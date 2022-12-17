@@ -121,8 +121,10 @@
             <div> <a href="/">Home</a></div>
             @yield('breadcrumbs')
         </div>
-        <div class="p-4">
+        <div class="p-4 bg-gray-100">
+
             @yield('content')
+
         </div>
     </main>
     <div class="alert-banner" id="alert">Test</div>

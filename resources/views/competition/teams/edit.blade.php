@@ -129,6 +129,8 @@ Edit Teams | {{ $comp->name }}
 
         </div>
         <button table-add-row="teams" class="btn">Add</button>
+        <br>
+        <br>
     </div>
 </div>
 

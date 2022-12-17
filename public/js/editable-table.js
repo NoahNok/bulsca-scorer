@@ -100,12 +100,18 @@ class EditableTable {
             
         })
 
+        newRow.querySelectorAll('form').forEach(f => {
+            f.outerHTML = ""
+        })
+
 
         console.log(newRow)
 
         tbody.appendChild(newRow);
 
         this.rows.push(new EditableTableRow(newRow))
+
+        window.scrollTo(0, document.body.scrollHeight)
 
         
     }
