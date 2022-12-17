@@ -1,0 +1,166 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.sidebar {
+    @apply p-3 flex flex-col space-y-3;
+
+    > a {
+        @apply flex flex-row space-x-4 rounded-md p-3 hover:bg-gray-200;
+
+        &.selected {
+            @apply bg-gray-200;
+        }
+
+        > div:last-child {
+            @apply col-span-2 flex items-center text-lg font-semibold;
+        }
+    }
+
+    > div.section {
+        @apply font-semibold text-lg mt-2 flex  items-center justify-between;
+    }
+}
+
+.breadcrumbs {
+    @apply bg-white flex flex-row py-1 px-3 space-x-2 text-sm font-semibold ;
+     > div {
+
+        @apply flex flex-row items-center space-x-2 hover:underline cursor-pointer; 
+     }
+}
+
+h1, h2, h3, h4, h5 {
+
+    @apply text-bulsca font-semibold mb-2;
+
+}
+
+h1 {
+@apply text-5xl;
+}
+
+h2 {
+@apply text-4xl;
+}
+
+h3 {
+@apply text-3xl;
+}
+
+h4 {
+@apply text-2xl;
+}
+
+h5 {
+@apply text-xl;
+}
+
+ div.form-input {
+
+    @apply flex flex-col mb-4;
+
+   label {
+    @apply mb-1;
+   }
+
+   input, select {
+    @apply border-2 rounded-md py-2 px-4 shadow-sm focus:outline-none hover:border-bulsca focus:border-bulsca mb-4;
+
+    &.file {
+      @apply file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold  file:text-black hover:file:bg-gray-200 file:cursor-pointer cursor-pointer;
+    }
+
+    
+   }
+
+   > input {
+    @apply  pt-[0.621rem] pb-[0.621rem];
+   }
+
+   > small {
+    @apply text-red-500 pl-2 -mt-3
+  }
+
+  &.is-invalid {
+    > input {
+      @apply border-red-500;
+    }
+  }
+
+   &.checkbox {
+    @apply flex-row items-center space-x-6;
+
+    > input {
+      @apply mb-[0.1rem]
+    }
+
+   }
+ }
+
+ .btn {
+    @apply py-2 px-6 text-center bg-green-500 hover:bg-green-600 transition-colors shadow-md text-white font-semibold rounded-md;
+ }
+
+ .card {
+  @apply px-5 py-3 border shadow-md bg-white rounded-md flex flex-col;
+ }
+
+ a.link {
+  @apply text-blue-700 text-base font-semibold hover:underline 
+ }
+
+ .label-killer {
+
+    div:not(:first-of-type) > div {
+      label {
+        display: none;
+      }
+
+
+    }
+    div {
+      margin-bottom: 0 !important;
+     
+    }
+  
+    div > div > input, div > div > select {
+      margin-bottom:  0 !important;
+    }
+
+    div:first-of-type > svg {
+      margin-top: 1.9em;
+    }
+    
+  
+
+
+ }
+
+ .editable-table {
+  tbody td, tbody th {
+    @apply bg-gray-100
+  }
+
+  .table-input {
+    @apply text-right py-4 px-6 bg-white text-black w-full;
+
+    &.invalid {
+      @apply border border-red-500;
+    }
+   }
+ }
+
+
+.alert-banner {
+  @apply fixed -bottom-12 transition-all ease-in-out duration-500 left-0 w-screen bg-red-500 text-white font-semibold flex items-center text-lg justify-center p-2;
+
+  &.active {
+    @apply bottom-0;
+  }
+
+  &.success {
+    @apply bg-green-500;
+  }
+}
