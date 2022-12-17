@@ -33,7 +33,7 @@ Teams | {{ $comp->name }}
 <div class="grid grid-cols-4 gap-6">
     <div class="flex flex-col space-y-4">
         <div class="flex justify-between">
-            <h2 class="mb-0">Edit Teams</h2>
+            <h2 class="mb-0">Teams ({{ $comp->getCompetitionTeams->count() }})</h2>
             <a href="{{ route('comps.view.teams.edit', $comp) }}" table-submit="teams" class="btn">Edit</a>
         </div>
 
