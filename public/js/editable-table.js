@@ -16,12 +16,12 @@ class EditableTable {
         });
 
         let saveButton = document.querySelector(`[table-submit='${target.getAttribute('editable-table')}']`)
-        saveButton.onclick = (e) => {
+        if (saveButton) saveButton.onclick = (e) => {
             this.save()
         }
 
         let addRow = document.querySelector(`[table-add-row='${target.getAttribute('editable-table')}']`)
-        addRow.onclick = (e) => {
+        if (addRow) addRow.onclick = (e) => {
             this.addRow()
         }
     }
@@ -34,6 +34,8 @@ class EditableTable {
             data.push(d)
             row.setValidCells()
         })
+
+        console.log(data)
 
         
 
@@ -149,7 +151,7 @@ class EditableTableRow {
         this.cells.forEach(cell => {
             let d = cell.getData();
             data.values[d.key] = d.value
-            if (d.value == "" || d.value == "null") nulls++
+            if (cell.element.getAttribute('table-cell-optional') == null && d.value == "" || d.value == "null") nulls++
         })
 
         if (nulls != 0) return null;

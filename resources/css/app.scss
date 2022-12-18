@@ -101,6 +101,10 @@ h5 {
 
  .btn {
     @apply py-2 px-6 text-center bg-green-500 hover:bg-green-600 transition-colors shadow-md text-white font-semibold rounded-md;
+
+    &.btn-danger {
+      @apply bg-red-500 hover:bg-red-600;
+    }
  }
 
  .card {

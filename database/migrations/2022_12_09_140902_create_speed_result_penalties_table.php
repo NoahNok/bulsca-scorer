@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('speed_result_penalties', function (Blueprint $table) {
             $table->id();
             $table->foreignId('speed_result')->references('id')->on('speed_results')->onUpdate('CASCADE')->onDelete('CASCADE');
-            $table->foreignId('penalty')->references('id')->on('penalties')->onUpdate('CASCADE')->onDelete('CASCADE');
+            $table->text('code');
             $table->timestamps();
         });
     }

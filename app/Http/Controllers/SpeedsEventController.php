@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AddSpeedEventRequest;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\Competition;
+use App\Models\Penalty;
 use App\Models\SpeedResult;
 use Illuminate\Http\Request;
+use Mockery\Undefined;
+use Spatie\LaravelIgnition\Recorders\DumpRecorder\Dump;
 
 class SpeedsEventController extends Controller
 {
@@ -70,9 +73,62 @@ class SpeedsEventController extends Controller
         $json = json_decode($request->input('data'));
         foreach ($json as $row) {
             $id = $row->id;
+            $sr = SpeedResult::find($id);
+
+
+
+            if ($row->values->disqualification != "") {
+                if (preg_match("/^DQ[0-9]{3}$/", $row->values->disqualification) == 0) {
+                    array_push($errors, ["id" => $id, "option" => "disqualification"]);
+                    continue;
+                } else {
+                    $sr->disqualification = $row->values->disqualification;
+                }
+            } else {
+                $sr->disqualification = null;
+            }
+
+            if (property_exists($row->values, "penalties")) {
+
+                if ($row->values->penalties != "") {
+                    $penaltiesSplit = explode(",", $row->values->penalties);
+
+                    $hasError = false;
+                    $valid = [];
+                    foreach ($penaltiesSplit as $penalty) {
+                        $penalty = trim($penalty);
+                        if (preg_match("/^P[0-9]{3}$/", $penalty) == 0) {
+                            $hasError = true;
+                            break;
+                        }
+                        array_push($valid, $penalty);
+                    }
+
+                    if ($hasError) {
+                        array_push($errors, ["id" => $id, "option" => "penalties"]);
+                        continue;
+                    }
+
+                    Penalty::where('speed_result', $sr->id)->delete();
+
+                    foreach ($valid as $penalty) {
+                        $p = new Penalty();
+                        $p->speed_result = $sr->id;
+                        $p->code = $penalty;
+                        $p->save();
+                    }
+                } else {
+                    Penalty::where('speed_result', $sr->id)->delete();
+                }
+            }
+
+
+
+
+
 
             if ($row->values->result == "") {
-                $sr = SpeedResult::find($id);
+
                 $sr->result = null;
                 $sr->save();
                 continue;
@@ -89,13 +145,29 @@ class SpeedsEventController extends Controller
 
             $totalMillis = $min * 60000 + $secMillisSplit[0] * 1000 + $secMillisSplit[1];
 
-            $sr = SpeedResult::find($id);
+
             $sr->result = $totalMillis;
             $sr->save();
         }
 
+
+
+
         if (!empty($errors)) {
             return response()->json($errors, 500);
         }
+    }
+
+    public function delete(Competition $comp, CompetitionSpeedEvent $event, Request $request)
+    {
+        $eid = $request->input('eid');
+
+        if ($eid != $event->id) {
+            return;
+        }
+
+        $event->delete();
+
+        return redirect()->route('comps.view.events', $comp);
     }
 }

@@ -13,4 +13,14 @@ class SpeedResult extends Model
     {
         return $this->belongsTo(CompetitionTeam::class, 'competition_team', 'id');
     }
+
+    public function getPenalties()
+    {
+        return $this->hasMany(Penalty::class, 'speed_result', 'id');
+    }
+
+    public function getPenaltiesAsString()
+    {
+        return $this->getPenalties()->get('code')->implode('code', ', ');
+    }
 }

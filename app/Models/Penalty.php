@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Penalty extends Model
 {
     use HasFactory;
+
+    protected $table = "speed_result_penalties";
 }

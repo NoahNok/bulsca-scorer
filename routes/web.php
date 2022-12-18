@@ -28,6 +28,7 @@ Route::get('/comps/{comp}', [CompetitionController::class, 'view'])->name('comps
 Route::get('/comps/{comp}/events', [CompetitionController::class, 'events'])->name('comps.view.events');
 Route::get('/comps/{comp}/events/speeds/add', [SpeedsEventController::class, 'add'])->name('comps.view.events.speeds.add');
 Route::post('/comps/{comp}/events/speeds/add', [SpeedsEventController::class, 'addPost'])->name('comps.view.events.speeds.addPost');
+Route::delete('/comps/{comp}/events/speeds/{event}/delete', [SpeedsEventController::class, 'delete'])->name('comps.view.events.speeds.delete');
 
 Route::get('/comps/{comp}/events/speeds/{event}', [SpeedsEventController::class, 'view'])->name('comps.view.events.speeds.view');
 Route::get('/comps/{comp}/events/speeds/{event}/edit', [SpeedsEventController::class, 'edit'])->name('comps.view.events.speeds.edit');

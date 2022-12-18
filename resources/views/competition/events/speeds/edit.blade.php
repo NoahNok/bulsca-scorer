@@ -66,18 +66,24 @@
                             Time
                         </th>
                         <th scope="col" class="py-3 px-6">
-                            DQ/Penalty
+                            DQ
                         </th>
+
+                        @if ($event->hasPenalties())
+                        <th scope="col" class="py-3 px-6">
+                            Penalties
+                        </th>
+                        @endif
 
 
                     </tr>
                 </thead>
                 <tbody>
 
-                    @forelse ($event->getResults() as $result)
+                    @forelse ($event->getSimpleResults as $result)
                     <tr table-row table-row-owner="{{ $result->id }}" class="bg-white border-b text-right ">
                         <th scope="row" class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap ">
-                            {{ $result->team }}
+                            {{ $result->getTeam->getFullname() }}
                         </th>
                         <td class="">
                             @php
@@ -85,12 +91,20 @@
                             $secs = (($result->result)-($mins*60000))/1000;
                             @endphp
 
-                            <input class="table-input" table-cell table-cell-name="result" placeholder="00:00.000" type="text" value="{{ sprintf("%02d", $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT)}}">
+                            <input class="table-input" table-cell table-cell-name="result" placeholder="00:00.000" type="text" value="{{ $result->result != null ? sprintf("%02d", $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT) : '' }}">
 
                         </td>
-                        <td class="py-4 px-6">
-                            {{ $result->disqualification ?: 'N/A' }}
+                        <td class="">
+
+                            <input class="table-input" table-cell table-cell-name="disqualification" table-cell-optional placeholder="DQ###" type="text" value="{{ $result->disqualification }}">
+
                         </td>
+
+                        @if ($event->hasPenalties())
+                        <td>
+                            <input class="table-input" table-cell table-cell-name="penalties" table-cell-optional placeholder="P###, P###, etc..." type="text" value="{{ $result->getPenaltiesAsString() }}">
+                        </td>
+                        @endif
 
 
                     </tr>

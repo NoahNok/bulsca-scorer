@@ -20,6 +20,11 @@ class SpeedEventSeeder extends Seeder
         foreach ($events as $event) {
             $se = SpeedEvent::firstOrCreate(['name' => $event]);
             $se->name = $event;
+
+            if ($event == 'Swim & Tow' || $event == 'Rope Throw') {
+                $se->has_penalties = true;
+            }
+
             $se->save();
         }
     }

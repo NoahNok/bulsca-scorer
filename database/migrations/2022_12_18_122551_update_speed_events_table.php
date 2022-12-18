@@ -13,10 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('penalties', function (Blueprint $table) {
-            $table->id();
-            $table->text('description');
-            $table->timestamps();
+        Schema::table('speed_events', function (Blueprint $table) {
+            $table->boolean('has_penalties')->default(false);
         });
     }
 
@@ -27,6 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('penalties');
+        Schema::table('speed_events', function (Blueprint $table) {
+            $table->dropColumn('has_penalties');
+        });
     }
 };

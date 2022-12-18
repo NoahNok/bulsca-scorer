@@ -33,7 +33,7 @@
 @endsection
 
 @section('content')
-<div class="grid grid-cols-2">
+<div class="grid grid-cols-2 gap-6">
     <div class="flex flex-col space-y-4">
         <div class="flex justify-between">
             <h2 class="mb-0">{{ $event->getName() }}</h2>
@@ -52,8 +52,14 @@
                             Time
                         </th>
                         <th scope="col" class="py-3 px-6">
-                            DQ/Penalty
+                            DQ
                         </th>
+
+                        @if ($event->hasPenalties())
+                        <th scope="col" class="py-3 px-6">
+                            Penalties
+                        </th>
+                        @endif
                         <th scope="col" class="py-3 px-6">
                             Points
                         </th>
@@ -78,8 +84,14 @@
                             {{ sprintf("%02d", $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT)}}
                         </td>
                         <td class="py-4 px-6">
-                            {{ $result->disqualification ?: 'N/A' }}
+                            {{ $result->disqualification ?: 'None' }}
                         </td>
+
+                        @if ($event->hasPenalties())
+                        <td class="py-3 px-6">
+                            {{ App\Models\Penalty::where('speed_result', $result->id)->get('code')->implode('code', ', ') ?: 'None'}}
+                        </td>
+                        @endif
                         <td class="py-4 px-6">
                             {{ round($result->points) }}
                         </td>
@@ -100,6 +112,21 @@
 
                 </tbody>
             </table>
+        </div>
+    </div>
+
+    <div class="flex flex-col space-y-4">
+        <h2 class="mb-0">Options</h2>
+        <div class="card">
+            <div class="flex justify-between items-center">
+                <strong>Delete event</strong>
+                <form action="{{ route('comps.view.events.speeds.delete', [$comp, $event]) }}" onsubmit="return confirm('Are you sure you want to delete this event!')" method="post">
+                    <input type="hidden" name="eid" value="{{ $event->id }}">
+                    {{ method_field('DELETE') }}
+                    @csrf
+                    <button class="btn btn-danger">Delete Event</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>
