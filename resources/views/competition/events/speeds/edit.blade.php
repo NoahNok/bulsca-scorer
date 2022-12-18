@@ -47,10 +47,15 @@
             <h2 class="mb-0">Edit - {{ $event->getName() }}</h2>
             <button table-submit="scores" class="btn">Save</button>
         </div>
-        <p>Editable cells are white!
+        <p>Be aware of milliseconds! If your stopwatch only displays a two digit milliseconds then make sure to multiply the value by 10 before entering!
             <br>
             <br>
-            Be aware of milliseconds! If your stopwatch only displays a two digit milliseconds then make sure to multiply the value by 10 before entering!
+
+            @if ($event->getName() == "Rope Throw")
+
+            <strong>Rope Throw:</strong> Enter a time for all in, otherwise a number between 0-3 for how many.
+            @endif
+            <br>
         </p>
 
 
@@ -63,7 +68,11 @@
                             Team
                         </th>
                         <th scope="col" class="py-3 px-6">
+                            @if ($event->getName() == "Rope Throw")
+                            Ropes/Time
+                            @else
                             Time
+                            @endif
                         </th>
                         <th scope="col" class="py-3 px-6">
                             DQ
@@ -86,12 +95,29 @@
                             {{ $result->getTeam->getFullname() }}
                         </th>
                         <td class="">
-                            @php
-                            $mins = floor($result->result / 60000);
-                            $secs = (($result->result)-($mins*60000))/1000;
-                            @endphp
 
-                            <input class="table-input" table-cell table-cell-name="result" placeholder="00:00.000" type="text" value="{{ $result->result != null ? sprintf("%02d", $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT) : '' }}">
+                            @if ($event->getName() == "Rope Throw")
+
+
+                            @if ($result->result < 4) <input class="table-input" table-cell table-cell-name="result" placeholder="Rope" type="text" value="{{ $result->result }}"> @else @php $mins=floor($result->result / 60000);
+                                $secs = (($result->result)-($mins*60000))/1000;
+                                @endphp
+                                <input class="table-input" table-cell table-cell-name="result" placeholder="00:00.000" type="text" value="{{ $result->result != null ? sprintf("%02d", $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT) : '' }}">
+                                @endif
+
+
+
+                                @else
+                                @php
+                                $mins = floor($result->result / 60000);
+                                $secs = (($result->result)-($mins*60000))/1000;
+                                @endphp
+
+                                <input class="table-input" table-cell table-cell-name="result" placeholder="00:00.000" type="text" value="{{ $result->result != null ? sprintf("%02d", $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT) : '' }}">
+
+                                @endif
+
+
 
                         </td>
                         <td class="">

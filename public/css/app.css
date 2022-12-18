@@ -474,6 +474,12 @@ video {
 .mb-0 {
   margin-bottom: 0px;
 }
+.mb-1 {
+  margin-bottom: 0.25rem;
+}
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
 .flex {
   display: flex;
 }
@@ -506,6 +512,9 @@ video {
 }
 .h-6 {
   height: 1.5rem;
+}
+.h-2 {
+  height: 0.5rem;
 }
 .w-3 {
   width: 0.75rem;
@@ -624,6 +633,9 @@ video {
 .py-4 {
   padding-top: 1rem;
   padding-bottom: 1rem;
+}
+.pb-2 {
+  padding-bottom: 0.5rem;
 }
 .text-left {
   text-align: left;

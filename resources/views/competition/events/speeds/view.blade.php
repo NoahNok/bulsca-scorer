@@ -49,7 +49,11 @@
                             Team
                         </th>
                         <th scope="col" class="py-3 px-6">
+                            @if ($event->getName() == "Rope Throw")
+                            Ropes/Time
+                            @else
                             Time
+                            @endif
                         </th>
                         <th scope="col" class="py-3 px-6">
                             DQ
@@ -77,11 +81,14 @@
                             {{ $result->team }}
                         </th>
                         <td class="py-4 px-6">
-                            @php
-                            $mins = floor($result->result / 60000);
-                            $secs = (($result->result)-($mins*60000))/1000;
-                            @endphp
-                            {{ sprintf("%02d", $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT)}}
+
+                            @if ($result->result < 4) {{ $result->result }} @else @php $mins=floor($result->result / 60000);
+                                $secs = (($result->result)-($mins*60000))/1000;
+                                @endphp
+                                {{ sprintf("%02d", $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT)}}
+                                @endif
+
+
                         </td>
                         <td class="py-4 px-6">
                             {{ $result->disqualification ?: 'None' }}
@@ -89,7 +96,12 @@
 
                         @if ($event->hasPenalties())
                         <td class="py-3 px-6">
-                            {{ App\Models\Penalty::where('speed_result', $result->id)->get('code')->implode('code', ', ') ?: 'None'}}
+
+
+                            {{ App\Models\Penalty::where('speed_result', $result->id)->get('code')->implode('code', ', ') ?: ($result->penalties == 0 ? 'None' : '') }}
+                            @if ($event->getName() == 'Swim & Tow' && $result->penalties != 0)
+                            (P900 x{{$result->penalties - App\Models\Penalty::where('speed_result', $result->id)->count() }})
+                            @endif
                         </td>
                         @endif
                         <td class="py-4 px-6">

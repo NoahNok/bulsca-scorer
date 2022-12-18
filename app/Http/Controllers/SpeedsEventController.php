@@ -134,20 +134,45 @@ class SpeedsEventController extends Controller
                 continue;
             }
 
-            if (preg_match("/^[0-9]{1,2}:[0-9]{1,2}.[0-9]{3}$/", $row->values->result) == 0) {
-                array_push($errors, ["id" => $id, "option" => "result"]);
-                continue;
+
+            if ($event->getName() == "Rope Throw") {
+                if (preg_match("/^[0-9]{1,2}:[0-9]{1,2}.[0-9]{3}|[0-3]$/", $row->values->result) == 0) {
+                    array_push($errors, ["id" => $id, "option" => "result"]);
+                    continue;
+                }
+
+                $minSecSplit = explode(":", $row->values->result);
+
+                if (count($minSecSplit) == 1) {
+                    $sr->result = $row->values->result;
+                    $sr->save();
+                    continue;
+                }
+
+                $min = $minSecSplit[0];
+                $secMillisSplit = explode(".", $minSecSplit[1]);
+
+                $totalMillis = $min * 60000 + $secMillisSplit[0] * 1000 + $secMillisSplit[1];
+
+
+                $sr->result = $totalMillis;
+                $sr->save();
+            } else {
+                if (preg_match("/^[0-9]{1,2}:[0-9]{1,2}.[0-9]{3}$/", $row->values->result) == 0) {
+                    array_push($errors, ["id" => $id, "option" => "result"]);
+                    continue;
+                }
+
+                $minSecSplit = explode(":", $row->values->result);
+                $min = $minSecSplit[0];
+                $secMillisSplit = explode(".", $minSecSplit[1]);
+
+                $totalMillis = $min * 60000 + $secMillisSplit[0] * 1000 + $secMillisSplit[1];
+
+
+                $sr->result = $totalMillis;
+                $sr->save();
             }
-
-            $minSecSplit = explode(":", $row->values->result);
-            $min = $minSecSplit[0];
-            $secMillisSplit = explode(".", $minSecSplit[1]);
-
-            $totalMillis = $min * 60000 + $secMillisSplit[0] * 1000 + $secMillisSplit[1];
-
-
-            $sr->result = $totalMillis;
-            $sr->save();
         }
 
 
