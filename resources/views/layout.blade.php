@@ -128,9 +128,18 @@
         </div>
     </main>
     <div class="alert-banner" id="alert">Test</div>
+
+
+
     <script src="{{ asset('js/editable-table.js') }}"></script>
     <script src="{{ asset('js/alert.js') }}"></script>
     <script src="{{ asset('js/serc-builder.js') }}"></script>
+    @if (Session::has('success'))
+    <script>
+        showSuccess('{{ Session::get("success") }}')
+    </script>
+
+    @endif
 </body>
 
 </html>

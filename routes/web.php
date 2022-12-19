@@ -42,3 +42,10 @@ Route::delete('/comps/{comp}/teams/delete', [TeamsController::class, 'delete'])-
 
 
 Route::get('/comps/{comp}/events/sercs/add', [SERCController::class, 'add'])->name('comps.view.events.sercs.add');
+Route::post('/comps/{comp}/events/sercs/add', [SERCController::class, 'addPost'])->name('comps.view.events.sercs.addPost');
+
+Route::get('/comps/{comp}/events/sercs/{serc}', [SERCController::class, 'view'])->name('comps.view.events.sercs.view');
+
+Route::get('/comps/{comp}/events/sercs/{serc}/edit', [SERCController::class, 'edit'])->name('comps.view.events.sercs.edit');
+Route::post('/comps/{comp}/events/sercs/{serc}/edit', [SERCController::class, 'editPost'])->name('comps.view.events.sercs.editPost');
+Route::delete('/comps/{comp}/events/sercs/{serc}', [SERCController::class, 'delete'])->name('comps.view.events.sercs.delete');

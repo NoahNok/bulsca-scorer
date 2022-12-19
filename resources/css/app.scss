@@ -176,7 +176,7 @@ h5 {
 
 .mp-list {
   div:first-child > div > svg {
-    @apply mt-3 mb-0;
+    @apply hidden;
   }
   div > div > svg {
     @apply mb-3;

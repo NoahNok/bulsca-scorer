@@ -8,13 +8,21 @@ class SERCBuilder {
         this.builder_id = target.getAttribute('serc-builder-id')
         this.builder_name = target.getAttribute('serc-builder')
         this.serc_name = document.querySelector('[serc-builder-name]')
+        this.url = target.getAttribute("serc-builder-url")
+        this.after = target.getAttribute("serc-builder-after-url")
+        this.csrf = target.getAttribute("serc-builder-csrf")
         
         this.judges = []
+
+        this.deleted = {
+            judges: [],
+            marking_points: []
+        }
 
         let clazz = this
 
         target.querySelectorAll('[serc-builder-judge]').forEach(j => {
-            clazz.judges.push(new SERCJudge(j, clazz.judges))
+            clazz.judges.push(new SERCJudge(j, clazz.judges, clazz.deleted))
         })
 
         this.add_judge = target.querySelector('[serc-builder-judge-add]')
@@ -37,7 +45,7 @@ class SERCBuilder {
 
             clazz.element.insertBefore(newJudge, clazz.add_judge)
 
-            clazz.judges.push(new SERCJudge(newJudge, clazz.judges))
+            clazz.judges.push(new SERCJudge(newJudge, clazz.judges, clazz.deleted))
 
             window.scrollTo(0, document.body.scrollHeight)
 
@@ -54,7 +62,7 @@ class SERCBuilder {
             if (clazz.serc_name.parentElement.classList.contains("is-invalid")) clazz.serc_name.parentElement.classList.remove('is-invalid')
         }
 
-   
+
     }
 
     save() {
@@ -67,7 +75,8 @@ class SERCBuilder {
         let data = {
             serc_id: this.builder_id,
             serc_name: this.serc_name.value,
-            judges: []
+            judges: [],
+            deleted: this.deleted
         };
 
         let index = 1;
@@ -78,12 +87,29 @@ class SERCBuilder {
 
         console.log(data)
 
+        let fd = new FormData();
+
+        fd.append('_token', this.csrf)
+        fd.append('data', JSON.stringify(data));
+
+        fetch(this.url, {
+            method: "POST",
+            body: fd
+        }).then(res => res.json()).then(data => {
+            let id = data.sid;
+
+            let url = this.after.replace(":rep:", id)
+
+            window.location.href = url
+
+        })
+
     }
 
 }
 
 class SERCJudge {
-    constructor(element, judges_list) {
+    constructor(element, judges_list, deleted) {
         this.element = element
         this.judge_id = element.getAttribute('serc-builder-judge-id')
         this.judge_delete = element.querySelector('[serc-builder-judge-delete]');
@@ -97,7 +123,7 @@ class SERCJudge {
         let clazz = this
 
         this.marking_point_container.querySelectorAll('[serc-builder-marking-point]').forEach(mp => {
-            clazz.marking_points.push(new SERCMarkingPoint(mp, clazz.marking_points))
+            clazz.marking_points.push(new SERCMarkingPoint(mp, clazz.marking_points, deleted))
         })
 
 
@@ -116,21 +142,20 @@ class SERCJudge {
 
             clazz.marking_point_container.appendChild(newPoint)
 
-            clazz.marking_points.push(new SERCMarkingPoint(newPoint, clazz.marking_points))
+            clazz.marking_points.push(new SERCMarkingPoint(newPoint, clazz.marking_points, deleted))
         }
 
         this.judge_delete.onclick = (e) => {
 
             if (judges_list.length == 1) return
 
-            if (clazz.judge_id == "null") {
-                // Not saved yet so just remove
-                clazz.element.outerHTML = ""
-                judges_list.splice(judges_list.indexOf(clazz), 1)
-            } else {
-                // Do a delete request here and remove
-                alert('not implemented')
-            }
+            if (clazz.judge_id != "null") {
+             
+                deleted.judges.push(clazz.judge_id)
+                
+            } 
+            clazz.element.outerHTML = ""
+            judges_list.splice(judges_list.indexOf(clazz), 1)
         }
 
  
@@ -155,7 +180,7 @@ class SERCJudge {
 }
 
 class SERCMarkingPoint {
-    constructor(element, mp_list){
+    constructor(element, mp_list, deleted){
         this.element = element
         this.id = element.getAttribute('serc-builder-marking-point')
         this.description = element.querySelector('[serc-builder-marking-point-desc]')
@@ -167,12 +192,11 @@ class SERCMarkingPoint {
         this.delete.onclick = (e) => {
             if (mp_list.indexOf(this) == 0) return
 
-            if (clazz.id == "null") {
-                mp_list.splice(mp_list.indexOf(this), 1)
+            if (clazz.id != "null") {
+                deleted.marking_points.push(clazz.id)
+            } 
+            mp_list.splice(mp_list.indexOf(this), 1)
                 clazz.element.outerHTML = ""
-            } else {
-                alert('not implemented')
-            }
         }
 
     

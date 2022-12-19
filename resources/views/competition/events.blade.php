@@ -49,7 +49,13 @@ Events | {{ $comp->name }}
 <h3 class="mb-0">SERCs</h3>
 <br>
 <div class="grid grid-cols-4 gap-4">
+    @foreach ($comp->getSERCs as $event)
+    <a href="{{ route('comps.view.events.sercs.view', ['comp' => $comp, 'serc' => $event]) }}" class="p-5 border shadow-md bg-white rounded-md flex items-center justify-center space-x-2 hover:bg-gray-400 hover:text-white transition-colors cursor-pointer">
+        <p class="text-lg font-semibold">{{ $event->name }}</p>
 
+
+    </a>
+    @endforeach
     <x-add-card link="{{ route('comps.view.events.sercs.add', $comp) }}" text="SERC" />
 
 </div>

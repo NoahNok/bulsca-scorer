@@ -20,6 +20,12 @@ class Competition extends Model
         //return $this->hasMany(CompetitionSpeedEvent::class, 'event', 'id');
     }
 
+    public function getSERCs()
+    {
+        return $this->hasMany(SERC::class, 'competition', 'id');
+        //return $this->hasMany(CompetitionSpeedEvent::class, 'event', 'id');
+    }
+
     public function getCompetitionTeams()
     {
         return $this->hasMany(CompetitionTeam::class, 'competition', 'id');

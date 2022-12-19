@@ -10,4 +10,9 @@ class SERC extends Model
     use HasFactory;
 
     protected $table = 'sercs';
+
+    public function getJudges()
+    {
+        return $this->hasMany(SERCJudge::class, 'serc', 'id');
+    }
 }
