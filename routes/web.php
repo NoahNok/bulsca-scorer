@@ -3,6 +3,7 @@
 use App\Http\Controllers\CompetitionController;
 use App\Http\Controllers\SpeedsEventController;
 use App\Http\Controllers\TeamsController;
+use App\Http\Controllers\SERCController;
 use App\Models\Competition;
 use Illuminate\Support\Facades\Route;
 
@@ -38,3 +39,6 @@ Route::get('/comps/{comp}/teams', [CompetitionController::class, 'teams'])->name
 Route::get('/comps/{comp}/teams/edit', [TeamsController::class, 'edit'])->name('comps.view.teams.edit');
 Route::post('/comps/{comp}/teams/edit', [TeamsController::class, 'editPost'])->name('comps.view.teams.editPost');
 Route::delete('/comps/{comp}/teams/delete', [TeamsController::class, 'delete'])->name('comps.view.teams.delete');
+
+
+Route::get('/comps/{comp}/events/sercs/add', [SERCController::class, 'add'])->name('comps.view.events.sercs.add');

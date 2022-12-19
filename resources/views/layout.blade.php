@@ -130,6 +130,7 @@
     <div class="alert-banner" id="alert">Test</div>
     <script src="{{ asset('js/editable-table.js') }}"></script>
     <script src="{{ asset('js/alert.js') }}"></script>
+    <script src="{{ asset('js/serc-builder.js') }}"></script>
 </body>
 
 </html>

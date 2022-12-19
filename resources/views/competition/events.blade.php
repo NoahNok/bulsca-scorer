@@ -50,7 +50,7 @@ Events | {{ $comp->name }}
 <br>
 <div class="grid grid-cols-4 gap-4">
 
-    <x-add-card text="SERC" />
+    <x-add-card link="{{ route('comps.view.events.sercs.add', $comp) }}" text="SERC" />
 
 </div>
 @endsection

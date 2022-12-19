@@ -168,3 +168,17 @@ h5 {
     @apply bg-green-500;
   }
 }
+
+
+.cross {
+  @apply transition-all hover:rotate-90 cursor-pointer ease-in-out hover:text-red-500;
+}
+
+.mp-list {
+  div:first-child > div > svg {
+    @apply mt-3 mb-0;
+  }
+  div > div > svg {
+    @apply mb-3;
+  }
+}
