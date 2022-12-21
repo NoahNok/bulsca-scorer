@@ -218,10 +218,4 @@ class SERCMarkingPoint {
     }
 }
 
-window.onload = () => {
 
-    document.querySelectorAll("[serc-builder]").forEach(sb => {
-       
-        new SERCBuilder(sb);
-    })
-}

@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Competition;
+use App\Models\CompetitionTeam;
 use App\Models\SERC;
 use App\Models\SERCJudge;
 use App\Models\SERCMarkingPoint;
+use App\Models\SERCResult;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 class SERCController extends Controller
 {
@@ -125,5 +128,44 @@ class SERCController extends Controller
         $serc->delete();
 
         return redirect()->route('comps.view.events', $comp)->with('success', 'SERC deleted!');
+    }
+
+    public function editResultsView(Competition $comp, SERC $serc, CompetitionTeam $team)
+    {
+        return view('competition.events.sercs.edit-team-results', ['comp' => $comp, 'serc' => $serc, 'team' => $team]);
+    }
+
+    public function updateTeamResults(Competition $comp, SERC $serc, CompetitionTeam $team, Request $request)
+    {
+        $json = json_decode($request->input('data'));
+
+        foreach ($json as $mp) {
+            $id = $mp->id;
+            $score = $mp->values->score ?: 0;
+
+            if ($score > 10) $score = 10;
+            if ($score < 0) $score = 0;
+
+            $result = SERCResult::firstOrNew(['marking_point' => $id, 'team' => $team->id]);
+
+            $result->result = $score;
+
+            $result->save();
+        }
+
+
+        $teamIds = CompetitionTeam::where('competition', 1)->pluck('id')->toArray();
+        $index = array_search($team->id, array_values($teamIds));
+
+
+
+        if ($index + 2 > count($teamIds)) {
+
+            return response()->json(['sid' => $serc->id]);
+        }
+
+        $nextTeamId = $teamIds[$index + 1];
+
+        return response()->json(['url' => Route('comps.view.events.sercs.editResults', [$comp, $serc, $nextTeamId])]);
     }
 }

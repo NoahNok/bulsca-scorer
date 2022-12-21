@@ -15,4 +15,9 @@ class SERC extends Model
     {
         return $this->hasMany(SERCJudge::class, 'serc', 'id');
     }
+
+    public function getTeams()
+    {
+        return CompetitionTeam::where('competition', $this->competition)->get();
+    }
 }

@@ -105,6 +105,14 @@ h5 {
     &.btn-danger {
       @apply bg-red-500 hover:bg-red-600;
     }
+
+    &.btn-primary {
+      @apply bg-blue-500 hover:bg-blue-600;
+    }
+
+    &.btn-thin {
+      @apply py-1;
+    }
  }
 
  .card {

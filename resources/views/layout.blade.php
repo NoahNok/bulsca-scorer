@@ -134,6 +134,19 @@
     <script src="{{ asset('js/editable-table.js') }}"></script>
     <script src="{{ asset('js/alert.js') }}"></script>
     <script src="{{ asset('js/serc-builder.js') }}"></script>
+    <script>
+        window.onload = () => {
+
+            document.querySelectorAll("[serc-builder]").forEach(sb => {
+
+                new SERCBuilder(sb);
+            })
+            document.querySelectorAll("[editable-table]").forEach(et => {
+                new EditableTable(et)
+            })
+
+        }
+    </script>
     @if (Session::has('success'))
     <script>
         showSuccess('{{ Session::get("success") }}')

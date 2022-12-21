@@ -24,9 +24,11 @@ class EditableTable {
         if (addRow) addRow.onclick = (e) => {
             this.addRow()
         }
+        
     }
 
     save() {
+        
         let data = []
         this.rows.forEach(row => {
             let d = row.getData();
@@ -52,7 +54,27 @@ class EditableTable {
             method: 'POST',
             body: fd
         }).then(async res => {
-            if (res.status == 200) window.location.href = clazz.after
+            if (res.status == 200) {
+
+                try {
+                    let data = await res.json()
+                    if (data.url) {
+                        window.location.href = data.url
+                    }
+                    else if (data.sid) {
+                        window.location.href = clazz.after
+                    } else {
+                        window.location.href = clazz.after
+                    }
+                    
+                } catch (e) {
+                    window.location.href = clazz.after
+                }
+
+               
+
+                
+            }
             if (res.status == 500) this.handleErrors(await res.json())
         })
     }
@@ -198,8 +220,4 @@ class EditableTableCell {
 
 }
 
-window.onload = () => {
-    document.querySelectorAll("[editable-table]").forEach(et => {
-        new EditableTable(et)
-    })
-}
+
