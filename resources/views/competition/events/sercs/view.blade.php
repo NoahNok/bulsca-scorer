@@ -152,6 +152,7 @@
     <div class="flex flex-col space-y-4">
         <h2 class="mb-0">Options</h2>
         <div class="card">
+            <h2>DONT FORGET TO INCLUDE DQS IN MYSQL QUERY!</h2>
             <div class="flex justify-between items-center">
                 <strong>Delete SERC</strong>
                 <form action="{{ route('comps.view.events.sercs.delete', [$comp, $serc]) }}" onsubmit="return confirm('Are you sure you want to delete this SERC!')" method="post">
