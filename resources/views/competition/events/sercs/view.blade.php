@@ -41,6 +41,7 @@
             <a href="{{ route('comps.view.events.sercs.edit', [$comp, $serc]) }}" class="btn">Edit SERC Setup</a>
         </div>
 
+        <h4>Marked Teams</h4>
         <div class="  relative w-full  ">
             <table class=" text-sm w-full shadow-md rounded-lg overflow-hidden text-left text-gray-500 ">
                 <thead class="text-xs text-gray-700 text-right uppercase bg-gray-50 ">
@@ -66,23 +67,67 @@
                 </thead>
                 <tbody>
 
-                    @forelse ($serc->getTeams() as $result)
+                    @forelse ($serc->getResults() as $result)
                     <tr class="bg-white border-b text-right ">
                         <th scope="row" class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap ">
-                            {{ $result->getFullname() }}
+                            {{ $result->team }}
                         </th>
                         <td class="py-4 px-6">
                             N/A
                         </td>
 
                         <td class="py-4 px-6">
-                            N/A
+                            {{ round($result->points) }}
                         </td>
                         <td class="py-4 px-6">
-                            N/A
+                            {{ $result->place }}
                         </td>
                         <td class="py-4 px-6">
-                            <a href="{{ route('comps.view.events.sercs.editResults', [$comp, $serc, $result->id]) }}" class="btn btn-primary btn-thin">
+                            <a href="{{ route('comps.view.events.sercs.editResults', [$comp, $serc, $result->tid]) }}" class="btn btn-primary btn-thin">
+                                Edit
+                            </a>
+                        </td>
+
+                    </tr>
+                    @empty
+                    <tr class="bg-white border-b text-right ">
+                        <th colspan="100" scope="row" class="py-4 text-left px-6 text-center font-medium text-gray-900 whitespace-nowrap ">
+                            None
+                        </th>
+                    </tr>
+                    @endforelse
+
+
+
+                </tbody>
+            </table>
+        </div>
+
+        <h4>All teams</h4>
+        <div class="  relative w-full  ">
+            <table class=" text-sm w-full shadow-md rounded-lg overflow-hidden text-left text-gray-500 ">
+                <thead class="text-xs text-gray-700 text-right uppercase bg-gray-50 ">
+                    <tr>
+                        <th scope="col" class="py-3 px-6 text-left">
+                            Team
+                        </th>
+
+                        <th scope="col" class="py-3 px-6">
+                            Results
+                        </th>
+
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @forelse ($serc->getTeams() as $team)
+                    <tr class="bg-white border-b text-right ">
+                        <th scope="row" class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap ">
+                            {{ $team->getFullname() }}
+                        </th>
+
+                        <td class="py-4 px-6">
+                            <a href="{{ route('comps.view.events.sercs.editResults', [$comp, $serc, $team]) }}" class="btn btn-primary btn-thin">
                                 Edit
                             </a>
                         </td>
