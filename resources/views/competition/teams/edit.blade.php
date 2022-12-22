@@ -114,10 +114,35 @@ Edit Teams | {{ $comp->name }}
 
                     </tr>
                     @empty
-                    <tr class="bg-white border-b text-right ">
-                        <th colspan="100" scope="row" class="py-4 px-6 text-center font-medium text-gray-900 whitespace-nowrap ">
-                            None
+                    <tr table-row table-row-owner="null" class="bg-white border-b text-right ">
+                        <th scope="row" class="text-left ">
+                            <input class="table-input" style="text-align: left !important" table-cell table-cell-name="club" placeholder="Club" type="text" value="">
                         </th>
+                        <td class="">
+                            <input class="table-input" table-cell table-cell-name="team" placeholder="A, B, C, etc..." type="text" value="">
+
+
+                        </td>
+                        <td class="">
+                            <select class="table-input" table-cell table-cell-name="league">
+                                <option value="null">Please select</option>
+                                @foreach (App\Models\League::all() as $league)
+                                <option value="{{ $league->id }}">{{ $league->name }}</option>
+                                @endforeach
+                            </select>
+
+
+                        </td>
+                        <td class="">
+                            <input class="table-input" table-cell table-cell-name="st_time" placeholder="" type="time" value="">
+
+
+                        </td>
+                        <td>
+
+                        </td>
+
+
                     </tr>
                     @endforelse
 

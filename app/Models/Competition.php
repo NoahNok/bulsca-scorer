@@ -30,4 +30,9 @@ class Competition extends Model
     {
         return $this->hasMany(CompetitionTeam::class, 'competition', 'id');
     }
+
+    public function getResultSchemas()
+    {
+        return $this->hasMany(ResultSchema::class, 'competition', 'id');
+    }
 }

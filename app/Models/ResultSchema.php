@@ -13,4 +13,9 @@ class ResultSchema extends Model
     {
         return $this->hasMany(ResultSchemaEvent::class, 'schema', 'id');
     }
+
+    public function getCompetition()
+    {
+        return $this->hasOne(Competition::class, 'id', 'competition');
+    }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Competition;
 use App\Models\ResultSchema;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class OverallResultsController extends Controller
@@ -35,7 +36,7 @@ class OverallResultsController extends Controller
             $mysqlEventNames[$event->id] = $eventMysqlName;
             array_push($mysqlEventNamesArray, $eventMysqlName);
 
-            $finalQuery .= $eventMysqlName . "<br> AS (" . rtrim($query, ";") . "), ";
+            $finalQuery .= $eventMysqlName . " AS (" . rtrim($query, ";") . "), ";
         }
 
         $finalQuery = rtrim($finalQuery, ", ");
@@ -45,10 +46,10 @@ class OverallResultsController extends Controller
             $mysqlTableName = $mysqlEventNames[$event->id];
             $finalQuery .= $mysqlTableName . ".points AS " . $mysqlTableName . "_points, ";
             $finalQuery .=  $event->weight . " AS " . $mysqlTableName . "_weight, ";
-            $finalQuery .= "(SELECT MIN(points) FROM " . $mysqlTableName . ") AS " . $mysqlTableName . "_min, ";
+            $finalQuery .= "(SELECT MIN(points) FROM " . $mysqlTableName . " WHERE points>0) AS " . $mysqlTableName . "_min, ";
             $finalQuery .= "(SELECT MAX(points) FROM " . $mysqlTableName . ") AS " . $mysqlTableName . "_max, ";
-            $finalQuery .= "900/((SELECT MAX(points) FROM " . $mysqlTableName . ") - (SELECT MIN(points) FROM " . $mysqlTableName . ")) AS " . $mysqlTableName . "_mult_factor, ";
-            $finalQuery .=  "(" . $mysqlTableName . ".points" . "-" . "(SELECT MIN(points) FROM " . $mysqlTableName . "))" . "*" . "(900/((SELECT MAX(points) FROM " . $mysqlTableName . ") - (SELECT MIN(points) FROM " . $mysqlTableName . ")))+100"    . " AS " . $mysqlTableName . "_rsp, ";
+            $finalQuery .= "900/((SELECT MAX(points) FROM " . $mysqlTableName . ") - (SELECT MIN(points) FROM " . $mysqlTableName . " WHERE points > 0)) AS " . $mysqlTableName . "_mult_factor, ";
+            $finalQuery .=  "IF(" . $mysqlTableName . ".points = 0,0,(" . $mysqlTableName . ".points" . "-" . "(SELECT MIN(points) FROM " . $mysqlTableName . " WHERE points > 0))" . "*" . "(900/((SELECT MAX(points) FROM " . $mysqlTableName . ") - (SELECT MIN(points) FROM " . $mysqlTableName . " WHERE points>0)))+100) * " . $event->weight . " AS " . $mysqlTableName . "_rsp, ";
         }
 
         $finalQuery = rtrim($finalQuery, ", ");
@@ -79,9 +80,19 @@ class OverallResultsController extends Controller
 
         $final = "SELECT *, RANK() OVER(ORDER BY totalPoints DESC) place FROM (" . $final . ") AS bbb;";
 
-        echo $final;
+        //echo $final;
+        //return;
 
 
-        dump($mysqlEventNamesArray);
+
+
+        $results = DB::select($final);
+
+        return view('competition.results.view', ['results' => $results, 'schema' => $schema, 'comp' => $schema->getCompetition]);
+    }
+
+    public function view(Competition $comp)
+    {
+        return view('competition.results', ['comp' => $comp]);
     }
 }
