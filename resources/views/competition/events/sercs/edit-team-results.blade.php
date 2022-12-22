@@ -69,6 +69,25 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <tr class="">
+                        <td colspan="100" style="background: rgb(156, 163, 175);" class="py-4 text-left text-lg px-6  font-medium text-white whitespace-nowrap ">Disqualification & Penalties</td>
+                    </tr>
+                    <tr table-row table-row-owner="disqualification" class="bg-white border-b text-right ">
+                        <th scope="row" class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap ">
+                            <span class="pl-4">Disqualification</span>
+                        </th>
+                        <td class="">
+                            <input class="table-input" table-cell table-cell-name="disqualification" placeholder="DQ###" type="text" value="{{ $serc->getTeamDQ($team)?->code }}">
+                        </td>
+                    </tr>
+                    <tr table-row table-row-owner="penalties" class="bg-white border-b text-right ">
+                        <th scope="row" class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap ">
+                            <span class="pl-4">Penalties</span>
+                        </th>
+                        <td class="">
+                            <input class="table-input" table-cell table-cell-name="penalties" placeholder="P###" type="text" value="{{ $serc->getTeamPenalties($team)?->codes }}">
+                        </td>
+                    </tr>
 
                     @forelse ($serc->getJudges as $judge)
 

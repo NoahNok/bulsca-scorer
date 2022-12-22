@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SERCDisqualification extends Model
+class SERCPenalty extends Model
 {
     use HasFactory;
 
+
     protected $fillable = ['serc', 'team'];
 
-    protected $table = "serc_disqualifications";
+    protected $table = "serc_penalties";
 }

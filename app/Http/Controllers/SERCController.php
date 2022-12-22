@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Competition;
 use App\Models\CompetitionTeam;
 use App\Models\SERC;
+use App\Models\SERCDisqualification;
 use App\Models\SERCJudge;
 use App\Models\SERCMarkingPoint;
+use App\Models\SERCPenalty;
 use App\Models\SERCResult;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -139,7 +141,28 @@ class SERCController extends Controller
     {
         $json = json_decode($request->input('data'));
 
+        $disSet = false;
+        $penSet = false;
+
         foreach ($json as $mp) {
+
+            if ($mp->id == "disqualification") {
+                $sd = SERCDisqualification::firstOrNew(['team' => $team->id, 'serc' => $serc->id]);
+                $sd->code = $mp->values->disqualification;
+                $sd->save();
+                $disSet = true;
+                continue;
+            }
+
+            if ($mp->id == "penalties") {
+                $sd = SERCPenalty::firstOrNew(['team' => $team->id, 'serc' => $serc->id]);
+                $sd->codes = $mp->values->penalties;
+                $sd->save();
+                $penSet = true;
+                continue;
+            }
+
+
             $id = $mp->id;
             $score = $mp->values->score ?: 0;
 
@@ -151,6 +174,13 @@ class SERCController extends Controller
             $result->result = $score;
 
             $result->save();
+        }
+
+        if (!$disSet) {
+            SERCDisqualification::where(['team' => $team->id, 'serc' => $serc->id])->delete();
+        }
+        if (!$penSet) {
+            SERCPenalty::where(['team' => $team->id, 'serc' => $serc->id])->delete();
         }
 
 

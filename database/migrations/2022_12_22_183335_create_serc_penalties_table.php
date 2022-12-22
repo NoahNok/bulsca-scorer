@@ -13,11 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('serc_disqualifications', function (Blueprint $table) {
+        Schema::create('serc_penalties', function (Blueprint $table) {
             $table->id();
             $table->foreignId('serc')->references('id')->on('sercs')->onUpdate('CASCADE')->onDelete('CASCADE');
             $table->foreignId('team')->references('id')->on('competition_teams')->onUpdate('CASCADE')->onDelete('CASCADE');
-            $table->text('code');
+            $table->text('codes');
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('serc_disqualifications');
+        Schema::dropIfExists('serc_penalties');
     }
 };
