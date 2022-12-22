@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CompetitionController;
+use App\Http\Controllers\OverallResultsController;
 use App\Http\Controllers\SpeedsEventController;
 use App\Http\Controllers\TeamsController;
 use App\Http\Controllers\SERCController;
@@ -52,3 +53,6 @@ Route::delete('/comps/{comp}/events/sercs/{serc}', [SERCController::class, 'dele
 
 Route::get('/comps/{comp}/events/sercs/{serc}/results/{team}/edit', [SERCController::class, 'editResultsView'])->name('comps.view.events.sercs.editResults');
 Route::post('/comps/{comp}/events/sercs/{serc}/results/{team}/edit', [SERCController::class, 'updateTeamResults'])->name('comps.view.events.sercs.editResultsPost');
+
+
+Route::get('/results/view-schema/{schema}', [OverallResultsController::class, 'computeResults']);
