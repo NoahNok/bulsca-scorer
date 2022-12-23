@@ -19,7 +19,7 @@ class CompetitionTeam extends Model
 
     public function getLeague()
     {
-        return $this->belongsToMany(League::class, 'competition_teams_league', 'competition_team', 'league');
+        return $this->hasOne(League::class, 'id', 'league');
     }
 
     public function getSwimTowTime()

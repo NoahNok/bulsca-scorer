@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->text('name');
             $table->foreignId('competition')->references('id')->on('competitions')->onUpdate('CASCADE')->onDelete('CASCADE');
+            $table->text('league');
             $table->timestamps();
         });
     }

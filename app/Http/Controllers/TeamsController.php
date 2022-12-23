@@ -37,6 +37,7 @@ class TeamsController extends Controller
             $team->team = $row->values->team;
 
             $team->competition = $comp->id;
+            $team->league = $row->values->league;
 
 
 
@@ -47,8 +48,7 @@ class TeamsController extends Controller
 
             $team->save();
 
-            $team->getLeague()->toggle(League::all());
-            $team->getLeague()->attach($row->values->league);
+
 
             if ($isNew) {
                 // If they are a new team, add them to all the current events

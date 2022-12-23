@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('club')->references('id')->on('clubs')->onUpdate('CASCADE')->onDelete('CASCADE');
             $table->text('team');
             $table->integer('st_time');
+            $table->text('league');
             $table->timestamps();
         });
     }

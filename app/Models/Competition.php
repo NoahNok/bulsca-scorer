@@ -35,4 +35,14 @@ class Competition extends Model
     {
         return $this->hasMany(ResultSchema::class, 'competition', 'id');
     }
+
+    public function getAllEvents()
+    {
+        $sercs = $this->getSERCs()->get();
+        $speeds = $this->getSpeedEvents()->get();
+
+        $merged = $sercs->merge($speeds);
+
+        return $merged;
+    }
 }

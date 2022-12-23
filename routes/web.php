@@ -55,4 +55,7 @@ Route::get('/comps/{comp}/events/sercs/{serc}/results/{team}/edit', [SERCControl
 Route::post('/comps/{comp}/events/sercs/{serc}/results/{team}/edit', [SERCController::class, 'updateTeamResults'])->name('comps.view.events.sercs.editResultsPost');
 
 Route::get('/comp/{comp}/results', [OverallResultsController::class, 'view'])->name('comps.view.results');
+Route::get('/comp/{comp}/results/add', [OverallResultsController::class, 'add'])->name('comps.view.results.add');
+Route::post('/comp/{comp}/results/add', [OverallResultsController::class, 'addPost'])->name('comps.view.results.addPost');
+Route::delete('/comp/{comp}/results/{schema}', [OverallResultsController::class, 'delete'])->name('comps.view.results.delete');
 Route::get('/results/view-schema/{schema}', [OverallResultsController::class, 'computeResults'])->name("comps.results.view-schema");

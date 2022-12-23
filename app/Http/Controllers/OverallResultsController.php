@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Competition;
 use App\Models\ResultSchema;
+use App\Models\ResultSchemaEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -17,6 +18,8 @@ class OverallResultsController extends Controller
 
         $events = $schema->getEvents;
 
+        $targetLeagueQueryExtra = $schema->getTargetLeagueQueryExtra();
+
         $finalQuery = "WITH ";
 
         $mysqlEventNames = [];
@@ -26,6 +29,7 @@ class OverallResultsController extends Controller
         foreach ($events as $event) {
             $actualEvent = $event->getActualEvent;
             $query = $actualEvent->getResultQuery();
+            $query = str_replace(":league_conds:", $targetLeagueQueryExtra, $query);
             $eventName = $actualEvent->getName();
 
 
@@ -76,6 +80,8 @@ class OverallResultsController extends Controller
             $final .= $event . "_rsp + ";
         }
 
+        //echo $finalQuery;
+
         $final = rtrim($final, "+ ") . " AS totalPoints FROM (" . $finalQuery . ") AS bb";
 
         $final = "SELECT *, RANK() OVER(ORDER BY totalPoints DESC) place FROM (" . $final . ") AS bbb;";
@@ -94,5 +100,80 @@ class OverallResultsController extends Controller
     public function view(Competition $comp)
     {
         return view('competition.results', ['comp' => $comp]);
+    }
+
+    public function add(Competition $comp)
+    {
+        return view('competition.results.add', ['comp' => $comp]);
+    }
+
+    public function addPost(Competition $comp, Request $request)
+    {
+
+        $json = json_decode($request->input('data'));
+
+        $errors = [];
+
+
+
+        $schema_name = null;
+        $schema_league = null;
+
+        foreach ($json as $event) {
+
+            if ($event->id == "name") {
+
+                if ($event->values->name == '') {
+                    array_push($errors, ['id' => "name", "option" => "name"]);
+                    continue;
+                }
+
+                $schema_name = $event->values->name;
+                continue;
+            }
+
+            if ($event->id == "league") {
+                if ($event->values->league == '') {
+                    array_push($errors, ['id' => "league", "option" => "league"]);
+                    continue;
+                }
+                $schema_league = $event->values->league;
+                continue;
+            }
+
+            if ($event->values->weight == '') {
+                array_push($errors, ['id' => $event->id, "option" => "weight"]);
+                continue;
+            }
+        }
+
+        if (!empty($errors)) {
+            return response()->json($errors, 500);
+        }
+
+
+        $rs = new ResultSchema();
+        $rs->name = $schema_name;
+        $rs->competition = $comp->id;
+        $rs->league = $schema_league;
+        $rs->save();
+
+        foreach ($json as $event) {
+            if ($event->id == "name" || $event->id == "league") continue;
+            $rse = new ResultSchemaEvent();
+            $rse->schema = $rs->id;
+            $rse->event_id = $event->id;
+            $rse->event_type = $event->values->type == "serc" ? "\App\Models\SERC" : "\App\Models\CompetitionSpeedEvent";
+            $rse->weight = $event->values->weight;
+            $rse->save();
+        }
+
+        return response()->json(['url' => route('comps.results.view-schema', $rs->id)]);
+    }
+
+    public function delete(Competition $comp, ResultSchema $schema)
+    {
+        $schema->delete();
+        return redirect()->route('comps.view.results', $comp);
     }
 }

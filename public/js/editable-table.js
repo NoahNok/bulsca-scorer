@@ -173,7 +173,10 @@ class EditableTableRow {
         this.cells.forEach(cell => {
             let d = cell.getData();
             data.values[d.key] = d.value
-            if (cell.element.getAttribute('table-cell-optional') == null && d.value == "" || d.value == "null") nulls++
+            if (!cell.element.hasAttribute('table-cell-required')) {
+                if (cell.element.getAttribute('table-cell-optional') == null && d.value == "" || d.value == "null") nulls++
+            }
+            
         })
 
         if (nulls != 0) return null;

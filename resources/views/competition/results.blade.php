@@ -40,7 +40,7 @@ Results | {{ $comp->name }}
 
     </a>
     @endforeach
-    <x-add-card link="#" text="Results" />
+    <x-add-card link="{{ route('comps.view.results.add', $comp) }}" text="Results" />
 </div>
 <br>
 

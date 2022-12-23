@@ -67,7 +67,7 @@ Teams | {{ $comp->name }}
                             {{ $team->team }}
                         </td>
                         <td class="py-4 px-6">
-                            {{ $team->getLeague->first()->name }}
+                            {{ $team->getLeague->name }}
                         </td>
                         <td class="py-4 px-6">
                             {{ $team->getSwimTowTime() }}

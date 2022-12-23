@@ -21,7 +21,7 @@
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
         <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
     </svg>
-    <a href="#">Results</a>
+    <a href="{{ route('comps.view.results', [$comp]) }}">Results</a>
 </div>
 <div>
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
@@ -93,8 +93,38 @@
 
 
     </div>
+    <div class="flex flex-col space-y-4">
+        <h2 class="mb-0">Options</h2>
+        <div class="card">
+            <div class="flex justify-between items-center">
+                <strong>Delete Results Sheet</strong>
+                <form action="{{ route('comps.view.results.delete', [$comp, $schema->id]) }}" onsubmit="return confirm('Are you sure you want to delete this Results Sheet!')" method="post">
+                    <input type="hidden" name="sid" value="{{ $schema->id }}">
+                    {{ method_field('DELETE') }}
+                    @csrf
+                    <button class="btn btn-danger">Delete Results Sheet</button>
+                </form>
+            </div>
+        </div>
+    </div>
 
 
+</div>
+
+<br>
+
+<div>
+    <h3>Weightings</h3>
+    <ul>
+        @foreach ($schema->getEvents as $event)
+        <li><strong>{{ $event->getActualEvent->getName()}}</strong>: {{ $event->weight}}</li>
+
+        @endforeach
+    </ul>
+    <br>
+    <h3>League</h3>
+    <p><strong>Target League</strong>: {{ $schema->league }}</p>
+    <small>Overall (O), A League (A), B League (B), Freshers League (F), Non-counting (NC), Non-student (NS)</small>
 </div>
 
 @endsection
