@@ -43,7 +43,7 @@ Add SERC | {{ $comp->name }}
     <input type="text" placeholder="Name" serc-builder-name>
 </div>
 
-<div class="grid grid-cols-3 gap-4" serc-builder="builder" serc-builder-id="null" serc-builder-csrf="{{ csrf_token() }}" serc-builder-url="{{ route('comps.view.events.sercs.addPost', $comp) }}" serc-builder-after-url="{{ route('comps.view.events.sercs.view', [$comp, ':rep:']) }}">
+<div class="grid-3" serc-builder="builder" serc-builder-id="null" serc-builder-csrf="{{ csrf_token() }}" serc-builder-url="{{ route('comps.view.events.sercs.addPost', $comp) }}" serc-builder-after-url="{{ route('comps.view.events.sercs.view', [$comp, ':rep:']) }}">
     <div class="card" serc-builder-judge sbj-nodelete serc-builder-judge-id="null">
         <div class="flex justify-between items-center">
             <h4>New Judge</h4>

@@ -17,7 +17,7 @@ Competitions
 @section('content')
 <h2 class="mb-0">Competitions</h2>
 <br>
-<div class="grid grid-cols-4 gap-4">
+<div class="grid-4">
     @foreach ($comps as $comp)
     <a href="{{ route('comps.view', $comp) }}" class="flex flex-row bg-white p-4 rounded-md border hover:border-black transition-colors">
         <h5 class="mb-0">{{ $comp->name }}</h5>

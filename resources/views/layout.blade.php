@@ -13,9 +13,9 @@
 
 
 
-    <aside class=" w-[10vw] h-screen flex flex-col">
-        <div class="flex items-center w-full justify-center space-x-3 text-white bg-bulsca p-5">
-            <p class="text-2xl  font-bold">BULSCA Scorer</p>
+    <aside class="  h-screen flex flex-col">
+        <div class="flex items-center w-full sm:justify-center space-x-3 text-white bg-bulsca p-5 h-[8vh]  ">
+            <p class="md:text-2xl text-xs  font-bold md:whitespace-nowrap">BULSCA Scorer</p>
         </div>
 
         <nav class="sidebar">
@@ -113,8 +113,8 @@
 
 
     </aside>
-    <main class="bg-gray-100 h-screen w-[90vw]">
-        <div class="flex items-center w-full justify-center space-x-3 text-white bg-bulsca p-5">
+    <main class="bg-gray-100 h-screen w-full">
+        <div class="flex items-center w-full justify-center space-x-3 text-white bg-bulsca p-5 h-[8vh]">
             <p class="text-2xl  font-bold">&nbsp;</p>
         </div>
         <div class="breadcrumbs">

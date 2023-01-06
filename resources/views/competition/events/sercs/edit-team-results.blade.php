@@ -39,7 +39,7 @@
 @endsection
 
 @section('content')
-<div class="grid grid-cols-2 gap-6">
+<div class="grid-2">
     <div class="flex flex-col space-y-4">
 
         <div class="flex justify-between items-start">

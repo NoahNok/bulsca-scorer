@@ -492,6 +492,9 @@ video {
 .grid {
   display: grid;
 }
+.list-item {
+  display: list-item;
+}
 .hidden {
   display: none;
 }
@@ -500,6 +503,9 @@ video {
 }
 .h-screen {
   height: 100vh;
+}
+.h-\[8vh\] {
+  height: 8vh;
 }
 .h-7 {
   height: 1.75rem;
@@ -519,9 +525,6 @@ video {
 .w-3 {
   width: 0.75rem;
 }
-.w-\[10vw\] {
-  width: 10vw;
-}
 .w-full {
   width: 100%;
 }
@@ -530,9 +533,6 @@ video {
 }
 .w-4 {
   width: 1rem;
-}
-.w-\[90vw\] {
-  width: 90vw;
 }
 .w-6 {
   width: 1.5rem;
@@ -554,6 +554,15 @@ video {
 }
 .cursor-pointer {
   cursor: pointer;
+}
+.list-inside {
+  list-style-position: inside;
+}
+.list-outside {
+  list-style-position: outside;
+}
+.list-disc {
+  list-style-type: disc;
 }
 .grid-cols-4 {
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -603,8 +612,21 @@ video {
   margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(1rem * var(--tw-space-y-reverse));
 }
+.space-y-2 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
+}
+.space-y-1 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.25rem * var(--tw-space-y-reverse));
+}
 .overflow-hidden {
   overflow: hidden;
+}
+.overflow-x-auto {
+  overflow-x: auto;
 }
 .whitespace-nowrap {
   white-space: nowrap;
@@ -667,6 +689,10 @@ video {
 .text-right {
   text-align: right;
 }
+.text-xs {
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
 .text-2xl {
   font-size: 1.5rem;
   line-height: 2rem;
@@ -678,10 +704,6 @@ video {
 .text-sm {
   font-size: 0.875rem;
   line-height: 1.25rem;
-}
-.text-xs {
-  font-size: 0.75rem;
-  line-height: 1rem;
 }
 .font-bold {
   font-weight: 700;
@@ -769,10 +791,17 @@ video {
 .sidebar > a > div:last-child {
   grid-column: span 2 / span 2;
   display: flex;
+  display: none;
   align-items: center;
   font-size: 1.125rem;
   line-height: 1.75rem;
   font-weight: 600;
+}
+@media (min-width: 640px) {
+
+  .sidebar > a > div:last-child {
+    display: block;
+  }
 }
 .sidebar > div.section {
   margin-top: 0.5rem;
@@ -782,6 +811,26 @@ video {
   font-size: 1.125rem;
   line-height: 1.75rem;
   font-weight: 600;
+}
+.sidebar > div.section > p {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+@media (min-width: 768px) {
+
+  .sidebar > div.section > p {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+}
+.sidebar > div.section > svg {
+  display: none;
+}
+@media (min-width: 640px) {
+
+  .sidebar > div.section > svg {
+    display: block;
+  }
 }
 
 .breadcrumbs {
@@ -1088,23 +1137,107 @@ a.link:hover {
 .mp-list div > div > svg {
   margin-bottom: 0.75rem;
 }
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+@media (min-width: 1280px) {
+
+  .grid-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+@media (min-width: 1280px) {
+
+  .grid-3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1600px) {
+
+  .grid-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+
+  .grid-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .grid-4 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1600px) {
+
+  .grid-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
 .hover\:border-black:hover {
   --tw-border-opacity: 1;
   border-color: rgb(0 0 0 / var(--tw-border-opacity));
 }
+
 .hover\:bg-gray-400:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(156 163 175 / var(--tw-bg-opacity));
 }
+
 .hover\:bg-gray-300:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(209 213 219 / var(--tw-bg-opacity));
 }
+
 .hover\:text-white:hover {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
 }
+
 .hover\:text-red-500:hover {
   --tw-text-opacity: 1;
   color: rgb(239 68 68 / var(--tw-text-opacity));
+}
+
+@media (min-width: 640px) {
+
+  .sm\:justify-center {
+    justify-content: center;
+  }
+}
+
+@media (min-width: 768px) {
+
+  .md\:whitespace-nowrap {
+    white-space: nowrap;
+  }
+
+  .md\:text-2xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
 }

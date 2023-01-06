@@ -32,7 +32,7 @@ Results | {{ $comp->name }}
 <p>The following result sheets are available:</p>
 <br>
 
-<div class="grid grid-cols-4 gap-4">
+<div class="grid-4">
     @foreach ($comp->getResultSchemas as $schema)
     <a href="{{ route('comps.results.view-schema', ['comp' => $comp, 'schema' => $schema]) }}" class="p-5 border shadow-md bg-white rounded-md flex items-center justify-center space-x-2 hover:bg-gray-400 hover:text-white transition-colors cursor-pointer">
         <p class="text-lg font-semibold">{{ $schema->name }}</p>

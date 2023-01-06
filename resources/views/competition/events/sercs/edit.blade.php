@@ -55,7 +55,7 @@
     <input type="text" placeholder="Name" serc-builder-name value="{{ $serc->name }}">
 </div>
 
-<div class="grid grid-cols-3 gap-4" serc-builder="builder" serc-builder-id="{{ $serc->id }}" serc-builder-csrf="{{ csrf_token() }}" serc-builder-url="{{ route('comps.view.events.sercs.editPost', [$comp, $serc]) }}" serc-builder-after-url="{{ route('comps.view.events.sercs.view', [$comp, $serc]) }}">
+<div class="grid-3" serc-builder="builder" serc-builder-id="{{ $serc->id }}" serc-builder-csrf="{{ csrf_token() }}" serc-builder-url="{{ route('comps.view.events.sercs.editPost', [$comp, $serc]) }}" serc-builder-after-url="{{ route('comps.view.events.sercs.view', [$comp, $serc]) }}">
 
     @foreach ($serc->getJudges as $judge)
     <div class="card" serc-builder-judge serc-builder-judge-id="{{ $judge->id }}">

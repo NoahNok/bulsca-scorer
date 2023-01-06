@@ -14,13 +14,25 @@
         }
 
         > div:last-child {
-            @apply col-span-2 flex items-center text-lg font-semibold;
+            @apply col-span-2 flex items-center text-lg font-semibold sm:block hidden;
         }
+
+
     }
 
     > div.section {
         @apply font-semibold text-lg mt-2 flex  items-center justify-between;
+
+        > p {
+          @apply text-sm md:text-base
+        }
+
+        > svg {
+          @apply hidden sm:block;
+        }
     }
+
+
 }
 
 .breadcrumbs {
@@ -189,4 +201,16 @@ h5 {
   div > div > svg {
     @apply mb-3;
   }
+}
+
+.grid-2 {
+  @apply grid grid-cols-1 xl:grid-cols-2 gap-4;
+}
+
+.grid-3 {
+  @apply grid grid-cols-1 xl:grid-cols-2 3xl:grid-cols-3 gap-4;
+}
+
+.grid-4 {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 3xl:grid-cols-4 gap-4;
 }

@@ -30,7 +30,7 @@ Teams | {{ $comp->name }}
 @section('content')
 
 
-<div class="grid grid-cols-4 gap-6">
+<div class="grid-3">
     <div class="flex flex-col space-y-4">
         <div class="flex justify-between">
             <h2 class="mb-0">Teams ({{ $comp->getCompetitionTeams->count() }})</h2>

@@ -31,7 +31,7 @@ Add Speeds Event | {{ $comp->name }}
 <br>
 <form action="{{ route('comps.view.events.speeds.addPost', $comp) }}" method="post">
     @csrf
-    <div class="grid grid-cols-4 gap-4">
+    <div class="grid-4">
         <x-form-select id="event" title="Event" :options="App\Models\SpeedEvent::get()" required></x-form-select>
         <x-form-input id="weight" title="Weight" required defaultValue="1" type="number"></x-form-input>
         <x-form-input id="record" title="Record" required placeholder="00:00.000"></x-form-input>

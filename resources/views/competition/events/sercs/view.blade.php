@@ -33,7 +33,7 @@
 @endsection
 
 @section('content')
-<div class="grid grid-cols-2 gap-6">
+<div class="grid-2">
     <div class="flex flex-col space-y-4">
 
         <div class="flex justify-between">
@@ -42,7 +42,7 @@
         </div>
 
         <h4>Marked Teams</h4>
-        <div class="  relative w-full  ">
+        <div class="  relative w-full overflow-x-auto  ">
             <table class=" text-sm w-full shadow-md rounded-lg overflow-hidden text-left text-gray-500 ">
                 <thead class="text-xs text-gray-700 text-right uppercase bg-gray-50 ">
                     <tr>
