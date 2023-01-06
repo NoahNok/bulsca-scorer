@@ -61,7 +61,28 @@ Add Results Sheet | {{ $comp->name }}
                 </thead>
                 <tbody>
 
-                    @forelse ($comp->getAllEvents() as $event)
+                    @forelse ($comp->getSpeedEvents as $event)
+                    <tr table-row table-row-owner="{{ $event->id }}" class="bg-white border-b text-right ">
+                        <th scope="row" class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap  ">
+                            {{ $event->getName() }}
+                        </th>
+                        <td class="">
+                            <input class="table-input" table-cell table-cell-required table-cell-name="weight" placeholder="1" type="number" value="">
+
+
+                        </td>
+                        <td class="hidden">
+                            <input class="hidden" table-cell table-cell-required table-cell-name="type" placeholder="1" type="text" value="{{ $event->getType() }}">
+                        </td>
+
+
+
+
+                    </tr>
+                    @empty
+
+                    @endforelse
+                    @forelse ($comp->getSERCs as $event)
                     <tr table-row table-row-owner="{{ $event->id }}" class="bg-white border-b text-right ">
                         <th scope="row" class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap  ">
                             {{ $event->getName() }}
