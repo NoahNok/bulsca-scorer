@@ -1,7 +1,7 @@
 <head>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/app.css?v=1.0.0') }}">
     <title>
-        <h2>{{ $schema->name }} | {{ $comp->name }}</h2>
+        {{ $schema->name }} | {{ $comp->name }}
     </title>
 </head>
 <div class="   ">

@@ -1,5 +1,5 @@
 <head>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/app.css?v=1.0.0') }}">
     <title>
         {{ $schema->name }} | {{ $comp->name }}
     </title>
@@ -14,7 +14,7 @@
 
                 @foreach ($results[0] as $key => $value)
 
-                @if (!str_contains($key, "team") && !str_ends_with($key, "rsp") && !str_contains($key, "totalPoints") ) @continue
+                @if (!str_contains($key, "team") && !str_ends_with($key, "rsp") && !str_ends_with($key, "place") && !str_contains($key, "totalPoints") ) @continue
 
                 @endif
 
@@ -31,7 +31,7 @@
             @forelse ($results as $result)
             <tr class="bg-white border-b text-right ">
                 @foreach ($result as $key => $value)
-                @if (!str_contains($key, "team") && !str_ends_with($key, "rsp") && !str_contains($key, "totalPoints") ) @continue
+                @if (!str_contains($key, "team") && !str_ends_with($key, "rsp") && !str_ends_with($key, "place") && !str_contains($key, "totalPoints") ) @continue
 
                 @endif
                 <td class="py-2 px-4 text-black text-sm whitespace-nowrap">
