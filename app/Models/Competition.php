@@ -31,6 +31,10 @@ class Competition extends Model
         return $this->hasMany(CompetitionTeam::class, 'competition', 'id');
     }
 
+    protected $casts = [
+        'when' => 'datetime',
+    ];
+
     public function getResultSchemas()
     {
         return $this->hasMany(ResultSchema::class, 'competition', 'id');
@@ -44,5 +48,10 @@ class Competition extends Model
         $merged = $sercs->merge($speeds);
 
         return $merged;
+    }
+
+    public function getUser()
+    {
+        return $this->hasOne(User::class, 'competition', 'id');
     }
 }
