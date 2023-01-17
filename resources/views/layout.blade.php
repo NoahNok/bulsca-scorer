@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
 
-<body class="flex ">
+<body class="flex  overflow-x-hidden">
 
 
 

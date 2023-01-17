@@ -95,7 +95,7 @@
     </div>
     <div class="flex flex-col space-y-4">
         <h2 class="mb-0">Options</h2>
-        <div class="card">
+        <div class="card space-y-6">
             <div class="flex justify-between items-center">
                 <strong>Delete Results Sheet</strong>
                 <form action="{{ route('comps.view.results.delete', [$comp, $schema->id]) }}" onsubmit="return confirm('Are you sure you want to delete this Results Sheet!')" method="post">
@@ -104,6 +104,16 @@
                     @csrf
                     <button class="btn btn-danger">Delete Results Sheet</button>
                 </form>
+            </div>
+            <div class="flex justify-between ">
+                <div class="flex flex-col">
+                    <strong>Print</strong>
+                    <small><strong>Print Basic</strong> will print table at the top left of this page showing just the final point total and places. <br><strong>Print Detailed</strong> will print including all the events, showing weighted final scores and places as the original "Comp Results" sheet would show!</small>
+                </div>
+                <div class="flex flex-col space-y-2">
+                    <a href="{{ route('comps.results.view-schema-print-basic', $schema) }}" class="btn">Print Basic</a>
+                    <a href="{{ route('comps.results.view-schema-print', $schema) }}" class="btn">Print Detailed</a>
+                </div>
             </div>
         </div>
     </div>
@@ -125,6 +135,52 @@
     <h3>League</h3>
     <p><strong>Target League</strong>: {{ $schema->league }}</p>
     <small>Overall (O), A League (A), B League (B), Freshers League (F), Non-counting (NC), Non-student (NS)</small>
+</div>
+
+<br>
+<div class=" overflow-hidden " id="raw_data">
+    <h2>Raw Data</h2>
+    <div class=" relative overflow-x-auto max-w-[85vw]  ">
+        <table class="w-full text-sm shadow-md  rounded-lg text-left text-gray-500 ">
+            <thead class="text-xs text-gray-700 text-right uppercase bg-gray-50 ">
+                <tr>
+
+
+                    @foreach ($results[0] as $key => $value)
+                    <th scope="col" class="py-2 px-4 whitespace-nowrap">
+                        {{ str_replace("_", " ", preg_replace("/_[0-9]/mi", "", $key)) }}
+                    </th>
+                    @endforeach
+
+
+                </tr>
+            </thead>
+            <tbody>
+
+                @forelse ($results as $result)
+                <tr class="bg-white border-b text-right ">
+                    @foreach ($result as $key => $value)
+                    <td class="py-2 px-4 text-black text-xs whitespace-nowrap">
+                        {{ $value }}
+                    </td>
+                    @endforeach
+
+
+
+                </tr>
+                @empty
+                <tr class="bg-white border-b text-right ">
+                    <th colspan="100" scope="row" class="py-4 text-left px-6 text-center font-medium text-gray-900 whitespace-nowrap ">
+                        None
+                    </th>
+                </tr>
+                @endforelse
+
+
+
+            </tbody>
+        </table>
+    </div>
 </div>
 
 @endsection
