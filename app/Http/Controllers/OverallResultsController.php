@@ -44,6 +44,9 @@ class OverallResultsController extends Controller
         }
 
         $finalQuery = rtrim($finalQuery, ", ");
+
+        if (count($mysqlEventNamesArray) == 0) return view('competition.results.view', ['results' => [], 'schema' => $schema, 'comp' => $schema->getCompetition]);
+
         $finalQuery .= " SELECT " . $mysqlEventNamesArray[0] . ".team, ";
 
         foreach ($events as $event) {
@@ -57,6 +60,9 @@ class OverallResultsController extends Controller
         }
 
         $finalQuery = rtrim($finalQuery, ", ");
+
+
+
 
         $finalQuery .= " FROM " . $mysqlEventNamesArray[0];
 
@@ -356,6 +362,71 @@ class OverallResultsController extends Controller
         }
 
         return response()->json(['url' => route('comps.results.view-schema', $rs->id)]);
+    }
+
+    public function quickGen(Competition $comp)
+    {
+        $overall = new ResultSchema();
+        $overall->competition = $comp->id;
+        $overall->name = "Overall";
+        $overall->league = "O";
+        $overall->save();
+
+        $a = new ResultSchema();
+        $a->competition = $comp->id;
+        $a->name = "A-League";
+        $a->league = "A";
+        $a->save();
+
+        $b = new ResultSchema();
+        $b->competition = $comp->id;
+        $b->name = "B-League";
+        $b->league = "B";
+        $b->save();
+
+        foreach ($comp->getSERCs as $serc) {
+            $rse = new ResultSchemaEvent();
+            $rse->schema = $overall->id;
+            $rse->event_id = $serc->id;
+            $rse->event_type = "\App\Models\SERC";
+            $rse->weight = 2;
+            $rse->save();
+            $rse = new ResultSchemaEvent();
+            $rse->schema = $a->id;
+            $rse->event_id = $serc->id;
+            $rse->event_type = "\App\Models\SERC";
+            $rse->weight = 2;
+            $rse->save();
+            $rse = new ResultSchemaEvent();
+            $rse->schema = $b->id;
+            $rse->event_id = $serc->id;
+            $rse->event_type = "\App\Models\SERC";
+            $rse->weight = 2;
+            $rse->save();
+        }
+
+        foreach ($comp->getSpeedEvents as $serc) {
+            $rse = new ResultSchemaEvent();
+            $rse->schema = $overall->id;
+            $rse->event_id = $serc->id;
+            $rse->event_type = "\App\Models\CompetitionSpeedEvent";
+            $rse->weight = 1;
+            $rse->save();
+            $rse = new ResultSchemaEvent();
+            $rse->schema = $a->id;
+            $rse->event_id = $serc->id;
+            $rse->event_type = "\App\Models\CompetitionSpeedEvent";
+            $rse->weight = 1;
+            $rse->save();
+            $rse = new ResultSchemaEvent();
+            $rse->schema = $b->id;
+            $rse->event_id = $serc->id;
+            $rse->event_type = "\App\Models\CompetitionSpeedEvent";
+            $rse->weight = 1;
+            $rse->save();
+        }
+
+        return redirect()->route('comps.view.results', $comp);
     }
 
     public function delete(Competition $comp, ResultSchema $schema)

@@ -28,7 +28,11 @@ Results | {{ $comp->name }}
 @endsection
 
 @section('content')
+
 <h2>Results</h2>
+
+<p><strong>Do not</strong> make a results sheet until you have made all your events! (You cannot edit which events are part of a results sheet after it has been made!)</p>
+<br>
 <p>The following result sheets are available:</p>
 <br>
 
@@ -43,5 +47,9 @@ Results | {{ $comp->name }}
     <x-add-card link="{{ route('comps.view.results.add', $comp) }}" text="Results" />
 </div>
 <br>
+<h3>Quick Generate</h3>
+<p class="mb-4">Click the button below to quickly generate the normal scoresheets for Overall, A-League and B-League</p>
+
+<a href="{{ route('comps.view.results.quickGen', $comp) }}" class="btn">Quick Generate</a>
 
 @endsection

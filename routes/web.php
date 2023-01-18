@@ -78,6 +78,7 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/comp/{comp}/results', [OverallResultsController::class, 'view'])->name('comps.view.results');
         Route::get('/comp/{comp}/results/add', [OverallResultsController::class, 'add'])->name('comps.view.results.add');
+        Route::get('/comp/{comp}/results/qg', [OverallResultsController::class, 'quickGen'])->name('comps.view.results.quickGen');
         Route::post('/comp/{comp}/results', [OverallResultsController::class, 'addPost'])->name('comps.view.results.addPost');
         Route::delete('/comp/{comp}/results/{schema}', [OverallResultsController::class, 'delete'])->name('comps.view.results.delete');
     });
