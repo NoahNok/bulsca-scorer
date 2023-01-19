@@ -11,14 +11,14 @@
 </head>
 
 <body>
-    <div class="w-screen h-screen flex flex-col items-center justify-center space-y-2">
+    <div class="w-screen  min-h-screen flex flex-col items-center lg:justify-center space-y-2 my-4 lg:my-0 ">
         <img src="https://www.bulsca.co.uk/storage/logo/blogo.png" class=" w-60 h-60" alt="">
         <h1 class="font-bold">{{ $comp->name }}</h1>
 
         <hr class="w-96">
         <br>
 
-        <div class="flex flex-col space-y-4 w-[50%]">
+        <div class="flex flex-col space-y-4 w-[80%] lg:w-[65%] xl:w-[50%]">
             <div class="">
                 <h3>SERCs</h3>
                 <div class="grid-4">

@@ -21,16 +21,17 @@
         </div>
 
         <div class="">
-            <div class="flex justify-between items-center">
+            <div class="flex justify-between items-center mx-3 lg:mx-0">
                 <h3>Results</h3>
                 <a class="link" href="{{ route('public.results.comp', $comp->resultsSlug()) }}"><small>Back</small></a>
             </div>
-            <div class="  relative w-full overflow-x-auto  ">
-                <table class=" text-sm w-full shadow-md rounded-lg overflow-hidden text-left text-gray-500 ">
-                    <thead class="text-xs text-gray-700 text-right uppercase bg-gray-50 ">
-                        <tr>
-                            <th scope="col" class="py-3 px-6 text-left">
+            <div class="  relative overflow-x-auto w-screen lg:w-auto  ">
+                <table class=" text-sm w-full shadow-md rounded-lg  text-left text-gray-500 ">
+                    <thead class="text-xs text-gray-700 text-right uppercase bg-gray-50  ">
+                        <tr class="">
+                            <th scope="col" class="py-3 px-6 text-left sticky left-0 bg-gray-50">
                                 Team
+
                             </th>
                             <th scope="col" class="py-3 px-6">
                                 @if ($event->getName() == "Rope Throw")
@@ -61,7 +62,7 @@
 
                         @forelse ($event->getResults() as $result)
                         <tr class="bg-white border-b text-right ">
-                            <th scope="row" class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap ">
+                            <th scope="row" class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap sticky left-0 bg-white ">
                                 {{ $result->team }}
                             </th>
                             <td class="py-4 px-6">

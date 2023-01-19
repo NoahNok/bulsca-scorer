@@ -17,10 +17,10 @@
 
         <hr class="w-96">
 
-        <div class="flex flex-wrap row  w-[60vw] justify-center justify-items-center">
+        <div class="flex flex-wrap row  w-[80%] lg:w-[65%] xl:w-[50%] justify-center justify-items-center">
 
             @forelse ($comps as $comp)
-            <a href="{{ route('public.results.comp', $comp->resultsSlug()) }}" class="card card-hover grow min-w-[23%] max-w-[23%] mt-4 mx-2">
+            <a href="{{ route('public.results.comp', $comp->resultsSlug()) }}" class="card card-hover grow 2xl:min-w-[23%] 2xl:max-w-[23%] mt-4 mx-2">
                 <h4 class="mb-0 text-center">{{ $comp->name }}</h4>
             </a>
             @empty
