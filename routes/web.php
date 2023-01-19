@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\CompetitionController;
 use App\Http\Controllers\OverallResultsController;
+use App\Http\Controllers\PublicResultsController;
 use App\Http\Controllers\SpeedsEventController;
 use App\Http\Controllers\TeamsController;
 use App\Http\Controllers\SERCController;
@@ -79,13 +80,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/comp/{comp}/results', [OverallResultsController::class, 'view'])->name('comps.view.results');
         Route::get('/comp/{comp}/results/add', [OverallResultsController::class, 'add'])->name('comps.view.results.add');
         Route::get('/comp/{comp}/results/qg', [OverallResultsController::class, 'quickGen'])->name('comps.view.results.quickGen');
+        Route::get('/comp/{comp}/results/pt', [OverallResultsController::class, 'publishToggle'])->name('comps.view.results.publishToggle');
         Route::post('/comp/{comp}/results', [OverallResultsController::class, 'addPost'])->name('comps.view.results.addPost');
         Route::delete('/comp/{comp}/results/{schema}', [OverallResultsController::class, 'delete'])->name('comps.view.results.delete');
     });
 
-    Route::get('/results/view-schema/{schema}', [OverallResultsController::class, 'computeResults'])->name("comps.results.view-schema");
-    Route::get('/results/view-schema/{schema}/print', [OverallResultsController::class, 'viewForPrint'])->name("comps.results.view-schema-print");
-    Route::get('/results/view-schema/{schema}/print-basic', [OverallResultsController::class, 'viewForPrintBasic'])->name("comps.results.view-schema-print-basic");
+    Route::get('/comp/results/view-schema/{schema}', [OverallResultsController::class, 'computeResults'])->name("comps.results.view-schema");
+    Route::get('/comp/results/view-schema/{schema}/print', [OverallResultsController::class, 'viewForPrint'])->name("comps.results.view-schema-print");
+    Route::get('/comp/results/view-schema/{schema}/print-basic', [OverallResultsController::class, 'viewForPrintBasic'])->name("comps.results.view-schema-print-basic");
 });
 
 
@@ -107,6 +109,24 @@ Route::middleware('auth')->group(function () {
 
 Route::get('dashboard', function () {
     return redirect()->route('comps.view', auth()->user()->getCompetition);
+});
+
+Route::bind('comp_slug', function ($value) {
+
+    $parts = explode(".", $value);
+
+    if (count($parts) < 2) abort(404);
+
+    $id = $parts[1];
+
+    return Competition::findOrFail($id);
+});
+
+/* PUBLIC RESULTS VIEWING */
+Route::prefix('results')->group(function () {
+    Route::get('', [PublicResultsController::class, 'index'])->name('public.results');
+    Route::get('/{comp_slug}', [PublicResultsController::class, 'viewComp'])->name("public.results.comp");
+    Route::get('/{comp_slug}/speed/{event}', [PublicResultsController::class, 'viewSpeed'])->name("public.results.speed");
 });
 
 require __DIR__ . '/auth.php';

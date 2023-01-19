@@ -429,6 +429,14 @@ class OverallResultsController extends Controller
         return redirect()->route('comps.view.results', $comp);
     }
 
+    public function publishToggle(Competition $comp)
+    {
+        $comp->public_results = !$comp->public_results;
+        $comp->save();
+
+        return redirect()->back();
+    }
+
     public function delete(Competition $comp, ResultSchema $schema)
     {
         $schema->delete();

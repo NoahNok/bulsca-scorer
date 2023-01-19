@@ -128,7 +128,10 @@ h5 {
  }
 
  .card {
-  @apply px-5 py-3 border shadow-md bg-white rounded-md flex flex-col;
+  @apply px-5 py-3 border shadow-md bg-white rounded-md flex flex-col transition-all;
+  &.card-hover {
+    @apply hover:shadow-lg hover:border-gray-300 focus:shadow-lg active:shadow-lg focus:border-gray-300 active:border-gray-300;
+  }
  }
 
  a.link {
@@ -218,3 +221,4 @@ h5 {
 .app-logo {
   @apply w-32 h-32;
 }
+
