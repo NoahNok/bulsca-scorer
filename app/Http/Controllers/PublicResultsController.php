@@ -27,7 +27,8 @@ class PublicResultsController extends Controller
         return view('public-results.view-speed', ['comp' => $comp_slug, 'event' => $event]);
     }
 
-    public function viewSerc(SERC $event)
+    public function viewSerc(Competition $comp_slug, SERC $event)
     {
+        return view('public-results.view-serc', ['comp' => $comp_slug, 'event' => $event]);
     }
 }

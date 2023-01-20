@@ -127,6 +127,7 @@ Route::prefix('results')->group(function () {
     Route::get('', [PublicResultsController::class, 'index'])->name('public.results');
     Route::get('/{comp_slug}', [PublicResultsController::class, 'viewComp'])->name("public.results.comp");
     Route::get('/{comp_slug}/speed/{event}', [PublicResultsController::class, 'viewSpeed'])->name("public.results.speed");
+    Route::get('/{comp_slug}/serc/{event}', [PublicResultsController::class, 'viewSerc'])->name("public.results.serc");
 });
 
 require __DIR__ . '/auth.php';

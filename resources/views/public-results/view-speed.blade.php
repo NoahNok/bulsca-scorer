@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>{{ $event->getName() }} | {{ $comp->name }} | Results | BULSCA</title>
     <link rel="stylesheet" href="{{ asset('css/app.css?v=1.0.0') }}">
 
 </head>
@@ -76,14 +76,14 @@
 
                             </td>
                             <td class="py-4 px-6">
-                                {{ $result->disqualification ?: 'None' }}
+                                {{ $result->disqualification ?: '-' }}
                             </td>
 
                             @if ($event->hasPenalties())
                             <td class="py-3 px-6">
 
 
-                                {{ App\Models\Penalty::where('speed_result', $result->id)->get('code')->implode('code', ', ') ?: ($result->penalties == 0 ? 'None' : '') }}
+                                {{ App\Models\Penalty::where('speed_result', $result->id)->get('code')->implode('code', ', ') ?: ($result->penalties == 0 ? '-' : '') }}
                                 @if ($event->getName() == 'Swim & Tow' && $result->penalties != 0)
                                 (P900 x{{$result->penalties - App\Models\Penalty::where('speed_result', $result->id)->count() }})
                                 @endif
@@ -99,7 +99,7 @@
                         </tr>
                         @empty
                         <tr class="bg-white border-b text-right ">
-                            <th colspan="100" scope="row" class="py-4 text-left px-6 text-center font-medium text-gray-900 whitespace-nowrap ">
+                            <th colspan="100" scope="row" class="py-4 px-6 text-center font-medium text-gray-900 whitespace-nowrap ">
                                 None
                             </th>
                         </tr>

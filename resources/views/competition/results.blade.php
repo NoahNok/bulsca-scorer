@@ -62,11 +62,11 @@ Results | {{ $comp->name }}
 <a href="{{ route('comps.view.results.publishToggle', $comp) }}" class="btn">Publish Results</a>
 @else
 
-<p class="mb-2"><strong>Results link:</strong> <a href="{{ route('public.results.comp', $comp)}}" class="link">Click to view public results</a>
+<p class="mb-2"><strong>Results link:</strong> <a href="{{ route('public.results.comp', $comp->resultsSlug())}}" class="link">Click to view public results</a>
     <br>Or scan the QR below
 </p>
 
-{!! QrCode::size(150)->style('round')->generate(route('public.results.comp', $comp)) !!}
+{!! QrCode::size(150)->style('round')->generate(route('public.results.comp', $comp->resultsSlug())) !!}
 
 <p class="mb-4 mt-6">
 

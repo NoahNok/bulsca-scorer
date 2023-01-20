@@ -24,7 +24,7 @@
                 <div class="grid-4">
 
                     @forelse ($comp->getSERCs as $serc)
-                    <a href="{{ route('public.results.speed', [$comp->resultsSlug(), $serc]) }}" class="card card-hover">
+                    <a href="{{ route('public.results.serc', [$comp->resultsSlug(), $serc]) }}" class="card card-hover">
                         <h4 class="mb-0 text-center">{{ $serc->getName() }}</h4>
                     </a>
                     @empty
