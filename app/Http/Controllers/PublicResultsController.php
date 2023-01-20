@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
+use App\Models\ResultSchema;
 use App\Models\SERC;
 use Illuminate\Http\Request;
 
@@ -30,5 +31,10 @@ class PublicResultsController extends Controller
     public function viewSerc(Competition $comp_slug, SERC $event)
     {
         return view('public-results.view-serc', ['comp' => $comp_slug, 'event' => $event]);
+    }
+
+    public function viewResults(Competition $comp_slug, ResultSchema $schema)
+    {
+        return view('public-results.view-results', ['comp' => $comp_slug, 'schema' => $schema, 'results' => $schema->getDetailedPrint()]);
     }
 }

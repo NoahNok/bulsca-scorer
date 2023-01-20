@@ -58,9 +58,9 @@
                 <h3>Results</h3>
                 <div class="grid-4">
 
-                    @forelse ($comp->getResultSchemas as $result)
-                    <a href="{{ route('public.results.comp', $comp->resultsSlug()) }}" class="card card-hover">
-                        <h4 class="mb-0 text-center">{{ $result->name }}</h4>
+                    @forelse ($comp->getResultSchemas as $schema)
+                    <a href="{{ route('public.results.results', [$comp->resultsSlug(), $schema]) }}" class="card card-hover">
+                        <h4 class="mb-0 text-center">{{ $schema->name }}</h4>
                     </a>
                     @empty
 
