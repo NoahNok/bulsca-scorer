@@ -26,7 +26,7 @@
                 <a class="link" href="{{ route('public.results.comp', $comp->resultsSlug()) }}"><small>Back</small></a>
             </div>
             <div class="  relative overflow-x-auto w-screen  lg:max-w-[80vw] max-h-[90vh] lg:max-h-[80vh]  ">
-                <table class=" text-sm w-full shadow-md rounded-lg top-0 text-left text-gray-500 border-collapse relative">
+                <table id="table" class=" text-sm w-full shadow-md rounded-lg top-0 text-left text-gray-500 border-collapse relative">
 
                     <thead class="text-xs text-gray-700 text-right uppercase bg-gray-50 sticky z-10  ">
                         <tr class="">
@@ -58,17 +58,17 @@
 
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="table-body">
 
                         @forelse ($event->getResults() as $result)
-                        <tr class="bg-white border-b text-right  ">
+                        <tr class="bg-white border-b text-right hover:bg-gray-200 transition-colors  ">
                             <th scope="row" class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap sticky left-0 bg-white  ">
                                 {{ $result->team }}
                             </th>
 
                             @foreach ($event->getJudges as $judge)
                             @foreach ($judge->getMarkingPoints as $markingPoint)
-                            <td class="py-3 px-6">
+                            <td class="py-3 px-6 hover:bg-gray-300 hover:text-black transition-colors hover:font-semibold">
                                 {{ $markingPoint->getScoreForTeam($result->tid) }}
                             </td>
 
@@ -76,14 +76,14 @@
 
                             @endforeach
 
-                            <td class="py-4 px-6">
+                            <td class="py-4 px-6 hover:bg-gray-300 hover:text-black transition-colors hover:font-semibold">
                                 N/A
                             </td>
 
-                            <td class="py-4 px-6">
+                            <td class="py-4 px-6 hover:bg-gray-300 hover:text-black transition-colors hover:font-semibold">
                                 {{ round($result->points) }}
                             </td>
-                            <td class="py-4 px-6">
+                            <td class="py-4 px-6 hover:bg-gray-300 hover:text-black transition-colors hover:font-semibold">
                                 {{ $result->place }}
                             </td>
 
@@ -118,6 +118,43 @@
 
     </div>
 
+    <script>
+        function initTable() {
+            let table = document.getElementById("table");
+            let tableBody = document.getElementById("table-body");
+            let tableRows = tableBody.querySelectorAll("tr")
+
+            table.onmouseover = (e) => {
+                let type = e.target;
+                if (type.nodeName != "TD") return
+                //console.log(type.innerHTML)
+                let index = Array.from(type.parentNode.children).indexOf(type)
+
+
+                tableBody.querySelectorAll("tr").forEach(tr => {
+                    tr.children[index].classList.add('bg-gray-200')
+                })
+            }
+
+
+            table.onmouseout = (e) => {
+                let type = e.target;
+                if (type.nodeName != "TD") return
+                //console.log(type.innerHTML)
+                let index = Array.from(type.parentNode.children).indexOf(type)
+
+
+                tableBody.querySelectorAll("tr").forEach(tr => {
+                    tr.children[index].classList.remove('bg-gray-200')
+                })
+            }
+
+
+
+        }
+
+        window.onload = initTable()
+    </script>
 </body>
 
 </html>

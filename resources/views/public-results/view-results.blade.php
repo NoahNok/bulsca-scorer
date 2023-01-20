@@ -26,7 +26,7 @@
                 <a class="link" href="{{ route('public.results.comp', $comp->resultsSlug()) }}"><small>Back</small></a>
             </div>
             <div class="  relative overflow-x-auto w-screen  lg:max-w-[80vw] max-h-[90vh] lg:max-h-[80vh]  ">
-                <table class=" text-sm w-full shadow-md rounded-lg top-0 text-left text-gray-500 border-collapse relative">
+                <table id="table" class=" text-sm w-full shadow-md rounded-lg top-0 text-left text-gray-500 border-collapse relative">
                     <thead class="text-xs text-gray-700 text-right uppercase bg-gray-50 ">
                         <tr>
 
@@ -45,15 +45,15 @@
 
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="table-body">
 
                         @forelse ($results as $result)
-                        <tr class="bg-white border-b text-right ">
+                        <tr class="bg-white border-b text-right hover:bg-gray-200 transition-colors   ">
                             @foreach ($result as $key => $value)
                             @if (!str_contains($key, "team") && !str_ends_with($key, "rsp") && !str_ends_with($key, "place") && !str_contains($key, "totalPoints") ) @continue
 
                             @endif
-                            <td class="py-3 px-6 text-black text-sm whitespace-nowrap @if($key=='team') sticky left-0 bg-white @endif">
+                            <td class="py-3 px-6 text-black text-sm whitespace-nowrap @if($key=='team') sticky left-0 bg-white @endif hover:bg-gray-300 hover:text-black transition-colors hover:font-semibold">
                                 @if ($key == "team")
                                 <span class="font-semibold">{{ $value }}</span>
                                 @else
@@ -100,7 +100,43 @@
 
 
     </div>
+    <script>
+        function initTable() {
+            let table = document.getElementById("table");
+            let tableBody = document.getElementById("table-body");
+            let tableRows = tableBody.querySelectorAll("tr")
 
+            table.onmouseover = (e) => {
+                let type = e.target;
+                if (type.nodeName != "TD") return
+                //console.log(type.innerHTML)
+                let index = Array.from(type.parentNode.children).indexOf(type)
+
+
+                tableBody.querySelectorAll("tr").forEach(tr => {
+                    tr.children[index].classList.add('bg-gray-200')
+                })
+            }
+
+
+            table.onmouseout = (e) => {
+                let type = e.target;
+                if (type.nodeName != "TD") return
+                //console.log(type.innerHTML)
+                let index = Array.from(type.parentNode.children).indexOf(type)
+
+
+                tableBody.querySelectorAll("tr").forEach(tr => {
+                    tr.children[index].classList.remove('bg-gray-200')
+                })
+            }
+
+
+
+        }
+
+        window.onload = initTable()
+    </script>
 </body>
 
 </html>
