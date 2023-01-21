@@ -588,15 +588,6 @@ video {
 .mt-3 {
   margin-top: 0.75rem;
 }
-.-mt-2 {
-  margin-top: -0.5rem;
-}
-.-mt-4 {
-  margin-top: -1rem;
-}
-.-mb-2 {
-  margin-bottom: -0.5rem;
-}
 .block {
   display: block;
 }
@@ -1814,6 +1805,36 @@ a.link:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(209 213 219 / var(--tw-bg-opacity));
   font-weight: 600;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+.table-highlight tbody > tr:first-child {
+  background-color: gold !important;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+.table-highlight tbody > tr:first-child td, .table-highlight tbody > tr:first-child th {
+  background-color: gold !important;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+.table-highlight tbody > tr:nth-child(2) {
+  background-color: silver !important;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+.table-highlight tbody > tr:nth-child(2) td, .table-highlight tbody > tr:nth-child(2) th {
+  background-color: silver !important;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+.table-highlight tbody > tr:nth-child(3), .table-highlight tbody > tr:nth-child(3) > td {
+  background-color: #cd7f32 !important;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+.table-highlight tbody > tr:nth-child(3) td, .table-highlight tbody > tr:nth-child(3) th, .table-highlight tbody > tr:nth-child(3) > td td, .table-highlight tbody > tr:nth-child(3) > td th {
+  background-color: #cd7f32 !important;
   --tw-text-opacity: 1;
   color: rgb(0 0 0 / var(--tw-text-opacity));
 }

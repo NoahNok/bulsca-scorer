@@ -244,4 +244,36 @@ h5 {
   td {
     @apply hover:font-semibold hover:bg-gray-300 hover:text-black transition-colors;
   }
+
+  tbody > tr:first-child {
+    background-color: gold !important;
+    @apply text-black;
+
+    td , th {
+      background-color: gold !important;
+      @apply text-black;
+  
+    }
+  }
+
+  tbody > tr:nth-child(2) {
+    background-color: silver !important;
+    @apply text-black;
+    td , th {
+      background-color: silver !important;
+      @apply text-black;
+  
+    }
+  }
+
+  tbody > tr:nth-child(3), tbody > tr:nth-child(3) > td {
+    background-color: #cd7f32 !important;
+    @apply text-black;
+
+    td , th {
+      background-color: #cd7f32 !important;
+      @apply text-black;
+  
+    }
+  }
 }
