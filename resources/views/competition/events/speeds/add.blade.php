@@ -33,7 +33,8 @@ Add Speeds Event | {{ $comp->name }}
     @csrf
     <div class="grid-4">
         <x-form-select id="event" title="Event" :options="App\Models\SpeedEvent::get()" required></x-form-select>
-        <x-form-input id="weight" title="Weight" required defaultValue="1" type="number"></x-form-input>
+        <input type="number" name="weight" value="1" required class="hidden">
+
         <x-form-input id="record" title="Record" required placeholder="00:00.000"></x-form-input>
 
     </div>
