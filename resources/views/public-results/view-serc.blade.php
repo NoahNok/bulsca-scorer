@@ -69,7 +69,7 @@
                             @foreach ($event->getJudges as $judge)
                             @foreach ($judge->getMarkingPoints as $markingPoint)
                             <td class="py-3 px-6 hover:bg-gray-300 hover:text-black transition-colors hover:font-semibold">
-                                {{ $markingPoint->getScoreForTeam($result->tid) }}
+                                {{ round($markingPoint->getScoreForTeam($result->tid)) }}
                             </td>
 
                             @endforeach
@@ -77,7 +77,7 @@
                             @endforeach
 
                             <td class="py-4 px-6 hover:bg-gray-300 hover:text-black transition-colors hover:font-semibold">
-                                N/A
+                                {{ $event->getTeamDQ(\App\Models\CompetitionTeam::find($result->tid))?->code ?: '-' }}
                             </td>
 
                             <td class="py-4 px-6 hover:bg-gray-300 hover:text-black transition-colors hover:font-semibold">

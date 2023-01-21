@@ -91,14 +91,14 @@
 
                         </td>
                         <td class="py-4 px-6">
-                            {{ $result->disqualification ?: 'None' }}
+                            {{ $result->disqualification ?: '-' }}
                         </td>
 
                         @if ($event->hasPenalties())
                         <td class="py-3 px-6">
 
 
-                            {{ App\Models\Penalty::where('speed_result', $result->id)->get('code')->implode('code', ', ') ?: ($result->penalties == 0 ? 'None' : '') }}
+                            {{ App\Models\Penalty::where('speed_result', $result->id)->get('code')->implode('code', ', ') ?: ($result->penalties == 0 ? '-' : '') }}
                             @if ($event->getName() == 'Swim & Tow' && $result->penalties != 0)
                             (P900 x{{$result->penalties - App\Models\Penalty::where('speed_result', $result->id)->count() }})
                             @endif

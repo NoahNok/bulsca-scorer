@@ -73,7 +73,7 @@
                             {{ $result->team }}
                         </th>
                         <td class="py-4 px-6">
-                            N/A
+                            {{ $serc->getTeamDQ(\App\Models\CompetitionTeam::find($result->tid))?->code ?: '-' }}
                         </td>
 
                         <td class="py-4 px-6">
