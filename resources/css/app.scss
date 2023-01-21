@@ -222,3 +222,26 @@ h5 {
   @apply w-32 h-32;
 }
 
+
+
+.table-highlight {
+  tr {
+    @apply hover:bg-gray-200 transition-colors;
+  }
+
+  thead > tr > th {
+    @apply sticky top-0 bg-gray-50;
+
+    &:first-child {
+      @apply left-0 z-20;
+    }
+  }
+
+  tbody > tr > th, tbody > tr >td:first-child {
+    @apply sticky left-0 bg-white
+  }
+
+  td {
+    @apply hover:font-semibold hover:bg-gray-300 hover:text-black transition-colors;
+  }
+}

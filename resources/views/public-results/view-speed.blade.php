@@ -26,7 +26,7 @@
                 <a class="link" href="{{ route('public.results.comp', $comp->resultsSlug()) }}"><small>Back</small></a>
             </div>
             <div class="  relative overflow-x-auto w-screen lg:w-auto  ">
-                <table class=" text-sm w-full shadow-md rounded-lg  text-left text-gray-500 ">
+                <table id="table" class="table-highlight text-sm w-full shadow-md rounded-lg  text-left text-gray-500 ">
                     <thead class="text-xs text-gray-700 text-right uppercase bg-gray-50  ">
                         <tr class="">
                             <th scope="col" class="py-3 px-6 text-left sticky left-0 bg-gray-50">
@@ -58,7 +58,7 @@
 
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="table-body">
 
                         @forelse ($event->getResults() as $result)
                         <tr class="bg-white border-b text-right ">
@@ -124,7 +124,43 @@
 
 
     </div>
+    <script>
+        function initTable() {
+            let table = document.getElementById("table");
+            let tableBody = document.getElementById("table-body");
+            let tableRows = tableBody.querySelectorAll("tr")
 
+            table.onmouseover = (e) => {
+                let type = e.target;
+                if (type.nodeName != "TD") return
+                //console.log(type.innerHTML)
+                let index = Array.from(type.parentNode.children).indexOf(type)
+
+
+                tableBody.querySelectorAll("tr").forEach(tr => {
+                    tr.children[index].classList.add('bg-gray-200')
+                })
+            }
+
+
+            table.onmouseout = (e) => {
+                let type = e.target;
+                if (type.nodeName != "TD") return
+                //console.log(type.innerHTML)
+                let index = Array.from(type.parentNode.children).indexOf(type)
+
+
+                tableBody.querySelectorAll("tr").forEach(tr => {
+                    tr.children[index].classList.remove('bg-gray-200')
+                })
+            }
+
+
+
+        }
+
+        window.onload = initTable()
+    </script>
 </body>
 
 </html>

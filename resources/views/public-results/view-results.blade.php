@@ -26,7 +26,7 @@
                 <a class="link" href="{{ route('public.results.comp', $comp->resultsSlug()) }}"><small>Back</small></a>
             </div>
             <div class="  relative overflow-x-auto w-screen  lg:max-w-[80vw] max-h-[90vh] lg:max-h-[80vh]  ">
-                <table id="table" class=" text-sm w-full shadow-md rounded-lg top-0 text-left text-gray-500 border-collapse relative">
+                <table id="table" class="table-highlight text-sm w-full shadow-md rounded-lg top-0 text-left text-gray-500 border-collapse relative">
                     <thead class="text-xs text-gray-700 text-right uppercase bg-gray-50 ">
                         <tr>
 
@@ -37,7 +37,7 @@
 
                             @endif
 
-                            <th scope="col" class="py-3 px-6 sticky top-0 bg-gray-50 whitespace-nowrap @if($key=='team') left-0 z-20 @endif">
+                            <th scope="col" class="py-3 px-6  whitespace-nowrap ">
                                 {{ str_replace("_", " ", preg_replace("/_[0-9]/mi", "", $key)) }}
                             </th>
                             @endforeach
@@ -48,12 +48,12 @@
                     <tbody id="table-body">
 
                         @forelse ($results as $result)
-                        <tr class="bg-white border-b text-right hover:bg-gray-200 transition-colors   ">
+                        <tr class="bg-white border-b text-right    ">
                             @foreach ($result as $key => $value)
                             @if (!str_contains($key, "team") && !str_ends_with($key, "rsp") && !str_ends_with($key, "place") && !str_contains($key, "totalPoints") ) @continue
 
                             @endif
-                            <td class="py-3 px-6 text-black text-sm whitespace-nowrap @if($key=='team') sticky left-0 bg-white @endif hover:bg-gray-300 hover:text-black transition-colors hover:font-semibold">
+                            <td class="py-3 px-6 text-black text-sm whitespace-nowrap @if($key=='team')  bg-white @endif">
                                 @if ($key == "team")
                                 <span class="font-semibold">{{ $value }}</span>
                                 @else

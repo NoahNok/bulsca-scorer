@@ -26,17 +26,17 @@
                 <a class="link" href="{{ route('public.results.comp', $comp->resultsSlug()) }}"><small>Back</small></a>
             </div>
             <div class="  relative overflow-x-auto w-screen  lg:max-w-[80vw] max-h-[90vh] lg:max-h-[80vh]  ">
-                <table id="table" class=" text-sm w-full shadow-md rounded-lg top-0 text-left text-gray-500 border-collapse relative">
+                <table id="table" class="table-highlight text-sm w-full shadow-md rounded-lg top-0 text-left text-gray-500 border-collapse relative">
 
-                    <thead class="text-xs text-gray-700 text-right uppercase bg-gray-50 sticky z-10  ">
+                    <thead class="text-xs text-gray-700 text-right uppercase   ">
                         <tr class="">
-                            <th scope="col" class="py-3 px-6 text-left sticky left-0 top-0 bg-gray-50 z-20">
+                            <th scope="col" class="py-3 px-6 text-left ">
                                 Team
                             </th>
 
                             @foreach ($event->getJudges as $judge)
                             @foreach ($judge->getMarkingPoints as $markingPoint)
-                            <th scope="col" class="py-3 px-6 sticky top-0 bg-gray-50" style="writing-mode: vertical-rl; ">
+                            <th scope="col" class="py-3 px-6" style="writing-mode: vertical-rl; ">
                                 {{ $markingPoint->name }}
                             </th>
 
@@ -44,14 +44,14 @@
 
                             @endforeach
 
-                            <th scope="col" class="py-3 px-6 sticky top-0 bg-gray-50">
+                            <th scope="col" class="py-3 px-6">
                                 DQ
                             </th>
 
-                            <th scope="col" class="py-3 px-6 sticky top-0 bg-gray-50">
+                            <th scope="col" class="py-3 px-6">
                                 Points
                             </th>
-                            <th scope="col" class="py-3 px-6 sticky top-0 bg-gray-50">
+                            <th scope="col" class="py-3 px-6">
                                 Position
                             </th>
 
@@ -61,14 +61,14 @@
                     <tbody id="table-body">
 
                         @forelse ($event->getResults() as $result)
-                        <tr class="bg-white border-b text-right hover:bg-gray-200 transition-colors  ">
-                            <th scope="row" class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap sticky left-0 bg-white  ">
+                        <tr class="bg-white border-b text-right   ">
+                            <th scope="row" class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap   ">
                                 {{ $result->team }}
                             </th>
 
                             @foreach ($event->getJudges as $judge)
                             @foreach ($judge->getMarkingPoints as $markingPoint)
-                            <td class="py-3 px-6 hover:bg-gray-300 hover:text-black transition-colors hover:font-semibold">
+                            <td class="py-3 px-6 ">
                                 {{ round($markingPoint->getScoreForTeam($result->tid)) }}
                             </td>
 
@@ -76,14 +76,14 @@
 
                             @endforeach
 
-                            <td class="py-4 px-6 hover:bg-gray-300 hover:text-black transition-colors hover:font-semibold">
+                            <td class="py-4 px-6">
                                 {{ $event->getTeamDQ(\App\Models\CompetitionTeam::find($result->tid))?->code ?: '-' }}
                             </td>
 
-                            <td class="py-4 px-6 hover:bg-gray-300 hover:text-black transition-colors hover:font-semibold">
+                            <td class="py-4 px-6 ">
                                 {{ round($result->points) }}
                             </td>
-                            <td class="py-4 px-6 hover:bg-gray-300 hover:text-black transition-colors hover:font-semibold">
+                            <td class="py-4 px-6 ">
                                 {{ $result->place }}
                             </td>
 
