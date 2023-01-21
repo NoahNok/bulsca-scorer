@@ -14,6 +14,7 @@
     <div class="w-screen  min-h-screen flex flex-col items-center lg:justify-center space-y-2 my-4 lg:my-0 ">
         <img src="https://www.bulsca.co.uk/storage/logo/blogo.png" class=" w-60 h-60" alt="">
         <h1 class="font-bold">{{ $comp->name }}</h1>
+        <a class="link  text-center" href="{{ route('public.results') }}"><small>Back</small></a>
 
         <hr class="w-96">
         <br>
