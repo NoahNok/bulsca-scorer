@@ -11,6 +11,7 @@ use App\Models\SERCMarkingPoint;
 use App\Models\SERCPenalty;
 use App\Models\SERCResult;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 
 class SERCController extends Controller
@@ -174,6 +175,8 @@ class SERCController extends Controller
             $result->result = $score;
 
             $result->save();
+
+            Cache::forget('mp.' . $id . '.team.' . $team->id);
         }
 
         if (!$disSet) {

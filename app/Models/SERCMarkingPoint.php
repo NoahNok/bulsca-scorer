@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class SERCMarkingPoint extends Model
 {
@@ -16,6 +17,11 @@ class SERCMarkingPoint extends Model
 
     public function getScoreForTeam($team)
     {
-        return SERCResult::where('marking_point', $this->id)->where('team', $team)->first()?->result;
+
+        $mpId = $this->id;
+
+        return Cache::rememberForever('mp.' . $mpId . '.team.' . $team, function () use ($team, $mpId) {
+            return SERCResult::where('marking_point', $mpId)->where('team', $team)->first()?->result;
+        });
     }
 }
