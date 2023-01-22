@@ -46,11 +46,11 @@
 
                             @foreach ($event->getJudges as $judge)
                             @foreach ($judge->getMarkingPoints as $markingPoint)
-                            <th scope="col" class="py-3 px-6 @if ($loop->last) border-r @endif @if($loop->first) border-l @endif group" title="{{ $markingPoint->name }}">
-                                <div class="flex flex-col">
-                                    <p class="overflow-hidden text-ellipsis max-h-52 whitespace-nowrap group-hover:whitespace-normal text-right h-full" style="writing-mode: vertical-rl; ">{{ $markingPoint->name }}</p> &nbsp;&nbsp;
-                                    <p class="text-center">{{ number_format($markingPoint->weight, 1)}}</p>
-                                </div>
+                            <th scope="col" class="py-3 px-6 @if ($loop->last) border-r @endif @if($loop->first) border-l @endif group max-h-52 whitespace-nowrap overflow-hidden text-ellipsis hover:whitespace-normal" style="writing-mode: vertical-rl; " title="{{ $markingPoint->name }}">
+
+                                {{ $markingPoint->name }}
+                                <!--<p class="text-center">{{ number_format($markingPoint->weight, 1)}}</p>-->
+
                             </th>
 
                             @endforeach
