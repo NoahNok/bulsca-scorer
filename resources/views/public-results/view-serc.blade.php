@@ -26,18 +26,29 @@
                 <a class="link" href="{{ route('public.results.comp', $comp->resultsSlug()) }}"><small>Back</small></a>
             </div>
             <div class="  relative overflow-x-auto w-screen  lg:max-w-[80vw] max-h-[90vh] lg:max-h-[80vh]  ">
-                <table id="table" class="table-highlight text-sm w-full shadow-md rounded-lg top-0 text-left text-gray-500 border-collapse relative">
+                <table id="table" class="table-highlight text-sm w-full shadow-md rounded-lg top-0 text-left text-gray-500 border-collapse  relative">
 
-                    <thead class="text-xs text-gray-700 text-right uppercase   ">
+                    <thead class="text-xs text-gray-700 text-right uppercase sticky top-0 z-50 ">
                         <tr class="">
-                            <th scope="col" class="py-3 px-6 text-left ">
+                            <th class=""></th>
+                            @foreach ($event->getJudges as $judge)
+                            <th colspan="{{ $judge->getMarkingPoints->count() }}" class="py-3 px-6 border-x text-center sticky top-0">{{ $judge->name }}</th>
+
+                            @endforeach
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        <tr class="">
+                            <th scope="col" class="py-3 px-6 text-left z-20">
                                 Team
                             </th>
 
                             @foreach ($event->getJudges as $judge)
                             @foreach ($judge->getMarkingPoints as $markingPoint)
-                            <th scope="col" class="py-3 px-6" style="writing-mode: vertical-rl; ">
-                                {{ $markingPoint->name }}
+                            <th scope="col" class="py-3 px-6 @if ($loop->last) border-r @endif @if($loop->first) border-l @endif" style="writing-mode: vertical-rl; ">
+                                {{ $markingPoint->name }} &nbsp;&nbsp;
+                                {{ number_format($markingPoint->weight, 1)}}
                             </th>
 
                             @endforeach
@@ -62,7 +73,7 @@
 
                         @forelse ($event->getResults() as $result)
                         <tr class="bg-white border-b text-right   ">
-                            <th scope="row" class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap   ">
+                            <th scope="row" class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap  ">
                                 {{ $result->team }}
                             </th>
 
