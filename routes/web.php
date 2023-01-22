@@ -119,7 +119,9 @@ Route::bind('comp_slug', function ($value) {
 
     $id = $parts[1];
 
-    return Competition::findOrFail($id);
+    $comp = Competition::findOrFail($id);
+    if (!$comp->areResultsPublic()) abort(404);
+    return $comp;
 });
 
 /* PUBLIC RESULTS VIEWING */
