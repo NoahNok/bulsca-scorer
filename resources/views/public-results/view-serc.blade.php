@@ -81,7 +81,7 @@
 
                             @foreach ($event->getJudges as $judge)
                             @foreach ($judge->getMarkingPoints as $markingPoint)
-                            <td class="py-3 px-6 ">
+                            <td class="py-3 px-6 text-center">
                                 {{ round($markingPoint->getScoreForTeam($result->tid)) }}
                             </td>
 
