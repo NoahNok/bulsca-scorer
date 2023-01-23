@@ -70,6 +70,20 @@
 
 
                         </tr>
+                        <tr class="">
+                            <th class=""></th>
+                            @foreach ($event->getJudges as $judge)
+                            @foreach ($judge->getMarkingPoints as $mp)
+
+
+                            <th class="py-3 px-6 text-center sticky top-0  @if ($loop->last) border-r @endif @if($loop->first) border-l @endif">{{ $mp->weight }}</th>
+                            @endforeach
+                            @endforeach
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+
                     </thead>
                     <tbody id="table-body">
 

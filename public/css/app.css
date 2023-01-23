@@ -531,6 +531,10 @@ video {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
 }
+.mx-1 {
+  margin-left: 0.25rem;
+  margin-right: 0.25rem;
+}
 .ml-3 {
   margin-left: 0.75rem;
 }
@@ -590,6 +594,9 @@ video {
 }
 .mt-3 {
   margin-top: 0.75rem;
+}
+.ml-auto {
+  margin-left: auto;
 }
 .block {
   display: block;
@@ -657,26 +664,17 @@ video {
 .h-9 {
   height: 2.25rem;
 }
+.h-72 {
+  height: 18rem;
+}
+.h-52 {
+  height: 13rem;
+}
 .max-h-\[90vh\] {
   max-height: 90vh;
 }
-.max-h-12 {
-  max-height: 3rem;
-}
-.max-h-36 {
-  max-height: 9rem;
-}
-.max-h-72 {
-  max-height: 18rem;
-}
-.max-h-60 {
-  max-height: 15rem;
-}
 .max-h-52 {
   max-height: 13rem;
-}
-.max-h-32 {
-  max-height: 8rem;
 }
 .min-h-screen {
   min-height: 100vh;
@@ -788,8 +786,8 @@ video {
   --tw-translate-y: 0px;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
-.rotate-180 {
-  --tw-rotate: 180deg;
+.rotate-90 {
+  --tw-rotate: 90deg;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 .scale-95 {
@@ -823,11 +821,11 @@ video {
 .flex-row {
   flex-direction: row;
 }
-.flex-row-reverse {
-  flex-direction: row-reverse;
-}
 .flex-col {
   flex-direction: column;
+}
+.flex-col-reverse {
+  flex-direction: column-reverse;
 }
 .flex-wrap {
   flex-wrap: wrap;
@@ -840,9 +838,6 @@ video {
 }
 .items-center {
   align-items: center;
-}
-.justify-start {
-  justify-content: flex-start;
 }
 .justify-end {
   justify-content: flex-end;
@@ -2052,9 +2047,6 @@ a.link:hover {
 .disabled\:opacity-25:disabled {
   opacity: 0.25;
 }
-.group:hover .group-hover\:whitespace-normal {
-  white-space: normal;
-}
 @media (prefers-color-scheme: dark) {
 
   .dark\:bg-gray-900 {
@@ -2198,10 +2190,6 @@ a.link:hover {
 
   .lg\:max-h-\[80vh\] {
     max-height: 80vh;
-  }
-
-  .lg\:max-h-52 {
-    max-height: 13rem;
   }
 
   .lg\:w-\[65\%\] {
