@@ -523,21 +523,13 @@ video {
   margin-left: auto;
   margin-right: auto;
 }
-.my-4 {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+.my-8 {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
 }
 .mx-2 {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
-}
-.mx-1 {
-  margin-left: 0.25rem;
-  margin-right: 0.25rem;
-}
-.my-8 {
-  margin-top: 2rem;
-  margin-bottom: 2rem;
 }
 .ml-3 {
   margin-left: 0.75rem;
@@ -668,12 +660,6 @@ video {
 .h-9 {
   height: 2.25rem;
 }
-.h-72 {
-  height: 18rem;
-}
-.h-52 {
-  height: 13rem;
-}
 .max-h-\[90vh\] {
   max-height: 90vh;
 }
@@ -790,10 +776,6 @@ video {
   --tw-translate-y: 0px;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
-.rotate-90 {
-  --tw-rotate: 90deg;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-}
 .scale-95 {
   --tw-scale-x: .95;
   --tw-scale-y: .95;
@@ -828,17 +810,11 @@ video {
 .flex-col {
   flex-direction: column;
 }
-.flex-col-reverse {
-  flex-direction: column-reverse;
-}
 .flex-wrap {
   flex-wrap: wrap;
 }
 .items-start {
   align-items: flex-start;
-}
-.items-end {
-  align-items: flex-end;
 }
 .items-center {
   align-items: center;
@@ -2185,11 +2161,6 @@ a.link:hover {
   .lg\:mx-0 {
     margin-left: 0px;
     margin-right: 0px;
-  }
-
-  .lg\:my-0 {
-    margin-top: 0px;
-    margin-bottom: 0px;
   }
 
   .lg\:max-h-\[80vh\] {

@@ -110,11 +110,17 @@
 
                     </tbody>
                 </table>
+
+            </div>
+            <div class="w-full flex items-center justify-center mt-2">
+                <a href="{{ Request::url() }}?dlCSV" class="link">Download as CSV</a>
+
             </div>
 
         </div>
 
-        <div class="pt-8 pb-16">
+
+        <div class=" pt-8 pb-16">
             <small>
                 &copy; BULSCA 2023
             </small>

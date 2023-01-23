@@ -131,6 +131,10 @@
 
                 </table>
             </div>
+            <div class="w-full flex items-center justify-center mt-2">
+                <a href="{{ Request::url() }}?dlCSV" class="link">Download as CSV</a>
+
+            </div>
 
         </div>
 
