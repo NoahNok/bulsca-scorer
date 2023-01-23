@@ -2212,6 +2212,10 @@ a.link:hover {
     justify-content: center;
   }
 
+  .lg\:whitespace-nowrap {
+    white-space: nowrap;
+  }
+
   .lg\:px-8 {
     padding-left: 2rem;
     padding-right: 2rem;

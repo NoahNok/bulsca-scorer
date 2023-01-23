@@ -46,7 +46,7 @@
 
                             @foreach ($event->getJudges as $judge)
                             @foreach ($judge->getMarkingPoints as $markingPoint)
-                            <th scope="col" class="py-3 px-6 @if ($loop->last) border-r @endif @if($loop->first) border-l @endif group max-h-52 whitespace-nowrap overflow-hidden text-ellipsis hover:whitespace-normal" style="writing-mode: vertical-rl; " title="{{ $markingPoint->name }}">
+                            <th scope="col" class="py-3 px-6 @if ($loop->last) border-r @endif @if($loop->first) border-l @endif group max-h-52 lg:whitespace-nowrap overflow-hidden text-ellipsis hover:whitespace-normal" style="writing-mode: vertical-rl; " title="{{ $markingPoint->name }}">
 
                                 {{ $markingPoint->name }}
                                 <!--<p class="text-center">{{ number_format($markingPoint->weight, 1)}}</p>-->
