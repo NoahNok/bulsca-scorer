@@ -10,8 +10,8 @@
 
 </head>
 
-<body>
-    <div class="w-screen h-screen flex flex-col items-center lg:justify-center space-y-2 my-8 ">
+<body class="overflow-x-hidden">
+    <div class="w-screen h-screen flex flex-col items-center overflow-x-hidden lg:justify-center space-y-2 my-8 ">
         <img src="https://www.bulsca.co.uk/storage/logo/blogo.png" class=" w-60 h-60" alt="">
         <h1 class="font-bold">Results</h1>
 

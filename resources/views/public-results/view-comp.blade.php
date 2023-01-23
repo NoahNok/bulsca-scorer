@@ -10,7 +10,7 @@
 
 </head>
 
-<body>
+<body class="overflow-x-hidden">
     <div class="w-screen  min-h-screen flex flex-col items-center lg:justify-center space-y-2 my-8  ">
         <img src="https://www.bulsca.co.uk/storage/logo/blogo.png" class=" w-60 h-60" alt="">
         <h1 class="font-bold">{{ $comp->name }}</h1>
