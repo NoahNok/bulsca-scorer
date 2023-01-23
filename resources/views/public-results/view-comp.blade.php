@@ -6,12 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $comp->name }} | Results | BULSCA</title>
-    <link rel="stylesheet" href="{{ asset('css/app.css?v=1.0.0') }}">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
 
 </head>
 
 <body>
-    <div class="w-screen  min-h-screen flex flex-col items-center lg:justify-center space-y-2 my-4 lg:my-0 ">
+    <div class="w-screen  min-h-screen flex flex-col items-center lg:justify-center space-y-2 my-8  ">
         <img src="https://www.bulsca.co.uk/storage/logo/blogo.png" class=" w-60 h-60" alt="">
         <h1 class="font-bold">{{ $comp->name }}</h1>
         <a class="link  text-center" href="{{ route('public.results') }}"><small>Back</small></a>
