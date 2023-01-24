@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AdminCreateCompRequest;
 use App\Models\Competition;
+use App\Models\SpeedEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
@@ -80,5 +81,34 @@ class AdminController extends Controller
         $compUser->save();
 
         return view('admin.competiton-created', ['email' => $compUserEmail, 'password' => $compUserPasswordRaw, 'comp' => $comp]);
+    }
+
+    public function records()
+    {
+        $se = SpeedEvent::all();
+        return view('admin.speed-records', ['events' => $se]);
+    }
+
+    public function updateRecords(Request $request)
+    {
+        $json = json_decode($request->input('data'));
+        foreach ($json as $row) {
+            $se = SpeedEvent::find($row->id);
+            $minSecSplit = explode(":", $row->values->record);
+
+
+
+            try {
+                $min = $minSecSplit[0];
+                $secMillisSplit = explode(".", $minSecSplit[1]);
+
+                $totalMillis = $min * 60000 + $secMillisSplit[0] * 1000 + $secMillisSplit[1];
+
+                $se->record = $totalMillis;
+                $se->save();
+            } catch (\Throwable $th) {
+                continue;
+            }
+        }
     }
 }

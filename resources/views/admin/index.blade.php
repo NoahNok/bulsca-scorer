@@ -26,4 +26,5 @@ Admin
     <x-add-card text="Competition" link="{{ route('admin.comp.create') }}"></x-add-card>
 
 </div>
+<br><a href="{{ route('admin.records') }}" class="link">Edit Speed Event Record Times</a>
 @endsection

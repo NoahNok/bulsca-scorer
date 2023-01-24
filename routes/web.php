@@ -99,6 +99,8 @@ Route::middleware('isAdmin')->group(function () {
     Route::post('/admin/competition/create', [AdminController::class, 'createCompPost'])->name('admin.comp.create.post');
     Route::post('/admin/competition/{comp}/update', [AdminController::class, 'updateCompPost'])->name('admin.comp.update.post');
     Route::post('/admin/competition/{comp}/updateUser', [AdminController::class, 'updateCompUserPassword'])->name('admin.comp.update.userPassword');
+    Route::get('/admin/records', [AdminController::class, 'records'])->name('admin.records');
+    Route::post('/admin/records', [AdminController::class, 'updateRecords'])->name('admin.records.update');
 });
 
 

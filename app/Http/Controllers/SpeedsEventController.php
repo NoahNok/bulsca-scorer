@@ -6,6 +6,7 @@ use App\Http\Requests\AddSpeedEventRequest;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\Competition;
 use App\Models\Penalty;
+use App\Models\SpeedEvent;
 use App\Models\SpeedResult;
 use Illuminate\Http\Request;
 use Mockery\Undefined;
@@ -34,7 +35,10 @@ class SpeedsEventController extends Controller
 
         $totalMillis = $min * 60000 + $secMillisSplit[0] * 1000 + $secMillisSplit[1];
 
-        $cse->record = $totalMillis;
+
+
+
+        $cse->record = SpeedEvent::find($data['event'])->record;
         $cse->weight = $data['weight'];
 
         $cse->save();
