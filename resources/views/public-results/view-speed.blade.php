@@ -6,7 +6,7 @@
     <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $event->getName() }} | {{ $comp->name }} | Results | BULSCA</title>
+    <title>@if ($comp->areResultsProvisional()) (PROVISIONAL) @endif{{ $event->getName() }} | {{ $comp->name }} | Results | BULSCA</title>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
 
 </head>
@@ -22,6 +22,11 @@
         </div>
 
         <div class="">
+            @if ($comp->areResultsProvisional())
+            <div class="p-2 text-center text-lg">
+                <p>These results are provisional! <strong>They are subject to change</strong> and should not be considered accurate or final!</p>
+            </div>
+            @endif
             <div class="flex justify-between items-center mx-3 lg:mx-0">
                 <h3>Results</h3>
                 <a class="link" href="{{ route('public.results.comp', $comp->resultsSlug()) }}"><small>Back</small></a>
@@ -112,10 +117,12 @@
                 </table>
 
             </div>
+            @if (!$comp->areResultsProvisional())
             <div class="w-full flex items-center justify-center mt-2">
                 <a href="{{ Request::url() }}?dlCSV" class="link">Download as CSV</a>
 
             </div>
+            @endif
 
         </div>
 

@@ -346,6 +346,14 @@ class OverallResultsController extends Controller
         return redirect()->back();
     }
 
+    public function provToggle(Competition $comp)
+    {
+        $comp->results_provisional = !$comp->results_provisional;
+        $comp->save();
+
+        return redirect()->back();
+    }
+
     public function delete(Competition $comp, ResultSchema $schema)
     {
         $schema->delete();

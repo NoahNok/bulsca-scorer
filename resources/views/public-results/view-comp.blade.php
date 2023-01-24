@@ -6,7 +6,7 @@
     <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $comp->name }} | Results | BULSCA</title>
+    <title>@if ($comp->areResultsProvisional()) (PROVISIONAL) @endif{{ $comp->name }} | Results | BULSCA</title>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
 
 </head>
@@ -18,10 +18,19 @@
         <a class="link  text-center" href="{{ route('public.results') }}"><small>Back</small></a>
 
         <hr class="w-96">
+
+        @if ($comp->areResultsProvisional())
+        <div class="p-2 text-center text-lg">
+            <p>These results are provisional! <strong>They are subject to change</strong> and should not be considered accurate or final!</p>
+        </div>
+        @else
         <br>
+        @endif
 
         <div class="flex flex-col space-y-4 w-[80%] lg:w-[65%] xl:w-[50%]">
+
             <div class="">
+
                 <h3>SERCs</h3>
                 <div class="grid-4">
 

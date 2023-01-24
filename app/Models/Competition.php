@@ -62,6 +62,14 @@ class Competition extends Model
         return $this->public_results;
     }
 
+
+    public function areResultsProvisional()
+    {
+
+        return $this->results_provisional;
+    }
+
+
     public function resultsSlug()
     {
 

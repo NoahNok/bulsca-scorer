@@ -1,11 +1,11 @@
 <head>
     <link rel="stylesheet" href="{{ asset('css/app.css?v=1.0.0') }}">
     <title>
-        {{ $schema->name }} | {{ $comp->name }}
+        @if ($comp->areResultsProvisional()) (PROVISIONAL) @endif{{ $schema->name }} | {{ $comp->name }}
     </title>
 </head>
 <div class="   ">
-    <h2>{{ $schema->name }} | {{ $comp->name }}</h2>
+    <h2>@if ($comp->areResultsProvisional()) (PROVISIONAL) @endif{{ $schema->name }} | {{ $comp->name }}</h2>
     <table class=" text-sm  rounded-lg overflow-hidden text-left text-gray-500 ">
         <thead class="text-xs text-gray-700 text-right uppercase bg-gray-50 ">
             <tr>

@@ -55,27 +55,53 @@ Results | {{ $comp->name }}
 <br>
 <hr>
 <br>
-<h3>Publicize Results</h3>
-@if (!$comp->areResultsPublic())
-<p class="mb-4">Click the button below to make results publicly viewable</p>
+<div class="grid-4">
+    <div>
+        <h3>Publicize Results</h3>
+        @if (!$comp->areResultsPublic())
+        <p class="mb-4">Click the button below to make results publicly viewable</p>
 
-<a href="{{ route('comps.view.results.publishToggle', $comp) }}" class="btn">Publish Results</a>
-@else
+        <a href="{{ route('comps.view.results.publishToggle', $comp) }}" class="btn">Publish Results</a>
+        @else
 
-<p class="mb-2"><strong>Results link:</strong> <a href="{{ route('public.results.comp', $comp->resultsSlug())}}" class="link">Click to view public results</a>
-    <br>Or scan the QR below
-</p>
+        <p class="mb-2"><strong>Results link:</strong> <a href="{{ route('public.results.comp', $comp->resultsSlug())}}" class="link">Click to view public results</a>
+            <br>Or scan the QR below
+        </p>
 
-{!! QrCode::size(150)->style('round')->generate(route('public.results.comp', $comp->resultsSlug())) !!}
+        {!! QrCode::size(150)->style('round')->generate(route('public.results.comp', $comp->resultsSlug())) !!}
 
-<p class="mb-4 mt-6">
+        <p class="mb-4 mt-6">
 
-    Click the button below to hide results from being publicly viewable
-</p>
+            Click the button below to hide results from being publicly viewable
+        </p>
 
 
-<a href="{{ route('comps.view.results.publishToggle', $comp) }}" class="btn btn-danger">Unpublish Results</a>
-@endif
+        <a href="{{ route('comps.view.results.publishToggle', $comp) }}" class="btn btn-danger">Unpublish Results</a>
+        @endif
+    </div>
+    <div>
+        <h3>Result Settings</h3>
+
+        <div class="flex lg:flex-row justify-between lg:items-center lg:space-x-2 space-y-2 flex-col">
+            <p><strong>Provisional</strong>: {{ $comp->areResultsProvisional() ? "Yes" : "No" }}
+                <br>
+                @if ($comp->areResultsProvisional())
+                Making results final (not provisional) removes any notice about provisional results and allows CSV downloading, etc.
+                @else
+                Making results provisional adds a notice about provisional results and disables CSV downloading
+                @endif
+            </p>
+            <div class="whitespace-nowrap">
+                @if (!$comp->areResultsProvisional())
+                <a href="{{ route('comps.view.results.provToggle', $comp) }}" class="btn">Make Provisional</a>
+                @else
+                <a href="{{ route('comps.view.results.provToggle', $comp) }}" class="btn">Make Final</a>
+                @endif
+            </div>
+        </div>
+
+    </div>
+</div>
 
 
 
