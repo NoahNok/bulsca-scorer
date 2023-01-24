@@ -53,15 +53,18 @@ class PublicResultsController extends Controller
 
             $headers = ['Team'];
 
+            $weightRow = [''];
+
             foreach ($event->getJudges as $judge) {
                 foreach ($judge->getMarkingPoints as $mp) {
                     array_push($headers, $mp->name);
+                    array_push($weightRow, $mp->weight);
                 }
             }
 
 
 
-            return array_merge($headers, ['DQ', 'Points', 'Position']);
+            return [array_merge($headers, ['DQ', 'Points', 'Position']), $weightRow];
         }, function ($row) use ($event) {
             $data = [$row->team];
 
@@ -85,7 +88,7 @@ class PublicResultsController extends Controller
 
 
 
-            return array_merge($headers, ['Points', 'Position']);
+            return [array_merge($headers, ['Points', 'Position'])];
         }, function ($row) use ($event) {
             $data = [$row->team];
 
@@ -128,6 +131,8 @@ class PublicResultsController extends Controller
         $headers = $colGenerator();
         $rows = [];
 
+
+
         foreach ($results as $result) {
             $row = $rowGenerator($result);
             array_push($rows, $row);
@@ -135,7 +140,9 @@ class PublicResultsController extends Controller
 
         $fp = fopen('php://output', 'w');
 
-        fputcsv($fp, $headers);
+        foreach ($headers as $header) {
+            fputcsv($fp, $header);
+        }
 
         foreach ($rows as $row) {
             fputcsv($fp, $row);

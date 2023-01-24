@@ -540,11 +540,11 @@ video {
 .mb-0 {
   margin-bottom: 0px;
 }
-.mb-6 {
-  margin-bottom: 1.5rem;
-}
 .mt-2 {
   margin-top: 0.5rem;
+}
+.mb-6 {
+  margin-bottom: 1.5rem;
 }
 .mb-1 {
   margin-bottom: 0.25rem;
@@ -590,9 +590,6 @@ video {
 }
 .mt-3 {
   margin-top: 0.75rem;
-}
-.ml-auto {
-  margin-left: auto;
 }
 .block {
   display: block;
