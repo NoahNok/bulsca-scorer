@@ -67,7 +67,7 @@ Add Results Sheet | {{ $comp->name }}
                             {{ $event->getName() }}
                         </th>
                         <td class="">
-                            <input class="table-input" table-cell table-cell-required table-cell-name="weight" placeholder="1" type="number" value="">
+                            <input class="table-input" table-cell table-cell-required table-cell-name="weight" placeholder="1" type="number">
 
 
                         </td>
@@ -88,7 +88,7 @@ Add Results Sheet | {{ $comp->name }}
                             {{ $event->getName() }}
                         </th>
                         <td class="">
-                            <input class="table-input" table-cell table-cell-required table-cell-name="weight" placeholder="1" type="number" value="">
+                            <input class="table-input" table-cell table-cell-required table-cell-name="weight" placeholder="2" type="number">
 
 
                         </td>
@@ -123,7 +123,7 @@ Add Results Sheet | {{ $comp->name }}
                     <tr table-row table-row-owner="league" class="bg-white border-b text-right ">
                         <th scope="row" class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap flex flex-col  ">
                             League
-                            <small>Overall (O), A League (A), B League (B), Freshers League (F), Non-counting (NC), Non-student (NS)</small>
+                            <small>Overall (O), A League (A), B League (B), Freshers League (F), Non-counting (NC), Non-student (NS), Old Boys (OB)</small>
                         </th>
                         <td class="">
                             <input class="table-input" table-cell table-cell-required table-cell-name="league" placeholder="O, A, B, F, NC, NS" type="text" value="">
