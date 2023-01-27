@@ -20,7 +20,7 @@
                 <h4>{{ $comp->name }}</h4>
             </div>
         </div>
-
+        <a href="https://forms.gle/FEc8XJM3SyUma3Br6" target="_blank" rel="noopener noreferrer" class="link">Give Feedback</a>
         <div class="">
             @if ($comp->areResultsProvisional())
             <div class="p-2 text-center text-lg">

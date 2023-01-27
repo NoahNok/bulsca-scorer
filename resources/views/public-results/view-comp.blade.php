@@ -17,8 +17,9 @@
         <h1 class="font-bold">{{ $comp->name }}</h1>
         <a class="link  text-center" href="{{ route('public.results') }}"><small>Back</small></a>
 
-        <hr class="w-96">
 
+        <hr class="w-96">
+        <a href="https://forms.gle/FEc8XJM3SyUma3Br6" target="_blank" rel="noopener noreferrer" class="link">Give Feedback</a>
         @if ($comp->areResultsProvisional())
         <div class="p-2 text-center text-lg">
             <p>These results are provisional! <strong>They are subject to change</strong> and should not be considered accurate or final!</p>

@@ -12,6 +12,8 @@
 </head>
 
 <body class="overflow-x-hidden">
+
+
     <div class="flex flex-col items-center w-screen h-screen p-8 space-y-6 ">
         <div class="flex flex-row space-x-6 items-center">
             <img src="https://www.bulsca.co.uk/storage/logo/blogo.png" class="w-32 h-32" alt="">
@@ -20,7 +22,7 @@
                 <h4>{{ $comp->name }}</h4>
             </div>
         </div>
-
+        <a href="https://forms.gle/FEc8XJM3SyUma3Br6" target="_blank" rel="noopener noreferrer" class="link">Give Feedback</a>
         <div class="">
             @if ($comp->areResultsProvisional())
             <div class="p-2 text-center text-lg">
