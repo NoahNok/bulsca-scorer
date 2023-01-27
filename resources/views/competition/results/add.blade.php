@@ -126,7 +126,19 @@ Add Results Sheet | {{ $comp->name }}
                             <small>Overall (O), A League (A), B League (B), Freshers League (F), Non-counting (NC), Non-student (NS), Old Boys (OB)</small>
                         </th>
                         <td class="">
-                            <input class="table-input" table-cell table-cell-required table-cell-name="league" placeholder="O, A, B, F, NC, NS" type="text" value="">
+
+
+                            <select table-cell table-cell-required table-cell-name="league" class="table-input">
+                                <option value="O">Overall</option>
+                                <option value="A">A-League</option>
+                                <option value="B">B-League</option>
+                                <option value="F">Freshers</option>
+                                <option value="NC">Non-counting</option>
+                                <option value="NS">Non-student</option>
+                                <option value="OB">Old Boys</option>
+                            </select>
+
+                            <!-- <input class="table-input" table-cell table-cell-required table-cell-name="league" placeholder="O, A, B, F, NC, NS" type="text" value=""> -->
 
 
                         </td>
