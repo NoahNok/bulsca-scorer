@@ -9,8 +9,6 @@ use App\Models\Penalty;
 use App\Models\SpeedEvent;
 use App\Models\SpeedResult;
 use Illuminate\Http\Request;
-use Mockery\Undefined;
-use Spatie\LaravelIgnition\Recorders\DumpRecorder\Dump;
 
 class SpeedsEventController extends Controller
 {

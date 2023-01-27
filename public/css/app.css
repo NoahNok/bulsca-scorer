@@ -591,6 +591,9 @@ video {
 .mt-3 {
   margin-top: 0.75rem;
 }
+.ml-auto {
+  margin-left: auto;
+}
 .block {
   display: block;
 }
@@ -1858,6 +1861,31 @@ a.link:hover {
 .provisional {
   position: relative;
   background: url("/tile.png");
+}
+
+aside {
+  width: 0px;
+}
+
+@media (min-width: 1024px) {
+
+  aside {
+    width: auto;
+  }
+}
+aside.open {
+  width: auto;
+}
+
+.mobile-nav-opener {
+  display: flex;
+}
+
+@media (min-width: 768px) {
+
+  .mobile-nav-opener {
+    display: none;
+  }
 }
 
 .hover\:whitespace-normal:hover {

@@ -284,3 +284,15 @@ h5 {
 
 
 }
+
+aside {
+  @apply w-0 lg:w-auto;
+
+  &.open {
+    @apply w-auto;
+  }
+}
+
+.mobile-nav-opener {
+  @apply flex md:hidden;
+}

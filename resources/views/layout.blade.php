@@ -14,7 +14,7 @@
 
 
 
-    <aside class="  h-screen flex flex-col">
+    <aside class="  h-screen flex flex-col" id="nav">
         <div class="flex flex-row items-center w-full  sm:justify-center space-x-3 text-white bg-bulsca p-5 h-[8vh]  ">
             <p class="md:text-2xl text-xs  font-bold md:whitespace-nowrap">BULSCA Scorer</p>
 
@@ -181,11 +181,19 @@
 
     </aside>
     <main class="bg-gray-100 h-screen w-full">
-        <div class="flex items-center w-full justify-end space-x-3 text-white bg-bulsca p-5 h-[8vh]">
+        <div class="flex items-center w-full justify-between  space-x-3 text-white bg-bulsca p-5 h-[8vh]">
+
+            <div class="mobile-nav-opener" id="mobile-nav-opener">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                </svg>
+
+            </div>
+
             <p class="text-2xl  font-bold">&nbsp;</p>
 
             @auth
-            <a href="/logout" class="hover:underline pr-5">Logout</a>
+            <a href="/logout" class="ml-auto hover:underline pr-5">Logout</a>
             @endauth
         </div>
         <div class="breadcrumbs">
@@ -215,6 +223,10 @@
             document.querySelectorAll("[editable-table]").forEach(et => {
                 new EditableTable(et)
             })
+
+            document.getElementById("mobile-nav-opener").onclick = (e) => {
+                document.getElementById('nav').classList.toggle('open');
+            }
 
         }
     </script>
