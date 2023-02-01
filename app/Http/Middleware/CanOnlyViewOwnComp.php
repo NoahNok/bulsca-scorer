@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Competition;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -19,7 +20,17 @@ class CanOnlyViewOwnComp
 
         $compIdAttempted = $request->route('comp');
 
-        if (auth()->user()->getCompetition->id == $compIdAttempted->id || auth()->user()->isAdmin()) return $next($request);
+
+
+        $targetId = "";
+
+        if ($compIdAttempted instanceof Competition) {
+            $targetId = $compIdAttempted->id;
+        } else {
+            $targetId = $compIdAttempted;
+        }
+
+        if (auth()->user()->getCompetition->id == $targetId || auth()->user()->isAdmin()) return $next($request);
 
         return redirect('/');
     }
