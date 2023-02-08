@@ -139,14 +139,20 @@
                 </table>
 
             </div>
-            <div class="mt-2 flex flex-col md:flex-row space-y-4 md:space-y-0 items-center justify-between">
+            <div class="mt-2 flex flex-col md:flex-row space-y-4 md:space-y-0 items-center ">
                 <div class="flex flex-col ">
                     <div class="form-input" style="margin-bottom: 0px !important;"><input placeholder="Filter" id="team-filter" style="margin-bottom: 0 !important" type="text"></div>
                     <small class="text-gray-600">team:x, league:x</small>
                 </div>
+
+                <div class="flex items-center justify-center space-x-2 ml-8">
+                    <label for="anal">Analysis</label>
+                    <input type="checkbox" name="" id="anal">
+                </div>
+
                 @if (!$comp->areResultsProvisional())
 
-                <a href="{{ Request::url() }}?dlCSV" class="link">Download as CSV</a>
+                <a href="{{ Request::url() }}?dlCSV" class="link ml-auto">Download as CSV</a>
 
 
                 @endif
@@ -168,12 +174,19 @@
 
 
     </div>
-
+    <script src="{{ asset('js/analysis.js') }}"></script>
     <script>
         function initTable() {
             let table = document.getElementById("table");
             let tableBody = document.getElementById("table-body");
             let tableRows = tableBody.querySelectorAll("tr")
+
+
+            analyze(tableRows)
+            document.getElementById("anal").onchange = v => {
+                tableBody.classList.toggle("analysis")
+            }
+
 
             table.onmouseover = (e) => {
                 let type = e.target;

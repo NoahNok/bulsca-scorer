@@ -245,7 +245,7 @@ h5 {
     @apply hover:font-semibold hover:bg-gray-300 hover:text-black transition-colors;
   }
 
-  tbody > tr:first-child {
+  tbody:not(.analysis) > tr:first-child {
     background-color: gold !important;
     @apply text-black;
 
@@ -256,7 +256,7 @@ h5 {
     }
   }
 
-  tbody > tr:nth-child(2) {
+  tbody:not(.analysis) > tr:nth-child(2) {
     background-color: silver !important;
     @apply text-black;
     td , th {
@@ -266,7 +266,7 @@ h5 {
     }
   }
 
-  tbody > tr:nth-child(3), tbody > tr:nth-child(3) > td {
+  tbody:not(.analysis) > tr:nth-child(3), tbody:not(.analysis) > tr:nth-child(3) > td {
     background-color: #cd7f32 !important;
     @apply text-black;
 
@@ -274,6 +274,16 @@ h5 {
       background-color: #cd7f32 !important;
       @apply text-black;
   
+    }
+  }
+
+  tbody.analysis {
+    @apply text-black font-semibold
+  }
+
+  tbody:not(.analysis) {
+    > tr > td {
+      background-color: white !important
     }
   }
 }

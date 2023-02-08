@@ -543,6 +543,12 @@ video {
 .mt-2 {
   margin-top: 0.5rem;
 }
+.ml-8 {
+  margin-left: 2rem;
+}
+.ml-auto {
+  margin-left: auto;
+}
 .mb-6 {
   margin-bottom: 1.5rem;
 }
@@ -563,9 +569,6 @@ video {
 }
 .mt-6 {
   margin-top: 1.5rem;
-}
-.ml-auto {
-  margin-left: auto;
 }
 .mb-2 {
   margin-bottom: 0.5rem;
@@ -627,6 +630,9 @@ video {
 .h-32 {
   height: 8rem;
 }
+.h-\[90vh\] {
+  height: 90vh;
+}
 .h-3 {
   height: 0.75rem;
 }
@@ -660,14 +666,11 @@ video {
 .h-9 {
   height: 2.25rem;
 }
-.h-\[90vh\] {
-  height: 90vh;
+.max-h-52 {
+  max-height: 13rem;
 }
 .max-h-\[90vh\] {
   max-height: 90vh;
-}
-.max-h-52 {
-  max-height: 13rem;
 }
 .min-h-screen {
   min-height: 100vh;
@@ -1833,35 +1836,43 @@ a.link:hover {
   --tw-text-opacity: 1;
   color: rgb(0 0 0 / var(--tw-text-opacity));
 }
-.table-highlight tbody > tr:first-child {
+.table-highlight tbody:not(.analysis) > tr:first-child {
   background-color: gold !important;
   --tw-text-opacity: 1;
   color: rgb(0 0 0 / var(--tw-text-opacity));
 }
-.table-highlight tbody > tr:first-child td, .table-highlight tbody > tr:first-child th {
+.table-highlight tbody:not(.analysis) > tr:first-child td, .table-highlight tbody:not(.analysis) > tr:first-child th {
   background-color: gold !important;
   --tw-text-opacity: 1;
   color: rgb(0 0 0 / var(--tw-text-opacity));
 }
-.table-highlight tbody > tr:nth-child(2) {
+.table-highlight tbody:not(.analysis) > tr:nth-child(2) {
   background-color: silver !important;
   --tw-text-opacity: 1;
   color: rgb(0 0 0 / var(--tw-text-opacity));
 }
-.table-highlight tbody > tr:nth-child(2) td, .table-highlight tbody > tr:nth-child(2) th {
+.table-highlight tbody:not(.analysis) > tr:nth-child(2) td, .table-highlight tbody:not(.analysis) > tr:nth-child(2) th {
   background-color: silver !important;
   --tw-text-opacity: 1;
   color: rgb(0 0 0 / var(--tw-text-opacity));
 }
-.table-highlight tbody > tr:nth-child(3), .table-highlight tbody > tr:nth-child(3) > td {
+.table-highlight tbody:not(.analysis) > tr:nth-child(3), .table-highlight tbody:not(.analysis) > tr:nth-child(3) > td {
   background-color: #cd7f32 !important;
   --tw-text-opacity: 1;
   color: rgb(0 0 0 / var(--tw-text-opacity));
 }
-.table-highlight tbody > tr:nth-child(3) td, .table-highlight tbody > tr:nth-child(3) th, .table-highlight tbody > tr:nth-child(3) > td td, .table-highlight tbody > tr:nth-child(3) > td th {
+.table-highlight tbody:not(.analysis) > tr:nth-child(3) td, .table-highlight tbody:not(.analysis) > tr:nth-child(3) th, .table-highlight tbody:not(.analysis) > tr:nth-child(3) > td td, .table-highlight tbody:not(.analysis) > tr:nth-child(3) > td th {
   background-color: #cd7f32 !important;
   --tw-text-opacity: 1;
   color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+.table-highlight tbody.analysis {
+  font-weight: 600;
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+.table-highlight tbody:not(.analysis) > tr > td {
+  background-color: white !important;
 }
 
 .provisional {
