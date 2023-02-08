@@ -515,6 +515,9 @@ video {
 .z-20 {
   z-index: 20;
 }
+.m-0 {
+  margin: 0px;
+}
 .mx-3 {
   margin-left: 0.75rem;
   margin-right: 0.75rem;
@@ -564,6 +567,9 @@ video {
 .mt-6 {
   margin-top: 1.5rem;
 }
+.ml-auto {
+  margin-left: auto;
+}
 .mb-2 {
   margin-bottom: 0.5rem;
 }
@@ -590,9 +596,6 @@ video {
 }
 .mt-3 {
   margin-top: 0.75rem;
-}
-.ml-auto {
-  margin-left: auto;
 }
 .block {
   display: block;
@@ -728,6 +731,9 @@ video {
 }
 .w-3\/4 {
   width: 75%;
+}
+.w-\[25\%\] {
+  width: 25%;
 }
 .min-w-\[23\%\] {
   min-width: 23%;
@@ -915,6 +921,9 @@ video {
 .border {
   border-width: 1px;
 }
+.border-2 {
+  border-width: 2px;
+}
 .border-x {
   border-left-width: 1px;
   border-right-width: 1px;
@@ -1013,6 +1022,9 @@ video {
 }
 .p-6 {
   padding: 1.5rem;
+}
+.p-0 {
+  padding: 0px;
 }
 .px-4 {
   padding-left: 1rem;
@@ -2225,6 +2237,16 @@ aside.open {
 }
 
 @media (min-width: 768px) {
+
+  .md\:flex-row {
+    flex-direction: row;
+  }
+
+  .md\:space-y-0 > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-y-reverse: 0;
+    margin-top: calc(0px * calc(1 - var(--tw-space-y-reverse)));
+    margin-bottom: calc(0px * var(--tw-space-y-reverse));
+  }
 
   .md\:whitespace-nowrap {
     white-space: nowrap;

@@ -117,12 +117,18 @@
                 </table>
 
             </div>
-            @if (!$comp->areResultsProvisional())
-            <div class="w-full flex items-center justify-center mt-2">
+            <div class="mt-2 flex flex-col md:flex-row space-y-4 md:space-y-0 items-center justify-between">
+                <div class="flex flex-col ">
+                    <div class="form-input" style="margin-bottom: 0px !important;"><input placeholder="Filter" id="team-filter" style="margin-bottom: 0 !important" type="text"></div>
+                    <small class="text-gray-600">team:x, league:x</small>
+                </div>
+                @if (!$comp->areResultsProvisional())
+
                 <a href="{{ Request::url() }}?dlCSV" class="link">Download as CSV</a>
 
+
+                @endif
             </div>
-            @endif
 
         </div>
 
@@ -167,6 +173,42 @@
                 tableBody.querySelectorAll("tr").forEach(tr => {
                     tr.children[index].classList.remove('bg-gray-200')
                 })
+            }
+
+            let filter = document.getElementById("team-filter")
+
+            function search(team) {
+
+                tableRows.forEach(row => {
+                    let teamCol = row.children[0];
+                    let teamName = teamCol.innerHTML.trim().toLowerCase();
+
+                    team = team.toLowerCase();
+                    let hide = false;
+
+
+
+                    if (team.startsWith("team:")) {
+                        hide = !teamName.endsWith(team.substr(5));
+                    } else if (team.startsWith("league:")) {
+                        let targetLeague = team.substr(7, 1);
+                        if (targetLeague == "a") {
+                            hide = !teamName.endsWith(targetLeague);
+                        } else {
+                            hide = teamName.endsWith("a")
+                        }
+                    } else {
+                        hide = !teamName.includes(team);
+                    }
+
+                    row.hidden = hide;
+
+
+                })
+
+            }
+            filter.onkeyup = (e) => {
+                search(e.target.value)
             }
 
 
