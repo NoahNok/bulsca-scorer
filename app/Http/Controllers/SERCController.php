@@ -187,7 +187,7 @@ class SERCController extends Controller
         }
 
 
-        $teamIds = CompetitionTeam::where('competition', 1)->pluck('id')->toArray();
+        $teamIds = CompetitionTeam::where('competition', $comp->id)->pluck('id')->toArray();
         $index = array_search($team->id, array_values($teamIds));
 
 
