@@ -515,9 +515,6 @@ video {
 .z-20 {
   z-index: 20;
 }
-.m-0 {
-  margin: 0px;
-}
 .mx-3 {
   margin-left: 0.75rem;
   margin-right: 0.75rem;
@@ -663,6 +660,9 @@ video {
 .h-9 {
   height: 2.25rem;
 }
+.h-\[90vh\] {
+  height: 90vh;
+}
 .max-h-\[90vh\] {
   max-height: 90vh;
 }
@@ -732,9 +732,6 @@ video {
 .w-3\/4 {
   width: 75%;
 }
-.w-\[25\%\] {
-  width: 25%;
-}
 .min-w-\[23\%\] {
   min-width: 23%;
 }
@@ -800,6 +797,9 @@ video {
 }
 .cursor-pointer {
   cursor: pointer;
+}
+.resize-y {
+  resize: vertical;
 }
 .list-inside {
   list-style-position: inside;
@@ -921,9 +921,6 @@ video {
 .border {
   border-width: 1px;
 }
-.border-2 {
-  border-width: 2px;
-}
 .border-x {
   border-left-width: 1px;
   border-right-width: 1px;
@@ -1023,9 +1020,6 @@ video {
 .p-6 {
   padding: 1.5rem;
 }
-.p-0 {
-  padding: 0px;
-}
 .px-4 {
   padding-left: 1rem;
   padding-right: 1rem;
@@ -1070,9 +1064,6 @@ video {
   padding-left: 0.25rem;
   padding-right: 0.25rem;
 }
-.pt-8 {
-  padding-top: 2rem;
-}
 .pb-16 {
   padding-bottom: 4rem;
 }
@@ -1091,6 +1082,9 @@ video {
 .pr-5 {
   padding-right: 1.25rem;
 }
+.pt-8 {
+  padding-top: 2rem;
+}
 .pt-6 {
   padding-top: 1.5rem;
 }
@@ -1108,9 +1102,6 @@ video {
 }
 .pt-1 {
   padding-top: 0.25rem;
-}
-.pb-0 {
-  padding-bottom: 0px;
 }
 .text-left {
   text-align: left;
@@ -1190,6 +1181,10 @@ video {
   --tw-text-opacity: 1;
   color: rgb(17 24 39 / var(--tw-text-opacity));
 }
+.text-gray-600 {
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
 .text-red-600 {
   --tw-text-opacity: 1;
   color: rgb(220 38 38 / var(--tw-text-opacity));
@@ -1205,10 +1200,6 @@ video {
 .text-indigo-600 {
   --tw-text-opacity: 1;
   color: rgb(79 70 229 / var(--tw-text-opacity));
-}
-.text-gray-600 {
-  --tw-text-opacity: 1;
-  color: rgb(75 85 99 / var(--tw-text-opacity));
 }
 .text-black {
   --tw-text-opacity: 1;
@@ -2263,6 +2254,10 @@ aside.open {
   .lg\:mx-0 {
     margin-left: 0px;
     margin-right: 0px;
+  }
+
+  .lg\:h-\[80vh\] {
+    height: 80vh;
   }
 
   .lg\:max-h-\[80vh\] {
