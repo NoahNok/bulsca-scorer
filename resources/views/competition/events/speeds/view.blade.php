@@ -76,6 +76,7 @@
                 <tbody>
 
                     @forelse ($event->getResults() as $result)
+
                     <tr class="bg-white border-b text-right ">
                         <th scope="row" class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap ">
                             {{ $result->team }}
@@ -125,6 +126,7 @@
                 </tbody>
             </table>
         </div>
+
     </div>
 
     <div class="flex flex-col space-y-4">

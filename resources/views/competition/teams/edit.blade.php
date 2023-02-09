@@ -92,7 +92,7 @@ Edit Teams | {{ $comp->name }}
 
                         </td>
                         <td class="">
-                            <input class="table-input" table-cell table-cell-name="st_time" placeholder="" type="time" value="{{ $team->getSwimTowTimeForDefault() }}">
+                            <input class="table-input" table-cell table-cell-name="st_time" placeholder="" type="time" defaultValue="00:00" value="{{ $team->getSwimTowTimeForDefault() }}">
 
 
                         </td>
@@ -134,7 +134,7 @@ Edit Teams | {{ $comp->name }}
 
                         </td>
                         <td class="">
-                            <input class="table-input" table-cell table-cell-name="st_time" placeholder="" type="time" value="">
+                            <input class="table-input" table-cell table-cell-name="st_time" placeholder="" type="time" defaultValue="00:00">
 
 
                         </td>

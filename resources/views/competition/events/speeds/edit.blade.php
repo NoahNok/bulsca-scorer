@@ -53,7 +53,7 @@
 
             @if ($event->getName() == "Rope Throw")
 
-            <strong>Rope Throw:</strong> Enter a time for all in, otherwise a number between 0-3 for how many.
+            <strong>Rope Throw:</strong> Enter a time for all in (00:00.000), otherwise a number between 0-3 for how many.
             @endif
             <br>
         </p>
@@ -99,7 +99,7 @@
                             @if ($event->getName() == "Rope Throw")
 
 
-                            @if ($result->result < 4) <input class="table-input" table-cell table-cell-name="result" placeholder="Rope" type="text" value="{{ $result->result }}"> @else @php $mins=floor($result->result / 60000);
+                            @if ($result->result < 4) <input class="table-input" table-cell table-cell-name="result" placeholder="Ropes In OR 00:00.000" type="text" value="{{ $result->result }}"> @else @php $mins=floor($result->result / 60000);
                                 $secs = (($result->result)-($mins*60000))/1000;
                                 @endphp
                                 <input class="table-input" table-cell table-cell-name="result" placeholder="00:00.000" type="text" value="{{ $result->result != null ? sprintf("%02d", $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT) : '' }}">

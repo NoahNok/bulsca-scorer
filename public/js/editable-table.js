@@ -121,6 +121,10 @@ class EditableTable {
         newRow.setAttribute("table-row-owner", null)
         newRow.querySelectorAll("input").forEach(input => {
             input.value = null
+
+            if (input.hasAttribute('defaultValue')) {
+                input.value = input.getAttribute('defaultValue')
+            }
             
         })
 
