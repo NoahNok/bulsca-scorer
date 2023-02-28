@@ -46,6 +46,7 @@
                             <th></th>
                             <th></th>
                             <th></th>
+                            <th></th>
                         </tr>
                         <tr class="">
                             <th scope="col" class="py-3 px-6 text-left z-20">
@@ -68,7 +69,9 @@
                             <th scope="col" class="py-3 px-6">
                                 DQ
                             </th>
-
+                            <th scope="col" class="py-3 px-6">
+                                Raw Mark
+                            </th>
                             <th scope="col" class="py-3 px-6">
                                 Points
                             </th>
@@ -88,6 +91,7 @@
                             @endforeach
                             @endforeach
                             <th></th>
+                            <th>Max: {{round($event->getMaxMark(),1)}}</th>
                             <th></th>
                             <th></th>
                         </tr>
@@ -114,7 +118,9 @@
                             <td class="py-4 px-6">
                                 {{ $event->getTeamDQ(\App\Models\CompetitionTeam::find($result->tid))?->code ?: '-' }}
                             </td>
-
+                            <td class="py-4 px-6 ">
+                                {{ round($result->score) }}
+                            </td>
                             <td class="py-4 px-6 ">
                                 {{ round($result->points) }}
                             </td>

@@ -56,4 +56,10 @@ class SERC extends Model
     {
         return 'serc';
     }
+
+    public function getMaxMark()
+    {
+        $result = DB::select(" SELECT SUM(weight*10) AS total FROM serc_marking_points WHERE serc=?;", [$this->id]);
+        return $result[0]->total;
+    }
 }

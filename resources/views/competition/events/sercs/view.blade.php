@@ -52,7 +52,9 @@
                         <th scope="col" class="py-3 px-6">
                             DQ
                         </th>
-
+                        <th scope="col" class="py-3 px-6">
+                            Raw Mark
+                        </th>
                         <th scope="col" class="py-3 px-6">
                             Points
                         </th>
@@ -75,7 +77,9 @@
                         <td class="py-4 px-6">
                             {{ $serc->getTeamDQ(\App\Models\CompetitionTeam::find($result->tid))?->code ?: '-' }}
                         </td>
-
+                        <td class="py-4 px-6">
+                            {{round($result->score, 1)}}
+                        </td>
                         <td class="py-4 px-6">
                             {{ round($result->points) }}
                         </td>
