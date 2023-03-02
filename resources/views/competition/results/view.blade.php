@@ -108,10 +108,10 @@
             <div class="flex justify-between ">
                 <div class="flex flex-col">
                     <strong>Print</strong>
-                    <small><strong>Print Basic</strong> will print table at the top left of this page showing just the final point total and places. <br><strong>Print Detailed</strong> will print including all the events, showing weighted final scores and places as the original "Comp Results" sheet would show!</small>
+                    <small><strong>Print Places</strong> will print table at the top left of this page showing just the final point total and places. <br><strong>Print Detailed</strong> will print all the events, showing weighted final scores and places as the original "Comp Results" sheet would show!</small>
                 </div>
                 <div class="flex flex-col space-y-2">
-                    <a href="{{ route('comps.results.view-schema-print-basic', $schema) }}" class="btn">Print Basic</a>
+                    <a href="{{ route('comps.results.view-schema-print-basic', $schema) }}" class="btn">Print Places</a>
                     <a href="{{ route('comps.results.view-schema-print', $schema) }}" class="btn">Print Detailed</a>
                 </div>
             </div>

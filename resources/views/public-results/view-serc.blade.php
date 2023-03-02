@@ -115,8 +115,9 @@
 
                             @endforeach
 
-                            <td class="py-4 px-6">
+                            <td class="py-4 px-6" title="{{ $event->getTeamDQ(\App\Models\CompetitionTeam::find($result->tid))?->code ? App\Models\DQCode::message($event->getTeamDQ(\App\Models\CompetitionTeam::find($result->tid))?->code) : ''}}">
                                 {{ $event->getTeamDQ(\App\Models\CompetitionTeam::find($result->tid))?->code ?: '-' }}
+
                             </td>
                             <td class="py-4 px-6 ">
                                 {{ round($result->score) }}

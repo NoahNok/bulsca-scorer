@@ -127,7 +127,7 @@
                     @forelse ($serc->getTeams() as $team)
                     <tr class="bg-white border-b text-right ">
                         <th scope="row" class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap ">
-                            {{ $team->getFullname() }}
+                            {{ $loop->index + 1}}: {{ $team->getFullname() }}
                         </th>
 
                         <td class="py-4 px-6">

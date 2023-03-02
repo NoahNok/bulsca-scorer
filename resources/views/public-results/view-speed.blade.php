@@ -81,7 +81,7 @@
 
 
                             </td>
-                            <td class="py-4 px-6">
+                            <td class="py-4 px-6" title="{{ $result->disqualification ? App\Models\DQCode::message($result->disqualification) : ''}}">
                                 {{ $result->disqualification ?: '-' }}
                             </td>
 
