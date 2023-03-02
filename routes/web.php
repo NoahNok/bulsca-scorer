@@ -22,7 +22,7 @@ use App\Http\Controllers\SpeedsEventController;
 use App\Http\Controllers\TeamsController;
 use App\Http\Controllers\SERCController;
 use App\Models\Competition;
-
+use App\Models\DQCode;
 
 /*
 |--------------------------------------------------------------------------
@@ -134,6 +134,15 @@ Route::prefix('results')->group(function () {
     Route::get('/{comp_slug}/speed/{event}', [PublicResultsController::class, 'viewSpeed'])->name("public.results.speed");
     Route::get('/{comp_slug}/serc/{event}', [PublicResultsController::class, 'viewSerc'])->name("public.results.serc");
     Route::get('/{comp_slug}/results/{schema}', [PublicResultsController::class, 'viewResults'])->name("public.results.results");
+});
+
+Route::get('dq', function () {
+    $ret = [];
+    foreach (DQCode::all() as $code) {
+        $d = "DQ" . str_pad($code->id, 3, '0', STR_PAD_LEFT);
+        array_push($ret, ['value' => $d, 'text' => $d]);
+    }
+    return response()->json($ret);
 });
 
 

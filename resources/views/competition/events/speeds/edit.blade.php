@@ -122,13 +122,13 @@
                         </td>
                         <td class="">
 
-                            <input class="table-input" table-cell table-cell-name="disqualification" table-cell-optional placeholder="DQ###" type="text" value="{{ $result->disqualification }}">
+                            <input class="table-input" ts table-cell table-cell-name="disqualification" table-cell-optional placeholder="DQ###" type="text" value="{{ $result->disqualification }}">
 
                         </td>
 
                         @if ($event->hasPenalties())
                         <td>
-                            <input class="table-input" table-cell table-cell-name="penalties" table-cell-optional placeholder="P###, P###, etc..." type="text" value="{{ $result->getPenaltiesAsString() }}">
+                            <input class="table-input" ts-p table-cell table-cell-name="penalties" table-cell-optional placeholder="P###, P###, etc..." type="text" value="{{ $result->getPenaltiesAsString() }}">
                         </td>
                         @endif
 
@@ -151,5 +151,26 @@
 </div>
 
 
+<link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+<script>
+    async function run() {
+        let opts = await fetch("/dq").then(d => d.json());
+        document.querySelectorAll('[ts]').forEach((el) => {
+            let settings = {
+                maxItems: 1,
+                options: opts,
+            };
+            new TomSelect(el, settings);
+        });
+        document.querySelectorAll('[ts-p]').forEach((el) => {
+            let settings = {
 
+                create: true
+            };
+            new TomSelect(el, settings);
+        });
+    }
+    run();
+</script>
 @endsection
