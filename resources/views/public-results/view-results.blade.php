@@ -46,7 +46,7 @@
                             @endif
 
                             <th scope="col" class="py-3 px-6  whitespace-nowrap ">
-                                {{ str_replace("_", " ", preg_replace("/_[0-9]/mi", "", $key)) }}
+                                {{ str_replace("_", " ", preg_replace("/_[0-9]*/mi", "", $key)) }}
                             </th>
                             @endforeach
 
