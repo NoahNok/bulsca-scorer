@@ -84,6 +84,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/comp/{comp}/results/prt', [OverallResultsController::class, 'provToggle'])->name('comps.view.results.provToggle');
         Route::post('/comp/{comp}/results', [OverallResultsController::class, 'addPost'])->name('comps.view.results.addPost');
         Route::delete('/comp/{comp}/results/{schema}', [OverallResultsController::class, 'delete'])->name('comps.view.results.delete');
+        Route::get('/comp/{comp}/results/{schema}/hide', [OverallResultsController::class, 'hide'])->name('comps.view.results.hide');
     });
 
     Route::get('/comp/results/view-schema/{schema}', [OverallResultsController::class, 'computeResults'])->name("comps.results.view-schema");

@@ -40,6 +40,9 @@ class PublicResultsController extends Controller
 
     public function viewResults(Competition $comp_slug, ResultSchema $schema)
     {
+
+        if (!$schema->viewable) return redirect()->route('public.results.comp', ['comp_slug' => $comp_slug->resultsSlug()]);
+
         return view('public-results.view-results', ['comp' => $comp_slug, 'schema' => $schema, 'results' => $schema->getDetailedPrint()]);
     }
 

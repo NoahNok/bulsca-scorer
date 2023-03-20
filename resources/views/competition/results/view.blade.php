@@ -115,6 +115,32 @@
                     <a href="{{ route('comps.results.view-schema-print', $schema) }}" class="btn">Print Detailed</a>
                 </div>
             </div>
+            @if ($schema->viewable)
+            <div class="flex justify-between items-center">
+                <div class="flex flex-col">
+                    <strong>Hide Results</strong>
+                    <small>This will make this result sheet hidden on the public results area!</small>
+                </div>
+
+                <div>
+                    <a href="{{ route('comps.view.results.hide', [$comp, $schema->id]) }}" class="btn btn-danger">Hide Results Sheet</a>
+                </div>
+
+            </div>
+            @else
+            <div class="flex justify-between items-center">
+                <div class="flex flex-col">
+                    <strong>Unhide Results</strong>
+                    <small>This will make this result sheet visible on the public results area!</small>
+                </div>
+
+                <div>
+                    <a href="{{ route('comps.view.results.hide', [$comp, $schema->id]) }}" class="btn ">Unhide Results Sheet</a>
+
+                </div>
+            </div>
+            @endif
+
         </div>
     </div>
 

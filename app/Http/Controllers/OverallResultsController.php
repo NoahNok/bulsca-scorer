@@ -359,4 +359,11 @@ class OverallResultsController extends Controller
         $schema->delete();
         return redirect()->route('comps.view.results', $comp);
     }
+
+    public function hide(Competition $comp, ResultSchema $schema)
+    {
+        $schema->viewable = !$schema->viewable;
+        $schema->save();
+        return redirect()->back();
+    }
 }

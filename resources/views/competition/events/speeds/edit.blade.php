@@ -171,6 +171,6 @@
             new TomSelect(el, settings);
         });
     }
-    run();
+    //run();
 </script>
 @endsection
