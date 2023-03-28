@@ -65,5 +65,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'isAdmin' => \App\Http\Middleware\AdminOnly::class,
         'onlyViewOwnComp' => \App\Http\Middleware\CanOnlyViewOwnComp::class,
+        'canJudge' => \App\Http\Middleware\DigitalJudge\CanJudge::class,
     ];
 }
