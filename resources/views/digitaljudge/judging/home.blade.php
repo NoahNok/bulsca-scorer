@@ -7,7 +7,7 @@
         <img src="{{ asset('blogo.png') }}" alt="BULSCA Logo" class=" w-52 h-52 ">
         <h5 class="font-semibold ">DigitalJudge | {{ $comp->name }} | {{ $serc->getName() }}</h5>
         <br>
-        <h2 class="font-bold">
+        <h2 class="font-bold text-center">
             @forelse ($judges as $judge)
             {{ $judge->name }}
             @if (!$loop->last)
