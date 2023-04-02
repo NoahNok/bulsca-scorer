@@ -62,4 +62,9 @@ class SERC extends Model
         $result = DB::select(" SELECT SUM(weight*10) AS total FROM serc_marking_points WHERE serc=?;", [$this->id]);
         return $result[0]->total;
     }
+
+    public function getCompetition()
+    {
+        return $this->hasOne(Competition::class, 'id', 'competition');
+    }
 }

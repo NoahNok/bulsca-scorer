@@ -92,7 +92,11 @@ h5 {
    }
 
    > small {
-    @apply text-red-500 pl-2 -mt-3
+    @apply text-red-500 pl-2 -mt-3;
+
+    &.info {
+      @apply text-gray-500;
+    }
   }
 
   &.is-invalid {
@@ -134,8 +138,8 @@ h5 {
   }
  }
 
- a.link {
-  @apply text-blue-700 text-base font-semibold hover:underline 
+ a.link, p.link {
+  @apply text-blue-700 text-base font-semibold hover:underline cursor-pointer
  }
 
  .label-killer {
