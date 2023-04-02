@@ -19,7 +19,7 @@
 
         <a href="{{ route('dj.home') }}" class="link">Back</a>
 
-        <p class="px-4">There are X teams to Judge. To start judging press "Start Judging", if you need to judge multiple judges then click 'Add Judge' below.</p>
+        <p class="px-4">There are {{ $comp->getCompetitionTeams->count() }} teams to Judge. To start judging press "Start Judging", if you need to judge multiple judges then click 'Add Judge' below.</p>
         <p class="px-4">You will not be able to edit/see scores after submitting them, however you will be able to see you highest, lowest and average score awarded for each criteria at all times.</p>
         <p class="px-4">If you need to get back to the judging page, click "Start Judging" again. It will resume you at the last team you started to judge!</p>
 
