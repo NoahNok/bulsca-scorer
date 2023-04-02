@@ -960,6 +960,9 @@ video {
 .whitespace-nowrap {
   white-space: nowrap;
 }
+.break-words {
+  overflow-wrap: break-word;
+}
 .rounded-md {
   border-radius: 0.375rem;
 }

@@ -21,11 +21,12 @@
                 {{ "," }}
                 @endif
                 @empty
-                @endforelse</strong> Marking: <strong class="text-bulsca">{{ $team->getFullname() }}</strong></p>
+                @endforelse</strong></p>
+        <br>
+        <p class="text-xl">Team: <strong class="text-bulsca">{{ $team->getFullname() }}</strong></p>
 
 
-
-        <h3>Mark Sheet</h3>
+        <hr>
 
         <form action="" method="post">
             <div class="flex flex-col space-y-6 ">
@@ -36,9 +37,9 @@
                 $mpValue = $head ? $mp->getScoreForTeam($team->id) : -1;
                 @endphp
                 <div class="flex flex-col space-y-2 border-b pb-4">
-                    <div class="flex justify-between items-center">
+                    <div class="flex justify-between items-center ">
                         <p>{{ $mp->name }}</p>
-                        <div>
+                        <div class="flex items-center justify-center">
                             <input type="radio" required class="w-0 h-0 peer" value="0" name="mp-{{ $mp->id }}" @if($mpValue==0) checked @endif id="mp-{{ $mp->id }}-0">
                             <label for="mp-{{ $mp->id }}-0" class="  flex items-center justify-center px-4 py-0.5 font-semibold  rounded-sm bg-gray-200 text-xs peer-checked:bg-bulsca_red peer-checked:text-white ">
                                 ZERO
