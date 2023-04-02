@@ -9,7 +9,7 @@
         <br>
         <h2 class="font-bold text-center w-full break-words">{{ $judge->name }}</h2>
 
-        <p class="">Please check the judging criteria below matches your breif and casualty and then click "Continue"</p>
+        <p class="">Please check the judging criteria below matches your brief and casualty and then click "Continue"</p>
 
         <h4>Criteria</h4>
         <ul class=" list-disc ">
