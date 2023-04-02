@@ -20,7 +20,7 @@ class DJJudgingController extends Controller
 
         if (DigitalJudge::isClientHeadJudge()) {
             DigitalJudge::setClientJudge($judge);
-            return redirect()->route('dj.judging.home', $judge);
+            return redirect()->route('dj.judging.home');
         }
 
         $serc = $judge->getSERC;
