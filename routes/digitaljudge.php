@@ -15,7 +15,17 @@ Route::prefix('dj')->group(function () {
         Route::prefix('judging/{judge}')->group(function () {
             Route::get('confirm-judge', [DJJudgingController::class, 'confirmJudge'])->name('dj.judging.confirm-judge');
             Route::post('confirm-judge', [DJJudgingController::class, 'confirmJudgePost'])->name('dj.judging.confirm');
+        });
+
+        Route::prefix('judging')->group(function () {
             Route::get('home', [DJJudgingController::class, 'home'])->name('dj.judging.home');
+
+            Route::get('add-judge', [DJJudgingController::class, 'addJudge'])->name('dj.judging.add-judge');
+            Route::post('add-judge', [DJJudgingController::class, 'addJudgePost'])->name('dj.judging.add-judge.post');
+
+            Route::get('remove-judge', [DJJudgingController::class, 'removeJudge'])->name('dj.judging.remove-judge');
+            Route::post('remove-judge', [DJJudgingController::class, 'removeJudgePost'])->name('dj.judging.remove-judge.post');
+
 
             Route::get('team/next', [DJJudgingController::class, 'nextTeamForJudge'])->name('dj.judging.next-team');
 

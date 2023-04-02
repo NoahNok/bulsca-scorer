@@ -14,7 +14,14 @@
 
 
     <div class="px-4 pb-4 space-y-2">
-        <p>You are <strong class="text-bulsca">{{ $judge->name }}</strong>, marking: <strong class="text-bulsca">{{ $team->getFullname() }}</strong></p>
+        <a href="{{ route('dj.judging.home') }}" class="link">Home</a>
+        <p>You are <strong class="text-bulsca"> @forelse ($judges as $judge)
+                {{ $judge->name }}
+                @if (!$loop->last)
+                {{ "," }}
+                @endif
+                @empty
+                @endforelse</strong> Marking: <strong class="text-bulsca">{{ $team->getFullname() }}</strong></p>
 
 
 
@@ -22,7 +29,9 @@
 
         <form action="" method="post">
             <div class="flex flex-col space-y-6 ">
-                @foreach ($judge->getMarkingPoints as $mp)
+                @foreach ($judges as $mJudge)
+                <h4>{{ $mJudge->name }}</h4>
+                @foreach ($mJudge->getMarkingPoints as $mp)
                 @php
                 $mpValue = $head ? $mp->getScoreForTeam($team->id) : -1;
                 @endphp
@@ -50,6 +59,8 @@
                     <small>Min: {{ round(App\Models\SERCResult::where('marking_point', $mp->id)->min('result')) ?: '0' }}</small><small>Avg: {{ round(App\Models\SERCResult::where('marking_point', $mp->id)->avg('result'), 1) ?: '0' }}</small><small>Max: {{ round(App\Models\SERCResult::where('marking_point', $mp->id)->max('result')) ?: '0' }}</small>
                 </div>
             </div>
+            @endforeach
+
             @endforeach
     </div>
     <br>

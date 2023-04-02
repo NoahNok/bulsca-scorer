@@ -33,21 +33,31 @@ class DigitalJudge
         return Competition::find(Session::get('digitalJudgeClientComp', null));
     }
 
-    public static function getBladeProps(SERCJudge $judge)
+    public static function getBladeProps()
     {
-        $serc = $judge->getSERC;
+        $serc = DigitalJudge::getClientJudges()[0]->getSERC;
         $comp = $serc->getCompetition;
-        return  ['judge' => $judge, 'serc' => $serc, 'comp' => $comp];
+        return  ['serc' => $serc, 'comp' => $comp, 'judges' => DigitalJudge::getClientJudges()];
     }
 
     public static function setClientJudge(SERCJudge $judge)
     {
-        Session::put('digitalJudgeJudgeId', $judge->id);
+        Session::put('digitalJudgeJudgeId', [$judge->id]);
     }
 
-    public static function getClientJudge(): SERCJudge
+    public static function addClientJudge($judgeId)
     {
-        return SERCJudge::find(Session::get('digitalJudgeJudgeId', NULL));
+        Session::put('digitalJudgeJudgeId', array_merge(Session::get('digitalJudgeJudgeId', []), [$judgeId]));
+    }
+
+    public static function removeClientJudge($judgeId)
+    {
+        Session::put('digitalJudgeJudgeId', array_diff(Session::get('digitalJudgeJudgeId', []), [$judgeId]));
+    }
+
+    public static function getClientJudges()
+    {
+        return SERCJudge::find(Session::get('digitalJudgeJudgeId', []));
     }
 
     public static function clientUrlAndSessionJudgeMatch(): bool
@@ -66,9 +76,11 @@ class DigitalJudge
         return Session::get('digitalJudgeClientHeadJudge', false);
     }
 
-    public static function hasTeamBeenJudgedAlready(SERCJudge $judge, CompetitionTeam $team)
+    public static function hasTeamBeenJudgedAlready(CompetitionTeam $team)
     {
         // SELECT COUNT(*) FROM serc_results WHERE team=? AND marking_point IN (SELECT id FROM serc_marking_points WHERE judge=?)
+
+        $judge = DigitalJudge::getClientJudges()[0];
 
         $result = DB::select('SELECT COUNT(*) AS c FROM serc_results WHERE team=? AND marking_point IN (SELECT id FROM serc_marking_points WHERE judge=?);', [$team->id, $judge->id]);
 
