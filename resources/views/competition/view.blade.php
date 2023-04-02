@@ -40,6 +40,39 @@
 
 </div>
 <br>
+<hr>
+<br>
+
+<div class="grid-3">
+    <div class="card">
+        <h3>Digital Judging</h3>
+        <p>Digital judging allows Judges to enter SERC marks on their own device. It is enabled per comp.</p>
+        <strong>If you need to DQ a SERC team, please talk with the competitions Scorer or Organiser!</strong>
+        <br>
+        <br>
+        @if ($comp->digitalJudgeEnabled)
+        <h5>Judges</h5>
+        <p>Please instruct Judges to go to here: <a href="{{ route('dj.index') }}" class="link">{{ route('dj.index') }}</a> and enter the following pin:</p>
+
+        <p class="text-xl"><strong>{{ $comp->digitalJudgePin }}</strong></p>
+
+        <br>
+        <h5>Head Judge/SERC Setter</h5>
+        <p>Please instruct your Head Judge and SERC Setters to follw the same above link, but use the following pin instead:</p>
+        <p class="text-xl"><strong>{{ $comp->digitalJudgeHeadPin }}</strong></p>
+        <br>
+        <p>This pin grants the ability for your Head Judge and SERC Setters to override Judge scores incase they accidently make a mistake</p>
+        <br>
+        <a href="{{ route('dj.toggle', $comp) }}" class="btn btn-danger">Disable Digital Judging</a>
+        @else
+        <a href="{{ route('dj.toggle', $comp) }}" class="btn">Enable Digital Judging</a>
+        @endif
+    </div>
+</div>
+
+<br>
+<hr>
+<br>
 <h3>Important Notes</h3>
 <div class="grid-4">
     <div>

@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 use App\Http\Controllers\CompetitionController;
+use App\Http\Controllers\DigitalJudge\DigitalJudgeController;
 use App\Http\Controllers\OverallResultsController;
 use App\Http\Controllers\PublicResultsController;
 use App\Http\Controllers\SpeedsEventController;
@@ -85,6 +86,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/comp/{comp}/results', [OverallResultsController::class, 'addPost'])->name('comps.view.results.addPost');
         Route::delete('/comp/{comp}/results/{schema}', [OverallResultsController::class, 'delete'])->name('comps.view.results.delete');
         Route::get('/comp/{comp}/results/{schema}/hide', [OverallResultsController::class, 'hide'])->name('comps.view.results.hide');
+
+        Route::get('/comps/{comp}/digital-judge-toggle', [DigitalJudgeController::class, 'toggle'])->name('dj.toggle');
     });
 
     Route::get('/comp/results/view-schema/{schema}', [OverallResultsController::class, 'computeResults'])->name("comps.results.view-schema");

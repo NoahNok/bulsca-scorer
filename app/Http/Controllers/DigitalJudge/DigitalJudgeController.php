@@ -53,4 +53,21 @@ class DigitalJudgeController extends Controller
     {
         return view('digitaljudge.home', ['comp' => DigitalJudge::getClientCompetition(), 'head' => DigitalJudge::isClientHeadJudge()]);
     }
+
+
+    function toggle(Competition $comp)
+    {
+
+        $wasState = $comp->digitalJudgeEnabled;
+        $comp->digitalJudgeEnabled = !$wasState;
+        $comp->save();
+        if ($wasState) return redirect()->back(); // Stop here as we have turned DJ off
+
+        $comp->digitalJudgePin = $comp->digitalJudgePin ?: sprintf("%06d", mt_rand(1, 999999));
+        $comp->digitalJudgeHeadPin = $comp->digitalJudgeHeadPin ?: sprintf("%06d", mt_rand(1, 999999));
+
+        $comp->save();
+
+        return redirect()->back();
+    }
 }

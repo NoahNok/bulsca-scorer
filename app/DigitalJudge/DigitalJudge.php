@@ -25,10 +25,15 @@ class DigitalJudge
 
     public static function canClientJudge()
     {
+
+        if (!DigitalJudge::getClientCompetition()?->digitalJudgeEnabled) {
+            DigitalJudge::stopClientFromJudging();
+        }
+
         return Session::get('digitalJudgeClientAllowed', false);
     }
 
-    public static function getClientCompetition(): Competition
+    public static function getClientCompetition(): Competition | null
     {
         return Competition::find(Session::get('digitalJudgeClientComp', null));
     }
