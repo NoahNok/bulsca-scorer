@@ -5,6 +5,7 @@ namespace App\Http\Middleware\DigitalJudge;
 use App\DigitalJudge\DigitalJudge;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 class CanJudge
 {
@@ -19,6 +20,8 @@ class CanJudge
     {
 
         if (!DigitalJudge::canClientJudge()) return redirect()->route('dj.index');
+
+
 
         return $next($request);
     }

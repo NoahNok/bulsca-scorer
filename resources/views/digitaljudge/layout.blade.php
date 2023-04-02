@@ -11,6 +11,21 @@
 
 <body>
     @yield('content')
+    <div class="alert-banner" id="alert">Test</div>
+
+    <script src="{{ asset('js/alert.js') }}"></script>
+    @if (Session::has('success'))
+    <script>
+        showSuccess('{{ Session::get("success") }}')
+    </script>
+
+    @endif
+    @if (Session::has('alert-error'))
+    <script>
+        showAlert('{{ Session::get("alert-error") }}')
+    </script>
+
+    @endif
 </body>
 
 </html>

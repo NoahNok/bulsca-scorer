@@ -15,4 +15,9 @@ class SERCJudge extends Model
     {
         return $this->hasMany(SERCMarkingPoint::class, 'judge', 'id');
     }
+
+    public function getSERC()
+    {
+        return $this->hasOne(SERC::class, 'id', 'serc');
+    }
 }
