@@ -21,7 +21,7 @@
             @endif
         </p>
 
-        @foreach ($comp->getSERCs as $serc)
+        @foreach ($comp->getSERCs->where('digitalJudgeEnabled') as $serc)
         <div class=" w-[80%] border-2 border-bulsca rounded-md ">
             <p class="p-2 bg-bulsca text-white list-none text-lg font-semibold">{{ $serc->getName() }}</p>
             <div class="px-3 py-2 flex flex-col space-y-4">

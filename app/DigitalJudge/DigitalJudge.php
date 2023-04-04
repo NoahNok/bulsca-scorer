@@ -4,6 +4,7 @@ namespace App\DigitalJudge;
 
 use App\Models\Competition;
 use App\Models\CompetitionTeam;
+use App\Models\SERC;
 use App\Models\SERCJudge;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request;
@@ -92,5 +93,32 @@ class DigitalJudge
         $count = $result[0]->c;
 
         return $count > 0;
+    }
+
+    public static function isDigitalJudgeEnabledForCompetition(Competition $comp): bool
+    {
+        return $comp->digitalJudgeEnabled;
+    }
+
+    /**
+     * Returns true if all digitally judges SERCs have been confirmed
+     */
+    public static function canGenerateCompetitionResults(Competition $comp): bool
+    {
+
+        if (!DigitalJudge::isDigitalJudgeEnabledForCompetition($comp)) return true;
+
+
+
+        foreach ($comp->getSERCs as $serc) {
+            if ($serc->digitalJudgeEnabled && $serc->digitalJudgeConfirmed == false) return false;
+        }
+
+        return true;
+    }
+
+    public static function getSercsRequiringConfirmation(Competition $comp)
+    {
+        return SERC::where('competition', $comp->id)->where('digitalJudgeEnabled', true)->where('digitalJudgeConfirmed', false)->get();
     }
 }

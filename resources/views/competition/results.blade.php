@@ -29,6 +29,23 @@ Results | {{ $comp->name }}
 
 @section('content')
 
+@if (!DigitalJudge::canGenerateCompetitionResults($comp))
+<div class="alert-box">
+
+    <h1>Unable to create results!</h1>
+    <p><strong>You cannot generate results</strong> until Digitally Judged SERC's have had their marks confirmed by the Head Judge.
+        <br>
+        The following SERC's require confirming: @foreach (DigitalJudge::getSercsRequiringConfirmation($comp) as $serc)
+        <a href="{{ route('comps.view.events.sercs.view', [$comp, $serc]) }}" class="link">{{ $serc->name }}</a>
+        @endforeach
+        <br>
+        If you weren't expecting a SERC to be Digitally Judged, go to the SERC's settings and disable DigitalJudge,
+    </p>
+
+</div>
+@endif
+
+
 <h2>Results</h2>
 
 <p><strong>Do not</strong> make a results sheet until you have made all your events! (You cannot edit which events are part of a results sheet after it has been made!)</p>
@@ -44,13 +61,18 @@ Results | {{ $comp->name }}
 
     </a>
     @endforeach
+    @if (DigitalJudge::canGenerateCompetitionResults($comp))
     <x-add-card link="{{ route('comps.view.results.add', $comp) }}" text="Results" />
+    @endif
 </div>
 <br>
 <h3>Quick Generate</h3>
 <p class="mb-4">Click the button below to quickly generate the normal scoresheets for Overall, A-League and B-League</p>
 
+@if (DigitalJudge::canGenerateCompetitionResults($comp))
 <a href="{{ route('comps.view.results.quickGen', $comp) }}" class="btn">Quick Generate</a>
+@endif
+
 <br>
 <br>
 <hr>

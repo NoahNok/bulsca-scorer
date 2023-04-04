@@ -155,7 +155,7 @@
 
     <div class="flex flex-col space-y-4">
         <h2 class="mb-0">Options</h2>
-        <div class="card">
+        <div class="card space-y-4">
             <div class="flex justify-between items-center">
                 <strong>Delete SERC</strong>
                 <form action="{{ route('comps.view.events.sercs.delete', [$comp, $serc]) }}" onsubmit="return confirm('Are you sure you want to delete this SERC!')" method="post">
@@ -164,6 +164,15 @@
                     @csrf
                     <button class="btn btn-danger">Delete SERC</button>
                 </form>
+            </div>
+
+            <div class="flex justify-between items-center">
+                <strong>DigitalJudge @if ($serc->digitalJudgeEnabled) (Enabled) @endif</strong>
+                @if ($serc->digitalJudgeEnabled)
+                <a href="{{ route('dj.sercToggle', [$comp, $serc]) }}" class="btn btn-danger">Disable</a>
+                @else
+                <a href="{{ route('dj.sercToggle', [$comp, $serc]) }}" class="btn">Enable</a>
+                @endif
             </div>
         </div>
     </div>

@@ -6,6 +6,7 @@ use App\DigitalJudge\DigitalJudge;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DigitalJudge\LoginRequest;
 use App\Models\Competition;
+use App\Models\SERC;
 use App\Models\SERCJudge;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -68,6 +69,13 @@ class DigitalJudgeController extends Controller
 
         $comp->save();
 
+        return redirect()->back();
+    }
+
+    function sercToggle(Competition $comp, SERC $serc)
+    {
+        $serc->digitalJudgeEnabled = !$serc->digitalJudgeEnabled;
+        $serc->Save();
         return redirect()->back();
     }
 }
