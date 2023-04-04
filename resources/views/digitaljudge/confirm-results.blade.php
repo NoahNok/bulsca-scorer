@@ -35,7 +35,7 @@
                         <div class="flex items-center border-b-2 border-x-2 border-gray-200 first-of-type:border-t-2 ">
                             <div class="w-[60%] bg-gray-300 p-2">{{ $mp->name }}</div>
                             <div class="ml-auto text-right pr-6">{{
-                            $mp->getScoreForTeam($team) ?: 0 }}</div>
+                            $mp->getScoreForTeam($team->id) ?: 0 }}</div>
                         </div>
 
                         @endforeach
