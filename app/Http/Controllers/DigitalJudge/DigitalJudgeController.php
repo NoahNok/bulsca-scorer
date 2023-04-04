@@ -78,4 +78,20 @@ class DigitalJudgeController extends Controller
         $serc->Save();
         return redirect()->back();
     }
+
+    function confirmResults(SERC $serc)
+    {
+        if ($serc->digitalJudgeConfirmed) return redirect()->route('dj.home')->with('alert-error', 'Results already confirmed!');;
+        return view('digitaljudge.confirm-results', ['serc' => $serc]);
+    }
+
+    function confirmResultsPost(SERC $serc)
+    {
+
+        if ($serc->digitalJudgeConfirmed) return redirect()->route('dj.home')->with('success', 'Results Confirmed');
+
+        $serc->digitalJudgeConfirmed = true;
+        $serc->save();
+        return redirect()->route('dj.home')->with('success', 'Results Confirmed');
+    }
 }

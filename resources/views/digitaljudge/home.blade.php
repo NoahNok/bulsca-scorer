@@ -23,7 +23,16 @@
 
         @foreach ($comp->getSERCs->where('digitalJudgeEnabled') as $serc)
         <div class=" w-[80%] border-2 border-bulsca rounded-md ">
-            <p class="p-2 bg-bulsca text-white list-none text-lg font-semibold">{{ $serc->getName() }}</p>
+            <p class="p-2 bg-bulsca text-white list-none text-lg font-semibold flex items-center">{{ $serc->getName() }}
+                @if ($head)
+                @if ($serc->digitalJudgeConfirmed)
+                <span class="btn ml-auto pointer-events-none btn-small">Result Confirmed</span>
+                @else
+                <a href="{{ route('dj.confirm-results', $serc) }}" class="btn ml-auto btn-white btn-small">Confirm Results</a>
+                @endif
+
+                @endif
+            </p>
             <div class="px-3 py-2 flex flex-col space-y-4">
                 @foreach ($serc->getJudges as $judge)
                 <a href="{{ route('dj.judging.confirm-judge', $judge) }}" class="flex justify-between items-center">

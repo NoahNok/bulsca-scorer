@@ -33,5 +33,8 @@ Route::prefix('dj')->group(function () {
             Route::post('team/{team}', [DJJudgingController::class, 'saveTeamScores'])->name('dj.judging.save-team-scores');
         });
         Route::get('change-judge', [DJJudgingController::class, 'changeJudge'])->name('dj.changeJudge');
+
+        Route::get('{serc}/confirm-results', [DigitalJudgeController::class, 'confirmResults'])->name('dj.confirm-results');
+        Route::post('{serc}/confirm-results', [DigitalJudgeController::class, 'confirmResultsPost'])->name('dj.confirm-results.post');
     });
 });
