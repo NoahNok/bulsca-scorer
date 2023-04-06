@@ -65,6 +65,16 @@
             @endforeach
     </div>
     <br>
+
+    <div>
+        <h4>Notes</h4>
+        @php
+        $n= ""
+        @endphp
+        @if ($head)@php $n = App\Models\DigitalJudge\JudgeNote::where('team', $team->id)->where('judge', $judges[0]->id)->first(); @endphp @endif
+        <textarea @if($head) disabled @endif name="team-notes" rows="5" placeholder="Type your notes for this team here..." class="w-full border hover:border-gray-400 p-3 h-max focus:border-gray-400 outline-none rounded-md" id="">{{ $n ? $n->note : "" }}</textarea>
+    </div>
+    <br>
     <div class="flex flex-row space-x-4">
 
         <label for="confirm">I acknowledge that the above results cannot be changed after submitting</label>
@@ -87,4 +97,39 @@
 
 
 </div>
+
+<div class="fixed top-0 right-0 border-b border-l rounded-bl-md p-1 pb-2 px-4 text-md border-gray-300 bg-bulsca text-white font-semibold" id="notes-open">
+    Notes
+</div>
+
+<div class="hidden judge-notes fixed top-0 left-0 w-full  h-full overflow-scroll bg-white  p-4" id="notes-pane">
+    <div class="flex flex-col items-center ">
+        <h1>Your Notes</h1>
+        <p class="link" id="notes-close-1">Close</p>
+
+        <div class="flex flex-col items-start ">
+            @foreach ($judges[0]->getNotes as $note)
+            <div class="border-b pb-4 mb-3 last-of-type:border-b-0 border-b-gray-300">
+                <h3>{{ $note->getTeam->getFullname() }}</h3>
+                <p>{{ $note->note }}</p>
+            </div>
+
+            @endforeach
+        </div>
+        <br>
+        <p class="link" id="notes-close-2">Close</p>
+    </div>
+</div>
+
+<script>
+    const np = document.getElementById("notes-pane");
+
+    const toggle = (e) => {
+        np.classList.toggle("hidden")
+    }
+
+    document.getElementById('notes-close-1').onclick = toggle;
+    document.getElementById('notes-close-2').onclick = toggle;
+    document.getElementById('notes-open').onclick = toggle;
+</script>
 @endsection

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\DigitalJudge\JudgeNote;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,5 +20,10 @@ class SERCJudge extends Model
     public function getSERC()
     {
         return $this->hasOne(SERC::class, 'id', 'serc');
+    }
+
+    public function getNotes()
+    {
+        return $this->hasMany(JudgeNote::class, 'judge', 'id');
     }
 }
