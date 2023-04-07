@@ -52,7 +52,7 @@
 
 {{ $log->links() }}
 <div class="flex flex-col space-y-2 mt-2">
-    @foreach ($log as $l)
+    @forelse ($log as $l)
     <div class="card card-row space-x-4 items-center">
         <p class="text-center text-sm text-gray-500 px-2">{{ $l->created_at->format('h:ia') }}<br>{{ $l->created_at->format('d/m/y') }}</p>
         <div class="px-4">
@@ -67,7 +67,10 @@
         </div>
     </div>
 
-    @endforeach
+    @empty
+    <p class="text-gray-700 indent-4">No judging log's found, if you have set any filters try clearing them!</p>
+
+    @endforelse
 
     {{ $log->links() }}
 </div>

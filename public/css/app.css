@@ -1239,6 +1239,12 @@ video {
 .text-right {
   text-align: right;
 }
+.indent-2 {
+  text-indent: 0.5rem;
+}
+.indent-4 {
+  text-indent: 1rem;
+}
 .font-mono {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
