@@ -9,8 +9,14 @@
 
     <form action="{{ route('dj.login') }}" method="POST">
         <div class="form-input">
-            <input type="number" maxlength="6" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="text-center" value="{{ old('pin') }}" name="pin" placeholder="PIN">
+            <input type="number" maxlength="6" required oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="text-center" value="{{ old('pin') }}" name="pin" placeholder="PIN">
             @error('pin')
+            <small class="ml-auto">{{ $message }}</small>
+            @enderror
+        </div>
+        <div class="form-input">
+            <input type="text" required name="judgeName" class="text-center" placeholder="Name or Initials">
+            @error('judgeName')
             <small class="ml-auto">{{ $message }}</small>
             @enderror
         </div>

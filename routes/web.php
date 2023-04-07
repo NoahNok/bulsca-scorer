@@ -89,6 +89,8 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/comps/{comp}/digital-judge-toggle', [DigitalJudgeController::class, 'toggle'])->name('dj.toggle');
         Route::get('/comps/{comp}/events/sercs/{serc}/digital-judge-toggle', [DigitalJudgeController::class, 'sercToggle'])->name('dj.sercToggle');
+
+        Route::get('/comps/{comp}/judge-log', [DigitalJudgeController::class, 'judgeLog'])->name('dj.judgeLog');
     });
 
     Route::get('/comp/results/view-schema/{schema}', [OverallResultsController::class, 'computeResults'])->name("comps.results.view-schema");

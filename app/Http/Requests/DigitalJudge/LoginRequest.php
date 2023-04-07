@@ -24,7 +24,8 @@ class LoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'pin' => 'required|min_digits:6|max_digits:6|min:0|max:999999|integer'
+            'pin' => 'required|min_digits:6|max_digits:6|min:0|max:999999|integer',
+            'judgeName' => 'required'
         ];
     }
 }

@@ -77,7 +77,7 @@
     <br>
     <div class="flex flex-row space-x-4">
 
-        <label for="confirm">I acknowledge that the above results cannot be changed after submitting</label>
+        <label for="confirm">I acknowledge that the above results are correct and cannot be changed, and submission of this form acts as signing it digitally.</label>
         <input type="checkbox" required name="" id="confirm">
     </div>
     <br>

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Competition;
 use App\Models\CompetitionTeam;
 use App\Models\DigitalJudge\JudgeNote;
+use App\Models\DigitalJudge\JudgeLog;
 use App\Models\SERCJudge;
 use App\Models\SERCResult;
 use Illuminate\Http\Request;
@@ -106,6 +107,16 @@ class DJJudgingController extends Controller
             $judgeNote->note = $request->input('team-notes');
 
             $judgeNote->save();
+        }
+
+        // Save log 
+        foreach (DigitalJudge::getClientJudges() as $judge) {
+            $jl = new JudgeLog();
+            $jl->judge = $judge->id;
+            $jl->competition = $team->competition;
+            $jl->team = $team->id;
+            $jl->judgeName = DigitalJudge::getClientName();
+            $jl->save();
         }
 
         if (DigitalJudge::isClientHeadJudge()) return redirect()->route('dj.judging.home');

@@ -6,6 +6,7 @@ use App\DigitalJudge\DigitalJudge;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DigitalJudge\LoginRequest;
 use App\Models\Competition;
+use App\Models\DigitalJudge\JudgeLog;
 use App\Models\SERC;
 use App\Models\SERCJudge;
 use Illuminate\Http\Request;
@@ -23,14 +24,15 @@ class DigitalJudgeController extends Controller
     {
         $validated = $request->validated();
         $pin = $validated['pin'];
+        $clientName = strip_tags($validated['judgeName']);
 
         $comp = Competition::where('digitalJudgePin', $pin)->where('digitalJudgeEnabled', true)->first();
 
-        if ($comp) $this->startJudging($comp, false);
+        if ($comp) $this->startJudging($comp, false, $clientName);
 
         $headComp = Competition::where('digitalJudgeHeadPin', $pin)->where('digitalJudgeEnabled', true)->first();
 
-        if ($headComp) $this->startJudging($headComp, true);
+        if ($headComp) $this->startJudging($headComp, true, $clientName);
 
         Session::put('_old_input.pin', $pin);
         return redirect()->route('dj.index')->withErrors(['pin' => 'Invalid pin']);
@@ -42,10 +44,11 @@ class DigitalJudgeController extends Controller
         return redirect()->route('dj.index');
     }
 
-    private function startJudging(Competition $comp, bool $isHead)
+    private function startJudging(Competition $comp, bool $isHead, $clientName)
     {
         DigitalJudge::allowClientToJudge($comp);
         DigitalJudge::setClientHeadJudge($isHead);
+        DigitalJudge::setClientName($clientName);
 
         return redirect()->route('dj.home');
     }
@@ -93,5 +96,31 @@ class DigitalJudgeController extends Controller
         $serc->digitalJudgeConfirmed = true;
         $serc->save();
         return redirect()->route('dj.home')->with('success', 'Results Confirmed');
+    }
+
+    function judgeLog(Request $request, Competition $comp)
+    {
+
+
+
+
+
+        $log = JudgeLog::WHERE('competition', $comp->id);
+
+        if ($request->filled('filterJudge')) {
+            $log = $log->where('judge', $request->input('filterJudge'));
+        }
+
+
+
+        $log = $log->orderBy('created_at', 'DESC')->paginate(15);
+
+        if ($request->filled('filterJudge')) {
+            $log->appends(['filterJudge' => $request->input('filterJudge')]);
+        }
+
+
+
+        return view('digitaljudge.judge-log', ['comp' => $comp, 'log' => $log]);
     }
 }

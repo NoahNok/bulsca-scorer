@@ -24,6 +24,16 @@ class DigitalJudge
         Session::forget(['digitalJudgeClientAllowed', 'digitalJudgeClientComp', 'digitalJudgeJudgeId', 'digitalJudgeClientHeadJudge']);
     }
 
+    public static function setClientName($name)
+    {
+        Session::put('digitalJudgeClientName', $name);
+    }
+
+    public static function getClientName(): string
+    {
+        return Session::get('digitalJudgeClientName', 'UNKNOWN');
+    }
+
     public static function canClientJudge()
     {
 

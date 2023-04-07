@@ -49,7 +49,6 @@
         <p>Digital judging allows Judges to enter SERC marks on their own device. It is enabled per comp.</p>
         <strong>If you need to DQ a SERC team, please talk with the competitions Scorer or Organiser!</strong>
         <br>
-        <br>
         @if ($comp->digitalJudgeEnabled)
         <h5>Judges</h5>
         <p>Please instruct Judges to go to here: <a href="{{ route('dj.index') }}" class="link">{{ route('dj.index') }}</a> and enter the following pin:</p>
@@ -63,6 +62,12 @@
         <br>
         <p>This pin grants the ability for your Head Judge and SERC Setters to override Judge scores incase they accidently make a mistake</p>
         <br>
+
+        <h5>Judging Log</h5>
+        <p><a class="link" href="{{ route('dj.judgeLog', $comp) }}">Click here</a> to view an activity log showing when each Judge marked a team.</p>
+
+        <br>
+
         <a href="{{ route('dj.toggle', $comp) }}" class="btn btn-danger">Disable Digital Judging</a>
         @else
         <a href="{{ route('dj.toggle', $comp) }}" class="btn">Enable Digital Judging</a>
