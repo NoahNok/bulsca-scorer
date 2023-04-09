@@ -19,16 +19,16 @@
 
         <a href="{{ route('dj.home') }}" class="link">Back</a>
 
-        <p class="px-4">There are {{ $comp->getCompetitionTeams->count() }} teams. If you need to officiate multiple judges then click "Add Judge" below. To start judging press "Start Judging"</p>
+        <p class="px-4">There are {{ $comp->getCompetitionTeams->count() }} teams. If you need to officiate multiple casualties/objectives then click "Add Casualty/Objective" below. To start judging press "Start Judging"</p>
         <p class="px-4">You will not be able to edit/see scores after submitting them, however you will be able to see the highest, lowest and average score awarded for each criteria at all times.</p>
         <p class="px-4">If you need to get back to the judging page, click "Start Judging" again. It will resume at the last team you started to judge!</p>
 
 
         @if (!$head)
-        <a href="{{ route('dj.judging.add-judge') }}" class="link">Add Judge</a>
+        <a href="{{ route('dj.judging.add-judge') }}" class="link">Add Casualty/Objective</a>
 
         @if (count($judges) > 1)
-        <a href="{{ route('dj.judging.remove-judge') }}" class="link">Remove Judge</a>
+        <a href="{{ route('dj.judging.remove-judge') }}" class="link">Remove Casualty/Objective</a>
         @endif
 
         <a href="{{ route('dj.judging.next-team') }}" class="btn w-[80%]">Start Judging</a>

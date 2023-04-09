@@ -742,6 +742,10 @@ video {
 .w-\[5\%\] {
   width: 5%;
 }
+.w-max {
+  width: -moz-max-content;
+  width: max-content;
+}
 .w-\[80\%\] {
   width: 80%;
 }
@@ -768,10 +772,6 @@ video {
 }
 .w-3\/4 {
   width: 75%;
-}
-.w-max {
-  width: -moz-max-content;
-  width: max-content;
 }
 .min-w-\[23\%\] {
   min-width: 23%;
@@ -961,9 +961,6 @@ video {
 }
 .text-ellipsis {
   text-overflow: ellipsis;
-}
-.whitespace-normal {
-  white-space: normal;
 }
 .whitespace-nowrap {
   white-space: nowrap;
@@ -1227,9 +1224,6 @@ video {
 .pt-1 {
   padding-top: 0.25rem;
 }
-.pr-8 {
-  padding-right: 2rem;
-}
 .text-left {
   text-align: left;
 }
@@ -1238,9 +1232,6 @@ video {
 }
 .text-right {
   text-align: right;
-}
-.indent-2 {
-  text-indent: 0.5rem;
 }
 .indent-4 {
   text-indent: 1rem;

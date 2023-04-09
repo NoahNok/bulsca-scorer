@@ -15,9 +15,9 @@
 
         <p class="px-4">
             @if ($head)
-            You can manage and alter the following SERC's and Judges below.
+            You can manage and alter the following SERC's and Casualties/Objectives below.
             @else
-            Please select which Judge you are for the SERC you are judging
+            Please select which Casualty/Objective you are for the SERC you are judging
             @endif
         </p>
 

@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
 </head>
 
-<body>
+<body class="overflow-x-hidden">
     @yield('content')
     <div class="alert-banner" id="alert">Test</div>
 

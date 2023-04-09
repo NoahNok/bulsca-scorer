@@ -44,7 +44,12 @@
     <button class="btn w-36" serc-builder-save>Save</button>
 </div>
 
-<p>Judges without names will be automatically named as "Judge #".
+<p>Welcome to the SERC Editor.
+    <br>
+    Please enter each casualty individually, if any marking points are a combination of multiple casualties, add the marking point to both, with the weight divided by the amount sharing the point.
+    <br>(e.g: If 2 casualties share an aftercare marking point with weight 2, create an aftercare marking point for both, with a weight of 1 on each!)
+    <br><br>
+    Casualties/Objectives without names will be automatically named as "Objective #".
     <br>
     Marking points <strong>missing</strong> either a description or weight will be ignored when saved!
 </p>
@@ -60,7 +65,7 @@
     @foreach ($serc->getJudges as $judge)
     <div class="card" serc-builder-judge serc-builder-judge-id="{{ $judge->id }}">
         <div class="flex justify-between items-center">
-            <h4>Judge</h4>
+            <h4>Casualty/Objective</h4>
             <div title="Delete Judge" class="flex items-center justify-center  h-full">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 cross" serc-builder-judge-delete>
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -119,7 +124,7 @@
 
     <div class="card items-center justify-center shadow-xl hover:bg-gray-300 cursor-pointer hover:text-white group transition-colors ease-in-out" serc-builder-judge-add>
 
-        <p class="text-2xl font-semibold">Add Judge</p>
+        <p class="text-2xl font-semibold">Add Casualty/Objective</p>
 
 
     </div>

@@ -165,7 +165,7 @@ class SERCJudge {
     toData(judgeNo)  {
         let judge = {
             id: this.judge_id,
-            name: this.judge_name.value != "" ? this.judge_name.value : `Judge ${judgeNo}`,
+            name: this.judge_name.value != "" ? this.judge_name.value : `Objective ${judgeNo}`,
             marking_points: []
         }
 
