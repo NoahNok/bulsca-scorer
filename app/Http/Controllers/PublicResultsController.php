@@ -60,7 +60,7 @@ class PublicResultsController extends Controller
 
             foreach ($event->getJudges as $judge) {
                 foreach ($judge->getMarkingPoints as $mp) {
-                    array_push($headers, $mp->name);
+                    array_push($headers, $judge->name . ' - ' . $mp->name);
                     array_push($weightRow, $mp->weight);
                 }
             }
