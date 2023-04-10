@@ -159,7 +159,10 @@
 
                 @if (!$comp->areResultsProvisional())
 
-                <a href="{{ Request::url() }}?dlCSV" class="link ml-auto">Download as CSV</a>
+                <div class="md:ml-auto flex flex-col items-center md:items-end">
+                    <a href="{{ Request::url() }}?dlCSV" class="link ">Download as CSV</a>
+                    <small>You can edit the CSV to see how changes effect SERC scores!</small>
+                </div>
 
 
                 @endif

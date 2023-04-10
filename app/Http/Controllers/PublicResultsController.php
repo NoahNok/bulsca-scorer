@@ -50,7 +50,7 @@ class PublicResultsController extends Controller
     private function getSercAsCSV(SERC $event, Competition $comp)
     {
 
-
+        $rowIndex = 3;
 
         $this->convertToCSVAndDownload($event->getResults(), function () use ($event) {
 
@@ -67,17 +67,47 @@ class PublicResultsController extends Controller
 
 
 
-            return [array_merge($headers, ['DQ', 'Points', 'Position']), $weightRow];
-        }, function ($row) use ($event) {
+            return [array_merge($headers, ['DQ', 'Raw Score', 'Points', 'Position']), $weightRow];
+        }, function ($row, $rowIndex) use ($event, $comp) {
             $data = [$row->team];
 
+            $totalMarkingPointCols = 0;
             foreach ($event->getJudges as $judge) {
                 foreach ($judge->getMarkingPoints as $mp) {
                     array_push($data, round($mp->getScoreForTeam($row->tid)));
+                    $totalMarkingPointCols += 1;
                 }
             }
 
-            return array_merge($data, [$event->getTeamDQ(\App\Models\CompetitionTeam::find($row->tid))?->code ?: '-', round($row->points), $row->place]);
+            $rowIndex = $rowIndex + 2;
+
+            $endLetter = $this->convertIndexToSheetLetter($totalMarkingPointCols);
+            $scoreFT = "B" . $rowIndex . ":" . $endLetter . $rowIndex;
+            $scoreWT = "B2" . ":" . $endLetter . "2";
+
+            $excelSum = "=SUMPRODUCT(" . $scoreFT  . "," . $scoreWT . ")";
+
+            $sumColIndex = 1 + $totalMarkingPointCols + 1;
+
+            $sumColIndLetter = $this->convertIndexToSheetLetter($sumColIndex);
+
+            $maxEnd = $sumColIndLetter . $comp->getCompetitionTeams->count() + 2;
+
+            $max = "MAX(" . $sumColIndLetter . "3:" . $maxEnd . ")";
+
+            $weightScore = "=ROUND(" . $sumColIndLetter . $rowIndex . "/" . $max . "*1000,0)";
+
+            $rankLetter = $this->convertIndexToSheetLetter($sumColIndex + 1);
+
+            $rankIndv = $rankLetter . $rowIndex;
+
+            $rankRange = $rankLetter . "$3" . ":" . $rankLetter . "$" . $comp->getCompetitionTeams->count() + 2;
+
+            $position = "=RANK.EQ(" . $rankIndv . ", " . $rankRange . ")";
+
+
+
+            return array_merge($data, [$event->getTeamDQ(\App\Models\CompetitionTeam::find($row->tid))?->code ?: '-', $excelSum, $weightScore, $position]);
         }, $event->name . " - " . $comp->name);
     }
 
@@ -123,6 +153,20 @@ class PublicResultsController extends Controller
         }, $event->getName() . " - " . $comp->name);
     }
 
+    /**
+     * 0 = 'A'
+     * 25 = 'Z'
+     */
+    public function convertIndexToSheetLetter($index)
+    {
+        $letters = str_split("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+
+        $code = "";
+
+        if ($index < 26) return $letters[$index];
+
+        return $letters[floor($index / 26) - 1] . $letters[$index - floor($index / 26) * 26];
+    }
 
     private function convertToCSVAndDownload($results, $colGenerator, $rowGenerator, $downloadName)
     {
@@ -135,9 +179,10 @@ class PublicResultsController extends Controller
         $rows = [];
 
 
-
+        $indx = 1;
         foreach ($results as $result) {
-            $row = $rowGenerator($result);
+            $row = $rowGenerator($result, $indx);
+            $indx += 1;
             array_push($rows, $row);
         }
 

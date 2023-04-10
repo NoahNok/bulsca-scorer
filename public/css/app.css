@@ -2411,8 +2411,16 @@ aside.open {
 }
 @media (min-width: 768px) {
 
+  .md\:ml-auto {
+    margin-left: auto;
+  }
+
   .md\:flex-row {
     flex-direction: row;
+  }
+
+  .md\:items-end {
+    align-items: flex-end;
   }
 
   .md\:space-y-0 > :not([hidden]) ~ :not([hidden]) {
@@ -2423,6 +2431,11 @@ aside.open {
 
   .md\:whitespace-nowrap {
     white-space: nowrap;
+  }
+
+  .md\:px-0 {
+    padding-left: 0px;
+    padding-right: 0px;
   }
 
   .md\:text-2xl {
