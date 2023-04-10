@@ -700,6 +700,15 @@ video {
 .min-h-screen {
   min-height: 100vh;
 }
+.min-h-\[30px\] {
+  min-height: 30px;
+}
+.min-h-\[20px\] {
+  min-height: 20px;
+}
+.min-h-\[15px\] {
+  min-height: 15px;
+}
 .w-5 {
   width: 1.25rem;
 }
@@ -775,6 +784,15 @@ video {
 }
 .min-w-\[23\%\] {
   min-width: 23%;
+}
+.min-w-\[30px\] {
+  min-width: 30px;
+}
+.min-w-\[20px\] {
+  min-width: 20px;
+}
+.min-w-\[15px\] {
+  min-width: 15px;
 }
 .max-w-7xl {
   max-width: 80rem;
@@ -2427,6 +2445,12 @@ aside.open {
     --tw-space-y-reverse: 0;
     margin-top: calc(0px * calc(1 - var(--tw-space-y-reverse)));
     margin-bottom: calc(0px * var(--tw-space-y-reverse));
+  }
+
+  .md\:space-x-4 > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-x-reverse: 0;
+    margin-right: calc(1rem * var(--tw-space-x-reverse));
+    margin-left: calc(1rem * calc(1 - var(--tw-space-x-reverse)));
   }
 
   .md\:whitespace-nowrap {
