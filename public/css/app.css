@@ -555,9 +555,6 @@ video {
 .ml-8 {
   margin-left: 2rem;
 }
-.ml-auto {
-  margin-left: auto;
-}
 .mt-8 {
   margin-top: 2rem;
 }
@@ -584,6 +581,9 @@ video {
 }
 .ml-2 {
   margin-left: 0.5rem;
+}
+.ml-auto {
+  margin-left: auto;
 }
 .mt-6 {
   margin-top: 1.5rem;
@@ -2431,11 +2431,6 @@ aside.open {
 
   .md\:whitespace-nowrap {
     white-space: nowrap;
-  }
-
-  .md\:px-0 {
-    padding-left: 0px;
-    padding-right: 0px;
   }
 
   .md\:text-2xl {

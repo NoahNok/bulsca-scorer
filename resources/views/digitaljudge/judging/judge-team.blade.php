@@ -75,10 +75,10 @@
         <textarea @if($head) disabled @endif name="team-notes" rows="5" placeholder="Type your notes for this team here..." class="w-full border hover:border-gray-400 p-3 h-max focus:border-gray-400 outline-none rounded-md" id="">{{ $n ? $n->note : "" }}</textarea>
     </div>
     <br>
-    <div class="flex flex-row space-x-4">
+    <div class="flex flex-row space-x-4 items-center">
 
         <label for="confirm">I acknowledge that the above results are correct and cannot be changed, and submission of this form acts as signing it digitally.</label>
-        <input type="checkbox" required name="" id="confirm">
+        <input type="checkbox" required name="" class="w-4 h-4" id="confirm">
     </div>
     <br>
     @csrf
