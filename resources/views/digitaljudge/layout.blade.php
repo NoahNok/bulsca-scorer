@@ -10,7 +10,14 @@
 </head>
 
 <body class="overflow-x-hidden">
+
+
+
     @yield('content')
+
+    <div class="flex justify-center items-center p-2">
+        <a href="https://forms.gle/tdEhubMkPNY3Dpnd7" class="link">Give Feedback</a>
+    </div>
     <div class="alert-banner" id="alert">Test</div>
 
     <script src="{{ asset('js/alert.js') }}"></script>
