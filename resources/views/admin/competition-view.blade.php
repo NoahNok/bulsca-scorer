@@ -5,16 +5,20 @@
 @endsection
 
 @section('breadcrumbs')
+
 <div>
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
         <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
     </svg>
     <a href="{{ route('admin.index') }}">Admin</a>
+</div>
+<div>
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
         <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
     </svg>
     <a href="{{ route('admin.comp.view', $comp) }}">{{ $comp->name }}</a>
 </div>
+
 
 @endsection
 
@@ -45,5 +49,18 @@
         <x-form-input id="when" title="When" required type="datetime-local" defaultValue="{{$comp->when}}"></x-form-input>
     </div>
     <button type="submit" class="btn">Save</button>
+</form>
+
+<br><br>
+<h3 class="mb-0">Delete Competition</h3>
+<br>
+<form action="{{ route('admin.comp.delete', $comp) }}" onsubmit="return confirm('This action cannot be undone! Are you sure?')" method="post">
+    @csrf
+    @method('DELETE')
+    <div class="grid-4">
+        <x-form-input id="compName" title="Name" required placeholder="{{$comp->name}}"></x-form-input>
+        <input type="hidden" name="compId" value="{{ $comp->id }}">
+    </div>
+    <button type="submit" class="btn btn-danger">Delete</button>
 </form>
 @endsection

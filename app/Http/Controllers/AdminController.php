@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AdminCreateCompRequest;
+use App\Http\Requests\AdminDeleteCompetition;
 use App\Models\Competition;
 use App\Models\SpeedEvent;
 use Illuminate\Http\Request;
@@ -110,5 +111,22 @@ class AdminController extends Controller
                 continue;
             }
         }
+    }
+
+
+    public function deleteCompPost(AdminDeleteCompetition $request, Competition $comp)
+    {
+        $data = $request->validated();
+
+        $compId = $data['compId'];
+        $compName = $data['compName'];
+
+        $c = Competition::find($compId);
+
+        if ($c != $comp || $c->name != $compName) return redirect()->back()->with('alert-error', "Competition name doesn't match!");
+
+        $c->delete();
+
+        return redirect()->route('admin.index')->with('success', "Competition deleted!");
     }
 }

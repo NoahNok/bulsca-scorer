@@ -236,6 +236,12 @@
     </script>
 
     @endif
+    @if (Session::has('alert-error'))
+    <script>
+        showAlert('{{ Session::get("alert-error") }}')
+    </script>
+
+    @endif
 </body>
 
 </html>
