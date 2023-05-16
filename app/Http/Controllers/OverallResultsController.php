@@ -53,10 +53,10 @@ class OverallResultsController extends Controller
             $mysqlTableName = $mysqlEventNames[$event->id];
             $finalQuery .= $mysqlTableName . ".points AS " . $mysqlTableName . "_points, ";
             $finalQuery .=  $event->weight . " AS " . $mysqlTableName . "_weight, ";
-            $finalQuery .= "(SELECT MIN(points) FROM " . $mysqlTableName . " WHERE points>0) AS " . $mysqlTableName . "_min, ";
+            $finalQuery .= "(SELECT MIN(points) FROM " . $mysqlTableName . ") AS " . $mysqlTableName . "_min, ";
             $finalQuery .= "(SELECT MAX(points) FROM " . $mysqlTableName . ") AS " . $mysqlTableName . "_max, ";
-            $finalQuery .= "900/((SELECT MAX(points) FROM " . $mysqlTableName . ") - (SELECT MIN(points) FROM " . $mysqlTableName . " WHERE points > 0)) AS " . $mysqlTableName . "_mult_factor, ";
-            $finalQuery .=  "IF(" . $mysqlTableName . ".points = 0,0,(" . $mysqlTableName . ".points" . "-" . "(SELECT MIN(points) FROM " . $mysqlTableName . " WHERE points > 0))" . "*" . "(900/((SELECT MAX(points) FROM " . $mysqlTableName . ") - (SELECT MIN(points) FROM " . $mysqlTableName . " WHERE points>0)))+100) * " . $event->weight . " AS " . $mysqlTableName . "_rsp, ";
+            $finalQuery .= "900/((SELECT MAX(points) FROM " . $mysqlTableName . ") - (SELECT MIN(points) FROM " . $mysqlTableName . ")) AS " . $mysqlTableName . "_mult_factor, ";
+            $finalQuery .=  "IF(" . $mysqlTableName . ".points = 0,0,(" . $mysqlTableName . ".points" . "-" . "(SELECT MIN(points) FROM " . $mysqlTableName . " ))" . "*" . "(900/((SELECT MAX(points) FROM " . $mysqlTableName . ") - (SELECT MIN(points) FROM " . $mysqlTableName . " )))+100) * " . $event->weight . " AS " . $mysqlTableName . "_rsp, ";
         }
 
         $finalQuery = rtrim($finalQuery, ", ");

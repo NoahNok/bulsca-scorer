@@ -49,6 +49,11 @@ class DigitalJudge
         return Competition::find(Session::get('digitalJudgeClientComp', null));
     }
 
+    public static function getSpeedBladeProps()
+    {
+        return ['comp' => DigitalJudge::getClientCompetition()];
+    }
+
     public static function getBladeProps()
     {
         $serc = DigitalJudge::getClientJudges()[0]->getSERC;

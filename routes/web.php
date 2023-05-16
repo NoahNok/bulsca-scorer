@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\CompetitionController;
 use App\Http\Controllers\DigitalJudge\DigitalJudgeController;
+use App\Http\Controllers\HeatController;
 use App\Http\Controllers\OverallResultsController;
 use App\Http\Controllers\PublicResultsController;
 use App\Http\Controllers\SpeedsEventController;
@@ -60,10 +61,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/comps/{comp}/events/speeds/{event}/edit', [SpeedsEventController::class, 'edit'])->name('comps.view.events.speeds.edit');
         Route::post('/comps/{comp}/events/speeds/{event}/edit', [SpeedsEventController::class, 'updateResults'])->name('comps.view.events.speeds.editPost');
 
+
+
         Route::get('/comps/{comp}/teams', [CompetitionController::class, 'teams'])->name('comps.view.teams');
         Route::get('/comps/{comp}/teams/edit', [TeamsController::class, 'edit'])->name('comps.view.teams.edit');
         Route::post('/comps/{comp}/teams/edit', [TeamsController::class, 'editPost'])->name('comps.view.teams.editPost');
         Route::delete('/comps/{comp}/teams/delete', [TeamsController::class, 'delete'])->name('comps.view.teams.delete');
+
+        Route::get('/comps/{comp}/heats/gen/{maxTeams}', [HeatController::class, 'createDefaultHeatsForComp']);
 
 
         Route::get('/comps/{comp}/events/sercs/add', [SERCController::class, 'add'])->name('comps.view.events.sercs.add');

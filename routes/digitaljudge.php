@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DigitalJudge\DigitalJudgeController;
 use App\Http\Controllers\DigitalJudge\DJJudgingController;
+use App\Http\Controllers\DigitalJudge\SpeedJudgingController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('dj')->group(function () {
@@ -36,5 +37,10 @@ Route::prefix('dj')->group(function () {
 
         Route::get('{serc}/confirm-results', [DigitalJudgeController::class, 'confirmResults'])->name('dj.confirm-results');
         Route::post('{serc}/confirm-results', [DigitalJudgeController::class, 'confirmResultsPost'])->name('dj.confirm-results.post');
+
+
+        Route::prefix('speeds')->group(function () {
+            Route::get('', [SpeedJudgingController::class, 'index'])->name('dj.speeds');
+        });
     });
 });
