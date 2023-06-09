@@ -80,6 +80,15 @@ Results | {{ $comp->name }}
 <div class="grid-4">
     <div>
         <h3>Publicize Results</h3>
+        @if (!$comp->isLeague)
+        <div class="alert-box">
+
+            <h1>Private Event</h1>
+            <p>These results will <strong>not</strong> show on the public results page, and can only be accessed via the link below!
+            </p>
+        
+        </div>
+        @endif
         @if (!$comp->areResultsPublic())
         <p class="mb-4">Click the button below to make results publicly viewable</p>
 

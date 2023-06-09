@@ -14,7 +14,7 @@ class PublicResultsController extends Controller
     public function index()
     {
 
-        $compsWithViewAbleResults = Competition::where('public_results', true)->get();
+        $compsWithViewAbleResults = Competition::where('public_results', true)->where('isLeague', true)->get();
 
         return view('public-results.index', ['comps' => $compsWithViewAbleResults]);
     }
