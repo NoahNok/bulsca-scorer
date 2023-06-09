@@ -32,11 +32,12 @@ class AdminController extends Controller
         $comp = new Competition();
         $comp->name = $validated['name'];
         $comp->when = $validated['when'];
+        $comp->isLeague = $validated['isLeague'];
 
         $comp->save();
 
 
-        $compUserEmail = Str::replace(" ", "-", Str::lower($comp->name)) . "@bulsca.co.uk";
+        $compUserEmail = Str::replace([" ", "@", "_"], "-", Str::lower($comp->name)) . "." . $comp->id . "@bulsca.co.uk";
         $compUserPasswordRaw =  Str::random(16);
         $compUserPassword = Hash::make($compUserPasswordRaw);
 
@@ -57,6 +58,7 @@ class AdminController extends Controller
 
         $comp->name = $validated['name'];
         $comp->when = $validated['when'];
+        $comp->isLeague = $validated['isLeague'];
 
         $comp->save();
 

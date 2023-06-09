@@ -47,6 +47,16 @@
     <div class="grid-4">
         <x-form-input id="name" title="Name" required placeholder="Uni Year (e.g. Warwick 2023)" defaultValue="{{$comp->name}}"></x-form-input>
         <x-form-input id="when" title="When" required type="datetime-local" defaultValue="{{$comp->when}}"></x-form-input>
+        <div class="form-input ">
+            <label for="isLeague" class="">League Competition</label>
+            <select  required id="isLeague" name="isLeague" class="input " style="padding-top: 0.65em; padding-bottom: 0.75em;">
+     
+                <option value="1" @if($comp->isLeague == true) selected @endif >Yes</option>
+                <option value="0" @if($comp->isLeague == false) selected @endif>No</option>
+              
+            </select>
+     
+        </div>
     </div>
     <button type="submit" class="btn">Save</button>
 </form>
