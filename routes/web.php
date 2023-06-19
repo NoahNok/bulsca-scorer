@@ -39,7 +39,7 @@ use App\Models\DQCode;
 
 Route::middleware('auth')->group(function () {
     Route::get('/', function () {
-
+        // @php-ignore
         if (!auth()->user()->isAdmin() && auth()->user()->getCompetition) {
             return redirect()->route('comps.view', auth()->user()->getCompetition);
         }
@@ -50,52 +50,72 @@ Route::middleware('auth')->group(function () {
     Route::get('/comps', [CompetitionController::class, 'index'])->name('comps');
 
     Route::middleware('onlyViewOwnComp')->group(function () {
-        Route::get('/comps/{comp}', [CompetitionController::class, 'view'])->name('comps.view');
 
-        Route::get('/comps/{comp}/events', [CompetitionController::class, 'events'])->name('comps.view.events');
-        Route::get('/comps/{comp}/events/speeds/add', [SpeedsEventController::class, 'add'])->name('comps.view.events.speeds.add');
-        Route::post('/comps/{comp}/events/speeds/add', [SpeedsEventController::class, 'addPost'])->name('comps.view.events.speeds.addPost');
-        Route::delete('/comps/{comp}/events/speeds/{event}/delete', [SpeedsEventController::class, 'delete'])->name('comps.view.events.speeds.delete');
-
-        Route::get('/comps/{comp}/events/speeds/{event}', [SpeedsEventController::class, 'view'])->name('comps.view.events.speeds.view');
-        Route::get('/comps/{comp}/events/speeds/{event}/edit', [SpeedsEventController::class, 'edit'])->name('comps.view.events.speeds.edit');
-        Route::post('/comps/{comp}/events/speeds/{event}/edit', [SpeedsEventController::class, 'updateResults'])->name('comps.view.events.speeds.editPost');
+        Route::prefix('/comps/{comp}')->group(function () {
+            Route::get('', [CompetitionController::class, 'view'])->name('comps.view');
+            Route::get('/digital-judge-toggle', [DigitalJudgeController::class, 'toggle'])->name('dj.toggle');
+            Route::get('/judge-log', [DigitalJudgeController::class, 'judgeLog'])->name('dj.judgeLog');
 
 
+            // EVENTS
+            Route::prefix('/events')->group(function () {
 
-        Route::get('/comps/{comp}/teams', [CompetitionController::class, 'teams'])->name('comps.view.teams');
-        Route::get('/comps/{comp}/teams/edit', [TeamsController::class, 'edit'])->name('comps.view.teams.edit');
-        Route::post('/comps/{comp}/teams/edit', [TeamsController::class, 'editPost'])->name('comps.view.teams.editPost');
-        Route::delete('/comps/{comp}/teams/delete', [TeamsController::class, 'delete'])->name('comps.view.teams.delete');
+                Route::get('', [CompetitionController::class, 'events'])->name('comps.view.events');
+
+                // SPEEDS
+                Route::prefix('/speeds')->group(function () {
+                    Route::get('/add', [SpeedsEventController::class, 'add'])->name('comps.view.events.speeds.add');
+                    Route::post('/add', [SpeedsEventController::class, 'addPost'])->name('comps.view.events.speeds.addPost');
+                    Route::delete('/{event}/delete', [SpeedsEventController::class, 'delete'])->name('comps.view.events.speeds.delete');
+
+                    Route::get('/{event}', [SpeedsEventController::class, 'view'])->name('comps.view.events.speeds.view');
+                    Route::get('/{event}/edit', [SpeedsEventController::class, 'edit'])->name('comps.view.events.speeds.edit');
+                    Route::post('/{event}/edit', [SpeedsEventController::class, 'updateResults'])->name('comps.view.events.speeds.editPost');
+                });
+
+                // SERCS
+                Route::get('/sercs/add', [SERCController::class, 'add'])->name('comps.view.events.sercs.add');
+                Route::post('/sercs/add', [SERCController::class, 'addPost'])->name('comps.view.events.sercs.addPost');
+                Route::prefix('/sercs/{serc}')->group(function () {
+
+
+
+                    Route::get('', [SERCController::class, 'view'])->name('comps.view.events.sercs.view');
+
+                    Route::get('/edit', [SERCController::class, 'edit'])->name('comps.view.events.sercs.edit');
+                    Route::post('/edit', [SERCController::class, 'editPost'])->name('comps.view.events.sercs.editPost');
+                    Route::delete('', [SERCController::class, 'delete'])->name('comps.view.events.sercs.delete');
+
+                    Route::get('/results/{team}/edit', [SERCController::class, 'editResultsView'])->name('comps.view.events.sercs.editResults');
+                    Route::post('/results/{team}/edit', [SERCController::class, 'updateTeamResults'])->name('comps.view.events.sercs.editResultsPost');
+
+                    Route::get('/digital-judge-toggle', [DigitalJudgeController::class, 'sercToggle'])->name('dj.sercToggle');
+                });
+            });
+
+
+            // TEAMS
+            Route::prefix('/teams')->group(function () {
+                Route::get('', [CompetitionController::class, 'teams'])->name('comps.view.teams');
+                Route::get('/edit', [TeamsController::class, 'edit'])->name('comps.view.teams.edit');
+                Route::post('/edit', [TeamsController::class, 'editPost'])->name('comps.view.teams.editPost');
+                Route::delete('/delete', [TeamsController::class, 'delete'])->name('comps.view.teams.delete');
+            });
+
+            // RESULTS
+            Route::prefix('/results')->group(function () {
+                Route::get('', [OverallResultsController::class, 'view'])->name('comps.view.results');
+                Route::get('/add', [OverallResultsController::class, 'add'])->name('comps.view.results.add');
+                Route::get('/qg', [OverallResultsController::class, 'quickGen'])->name('comps.view.results.quickGen');
+                Route::get('/pt', [OverallResultsController::class, 'publishToggle'])->name('comps.view.results.publishToggle');
+                Route::get('/prt', [OverallResultsController::class, 'provToggle'])->name('comps.view.results.provToggle');
+                Route::post('', [OverallResultsController::class, 'addPost'])->name('comps.view.results.addPost');
+                Route::delete('/{schema}', [OverallResultsController::class, 'delete'])->name('comps.view.results.delete');
+                Route::get('/{schema}/hide', [OverallResultsController::class, 'hide'])->name('comps.view.results.hide');
+            });
+        });
 
         Route::get('/comps/{comp}/heats/gen/{maxTeams}', [HeatController::class, 'createDefaultHeatsForComp']);
-
-
-        Route::get('/comps/{comp}/events/sercs/add', [SERCController::class, 'add'])->name('comps.view.events.sercs.add');
-        Route::post('/comps/{comp}/events/sercs/add', [SERCController::class, 'addPost'])->name('comps.view.events.sercs.addPost');
-
-        Route::get('/comps/{comp}/events/sercs/{serc}', [SERCController::class, 'view'])->name('comps.view.events.sercs.view');
-
-        Route::get('/comps/{comp}/events/sercs/{serc}/edit', [SERCController::class, 'edit'])->name('comps.view.events.sercs.edit');
-        Route::post('/comps/{comp}/events/sercs/{serc}/edit', [SERCController::class, 'editPost'])->name('comps.view.events.sercs.editPost');
-        Route::delete('/comps/{comp}/events/sercs/{serc}', [SERCController::class, 'delete'])->name('comps.view.events.sercs.delete');
-
-        Route::get('/comps/{comp}/events/sercs/{serc}/results/{team}/edit', [SERCController::class, 'editResultsView'])->name('comps.view.events.sercs.editResults');
-        Route::post('/comps/{comp}/events/sercs/{serc}/results/{team}/edit', [SERCController::class, 'updateTeamResults'])->name('comps.view.events.sercs.editResultsPost');
-
-        Route::get('/comp/{comp}/results', [OverallResultsController::class, 'view'])->name('comps.view.results');
-        Route::get('/comp/{comp}/results/add', [OverallResultsController::class, 'add'])->name('comps.view.results.add');
-        Route::get('/comp/{comp}/results/qg', [OverallResultsController::class, 'quickGen'])->name('comps.view.results.quickGen');
-        Route::get('/comp/{comp}/results/pt', [OverallResultsController::class, 'publishToggle'])->name('comps.view.results.publishToggle');
-        Route::get('/comp/{comp}/results/prt', [OverallResultsController::class, 'provToggle'])->name('comps.view.results.provToggle');
-        Route::post('/comp/{comp}/results', [OverallResultsController::class, 'addPost'])->name('comps.view.results.addPost');
-        Route::delete('/comp/{comp}/results/{schema}', [OverallResultsController::class, 'delete'])->name('comps.view.results.delete');
-        Route::get('/comp/{comp}/results/{schema}/hide', [OverallResultsController::class, 'hide'])->name('comps.view.results.hide');
-
-        Route::get('/comps/{comp}/digital-judge-toggle', [DigitalJudgeController::class, 'toggle'])->name('dj.toggle');
-        Route::get('/comps/{comp}/events/sercs/{serc}/digital-judge-toggle', [DigitalJudgeController::class, 'sercToggle'])->name('dj.sercToggle');
-
-        Route::get('/comps/{comp}/judge-log', [DigitalJudgeController::class, 'judgeLog'])->name('dj.judgeLog');
     });
 
     Route::get('/comp/results/view-schema/{schema}', [OverallResultsController::class, 'computeResults'])->name("comps.results.view-schema");
@@ -104,17 +124,17 @@ Route::middleware('auth')->group(function () {
 });
 
 
-Route::middleware('isAdmin')->group(function () {
-    Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
-    Route::get('/admin/competition/create', [AdminController::class, 'createComp'])->name('admin.comp.create');
-    Route::get('/admin/competition/{comp}', [AdminController::class, 'viewComp'])->name('admin.comp.view');
-    Route::post('/admin/competition/create', [AdminController::class, 'createCompPost'])->name('admin.comp.create.post');
-    Route::post('/admin/competition/{comp}/update', [AdminController::class, 'updateCompPost'])->name('admin.comp.update.post');
-    Route::post('/admin/competition/{comp}/updateUser', [AdminController::class, 'updateCompUserPassword'])->name('admin.comp.update.userPassword');
-    Route::get('/admin/records', [AdminController::class, 'records'])->name('admin.records');
-    Route::post('/admin/records', [AdminController::class, 'updateRecords'])->name('admin.records.update');
+Route::prefix('/admin')->middleware('isAdmin')->group(function () {
+    Route::get('', [AdminController::class, 'index'])->name('admin.index');
+    Route::get('/competition/create', [AdminController::class, 'createComp'])->name('admin.comp.create');
+    Route::get('/competition/{comp}', [AdminController::class, 'viewComp'])->name('admin.comp.view');
+    Route::post('/competition/create', [AdminController::class, 'createCompPost'])->name('admin.comp.create.post');
+    Route::post('/competition/{comp}/update', [AdminController::class, 'updateCompPost'])->name('admin.comp.update.post');
+    Route::post('/competition/{comp}/updateUser', [AdminController::class, 'updateCompUserPassword'])->name('admin.comp.update.userPassword');
+    Route::get('/records', [AdminController::class, 'records'])->name('admin.records');
+    Route::post('/records', [AdminController::class, 'updateRecords'])->name('admin.records.update');
 
-    Route::delete('/admin/competition/{comp}/delete', [AdminController::class, 'deleteCompPost'])->name('admin.comp.delete');
+    Route::delete('/competition/{comp}/delete', [AdminController::class, 'deleteCompPost'])->name('admin.comp.delete');
 });
 
 
