@@ -3,28 +3,64 @@
 namespace App\Http\Controllers;
 
 use App\Models\Competition;
+use App\Models\Heat;
 use Illuminate\Http\Request;
 
 class HeatController extends Controller
 {
-    public function createDefaultHeatsForComp(Competition $comp, int $maxLanes)
+
+    public function index(Competition $comp)
+    {
+
+
+
+
+
+
+        $heatEntries = $comp->getHeatEntries;
+
+        return view('competition.heats-and-orders.index', ['comp' => $comp, 'heatEntries' => $heatEntries]);
+    }
+
+    public function createDefaultHeatsForComp(Competition $comp)
     {
         $teams = $comp->getCompetitionTeams()->orderBy('st_time', 'desc')->get();
 
         $heats = [];
-        $maxHeats = ceil($teams->count() / $maxLanes);
+        $maxHeats = ceil($teams->count() / $comp->max_lanes);
+
+
 
 
         // Creates the default heats based on swim tow times!
         for ($i = $maxHeats; $i > 0; $i--) {
-            $heatTeams = $teams->pop($maxLanes); // Ordered slowest to fastest
+            $heatTeams = $teams->pop($comp->max_lanes); // Ordered slowest to fastest
 
-            $orderedTeams = $this->heatMap($heatTeams->reverse()->toArray(), $maxLanes);
+            $orderedTeams = $this->heatMap($heatTeams->reverse()->toArray(), $comp->max_lanes);
 
             $heats[$i] = $orderedTeams;
         }
 
-        dump($heats);
+
+
+        $databaseInsertable = [];
+
+        for ($i = $maxHeats; $i > 0; $i--) {
+            $heat = $heats[$i];
+            foreach (array_keys($heat) as $l) {
+
+
+                $d = ['competition' => $comp->id, 'team' => $heat[$l]['id'], 'heat' => $i, 'lane' => $l];;
+                array_push($databaseInsertable, $d);
+            }
+        }
+
+
+        Heat::where('competition', $comp->id)->delete();
+        Heat::insert($databaseInsertable);
+
+
+
         return;
     }
 

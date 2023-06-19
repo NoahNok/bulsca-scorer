@@ -113,9 +113,19 @@ Route::middleware('auth')->group(function () {
                 Route::delete('/{schema}', [OverallResultsController::class, 'delete'])->name('comps.view.results.delete');
                 Route::get('/{schema}/hide', [OverallResultsController::class, 'hide'])->name('comps.view.results.hide');
             });
-        });
 
-        Route::get('/comps/{comp}/heats/gen/{maxTeams}', [HeatController::class, 'createDefaultHeatsForComp']);
+            // HEATS AND SERC ORDER
+            Route::prefix('/heats-and-orders')->group(function () {
+
+                Route::get('', [HeatController::class, 'index']);
+
+                Route::prefix('/heats')->group(function () {
+                    Route::get('/gen', [HeatController::class, 'createDefaultHeatsForComp']);
+                });
+                Route::prefix('/serc-order')->group(function () {
+                });
+            });
+        });
     });
 
     Route::get('/comp/results/view-schema/{schema}', [OverallResultsController::class, 'computeResults'])->name("comps.results.view-schema");

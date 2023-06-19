@@ -32,6 +32,11 @@ class Competition extends Model
         return $this->hasMany(CompetitionTeam::class, 'competition', 'id');
     }
 
+    public function getHeatEntries()
+    {
+        return $this->hasMany(Heat::class, 'competition', 'id');
+    }
+
     protected $casts = [
         'when' => 'datetime',
     ];
