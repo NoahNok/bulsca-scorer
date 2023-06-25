@@ -92,6 +92,12 @@ Heats and Orders | {{ $comp->name }}
 
 
     </div>
+    <h4>Reset Heats</h4>
+    <p>Resetting heats will restore them to their original layout. <strong>You will loose</strong> any alterations you have made!</p>
+    <br>
+    <form action="{{ route('comps.view.heats.gen', $comp) }}" method="get" onsubmit="return confirm('Are you sure you want to reset the heats?')">
+        <button class="btn btn-danger">Reset</button>
+    </form>
 </div>
 
 <script>

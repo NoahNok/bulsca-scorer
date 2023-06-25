@@ -27,6 +27,7 @@ class AdminCreateCompRequest extends FormRequest
             'name' => 'required',
             'when' => 'required',
             'isLeague' => 'required|boolean',
+            'lanes' => 'required',
         ];
     }
 }

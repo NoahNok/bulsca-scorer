@@ -29,7 +29,7 @@ class Competition extends Model
 
     public function getCompetitionTeams()
     {
-        return $this->hasMany(CompetitionTeam::class, 'competition', 'id');
+        return $this->hasMany(CompetitionTeam::class, 'competition', 'id')->orderBy('serc_order');
     }
 
     public function getHeatEntries()

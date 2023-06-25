@@ -694,6 +694,12 @@ video {
 .h-9 {
   height: 2.25rem;
 }
+.h-10 {
+  height: 2.5rem;
+}
+.h-12 {
+  height: 3rem;
+}
 .max-h-52 {
   max-height: 13rem;
 }
@@ -1257,6 +1263,9 @@ video {
 }
 .indent-4 {
   text-indent: 1rem;
+}
+.align-middle {
+  vertical-align: middle;
 }
 .font-mono {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;

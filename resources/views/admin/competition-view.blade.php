@@ -57,6 +57,7 @@
             </select>
      
         </div>
+        <x-form-input id="lanes" title="Lanes" required type="number" defaultValue="{{$comp->max_lanes}}"></x-form-input>
     </div>
     <button type="submit" class="btn">Save</button>
 </form>

@@ -33,6 +33,7 @@ class AdminController extends Controller
         $comp->name = $validated['name'];
         $comp->when = $validated['when'];
         $comp->isLeague = $validated['isLeague'];
+        $comp->max_lanes = $validated['lanes'];
 
         $comp->save();
 
@@ -59,6 +60,7 @@ class AdminController extends Controller
         $comp->name = $validated['name'];
         $comp->when = $validated['when'];
         $comp->isLeague = $validated['isLeague'];
+        $comp->max_lanes = $validated['lanes'];
 
         $comp->save();
 

@@ -49,7 +49,7 @@ Heats and Orders | {{ $comp->name }}
                 <div class=" w-full grid grid-cols-1 md:grid-cols-8 gap-3 " >
       
                 
-                    @foreach ($heatEntries->sortBy(['heat','lane'])->groupBy('heat') as $key => $heat)
+                    @forelse ($heatEntries->sortBy(['heat','lane'])->groupBy('heat') as $key => $heat)
                         <div >
                             <h5 >Heat {{ $key }}</h5>
                             <ol class=" list-item space-y-2">
@@ -73,8 +73,10 @@ Heats and Orders | {{ $comp->name }}
                                 @endfor
                             </ol>
                         </div>
-                        
-                    @endforeach
+                        @empty
+                  
+                        <a href="{{ route('comps.view.heats.gen', $comp) }}" class="btn flex items-center justify-center">Generate Heats</a>
+                    @endforelse
         
                 </div>
         </div>
@@ -83,11 +85,14 @@ Heats and Orders | {{ $comp->name }}
 
         <div class="flex justify-between">
             <h2 class="mb-0">SERC Order</h2>
-            <a href="#" class="btn">Edit SERC Order</a>
+            <a href="{{ route('comps.view.serc-order.edit', $comp) }}" class="btn">Edit SERC Order</a>
         </div>
 
         <div class="grid grid-rows-6 gap-3 grid-flow-col">
             @foreach ($comp->getCompetitionTeams as $team)
+
+              
+
                 <div class="card">
                     {{ $loop->index + 1 }}. {{ $team->getFullname() }} 
                 </div>

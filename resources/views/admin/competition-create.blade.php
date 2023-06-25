@@ -36,6 +36,7 @@ Create Competition | Admin
             </select>
      
         </div>
+        <x-form-input id="lanes" title="Lanes" required type="number"></x-form-input>
     </div>
     <button type="submit" class="btn">Add</button>
 </form>
