@@ -19,7 +19,7 @@ class SERC extends Model
 
     public function getTeams()
     {
-        return CompetitionTeam::where('competition', $this->competition)->get();
+        return CompetitionTeam::where('competition', $this->competition)->orderBy('serc_order')->get();
     }
 
     public function getName()
