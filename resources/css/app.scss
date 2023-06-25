@@ -148,6 +148,10 @@ h5 {
   &.card-row {
     @apply flex-row;
   }
+
+  &.selected {
+    @apply bg-bulsca text-white;
+  }
  }
 
  a.link, p.link {

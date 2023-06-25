@@ -86,4 +86,44 @@ class HeatController extends Controller
 
         return $allocatedHeat;
     }
+
+    public function edit(Competition $comp)
+    {
+        $heatEntries = $comp->getHeatEntries;
+
+        return view('competition.heats-and-orders.heats.edit', ['comp' => $comp, 'heatEntries' => $heatEntries]);
+    }
+
+    public function editPost(Competition $comp, Request $request)
+    {
+        $team = $request->input('team', -1);
+        $lane = $request->input('target-lane');
+        $heat = $request->input('target-heat');
+
+        // Check if a team exists as the target location, if so we need to swap teams
+        $foundHeat = Heat::where('competition', $comp->id)->where('lane', $lane)->where('heat', $heat)->first();
+
+        if ($foundHeat == null) {
+            // No team at target location simple update
+            $theat = Heat::where('team', $team)->first();
+            $theat->lane = $lane;
+            $theat->heat = $heat;
+            $theat->save();
+            return redirect()->route('comps.view.heats.edit', $comp);
+        }
+
+        $theat = Heat::where('team', $team)->first();
+        $toriglane = $theat->lane;
+        $torigheat = $theat->heat;
+
+        $theat->lane = $lane;
+        $theat->heat = $heat;
+        $theat->save();
+
+        $foundHeat->lane = $toriglane;
+        $foundHeat->heat = $torigheat;
+        $foundHeat->save();
+
+        return redirect()->route('comps.view.heats.edit', $comp);
+    }
 }

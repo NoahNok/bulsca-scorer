@@ -117,9 +117,11 @@ Route::middleware('auth')->group(function () {
             // HEATS AND SERC ORDER
             Route::prefix('/heats-and-orders')->group(function () {
 
-                Route::get('', [HeatController::class, 'index']);
+                Route::get('', [HeatController::class, 'index'])->name('comps.view.heats');
 
                 Route::prefix('/heats')->group(function () {
+                    Route::get('/edit', [HeatController::class, 'edit'])->name('comps.view.heats.edit');
+                    Route::post('/edit', [HeatController::class, 'editPost'])->name('comps.view.heats.editPost');
                     Route::get('/gen', [HeatController::class, 'createDefaultHeatsForComp']);
                 });
                 Route::prefix('/serc-order')->group(function () {

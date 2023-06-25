@@ -33,8 +33,10 @@ Heats and Orders | {{ $comp->name }}
 
         <div class="flex justify-between">
             <h2 class="mb-0">Heats</h2>
-            <a href="{{ route('comps.view.heats.edit', $comp) }}" class="btn">Edit Heats</a>
+            <a href="{{ route('comps.view.heats', $comp) }}" class="btn">Back</a>
         </div>
+
+        <p>To swap teams, click the first team, it will turn blue. Then click the team you want to swap it with (including blank spaces). The page will automatically update and save.</p>
 
         <div class="flex space-x-2  ">
             <div class=" hidden md:block  ">
@@ -46,7 +48,7 @@ Heats and Orders | {{ $comp->name }}
                 </ol>
             </div>
        
-                <div class=" w-full grid grid-cols-1 md:grid-cols-8 gap-3 " >
+                <div class=" w-full grid grid-cols-1 md:grid-cols-8 gap-3 " id="all-teams" >
       
                 
                     @foreach ($heatEntries->sortBy(['heat','lane'])->groupBy('heat') as $key => $heat)
@@ -59,7 +61,7 @@ Heats and Orders | {{ $comp->name }}
                                         $lane = $heat->where('lane', $l)->first()
                                     @endphp
         
-                                    <li class="card ">
+                                    <li class="card cursor-pointer hover:bg-bulsca hover:text-white " data-team="{{ $lane->getTeam->id ?? -1}}" data-heat="{{ $key }}" data-lane="{{ $l }}">
                                         @if ($lane)
                                          {{ $lane->getTeam->getFullname() }}
                                         @else
@@ -81,22 +83,71 @@ Heats and Orders | {{ $comp->name }}
 
         <br>
 
-        <div class="flex justify-between">
-            <h2 class="mb-0">SERC Order</h2>
-            <a href="#" class="btn">Edit SERC Order</a>
-        </div>
+        <form action="" method="post" id="team-switch" class="hidden">
+            @csrf
+            <input type="text" name="team" id="team">
+            <input type="text" name="target-lane" id="target-lane">
+            <input type="text" name="target-heat" id="target-heat">
+        </form>
 
-        <div class="grid grid-rows-6 gap-3 grid-flow-col">
-            @foreach ($comp->getCompetitionTeams as $team)
-                <div class="card">
-                    {{ $loop->index + 1 }}. {{ $team->getFullname() }} 
-                </div>
-                
-            @endforeach
-        </div>
 
-        
     </div>
 </div>
+
+<script>
+
+
+    function init() {
+        let hasClicked = false;
+
+        let teamToMove = null;
+
+        let teamInput = document.getElementById("team")
+        let laneInput = document.getElementById("target-lane")
+        let heatInput = document.getElementById("target-heat")
+        let form = document.getElementById("team-switch")
+
+
+
+        document.getElementById('all-teams').querySelectorAll('[data-team]').forEach(element => {
+            
+            element.onclick = (event) => {
+                if (!hasClicked) {
+
+                    if (element.getAttribute('data-team') === "-1") return
+
+                    teamInput.value = element.getAttribute('data-team');
+                    element.classList.toggle('selected')
+                    hasClicked = !hasClicked;
+                    return;
+                }
+
+                if (element.getAttribute('data-team') === teamInput.value) {
+                    element.classList.toggle('selected')
+                    hasClicked = !hasClicked
+                    teamInput.value = ""
+                    return
+                }
+
+
+         
+                heatInput.value = element.getAttribute('data-heat');
+                laneInput.value = element.getAttribute('data-lane');
+                
+                form.submit()
+                
+
+
+            }
+
+        });
+    
+    }
+
+    init()
+
+
+
+</script>
 
 @endsection
