@@ -58,7 +58,7 @@ class DJJudgingController extends Controller
 
         $j = DigitalJudge::getClientJudges()[0]->id;
         $c = DigitalJudge::getClientCompetition()->id;
-        $nextTeamIdRow = DB::select("SELECT id FROM (SELECT id, (SELECT COUNT(*) FROM serc_results WHERE team=competition_teams.id AND marking_point IN (SELECT id FROM serc_marking_points WHERE judge=?)) AS markedPoints FROM competition_teams WHERE competition=?) AS b WHERE b.markedPoints = 0 LIMIT 1;", [$j, $c]);
+        $nextTeamIdRow = DB::select("SELECT id FROM (SELECT id, (SELECT COUNT(*) FROM serc_results WHERE team=competition_teams.id AND marking_point IN (SELECT id FROM serc_marking_points WHERE judge=?)) AS markedPoints FROM competition_teams WHERE competition=? ORDER BY serc_order) AS b WHERE b.markedPoints = 0 LIMIT 1;", [$j, $c]);
 
         $nextTeamId = $nextTeamIdRow ? $nextTeamIdRow[0]->id : null;
 
