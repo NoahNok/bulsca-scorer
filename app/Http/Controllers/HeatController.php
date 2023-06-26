@@ -25,8 +25,8 @@ class HeatController extends Controller
 
     public function createDefaultHeatsForComp(Competition $comp, Request $request)
     {
-        $teams = $comp->getCompetitionTeams()->orderBy('st_time', 'desc')->get();
-
+        $teams = $comp->getCompetitionTeams()->get()->sortByDesc('st_time');
+        //dump($teams->pluck('st_time'));
         $heats = [];
         $maxHeats = ceil($teams->count() / $comp->max_lanes);
 
@@ -36,6 +36,7 @@ class HeatController extends Controller
         // Creates the default heats based on swim tow times!
         for ($i = $maxHeats; $i > 0; $i--) {
             $heatTeams = $teams->pop($comp->max_lanes); // Ordered slowest to fastest
+
 
             $orderedTeams = $this->heatMap($heatTeams->reverse()->toArray(), $comp->max_lanes);
 

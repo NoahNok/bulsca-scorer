@@ -61,7 +61,7 @@ Heats and Orders | {{ $comp->name }}
         
                                     <li class="card ">
                                         @if ($lane)
-                                         {{ $lane->getTeam->getFullname() }}
+                                         {{ $lane->getTeam->getFullname() }} ({{ $lane->getTeam->getSwimTowTimeForDefault()}})
                                         @else
                                           &nbsp;
                                         @endif
