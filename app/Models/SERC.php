@@ -67,4 +67,47 @@ class SERC extends Model
     {
         return $this->hasOne(Competition::class, 'id', 'competition');
     }
+
+    // STATS METHODS
+    public function getMarkDistribution()
+    {
+        $dist = DB::select('SELECT sr.result, COUNT(sr.result) AS count FROM serc_results sr INNER JOIN serc_marking_points smp ON sr.marking_point=smp.id WHERE smp.serc=? GROUP BY sr.result ORDER BY result', [$this->id]);
+        $result = array_map(function ($value) {
+            return (array)$value;
+        }, $dist);
+
+
+        $labels = [];
+        $values = [];
+
+        foreach ($result as $res) {
+            $labels[] = $res['result'];
+            $values[] = $res['count'];
+        }
+
+        return [
+            'labels' => $labels,
+            'values' => $values
+        ];
+    }
+
+    public function getRollingAverageForMP($mpId)
+    {
+        $rawMarks = DB::select('SELECT result AS count FROM serc_results sr INNER JOIN competition_teams ct ON sr.team=ct.id WHERE marking_point=? ORDER BY ct.serc_order', [$mpId]);
+        $rollingMarks = DB::select('SELECT AVG(result) OVER (ORDER BY id ROWS BETWEEN 5 PRECEDING AND CURRENT ROW) AS count FROM (SELECT sr.id, result FROM serc_results sr INNER JOIN competition_teams ct ON sr.team=ct.id WHERE marking_point=? ORDER BY ct.serc_order) AS b;', [$mpId]);
+
+        $rawMarks = array_map(function ($value) {
+            return $value->count;
+        }, $rawMarks);
+
+        $rollingMarks = array_map(function ($value) {
+            return $value->count;
+        }, $rollingMarks);
+
+        return [
+            'labels' => range(1, count($rawMarks)),
+            'raw' => $rawMarks,
+            'rolling' => $rollingMarks
+        ];
+    }
 }

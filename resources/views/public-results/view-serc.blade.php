@@ -173,6 +173,30 @@
 
         </div>
 
+        <div class="w-screen  lg:max-w-[80vw]">
+            <details>
+                <summary class="text-bulsca font-semibold text-3xl" onclick="generateCharts()">Charts</summary>
+            <div>
+                <canvas id="mark-dist"></canvas>
+            </div>
+            <br>
+            <h4>Judges </h4>
+            <p>The following charts show the raw and rolling average for each of the judges marking points, in the order of the SERC draw</p>
+            <br>
+           @foreach ($event->getJudges as $judge)
+           <h5>{{ $judge->name }}</h5>
+           <div class="grid-4">
+            @foreach ($judge->getMarkingPoints as $mp)
+            <div>
+                <canvas id="rolling-mp-{{$mp->id}}"></canvas>
+            </div>
+            @endforeach
+           </div>
+               
+           @endforeach
+            </details>
+        </div>
+
         <div class=" pb-16">
             <small>
                 &copy; BULSCA 2023
@@ -184,6 +208,7 @@
 
 
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ asset('js/analysis.js') }}"></script>
     <script>
         function initTable() {
@@ -266,6 +291,116 @@
         }
 
         window.onload = initTable()
+
+        function charts() {
+            let ctx = document.getElementById('mark-dist');
+            let chart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: {{ Js::from($event->getMarkDistribution()['labels']) }},
+                    datasets: [{
+                        label: 'Mark Distribution',
+                        data: {{ Js::from($event->getMarkDistribution()['values']) }},
+  
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Mark Distribution'
+                        }
+                    }
+                }
+            });
+
+
+            new Chart(document.getElementById('rolling-judge'), {
+                type: 'line',
+                data: {
+                    labels: {{ Js::from($event->getRollingAverageForMP(1)['labels']) }},
+                    datasets: [{
+                        label: 'Raw Mark',
+                        data: {{ Js::from($event->getRollingAverageForMP(1)['raw']) }},
+                        
+                    },
+                    {
+                        label: 'Rolling Avg',
+                        data: {{ Js::from($event->getRollingAverageForMP(1)['rolling']) }},
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Mark Distribution'
+                        }
+                    }
+                }
+            });
+
+
+
+            @foreach ($event->getJudges as $judge)
+           
+           
+            @foreach ($judge->getMarkingPoints as $mp)
+            @php
+                $cached = $event->getRollingAverageForMP($mp->id);
+            @endphp
+            new Chart(document.getElementById("rolling-mp-{{$mp->id}}"), {
+                type: 'line',
+                data: {
+                    labels: {{ Js::from($cached['labels']) }},
+                    datasets: [{
+                        label: 'Raw Mark',
+                        data: {{ Js::from($cached['raw']) }},
+                        
+                    },
+                    {
+                        label: 'Rolling Avg',
+                        data: {{ Js::from($cached['rolling']) }},
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        },
+                        title: {
+                            display: true,
+                            text: '{{ $mp->name }}'
+                        }
+                    }
+                }
+            });
+           
+            
+            @endforeach
+           
+               
+           @endforeach
+        }
+        
+        let generatedCharts = false;
+        function generateCharts() {
+            if (generatedCharts) return;
+            charts();
+
+        }
     </script>
 </body>
 
