@@ -94,7 +94,7 @@ class SERC extends Model
     public function getRollingAverageForMP($mpId)
     {
         $rawMarks = DB::select('SELECT result AS count FROM serc_results sr INNER JOIN competition_teams ct ON sr.team=ct.id WHERE marking_point=? ORDER BY ct.serc_order', [$mpId]);
-        $rollingMarks = DB::select('SELECT AVG(result) OVER (ORDER BY id ROWS BETWEEN 5 PRECEDING AND CURRENT ROW) AS count FROM (SELECT sr.id, result FROM serc_results sr INNER JOIN competition_teams ct ON sr.team=ct.id WHERE marking_point=? ORDER BY ct.serc_order) AS b;', [$mpId]);
+        $rollingMarks = DB::select('SELECT AVG(result) OVER (ORDER BY serc_order ROWS BETWEEN 5 PRECEDING AND CURRENT ROW) AS count FROM (SELECT sr.id, result, serc_order FROM serc_results sr INNER JOIN competition_teams ct ON sr.team=ct.id WHERE marking_point=? ORDER BY ct.serc_order) AS b;', [$mpId]);
 
         $rawMarks = array_map(function ($value) {
             return $value->count;
