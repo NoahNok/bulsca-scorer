@@ -108,6 +108,17 @@
         </div>
 
         <h4>All teams</h4>
+        @if ($comp->needsToRegenerateSERCDraw())
+        <div class="alert-box alert-warning">
+            <h1>Missing SERC Order</h1>
+            <p>The teams below are showing in the default entered order, as no SERC order has been generated <strong>OR</strong> a new SERC order needs to be <a href="{{ route('comps.view.heats', $comp) }}" class="link">generated</a>.
+                <br>
+                <br>
+                If you are using an external order please ignore this message.
+            </p>
+        </div>
+            
+        @endif
         <div class="  relative w-full  ">
             <table class=" text-sm w-full shadow-md rounded-lg overflow-hidden text-left text-gray-500 ">
                 <thead class="text-xs text-gray-700 text-right uppercase bg-gray-50 ">

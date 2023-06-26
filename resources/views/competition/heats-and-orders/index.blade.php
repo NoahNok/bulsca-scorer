@@ -85,19 +85,29 @@ Heats and Orders | {{ $comp->name }}
 
         <div class="flex justify-between">
             <h2 class="mb-0">SERC Order</h2>
+            @if (!$comp->needsToRegenerateSERCDraw())
             <a href="{{ route('comps.view.serc-order.edit', $comp) }}" class="btn">Edit SERC Order</a>
+            @endif
+            
         </div>
 
         <div class="grid grid-rows-6 gap-3 grid-flow-col">
-            @foreach ($comp->getCompetitionTeams as $team)
-
-              
+            @if ($comp->needsToRegenerateSERCDraw())
+                
+                <div>
+                    <a href="{{ route('comps.view.serc-order.regen', $comp) }}" class="btn ">Generate SERC Order</a>
+                </div>
+                
+            @else
+                @foreach ($comp->getCompetitionTeams as $team)
 
                 <div class="card">
                     {{ $loop->index + 1 }}. {{ $team->getFullname() }} 
                 </div>
                 
-            @endforeach
+                @endforeach
+            @endif
+ 
         </div>
 
         

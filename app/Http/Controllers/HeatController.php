@@ -132,11 +132,17 @@ class HeatController extends Controller
     {
         $index = 1;
 
-        foreach ($comp->getCompetitionTeams as $team) {
+        foreach ($comp->getCompetitionTeams->shuffle() as $team) {
             $team->serc_order = $index;
             $team->save();
             $index++;
         }
+    }
+
+    public function regenSERCOrder(Competition $comp)
+    {
+        $this->createDefaultSERCorderForComp($comp);
+        return redirect()->route('comps.view.heats', $comp);
     }
 
     public function editSERCOrder(Competition $comp)

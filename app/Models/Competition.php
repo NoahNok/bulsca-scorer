@@ -80,4 +80,9 @@ class Competition extends Model
 
         return Str::lower(str_replace(" ", "-", $this->name)) . "." . $this->id;
     }
+
+    public function needsToRegenerateSERCDraw(): bool
+    {
+        return $this->getCompetitionTeams()->where('serc_order', 0)->exists();
+    }
 }

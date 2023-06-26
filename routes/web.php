@@ -127,7 +127,7 @@ Route::middleware('auth')->group(function () {
                 Route::prefix('/serc-order')->group(function () {
                     Route::get('/edit', [HeatController::class, 'editSERCOrder'])->name('comps.view.serc-order.edit');
                     Route::post('/edit', [HeatController::class, 'editSERCOrderPost'])->name('comps.view.serc-order.editPost');
-                    //Route::get('/gen', [HeatController::class, 'createDefaultSERCorderForComp']);
+                    Route::get('/regen', [HeatController::class, 'regenSERCOrder'])->name('comps.view.serc-order.regen');
                 });
             });
         });

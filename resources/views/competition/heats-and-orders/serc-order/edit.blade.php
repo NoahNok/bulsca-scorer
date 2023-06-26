@@ -62,6 +62,12 @@ Heats and Orders | {{ $comp->name }}
 
 
     </div>
+    <h4>Regen SERC Order</h4>
+    <p>Regenerating the SERC order will randomly assign teams. <strong>You will loose</strong> any alterations you have made!</p>
+    <br>
+    <form action="{{ route('comps.view.serc-order.regen', $comp) }}" method="get" onsubmit="return confirm('Are you sure you want to reset the heats?')">
+        <button class="btn btn-danger">Regen</button>
+    </form>
 </div>
 
 <script>

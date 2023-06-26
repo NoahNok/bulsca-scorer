@@ -157,6 +157,15 @@ Edit Teams | {{ $comp->name }}
         <br>
         <br>
     </div>
+    <div class=" row-start-1 md:row-start-auto">
+        <div class="alert-box alert-warning">
+            <h1>Heat & SERC Order</h1>
+            <p>You will need to <strong>regenerate</strong> the Heat and SERC Order after adding any <strong>new</strong> teams.
+                <br>
+                <strong>Tip:</strong> Only generate the heats and SERC Order after adding all your teams!
+            </p>
+        </div>
+    </div>
 </div>
 
 
