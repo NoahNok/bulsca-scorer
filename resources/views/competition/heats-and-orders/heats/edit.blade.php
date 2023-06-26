@@ -63,7 +63,7 @@ Heats and Orders | {{ $comp->name }}
         
                                     <li class="card cursor-pointer hover:bg-bulsca hover:text-white " data-team="{{ $lane->getTeam->id ?? -1}}" data-heat="{{ $key }}" data-lane="{{ $l }}">
                                         @if ($lane)
-                                         {{ $lane->getTeam->getFullname() }}
+                                         {{ $lane->getTeam->getFullname() }} ({{ $lane->getTeam->getSwimTowTimeForDefault()}})
                                         @else
                                           &nbsp;
                                         @endif
