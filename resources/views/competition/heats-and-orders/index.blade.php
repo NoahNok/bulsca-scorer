@@ -36,6 +36,15 @@ Heats and Orders | {{ $comp->name }}
             <a href="{{ route('comps.view.heats.edit', $comp) }}" class="btn">Edit Heats</a>
         </div>
 
+        @if ($comp->getCompetitionTeams->count() == 0)
+        <div class=" grid grid-cols-3">
+            <div class="alert-box ">
+                <h1>No Teams</h1>
+                <p>You need to <strong>add</strong> some <a class="" href="{{ route('comps.view.teams.edit', $comp) }}">teams</a> before you can generate heats
+                </p>
+            </div>
+        </div>
+        @else
         <div class="flex space-x-2  ">
             <div class=" hidden md:block  ">
                 <h5>Lane</h5>
@@ -44,8 +53,7 @@ Heats and Orders | {{ $comp->name }}
                     <li class="px-5 py-3 border border-transparent">{{ $l }}</li>
                     @endfor
                 </ol>
-            </div>
-       
+            </div>       
                 <div class=" w-full grid grid-cols-1 md:grid-cols-8 gap-3 " >
       
                 
@@ -80,6 +88,7 @@ Heats and Orders | {{ $comp->name }}
         
                 </div>
         </div>
+        @endif
 
         <br>
 
@@ -97,7 +106,14 @@ Heats and Orders | {{ $comp->name }}
                 <div>
                     <a href="{{ route('comps.view.serc-order.regen', $comp) }}" class="btn ">Generate SERC Order</a>
                 </div>
-                
+            @elseif ($comp->getCompetitionTeams->count() == 0)
+                <div class=" grid grid-cols-3">
+                    <div class="alert-box ">
+                        <h1>No Teams</h1>
+                        <p>You need to <strong>add</strong> some <a class="" href="{{ route('comps.view.teams.edit', $comp) }}">teams</a> before you can generate a SERC order
+                        </p>
+                    </div>
+                </div>
             @else
                 @foreach ($comp->getCompetitionTeams as $team)
 
