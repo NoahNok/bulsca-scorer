@@ -16,50 +16,76 @@ class TeamsController extends Controller
 
     public function edit(Competition $comp)
     {
-        return view('competition.teams.edit', ['comp' => $comp]);
+
+
+        $all_clubs = [];
+
+        foreach ($comp->getCompetitionTeams()->reorder('team')->get() as $team) {
+            $club_name = $team->getClubName();
+            $club_teams = $all_clubs[$club_name] ?? [];
+
+
+
+            array_push($club_teams, ["team" => $team->team, "time" => $team->getSwimTowTimeForDefault(), "league" => $team->league]);
+
+
+            $all_clubs[$club_name] = $club_teams;
+        }
+
+        $final = [];
+        foreach ($all_clubs as $name => $club) {
+            array_push($final, ['name' => $name, 'teams' => $club]);
+        }
+
+
+
+        return view('competition.teams.edit', ['comp' => $comp, 'currentTeams' => json_encode($final)]);
     }
 
     public function editPost(Competition $comp, Request $request)
     {
 
-        $json = json_decode($request->input('data'));
-        foreach ($json as $row) {
-            $team = null;
-            $isNew = false;
-            if ($row->id == "null") {
-                $team = new CompetitionTeam();
-                $isNew = true;
-            } else {
-                $team = CompetitionTeam::find($row->id);
-            }
+        $json = json_decode($request->input('json'));
 
-            $team->club = Club::firstOrCreate(['name' => $row->values->club])->id;
-            $team->team = $row->values->team;
+        $teamIdsToKeep = [];
 
-            $team->competition = $comp->id;
-            $team->league = $row->values->league;
+        foreach ($json as $json_club) {
+            $club = Club::firstOrCreate(['name' => $json_club->name]);
+            foreach ($json_club->teams as $json_team) {
+
+
+                $team = CompetitionTeam::firstOrNew(['club' => $club->id, 'team' => $json_team->team]);
+
+                $team->competition = $comp->id;
+                $team->league = $json_team->league;
 
 
 
 
-            $timeParts = explode(":", $row->values->st_time);
-            $seconds = $timeParts[0] * 60 + $timeParts[1];
-            $team->st_time = $seconds;
+                $timeParts = explode(":", $json_team->time);
+                $seconds = $timeParts[0] * 60 + $timeParts[1];
+                $team->st_time = $seconds;
+                $team->save();
 
-            $team->save();
+                array_push($teamIdsToKeep, $team->id);
 
-
-
-            if ($isNew) {
-                // If they are a new team, add them to all the current events
-                foreach ($comp->getSpeedEvents as $event) {
-                    $sr = new SpeedResult();
-                    $sr->competition_team = $team->id;
-                    $sr->event = $event->id;
-                    $sr->save();
+                if ($team->wasRecentlyCreated) {
+                    // If they are a new team, add them to all the current events
+                    foreach ($comp->getSpeedEvents as $event) {
+                        $sr = new SpeedResult();
+                        $sr->competition_team = $team->id;
+                        $sr->event = $event->id;
+                        $sr->save();
+                    }
                 }
             }
         }
+
+        // Now remove any deleted teams - these won't be present in the ids to keep
+
+        CompetitionTeam::where('competition', $comp->id)->whereNotIn('id', $teamIdsToKeep)->delete();
+
+
 
         return;
 

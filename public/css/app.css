@@ -570,6 +570,9 @@ video {
 .mb-6 {
   margin-bottom: 1.5rem;
 }
+.ml-auto {
+  margin-left: auto;
+}
 .mb-1 {
   margin-bottom: 0.25rem;
 }
@@ -584,9 +587,6 @@ video {
 }
 .ml-2 {
   margin-left: 0.5rem;
-}
-.ml-auto {
-  margin-left: auto;
 }
 .mt-6 {
   margin-top: 1.5rem;
@@ -872,11 +872,14 @@ video {
 .grid-cols-5 {
   grid-template-columns: repeat(5, minmax(0, 1fr));
 }
-.grid-cols-1 {
-  grid-template-columns: repeat(1, minmax(0, 1fr));
+.grid-cols-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 .grid-cols-3 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.grid-cols-1 {
+  grid-template-columns: repeat(1, minmax(0, 1fr));
 }
 .grid-rows-6 {
   grid-template-rows: repeat(6, minmax(0, 1fr));
@@ -892,9 +895,6 @@ video {
 }
 .items-start {
   align-items: flex-start;
-}
-.items-end {
-  align-items: flex-end;
 }
 .items-center {
   align-items: center;
@@ -914,11 +914,11 @@ video {
 .gap-2 {
   gap: 0.5rem;
 }
-.gap-3 {
-  gap: 0.75rem;
-}
 .gap-4 {
   gap: 1rem;
+}
+.gap-3 {
+  gap: 0.75rem;
 }
 .gap-y-4 {
   row-gap: 1rem;
@@ -953,6 +953,11 @@ video {
   margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
 }
+.space-y-3 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.75rem * var(--tw-space-y-reverse));
+}
 .space-y-1 > :not([hidden]) ~ :not([hidden]) {
   --tw-space-y-reverse: 0;
   margin-top: calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));
@@ -967,11 +972,6 @@ video {
   --tw-space-x-reverse: 0;
   margin-right: calc(2rem * var(--tw-space-x-reverse));
   margin-left: calc(2rem * calc(1 - var(--tw-space-x-reverse)));
-}
-.space-y-3 > :not([hidden]) ~ :not([hidden]) {
-  --tw-space-y-reverse: 0;
-  margin-top: calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));
-  margin-bottom: calc(0.75rem * var(--tw-space-y-reverse));
 }
 .overflow-hidden {
   overflow: hidden;
@@ -1467,13 +1467,13 @@ video {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
-.transition-colors {
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+.transition-all {
+  transition-property: all;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
-.transition-all {
-  transition-property: all;
+.transition-colors {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
@@ -1700,6 +1700,10 @@ div.form-input input.file::file-selector-button:hover, div.form-input select.fil
 div.form-input > input {
   padding-top: 0.621rem;
   padding-bottom: 0.621rem;
+}
+div.form-input > input[type=time] {
+  padding-bottom: 0.59rem;
+  padding-top: 0.59rem;
 }
 div.form-input > small {
   margin-top: -0.75rem;
@@ -2230,10 +2234,6 @@ aside.open {
 .hover\:text-gray-400:hover {
   --tw-text-opacity: 1;
   color: rgb(156 163 175 / var(--tw-text-opacity));
-}
-.hover\:text-red-500:hover {
-  --tw-text-opacity: 1;
-  color: rgb(239 68 68 / var(--tw-text-opacity));
 }
 .hover\:text-white:hover {
   --tw-text-opacity: 1;

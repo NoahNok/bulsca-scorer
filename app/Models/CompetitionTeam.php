@@ -10,7 +10,7 @@ class CompetitionTeam extends Model
 {
     use HasFactory;
 
-
+    protected $fillable = ['club', 'team'];
 
     public function getClubName()
     {

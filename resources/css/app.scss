@@ -87,8 +87,13 @@ h5 {
     
    }
 
+
    > input {
     @apply  pt-[0.621rem] pb-[0.621rem];
+   }
+
+   > input[type=time] {
+    @apply pb-[0.59rem] pt-[0.59rem];
    }
 
    > small {
