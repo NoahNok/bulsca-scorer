@@ -2187,6 +2187,9 @@ aside.open {
 .hover\:whitespace-normal:hover {
   white-space: normal;
 }
+.hover\:border-b:hover {
+  border-bottom-width: 1px;
+}
 .hover\:border-gray-400:hover {
   --tw-border-opacity: 1;
   border-color: rgb(156 163 175 / var(--tw-border-opacity));
@@ -2259,8 +2262,15 @@ aside.open {
   --tw-shadow-colored: 0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
+.hover\:outline-none:hover {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
 .focus\:z-10:focus {
   z-index: 10;
+}
+.focus\:border-b:focus {
+  border-bottom-width: 1px;
 }
 .focus\:border-blue-300:focus {
   --tw-border-opacity: 1;
@@ -2358,6 +2368,10 @@ aside.open {
 .active\:text-gray-500:active {
   --tw-text-opacity: 1;
   color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+.active\:outline-none:active {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
 }
 .disabled\:opacity-25:disabled {
   opacity: 0.25;

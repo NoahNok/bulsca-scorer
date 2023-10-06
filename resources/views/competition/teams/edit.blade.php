@@ -125,7 +125,9 @@
                         }
                     }">
                         <div class="flex items-center">
-                            <h3 class="mb-0" x-text="club.name"></h3>
+                            <input
+                                class="mb-0 text-3xl text-bulsca font-semibold hover:border-b focus:border-b focus:outline-none"
+                                x-model.lazy="club.name">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor" class="w-6 h-6 ml-auto"
                                 x-on:click="clubs = clubs.filter((c) => c.name != club.name)">
