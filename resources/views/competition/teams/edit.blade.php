@@ -67,13 +67,13 @@
                 name: this.name,
                 teams: [{
                         team: 'A',
-                        time: '',
+                        time: '00:00',
                         league: '1',
                         id: null
                     },
                     {
                         team: 'B',
-                        time: '',
+                        time: '00:00',
                         league: '1',
                         id: null
                     }
@@ -104,7 +104,7 @@
                                     ...club.teams,
                                     {
                                         team: 'A',
-                                        time: '',
+                                        time: '00:00',
                                         league: '1',
                                         id: null
                                     }
@@ -114,7 +114,7 @@
                                     ...club.teams,
                                     {
                                         team: String.fromCharCode(club.teams[club.teams.length - 1].team.charCodeAt(0) + 1),
-                                        time: '',
+                                        time: '00:00',
                                         league: '1',
                                         id: null
                                     }
