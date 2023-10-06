@@ -54,7 +54,7 @@
             }).then(res => {
                 if (res.ok) {
                     showSuccess('Saved teams')
-                    this.hasChanges = false
+                    setTimeout(() => location.href = `{{ route('comps.view.teams', $comp) }}`, 500)
                 } else {
                     showAlert(`Failed to save teams. Check your inputs and try again!`)
                 }
@@ -68,12 +68,14 @@
                 teams: [{
                         team: 'A',
                         time: '',
-                        league: '1'
+                        league: '1',
+                        id: null
                     },
                     {
                         team: 'B',
                         time: '',
-                        league: '1'
+                        league: '1',
+                        id: null
                     }
                 ]
             }]
@@ -103,7 +105,8 @@
                                     {
                                         team: 'A',
                                         time: '',
-                                        league: '1'
+                                        league: '1',
+                                        id: null
                                     }
                                 ]
                             } else {
@@ -112,7 +115,8 @@
                                     {
                                         team: String.fromCharCode(club.teams[club.teams.length - 1].team.charCodeAt(0) + 1),
                                         time: '',
-                                        league: '1'
+                                        league: '1',
+                                        id: null
                                     }
                                 ]
                             }

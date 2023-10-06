@@ -26,7 +26,7 @@ class TeamsController extends Controller
 
 
 
-            array_push($club_teams, ["team" => $team->team, "time" => $team->getSwimTowTimeForDefault(), "league" => $team->league]);
+            array_push($club_teams, ["team" => $team->team, "time" => $team->getSwimTowTimeForDefault(), "league" => $team->league, "id" => $team->id]);
 
 
             $all_clubs[$club_name] = $club_teams;
@@ -54,7 +54,14 @@ class TeamsController extends Controller
             foreach ($json_club->teams as $json_team) {
 
 
-                $team = CompetitionTeam::firstOrNew(['club' => $club->id, 'team' => $json_team->team]);
+                $team = null;
+                if ($json_team->id === null) {
+                    $team = new CompetitionTeam();
+                } else {
+                    $team = CompetitionTeam::find($json_team->id);
+                }
+                $team->club = $club->id;
+                $team->team = $json_team->team;
 
                 $team->competition = $comp->id;
                 $team->league = $json_team->league;
