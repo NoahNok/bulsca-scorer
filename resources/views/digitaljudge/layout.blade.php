@@ -7,6 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DigitalJudge</title>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/mask@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
 <body class="overflow-x-hidden">
@@ -22,16 +24,14 @@
 
     <script src="{{ asset('js/alert.js') }}"></script>
     @if (Session::has('success'))
-    <script>
-        showSuccess('{{ Session::get("success") }}')
-    </script>
-
+        <script>
+            showSuccess('{{ Session::get('success') }}')
+        </script>
     @endif
     @if (Session::has('alert-error'))
-    <script>
-        showAlert('{{ Session::get("alert-error") }}')
-    </script>
-
+        <script>
+            showAlert('{{ Session::get('alert-error') }}')
+        </script>
     @endif
 </body>
 

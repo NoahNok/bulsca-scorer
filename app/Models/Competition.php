@@ -85,4 +85,14 @@ class Competition extends Model
     {
         return $this->getCompetitionTeams()->where('serc_order', 0)->exists();
     }
+
+    public function getMaxHeats(): int
+    {
+        return $this->getHeatEntries->max('heat');
+    }
+
+    public function getMaxLanes(): int
+    {
+        return $this->max_lanes;
+    }
 }

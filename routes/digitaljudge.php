@@ -39,8 +39,10 @@ Route::prefix('dj')->group(function () {
         Route::post('{serc}/confirm-results', [DigitalJudgeController::class, 'confirmResultsPost'])->name('dj.confirm-results.post');
 
 
-        Route::prefix('speeds')->group(function () {
-            Route::get('', [SpeedJudgingController::class, 'index'])->name('dj.speeds');
+        Route::prefix('speeds/{speed}')->group(function () {
+            Route::get('times', [SpeedJudgingController::class, 'timesIndex'])->name('dj.speeds.times.index');
+            Route::get('times/h/{heat}', [SpeedJudgingController::class, 'timesJudge'])->name('dj.speeds.times.judge');
+            Route::post('times/h/{heat}', [SpeedJudgingController::class, 'saveHeatTimes'])->name('dj.speeds.times.judgePost');
         });
     });
 });

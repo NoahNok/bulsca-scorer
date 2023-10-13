@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class SpeedEvent extends Model
 {
     use HasFactory;
+
+    public function getName()
+    {
+        return $this->name;
+    }
 }
