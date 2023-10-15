@@ -60,7 +60,7 @@
                             <p>Times</p>
                             <p class=" link">Start</p>
                         </a>
-                        <a href="#" class="flex justify-between items-center">
+                        <a href="#" class="flex justify-between items-center hidden">
                             <p>Order of Finish</p>
                             <p class=" link">Start</p>
                         </a>

@@ -13,11 +13,36 @@
 
             <a href="{{ route('dj.home') }}" class="link">Back</a>
 
-            <p>Heats will turn green once entered!</p>
+            <p>Heats will turn green once complete!</p>
 
 
             @for ($heat = 1; $heat <= $comp->getMaxHeats(); $heat++)
-                <a href="{{ route('dj.speeds.times.judge', [$speed, $heat]) }}" class="btn btn-primary">Heat
+                @php
+                    $heatTeams = $comp
+                        ->getHeatEntries()
+                        ->where('heat', $heat)
+                        ->get();
+
+                    $missingResult = false;
+
+                    // Code that checks if each team has a reuslt for the event
+                    foreach ($heatTeams as $team) {
+                        $sr = App\Models\SpeedResult::where('competition_team', $team->team)
+                            ->where('event', $speed->id)
+                            ->first();
+
+                        if ($sr->result == null) {
+                            $missingResult = true;
+                            break;
+                        }
+                    }
+
+                @endphp
+
+
+
+                <a href="{{ route('dj.speeds.times.judge', [$speed, $heat]) }}"
+                    class="btn {{ $missingResult ? 'btn-primary' : 'btn-success' }}">Heat
                     {{ $heat }}</a>
             @endfor
 

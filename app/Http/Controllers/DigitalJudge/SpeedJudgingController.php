@@ -5,6 +5,7 @@ namespace App\Http\Controllers\DigitalJudge;
 use App\DigitalJudge\DigitalJudge;
 use App\Http\Controllers\Controller;
 use App\Models\CompetitionSpeedEvent;
+use App\Models\Penalty;
 use App\Models\SpeedEvent;
 use App\Models\SpeedResult;
 use Illuminate\Http\Request;
@@ -43,14 +44,49 @@ class SpeedJudgingController extends Controller
 
             $sr = SpeedResult::where('competition_team', $team)->where('event', $speed->id)->first();
 
+
+            if ($values['dq'] != "") {
+                $sr->disqualification = $values['dq'];
+            } else {
+                $sr->disqualification = null;
+            }
+
+            Penalty::where('speed_result', $sr->id)->delete();
+            foreach (explode(",", $values['p']) as $penalty) {
+                if ($penalty == "") continue;
+
+                $p = new Penalty();
+                $p->speed_result = $sr->id;
+                $p->code = trim($penalty);
+                $p->save();
+            }
+
+
+
             $minSecSplit = explode(":", $values['time']);
-            $min = $minSecSplit[0];
-            $secMillisSplit = explode(".", $minSecSplit[1]);
 
-            $totalMillis = $min * 60000 + $secMillisSplit[0] * 1000 + $secMillisSplit[1];
+            if ($speed->getName() == "Rope Throw" && count($minSecSplit) == 1) {
+                $sr->result = $minSecSplit[0];
+            } else {
+
+                if (count($minSecSplit) != 2) {
+                    continue;
+                }
+
+                $min = $minSecSplit[0];
+                $secMillisSplit = explode(".", $minSecSplit[1]);
+                if (count($secMillisSplit) != 2) {
+                    continue;
+                }
+
+                $totalMillis = $min * 60000 + $secMillisSplit[0] * 1000 + $secMillisSplit[1];
 
 
-            $sr->result = $totalMillis;
+                $sr->result = $totalMillis;
+            }
+
+
+
 
             $sr->save();
         }
