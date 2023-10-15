@@ -5,6 +5,7 @@ namespace App\Http\Controllers\DigitalJudge;
 use App\DigitalJudge\DigitalJudge;
 use App\Http\Controllers\Controller;
 use App\Models\CompetitionSpeedEvent;
+use App\Models\DigitalJudge\JudgeLog;
 use App\Models\Penalty;
 use App\Models\SpeedEvent;
 use App\Models\SpeedResult;
@@ -89,7 +90,19 @@ class SpeedJudgingController extends Controller
 
 
             $sr->save();
+
+            $jl = new JudgeLog();
+
+            $jl->competition = DigitalJudge::getClientCompetition()->id;
+            $jl->team = $team;
+            $jl->judgeName = DigitalJudge::getClientName();
+            $jl->speed_event = $speed->id;
+            $jl->save();
         }
+
+
+
+
 
         if ($heat + 1 > DigitalJudge::getClientCompetition()->getMaxHeats()) {
             return redirect()->route('dj.speeds.times.index', $speed);

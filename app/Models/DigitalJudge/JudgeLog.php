@@ -2,6 +2,7 @@
 
 namespace App\Models\DigitalJudge;
 
+use App\Models\CompetitionSpeedEvent;
 use App\Models\CompetitionTeam;
 use App\Models\SERCJudge;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,5 +23,10 @@ class JudgeLog extends Model
     public function getTeam()
     {
         return $this->hasOne(CompetitionTeam::class, 'id', 'team');
+    }
+
+    public function getSpeedEvent()
+    {
+        return $this->hasOne(CompetitionSpeedEvent::class, 'id', 'speed_event');
     }
 }
