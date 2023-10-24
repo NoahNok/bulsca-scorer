@@ -29,4 +29,9 @@ class JudgeLog extends Model
     {
         return $this->hasOne(CompetitionSpeedEvent::class, 'id', 'speed_event');
     }
+
+    public function getChange()
+    {
+        return $this->from . " -> " . $this->to;
+    }
 }

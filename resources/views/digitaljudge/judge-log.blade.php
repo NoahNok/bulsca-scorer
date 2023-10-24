@@ -53,10 +53,10 @@
     {{ $log->links() }}
     <div class="flex flex-col space-y-2 mt-2">
         @forelse ($log as $l)
-            <div class="card card-row space-x-4 items-center">
+            <div class="card card-row space-x-4 items-center ">
                 <p class="text-center text-sm text-gray-500 px-2">
                     {{ $l->created_at->format('h:ia') }}<br>{{ $l->created_at->format('d/m/y') }}</p>
-                <div class="px-4">
+                <div class="px-4 w-[15%] max-w-[15%]">
                     <h5 class=" ">
                         {{ $l->judgeName }} marked {{ $l->getTeam->getFullname() }}
                     </h5>
@@ -76,6 +76,14 @@
                             <br>
                             Judge Name: {{ $l->getJudge()->first()->name }}
                         </p>
+                    @endif
+                </div>
+                <div class="" style="">
+                    @if ($l->from != null && $l->to != null)
+                        <h5>From</h5>
+                        <p>{{ $l->from }}</p>
+                        <h5>To</h5>
+                        <p>{{ $l->to }}</p>
                     @endif
                 </div>
             </div>

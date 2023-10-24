@@ -45,6 +45,9 @@ class SpeedJudgingController extends Controller
 
             $sr = SpeedResult::where('competition_team', $team)->where('event', $speed->id)->first();
 
+            $fromDQ = $sr->disqualification;
+            $fromPenalties = $sr->getPenalties->pluck('code')->join(", ");
+            $fromResult = $sr->getResultAsString();
 
             if ($values['dq'] != "") {
                 $sr->disqualification = $values['dq'];
@@ -61,6 +64,9 @@ class SpeedJudgingController extends Controller
                 $p->code = trim($penalty);
                 $p->save();
             }
+
+            $toDQ = $sr->disqualification;
+            $toPenalties = $sr->getPenalties->pluck('code')->join(", ");
 
 
 
@@ -88,8 +94,15 @@ class SpeedJudgingController extends Controller
 
 
 
-
             $sr->save();
+            $toResult = $sr->getResultAsString();
+
+            $from = "Result: " . $fromResult . " DQ: " . ($fromDQ ?: '-') . " Penalties: " . ($fromPenalties == "" ? "-" : $fromPenalties);
+            $to = "Result: " . $toResult . " DQ: " . ($toDQ ?: '-') . " Penalties: " . ($toPenalties == "" ? "-" : $toPenalties);
+
+
+
+
 
             $jl = new JudgeLog();
 
@@ -97,6 +110,8 @@ class SpeedJudgingController extends Controller
             $jl->team = $team;
             $jl->judgeName = DigitalJudge::getClientName();
             $jl->speed_event = $speed->id;
+            $jl->from = $from;
+            $jl->to = $to;
             $jl->save();
         }
 

@@ -15,4 +15,9 @@ class SERCResult extends Model
         'marking_point',
         'team'
     ];
+
+    public function getMarkingPointName()
+    {
+        return $this->belongsTo(SERCMarkingPoint::class, 'marking_point', 'id')->get('name')->implode('name');
+    }
 }

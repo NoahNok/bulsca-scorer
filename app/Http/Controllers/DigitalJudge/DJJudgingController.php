@@ -84,6 +84,10 @@ class DJJudgingController extends Controller
     {
 
         if ($team->competition != DigitalJudge::getClientCompetition()->id) return redirect()->route('dj.judging.home');
+
+        $from = "";
+        $to = "";
+
         foreach ($request->all() as $key => $value) {
 
             if (!str_starts_with($key, 'mp-')) continue;
@@ -91,7 +95,9 @@ class DJJudgingController extends Controller
             $markingPointId = explode("-", $key)[1];
 
             $sercResult = SERCResult::firstOrNew(['marking_point' => $markingPointId, 'team' => $team->id]);
+            $from .= $sercResult->getMarkingPointName() . ": " . ($sercResult->result ?: "-") . ", ";
             $sercResult->result = $value;
+            $to .= $sercResult->getMarkingPointName() . ": " . $sercResult->result . ", ";
 
 
             $sercResult->save();
@@ -116,6 +122,8 @@ class DJJudgingController extends Controller
             $jl->competition = $team->competition;
             $jl->team = $team->id;
             $jl->judgeName = DigitalJudge::getClientName();
+            $jl->from = $from;
+            $jl->to = $to;
             $jl->save();
         }
 
