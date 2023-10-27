@@ -88,7 +88,7 @@ class Competition extends Model
 
     public function getMaxHeats(): int
     {
-        return $this->getHeatEntries->max('heat');
+        return $this->getHeatEntries->max('heat') ?: -1;
     }
 
     public function getMaxLanes(): int

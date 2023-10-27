@@ -49,7 +49,7 @@
 
             <h3>Speeds</h3>
 
-            @if ($comp->getMaxHeats() == null)
+            @if ($comp->getMaxHeats() == -1)
                 <div class="alert-box">
                     <p class="font-semibold">No Heats Set</p>
                     <p class="text-sm">You have not generated heats yet. You will not be able to digitally judge any speeds
