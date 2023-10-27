@@ -1146,6 +1146,10 @@ video {
   --tw-bg-opacity: 1;
   background-color: rgb(209 213 219 / var(--tw-bg-opacity));
 }
+.bg-bulsca_red {
+  --tw-bg-opacity: 1;
+  background-color: rgb(158 13 6 / var(--tw-bg-opacity));
+}
 .fill-current {
   fill: currentColor;
 }
