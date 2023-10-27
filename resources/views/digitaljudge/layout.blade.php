@@ -14,7 +14,7 @@
 <body class="overflow-x-hidden">
 
     @if (\App\DigitalJudge\DigitalJudge::isClientHeadJudge())
-        <div class="w-full bg-bulsca text-white font-semibold text-center p-1">
+        <div class="w-full fixed top-0 left-0 bg-bulsca text-white font-semibold text-center p-1">
             Head Judge/SERC Setter Mode
         </div>
     @endif
