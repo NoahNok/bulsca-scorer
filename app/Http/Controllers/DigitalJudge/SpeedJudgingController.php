@@ -125,4 +125,19 @@ class SpeedJudgingController extends Controller
 
         return redirect()->route('dj.speeds.times.judge', [$speed, $heat + 1]);
     }
+
+    // ##########################################################################
+    // ########################### ORDER OF FINISH ##############################
+    // ##########################################################################
+
+    public function oofIndex(CompetitionSpeedEvent $speed)
+    {
+
+        return view('digitaljudge.speeds.oof.index', ['speed' => $speed, 'comp' => DigitalJudge::getClientCompetition()]);
+    }
+
+    public function oofJudge(CompetitionSpeedEvent $speed, int $heat)
+    {
+        return view('digitaljudge.speeds.oof.judge', ['speed' => $speed, 'comp' => DigitalJudge::getClientCompetition(), 'heat' => $heat]);
+    }
 }

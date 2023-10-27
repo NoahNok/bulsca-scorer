@@ -8,8 +8,9 @@
             <h5 class="font-semibold ">DigitalJudge | {{ $comp->name }} | {{ $speed->getName() }}</h5>
             <br>
             <h2 class="font-bold text-center w-full break-words">
-                {{ $speed->getName() }}
+                Times
             </h2>
+
 
             <a href="{{ route('dj.home') }}" class="link">Back</a>
 

@@ -40,9 +40,21 @@ Route::prefix('dj')->group(function () {
 
 
         Route::prefix('speeds/{speed}')->group(function () {
-            Route::get('times', [SpeedJudgingController::class, 'timesIndex'])->name('dj.speeds.times.index');
-            Route::get('times/h/{heat}', [SpeedJudgingController::class, 'timesJudge'])->name('dj.speeds.times.judge');
-            Route::post('times/h/{heat}', [SpeedJudgingController::class, 'saveHeatTimes'])->name('dj.speeds.times.judgePost');
+
+            Route::prefix('times')->group(function () {
+                Route::get('', [SpeedJudgingController::class, 'timesIndex'])->name('dj.speeds.times.index');
+                Route::get('/h/{heat}', [SpeedJudgingController::class, 'timesJudge'])->name('dj.speeds.times.judge');
+                Route::post('/h/{heat}', [SpeedJudgingController::class, 'saveHeatTimes'])->name('dj.speeds.times.judgePost');
+            });
+
+
+
+
+            Route::prefix('oof')->group(function () {
+                Route::get('', [SpeedJudgingController::class, 'oofIndex'])->name('dj.speeds.oof.index');
+                Route::get('/h/{heat}', [SpeedJudgingController::class, 'oofJudge'])->name('dj.speeds.oof.judge');
+                Route::post('/h/{heat}', [SpeedJudgingController::class, 'saveOofTimes'])->name('dj.speeds.oof.judgePost');
+            });
         });
     });
 });
