@@ -46,7 +46,7 @@
                 </div>
             @endforeach
 
-            @env('local')
+
             <h3>Speeds</h3>
 
             @foreach ($comp->getSpeedEvents as $speed)
@@ -61,15 +61,17 @@
                             <p>Times</p>
                             <p class=" link">Start</p>
                         </a>
+                        @env('local')
                         <a href="{{ route('dj.speeds.oof.index', $speed) }}" class="flex justify-between items-center">
                             <p>Order of Finish</p>
                             <p class=" link">Start</p>
                         </a>
+                        @endenv
 
                     </div>
                 </div>
             @endforeach
-            @endenv
+
 
             <a href="{{ route('dj.logout') }}" class="link">Logout</a>
         </div>

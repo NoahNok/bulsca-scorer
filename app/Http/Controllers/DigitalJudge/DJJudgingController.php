@@ -13,6 +13,7 @@ use App\Models\SERCResult;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 class DJJudgingController extends Controller
 {
@@ -66,10 +67,12 @@ class DJJudgingController extends Controller
 
         $nextTeam = CompetitionTeam::find($nextTeamId);
 
-        return redirect()->route('dj.judging.judge-team', [$nextTeam]);
+        $resp = redirect()->route('dj.judging.judge-team', [$nextTeam]);
+        if (Session::has('success')) $resp = $resp->with('success', Session::get('success'));
+        return $resp;
     }
 
-    public function judgeTeam(CompetitionTeam $team)
+    public function judgeTeam(CompetitionTeam $team, Request $request)
     {
 
         // Check team are part of this competition to avoid any dangerous behaviour
@@ -77,7 +80,11 @@ class DJJudgingController extends Controller
 
         if (!DigitalJudge::isClientHeadJudge() && DigitalJudge::hasTeamBeenJudgedAlready($team)) return redirect()->route('dj.judging.next-team');
 
-        return view('digitaljudge.judging.judge-team', array_merge(DigitalJudge::getBladeProps(), ['team' => $team, 'head' => DigitalJudge::isClientHeadJudge()]));
+        $resp = view('digitaljudge.judging.judge-team', array_merge(DigitalJudge::getBladeProps(), ['team' => $team, 'head' => DigitalJudge::isClientHeadJudge()]));
+
+        if (Session::has('success')) $resp = $resp->with('success', Session::get('success'));
+
+        return $resp;
     }
 
     public function saveTeamScores(Request $request, CompetitionTeam $team)
@@ -127,9 +134,9 @@ class DJJudgingController extends Controller
             $jl->save();
         }
 
-        if (DigitalJudge::isClientHeadJudge()) return redirect()->route('dj.judging.home');
+        if (DigitalJudge::isClientHeadJudge()) return redirect()->route('dj.judging.home')->with('success', 'Team ' . $team->getFullname() . ' has been re-marked!');;
 
-        return redirect()->route('dj.judging.next-team');
+        return redirect()->route('dj.judging.next-team')->with('success', 'Team ' . $team->getFullname() . ' has been marked!');
     }
 
     public function addJudge()
