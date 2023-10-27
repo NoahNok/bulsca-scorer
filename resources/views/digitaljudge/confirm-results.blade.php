@@ -13,8 +13,7 @@
 
             <a href="{{ route('dj.home') }}" class="link">Back</a>
 
-            <p>Below is a list of each team and their marks for each Judge and Marking Point. If there is a mistake you can
-                click the edit button to jump to the respective edit page!</p>
+            <p>Below is a list of each team and their marks for each Judge and Marking Point.</p>
 
 
 
@@ -68,6 +67,7 @@
                             </div>
                         @endforeach
                     </div>
+
                 </div>
             @endforeach
 
