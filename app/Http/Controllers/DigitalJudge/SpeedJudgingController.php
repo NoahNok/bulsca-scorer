@@ -17,11 +17,46 @@ class SpeedJudgingController extends Controller
     public function timesIndex(CompetitionSpeedEvent $speed)
     {
 
-        return view('digitaljudge.speeds.times.index', ['speed' => $speed, 'comp' => DigitalJudge::getClientCompetition()]);
+        return view('digitaljudge.speeds.times.index', ['speed' => $speed, 'comp' => DigitalJudge::getClientCompetition(), 'head' => $isHead = DigitalJudge::isClientHeadJudge()]);
     }
 
     public function timesJudge(CompetitionSpeedEvent $speed, int $heat)
     {
+
+        $comp = DigitalJudge::getClientCompetition();
+
+
+        if ($heat > $comp->getMaxHeats()) {
+            return redirect()->route('dj.speeds.times.index', $speed)->with('alert-error', 'Heat ' . $heat . ' does not exist');
+        }
+
+
+        $heatTeams = $comp
+            ->getHeatEntries()
+            ->where('heat', $heat)
+            ->get();
+
+        $missingResult = false;
+
+        // Code that checks if each team has a reuslt for the event
+        foreach ($heatTeams as $team) {
+            $sr = SpeedResult::where('competition_team', $team->team)
+                ->where('event', $speed->id)
+                ->first();
+
+            if ($sr->result == null) {
+                $missingResult = true;
+                break;
+            }
+        }
+
+        $isHead = $isHead = DigitalJudge::isClientHeadJudge();;
+
+        if (!$missingResult && !$isHead) {
+            return redirect()->route('dj.speeds.times.index', $speed)->with('alert-error', 'All teams have a result for Heat ' . $heat);
+        }
+
+
         return view('digitaljudge.speeds.times.judge', ['speed' => $speed, 'comp' => DigitalJudge::getClientCompetition(), 'heat' => $heat]);
     }
 
@@ -123,7 +158,7 @@ class SpeedJudgingController extends Controller
             return redirect()->route('dj.speeds.times.index', $speed);
         }
 
-        return redirect()->route('dj.speeds.times.judge', [$speed, $heat + 1]);
+        return redirect()->route('dj.speeds.times.judge', [$speed, $heat + 1])->with('success', 'Successfully marked Heat ' . $heat);
     }
 
     // ##########################################################################

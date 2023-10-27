@@ -40,11 +40,13 @@
 
                 @endphp
 
-
-
-                <a href="{{ route('dj.speeds.times.judge', [$speed, $heat]) }}"
-                    class="btn {{ $missingResult ? 'btn-primary' : 'btn-success' }}">Heat
-                    {{ $heat }}</a>
+                @if ($missingResult || $head)
+                    <a href="{{ route('dj.speeds.times.judge', [$speed, $heat]) }}" class="btn btn-primary">Heat
+                        {{ $heat }}</a>
+                @else
+                    <button class="btn btn-success cursor-not-allowed">Heat
+                        {{ $heat }}</button>
+                @endif
             @endfor
 
 

@@ -46,6 +46,7 @@
                 </div>
             @endforeach
 
+            @env('local')
             <h3>Speeds</h3>
 
             @foreach ($comp->getSpeedEvents as $speed)
@@ -68,6 +69,7 @@
                     </div>
                 </div>
             @endforeach
+            @endenv
 
             <a href="{{ route('dj.logout') }}" class="link">Logout</a>
         </div>
