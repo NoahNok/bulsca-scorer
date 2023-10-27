@@ -67,6 +67,8 @@
             <h3>Digital Judging</h3>
             <p>Digital judging allows Judges to enter SERC marks on their own device. It is enabled per comp.</p>
             <strong>If you need to DQ a SERC team, please talk with the competitions Scorer or Organiser!</strong>
+            <p><a href="https://docs.google.com/document/d/1HKTR9HUzgTKadyE7vyVqDWXeaheK4XFmzlw9Hrn1Q1s/edit?usp=sharing"
+                    target="_blank" rel="noopener noreferrer" class="link">DigitalJudge Manual</a></p>
             <br>
             @if ($comp->digitalJudgeEnabled)
                 <h5>Judges</h5>
