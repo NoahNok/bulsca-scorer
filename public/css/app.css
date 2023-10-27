@@ -700,6 +700,9 @@ video {
 .h-9 {
   height: 2.25rem;
 }
+.h-auto {
+  height: auto;
+}
 .max-h-52 {
   max-height: 13rem;
 }
@@ -787,6 +790,9 @@ video {
 }
 .w-3\/4 {
   width: 75%;
+}
+.w-\[40\%\] {
+  width: 40%;
 }
 .min-w-\[20px\] {
   min-width: 20px;
@@ -1010,6 +1016,9 @@ video {
 }
 .text-ellipsis {
   text-overflow: ellipsis;
+}
+.whitespace-normal {
+  white-space: normal;
 }
 .whitespace-nowrap {
   white-space: nowrap;
@@ -2550,6 +2559,22 @@ aside.open {
 
   .md\:w-auto {
     width: auto;
+  }
+
+  .md\:w-\[60\%\] {
+    width: 60%;
+  }
+
+  .md\:w-\[50\%\] {
+    width: 50%;
+  }
+
+  .md\:w-\[40\%\] {
+    width: 40%;
+  }
+
+  .md\:w-\[30\%\] {
+    width: 30%;
   }
 
   .md\:grid-cols-8 {
