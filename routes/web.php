@@ -71,6 +71,9 @@ Route::middleware('auth')->group(function () {
                     Route::get('/{event}', [SpeedsEventController::class, 'view'])->name('comps.view.events.speeds.view');
                     Route::get('/{event}/edit', [SpeedsEventController::class, 'edit'])->name('comps.view.events.speeds.edit');
                     Route::post('/{event}/edit', [SpeedsEventController::class, 'updateResults'])->name('comps.view.events.speeds.editPost');
+
+
+                    Route::get('/{event}/digital-judge-toggle', [DigitalJudgeController::class, 'speedToggle'])->name('dj.speedToggle');
                 });
 
                 // SERCS

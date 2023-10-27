@@ -6,6 +6,7 @@ use App\DigitalJudge\DigitalJudge;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DigitalJudge\LoginRequest;
 use App\Models\Competition;
+use App\Models\CompetitionSpeedEvent;
 use App\Models\DigitalJudge\JudgeLog;
 use App\Models\SERC;
 use App\Models\SERCJudge;
@@ -78,7 +79,16 @@ class DigitalJudgeController extends Controller
     function sercToggle(Competition $comp, SERC $serc)
     {
         $serc->digitalJudgeEnabled = !$serc->digitalJudgeEnabled;
-        $serc->Save();
+        $serc->save();
+        return redirect()->back();
+    }
+
+
+    function speedToggle(Competition $comp, CompetitionSpeedEvent $event)
+    {
+
+        $event->digitalJudgeEnabled = !$event->digitalJudgeEnabled;
+        $event->save();
         return redirect()->back();
     }
 

@@ -49,7 +49,7 @@
 
             <h3>Speeds</h3>
 
-            @foreach ($comp->getSpeedEvents as $speed)
+            @foreach ($comp->getSpeedEvents->where('digitalJudgeEnabled') as $speed)
                 <div class=" w-[80%] border-2 border-bulsca rounded-md ">
                     <p class="p-2 bg-bulsca text-white list-none text-lg font-semibold flex items-center">
                         {{ $speed->getName() }}
