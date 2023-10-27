@@ -49,28 +49,39 @@
 
             <h3>Speeds</h3>
 
-            @foreach ($comp->getSpeedEvents->where('digitalJudgeEnabled') as $speed)
-                <div class=" w-[80%] border-2 border-bulsca rounded-md ">
-                    <p class="p-2 bg-bulsca text-white list-none text-lg font-semibold flex items-center">
-                        {{ $speed->getName() }}
-
-                    </p>
-                    <div class="px-3 py-2 flex flex-col space-y-4">
-
-                        <a href="{{ route('dj.speeds.times.index', $speed) }}" class="flex justify-between items-center">
-                            <p>Times</p>
-                            <p class=" link">Start</p>
-                        </a>
-                        @env('local')
-                        <a href="{{ route('dj.speeds.oof.index', $speed) }}" class="flex justify-between items-center">
-                            <p>Order of Finish</p>
-                            <p class=" link">Start</p>
-                        </a>
-                        @endenv
-
-                    </div>
+            @if ($comp->getMaxHeats() == null)
+                <div class="alert-box">
+                    <p class="font-semibold">No Heats Set</p>
+                    <p class="text-sm">You have not generated heats yet. You will not be able to digitally judge any speeds
+                        events until you do so!</p>
                 </div>
-            @endforeach
+            @else
+                @foreach ($comp->getSpeedEvents->where('digitalJudgeEnabled') as $speed)
+                    <div class=" w-[80%] border-2 border-bulsca rounded-md ">
+                        <p class="p-2 bg-bulsca text-white list-none text-lg font-semibold flex items-center">
+                            {{ $speed->getName() }}
+
+                        </p>
+                        <div class="px-3 py-2 flex flex-col space-y-4">
+
+                            <a href="{{ route('dj.speeds.times.index', $speed) }}"
+                                class="flex justify-between items-center">
+                                <p>Times</p>
+                                <p class=" link">Start</p>
+                            </a>
+                            @env('local')
+                            <a href="{{ route('dj.speeds.oof.index', $speed) }}" class="flex justify-between items-center">
+                                <p>Order of Finish</p>
+                                <p class=" link">Start</p>
+                            </a>
+                            @endenv
+
+                        </div>
+                    </div>
+                @endforeach
+            @endif
+
+
 
 
             <a href="{{ route('dj.logout') }}" class="link">Logout</a>
