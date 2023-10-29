@@ -33,20 +33,34 @@
             <button class="btn">Apply Filters</button>
         </div>
 
-        <div class="form-input w-max">
-            <label for="judge-filter">Judge</label>
-            <select name="filterJudge" id="judge-filter">
-                <option value="">All</option>
-                @foreach ($comp->getSERCs->where('digitalJudgeEnabled', 1) as $serc)
-                    <optgroup label="{{ $serc->getName() }}">
-                        @foreach ($serc->getJudges as $judge)
-                            <option value="{{ $judge->id }}" @if (Request::input('filterJudge') == $judge->id) selected @endif>
-                                {{ $judge->name }}</option>
-                        @endforeach
-                    </optgroup>
-                @endforeach
-            </select>
+        <div class="flex space-x-6">
+            <div class="form-input w-max">
+                <label for="event-filter">Event</label>
+                <select name="filterEvent" id="event-filter">
+                    <option value="">All</option>
+                    @foreach ($comp->getSERCs->where('digitalJudgeEnabled', 1) as $serc)
+                        <optgroup label="{{ $serc->getName() }}">
+                            @foreach ($serc->getJudges as $judge)
+                                <option value="{{ $judge->id }}" @if (Request::input('filterEvent') == $judge->id) selected @endif>
+                                    {{ $judge->name }}</option>
+                            @endforeach
+                        </optgroup>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="form-input w-max">
+                <label for="judge-filter">Judge Name</label>
+                <select name="filterJudge" id="judge-filter">
+                    <option value="">All</option>
+                    @foreach (\App\Models\DigitalJudge\JudgeLog::where('competition', $comp->id)->select('judgeName')->distinct()->get() as $name)
+                        <option value="{{ $name->judgeName }}" @if (Request::input('filterJudge') == $name->judgeName) selected @endif>
+                            {{ $name->judgeName }}</option>
+                    @endforeach
+                </select>
+            </div>
         </div>
+
 
     </form>
 

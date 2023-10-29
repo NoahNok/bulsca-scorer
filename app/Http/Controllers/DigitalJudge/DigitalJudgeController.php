@@ -117,14 +117,21 @@ class DigitalJudgeController extends Controller
 
         $log = JudgeLog::WHERE('competition', $comp->id);
 
+        if ($request->filled('filterEvent')) {
+            $log = $log->where('judge', $request->input('filterEvent'));
+        }
+
         if ($request->filled('filterJudge')) {
-            $log = $log->where('judge', $request->input('filterJudge'));
+            $log = $log->where('judgeName', $request->input('filterJudge'));
         }
 
 
 
         $log = $log->orderBy('created_at', 'DESC')->paginate(15);
 
+        if ($request->filled('filterEvent')) {
+            $log->appends(['filterEvent' => $request->input('filterEvent')]);
+        }
         if ($request->filled('filterJudge')) {
             $log->appends(['filterJudge' => $request->input('filterJudge')]);
         }
