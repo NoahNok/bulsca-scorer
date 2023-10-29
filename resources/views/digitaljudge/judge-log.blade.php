@@ -39,13 +39,21 @@
                 <select name="filterEvent" id="event-filter">
                     <option value="">All</option>
                     @foreach ($comp->getSERCs->where('digitalJudgeEnabled', 1) as $serc)
-                        <optgroup label="{{ $serc->getName() }}">
+                        <optgroup label="SERC: {{ $serc->getName() }}">
                             @foreach ($serc->getJudges as $judge)
-                                <option value="{{ $judge->id }}" @if (Request::input('filterEvent') == $judge->id) selected @endif>
+                                <option value="se{{ $judge->id }}" @if (Request::input('filterEvent') == 'se' . $judge->id) selected @endif>
                                     {{ $judge->name }}</option>
                             @endforeach
                         </optgroup>
                     @endforeach
+
+                    <optgroup label="Speeds">
+                        @foreach ($comp->getSpeedEvents as $speed)
+                            <option value="sp{{ $speed->id }}" @if (Request::input('filterEvent') == 'sp' . $speed->id) selected @endif>
+                                {{ $speed->getName() }}</option>
+                        @endforeach
+                    </optgroup>
+
                 </select>
             </div>
 
@@ -56,6 +64,17 @@
                     @foreach (\App\Models\DigitalJudge\JudgeLog::where('competition', $comp->id)->select('judgeName')->distinct()->get() as $name)
                         <option value="{{ $name->judgeName }}" @if (Request::input('filterJudge') == $name->judgeName) selected @endif>
                             {{ $name->judgeName }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="form-input w-max">
+                <label for="team-filter">Team</label>
+                <select name="filterTeam" id="team-filter">
+                    <option value="">All</option>
+                    @foreach ($comp->getCompetitionTeams()->get()->sortBy('team')->sortBy('club') as $team)
+                        <option value="{{ $team->id }}" @if (Request::input('filterTeam') == $team->id) selected @endif>
+                            {{ $team->getFullname() }}</option>
                     @endforeach
                 </select>
             </div>

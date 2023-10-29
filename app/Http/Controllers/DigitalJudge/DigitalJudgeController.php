@@ -118,11 +118,19 @@ class DigitalJudgeController extends Controller
         $log = JudgeLog::WHERE('competition', $comp->id);
 
         if ($request->filled('filterEvent')) {
-            $log = $log->where('judge', $request->input('filterEvent'));
+            if (str_starts_with($request->input('filterEvent'), 'se')) {
+                $log = $log->where('judge', substr($request->input('filterEvent'), 2));
+            } else {
+                $log = $log->where('speed_event', substr($request->input('filterEvent'), 2));
+            }
         }
 
         if ($request->filled('filterJudge')) {
             $log = $log->where('judgeName', $request->input('filterJudge'));
+        }
+
+        if ($request->filled('filterTeam')) {
+            $log = $log->where('team', $request->input('filterTeam'));
         }
 
 
@@ -134,6 +142,9 @@ class DigitalJudgeController extends Controller
         }
         if ($request->filled('filterJudge')) {
             $log->appends(['filterJudge' => $request->input('filterJudge')]);
+        }
+        if ($request->filled('filterTeam')) {
+            $log->appends(['filterTeam' => $request->input('filterTeam')]);
         }
 
 

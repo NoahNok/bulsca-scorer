@@ -88,8 +88,8 @@
                 <br>
 
                 <h5>Judging Log</h5>
-                <p><a class="link" href="{{ route('dj.judgeLog', $comp) }}">Click here</a> to view an activity log
-                    showing when each Judge marked a team.</p>
+                <p><a class="link" href="{{ route('dj.judgeLog', $comp) }}">Click here</a> to view an activity log of all
+                    judge activity.</p>
 
                 <br>
 

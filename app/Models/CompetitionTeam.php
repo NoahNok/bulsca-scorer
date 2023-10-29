@@ -17,6 +17,7 @@ class CompetitionTeam extends Model
         return $this->hasOne(Club::class, 'id', 'club')->first()->name;
     }
 
+
     public function getLeague()
     {
         return $this->hasOne(League::class, 'id', 'league');
