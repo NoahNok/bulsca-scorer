@@ -25,6 +25,7 @@ use App\Http\Controllers\TeamsController;
 use App\Http\Controllers\SERCController;
 use App\Models\Competition;
 use App\Models\DQCode;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,17 +38,32 @@ use App\Models\DQCode;
 |
 */
 
-Route::middleware('auth')->group(function () {
-    Route::get('/', function () {
-        // @php-ignore
-        if (!auth()->user()->isAdmin() && auth()->user()->getCompetition) {
-            return redirect()->route('comps.view', auth()->user()->getCompetition);
-        }
+Route::get('/', function () {
 
+    if (Auth::guest()) {
         return view('welcome');
-    })->name('home');
+    }
 
-    Route::get('/comps', [CompetitionController::class, 'index'])->name('comps');
+
+
+    if (!auth()->user()->isAdmin() && auth()->user()->getCompetition) {
+        return redirect()->route('comps.view', auth()->user()->getCompetition);
+    }
+
+    if (auth()->user()->isAdmin()) {
+        return redirect()->route('admin.index');
+    }
+})->name('home');
+
+
+
+
+Route::middleware('auth')->group(function () {
+
+
+    // Route::get('/comps', [CompetitionController::class, 'index'])->name('comps');
+
+    Route::redirect('/comps', '/')->name('comps');
 
     Route::middleware('onlyViewOwnComp')->group(function () {
 

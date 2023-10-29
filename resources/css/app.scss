@@ -157,6 +157,23 @@ h5 {
   &.selected {
     @apply bg-bulsca text-white;
   }
+
+  &.card-bulsca {
+    @apply bg-bulsca text-white text-center bg-gradient-to-br from-bulsca to-bulsca_red hover:bg-blend-lighten ;
+
+    &.card-bulsca-red {
+      @apply bg-bulsca_red to-bulsca from-bulsca_red;
+    }
+
+ 
+    * {
+      @apply text-white;
+    }
+  }
+
+  &.card-pad-y {
+    @apply py-10;
+  }
  }
 
  a.link, p.link {

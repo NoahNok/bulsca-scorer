@@ -11,7 +11,7 @@ class CompetitionController extends Controller
 
     public function index()
     {
-        $c = Competition::orderBy('when')->paginate(10);
+        $c = Competition::orderBy('when')->paginate(12);
 
 
         if (!auth()->user()->isAdmin()) return back();

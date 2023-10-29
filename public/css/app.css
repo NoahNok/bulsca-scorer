@@ -697,11 +697,11 @@ video {
 .h-20 {
   height: 5rem;
 }
+.h-12 {
+  height: 3rem;
+}
 .h-9 {
   height: 2.25rem;
-}
-.h-auto {
-  height: auto;
 }
 .max-h-52 {
   max-height: 13rem;
@@ -785,14 +785,20 @@ video {
 .w-20 {
   width: 5rem;
 }
+.w-\[30\%\] {
+  width: 30%;
+}
+.w-12 {
+  width: 3rem;
+}
 .w-\[60\%\] {
   width: 60%;
 }
-.w-3\/4 {
-  width: 75%;
-}
 .w-\[40\%\] {
   width: 40%;
+}
+.w-3\/4 {
+  width: 75%;
 }
 .min-w-\[20px\] {
   min-width: 20px;
@@ -986,6 +992,11 @@ video {
   margin-right: calc(0.75rem * var(--tw-space-x-reverse));
   margin-left: calc(0.75rem * calc(1 - var(--tw-space-x-reverse)));
 }
+.space-y-12 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(3rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(3rem * var(--tw-space-y-reverse));
+}
 .space-x-8 > :not([hidden]) ~ :not([hidden]) {
   --tw-space-x-reverse: 0;
   margin-right: calc(2rem * var(--tw-space-x-reverse));
@@ -1016,9 +1027,6 @@ video {
 }
 .text-ellipsis {
   text-overflow: ellipsis;
-}
-.whitespace-normal {
-  white-space: normal;
 }
 .whitespace-nowrap {
   white-space: nowrap;
@@ -1155,9 +1163,20 @@ video {
   --tw-bg-opacity: 1;
   background-color: rgb(209 213 219 / var(--tw-bg-opacity));
 }
-.bg-bulsca_red {
-  --tw-bg-opacity: 1;
-  background-color: rgb(158 13 6 / var(--tw-bg-opacity));
+.bg-gradient-to-r {
+  background-image: linear-gradient(to right, var(--tw-gradient-stops));
+}
+.from-bulsca {
+  --tw-gradient-from: #070660;
+  --tw-gradient-to: rgb(7 6 96 / 0);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+.to-bulsca_red {
+  --tw-gradient-to: #9e0d06;
+}
+.bg-clip-text {
+  -webkit-background-clip: text;
+          background-clip: text;
 }
 .fill-current {
   fill: currentColor;
@@ -1339,6 +1358,10 @@ video {
   font-size: 1rem;
   line-height: 1.5rem;
 }
+.text-6xl {
+  font-size: 3.75rem;
+  line-height: 1;
+}
 .font-medium {
   font-weight: 500;
 }
@@ -1432,6 +1455,9 @@ video {
 .text-bulsca_red {
   --tw-text-opacity: 1;
   color: rgb(158 13 6 / var(--tw-text-opacity));
+}
+.text-transparent {
+  color: transparent;
 }
 .underline {
   text-decoration-line: underline;
@@ -1892,6 +1918,37 @@ div.form-input.checkbox > input {
   background-color: rgb(7 6 96 / var(--tw-bg-opacity));
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+.card.card-bulsca {
+  --tw-bg-opacity: 1;
+  background-color: rgb(7 6 96 / var(--tw-bg-opacity));
+  background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
+  --tw-gradient-from: #070660;
+  --tw-gradient-to: rgb(7 6 96 / 0);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+  --tw-gradient-to: #9e0d06;
+  text-align: center;
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+.card.card-bulsca:hover {
+  background-blend-mode: lighten;
+}
+.card.card-bulsca.card-bulsca-red {
+  --tw-bg-opacity: 1;
+  background-color: rgb(158 13 6 / var(--tw-bg-opacity));
+  --tw-gradient-from: #9e0d06;
+  --tw-gradient-to: rgb(158 13 6 / 0);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+  --tw-gradient-to: #070660;
+}
+.card.card-bulsca * {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+.card.card-pad-y {
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
 }
 
 a.link, p.link {
@@ -2561,20 +2618,16 @@ aside.open {
     width: auto;
   }
 
-  .md\:w-\[60\%\] {
-    width: 60%;
-  }
-
-  .md\:w-\[50\%\] {
-    width: 50%;
+  .md\:w-\[30\%\] {
+    width: 30%;
   }
 
   .md\:w-\[40\%\] {
     width: 40%;
   }
 
-  .md\:w-\[30\%\] {
-    width: 30%;
+  .md\:w-\[50\%\] {
+    width: 50%;
   }
 
   .md\:grid-cols-8 {
@@ -2633,6 +2686,10 @@ aside.open {
     width: auto;
   }
 
+  .lg\:w-\[30\%\] {
+    width: 30%;
+  }
+
   .lg\:max-w-\[80vw\] {
     max-width: 80vw;
   }
@@ -2669,8 +2726,20 @@ aside.open {
   .xl\:w-\[50\%\] {
     width: 50%;
   }
+
+  .xl\:w-\[30\%\] {
+    width: 30%;
+  }
+
+  .xl\:w-\[40\%\] {
+    width: 40%;
+  }
 }
 @media (min-width: 1536px) {
+
+  .\32xl\:w-\[30\%\] {
+    width: 30%;
+  }
 
   .\32xl\:min-w-\[23\%\] {
     min-width: 23%;
@@ -2678,5 +2747,11 @@ aside.open {
 
   .\32xl\:max-w-\[23\%\] {
     max-width: 23%;
+  }
+}
+@media (min-width: 1600px) {
+
+  .\33xl\:w-\[30\%\] {
+    width: 30%;
   }
 }
