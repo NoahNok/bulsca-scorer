@@ -151,7 +151,7 @@ h5 {
   }
 
   &.card-row {
-    @apply flex-row;
+    @apply md:flex-row flex-col;
   }
 
   &.selected {

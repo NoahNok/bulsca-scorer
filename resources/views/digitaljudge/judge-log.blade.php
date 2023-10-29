@@ -33,8 +33,8 @@
             <button class="btn">Apply Filters</button>
         </div>
 
-        <div class="flex space-x-6">
-            <div class="form-input w-max">
+        <div class="flex flex-col md:flex-row md:space-x-6">
+            <div class="form-input w-max max-w-full">
                 <label for="event-filter">Event</label>
                 <select name="filterEvent" id="event-filter">
                     <option value="">All</option>
@@ -86,10 +86,12 @@
     {{ $log->links() }}
     <div class="flex flex-col space-y-2 mt-2">
         @forelse ($log as $l)
-            <div class="card card-row space-x-4 items-center ">
-                <p class="text-center text-sm text-gray-500 px-2">
-                    {{ $l->created_at->format('h:ia') }}<br>{{ $l->created_at->format('d/m/y') }}</p>
-                <div class="px-4 w-[15%] max-w-[15%]">
+            <div class="card card-row md:space-x-4 md:items-center ">
+                <div class="md:text-center text-sm text-gray-500 md:px-2 flex md:flex-col space-x-2 md:space-x-0">
+                    <span>{{ $l->created_at->format('h:ia') }}</span>
+                    <span>{{ $l->created_at->format('d/m/y') }}</span>
+                </div>
+                <div class="md:px-4 md:w-[15%] md:max-w-[15%]">
                     <h5 class=" ">
                         {{ $l->judgeName }} marked {{ $l->getTeam->getFullname() }}
                     </h5>
