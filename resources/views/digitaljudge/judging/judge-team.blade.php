@@ -1,7 +1,29 @@
 @extends('digitaljudge.layout')
 
 @section('content')
-    <div class=" w-screen flex flex-col  mt-8 space-y-4">
+    <div x-data="{
+        open: false,
+        loading: false,
+    
+        judges: [],
+    
+        loadMarks() {
+            this.open = true
+            this.loading = true;
+            this.judges = [];
+            fetch('{{ route('dj.judging.previous-marks') }}').then(res => res.json()).then(data => {
+                console.log(data);
+    
+                this.loading = false;
+                this.judges = data;
+    
+    
+    
+    
+            })
+    
+        },
+    }" class=" w-screen flex flex-col  mt-8 space-y-4">
         <div class="flex w-full items-center justify-center space-x-4">
             <img src="{{ asset('blogo.png') }}" alt="BULSCA Logo" class=" w-32 h-32 ">
             <div class="flex flex-col">
@@ -32,7 +54,13 @@
             <form action="" method="post">
                 <div class="flex flex-col space-y-6 ">
                     @foreach ($judges as $mJudge)
-                        <h4>{{ $mJudge->name }}</h4>
+                        <div>
+                            <h4>{{ $mJudge->name }} </h4>
+                            <p x-on:click="loadMarks()" class="-mt-2 text-sm text-blue-700 hover:underline cursor-pointer">
+                                Previous Marks</p>
+                        </div>
+
+
                         @foreach ($mJudge->getMarkingPoints as $mp)
                             @php
                                 $mpValue = $head ? $mp->getScoreForTeam($team->id) : -1;
@@ -111,6 +139,79 @@
         </div>
 
 
+        <div x-show="open" class="judge-notes fixed top-0 left-0 w-screen  h-screen overflow-scroll bg-white py-2 z-10  "
+            style="display: none; margin-top: 0 !important">
+            <div class="flex flex-col  mx-4 ">
+                <h1 class="text-center">Previous Marks</h1>
+                <div class="flex items-center justify-center">
+                    <p class="link" x-on:click="open = !open">Close</p>
+                </div>
+
+                <div x-show="loading"><br><x-loader /></div>
+
+                <div class="flex flex-col items-start ">
+                    <template x-for="judge in judges">
+                        <div class="border-b pb-4 mb-3 last-of-type:border-b-0 border-b-gray-300 max-w-full ">
+                            <h2 class=" whitespace-nowrap text-ellipsis overflow-hidden hover:whitespace-normal focus:whitespace-normal"
+                                x-text="judge.name"></h2>
+
+
+
+
+                            <div class="  relative overflow-x-auto   ">
+                                <table
+                                    class=" text-sm w-full shadow-md rounded-lg top-0 text-left text-gray-500 border-collapse  relative">
+                                    <thead class="text-xs text-gray-700 text-right uppercase bg-gray-50 ">
+                                        <tr>
+                                            <th class="py-3 px-3  sticky left-0 top-0 bg-gray-50">Marking
+                                                Point</th>
+                                            <template x-for="mark in judge.mp[0].marks">
+
+                                                <th x-text="mark.team" class="py-3 px-3 whitespace-nowrap"
+                                                    style="writing-mode: vertical-rl"></th>
+
+
+                                            </template>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template x-for="mp in judge.mp">
+                                            <tr class="bg-white border-b text-right ">
+                                                <td class="py-2 px-3 sticky left-0 top-0 bg-white text-ellipsis whitespace-nowrap overflow-hidden max-w-[1px] hover:max-w-none focus:max-w-none "
+                                                    x-text="mp.name" style=""></td>
+                                                <template x-for="mark in mp.marks">
+
+
+                                                    <td class="py-2 px-3"
+                                                        x-text="mark.mark == null ? '-' : Math.round(mark.mark)"></td>
+
+                                                </template>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+
+
+
+
+
+
+
+                        </div>
+                    </template>
+
+                </div>
+                <br>
+                <div class="flex items-center justify-center">
+                    <p class="link" x-on:click="open = !open">Close</p>
+                </div>
+            </div>
+        </div>
+
+
     </div>
 
 
@@ -143,6 +244,8 @@
             <p class="link" id="notes-close-2">Close</p>
         </div>
     </div>
+
+
 
     <script>
         const np = document.getElementById("notes-pane");

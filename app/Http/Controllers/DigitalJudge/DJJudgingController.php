@@ -170,4 +170,38 @@ class DJJudgingController extends Controller
 
         return redirect()->route('dj.judging.home', $judgeId);
     }
+
+    public function previousMarks()
+    {
+
+
+        $data = [];
+
+        foreach (DigitalJudge::getClientJudges() as $judge) {
+
+            $judgeData = [];
+            $judgeData['name'] = $judge->name;
+
+            foreach ($judge->getMarkingPoints as $mp) {
+                $mpData = [];
+                $mpData['name'] = $mp->name;
+                $mpData['marks'] = [];
+
+                foreach (DigitalJudge::getClientCompetition()->getCompetitionTeams as $team) {
+                    $mpData['marks'][] = [
+                        'team' => $team->getFullname(),
+                        'mark' => $mp->getScoreForTeam($team->id)
+                    ];
+                }
+
+                $judgeData['mp'][] = $mpData;
+            }
+
+            $data[] = $judgeData;
+        }
+
+
+
+        return response()->json($data, 200);
+    }
 }
