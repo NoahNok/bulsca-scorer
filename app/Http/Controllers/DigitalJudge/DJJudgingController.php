@@ -21,10 +21,10 @@ class DJJudgingController extends Controller
     public function confirmJudge(SERCJudge $judge)
     {
 
-        if (DigitalJudge::isClientHeadJudge()) {
-            DigitalJudge::setClientJudge($judge);
-            return redirect()->route('dj.judging.home');
-        }
+        // if (DigitalJudge::isClientHeadJudge()) {
+        //     DigitalJudge::setClientJudge($judge);
+        //     return redirect()->route('dj.judging.home');
+        // }
 
         $serc = $judge->getSERC;
         $comp = $serc->getCompetition;
@@ -90,6 +90,8 @@ class DJJudgingController extends Controller
     public function saveTeamScores(Request $request, CompetitionTeam $team)
     {
 
+        $teamAlreadyJudged = DigitalJudge::hasTeamBeenJudgedAlready($team);
+
         if ($team->competition != DigitalJudge::getClientCompetition()->id) return redirect()->route('dj.judging.home');
 
         $from = "";
@@ -134,7 +136,9 @@ class DJJudgingController extends Controller
             $jl->save();
         }
 
-        if (DigitalJudge::isClientHeadJudge()) return redirect()->route('dj.judging.home')->with('success', 'Team ' . $team->getFullname() . ' has been re-marked!');;
+
+
+        if (DigitalJudge::isClientHeadJudge() && $teamAlreadyJudged) return redirect()->route('dj.judging.home')->with('success', 'Team ' . $team->getFullname() . ' has been re-marked!');
 
         return redirect()->route('dj.judging.next-team')->with('success', 'Team ' . $team->getFullname() . ' has been marked!');
     }
