@@ -47,8 +47,8 @@
                 @foreach ($comp->getCompetitionTeams as $team)
                     @if ($head)
                         <li class="">
-                            <div class="grid grid-cols-5">
-                                {{ $team->getFullname() }} <a href="{{ route('dj.judging.judge-team', [$team]) }}"
+                            <div class="grid grid-cols-2">
+                                <p>{{ $team->getFullname() }}</p> <a href="{{ route('dj.judging.judge-team', [$team]) }}"
                                     class="link col-start-5">Edit</a>
                             </div>
                         </li>
