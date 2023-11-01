@@ -1,5 +1,6 @@
 <?php
 
+use App\DigitalJudge\DigitalJudge;
 use App\Http\Controllers\DigitalJudge\DigitalJudgeController;
 use App\Http\Controllers\DigitalJudge\DJJudgingController;
 use App\Http\Controllers\DigitalJudge\SpeedJudgingController;
@@ -57,4 +58,11 @@ Route::prefix('dj')->group(function () {
             });
         });
     });
+
+    if (env('APP_ENV') == 'local') {
+        Route::get('toggle-head-ref', function () {
+            DigitalJudge::setClientHeadJudge(!DigitalJudge::isClientHeadJudge());
+            return redirect()->back();
+        })->name('LOCAL.dj.toggle-head-ref');
+    }
 });

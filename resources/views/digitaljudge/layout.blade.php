@@ -23,10 +23,30 @@
 
     @yield('content')
 
+    @if (\App\DigitalJudge\DigitalJudge::isClientHeadJudge())
+        <div class="fixed left-0 bottom-0 w-screen bg-white border-t-2  grid grid-cols-3">
+            <a href="#" class="p-2 text-center border-r">Judge</a>
+            <a href="#" class="p-2 text-center border-r">Manage</a>
+            <a href="#" class="p-2 text-center border-l">DQ/Penalty</a>
+
+        </div>
+    @endif
+
     <div class="flex justify-center items-center p-2">
         <a href="https://forms.gle/tdEhubMkPNY3Dpnd7" class="link">Give Feedback</a>
     </div>
     <div class="alert-banner" id="alert">Test</div>
+
+    @env('local')
+    <div class="fixed right-0 bottom-[15%] text-white bg-red-700 px-1 py-3 font-semibold rounded-l-md  "
+        style="writing-mode: vertical-rl">
+        <a href="{{ route('LOCAL.dj.toggle-head-ref') }}">DEVELOPMENT</a>
+    </div>
+    <div class="fixed  left-0 top-[15%] text-white bg-red-700 px-1 py-3 font-semibold rounded-r-md  "
+        style="writing-mode: vertical-rl">
+        <a href="{{ route('LOCAL.dj.toggle-head-ref') }}">DEVELOPMENT</a>
+    </div>
+    @endenv
 
     <script src="{{ asset('js/alert.js') }}"></script>
     @if (Session::has('success'))
