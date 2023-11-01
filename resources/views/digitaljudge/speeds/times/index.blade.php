@@ -14,7 +14,11 @@
 
             <a href="{{ route('dj.home') }}" class="link">Back</a>
 
-            <p>Heats will turn green once complete!</p>
+            @if ($head)
+                <p>Heats will turn green once complete <strong>and</strong> maybe be edited at any time</p>
+            @else
+                <p>Heats will turn green once complete!</p>
+            @endif
 
 
             @for ($heat = 1; $heat <= $comp->getMaxHeats(); $heat++)
@@ -40,8 +44,11 @@
 
                 @endphp
 
-                @if ($missingResult || $head)
+                @if ($missingResult)
                     <a href="{{ route('dj.speeds.times.judge', [$speed, $heat]) }}" class="btn btn-primary">Heat
+                        {{ $heat }}</a>
+                @elseif ($head)
+                    <a href="{{ route('dj.speeds.times.judge', [$speed, $heat]) }}" class="btn btn-success">Heat
                         {{ $heat }}</a>
                 @else
                     <button class="btn btn-success cursor-not-allowed">Heat
