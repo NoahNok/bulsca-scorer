@@ -32,10 +32,10 @@ class SpeedResult extends Model
 
     public function getResultAsString()
     {
-        $result = "";
+
         if ($this->getEvent->getName() == "Rope Throw") {
             if ($this->result < 4) {
-                return $result;
+                return $this->result;
             }
         }
 
