@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\DigitalJudge\JudgeNote;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -109,5 +110,12 @@ class SERC extends Model
             'raw' => $rawMarks,
             'rolling' => $rollingMarks
         ];
+    }
+
+    public function getNotesForTeam(CompetitionTeam $team)
+    {
+        $allJudgeIds = $this->getJudges()->pluck('id')->toArray();
+
+        return JudgeNote::whereIn('judge', $allJudgeIds)->where('team', $team->id)->get();
     }
 }

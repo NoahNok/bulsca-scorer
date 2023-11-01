@@ -818,6 +818,9 @@ video {
 .max-w-\[30\%\] {
   max-width: 30%;
 }
+.max-w-\[50\%\] {
+  max-width: 50%;
+}
 .flex-1 {
   flex: 1 1 0%;
 }
@@ -1024,9 +1027,6 @@ video {
 }
 .whitespace-nowrap {
   white-space: nowrap;
-}
-.whitespace-pre-line {
-  white-space: pre-line;
 }
 .break-words {
   overflow-wrap: break-word;
@@ -2635,6 +2635,14 @@ aside.open {
 
   .md\:max-w-\[15\%\] {
     max-width: 15%;
+  }
+
+  .md\:max-w-\[50\%\] {
+    max-width: 50%;
+  }
+
+  .md\:max-w-\[40\%\] {
+    max-width: 40%;
   }
 
   .md\:grid-cols-8 {

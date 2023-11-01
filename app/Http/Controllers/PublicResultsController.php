@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
+use App\Models\CompetitionTeam;
 use App\Models\Penalty;
 use App\Models\ResultSchema;
 use App\Models\SERC;
@@ -202,5 +203,10 @@ class PublicResultsController extends Controller
 
         fpassthru($fp);
         fclose($fp);
+    }
+
+    public function viewTeamSercNotes(Competition $comp_slug, SERC $event, CompetitionTeam $team)
+    {
+        return view('public-results.view-team-serc-notes', ['comp' => $comp_slug, 'serc' => $event, 'team' => $team]);
     }
 }
