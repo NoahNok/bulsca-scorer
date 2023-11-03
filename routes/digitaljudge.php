@@ -3,6 +3,7 @@
 use App\DigitalJudge\DigitalJudge;
 use App\Http\Controllers\DigitalJudge\DigitalJudgeController;
 use App\Http\Controllers\DigitalJudge\DJJudgingController;
+use App\Http\Controllers\DigitalJudge\DJManageController;
 use App\Http\Controllers\DigitalJudge\SpeedJudgingController;
 use Illuminate\Support\Facades\Route;
 
@@ -61,6 +62,17 @@ Route::prefix('dj')->group(function () {
             });
         });
     });
+
+    Route::middleware('isHeadJudge')->group(function () {
+        Route::prefix('manage')->group(function () {
+            Route::get('', [DJManageController::class, 'index'])->name('dj.manage.index');
+            Route::get('/serc/{serc}', [DJManageController::class, 'manageSerc'])->name('dj.manage.serc');
+            Route::post('/serc/{serc}', [DJManageController::class, 'manageSercPost'])->name('dj.manage.serc.post');
+            Route::get('/speed/{speed}', [DJManageController::class, 'manageSpeed'])->name('dj.manage.speed');
+        });
+    });
+
+
 
     if (env('APP_ENV') == 'local') {
         Route::get('toggle-head-ref', function () {
