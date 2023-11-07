@@ -67,7 +67,7 @@ class SpeedJudgingController extends Controller
 
         $teams = [];
 
-        dump($request->all());
+        //dump($request->all());
         foreach ($request->all() as $key => $value) {
             if (!str_starts_with($key, "team-")) continue;
             $splt = explode("-", $key);
@@ -76,34 +76,20 @@ class SpeedJudgingController extends Controller
             $teams[$splt[1]][$splt[2]] = $value;
         }
 
-        dump($teams);
+        //dump($teams);
 
         foreach ($teams as $team => $values) {
 
             $sr = SpeedResult::where('competition_team', $team)->where('event', $speed->id)->first();
 
-            $fromDQ = $sr->disqualification;
-            $fromPenalties = $sr->getPenalties->pluck('code')->join(", ");
+
             $fromResult = $sr->getResultAsString();
 
-            if ($values['dq'] != "") {
-                $sr->disqualification = $values['dq'];
-            } else {
-                $sr->disqualification = null;
-            }
 
-            Penalty::where('speed_result', $sr->id)->delete();
-            foreach (explode(",", $values['p']) as $penalty) {
-                if ($penalty == "") continue;
 
-                $p = new Penalty();
-                $p->speed_result = $sr->id;
-                $p->code = trim($penalty);
-                $p->save();
-            }
 
-            $toDQ = $sr->disqualification;
-            $toPenalties = $sr->getPenalties->pluck('code')->join(", ");
+
+
 
 
 
@@ -134,8 +120,8 @@ class SpeedJudgingController extends Controller
             $sr->save();
             $toResult = $sr->getResultAsString();
 
-            $from = "Result: " . $fromResult . " DQ: " . ($fromDQ ?: '-') . " Penalties: " . ($fromPenalties == "" ? "-" : $fromPenalties);
-            $to = "Result: " . $toResult . " DQ: " . ($toDQ ?: '-') . " Penalties: " . ($toPenalties == "" ? "-" : $toPenalties);
+            $from = "Result: " . $fromResult;
+            $to = "Result: " . $toResult;
 
 
 

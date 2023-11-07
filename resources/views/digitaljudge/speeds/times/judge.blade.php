@@ -77,16 +77,6 @@
 
 
                                     </td>
-                                    <td class="">
-                                        <input class="p-2" type="text" placeholder="PXXX"
-                                            name="team-{{ $pLane->team }}-p" id="team-{{ $pLane->team }}-p"
-                                            value="{{ $sr->getPenaltiesAsString() }}">
-                                    </td>
-                                    <td class="">
-                                        <input class="p-2" type="text" placeholder="DQXXX" x-data x-mask="DQ999"
-                                            name="team-{{ $pLane->team }}-dq" id="team-{{ $pLane->team }}-dq"
-                                            value="{{ $sr->disqualification }}">
-                                    </td>
                                 @else
                                     <td class="border-r p-2 pr-8 bg-white"></td>
                                 @endif
