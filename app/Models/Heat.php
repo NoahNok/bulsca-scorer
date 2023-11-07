@@ -13,4 +13,9 @@ class Heat extends Model
     {
         return $this->hasOne(CompetitionTeam::class, 'id', 'team');
     }
+
+    public function getOOF()
+    {
+        return $this->hasOne(EventOOF::class, 'heat_lane', 'id');
+    }
 }

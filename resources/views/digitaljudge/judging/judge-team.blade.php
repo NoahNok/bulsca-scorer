@@ -1,4 +1,15 @@
-@extends('digitaljudge.layout')
+@extends('digitaljudge.mpa-layout')
+
+@section('title')
+    {{ $serc->getName() }}
+@endsection
+@php
+    $nopad = true;
+    $backlink = route('dj.judging.home');
+    $icon =
+        ' <path stroke-linecap="round" stroke-linejoin="round" d="M16.712 4.33a9.027 9.027 0 011.652 1.306c.51.51.944 1.064 1.306 1.652M16.712 4.33l-3.448 4.138m3.448-4.138a9.014 9.014 0 00-9.424 0M19.67 7.288l-4.138 3.448m4.138-3.448a9.014 9.014 0 010 9.424m-4.138-5.976a3.736 3.736 0 00-.88-1.388 3.737 3.737 0 00-1.388-.88m2.268 2.268a3.765 3.765 0 010 2.528m-2.268-4.796a3.765 3.765 0 00-2.528 0m4.796 4.796c-.181.506-.475.982-.88 1.388a3.736 3.736 0 01-1.388.88m2.268-2.268l4.138 3.448m0 0a9.027 9.027 0 01-1.306 1.652c-.51.51-1.064.944-1.652 1.306m0 0l-3.448-4.138m3.448 4.138a9.014 9.014 0 01-9.424 0m5.976-4.138a3.765 3.765 0 01-2.528 0m0 0a3.736 3.736 0 01-1.388-.88 3.737 3.737 0 01-.88-1.388m2.268 2.268L7.288 19.67m0 0a9.024 9.024 0 01-1.652-1.306 9.027 9.027 0 01-1.306-1.652m0 0l4.138-3.448M4.33 16.712a9.014 9.014 0 010-9.424m4.138 5.976a3.765 3.765 0 010-2.528m0 0c.181-.506.475-.982.88-1.388a3.736 3.736 0 011.388-.88m-2.268 2.268L4.33 7.288m6.406 1.18L7.288 4.33m0 0a9.024 9.024 0 00-1.652 1.306A9.025 9.025 0 004.33 7.288" />';
+
+@endphp
 
 @section('content')
     <div x-data="{
@@ -23,19 +34,11 @@
             })
     
         },
-    }" class=" w-screen flex flex-col  mt-8 space-y-4">
-        <div class="flex w-full items-center justify-center space-x-4">
-            <img src="{{ asset('blogo.png') }}" alt="BULSCA Logo" class=" w-32 h-32 ">
-            <div class="flex flex-col">
-                <h5 class="-mb-1 text-sm">DigitalJudge</h5>
-                <h3 class="-mb-1">{{ $serc->name }}</h3>
-                <h5 class="text-sm">{{ $comp->name }} </h5>
-            </div>
-        </div>
+    }" class=" flex flex-col   space-y-3">
+
 
 
         <div class="px-4 pb-4 space-y-2">
-            <a href="{{ route('dj.judging.home') }}" class="link">Home</a>
             <p>You are <strong class="text-bulsca">
                     @forelse ($judges as $judge)
                         {{ $judge->name }}

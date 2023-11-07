@@ -20,18 +20,19 @@
     @endif
 
 
-    <div class="p-6 md:max-w-[30%] md:mx-auto">
+    <div class="{{ $nopad ?? false ? '' : 'p-6' }} md:max-w-[30%] md:mx-auto">
         @if ($backlink ?? false)
-            <a href="{{ $backlink ?? route('dj.home') }}">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="w-8 h-8 hover:-ml-2 transition-all ">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18" />
-                </svg>
-            </a>
+            <div class="{{ $nopad ?? false ? 'mx-4 mt-6' : '' }}"> <a href="{{ $backlink ?? route('dj.home') }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-8 h-8 hover:-ml-2 transition-all ">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18" />
+                    </svg>
+                </a></div>
         @endif
 
 
-        <div class="flex justify-between items-center">
+        <div class="flex justify-between items-center {{ $nopad ?? false ? 'px-4' : '' }}">
             <div>
                 <h2 class="-mb-1">@yield('title')</h2>
                 <small class="">{{ \App\DigitalJudge\DigitalJudge::getClientCompetition()->name }}</small>
@@ -41,7 +42,7 @@
                     stroke="white" class="w-12 h-12 p-3 bg-bulsca rounded-full">
                     {!! $icon ??
                         '<path stroke-linecap="round" stroke-linejoin="round"
-                                                            d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />" ?>' !!}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />" ?>' !!}
                 </svg>
 
 
@@ -53,6 +54,10 @@
 
 
         @yield('content')
+
+        <br>
+        <br>
+        <br>
     </div>
 
 
@@ -60,14 +65,14 @@
 
     @if (\App\DigitalJudge\DigitalJudge::isClientHeadJudge())
         <div class="fixed left-0 bottom-0 w-screen bg-white border-t-2  grid grid-cols-3 ">
-            <a href="#" class="p-2 text-center border-r">Judge</a>
+            <a href="{{ route('dj.home') }}" class="p-2 text-center border-r">Judge</a>
             <a href="{{ route('dj.manage.index') }}" class="p-2 text-center border-r">Manage</a>
             <a href="#" class="p-2 text-center border-l">DQ/Penalty</a>
 
         </div>
     @else
         <div class="fixed left-0 bottom-0 w-screen bg-white border-t-2  grid grid-cols-2">
-            <a href="#" class="p-2 text-center border-r">Judge</a>
+            <a href="{{ route('dj.home') }}" class="p-2 text-center border-r">Judge</a>
             <a href="#" class="p-2 text-center border-r">Help</a>
         </div>
     @endif
