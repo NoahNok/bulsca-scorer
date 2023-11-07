@@ -20,7 +20,12 @@
         <h2 class="font-bold  w-full break-words">
             Heat {{ $heat }}
         </h2>
-        <p>Times must match the format <strong>XX:XX.XXX</strong> exactly!</p>
+        <p>Times must match the format <strong>XX:XX.XXX</strong> exactly!
+            <br>
+            @if ($speed->getName() == 'Rope Throw')
+                <strong>OR</strong> enter the total amount of people pulled in from 0-3
+            @endif
+        </p>
 
 
         @php
