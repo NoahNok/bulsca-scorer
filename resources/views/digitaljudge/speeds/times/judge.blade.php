@@ -32,8 +32,8 @@
         @endphp
 
         <form action="" method="post" class="">
-            <div class="relative overflow-x-auto w-screen md:w-auto ">
-                <table>
+            <div class="relative overflow-x-auto w-full ">
+                <table class="w-full">
 
                     <tbody class="divide-y">
                         @for ($lane = 1; $lane <= $comp->getMaxLanes(); $lane++)

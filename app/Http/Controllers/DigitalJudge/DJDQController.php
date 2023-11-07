@@ -6,7 +6,9 @@ use App\DigitalJudge\DigitalJudge;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DigitalJudge\DQRequest;
 use App\Models\CompetitionTeam;
+use App\Models\DigitalJudge\JudgeLog;
 use App\Models\Penalty;
+use App\Models\SERC;
 use App\Models\SERCDisqualification;
 use App\Models\SERCPenalty;
 use App\Models\SpeedResult;
@@ -25,16 +27,28 @@ class DJDQController extends Controller
 
         $event = $dQRequest->input('event');
 
+        $jl = new JudgeLog();
+        $jl->competition = DigitalJudge::getClientCompetition()->id;
+        $jl->judgeName = DigitalJudge::getClientName();
+        $jl->team = $dQRequest->input('team');
+
         if (str_starts_with($event, 'sp')) {
             // SPEED EVENT
             $eventId = substr($event, 3);
+
+            $jl->speed_event = $eventId;
+
 
             if ($dQRequest->input('type') == 'dq') {
                 // DQ
 
                 $sr = SpeedResult::where('competition_team', $dQRequest->input('team'))->where('event', $eventId)->first();
+                $jl->from = $sr->disqualification ?: "-";
                 $sr->disqualification = $dQRequest->input('code');
                 $sr->save();
+
+
+                $jl->to = $dQRequest->input('code') == "" ? "-" : $dQRequest->input('code');
             } else {
                 // Penalty
                 $penaltiesSplit = explode(",", $dQRequest->input('code'));
@@ -50,7 +64,8 @@ class DJDQController extends Controller
                 }
 
                 $sr = SpeedResult::where('competition_team', $dQRequest->input('team'))->where('event', $eventId)->first();
-
+                $jl->from = $sr->getPenaltiesAsString() == "" ? "-" : $sr->getPenaltiesAsString();
+                $jl->to = implode(",", $valid) == "" ? "-" : implode(",", $valid);
                 Penalty::where('speed_result', $sr->id)->delete();
 
                 foreach ($valid as $penalty) {
@@ -63,8 +78,11 @@ class DJDQController extends Controller
         } else {
             $eventId = substr($event, 3);
             // SERC EVENT
-            if ($dQRequest->input('type') == 'dq') {
 
+            $jl->judge = SERC::find($eventId)->getJudges->first()->id;
+
+            if ($dQRequest->input('type') == 'dq') {
+                $jl->from =  SERCDisqualification::where(['team' => $dQRequest->input('team'), 'serc' => $eventId])->first()?->code ?: "-";
                 if ($dQRequest->input('code') == null) {
                     SERCDisqualification::where(['team' => $dQRequest->input('team'), 'serc' => $eventId])->delete();
                 } else {
@@ -72,14 +90,19 @@ class DJDQController extends Controller
                     $sd->code = $dQRequest->input('code');
                     $sd->save();
                 }
+
+                $jl->to = $dQRequest->input('code') == "" ? "-" : $dQRequest->input('code');
             } else {
 
                 $sd = SERCPenalty::firstOrNew(['team' => $dQRequest->input('team'), 'serc' => $eventId]);
+                $jl->from = $sd->codes == "" ? "-" : $sd->codes;
                 $sd->codes = $dQRequest->input('code') ?: "";
+                $jl->to = $sd->codes == "" ? "-" : $sd->codes;
                 $sd->save();
             }
         }
 
+        $jl->save();
         return redirect()->back()->with('success', 'Disqualification submitted');
     }
 
