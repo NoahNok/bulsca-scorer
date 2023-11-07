@@ -42,7 +42,7 @@
                     stroke="white" class="w-12 h-12 p-3 bg-bulsca rounded-full">
                     {!! $icon ??
                         '<path stroke-linecap="round" stroke-linejoin="round"
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />" ?>' !!}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />" ?>' !!}
                 </svg>
 
 
@@ -67,7 +67,7 @@
         <div class="fixed left-0 bottom-0 w-screen bg-white border-t-2  grid grid-cols-3 ">
             <a href="{{ route('dj.home') }}" class="p-2 text-center border-r">Judge</a>
             <a href="{{ route('dj.manage.index') }}" class="p-2 text-center border-r">Manage</a>
-            <a href="#" class="p-2 text-center border-l">DQ/Penalty</a>
+            <a href="{{ route('dj.dq.index') }}" class="p-2 text-center border-l">DQ/Penalty</a>
 
         </div>
     @else

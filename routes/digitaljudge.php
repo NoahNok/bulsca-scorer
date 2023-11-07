@@ -2,6 +2,7 @@
 
 use App\DigitalJudge\DigitalJudge;
 use App\Http\Controllers\DigitalJudge\DigitalJudgeController;
+use App\Http\Controllers\DigitalJudge\DJDQController;
 use App\Http\Controllers\DigitalJudge\DJJudgingController;
 use App\Http\Controllers\DigitalJudge\DJManageController;
 use App\Http\Controllers\DigitalJudge\SpeedJudgingController;
@@ -69,6 +70,10 @@ Route::prefix('dj')->group(function () {
             Route::get('/serc/{serc}', [DJManageController::class, 'manageSerc'])->name('dj.manage.serc');
             Route::post('/serc/{serc}', [DJManageController::class, 'manageSercPost'])->name('dj.manage.serc.post');
             Route::get('/speed/{speed}', [DJManageController::class, 'manageSpeed'])->name('dj.manage.speed');
+        });
+
+        Route::prefix('dq')->group(function () {
+            Route::get('', [DJDQController::class, 'index'])->name('dj.dq.index');
         });
     });
 
