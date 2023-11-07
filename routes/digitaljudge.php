@@ -74,6 +74,8 @@ Route::prefix('dj')->group(function () {
 
         Route::prefix('dq')->group(function () {
             Route::get('', [DJDQController::class, 'index'])->name('dj.dq.index');
+            Route::get('/current/{event}/{team}/{type}', [DJDQController::class, 'current'])->name('dj.dq.current');
+            Route::post('', [DJDQController::class, 'submit'])->name('dj.dq.index.post');
         });
     });
 

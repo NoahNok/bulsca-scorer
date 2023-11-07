@@ -7,33 +7,67 @@
 
 @section('content')
 
-    <div x-data="{
+    <form method="POST" x-data="{
     
         stage: 1,
     
         nextStage(s) {
+            let was = this.stage;
+    
             this.stage = s;
+            if (s < was) {
+                this.resetAhead();
+            }
+        },
+    
+        resetAhead() {
+            console.log(this.stage)
+            if (this.stage < 3) {
+                this.$refs.team.value = null;
+            }
+    
+            if (this.type != '' && this.stage < 4) {
+                this.type = '';
+            }
+    
+    
         },
     
     
         type: '',
         placeholder: 'Please select a type above',
         setType(ty) {
+            this.loading = true;
             this.type = ty;
-            if (ty == 'dq') {
-                this.placeholder = 'DQXXX';
-            } else {
+            this.$refs.code.value = '';
+            if (ty == 'dq') { this.placeholder = 'DQXXX'; } else {
                 this.placeholder = 'PXXX, PXXX, ...';
             }
-    
+            this.nextStage(4);
+            this.getCurrent()
         },
+        loading: false,
+        getCurrent() {
+            let event = this.$refs.event.value;
+            let team = this.$refs.team.value;
+            let type = this.type;
     
+            fetch(`./dq/current/${event}/${team}/${type}`).then(res => res.json()).then(data => {
+                this.$refs.code.value = data.current;
+    
+                if (data.current != null) {
+                    this.nextStage(5);
+                }
+    
+                this.loading = false;
+            })
+        },
     }">
 
         <h4>Select an Event</h4>
         <div class="form-input ">
             <label for="" class="">Event</label>
-            <select required name="event" class="input " style="padding-top: 0.65em; padding-bottom: 0.65em;"
+            <select required name="event" x-ref="event" class="input " style="padding-top: 0.65em; padding-bottom: 0.65em;"
                 @change="nextStage(2)">
                 <option value="null">Please select an event...</option>
                 <optgroup label="SERCs">
@@ -58,8 +92,8 @@
             <h4>Select a Team</h4>
             <div class="form-input ">
                 <label for="" class="">Event</label>
-                <select required name="event" class="input " style="padding-top: 0.65em; padding-bottom: 0.65em;"
-                    @change="nextStage(3)">
+                <select required name="team" x-ref="team" class="input "
+                    style="padding-top: 0.65em; padding-bottom: 0.65em;" @change="nextStage(3)">
                     <option value="null">Please select a team...</option>
 
                     @foreach ($comp->getCompetitionTeams as $team)
@@ -78,22 +112,25 @@
 
             <div>
                 <div class="flex w-full space-x-3 mb-3">
-                    <button class="btn w-full" @click="setType('dq')"
+                    <button type="button" class="btn w-full" @click="setType('dq')"
                         x-bind:class="type == 'dq' ? 'btn-success' : 'btn-primary'">DQ</button>
-                    <button class="btn w-full" @click="setType('p')"
+                    <button type="button" class="btn w-full" @click="setType('p')"
                         x-bind:class="type == 'p' ? 'btn-success' : 'btn-primary'">Penalty</button>
                 </div>
-                <input type="hidden" x-modal="type" name="dq_or_pen">
+                <input type="hidden" x-model="type" name="type">
 
-                <div class="form-input " x-show="type != ''">
-                    <input type="text" x-bind:placeholder="placeholder" x-mask:dynamic="type == 'dq' ? 'DQ999' : ''"
-                        @keyup="nextStage(4)">
+                <div x-show="loading">
+                    <x-loader />
+                </div>
+                <div class="form-input " x-show="type != '' && !loading">
+                    <input type="text" x-ref="code" name="code" x-bind:placeholder="placeholder"
+                        x-mask:dynamic="type == 'dq' ? 'DQ999' : ''" @keyup="nextStage(5)">
                 </div>
             </div>
         </div>
 
+        @csrf
 
-
-        <button x-show="stage > 3" class="btn w-full">Submit</button>
-    </div>
+        <button x-show="stage > 4" class="btn w-full">Submit</button>
+    </form>
 @endsection
