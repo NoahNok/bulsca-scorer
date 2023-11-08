@@ -61,7 +61,15 @@
                 <div class="  border-2 border-bulsca rounded-md ">
                     <p class="p-2 bg-bulsca text-white list-none text-lg font-semibold flex items-center">
                         {{ $speed->getName() }}
-
+                        @if ($head)
+                            @if ($speed->digitalJudgeConfirmed)
+                                <span class="btn ml-auto pointer-events-none btn-small">Result Confirmed</span>
+                            @else
+                                <a href="{{ route('dj.confirm-results.speed', $speed) }}"
+                                    class="btn ml-auto btn-white btn-small">Confirm
+                                    Results</a>
+                            @endif
+                        @endif
                     </p>
                     <div class="px-3 py-2 flex flex-col space-y-4">
 
@@ -69,12 +77,12 @@
                             <p>Times</p>
                             <p class=" link">Start</p>
                         </a>
-                        @env('local')
+
                         <a href="{{ route('dj.speeds.oof.index', $speed) }}" class="flex justify-between items-center">
                             <p>Order of Finish</p>
                             <p class=" link">Start</p>
                         </a>
-                        @endenv
+
 
                     </div>
                 </div>

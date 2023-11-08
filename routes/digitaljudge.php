@@ -41,8 +41,6 @@ Route::prefix('dj')->group(function () {
         });
         Route::get('change-judge', [DJJudgingController::class, 'changeJudge'])->name('dj.changeJudge');
 
-        Route::get('{serc}/confirm-results', [DigitalJudgeController::class, 'confirmResults'])->name('dj.confirm-results');
-        Route::post('{serc}/confirm-results', [DigitalJudgeController::class, 'confirmResultsPost'])->name('dj.confirm-results.post');
 
 
         Route::prefix('speeds/{speed}')->group(function () {
@@ -76,6 +74,14 @@ Route::prefix('dj')->group(function () {
             Route::get('', [DJDQController::class, 'index'])->name('dj.dq.index');
             Route::get('/current/{event}/{team}/{type}', [DJDQController::class, 'current'])->name('dj.dq.current');
             Route::post('', [DJDQController::class, 'submit'])->name('dj.dq.index.post');
+        });
+
+        Route::prefix('confirm')->group(function () {
+            Route::get('serc/{serc}', [DigitalJudgeController::class, 'confirmResults'])->name('dj.confirm-results');
+            Route::post('serc/{serc}', [DigitalJudgeController::class, 'confirmResultsPost'])->name('dj.confirm-results.post');
+
+            Route::get('speed/{speed}', [DigitalJudgeController::class, 'confirmSpeedResults'])->name('dj.confirm-results.speed');
+            Route::post('speed/{speed}', [DigitalJudgeController::class, 'confirmSpeedResultsPost'])->name('dj.confirm-results.speed.post');
         });
     });
 

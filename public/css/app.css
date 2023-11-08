@@ -852,6 +852,9 @@ video {
 .shrink-0 {
   flex-shrink: 0;
 }
+.flex-grow {
+  flex-grow: 1;
+}
 .grow {
   flex-grow: 1;
 }
@@ -1291,6 +1294,10 @@ video {
   padding-left: 1.25rem;
   padding-right: 1.25rem;
 }
+.px-8 {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
 .pb-16 {
   padding-bottom: 4rem;
 }
@@ -1344,6 +1351,21 @@ video {
 }
 .pt-1 {
   padding-top: 0.25rem;
+}
+.pr-12 {
+  padding-right: 3rem;
+}
+.pr-16 {
+  padding-right: 4rem;
+}
+.pr-20 {
+  padding-right: 5rem;
+}
+.pr-10 {
+  padding-right: 2.5rem;
+}
+.pr-11 {
+  padding-right: 2.75rem;
 }
 .text-left {
   text-align: left;

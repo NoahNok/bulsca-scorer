@@ -43,8 +43,8 @@
 
                     $lanes[$lane] = ['number' => $lane, 'name' => $pLane->getTeam->getFullname(), 'id' => $pLane->team];
 
-                    if ($pLane->getOOF != null) {
-                        $lanes[$lane]['place'] = $pLane->getOOF->oof;
+                    if ($pLane->getOOF($speed->id) != null) {
+                        $lanes[$lane]['place'] = $pLane->getOOF($speed->id)->oof;
                         $hasAssigned = true;
                     }
 

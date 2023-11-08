@@ -178,7 +178,7 @@ class SpeedJudgingController extends Controller
         $missingResult = false;
 
         foreach ($heatlanes as $lane) {
-            if ($lane->getOOF == null) {
+            if ($lane->getOOF($speed->id) == null) {
                 $missingResult = true;
                 break;
             }
@@ -213,6 +213,8 @@ class SpeedJudgingController extends Controller
             $eOof = EventOOF::firstOrNew(['heat_lane' => $heatlane->id, 'event' => $speed->id]);
 
             $eOof->oof = $res['place'];
+
+
 
             $eOof->save();
         }

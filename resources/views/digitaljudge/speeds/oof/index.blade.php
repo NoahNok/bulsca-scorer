@@ -33,7 +33,7 @@
                 $missingResult = false;
 
                 foreach ($heatlanes as $lane) {
-                    if ($lane->getOOF == null) {
+                    if ($lane->getOOF($speed->id) == null) {
                         $missingResult = true;
                         break;
                     }

@@ -108,6 +108,21 @@ class DigitalJudgeController extends Controller
         return redirect()->route('dj.home')->with('success', 'Results Confirmed');
     }
 
+    function confirmSpeedResults(CompetitionSpeedEvent $speed)
+    {
+        if ($speed->digitalJudgeConfirmed) return redirect()->route('dj.home')->with('alert-error', 'Results already confirmed!');;
+        return view('digitaljudge.speeds.confirm-speeds', ['speed' => $speed, 'comp' => DigitalJudge::getClientCompetition()]);
+    }
+
+    function confirmSpeedResultsPost(CompetitionSpeedEvent $speed)
+    {
+        if ($speed->digitalJudgeConfirmed) return redirect()->route('dj.home')->with('success', 'Results Confirmed');
+
+        $speed->digitalJudgeConfirmed = true;
+        $speed->save();
+        return redirect()->route('dj.home')->with('success', 'Results Confirmed');
+    }
+
     function judgeLog(Request $request, Competition $comp)
     {
 
