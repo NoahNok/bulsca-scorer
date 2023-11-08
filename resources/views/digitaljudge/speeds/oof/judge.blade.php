@@ -69,6 +69,7 @@
             place: 1,
             maxAssignable: {{ $maxLanes }},
             canReassign: {{ $hasAssigned ? 1 : 0 }},
+            checked: false,
         
             clickOrder(lane) {
                 if (lane.id == null || lane.place != null) return
@@ -98,6 +99,8 @@
             save() {
         
                 if (this.canReassign == false) return alert('Please order all available lanes first')
+        
+                if (!this.checked) return alert('Please check the box to confirm the results are correct')
         
                 let data = []
         
@@ -156,6 +159,16 @@
 
             <br>
 
+            <div class="flex flex-row space-x-2 md:space-x-4 items-center">
+
+                <label for="confirm">I acknowledge that the above results are correct and cannot be changed, and
+                    submission of this form acts as signing it digitally.
+                    <br>
+                    <small class="text-gray-500">(Clicking the text will also check the box!)</small>
+                </label>
+                <input type="checkbox" required x-model="checked" name="" class="min-w-[20px] min-h-[20px]"
+                    id="confirm">
+            </div>
 
             <button @click="save()" class="btn w-full "
                 :class="canReassign == true ? 'btn-success' : 'btn-white cursor-not-allowed'">Save &

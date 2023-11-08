@@ -36,7 +36,9 @@
                 ->get();
         @endphp
 
-        <form action="" method="post" class="">
+        <form action=""
+            onsubmit="if (document.getElementById('check-conf').checked == false) { alert('Please check the box to confirm the results are correct'); return false } else  {return true}"
+            method="post" class="">
             <div class="relative overflow-x-auto w-full ">
                 <table class="w-full">
 
@@ -95,6 +97,17 @@
             <br>
 
             @csrf
+
+            <div class="flex flex-row space-x-2 md:space-x-4 items-center">
+
+                <label for="check-conf">I acknowledge that the above results are correct and cannot be changed, and
+                    submission of this form acts as signing it digitally.
+                    <br>
+                    <small class="text-gray-500">(Clicking the text will also check the box!)</small>
+                </label>
+                <input type="checkbox" id="check-conf" class="min-w-[20px] min-h-[20px]">
+            </div>
+            <br>
 
             <button href="#" class="btn w-full">Save & Next</button>
 
