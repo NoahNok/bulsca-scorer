@@ -3,6 +3,7 @@
 namespace App\DigitalJudge;
 
 use App\Models\Competition;
+use App\Models\CompetitionSpeedEvent;
 use App\Models\CompetitionTeam;
 use App\Models\SERC;
 use App\Models\SERCJudge;
@@ -129,11 +130,20 @@ class DigitalJudge
             if ($serc->digitalJudgeEnabled && $serc->digitalJudgeConfirmed == false) return false;
         }
 
+        foreach ($comp->getSpeedEvents as $speed) {
+            if ($speed->digitalJudgeEnabled && $speed->digitalJudgeConfirmed == false) return false;
+        }
+
         return true;
     }
 
     public static function getSercsRequiringConfirmation(Competition $comp)
     {
         return SERC::where('competition', $comp->id)->where('digitalJudgeEnabled', true)->where('digitalJudgeConfirmed', false)->get();
+    }
+
+    public static function getSpeedsRequiringConfirmation(Competition $comp)
+    {
+        return CompetitionSpeedEvent::where('competition', $comp->id)->where('digitalJudgeEnabled', true)->where('digitalJudgeConfirmed', false)->get();
     }
 }

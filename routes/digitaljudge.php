@@ -1,7 +1,10 @@
 <?php
 
+use App\DigitalJudge\DigitalJudge;
 use App\Http\Controllers\DigitalJudge\DigitalJudgeController;
+use App\Http\Controllers\DigitalJudge\DJDQController;
 use App\Http\Controllers\DigitalJudge\DJJudgingController;
+use App\Http\Controllers\DigitalJudge\DJManageController;
 use App\Http\Controllers\DigitalJudge\SpeedJudgingController;
 use Illuminate\Support\Facades\Route;
 
@@ -32,11 +35,12 @@ Route::prefix('dj')->group(function () {
 
             Route::get('team/{team}', [DJJudgingController::class, 'judgeTeam'])->name('dj.judging.judge-team');
             Route::post('team/{team}', [DJJudgingController::class, 'saveTeamScores'])->name('dj.judging.save-team-scores');
+
+
+            Route::get('previous-marks', [DJJudgingController::class, 'previousMarks'])->name('dj.judging.previous-marks');
         });
         Route::get('change-judge', [DJJudgingController::class, 'changeJudge'])->name('dj.changeJudge');
 
-        Route::get('{serc}/confirm-results', [DigitalJudgeController::class, 'confirmResults'])->name('dj.confirm-results');
-        Route::post('{serc}/confirm-results', [DigitalJudgeController::class, 'confirmResultsPost'])->name('dj.confirm-results.post');
 
 
         Route::prefix('speeds/{speed}')->group(function () {
@@ -57,4 +61,36 @@ Route::prefix('dj')->group(function () {
             });
         });
     });
+
+    Route::middleware('isHeadJudge')->group(function () {
+        Route::prefix('manage')->group(function () {
+            Route::get('', [DJManageController::class, 'index'])->name('dj.manage.index');
+            Route::get('/serc/{serc}', [DJManageController::class, 'manageSerc'])->name('dj.manage.serc');
+            Route::post('/serc/{serc}', [DJManageController::class, 'manageSercPost'])->name('dj.manage.serc.post');
+            Route::get('/speed/{speed}', [DJManageController::class, 'manageSpeed'])->name('dj.manage.speed');
+        });
+
+        Route::prefix('dq')->group(function () {
+            Route::get('', [DJDQController::class, 'index'])->name('dj.dq.index');
+            Route::get('/current/{event}/{team}/{type}', [DJDQController::class, 'current'])->name('dj.dq.current');
+            Route::post('', [DJDQController::class, 'submit'])->name('dj.dq.index.post');
+        });
+
+        Route::prefix('confirm')->group(function () {
+            Route::get('serc/{serc}', [DigitalJudgeController::class, 'confirmResults'])->name('dj.confirm-results');
+            Route::post('serc/{serc}', [DigitalJudgeController::class, 'confirmResultsPost'])->name('dj.confirm-results.post');
+
+            Route::get('speed/{speed}', [DigitalJudgeController::class, 'confirmSpeedResults'])->name('dj.confirm-results.speed');
+            Route::post('speed/{speed}', [DigitalJudgeController::class, 'confirmSpeedResultsPost'])->name('dj.confirm-results.speed.post');
+        });
+    });
+
+
+
+    if (env('APP_ENV') == 'local') {
+        Route::get('toggle-head-ref', function () {
+            DigitalJudge::setClientHeadJudge(!DigitalJudge::isClientHeadJudge());
+            return redirect()->back();
+        })->name('LOCAL.dj.toggle-head-ref');
+    }
 });

@@ -1,40 +1,60 @@
-@extends('digitaljudge.layout')
+@extends('digitaljudge.mpa-layout')
+
+@section('title')
+    {{ $speed->getName() }}
+@endsection
+@php
+    $backlink = route('dj.home');
+    $icon = '<path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />';
+@endphp
 
 @section('content')
-    <div class=" w-screen flex flex-col items-center mt-8 space-y-4 px-4 ">
+    <div class="flex flex-col space-y-3 ">
 
-        <div class="flex flex-col space-y-4 items-center w-full ">
-            <img src="{{ asset('blogo.png') }}" alt="BULSCA Logo" class=" w-52 h-52 ">
-            <h5 class="font-semibold ">DigitalJudge | {{ $comp->name }} | {{ $speed->getName() }}</h5>
-            <br>
-            <h2 class="font-bold text-center w-full break-words">
-                Order of Finish
-            </h2>
+        <h2 class="font-bold w-full break-words">
+            Order of Finish
+        </h2>
 
 
-            <a href="{{ route('dj.home') }}" class="link">Back</a>
 
+        @if ($head)
+            <p>Heats will turn green once complete <strong>and</strong> maybe be edited at any time</p>
+        @else
             <p>Heats will turn green once complete!</p>
+        @endif
+
+        @for ($heat = 1; $heat <= $comp->getMaxHeats(); $heat++)
+            @php
+                $heatlanes = $comp
+                    ->getHeatEntries()
+                    ->where('heat', $heat)
+                    ->get();
+
+                $missingResult = false;
+
+                foreach ($heatlanes as $lane) {
+                    if ($lane->getOOF($speed->id) == null) {
+                        $missingResult = true;
+                        break;
+                    }
+                }
+
+                // Code to check that each team in the heat has an oof result
+
+            @endphp
 
 
-            @for ($heat = 1; $heat <= $comp->getMaxHeats(); $heat++)
-                @php
-                    $missingResult = $comp
-                        ->getHeatEntries()
-                        ->where('heat', $heat)
-                        ->where('oof', '==', 0)
-                        ->exists();
-
-                    // Code to check that each team in the heat has an oof result
-
-                @endphp
-
-
-
-                <a href="{{ route('dj.speeds.oof.judge', [$speed, $heat]) }}"
-                    class="btn {{ $missingResult ? 'btn-primary' : 'btn-success' }}">Heat
+            @if ($missingResult)
+                <a href="{{ route('dj.speeds.oof.judge', [$speed, $heat]) }}" class="btn btn-primary">Heat
                     {{ $heat }}</a>
-            @endfor
+            @elseif ($head)
+                <a href="{{ route('dj.speeds.oof.judge', [$speed, $heat]) }}" class="btn btn-success">Heat
+                    {{ $heat }}</a>
+            @else
+                <button class="btn btn-success cursor-not-allowed">Heat
+                    {{ $heat }}</button>
+            @endif
+        @endfor
 
 
 
@@ -43,8 +63,5 @@
 
 
 
-        </div>
-        <a href="{{ route('dj.logout') }}" class="link">Logout</a>
-        <br>
     </div>
 @endsection

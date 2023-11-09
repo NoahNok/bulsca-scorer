@@ -47,6 +47,10 @@ h1, h2, h3, h4, h5 {
 
     @apply text-bulsca font-semibold mb-2;
 
+    &.hmb-0 {
+      @apply mb-0;
+    }
+
 }
 
 h1 {
@@ -169,6 +173,11 @@ h5 {
     * {
       @apply text-white;
     }
+
+   
+  }
+  &.disabled {
+    @apply bg-gray-400 cursor-not-allowed;
   }
 
   &.card-pad-y {
