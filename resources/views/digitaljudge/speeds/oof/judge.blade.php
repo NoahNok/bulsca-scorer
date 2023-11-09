@@ -66,7 +66,7 @@
         <div class="flex flex-col space-y-3" x-data="{
             lanes: {{ json_encode($lanes) }},
         
-            place: 1,
+            place: {{ $hasAssigned ? $maxLanes + 1 : 1 }},
             maxAssignable: {{ $maxLanes }},
             canReassign: {{ $hasAssigned ? 1 : 0 }},
             checked: false,
@@ -80,6 +80,8 @@
                     this.canReassign = true
                 }
                 this.place++
+                this.canReassign = true
+        
         
             },
         
@@ -98,7 +100,7 @@
         
             save() {
         
-                if (this.canReassign == false) return alert('Please order all available lanes first')
+                if (this.canReassign == false || this.place < this.maxAssignable + 1) return alert('Please order all available lanes first')
         
                 if (!this.checked) return alert('Please check the box to confirm the results are correct')
         
@@ -142,7 +144,7 @@
             <template x-for="lane in lanes">
 
                 <div class="flex space-x-2">
-                    <div class="btn btn-white">
+                    <div class="btn btn-white" @click="clickOrder(lane)">
                         <span x-text="lane.place == null ? '-' : lane.place"></span>
                     </div>
                     <button class="btn w-full" @click="clickOrder(lane)"
@@ -171,7 +173,7 @@
             </div>
 
             <button @click="save()" class="btn w-full "
-                :class="canReassign == true ? 'btn-success' : 'btn-white cursor-not-allowed'">Save &
+                :class="place > maxAssignable ? 'btn-success' : 'btn-white cursor-not-allowed'">Save &
                 Next</button>
 
         </div>

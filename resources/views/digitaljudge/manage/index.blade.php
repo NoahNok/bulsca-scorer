@@ -20,7 +20,7 @@
     <h4>Speeds</h4>
     <div class="flex flex-col space-y-2">
         @foreach (\App\DigitalJudge\DigitalJudge::getClientCompetition()->getSpeedEvents->where('digitalJudgeEnabled') as $speed)
-            <a href="" class="card card-hover">
+            <a href="#" class="card card-hover disabled">
                 <h5 class="hmb-0">{{ $speed->getName() }}</h5>
             </a>
         @endforeach

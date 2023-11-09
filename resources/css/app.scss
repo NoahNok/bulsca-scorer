@@ -173,6 +173,11 @@ h5 {
     * {
       @apply text-white;
     }
+
+   
+  }
+  &.disabled {
+    @apply bg-gray-400 cursor-not-allowed;
   }
 
   &.card-pad-y {
