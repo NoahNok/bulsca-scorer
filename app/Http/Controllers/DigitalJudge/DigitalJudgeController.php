@@ -166,4 +166,9 @@ class DigitalJudgeController extends Controller
 
         return view('digitaljudge.judge-log', ['comp' => $comp, 'log' => $log]);
     }
+
+    public function help()
+    {
+        return view('digitaljudge.help', ['comp' => DigitalJudge::getClientCompetition()]);
+    }
 }

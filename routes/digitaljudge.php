@@ -15,6 +15,7 @@ Route::prefix('dj')->group(function () {
 
     Route::middleware('canJudge')->group(function () {
         Route::get('home', [DigitalJudgeController::class, 'home'])->name('dj.home');
+        Route::get('help', [DigitalJudgeController::class, 'help'])->name('dj.help');
 
         Route::prefix('judging/{judge}')->group(function () {
             Route::get('confirm-judge', [DJJudgingController::class, 'confirmJudge'])->name('dj.judging.confirm-judge');

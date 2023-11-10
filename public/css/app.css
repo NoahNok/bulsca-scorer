@@ -604,11 +604,11 @@ video {
 .ml-2 {
   margin-left: 0.5rem;
 }
-.mt-8 {
-  margin-top: 2rem;
-}
 .mt-6 {
   margin-top: 1.5rem;
+}
+.mt-8 {
+  margin-top: 2rem;
 }
 .mb-2 {
   margin-bottom: 0.5rem;
@@ -639,6 +639,9 @@ video {
 }
 .mt-3 {
   margin-top: 0.75rem;
+}
+.ml-6 {
+  margin-left: 1.5rem;
 }
 .block {
   display: block;
