@@ -35,7 +35,7 @@ class ResultSchema extends Model
                 return " AND ct.team !='A' AND l.name = 'S' ";
 
             case "f":
-                return " AND ct.team !='A' AND l.name = 'F' ";
+                return " AND l.name = 'F' ";
 
             case "nc":
                 return " AND l.name ='NC' ";
