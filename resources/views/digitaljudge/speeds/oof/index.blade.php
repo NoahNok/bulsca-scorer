@@ -30,11 +30,11 @@
                     ->where('heat', $heat)
                     ->get();
 
-                $missingResult = false;
+                $hasResult = false;
 
                 foreach ($heatlanes as $lane) {
-                    if ($lane->getOOF($speed->id) == null) {
-                        $missingResult = true;
+                    if ($lane->getOOF($speed->id)) {
+                        $hasResult = true;
                         break;
                     }
                 }
@@ -44,7 +44,7 @@
             @endphp
 
 
-            @if ($missingResult)
+            @if (!$hasResult)
                 <a href="{{ route('dj.speeds.oof.judge', [$speed, $heat]) }}" class="btn btn-primary">Heat
                     {{ $heat }}</a>
             @elseif ($head)

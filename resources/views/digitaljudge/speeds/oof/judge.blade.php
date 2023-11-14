@@ -16,14 +16,10 @@
         </h2>
 
         <p>Click lanes in the order they finish. Thye will turn green once clicked and a place will appear in the box to
-            the left. You can ignore empty white lanes. <strong>If a team doesn't start or finish (excl rope throw) place
-                them last (or joint last for multiple)</strong></p>
-
-        @if ($speed->getName() == 'Rope Throw')
-            <strong>For teams that don't finish</strong> (0-3 ropes) assign their order of finish in terms of highest amount
-            of ropes in first. Ties can be in any order. e.g: 4 teams get times - order in terms of fastest to slowest, then
-            with remaining teams order with teams getting in 3 ropes, then 2, etc.
-        @endif
+            the left. You can ignore empty white lanes.
+            <br>
+            <br>Teams that <strong>didn't start/finish</strong> can be ignored.
+        </p>
 
 
         @php
@@ -107,7 +103,7 @@
         
             save() {
         
-                if (this.canReassign == false || this.place < this.maxAssignable + 1) return alert('Please order all available lanes first')
+        
         
                 if (!this.checked) return alert('Please check the box to confirm the results are correct')
         
@@ -179,8 +175,7 @@
                     id="confirm">
             </div>
 
-            <button @click="save()" class="btn w-full "
-                :class="place > maxAssignable ? 'btn-success' : 'btn-white cursor-not-allowed'">Save &
+            <button @click="save()" class="btn w-full btn-success ">Save &
                 Next</button>
 
         </div>

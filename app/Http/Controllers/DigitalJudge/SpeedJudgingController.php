@@ -203,9 +203,18 @@ class SpeedJudgingController extends Controller
 
         foreach ($json as $res) {
 
+            if (!array_key_exists('place', $res)) continue;
+
+
+
 
             // Pull the heat for the team
             $heatlane = Heat::where('lane', $res['lane'])->where('heat', $heat)->where('competition', DigitalJudge::getClientCompetition()->id)->first();
+
+            if ($res['place'] == null) {
+                EventOOF::where(['heat_lane' => $heatlane->id, 'event' => $speed->id])->delete();
+                continue;
+            };
 
 
 
