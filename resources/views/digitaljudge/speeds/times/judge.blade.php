@@ -20,7 +20,7 @@
         <h2 class="font-bold  w-full break-words">
             Heat {{ $heat }}
         </h2>
-        <p>Times must match the format <strong>XX:XX.XXX</strong> exactly!
+        <p>Times must match the format <strong>XX:XX.XXX</strong> exactly!. Enter <strong>DNF or DNS</strong> as required!
             <br>
             @if ($speed->getName() == 'Rope Throw')
                 <strong>OR</strong> enter the total amount of people pulled in from 0-3
@@ -73,13 +73,15 @@
                                         @if ($speed->getName() == 'Rope Throw')
                                             <input class="p-2 px-4" type="text" placeholder="Ropes In OR 00:00.000"
                                                 name="team-{{ $pLane->team }}-time" id="team-{{ $pLane->team }}-time"
-                                                required x-data x-mask="99:99.999"
-                                                value="{{ $sr->result != null ? ($sr->result > 4 ? sprintf('%02d', $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT) : $sr->result) : '' }}}">
+                                                required x-data
+                                                x-mask:dynamic="$input.startsWith('D') ? 'DNa' : '99:99.999'"
+                                                value="{{ in_array($sr->disqualification, ['DQ004', 'DQ015']) ? ($sr->disqualification == 'DQ004' ? 'DNS' : 'DNF') : ($sr->result != null ? ($sr->result > 4 ? sprintf('%02d', $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT) : $sr->result) : '') }}">
                                         @else
                                             <input class="p-2 px-4" type="text" placeholder="00:00.000"
                                                 name="team-{{ $pLane->team }}-time" id="team-{{ $pLane->team }}-time"
-                                                required x-data x-mask="99:99.999"
-                                                value="{{ $sr->result != null ? sprintf('%02d', $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT) : '' }}}">
+                                                required x-data
+                                                x-mask:dynamic="$input.startsWith('D') ? 'DNa' : '99:99.999'"
+                                                value="{{ in_array($sr->disqualification, ['DQ004', 'DQ015']) ? ($sr->disqualification == 'DQ004' ? 'DNS' : 'DNF') : ($sr->result != null ? sprintf('%02d', $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT) : '') }}">
                                         @endif
 
 

@@ -88,7 +88,13 @@ class SpeedJudgingController extends Controller
 
 
 
-
+            // See if time value starts with DNF
+            if (str_starts_with($values['time'], "DN")) {
+                $sr->result = 0;
+                $sr->disqualification = str_starts_with($values['time'], 'DNS') ? 'DQ004' : 'DQ015';
+                $sr->save();
+                continue;
+            }
 
 
 
