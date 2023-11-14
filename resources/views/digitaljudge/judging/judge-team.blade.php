@@ -53,6 +53,9 @@
 
 
             <hr>
+            @php
+                $mpIds = [];
+            @endphp
 
             <form action="" method="post">
                 <div class="flex flex-col space-y-6 ">
@@ -67,8 +70,9 @@
                         @foreach ($mJudge->getMarkingPoints as $mp)
                             @php
                                 $mpValue = $head ? $mp->getScoreForTeam($team->id) : -1;
+                                $mpIds[] = $mp->id;
                             @endphp
-                            <div class="flex flex-col space-y-2 border-b pb-4">
+                            <div class="flex flex-col space-y-2 border-b pb-4" id="mpcontainer-{{ $mp->id }}">
                                 <div class="flex justify-between items-center ">
                                     <p>{{ $mp->name }}</p>
                                     <div class="flex items-center justify-center">
@@ -136,7 +140,7 @@
                 </div>
                 <br>
                 @csrf
-                <button type="submit" class="btn w-full">Submit</button>
+                <button type="submit" onclick="submissionCheck()" class="btn w-full">Submit</button>
             </form>
 
         </div>
@@ -260,5 +264,56 @@
         document.getElementById('notes-close-1').onclick = toggle;
         document.getElementById('notes-close-2').onclick = toggle;
         document.getElementById('notes-open').onclick = toggle;
+    </script>
+
+
+    <script>
+        function submissionCheck() {
+
+
+            const mpIds = [{{ implode(',', $mpIds) }}];
+
+            let allGood = true;
+
+            mpIds.forEach(id => {
+                let checked = document.querySelector(`input[name="mp-${id}"]:checked`);
+
+                if (!checked) {
+                    let el = document.getElementById(`mpcontainer-${id}`);
+                    if (allGood) {
+                        el.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'center',
+                            inline: 'center'
+                        });
+                    }
+
+                    allGood = false;
+
+
+
+                    // Highlight the missing marking point
+
+                    el.classList.add('border-2', 'rounded-md',
+                        'border-bulsca_red', 'p-2',
+                        'animate-pulse');
+
+
+                    el.querySelectorAll('input').forEach(input => {
+                        input.onclick = () => {
+                            el.classList.remove('border-2', 'rounded-md',
+                                'border-bulsca_red', 'p-2',
+                                'animate-pulse');
+
+                        }
+                    })
+                }
+
+
+
+            });
+
+            return allGood;
+        }
     </script>
 @endsection
