@@ -40,7 +40,10 @@
             <a href="{{ route('dj.judging.remove-judge') }}" class="link">Remove Casualty/Objective</a>
         @endif
 
+
+
         <a href="{{ route('dj.judging.next-team') }}" class="btn w-full">Start Judging</a>
+        <a href="{{ route('dj.judging.tutorial') }}" class="btn btn-thin btn-purple w-full">Tutorial</a>
 
 
 
@@ -67,4 +70,24 @@
 
 
     </div>
+
+    <script>
+        function askToDoTutorial() {
+
+            // See if they have done the tutorial before
+            if (localStorage.getItem('serc-tutorial') == 'done') {
+                return;
+            }
+            localStorage.setItem('serc-tutorial', 'done');
+
+            if (confirm('Would you like to go through the SERC marking tutorial?')) {
+
+
+                window.location.href = "{{ route('dj.judging.tutorial') }}";
+
+            }
+        }
+
+        window.onload = askToDoTutorial;
+    </script>
 @endsection

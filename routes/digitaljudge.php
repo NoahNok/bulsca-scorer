@@ -37,6 +37,9 @@ Route::prefix('dj')->group(function () {
             Route::get('team/{team}', [DJJudgingController::class, 'judgeTeam'])->name('dj.judging.judge-team');
             Route::post('team/{team}', [DJJudgingController::class, 'saveTeamScores'])->name('dj.judging.save-team-scores');
 
+            Route::get('tutorial', [DJJudgingController::class, 'tutorial'])->name('dj.judging.tutorial');
+            Route::post('tutorial', [DJJudgingController::class, 'tutorialPost'])->name('dj.judging.tutorial.post');
+
 
             Route::get('previous-marks', [DJJudgingController::class, 'previousMarks'])->name('dj.judging.previous-marks');
         });

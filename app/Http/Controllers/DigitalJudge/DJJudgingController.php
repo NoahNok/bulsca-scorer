@@ -204,4 +204,15 @@ class DJJudgingController extends Controller
 
         return response()->json($data, 200);
     }
+
+
+    public function tutorial()
+    {
+        return view('digitaljudge.judging.judge-tutorial', ['comp' => DigitalJudge::getClientCompetition()]);
+    }
+
+    public function tutorialPost()
+    {
+        return redirect()->route('dj.judging.home')->with('success', 'Tutorial completed!');
+    }
 }

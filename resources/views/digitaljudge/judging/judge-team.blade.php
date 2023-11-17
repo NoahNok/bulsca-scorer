@@ -3,6 +3,7 @@
 @section('title')
     {{ $serc->getName() }}
 @endsection
+
 @php
     $nopad = true;
     $backlink = route('dj.judging.home');
