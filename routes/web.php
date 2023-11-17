@@ -27,6 +27,11 @@ use App\Models\Competition;
 use App\Models\DQCode;
 use Illuminate\Support\Facades\Auth;
 
+
+
+// Import judge routes first so judge. overrides
+require __DIR__ . '/digitaljudge.php';
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -221,4 +226,3 @@ Route::get('dq', function () {
 
 
 require __DIR__ . '/auth.php';
-require __DIR__ . '/digitaljudge.php';
