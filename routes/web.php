@@ -179,6 +179,11 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('dashboard', function () {
+
+    if (auth()->user()->isAdmin()) {
+        return redirect()->route('admin.index');
+    }
+
     return redirect()->route('comps.view', auth()->user()->getCompetition);
 });
 
