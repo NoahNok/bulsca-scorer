@@ -30,7 +30,7 @@ class CanOnlyViewOwnComp
             $targetId = $compIdAttempted;
         }
 
-        if (auth()->user()->getCompetition->id == $targetId || auth()->user()->isAdmin()) return $next($request);
+        if (auth()->user()->isAdmin() || auth()->user()->getCompetition->id == $targetId) return $next($request);
 
         return redirect('/');
     }
