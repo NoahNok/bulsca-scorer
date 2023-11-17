@@ -8,7 +8,10 @@ use App\Http\Controllers\DigitalJudge\DJManageController;
 use App\Http\Controllers\DigitalJudge\SpeedJudgingController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('dj')->group(function () {
+
+
+function r()
+{
     Route::get('', [DigitalJudgeController::class, 'index'])->name('dj.index');
     Route::post('login', [DigitalJudgeController::class, 'login'])->name('dj.login');
     Route::get('logout', [DigitalJudgeController::class, 'logout'])->name('dj.logout');
@@ -97,4 +100,15 @@ Route::prefix('dj')->group(function () {
             return redirect()->back();
         })->name('LOCAL.dj.toggle-head-ref');
     }
-});
+}
+
+if (env('APP_ENV') == 'local') {
+    Route::prefix('dj')->group(function () {
+        r();
+    });
+} else {
+
+    Route::domain('judge.bulsca.co.uk')->group(function () {
+        r();
+    });
+}
