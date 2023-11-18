@@ -68,8 +68,8 @@ class DigitalJudgeController extends Controller
         $comp->save();
         if ($wasState) return redirect()->back(); // Stop here as we have turned DJ off
 
-        $comp->digitalJudgePin = $comp->digitalJudgePin ?: sprintf("%06d", mt_rand(1, 999999));
-        $comp->digitalJudgeHeadPin = $comp->digitalJudgeHeadPin ?: sprintf("%06d", mt_rand(1, 999999));
+        $comp->digitalJudgePin = $comp->digitalJudgePin ?: mt_rand(111111, 999999);
+        $comp->digitalJudgeHeadPin = $comp->digitalJudgeHeadPin ?: mt_rand(111111, 999999);
 
         $comp->save();
 
