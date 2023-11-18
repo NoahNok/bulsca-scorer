@@ -78,6 +78,8 @@ Route::middleware('auth')->group(function () {
         Route::prefix('/comps/{comp}')->group(function () {
             Route::get('', [CompetitionController::class, 'view'])->name('comps.view');
             Route::get('/digital-judge-toggle', [DigitalJudgeController::class, 'toggle'])->name('dj.toggle');
+            Route::get('/digital-judge-settings', [DigitalJudgeController::class, 'settings'])->name('dj.settings');
+            Route::post('/digital-judge-settings', [DigitalJudgeController::class, 'settingsPost'])->name('dj.settings.post');
             Route::get('/judge-log', [DigitalJudgeController::class, 'judgeLog'])->name('dj.judgeLog');
 
 

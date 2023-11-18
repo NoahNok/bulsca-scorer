@@ -643,6 +643,9 @@ video {
 .mt-3 {
   margin-top: 0.75rem;
 }
+.mt-auto {
+  margin-top: auto;
+}
 .block {
   display: block;
 }
@@ -1370,6 +1373,9 @@ video {
 .pt-1 {
   padding-top: 0.25rem;
 }
+.pr-3 {
+  padding-right: 0.75rem;
+}
 .text-left {
   text-align: left;
 }
@@ -1381,6 +1387,9 @@ video {
 }
 .indent-4 {
   text-indent: 1rem;
+}
+.indent-2 {
+  text-indent: 0.5rem;
 }
 .font-mono {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;

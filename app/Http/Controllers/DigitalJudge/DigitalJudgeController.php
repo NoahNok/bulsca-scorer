@@ -73,6 +73,10 @@ class DigitalJudgeController extends Controller
 
         $comp->save();
 
+        if ($wasState == false) {
+            return redirect()->route('dj.settings', $comp)->with('success', 'Digital Judge Enabled');
+        }
+
         return redirect()->back();
     }
 
@@ -170,5 +174,29 @@ class DigitalJudgeController extends Controller
     public function help()
     {
         return view('digitaljudge.help', ['comp' => DigitalJudge::getClientCompetition()]);
+    }
+
+    public function settings(Competition $comp)
+    {
+        return view('digitaljudge.settings', ['comp' => $comp]);
+    }
+
+    public function settingsPost(Competition $comp, Request $request)
+    {
+        foreach ($comp->getSERCs as $serc) {
+            $serc->digitalJudgeEnabled = $request->input('se:' . $serc->id) == 'on';
+            $serc->save();
+        }
+
+        foreach ($comp->getSpeedEvents as $speed) {
+            $speed->digitalJudgeEnabled = $request->input('sp:' . $speed->id) == 'on';
+            $speed->save();
+        }
+
+        $comp->max_lanes = $request->input('lanes', $comp->max_lanes);
+
+        $comp->save();
+
+        return redirect()->back()->with('success', 'Settings saved');
     }
 }

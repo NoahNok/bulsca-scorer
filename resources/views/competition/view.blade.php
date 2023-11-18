@@ -71,6 +71,8 @@
                     target="_blank" rel="noopener noreferrer" class="link">DigitalJudge Manual</a></p>
             <br>
             @if ($comp->digitalJudgeEnabled)
+                <a href="{{ route('dj.settings', $comp) }}" class="btn btn-purple">Settings</a>
+                <br>
                 <h5>Judges</h5>
                 <p>Please instruct Judges to go to here: <a href="{{ route('dj.index') }}"
                         class="link">{{ route('dj.index') }}</a> and enter the following pin:</p>
@@ -96,6 +98,16 @@
                 <a href="{{ route('dj.toggle', $comp) }}" class="btn btn-danger">Disable Digital Judging</a>
             @else
                 <a href="{{ route('dj.toggle', $comp) }}" class="btn">Enable Digital Judging</a>
+            @endif
+        </div>
+        <div>
+            @if ($comp->digitalJudgeEnabled && $comp->getMaxHeats() == -1)
+                <div class="alert-box">
+                    <p class="font-semibold">No Heats Set</p>
+                    <p class="text-sm">You have not generated heats any yet. You will not be able to digitally judge any
+                        speeds
+                        events until you do so!</p>
+                </div>
             @endif
         </div>
 
