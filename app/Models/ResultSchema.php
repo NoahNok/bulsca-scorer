@@ -65,6 +65,10 @@ class ResultSchema extends Model
 
         foreach ($events as $event) {
             $actualEvent = $event->getActualEvent;
+
+            // If you remove an event from a created RS it gets a null, so skip it
+            if (!$actualEvent) continue;
+
             $query = $actualEvent->getResultQuery();
             $query = str_replace(":league_conds:", $targetLeagueQueryExtra, $query);
             $eventName = $actualEvent->getName();
@@ -84,6 +88,8 @@ class ResultSchema extends Model
         $finalQuery .= " SELECT " . $mysqlEventNamesArray[0] . ".team, ";
 
         foreach ($events as $event) {
+            // If you remove an event from a created RS it gets a null, so skip it
+            if (!array_key_exists($event->id, $mysqlEventNames)) continue;
             $mysqlTableName = $mysqlEventNames[$event->id];
             $finalQuery .= $mysqlTableName . ".points AS " . $mysqlTableName . "_points, ";
             $finalQuery .=  $event->weight . " AS " . $mysqlTableName . "_weight, ";
