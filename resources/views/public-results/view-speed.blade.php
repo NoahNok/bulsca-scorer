@@ -6,7 +6,11 @@
     <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@if ($comp->areResultsProvisional()) (PROVISIONAL) @endif{{ $event->getName() }} | {{ $comp->name }} | Results | BULSCA</title>
+    <title>
+        @if ($comp->areResultsProvisional())
+            (PROVISIONAL)
+        @endif{{ $event->getName() }} | {{ $comp->name }} | Results | BULSCA
+    </title>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
 
 </head>
@@ -20,19 +24,23 @@
                 <h4>{{ $comp->name }}</h4>
             </div>
         </div>
-        <a href="https://forms.gle/FEc8XJM3SyUma3Br6" target="_blank" rel="noopener noreferrer" class="link">Give Feedback</a>
+        <a href="https://forms.gle/FEc8XJM3SyUma3Br6" target="_blank" rel="noopener noreferrer" class="link">Give
+            Feedback</a>
         <div class="">
             @if ($comp->areResultsProvisional())
-            <div class="p-2 text-center text-lg">
-                <p>These results are provisional! <strong>They are subject to change</strong> and should not be considered accurate or final!</p>
-            </div>
+                <div class="p-2 text-center text-lg">
+                    <p>These results are provisional! <strong>They are subject to change</strong> and should not be
+                        considered accurate or final!</p>
+                </div>
             @endif
             <div class="flex justify-between items-center mx-3 lg:mx-0">
                 <h3>Results</h3>
-                <a class="link" href="{{ route('public.results.comp', $comp->resultsSlug()) }}"><small>Back</small></a>
+                <a class="link"
+                    href="{{ route('public.results.comp', $comp->resultsSlug()) }}"><small>Back</small></a>
             </div>
             <div class="  relative overflow-x-auto w-screen lg:w-auto  ">
-                <table id="table" class="table-highlight text-sm w-full shadow-md rounded-lg  text-left text-gray-500 ">
+                <table id="table"
+                    class="table-highlight text-sm w-full shadow-md rounded-lg  text-left text-gray-500 ">
                     <thead class="text-xs text-gray-700 text-right uppercase bg-gray-50  ">
                         <tr class="">
                             <th scope="col" class="py-3 px-6 text-left sticky left-0 bg-gray-50">
@@ -40,10 +48,10 @@
 
                             </th>
                             <th scope="col" class="py-3 px-6">
-                                @if ($event->getName() == "Rope Throw")
-                                Ropes/Time
+                                @if ($event->getName() == 'Rope Throw')
+                                    Ropes/Time
                                 @else
-                                Time
+                                    Time
                                 @endif
                             </th>
                             <th scope="col" class="py-3 px-6">
@@ -51,9 +59,9 @@
                             </th>
 
                             @if ($event->hasPenalties())
-                            <th scope="col" class="py-3 px-6">
-                                Penalties
-                            </th>
+                                <th scope="col" class="py-3 px-6">
+                                    Penalties
+                                </th>
                             @endif
                             <th scope="col" class="py-3 px-6">
                                 Points
@@ -67,48 +75,58 @@
                     <tbody id="table-body">
 
                         @forelse ($event->getResults() as $result)
-                        <tr class="bg-white border-b text-right ">
-                            <th scope="row" class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap sticky left-0 bg-white ">
-                                {{ $result->team }}
-                            </th>
-                            <td class="py-4 px-6">
-
-                                @if ($result->result < 4) {{ $result->result }} @else @php $mins=floor($result->result / 60000);
-                                    $secs = (($result->result)-($mins*60000))/1000;
+                            <tr class="bg-white border-b text-right ">
+                                <th scope="row"
+                                    class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap sticky left-0 bg-white ">
+                                    {{ $result->team }}
+                                </th>
+                                <td class="py-4 px-6">
+                                    @php
+                                        $actualResult = $event->getName() == 'Rope Throw' ? $result->result_penalties : $result->result;
                                     @endphp
-                                    {{ sprintf("%02d", $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT)}}
+
+                                    {{ App\Models\SpeedResult::prettyTime($actualResult) }}
+
+                                    @if ($actualResult != $result->base_result)
+                                        <br>
+                                        <small>
+                                            Was {{ App\Models\SpeedResult::prettyTime((int) $result->base_result) }}
+                                        </small>
                                     @endif
 
 
-                            </td>
-                            <td class="py-4 px-6" title="{{ $result->disqualification ? App\Models\DQCode::message($result->disqualification) : ''}}">
-                                {{ $result->disqualification ?: '-' }}
-                            </td>
+                                </td>
+                                <td class="py-4 px-6"
+                                    title="{{ $result->disqualification ? App\Models\DQCode::message($result->disqualification) : '' }}">
+                                    {{ $result->disqualification ?: '-' }}
+                                </td>
 
-                            @if ($event->hasPenalties())
-                            <td class="py-3 px-6">
+                                @if ($event->hasPenalties())
+                                    <td class="py-3 px-6">
 
 
-                                {{ App\Models\Penalty::where('speed_result', $result->id)->get('code')->implode('code', ', ') ?: ($result->penalties == 0 ? '-' : '') }}
-                                @if ($event->getName() == 'Swim & Tow' && $result->penalties != 0)
-                                (P900 x{{$result->penalties - App\Models\Penalty::where('speed_result', $result->id)->count() }})
+                                        {{ App\Models\Penalty::where('speed_result', $result->id)->get('code')->implode('code', ', ') ?:($result->penalties == 0? '-': '') }}
+                                        @if ($event->getName() == 'Swim & Tow' && $result->penalties != 0)
+                                            (P900
+                                            x{{ $result->penalties - App\Models\Penalty::where('speed_result', $result->id)->count() }})
+                                        @endif
+                                    </td>
                                 @endif
-                            </td>
-                            @endif
-                            <td class="py-4 px-6">
-                                {{ round($result->points) }}
-                            </td>
-                            <td class="py-4 px-6">
-                                {{ $result->place }}
-                            </td>
+                                <td class="py-4 px-6">
+                                    {{ round($result->points) }}
+                                </td>
+                                <td class="py-4 px-6">
+                                    {{ $result->place }}
+                                </td>
 
-                        </tr>
+                            </tr>
                         @empty
-                        <tr class="bg-white border-b text-right ">
-                            <th colspan="100" scope="row" class="py-4 px-6 text-center font-medium text-gray-900 whitespace-nowrap ">
-                                None
-                            </th>
-                        </tr>
+                            <tr class="bg-white border-b text-right ">
+                                <th colspan="100" scope="row"
+                                    class="py-4 px-6 text-center font-medium text-gray-900 whitespace-nowrap ">
+                                    None
+                                </th>
+                            </tr>
                         @endforelse
 
 
@@ -119,14 +137,12 @@
             </div>
             <div class="mt-2 flex flex-col md:flex-row space-y-4 md:space-y-0 items-center justify-between">
                 <div class="flex flex-col ">
-                    <div class="form-input" style="margin-bottom: 0px !important;"><input placeholder="Filter" id="team-filter" style="margin-bottom: 0 !important" type="text"></div>
+                    <div class="form-input" style="margin-bottom: 0px !important;"><input placeholder="Filter"
+                            id="team-filter" style="margin-bottom: 0 !important" type="text"></div>
                     <small class="text-gray-600">team:x, league:x</small>
                 </div>
                 @if (!$comp->areResultsProvisional())
-
-                <a href="{{ Request::url() }}?dlCSV" class="link">Download as CSV</a>
-
-
+                    <a href="{{ Request::url() }}?dlCSV" class="link">Download as CSV</a>
                 @endif
             </div>
 
