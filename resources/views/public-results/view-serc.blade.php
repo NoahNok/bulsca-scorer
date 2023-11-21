@@ -49,7 +49,7 @@
                             <th class=""></th>
                             <th class=""></th>
                             @foreach ($event->getJudges as $judge)
-                                <th colspan="{{ $judge->getMarkingPoints->count() }}"
+                                <th colspan="{{ $judge->getMarkingPoints->count() + 1 }}"
                                     class="py-3 px-6 border-x text-center sticky top-0">{{ $judge->name }}</th>
                             @endforeach
                             <th></th>
@@ -68,7 +68,7 @@
                             @foreach ($event->getJudges as $judge)
                                 @foreach ($judge->getMarkingPoints as $markingPoint)
                                     <th scope="col"
-                                        class="py-3 px-6 @if ($loop->last) border-r @endif @if ($loop->first) border-l @endif group max-h-52 lg:whitespace-nowrap overflow-hidden text-ellipsis hover:whitespace-normal"
+                                        class="py-3 px-6  @if ($loop->first) border-l @endif group max-h-52 lg:whitespace-nowrap overflow-hidden text-ellipsis hover:whitespace-normal"
                                         style="writing-mode: vertical-rl; " title="{{ $markingPoint->name }}">
 
                                         {{ $markingPoint->name }}
@@ -76,6 +76,13 @@
 
                                     </th>
                                 @endforeach
+                                <th scope="col"
+                                    class="py-3 px-6 border-r    group max-h-52 lg:whitespace-nowrap overflow-hidden text-ellipsis hover:whitespace-normal"
+                                    style="writing-mode: vertical-rl; ">
+                                    TOTAL
+
+
+                                </th>
                             @endforeach
 
                             <th scope="col" class="py-3 px-6">
@@ -99,9 +106,11 @@
                             @foreach ($event->getJudges as $judge)
                                 @foreach ($judge->getMarkingPoints as $mp)
                                     <th
-                                        class="py-3 px-6 text-center sticky top-0  @if ($loop->last) border-r @endif @if ($loop->first) border-l @endif">
+                                        class="py-3 px-6 text-center sticky top-0   @if ($loop->first) border-l @endif">
                                         {{ $mp->weight }}</th>
                                 @endforeach
+                                <th class="py-3 px-6 text-center sticky top-0   border-r ">
+                                    -</th>
                             @endforeach
                             <th></th>
                             <th>Max: {{ round($event->getMaxMark(), 1) }}</th>
@@ -124,11 +133,19 @@
                                 </td>
 
                                 @foreach ($event->getJudges as $judge)
+                                    @php
+                                        $localTotal = 0;
+                                    @endphp
                                     @foreach ($judge->getMarkingPoints as $markingPoint)
+                                        @php
+                                            $localTotal += $markingPoint->getScoreForTeam($result->tid);
+                                        @endphp
                                         <td class="py-3 px-6 text-center">
                                             {{ round($markingPoint->getScoreForTeam($result->tid)) }}
                                         </td>
                                     @endforeach
+                                    <td class="py-3 px-6 text-center border-x font-semibold" data-total-row>
+                                        {{ $localTotal }}</td>
                                 @endforeach
 
                                 <td class="py-4 px-6"
@@ -136,10 +153,10 @@
                                     {{ $event->getTeamDQ(\App\Models\CompetitionTeam::find($result->tid))?->code ?: '-' }}
 
                                 </td>
-                                <td class="py-4 px-6 ">
+                                <td class="py-4 px-6 font-semibold ">
                                     {{ round($result->score) }}
                                 </td>
-                                <td class="py-4 px-6 ">
+                                <td class="py-4 px-6 font-bold ">
                                     {{ round($result->points) }}
                                 </td>
                                 <td class="py-4 px-6 ">

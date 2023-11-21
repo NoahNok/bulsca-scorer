@@ -7,6 +7,10 @@ function analyze(elementRows) {
         let eRow = [];
         let total = row.children.length;
         for (let i = 2; i < total - 4; i++) {
+            if (row.children[i].hasAttribute("data-total-row")) {
+                continue;
+            }
+
             nrow.push(parseInt(row.children[i].innerHTML));
             eRow.push(row.children[i]);
         }
