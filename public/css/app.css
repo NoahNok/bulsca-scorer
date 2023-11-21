@@ -658,6 +658,9 @@ video {
 .table {
   display: table;
 }
+.table-caption {
+  display: table-caption;
+}
 .table-cell {
   display: table-cell;
 }

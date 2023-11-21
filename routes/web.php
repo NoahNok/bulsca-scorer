@@ -19,6 +19,7 @@ use App\Http\Controllers\CompetitionController;
 use App\Http\Controllers\DigitalJudge\DigitalJudgeController;
 use App\Http\Controllers\HeatController;
 use App\Http\Controllers\OverallResultsController;
+use App\Http\Controllers\PrintableController;
 use App\Http\Controllers\PublicResultsController;
 use App\Http\Controllers\SpeedsEventController;
 use App\Http\Controllers\TeamsController;
@@ -158,6 +159,12 @@ Route::middleware('auth')->group(function () {
                     Route::post('/edit', [HeatController::class, 'editSERCOrderPost'])->name('comps.view.serc-order.editPost');
                     Route::get('/regen', [HeatController::class, 'regenSERCOrder'])->name('comps.view.serc-order.regen');
                 });
+            });
+
+            // PRINTABLES
+            Route::prefix('printables')->group(function () {
+
+                Route::get('serc-sheets/{serc}', [PrintableController::class, 'sercSheets'])->name('comps.view.printables.serc-sheets');
             });
         });
     });
