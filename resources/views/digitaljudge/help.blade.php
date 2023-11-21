@@ -58,14 +58,8 @@
     </p>
 
     <h5 id="idoofbatdsf" class="mt-4">I'm doing Order of Finish but a team didn't start/finish?</h5>
-    <p>For teams that don't start or finish, order them last. So if there are six lanes and one team didnt start and one
-        didn't finish, order then as 5th and 6th. (It doesnt matter which team is 5th or 6th)
-        <br>
-        <br>
-        <strong>UNLESS</strong> it's rope throw. In this case you should order any teams that dont finish (but have some
-        amount of ropes in) in the order of how many ropes. If two teams have the same amount of ropes they can be in
-        any
-        order. Thus you'd place all teams with times, the nall with 3 in, all with 2, in etc...
+    <p>Only click teams that have finished. Any teams that don't finish should be left unordered. This includes Rope Throw
+        teams that done get all their ropes in.
     </p>
 
     <h5 id="sthaphdist" class="mt-4">SERC Team has a penalty, how do I score them?</h5>
