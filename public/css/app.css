@@ -951,6 +951,9 @@ video {
 .grid-rows-6 {
   grid-template-rows: repeat(6, minmax(0, 1fr));
 }
+.grid-rows-1 {
+  grid-template-rows: repeat(1, minmax(0, 1fr));
+}
 .flex-row {
   flex-direction: row;
 }
@@ -2755,8 +2758,16 @@ aside.open {
     max-width: 40%;
   }
 
+  .md\:grid-flow-col {
+    grid-auto-flow: column;
+  }
+
   .md\:grid-cols-8 {
     grid-template-columns: repeat(8, minmax(0, 1fr));
+  }
+
+  .md\:grid-rows-6 {
+    grid-template-rows: repeat(6, minmax(0, 1fr));
   }
 
   .md\:flex-row {
