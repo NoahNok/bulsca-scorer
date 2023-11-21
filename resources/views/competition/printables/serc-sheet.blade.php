@@ -1,5 +1,5 @@
 <head>
-    <link rel="stylesheet" href="{{ asset('css/app.css?v=1.0.0') }}">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
     <title>
         {{ $serc->getName() }}
     </title>
