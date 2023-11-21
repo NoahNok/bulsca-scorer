@@ -85,6 +85,9 @@
                     <tbody>
 
                         @forelse ($event->getResults() as $result)
+                            @php
+                                dump($result);
+                            @endphp
                             <tr class="bg-white border-b text-right ">
                                 <th scope="row" class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap ">
                                     {{ $result->team }}
@@ -102,14 +105,17 @@
                                 @endif
                                 <td class="py-4 px-6">
 
-                                    @if ($result->result < 4)
-                                        {{ $result->result }}
-                                    @else
-                                        @php
-                                            $mins = floor($result->result / 60000);
-                                            $secs = ($result->result - $mins * 60000) / 1000;
-                                        @endphp
-                                        {{ sprintf('%02d', $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT) }}
+                                    @php
+                                        $actualResult = $event->getName() == 'Rope Throw' ? $result->result_penalties : $result->result;
+                                    @endphp
+
+                                    {{ App\Models\SpeedResult::prettyTime($actualResult) }}
+
+                                    @if ($actualResult != $result->base_result)
+                                        <br>
+                                        <small>
+                                            Was {{ App\Models\SpeedResult::prettyTime((int) $result->base_result) }}
+                                        </small>
                                     @endif
 
 

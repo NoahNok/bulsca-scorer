@@ -48,4 +48,19 @@ class SpeedResult extends Model
 
         return $result;
     }
+
+
+    static function prettyTime($result)
+    {
+
+        if ($result < 4) {
+            return $result;
+        } else {
+
+            $mins = floor($result / 60000);
+            $secs = ($result - $mins * 60000) / 1000;
+
+            return sprintf('%02d', $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT);
+        }
+    }
 }
