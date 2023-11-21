@@ -51,6 +51,11 @@
                             <th scope="col" class="py-3 px-6 text-left">
                                 Team
                             </th>
+                            @if ($event->digitalJudgeEnabled)
+                                <th scope="col" class="py-3 px-6">
+                                    OOF
+                                </th>
+                            @endif
                             <th scope="col" class="py-3 px-6">
                                 @if ($event->getName() == 'Rope Throw')
                                     Ropes/Time
@@ -58,6 +63,7 @@
                                     Time
                                 @endif
                             </th>
+
                             <th scope="col" class="py-3 px-6">
                                 DQ
                             </th>
@@ -83,6 +89,17 @@
                                 <th scope="row" class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap ">
                                     {{ $result->team }}
                                 </th>
+                                @if ($event->digitalJudgeEnabled)
+                                    <td scope="col" class="py-3 px-6">
+                                        @php
+                                            $h = App\Models\Heat::where('competition', $comp->id)
+                                                ->where('team', $result->tid)
+                                                ->first();
+                                        @endphp
+                                        H{{ $h->heat }}L{{ $h->lane }}:
+                                        {{ $h->getOOF($event->id)?->oof ?: '-' }}
+                                    </td>
+                                @endif
                                 <td class="py-4 px-6">
 
                                     @if ($result->result < 4)
@@ -97,6 +114,8 @@
 
 
                                 </td>
+
+
                                 <td class="py-4 px-6">
                                     {{ $result->disqualification ?: '-' }}
                                 </td>
