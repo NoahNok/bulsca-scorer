@@ -52,6 +52,8 @@
             <br>
             <p class="text-xl">Team: <strong class="text-bulsca">{{ $team->getFullname() }}</strong></p>
 
+            <button class="btn btn-purple btn-thin w-full" onclick="zeroAll()">ZERO for All</button>
+
 
             <hr>
             @php
@@ -315,6 +317,12 @@
             });
 
             return allGood;
+        }
+
+        function zeroAll() {
+            if (!confirm('Are you sure you want to zero all marking points for this team?')) return;
+
+            document.querySelectorAll("input[value='0']").forEach(i => i.checked = true)
         }
     </script>
 @endsection
