@@ -85,9 +85,6 @@
                     <tbody>
 
                         @forelse ($event->getResults() as $result)
-                            @php
-                                dump($result);
-                            @endphp
                             <tr class="bg-white border-b text-right ">
                                 <th scope="row" class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap ">
                                     {{ $result->team }}

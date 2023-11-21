@@ -16,6 +16,6 @@ class DQCode extends Model
 
         if (str_starts_with(strtolower($code), 'dq')) $code = substr($code, 2);
 
-        return DQCode::find($code)->description ?: "";
+        return DQCode::find($code)?->description ?: "";
     }
 }
