@@ -187,6 +187,10 @@ h5 {
   &.card-pad-y {
     @apply py-10;
   }
+
+  &.card-pad-y-sm {
+    @apply py-5;
+  }
  }
 
  a.link, p.link {

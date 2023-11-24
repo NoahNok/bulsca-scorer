@@ -1221,13 +1221,24 @@ video {
 .bg-gradient-to-r {
   background-image: linear-gradient(to right, var(--tw-gradient-stops));
 }
+.bg-gradient-to-bl {
+  background-image: linear-gradient(to bottom left, var(--tw-gradient-stops));
+}
 .from-bulsca {
   --tw-gradient-from: #070660;
   --tw-gradient-to: rgb(7 6 96 / 0);
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
 }
+.from-purple-700 {
+  --tw-gradient-from: #7e22ce;
+  --tw-gradient-to: rgb(126 34 206 / 0);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
 .to-bulsca_red {
   --tw-gradient-to: #9e0d06;
+}
+.to-bulsca {
+  --tw-gradient-to: #070660;
 }
 .bg-clip-text {
   -webkit-background-clip: text;
@@ -2039,6 +2050,10 @@ div.form-input.checkbox > input {
   padding-top: 2.5rem;
   padding-bottom: 2.5rem;
 }
+.card.card-pad-y-sm {
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
+}
 
 a.link, p.link {
   cursor: pointer;
@@ -2423,6 +2438,9 @@ aside.open {
   --tw-bg-opacity: 1;
   background-color: rgb(7 6 96 / var(--tw-bg-opacity));
 }
+.hover\:to-bulsca_red:hover {
+  --tw-gradient-to: #9e0d06;
+}
 .hover\:text-gray-500:hover {
   --tw-text-opacity: 1;
   color: rgb(107 114 128 / var(--tw-text-opacity));
@@ -2709,6 +2727,10 @@ aside.open {
   }
 }
 @media (min-width: 768px) {
+
+  .md\:col-span-2 {
+    grid-column: span 2 / span 2;
+  }
 
   .md\:row-start-auto {
     grid-row-start: auto;
