@@ -19,6 +19,17 @@
         <br>
 
         <h3>SERC Order</h3>
+        <div class="flex space-x-4 mb-2">
+            <p>Finished:</p>
+
+
+            <div class="px-4 finished-1 rounded-md text-white flex items-center justify-center font-semibold text-sm">
+                Dry</div>
+
+            <div class="px-4 finished-2 rounded-md text-white flex items-center justify-center font-semibold text-sm">
+                Both</div>
+        </div>
+
         <div class="grid grid-rows-12 md:grid-rows-8 2xl:grid-rows-6 gap-3 md:grid-flow-col">
             @if ($comp->getCompetitionTeams->count() == 0)
                 <p>No SERC Order available yet!</p>
