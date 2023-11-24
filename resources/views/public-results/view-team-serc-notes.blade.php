@@ -32,13 +32,15 @@
 
             <h3 class="text-center">Notes for <span class=" whitespace-nowrap">{{ $team->getFullname() }}</span></h3>
 
-            <ul class=" list-disc md:max-w-[40%] ">
+            <div class="md:max-w-[30vw]   ">
                 @forelse ($serc->getNotesForTeam($team) as $note)
-                    <li>{{ $note->note }} </li>
+                    <p><strong>{{ $note->getJudge->name }}</strong>
+                    </p>
+                    <p class="ml-6">{{ $note->note }}</p>
                 @empty
                     <strong>No notes for this team</strong>
                 @endforelse
-            </ul>
+            </div>
 
 
 

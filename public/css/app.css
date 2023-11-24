@@ -855,6 +855,15 @@ video {
 .max-w-\[30\%\] {
   max-width: 30%;
 }
+.max-w-\[40\%\] {
+  max-width: 40%;
+}
+.max-w-\[80\%\] {
+  max-width: 80%;
+}
+.max-w-\[40vw\] {
+  max-width: 40vw;
+}
 .flex-1 {
   flex: 1 1 0%;
 }
@@ -1392,6 +1401,9 @@ video {
 }
 .indent-4 {
   text-indent: 1rem;
+}
+.indent-2 {
+  text-indent: 0.5rem;
 }
 .font-mono {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -2775,6 +2787,18 @@ aside.open {
 
   .md\:max-w-\[40\%\] {
     max-width: 40%;
+  }
+
+  .md\:max-w-\[40vw\] {
+    max-width: 40vw;
+  }
+
+  .md\:max-w-\[30vw\] {
+    max-width: 30vw;
+  }
+
+  .md\:max-w-\[20vw\] {
+    max-width: 20vw;
   }
 
   .md\:grid-flow-col {

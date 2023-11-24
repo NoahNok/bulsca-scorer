@@ -59,7 +59,7 @@
 
     <h5 id="idoofbatdsf" class="mt-4">I'm doing Order of Finish but a team didn't start/finish?</h5>
     <p>Only click teams that have finished. Any teams that don't finish should be left unordered. This includes Rope Throw
-        teams that done get all their ropes in.
+        teams that don't get all their ropes in.
     </p>
 
     <h5 id="sthaphdist" class="mt-4">SERC Team has a penalty, how do I score them?</h5>
