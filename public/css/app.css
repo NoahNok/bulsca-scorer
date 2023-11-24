@@ -933,9 +933,6 @@ video {
 .list-decimal {
   list-style-type: decimal;
 }
-.grid-flow-col {
-  grid-auto-flow: column;
-}
 .grid-cols-5 {
   grid-template-columns: repeat(5, minmax(0, 1fr));
 }
@@ -953,9 +950,6 @@ video {
 }
 .grid-rows-6 {
   grid-template-rows: repeat(6, minmax(0, 1fr));
-}
-.grid-rows-1 {
-  grid-template-rows: repeat(1, minmax(0, 1fr));
 }
 .flex-row {
   flex-direction: row;
@@ -1121,11 +1115,11 @@ video {
   border-left-width: 2px;
   border-right-width: 2px;
 }
-.border-r {
-  border-right-width: 1px;
-}
 .border-l {
   border-left-width: 1px;
+}
+.border-r {
+  border-right-width: 1px;
 }
 .border-b {
   border-bottom-width: 1px;
@@ -2767,10 +2761,6 @@ aside.open {
 
   .md\:grid-cols-8 {
     grid-template-columns: repeat(8, minmax(0, 1fr));
-  }
-
-  .md\:grid-rows-6 {
-    grid-template-rows: repeat(6, minmax(0, 1fr));
   }
 
   .md\:flex-row {
