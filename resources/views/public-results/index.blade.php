@@ -21,7 +21,7 @@
         <div class=" w-[80%] lg:w-[65%] xl:w-[50%]">
 
             @forelse (\App\Models\Season::all() as $season)
-                <div class="flex flex-col mb-4">
+                <div class="flex flex-col mb-6">
                     <h4 class="-mb-2">{{ $season->name }}</h4>
                     <div class="flex flex-wrap row  w-full justify-center justify-items-center">
                         @forelse ($season->getCompetitions->where('public_results', true)->where('isLeague', true) as $comp)
@@ -30,7 +30,7 @@
                                 <h4 class="mb-0 text-center">{{ $comp->name }}</h4>
                             </a>
                         @empty
-                            <div class="card card-hover grow min-w-[23%] max-w-[30%] mt-6 mx-2 text-center">
+                            <div class="card card-hover grow min-w-[23%] max-w-[30%] mt-4 mx-2 text-center">
                                 <p>There are no result for this season available yet!</p>
                             </div>
                         @endforelse
