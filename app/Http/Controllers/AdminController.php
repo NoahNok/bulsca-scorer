@@ -61,6 +61,7 @@ class AdminController extends Controller
         $comp->when = $validated['when'];
         $comp->isLeague = $validated['isLeague'];
         $comp->max_lanes = $validated['lanes'];
+        $comp->season = $validated['season'];
 
         $comp->save();
 
@@ -132,5 +133,46 @@ class AdminController extends Controller
         $c->delete();
 
         return redirect()->route('admin.index')->with('success', "Competition deleted!");
+    }
+
+    public function seasons()
+    {
+        return view('admin.seasons');
+    }
+
+    public function seasonCreate()
+    {
+        return view('admin.season-create');
+    }
+
+
+    public function seasonCreatePost(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $season = new \App\Models\Season();
+        $season->name = $validated['name'];
+        $season->save();
+
+        return redirect()->route('admin.seasons')->with('success', "Season created!");
+    }
+
+    public function seasonEdit(\App\Models\Season $season)
+    {
+        return view('admin.season-edit', ['season' => $season]);
+    }
+
+    public function seasonEditPost(\App\Models\Season $season, Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $season->name = $validated['name'];
+        $season->save();
+
+        return redirect()->route('admin.seasons')->with('success', "Season updated!");
     }
 }

@@ -185,6 +185,12 @@ Route::prefix('/admin')->middleware('isAdmin')->group(function () {
     Route::get('/records', [AdminController::class, 'records'])->name('admin.records');
     Route::post('/records', [AdminController::class, 'updateRecords'])->name('admin.records.update');
 
+    Route::get('seasons', [AdminController::class, 'seasons'])->name('admin.seasons');
+    Route::get('season/create', [AdminController::class, 'seasonCreate'])->name('admin.seasons.create');
+    Route::post('season/create', [AdminController::class, 'seasonCreatePost'])->name('admin.seasons.create.post');
+    Route::get('season/edit/{season}', [AdminController::class, 'seasonEdit'])->name('admin.seasons.edit');
+    Route::post('season/edit/{season}', [AdminController::class, 'seasonEditPost'])->name('admin.seasons.edit.post');
+
     Route::delete('/competition/{comp}/delete', [AdminController::class, 'deleteCompPost'])->name('admin.comp.delete');
 });
 

@@ -95,4 +95,9 @@ class Competition extends Model
     {
         return $this->max_lanes;
     }
+
+    public function getSeason()
+    {
+        return $this->hasOne(Season::class, 'id', 'season');
+    }
 }

@@ -18,18 +18,30 @@
 
         <hr class="w-96">
 
-        <div class="flex flex-wrap row  w-[80%] lg:w-[65%] xl:w-[50%] justify-center justify-items-center">
+        <div class=" w-[80%] lg:w-[65%] xl:w-[50%]">
 
-            @forelse ($comps as $comp)
-            <a href="{{ route('public.results.comp', $comp->resultsSlug()) }}" class="card card-hover grow 2xl:min-w-[23%] 2xl:max-w-[23%] mt-4 mx-2">
-                <h4 class="mb-0 text-center">{{ $comp->name }}</h4>
-            </a>
+            @forelse (\App\Models\Season::all() as $season)
+                <div class="flex flex-col">
+                    <h4 class="-mb-2">{{ $season->name }}</h4>
+                    <div class="flex flex-wrap row  w-full justify-center justify-items-center">
+                        @forelse ($season->getCompetitions->where('public_results', true)->where('isLeague', true) as $comp)
+                            <a href="{{ route('public.results.comp', $comp->resultsSlug()) }}"
+                                class="card card-hover flex-grow 2xl:min-w-[23%]  mt-4 mx-2 ">
+                                <h4 class="mb-0 text-center">{{ $comp->name }}</h4>
+                            </a>
+                        @empty
+                            <div class="card card-hover grow min-w-[23%] max-w-[30%] mt-4 mx-2 text-center">
+                                <p>There aren't currently any competition results available!</p>
+                            </div>
+                        @endforelse
+                    </div>
+
+                </div>
             @empty
-            <div class="card card-hover grow min-w-[23%] max-w-[30%] mt-4 mx-2 text-center">
-                <p>There aren't currently any competition results available!</p>
-            </div>
 
             @endforelse
+
+
 
         </div>
     </div>
