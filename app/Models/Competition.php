@@ -100,4 +100,9 @@ class Competition extends Model
     {
         return $this->hasOne(Season::class, 'id', 'season');
     }
+
+    public function getHeats()
+    {
+        return $this->hasMany(Heat::class, 'competition', 'id');
+    }
 }

@@ -36,6 +36,9 @@ require __DIR__ . '/digitaljudge.php';
 // Import judge routes first so results. overrides
 require __DIR__ . '/results.php';
 
+// Import LIVE routes first so results. overrides
+require __DIR__ . '/live.php';
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
