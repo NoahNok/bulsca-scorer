@@ -12,6 +12,7 @@
         @endif{{ $event->getName() }} | {{ $comp->name }} | Results | BULSCA
     </title>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
+    <script src="{{ asset('js/sorttable.js') }}?{{ config('version.hash') }}"></script>
 
 </head>
 
@@ -42,7 +43,8 @@
             </div>
             <div class="  relative overflow-x-auto w-screen  lg:max-w-[80vw] h-[90vh] lg:h-[80vh] resize-y ">
                 <table id="table"
-                    class="table-highlight text-sm w-full shadow-md rounded-lg top-0 text-left text-gray-500 border-collapse  relative">
+                    class="table-highlight text-sm w-full shadow-md rounded-lg top-0 text-left text-gray-500 border-collapse  relative "
+                    sortable>
 
                     <thead class="text-xs text-gray-700 text-right uppercase sticky top-0 z-50 ">
                         <tr class="">
@@ -50,15 +52,16 @@
                             <th class=""></th>
                             @foreach ($event->getJudges as $judge)
                                 <th colspan="{{ $judge->getMarkingPoints->count() + 1 }}"
-                                    class="py-3 px-6 border-x text-center sticky top-0">{{ $judge->name }}</th>
+                                    class="py-3 px-6 border-x text-center sticky top-0 ">
+                                    {{ $judge->name }}</th>
                             @endforeach
                             <th></th>
                             <th></th>
                             <th></th>
                             <th></th>
                         </tr>
-                        <tr class="">
-                            <th scope="col" class="py-3 px-6 text-left z-20">
+                        <tr data-sortable-row class="">
+                            <th scope="col" class="py-3 px-6 text-left z-20" data-sortable>
                                 Team
                             </th>
                             <th scope="col" class="py-3 px-6">
@@ -69,7 +72,8 @@
                                 @foreach ($judge->getMarkingPoints as $markingPoint)
                                     <th scope="col"
                                         class="py-3 px-6  @if ($loop->first) border-l @endif group max-h-52 lg:whitespace-nowrap overflow-hidden text-ellipsis hover:whitespace-normal"
-                                        style="writing-mode: vertical-rl; " title="{{ $markingPoint->name }}">
+                                        style="writing-mode: vertical-rl; " title="{{ $markingPoint->name }}"
+                                        data-sortable>
 
                                         {{ $markingPoint->name }}
                                         <!--<p class="text-center">{{ number_format($markingPoint->weight, 1) }}</p>-->
@@ -78,7 +82,7 @@
                                 @endforeach
                                 <th scope="col"
                                     class="py-3 px-6 border-r    group max-h-52 lg:whitespace-nowrap overflow-hidden text-ellipsis hover:whitespace-normal"
-                                    style="writing-mode: vertical-rl; ">
+                                    style="writing-mode: vertical-rl; " data-sortable>
                                     TOTAL
 
 
@@ -91,10 +95,10 @@
                             <th scope="col" class="py-3 px-6">
                                 Raw Mark
                             </th>
-                            <th scope="col" class="py-3 px-6">
+                            <th scope="col" class="py-3 px-6" data-sortable>
                                 Points
                             </th>
-                            <th scope="col" class="py-3 px-6">
+                            <th scope="col" class="py-3 px-6" data-sortable>
                                 Position
                             </th>
 
@@ -122,7 +126,7 @@
                     <tbody id="table-body">
 
                         @forelse ($event->getResults() as $result)
-                            <tr class="bg-white border-b text-right   ">
+                            <tr class="bg-white border-b text-right  place-{{ $result->place }} ">
                                 <th scope="row"
                                     class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap  ">
                                     {{ $result->team }}
@@ -323,7 +327,10 @@
 
         }
 
-        window.onload = initTable()
+        window.onload = function() {
+            initTable()
+            Sorttable()
+        }
 
         function charts() {
             let ctx = document.getElementById('mark-dist');
@@ -434,6 +441,7 @@
 
         }
     </script>
+
 </body>
 
 </html>

@@ -43,8 +43,8 @@ function analyze(elementRows) {
         colSD.push(Math.sqrt(sdTotal / rows.length));
     }
 
-    console.log(colMeans);
-    console.log(colSD);
+    //console.log(colMeans);
+    //console.log(colSD);
 
     // Now lets compute a matrix with values representing how above or below to mean you were in terms of how many SD
 
@@ -68,7 +68,7 @@ function analyze(elementRows) {
         });
         matrix.push(matrixRow);
     });
-    console.log(matrix);
+    //console.log(matrix);
 
     // Now lets loop this matrix any apply colours to cells based on values, we will need to normalise
 
@@ -83,7 +83,7 @@ function analyze(elementRows) {
 
             if (isNaN(norm)) colour = colorMixer([0, 255, 0], [255, 0, 0], 0.5);
 
-            console.log(norm);
+            //console.log(norm);
             eRows[rowId][colIdd].style.backgroundColor = colour;
             colIdd++;
         });

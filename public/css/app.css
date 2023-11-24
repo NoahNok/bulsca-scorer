@@ -631,11 +631,11 @@ video {
 .-mt-px {
   margin-top: -1px;
 }
-.-mt-3 {
-  margin-top: -0.75rem;
-}
 .ml-6 {
   margin-left: 1.5rem;
+}
+.-mt-3 {
+  margin-top: -0.75rem;
 }
 .-mr-2 {
   margin-right: -0.5rem;
@@ -854,15 +854,6 @@ video {
 }
 .max-w-\[30\%\] {
   max-width: 30%;
-}
-.max-w-\[40\%\] {
-  max-width: 40%;
-}
-.max-w-\[80\%\] {
-  max-width: 80%;
-}
-.max-w-\[40vw\] {
-  max-width: 40vw;
 }
 .flex-1 {
   flex: 1 1 0%;
@@ -1401,9 +1392,6 @@ video {
 }
 .indent-4 {
   text-indent: 1rem;
-}
-.indent-2 {
-  text-indent: 0.5rem;
 }
 .font-mono {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -2267,32 +2255,32 @@ a.link:hover, p.link:hover {
   --tw-text-opacity: 1;
   color: rgb(0 0 0 / var(--tw-text-opacity));
 }
-.table-highlight tbody:not(.analysis) > tr:first-child {
+.table-highlight tbody:not(.analysis) > tr.place-1 {
   background-color: gold !important;
   --tw-text-opacity: 1;
   color: rgb(0 0 0 / var(--tw-text-opacity));
 }
-.table-highlight tbody:not(.analysis) > tr:first-child td, .table-highlight tbody:not(.analysis) > tr:first-child th {
+.table-highlight tbody:not(.analysis) > tr.place-1 td, .table-highlight tbody:not(.analysis) > tr.place-1 th {
   background-color: gold !important;
   --tw-text-opacity: 1;
   color: rgb(0 0 0 / var(--tw-text-opacity));
 }
-.table-highlight tbody:not(.analysis) > tr:nth-child(2) {
+.table-highlight tbody:not(.analysis) > tr.place-2 {
   background-color: silver !important;
   --tw-text-opacity: 1;
   color: rgb(0 0 0 / var(--tw-text-opacity));
 }
-.table-highlight tbody:not(.analysis) > tr:nth-child(2) td, .table-highlight tbody:not(.analysis) > tr:nth-child(2) th {
+.table-highlight tbody:not(.analysis) > tr.place-2 td, .table-highlight tbody:not(.analysis) > tr.place-2 th {
   background-color: silver !important;
   --tw-text-opacity: 1;
   color: rgb(0 0 0 / var(--tw-text-opacity));
 }
-.table-highlight tbody:not(.analysis) > tr:nth-child(3), .table-highlight tbody:not(.analysis) > tr:nth-child(3) > td {
+.table-highlight tbody:not(.analysis) > tr.place-3, .table-highlight tbody:not(.analysis) > tr.place-3 > td {
   background-color: #cd7f32 !important;
   --tw-text-opacity: 1;
   color: rgb(0 0 0 / var(--tw-text-opacity));
 }
-.table-highlight tbody:not(.analysis) > tr:nth-child(3) td, .table-highlight tbody:not(.analysis) > tr:nth-child(3) th, .table-highlight tbody:not(.analysis) > tr:nth-child(3) > td td, .table-highlight tbody:not(.analysis) > tr:nth-child(3) > td th {
+.table-highlight tbody:not(.analysis) > tr.place-3 td, .table-highlight tbody:not(.analysis) > tr.place-3 th, .table-highlight tbody:not(.analysis) > tr.place-3 > td td, .table-highlight tbody:not(.analysis) > tr.place-3 > td th {
   background-color: #cd7f32 !important;
   --tw-text-opacity: 1;
   color: rgb(0 0 0 / var(--tw-text-opacity));
@@ -2785,20 +2773,8 @@ aside.open {
     max-width: 30%;
   }
 
-  .md\:max-w-\[40\%\] {
-    max-width: 40%;
-  }
-
-  .md\:max-w-\[40vw\] {
-    max-width: 40vw;
-  }
-
   .md\:max-w-\[30vw\] {
     max-width: 30vw;
-  }
-
-  .md\:max-w-\[20vw\] {
-    max-width: 20vw;
   }
 
   .md\:grid-flow-col {
