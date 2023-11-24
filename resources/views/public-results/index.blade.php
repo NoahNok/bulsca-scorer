@@ -20,7 +20,7 @@
 
         <div class=" w-[80%] lg:w-[65%] xl:w-[50%]">
 
-            @forelse (\App\Models\Season::order('name','desc')->get() as $season)
+            @forelse (\App\Models\Season::orderBy('name','desc')->get() as $season)
                 <div class="flex flex-col mb-6">
                     <h4 class="-mb-2">{{ $season->name }}</h4>
                     <div class="flex flex-wrap row  w-full justify-center justify-items-center">
