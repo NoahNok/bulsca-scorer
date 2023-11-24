@@ -2237,6 +2237,12 @@ a.link:hover, p.link:hover {
   left: 0px;
   z-index: 20;
 }
+.table-highlight thead > tr > th[data-sortable][reverse=false]::after {
+  content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='currentColor' width='15px' height='15px'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M4.5 15.75l7.5-7.5 7.5 7.5' /%3E%3C/svg%3E%0A");
+}
+.table-highlight thead > tr > th[data-sortable][reverse=true]::after {
+  content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='currentColor' width='15px' height='15px'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5' /%3E%3C/svg%3E%0A");
+}
 .table-highlight tbody > tr > th, .table-highlight tbody > tr > td:first-child {
   position: sticky;
   left: 0px;

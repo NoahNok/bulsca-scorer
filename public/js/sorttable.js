@@ -1,4 +1,5 @@
 function Sorttable() {
+    lastClicked = null;
     document.querySelectorAll("table[sortable]").forEach((table) => {
         let headers = table
             .querySelector("tr[data-sortable-row]")
@@ -14,6 +15,11 @@ function Sorttable() {
 
                     header.setAttribute("reverse", !rev);
                     sortTable(table, i, rev);
+
+                    if (lastClicked && lastClicked != header) {
+                        lastClicked.removeAttribute("reverse");
+                    }
+                    lastClicked = header;
                 });
             }
         });
