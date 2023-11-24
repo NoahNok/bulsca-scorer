@@ -30,7 +30,7 @@
                                 <h4 class="mb-0 text-center">{{ $comp->name }}</h4>
                             </a>
                         @empty
-                            <div class="card card-hover grow min-w-[23%] max-w-[30%] mt-4 mx-2 text-center">
+                            <div class="card card-hover grow min-w-[23%] max-w-[30%] mt-6 mx-2 text-center">
                                 <p>There are no result for this season available yet!</p>
                             </div>
                         @endforelse
