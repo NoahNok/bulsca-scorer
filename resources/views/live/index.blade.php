@@ -8,7 +8,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $comp->name }} | Live | BULSCA</title>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
+    <style>
 
+    </style>
 </head>
 
 <body class="overflow-x-hidden flex justify-center w-screen h-screen">
@@ -22,7 +24,7 @@
                 <p>No SERC Order available yet!</p>
             @else
                 @foreach ($comp->getCompetitionTeams as $team)
-                    <div class="card whitespace-nowrap">
+                    <div class="card whitespace-nowrap transition-colors" data-team="{{ $team->id }}">
                         {{ $loop->index + 1 }}. {{ $team->getFullname() }}
                     </div>
                 @endforeach
@@ -78,6 +80,21 @@
         <br>
         <br>
 
+        <script>
+            function update() {
+                fetch("{{ route('live.howManySercsHasEachTeamFinished', $comp->id) }}")
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        Object.keys(data).forEach(id => {
+                            let card = document.querySelector(`[data-team="${id}"]`);
+                            card.classList.add(`finished-${data[id]}`);
+                        });
+                    });
+            }
+            setInterval(update, 5000);
+            window.onload = update;
+        </script>
 </body>
 
 </html>

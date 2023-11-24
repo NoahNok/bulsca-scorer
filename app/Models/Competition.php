@@ -105,4 +105,24 @@ class Competition extends Model
     {
         return $this->hasMany(Heat::class, 'competition', 'id');
     }
+
+
+
+    public function howManySercsHasEachTeamFinished()
+    {
+
+
+        $teamsFinished = [];
+
+        foreach ($this->getCompetitionTeams as $team) {
+            $finished = 0;
+            foreach ($this->getSERCs as $serc) {
+                if ($serc->hasTeamFinished($team)) $finished++;
+            }
+
+            $teamsFinished[$team->id] = $finished;
+        }
+
+        return $teamsFinished;
+    }
 }

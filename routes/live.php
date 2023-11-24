@@ -10,6 +10,7 @@ function rrr()
     /* LIVE VIEWING */
 
     Route::get('', [LiveController::class, 'index'])->name('live');
+    Route::get('{comp}/howManySercsHasEachTeamFinished', [LiveController::class, 'howManySercsHasEachTeamFinished'])->name('live.howManySercsHasEachTeamFinished')->middleware('throttle:30,1');
 }
 
 if (env('APP_ENV') == 'local') {

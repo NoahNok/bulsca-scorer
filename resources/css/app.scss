@@ -422,3 +422,14 @@ aside {
 .grid-rows-12 {
   grid-template-rows: repeat(12, minmax(0, 1fr));
 }
+
+
+// LIVE STUFF
+
+.finished-1 {
+  @apply bg-orange-400;
+}
+
+.finished-2 {
+  @apply bg-green-500;
+}

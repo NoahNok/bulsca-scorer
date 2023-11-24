@@ -118,4 +118,10 @@ class SERC extends Model
 
         return JudgeNote::whereIn('judge', $allJudgeIds)->where('team', $team->id)->get();
     }
+
+    public function hasTeamFinished($team)
+    {
+        $c = DB::select('SELECT COUNT(*) AS count FROM serc_results INNER JOIN serc_marking_points smp ON smp.id=marking_point WHERE team=? AND serc=?', [$team->id, $this->id]);
+        return $c[0]->count > 0;
+    }
 }
