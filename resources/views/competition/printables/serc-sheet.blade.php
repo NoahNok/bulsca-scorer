@@ -1,7 +1,7 @@
 <head>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
     <title>
-        {{ $serc->getName() }}
+        Rough Judge Sheets | {{ $serc->getName() }}
     </title>
     <style>
         @media print {
@@ -10,6 +10,10 @@
             }
 
             /* page-break-after works, as well */
+        }
+
+        @page {
+            margin: 10px;
         }
     </style>
 </head>
@@ -22,16 +26,16 @@
 
         @foreach ($serc->getJudges as $judge)
             <div class="pagebreak">
-                <h2>
-                    {{ $serc->getName() }}
-                </h2>
-                <h3>{{ $judge->name }}</h3>
+                <h5>
+                    {{ $judge->name }} | {{ $serc->getName() }}
+                </h5>
+
                 <table class=" text-sm   rounded-lg text-left text-gray-500 ">
                     <thead class="text-xs border text-gray-700 text-right uppercase bg-gray-50 ">
                         <tr>
 
 
-                            <th scope="col" class="py-2 px-4 whitespace-nowrap">
+                            <th scope="col" class="py-2 px-2 whitespace-nowrap">
                                 Team
                             </th>
                             @foreach ($judge->getMarkingPoints as $mp)
@@ -90,7 +94,7 @@
     </div>
     <script>
         window.onload = function() {
-            //window.print()
+            window.print()
         }
     </script>
 </body>
