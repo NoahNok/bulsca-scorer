@@ -142,7 +142,7 @@
                                     @endphp
                                     @foreach ($judge->getMarkingPoints as $markingPoint)
                                         @php
-                                            $localTotal += $markingPoint->getScoreForTeam($result->tid);
+                                            $localTotal += $markingPoint->getScoreForTeam($result->tid) * $markingPoint->weight;
                                         @endphp
                                         <td class="py-3 px-6 text-center">
                                             {{ round($markingPoint->getScoreForTeam($result->tid)) }}
