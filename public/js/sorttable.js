@@ -34,22 +34,28 @@ function sortTable(table, col, reverse) {
     reverse = -(+reverse || -1);
 
     tr = tr.sort((a, b) => {
-        // sort rows via integer contents
-        if (a.cells[col].textContent.trim().match(/^[0-9]+$/)) {
-            return (
-                reverse *
-                (a.cells[col].textContent.trim() -
-                    b.cells[col].textContent.trim())
-            );
+        // sort rows by decimal or integer contents
+        let aVal = a.cells[col].textContent.trim();
+        let bVal = b.cells[col].textContent.trim();
+        if (aVal.match(/^-?\d+\.?\d*$/)) {
+            aVal = parseFloat(aVal);
+            bVal = parseFloat(bVal);
         }
+        if (aVal < bVal) {
+            return -1 * reverse;
+        }
+        if (aVal > bVal) {
+            return 1 * reverse;
+        }
+        return 0;
 
-        // sort rows
-        return (
-            reverse * // `-1 *` if want opposite order
-            a.cells[col].textContent
-                .trim() // using `.textContent.trim()` for test
-                .localeCompare(b.cells[col].textContent.trim())
-        );
+        // // sort rows
+        // return (
+        //     reverse * // `-1 *` if want opposite order
+        //     a.cells[col].textContent
+        //         .trim() // using `.textContent.trim()` for test
+        //         .localeCompare(b.cells[col].textContent.trim())
+        // );
     });
 
     for (i = 0; i < tr.length; ++i) tb.appendChild(tr[i]); // append each row in order
