@@ -129,7 +129,7 @@ class Competition extends Model
     {
 
         // This is much faster than doing it via ORM models. Reduce to one query instead of sercs * teams
-        $res = DB::select('SELECT heat, COUNT(*) AS done FROM speed_results sr INNER JOIN heats h ON sr.competition_team=h.team WHERE competition=? AND result IS NOT NULL GROUP BY heat;', [$this->id]);
+        $res = DB::select('SELECT heat, COUNT(DISTINCT sr.event) AS done FROM speed_results sr INNER JOIN heats h ON sr.competition_team=h.team WHERE competition=? AND result IS NOT NULL GROUP BY heat;', [$this->id]);
 
         $heatsFinished = [];
 
