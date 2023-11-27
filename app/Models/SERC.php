@@ -124,4 +124,15 @@ class SERC extends Model
         $c = DB::select('SELECT COUNT(*) AS count FROM serc_results INNER JOIN serc_marking_points smp ON smp.id=marking_point WHERE team=? AND serc=?', [$team->id, $this->id]);
         return $c[0]->count > 0;
     }
+
+    public function getAverageTimeBetweenTeams()
+    {
+
+        $res = DB::select('SELECT TIMESTAMPDIFF(SECOND, MIN(team_min), MAX(team_min))/(GREATEST((COUNT(team_min) - 1),1)) AS avg_time FROM (SELECT sr.team, MIN(sr.created_at) as team_min FROM serc_results sr INNER JOIN
+        serc_marking_points smp ON smp.id=sr.marking_point WHERE smp.serc=? GROUP BY sr.team) AS t;', [$this->id]);
+
+        $avgTime = $res[0]->avg_time;
+
+        return $avgTime == 0 ? 600 : $avgTime;
+    }
 }

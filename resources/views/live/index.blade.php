@@ -37,14 +37,30 @@
                 @foreach ($comp->getCompetitionTeams as $team)
                     <div class="card whitespace-nowrap transition-colors" data-team="{{ $team->id }}">
                         {{ $loop->index + 1 }}. {{ $team->getFullname() }}
+                        <br>
+                        <small class="text-xs font-semibold">Est: <span data-team-time>-</span></small>
                     </div>
                 @endforeach
             @endif
 
         </div>
+        <small>Times are an estimate only based on the average time between each team. Longer gaps such as lunch may
+            cause estimates to be majorly off</small>
         <br>
 
         <h3>Heats</h3>
+        <div class="flex space-x-4 mb-2">
+            <p>Finished:</p>
+
+
+            <div class="px-4 speed speed-1 rounded-md  flex items-center justify-center font-semibold text-sm">
+                Rope Throw</div>
+
+            <div class="px-4 speed speed-2 rounded-md  flex items-center justify-center font-semibold text-sm">
+                + League Event</div>
+            <div class="px-4 speed speed-3 rounded-md  flex items-center justify-center font-semibold text-sm">
+                + Swim & Tow</div>
+        </div>
         <div class="flex space-x-2  ">
             <div class=" hidden md:block  ">
                 <h5>Lane</h5>
@@ -69,7 +85,7 @@
 
                                 <div class="flex flex-row md:block ">
                                     <p class="px-5 py-3 border border-transparent md:hidden">{{ $l }}</p>
-                                    <li class="card whitespace-nowrap flex-grow ">
+                                    <li class="card whitespace-nowrap flex-grow  " data-heat="{{ $key }}">
                                         @if ($lane)
                                             {{ $lane->getTeam->getFullname() }}
                                             ({{ $lane->getTeam->getSwimTowTimeForDefault() }})
@@ -93,14 +109,79 @@
 
         <script>
             function update() {
-                fetch("{{ route('live.howManySercsHasEachTeamFinished', $comp->id) }}")
+
+
+                function handleSercsFinished(data) {
+                    Object.keys(data).forEach(id => {
+                        let card = document.querySelector(`[data-team="${id}"]`);
+                        card.classList.add('finished', `finished-${data[id]}`);
+                    });
+                }
+
+                function handleEstimatedTeamTime(avgTeamTime, startTime) {
+                    console.log(avgTeamTime)
+
+                    function addSeconds(date, seconds) {
+                        // Making a copy with the Date() constructor
+                        const dateCopy = new Date(date);
+                        dateCopy.setTime(dateCopy.getTime() + seconds * 1000);
+                        return dateCopy;
+                    }
+
+                    let timeNow = new Date();
+                    if (startTime) {
+                        startTime = new Date(startTime);
+
+                        if (startTime > timeNow) {
+                            timeNow = new Date(startTime);
+                        }
+
+
+
+
+
+
+                    }
+
+                    document.querySelectorAll('[data-team]').forEach(card => {
+                        if (card.classList.contains('finished')) {
+                            let small = card.querySelector('small')
+                            small.innerText = card.classList.contains('finished-2') ? 'Finished (Both)' :
+                                'Finished (Dry)';
+                            return;
+                        }
+
+                        let teamTime = card.querySelector('[data-team-time]');
+
+                        teamTime.innerText = timeNow.toLocaleTimeString('en-GB', {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+                        timeNow = addSeconds(timeNow, avgTeamTime);
+
+                    })
+
+                }
+
+                function handleHeatsFinished(data) {
+                    Object.keys(data).forEach(heat => {
+                        let cards = document.querySelectorAll(`[data-heat="${heat}"]`);
+
+                        cards.forEach(card => {
+                            card.classList.add('speed', `speed-${data[heat]}`);
+                        });
+
+                    });
+                }
+
+
+                fetch("{{ route('live.data', $comp->id) }}")
                     .then(response => response.json())
                     .then(data => {
-                        console.log(data);
-                        Object.keys(data).forEach(id => {
-                            let card = document.querySelector(`[data-team="${id}"]`);
-                            card.classList.add(`finished-${data[id]}`);
-                        });
+
+                        handleSercsFinished(data.sercsFinished);
+                        handleEstimatedTeamTime(data.avgTime, data.sercStartTime);
+                        handleHeatsFinished(data.heatsFinished);
                     });
             }
             setInterval(update, 5000);

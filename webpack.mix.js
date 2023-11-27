@@ -1,4 +1,6 @@
-const mix = require('laravel-mix');
+const mix = require("laravel-mix");
+require("laravel-mix-serve");
+
 //require('laravel-mix-blade-reload');
 
 /*
@@ -12,9 +14,11 @@ const mix = require('laravel-mix');
  |
  */
 
- mix.js('resources/js/*', 'public/js')
- .sass('resources/css/app.scss', 'public/css').options({
-     postCss: [require("tailwindcss")],
- });//.bladeReload();
+mix.js("resources/js/*", "public/js")
+    .sass("resources/css/app.scss", "public/css")
+    .options({
+        postCss: [require("tailwindcss")],
+    }); //.bladeReload();
 
-mix.browserSync('127.0.0.1:8000')
+mix.browserSync("127.0.0.1:8000");
+mix.serve();

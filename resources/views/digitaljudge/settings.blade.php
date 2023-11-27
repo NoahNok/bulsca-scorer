@@ -74,6 +74,12 @@
                 <x-form-input id="lanes" title="Lanes" type="number" defaultValue="{{ $comp->max_lanes }}" />
 
             </div>
+
+            <div class="card">
+                <h4>Other</h4>
+                <x-form-input id="serc_start_time" title="SERC Start Time" type="datetime-local"
+                    defaultValue="{{ $comp->serc_start_time }}"></x-form-input>
+            </div>
         </div>
     </form>
 @endsection

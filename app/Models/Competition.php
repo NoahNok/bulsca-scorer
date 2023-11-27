@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class Competition extends Model
@@ -39,6 +40,7 @@ class Competition extends Model
 
     protected $casts = [
         'when' => 'datetime',
+        'serc_start_time' => 'datetime',
     ];
 
     public function getResultSchemas()
@@ -111,18 +113,30 @@ class Competition extends Model
     public function howManySercsHasEachTeamFinished()
     {
 
+        // This is much faster than doing it via ORM models. Reduce to one query instead of sercs * teams
+        $res = DB::select('SELECT sr.team AS team, COUNT(DISTINCT smp.serc) AS total FROM serc_results sr INNER JOIN serc_marking_points smp ON smp.id=sr.marking_point INNER JOIN sercs s ON s.id=smp.serc WHERE s.competition=? GROUP BY sr.team;', [$this->id]);
 
         $teamsFinished = [];
 
-        foreach ($this->getCompetitionTeams as $team) {
-            $finished = 0;
-            foreach ($this->getSERCs as $serc) {
-                if ($serc->hasTeamFinished($team)) $finished++;
-            }
-
-            $teamsFinished[$team->id] = $finished;
+        foreach ($res as $row) {
+            $teamsFinished[$row->team] = $row->total;
         }
 
         return $teamsFinished;
+    }
+
+    public function whichSpeedEventHeatsHaveFinished()
+    {
+
+        // This is much faster than doing it via ORM models. Reduce to one query instead of sercs * teams
+        $res = DB::select('SELECT heat, COUNT(*) AS done FROM speed_results sr INNER JOIN heats h ON sr.competition_team=h.team WHERE competition=? AND result IS NOT NULL GROUP BY heat;', [$this->id]);
+
+        $heatsFinished = [];
+
+        foreach ($res as $row) {
+            $heatsFinished[$row->heat] = $row->done;
+        }
+
+        return $heatsFinished;
     }
 }
