@@ -33,6 +33,6 @@ class LiveController extends Controller
             return $serc->getAverageTimeBetweenTeams();
         });
 
-        return response()->json(['sercsFinished' => $sercsFinished, 'avgTime' => $avgTime, 'sercStartTime' => $comp->serc_start_time->timestamp * 1000, 'heatsFinished' => $comp->whichSpeedEventHeatsHaveFinished()]);
+        return response()->json(['sercsFinished' => $sercsFinished, 'avgTime' => $avgTime, 'sercStartTime' => $comp->serc_start_time?->timestamp * 1000, 'heatsFinished' => $comp->whichSpeedEventHeatsHaveFinished()]);
     }
 }
