@@ -15,6 +15,10 @@ class LiveController extends Controller
 
         $comp = Competition::orderBy(DB::raw('ABS(DATEDIFF(competitions.when, NOW()))'), 'asc')->first();
 
+        if (!$comp) return view('live.unavailable', ['message' => 'No competitions are currently available to view live.']);
+
+        if ($comp->can_be_live == false) return view('live.unavailable', ['message' => $comp->name . ' is not currently available to view live.']);
+
         return view('live.index', ['comp' => $comp]);
     }
 

@@ -32,7 +32,7 @@
     <form method="POST">
         <div class="grid-3">
             <h2 class="mb-0">DigitalJudge Settings</h2>
-            <div class="flex items-center justify-center">
+            <div class="flex items-center justify-center col-start-3">
                 <button class="btn ml-auto">Save</button>
             </div>
         </div>
@@ -77,8 +77,13 @@
 
             <div class="card">
                 <h4>Other</h4>
-                <x-form-input id="serc_start_time" title="SERC Start Time" type="datetime-local"
+                <x-form-input id="serc_start_time" title="SERC Start Time" required="false" type="datetime-local"
                     defaultValue="{{ $comp->serc_start_time }}"></x-form-input>
+                <div class="flex space-x-2">
+                    <input type="checkbox" name="can_be_live" @if ($comp->can_be_live) checked @endif
+                        id="can_be_live">
+                    <label for="can_be_live">Viewable Live</label>
+                </div>
             </div>
         </div>
     </form>

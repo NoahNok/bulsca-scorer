@@ -195,6 +195,7 @@ class DigitalJudgeController extends Controller
 
         $comp->max_lanes = $request->input('lanes', $comp->max_lanes);
         $comp->serc_start_time = $request->input('serc_start_time', $comp->serc_start_time);
+        $comp->can_be_live = $request->has('can_be_live');
 
         $comp->save();
 
