@@ -88,7 +88,6 @@
                                     <li class="card whitespace-nowrap flex-grow  " data-heat="{{ $key }}">
                                         @if ($lane)
                                             {{ $lane->getTeam->getFullname() }}
-                                            ({{ $lane->getTeam->getSwimTowTimeForDefault() }})
                                         @else
                                             &nbsp;
                                         @endif
