@@ -133,6 +133,6 @@ class SERC extends Model
 
         $avgTime = $res[0]->avg_time;
 
-        return $avgTime == 0 ? 600 : $avgTime;
+        return $avgTime == 0 ? 360 : $avgTime;
     }
 }
