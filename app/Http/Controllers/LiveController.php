@@ -10,10 +10,17 @@ use Illuminate\Support\Facades\DB;
 
 class LiveController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
 
+
         $comp = Competition::orderBy(DB::raw('ABS(DATEDIFF(competitions.when, NOW()))'), 'asc')->first();
+
+        if (auth()->user() && auth()->user()->isAdmin()) {
+            $comp = Competition::find($request->input('comp'));
+            if (!$comp) return view('live.unavailable', ['message' => 'No competitions with that ID exists!']);
+            $comp->can_be_live = true;
+        }
 
         if (!$comp) return view('live.unavailable', ['message' => 'No competitions are currently available to view live.']);
 
