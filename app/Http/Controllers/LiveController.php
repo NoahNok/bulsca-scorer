@@ -16,7 +16,7 @@ class LiveController extends Controller
     {
 
 
-        $comp = Competition::orderBy(DB::raw('ABS(DATEDIFF(competitions.when, NOW()))'), 'asc')->first();
+        $comp = Competition::where(DB::raw('DATEDIFF(competitions.when, NOW())'), '>', -2)->orderBy(DB::raw('DATEDIFF(competitions.when, NOW())'), 'asc')->first();
 
         if (auth()->user() && auth()->user()->isAdmin() && $request->has('comp')) {
             $comp = Competition::find($request->input('comp'));
