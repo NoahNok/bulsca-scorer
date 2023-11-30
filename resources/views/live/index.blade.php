@@ -129,16 +129,7 @@
 
                     let timeNow = new Date();
                     if (startTime) {
-                        startTime = new Date(startTime);
-
-                        if (startTime > timeNow) {
-                            timeNow = new Date(startTime);
-                        }
-
-
-
-
-
+                        timeNow = new Date(startTime);
 
                     }
 
@@ -147,6 +138,7 @@
                             let small = card.querySelector('small')
                             small.innerText = card.classList.contains('finished-2') ? 'Finished (Both)' :
                                 'Finished (Dry)';
+                            timeNow = addSeconds(timeNow, avgTeamTime);
                             return;
                         }
 

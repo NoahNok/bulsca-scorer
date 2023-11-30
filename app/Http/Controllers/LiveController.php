@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Competition;
 use App\Models\SERC;
+use Carbon\Carbon;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -32,18 +34,31 @@ class LiveController extends Controller
     public function liveData(Competition $comp)
     {
 
+        $serc = Cache::remember('live.drySerc', 60 * 60, function () use ($comp) {
+            return SERC::where('competition', $comp->id)->where('name', 'LIKE', '%Dry%')->first();
+        });
+
 
         $sercsFinished = Cache::remember('live.howManySercsHasEachTeamFinished', 10, function () use ($comp) {
             return $comp->howManySercsHasEachTeamFinished();
         });
-        $avgTime = Cache::remember('live.getAverageSercTime', 10, function () use ($comp) {
+        $avgTime = Cache::remember('live.getAverageSercTime', 10, function () use ($serc) {
             // This is not ideal, should make comp org select which serc is dry
-            $serc = SERC::where('competition', $comp->id)->where('name', 'LIKE', '%Dry%')->first();
+
 
 
             return $serc->getAverageTimeBetweenTeams();
         });
 
-        return response()->json(['sercsFinished' => $sercsFinished, 'avgTime' => $avgTime, 'sercStartTime' => $comp->serc_start_time ? $comp->serc_start_time->timestamp * 1000 : null, 'heatsFinished' => $comp->whichSpeedEventHeatsHaveFinished()]);
+
+        $startTime = $comp->serc_start_time ? $comp->serc_start_time->timestamp * 1000 : null;
+        if (!empty($sercsFinished)) {
+            $startTime = Cache::remember('live.getStartTime', 60 * 60, function () use ($serc) {
+                $t =  new Carbon(DB::select(' SELECT MIN(sr.created_at) AS start_time FROM serc_results sr INNER JOIN serc_marking_points smp on smp.id=sr.marking_point WHERE serc=?;', [$serc->id])[0]->start_time);
+                return $t->timestamp * 1000;
+            });
+        }
+
+        return response()->json(['sercsFinished' => $sercsFinished, 'avgTime' => $avgTime, 'sercStartTime' => $startTime, 'heatsFinished' => $comp->whichSpeedEventHeatsHaveFinished()]);
     }
 }
