@@ -34,15 +34,15 @@ class LiveController extends Controller
     public function liveData(Competition $comp)
     {
 
-        $serc = Cache::remember('live.drySerc', 60 * 60, function () use ($comp) {
+        $serc = Cache::remember('live.' . $comp->id . '.drySerc', 60 * 60, function () use ($comp) {
             return SERC::where('competition', $comp->id)->where('name', 'LIKE', '%Dry%')->first();
         });
 
 
-        $sercsFinished = Cache::remember('live.howManySercsHasEachTeamFinished', 10, function () use ($comp) {
+        $sercsFinished = Cache::remember('live.' . $comp->id . '.howManySercsHasEachTeamFinished', 10, function () use ($comp) {
             return $comp->howManySercsHasEachTeamFinished();
         });
-        $avgTime = Cache::remember('live.getAverageSercTime', 10, function () use ($serc) {
+        $avgTime = Cache::remember('live.' . $comp->id . '.getAverageSercTime', 10, function () use ($serc) {
             // This is not ideal, should make comp org select which serc is dry
 
 
@@ -53,7 +53,7 @@ class LiveController extends Controller
 
         $startTime = $comp->serc_start_time ? $comp->serc_start_time->timestamp * 1000 : null;
         if (!empty($sercsFinished)) {
-            $startTime = Cache::remember('live.getStartTime', 60 * 60, function () use ($serc) {
+            $startTime = Cache::remember('live.' . $comp->id . '.getStartTime', 60 * 60, function () use ($serc) {
                 $t =  new Carbon(DB::select(' SELECT MIN(sr.created_at) AS start_time FROM serc_results sr INNER JOIN serc_marking_points smp on smp.id=sr.marking_point WHERE serc=?;', [$serc->id])[0]->start_time);
                 return $t->timestamp * 1000;
             });
