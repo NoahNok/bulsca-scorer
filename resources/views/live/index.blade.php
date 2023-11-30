@@ -44,8 +44,7 @@
             @endif
 
         </div>
-        <small>Times are an estimate only based on the average time between each team. Longer gaps such as lunch may
-            cause estimates to be majorly off</small>
+        <small>Times are an estimate only based on the average time between each team.</small>
         <br>
 
         <h3>Heats</h3>
