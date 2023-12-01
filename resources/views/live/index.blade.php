@@ -15,7 +15,11 @@
 
 <body class="overflow-x-hidden flex justify-center w-screen h-screen">
     <div class="w-[90vw] md:w-[70vw] my-12">
-        <h1>{{ $comp->name }}</h1>
+        <h1 class="mb-0">{{ $comp->name }}</h1>
+        <div class="flex items-center space-x-2 ml-2 ">
+            <div id="live-status-ping" class="w-2 h-2 rounded-full animate-pulse bg-orange-400"></div>
+            <small id="live-status">Waiting...</small>
+        </div>
         <br>
 
         <h3>SERC Order</h3>
@@ -106,7 +110,25 @@
         <br>
 
         <script>
+            let liveStatus = document.getElementById('live-status');
+            let liveStatusPing = document.getElementById('live-status-ping');
+
+            function switchStatus(s) {
+                liveStatusPing.classList.remove('bg-orange-400');
+                if (!s) {
+                    liveStatus.innerText = 'Lost connection, Retrying...';
+                    liveStatusPing.classList.remove('bg-green-400');
+                    liveStatusPing.classList.add('bg-red-400');
+                } else {
+                    liveStatus.innerText = 'Live';
+                    liveStatusPing.classList.remove('bg-red-400');
+                    liveStatusPing.classList.add('bg-green-400');
+                }
+            }
+
             function update() {
+
+
 
 
                 function handleSercsFinished(data) {
@@ -172,6 +194,9 @@
                         handleSercsFinished(data.sercsFinished);
                         handleEstimatedTeamTime(data.avgTime, data.sercStartTime);
                         handleHeatsFinished(data.heatsFinished);
+                        switchStatus(true);
+                    }).catch(err => {
+                        switchStatus(false);
                     });
             }
             setInterval(update, 5000);
