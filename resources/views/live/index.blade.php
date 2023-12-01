@@ -15,7 +15,10 @@
 
 <body class="overflow-x-hidden flex justify-center w-screen h-screen">
     <div class="w-[90vw] md:w-[70vw] my-12">
-        <h1 class="mb-0">{{ $comp->name }}</h1>
+        <div class="w-full flex items-center justify-between">
+            <h1 class="mb-0">{{ $comp->name }}</h1>
+            <h2 id="time-now"></h2>
+        </div>
         <div class="flex items-center space-x-2 ml-2 ">
             <div id="live-status-ping" class="w-2 h-2 rounded-full animate-pulse bg-orange-400"></div>
             <small id="live-status">Waiting...</small>
@@ -126,6 +129,16 @@
                     liveStatusPing.classList.add('bg-green-400');
                 }
             }
+
+            function updateTime() {
+                let timeNow = new Date();
+                document.getElementById('time-now').innerText = timeNow.toLocaleTimeString('en-GB', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                });
+            }
+            updateTime();
+            setInterval(updateTime, 1000);
 
             function update() {
 
