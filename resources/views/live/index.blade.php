@@ -48,7 +48,8 @@
             @endif
 
         </div>
-        <small>Times are an estimate only based on the average time between each team.</small>
+        <small>Times are an estimate only.</small>
+        <br>
         <br>
 
         <h3>Heats</h3>
@@ -159,7 +160,7 @@
                             let small = card.querySelector('small')
                             small.innerText = card.classList.contains('finished-2') ? 'Finished (Both)' :
                                 'Finished (Dry)';
-                            timeNow = addSeconds(timeNow, avgTeamTime);
+
                             return;
                         }
 

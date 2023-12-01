@@ -53,8 +53,9 @@ class LiveController extends Controller
 
         $startTime = $comp->serc_start_time ? $comp->serc_start_time->timestamp * 1000 : null;
         if (!empty($sercsFinished)) {
-            $startTime = Cache::remember('live.' . $comp->id . '.getStartTime', 60 * 60, function () use ($serc) {
-                $t =  new Carbon(DB::select(' SELECT MIN(sr.created_at) AS start_time FROM serc_results sr INNER JOIN serc_marking_points smp on smp.id=sr.marking_point WHERE serc=?;', [$serc->id])[0]->start_time);
+            $startTime = Cache::remember('live.' . $comp->id . '.getStartTime', 10, function () use ($serc) {
+                $t =  new Carbon(DB::select(' SELECT MAX(sr.created_at) AS start_time FROM serc_results sr INNER JOIN serc_marking_points smp on smp.id=sr.marking_point WHERE serc=?;', [$serc->id])[0]->start_time);
+                $t->addMinutes(2); // Assume max 2m reset time
                 return $t->timestamp * 1000;
             });
         }
