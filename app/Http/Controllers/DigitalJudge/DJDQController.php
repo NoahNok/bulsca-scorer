@@ -137,4 +137,11 @@ class DJDQController extends Controller
             }
         }
     }
+
+
+    ######################### JUDGE DQ REQUESTS #########################
+    public function issue()
+    {
+        return view('digitaljudge.dq.judge-issue', ['comp' => DigitalJudge::getClientCompetition()]);
+    }
 }

@@ -69,6 +69,10 @@ function r()
         });
     });
 
+    Route::prefix('dq')->group(function () {
+        Route::get('issue', [DJDQController::class, 'issue'])->name('dj.dq.issue');
+    });
+
     Route::middleware('isHeadJudge')->group(function () {
         Route::prefix('manage')->group(function () {
             Route::get('', [DJManageController::class, 'index'])->name('dj.manage.index');
