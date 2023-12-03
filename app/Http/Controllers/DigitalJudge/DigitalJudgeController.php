@@ -11,6 +11,7 @@ use App\Models\DigitalJudge\JudgeLog;
 use App\Models\SERC;
 use App\Models\SERCJudge;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 class DigitalJudgeController extends Controller
@@ -27,7 +28,7 @@ class DigitalJudgeController extends Controller
         $pin = $validated['pin'];
         $clientName = strip_tags($validated['judgeName']);
 
-        $comp = Competition::where('digitalJudgePin', $pin)->where('digitalJudgeEnabled', true)->first();
+        $comp = Competition::where('digitalJudgePin', $pin)->where('digitalJudgeEnabled', true)->where('when', DB::raw('CURDATE()'))->first();
 
         if ($comp) $this->startJudging($comp, false, $clientName);
 

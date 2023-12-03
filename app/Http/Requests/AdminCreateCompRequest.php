@@ -28,7 +28,7 @@ class AdminCreateCompRequest extends FormRequest
             'when' => 'required',
             'isLeague' => 'required|boolean',
             'lanes' => 'required',
-            'season' => 'exists:seasons,id',
+            'season' => '',
         ];
     }
 }

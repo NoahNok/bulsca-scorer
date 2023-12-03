@@ -61,7 +61,10 @@ class AdminController extends Controller
         $comp->when = $validated['when'];
         $comp->isLeague = $validated['isLeague'];
         $comp->max_lanes = $validated['lanes'];
-        $comp->season = $validated['season'];
+
+        if ($validated['season'] !== 'null') {
+            $comp->season = $validated['season'];
+        }
 
         $comp->save();
 
