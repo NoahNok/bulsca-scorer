@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 
 class SERCMarkingPoint extends Model
 {
-    use HasFactory;
+    use HasFactory, Cloneable;
 
     protected $table = "serc_marking_points";
 

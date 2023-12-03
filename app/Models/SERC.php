@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use App\Models\DigitalJudge\JudgeNote;
+use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 class SERC extends Model
 {
-    use HasFactory;
+    use HasFactory, Cloneable;
 
     protected $table = 'sercs';
 

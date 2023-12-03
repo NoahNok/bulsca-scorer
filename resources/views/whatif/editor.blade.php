@@ -1,0 +1,2 @@
+{{ $comp->name }},
+{{ $comp->id }}

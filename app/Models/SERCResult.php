@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class SERCResult extends Model
 {
-    use HasFactory;
+    use HasFactory, Cloneable;
 
     protected $table = "serc_results";
 
