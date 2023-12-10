@@ -151,4 +151,42 @@ class SERC extends Model
 
         return $avgTime == 0 ? 360 : $avgTime;
     }
+
+    public function getDataAsJson()
+    {
+
+        $data = [];
+        $teams = [];
+        $judges = [];
+
+        foreach ($this->getJudges as $judge) {
+            $judges[] = [
+                'id' => $judge->id,
+                'name' => $judge->name,
+                'marking_points' => $judge->getMarkingPoints->toArray()
+            ];
+        }
+
+        foreach ($this->getTeams() as $team) {
+            $teams[] = [
+                'name' => $team->getFullname(),
+                'id' => $team->id,
+
+            ];
+        }
+
+        foreach ($this->getJudges as $judge) {
+            foreach ($judge->getMarkingPoints as $mp) {
+                foreach (SERCResult::where(['marking_point' => $mp->id])->get() as $result) {
+                    $data[$mp->id][$result->team] = [
+                        'result' => $result->result,
+                        'id' => $result->id
+                    ];
+                }
+            }
+        }
+
+
+        return ['judges' => $judges, 'teams' => $teams, 'data' => $data];
+    }
 }

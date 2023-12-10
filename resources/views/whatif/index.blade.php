@@ -13,7 +13,7 @@
 <body>
     <div class="w-screen h-screen flex flex-col items-center justify-center bg-whatif">
         <div class="" x-data="{
-            openSection: 'main',
+            openSection: '{{ $errors->any() ? 'start' : 'main' }}' == 'start' ? (window.location.hash == '#resume' ? 'resume' : 'start') : 'main',
         
             setOpenSection(section) {
                 this.openSection = section
@@ -36,6 +36,13 @@
             <form method="POST" action="{{ route('whatif.clone') }}" class="w-full flex flex-col"
                 x-show="openSection == 'start'" style="display: none">
                 @csrf
+
+                <x-form-input id="email" title="Email" type="email" required></x-form-input>
+                <x-form-input id="password" title="Password" type="password" required></x-form-input>
+
+
+
+
                 <div class="form-input">
                     <label for="competition">Select a competition</label>
                     <select name="competition" id="competition" class="input"
@@ -52,23 +59,17 @@
 
 
                 </div>
+
                 <button class="btn">Begin</button>
             </form>
 
-            <div class="w-full flex flex-col " x-show="openSection == 'resume'" style="display: none">
-
-                <div class="form-input">
-                    <label for="">Email</label>
-                    <input type="email" style="margin-bottom: 0px !important">
-
-                </div>
-                <div class="form-input">
-                    <label for="">Password</label>
-                    <input type="password" style="margin-bottom: 0px !important">
-
-                </div>
+            <form method="POST" action="{{ route('whatif.resume') }}?s" class="w-full flex flex-col "
+                x-show="openSection == 'resume'" style="display: none">
+                @csrf
+                <x-form-input id="email" title="Email" type="email" required></x-form-input>
+                <x-form-input id="password" title="Password" type="password" required></x-form-input>
                 <button class="btn">Resume</button>
-            </div>
+            </form>
 
         </div>
 
