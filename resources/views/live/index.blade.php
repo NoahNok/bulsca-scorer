@@ -116,12 +116,6 @@
         <script>
             let liveStatus = document.getElementById('live-status');
             let liveStatusPing = document.getElementById('live-status-ping');
-            DEBUG = false;
-
-            function DEBUG(message) {
-                if (DEBUG == false) return;
-                console.log(message);
-            }
 
             function switchStatus(s) {
                 liveStatusPing.classList.remove('bg-orange-400');
@@ -159,8 +153,7 @@
                 }
 
                 function handleEstimatedTeamTime(avgTeamTime, startTime) {
-                    DEBUG(avgTeamTime);
-                    DEBUG(startTime);
+                    startTime = +startTime
 
                     function addSeconds(date, seconds) {
                         // Making a copy with the Date() constructor
@@ -171,12 +164,12 @@
 
                     let timeNow = new Date();
                     if (startTime) {
-                        timeNow = new Date(+startTime);
+                        timeNow = new Date(startTime);
 
                     }
 
                     document.querySelectorAll('[data-team]').forEach(card => {
-                        DEBUG(timeNow);
+
                         if (card.classList.contains('finished')) {
                             let small = card.querySelector('small')
                             small.innerText = card.classList.contains('finished-2') ? 'Finished (Both)' :
