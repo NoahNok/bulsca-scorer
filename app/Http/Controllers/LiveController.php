@@ -60,6 +60,6 @@ class LiveController extends Controller
             });
         }
 
-        return response()->json(['sercsFinished' => $sercsFinished, 'avgTime' => $avgTime, 'sercStartTime' => $startTime, 'heatsFinished' => $comp->whichSpeedEventHeatsHaveFinished()]);
+        return response()->json(['sercsFinished' => $sercsFinished, 'avgTime' => $avgTime, 'sercStartTime' => (int) $startTime, 'heatsFinished' => $comp->whichSpeedEventHeatsHaveFinished()]);
     }
 }
