@@ -27,6 +27,12 @@ class WhatIfController extends Controller
 {
     public function index()
     {
+
+
+        if (auth()->user()) {
+            return redirect()->route('whatif.editor');
+        }
+
         return view('whatif.index');
     }
 
