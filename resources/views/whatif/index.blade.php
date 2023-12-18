@@ -33,14 +33,13 @@
             </div>
 
 
-            <form method="POST" action="{{ route('whatif.clone') }}" class="w-full flex flex-col"
+            <form method="POST" action="{{ route('whatif.clone') }}"
+                onsubmit="showSuccess('Generating you account and editor...')" class="w-full flex flex-col"
                 x-show="openSection == 'start'" style="display: none">
                 @csrf
 
-                <x-form-input id="email" title="Email" type="email" required
-                    defaultValue="n@n.com"></x-form-input>
-                <x-form-input id="password" title="Password" type="password" defaultValue="hollowell"
-                    required></x-form-input>
+                <x-form-input id="email" title="Email" type="email" required></x-form-input>
+                <x-form-input id="password" title="Password" type="password" required></x-form-input>
 
 
 
@@ -78,6 +77,12 @@
 
 
     </div>
+    <div class="alert-banner z-50" id="alert">Test</div>
+
+
+
+
+    <script src="{{ asset('js/alert.js') }}"></script>
 </body>
 
 </html>
