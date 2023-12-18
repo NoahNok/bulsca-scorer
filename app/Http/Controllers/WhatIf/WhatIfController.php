@@ -69,6 +69,8 @@ class WhatIfController extends Controller
             $user->save();
         }
 
+        DB::update('UPDATE competitions SET wi_user=? WHERE id=?', [$user->id, $newCompId]);
+
 
         Auth::login($user);
 
@@ -93,9 +95,19 @@ class WhatIfController extends Controller
     public function editorIndex()
     {
 
+
+        if (!auth()->user()) {
+            return redirect()->route('whatif');
+        }
+
         $comp = auth()->user()->getCompetition;
 
+        if (!$comp) {
+            return redirect()->route('whatif.select');
+        }
 
+        $comp->updated_at = now();
+        $comp->save();
         return view('whatif.editor', [
             'comp' => $comp
         ]);
@@ -222,5 +234,134 @@ class WhatIfController extends Controller
         $results = $serc->getResults();
 
         return response()->json($results);
+    }
+
+    public function switchOpenEditor(int $comp)
+    {
+
+
+
+        $comp = Competition::find($comp);
+
+        if ($comp->wi_user != auth()->user()->id) {
+            return response()->json([
+                'success' => false,
+                'error' => "You do not have access to this editor!"
+            ]);
+        }
+
+        $currentComp = auth()->user()->getCompetition;
+        if ($currentComp) {
+            $currentComp->updated_at = now();
+            $currentComp->save();
+        }
+
+
+        $user = auth()->user();
+        $user->competition = $comp->id;
+        $user->save();
+
+        return redirect()->route('whatif.editor');
+    }
+
+    public function loggedInCloneAndSwitch(Request $request)
+    {
+
+
+        $compId = $request->input('competition', '');
+
+        if ($compId == '') {
+            return response()->json([
+                'success' => false,
+                'error' => "No competition specified!"
+            ]);
+        }
+
+
+        Config::set('database.default', 'mysql');
+
+        $comp = Competition::find($compId);
+
+        if (!$comp) {
+            return response()->json([
+                'success' => false,
+                'error' => "Invalid competition!"
+            ]);
+        }
+
+        $cloner = new CompetitionCloner();
+        $newCompId = $cloner->clone($comp);
+
+        Config::set('database.default', 'whatif');
+
+        $c = Competition::find($newCompId);
+        $c->wi_user = auth()->user()->id;
+        $c->save();
+
+        $user = auth()->user();
+        $user->competition = $newCompId;
+        $user->save();
+
+        return redirect()->route('whatif.editor');
+    }
+
+    public function deleteEditor(Request $request)
+    {
+
+
+        if (!auth()->user()->getCompetition) {
+            return redirect()->route('whatif.select');
+        }
+
+        $compId = auth()->user()->getCompetition->id;
+
+        if ($compId == '') {
+            return response()->json([
+                'success' => false,
+                'error' => "No competition specified!"
+            ]);
+        }
+
+        $comp = Competition::find($compId);
+
+        if (!$comp) {
+            return response()->json([
+                'success' => false,
+                'error' => "Invalid competition!"
+            ]);
+        }
+
+        if ($comp->wi_user != auth()->user()->id) {
+            return response()->json([
+                'success' => false,
+                'error' => "You do not have access to this editor!"
+            ]);
+        }
+
+        $comp->delete();
+
+        $user = auth()->user();
+        $user->competition = null;
+        $user->save();
+
+        return redirect()->route('whatif.select');
+    }
+
+    public function select()
+    {
+        return view('whatif.select-competition');
+    }
+
+    public function logout()
+    {
+        $comp = auth()->user()->getCompetition;
+        if ($comp) {
+            $comp->updated_at = now();
+            $comp->save();
+        }
+
+        auth()->logout();
+
+        return redirect()->route('whatif');
     }
 }

@@ -18,6 +18,7 @@ function wir()
 
         Route::post('resume', [WhatIfController::class, 'resume'])->name('whatif.resume');
 
+
         Route::prefix('editor')->group(function () {
             Route::get('', [WhatIfController::class, 'editorIndex'])->name('whatif.editor');
             Route::get('results/speeds/{speed}', [WhatIfController::class, 'getSpeedResults'])->name('whatif.editor.speeds');
@@ -26,6 +27,14 @@ function wir()
 
             Route::post('userc', [WhatIfController::class, 'updateSercResult'])->name('whatif.userc');
             Route::post('uspeed', [WhatIfController::class, 'updateSpeedResult'])->name('whatif.uspeed');
+
+            Route::get('switch/{comp}', [WhatIfController::class, 'switchOpenEditor'])->name('whatif.switch');
+            Route::post('internalCas', [WhatIfController::class, 'loggedInCloneAndSwitch'])->name('whatif.internalCas');
+            Route::post('delete', [WhatIfController::class, 'deleteEditor'])->name('whatif.delete');
+
+            Route::get('select', [WhatIfController::class, 'select'])->name('whatif.select');
+
+            Route::get('logout', [WhatIfController::class, 'logout'])->name('whatif.logout');
         });
     });
 }

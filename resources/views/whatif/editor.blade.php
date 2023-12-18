@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Editor | WhatIf | BULSCA</title>
+    <title>{{ $comp->name }} - Editor | WhatIf | BULSCA</title>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/mask@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
@@ -17,6 +17,12 @@
             <h1 class=" text-[2rem] text-transparent bg-clip-text bg-gradient-to-r from-bulsca via-purple-500 to-bulsca_red"
                 style="margin-bottom: 0 !important">
                 WhatIf</h1>
+
+            <div class="flex space-x-2 text-xs items-center justify-center self-end">
+                <a href="#" class="hover:underline" @click="optionsOpen=true">Options</a>
+                <span style="width: 3px; height: 3px;" class=" bg-black rounded-full"></span>
+                <a href="{{ route('whatif.logout') }}" class="hover:underline">Leave</a>
+            </div>
             <div class="flex-grow"></div>
             <h1 class="text-[1.5rem]" style="margin-bottom: 0 !important">{{ $comp->name }}</h1>
         </div>
@@ -64,11 +70,12 @@
                         <div class="flex flex-row space-x-5" x-data="{
                             sdata: {{ json_encode($serc->getDataAsJson()) }},
                             rdata: null,
+                            void: 0,
                         
                             loadResults() {
                                 this.rdata = null
                                 fetch('{{ route('whatif.editor.sercs', $serc->id) }}').then(res => res.json()).then(data => {
-                                    console.log(data)
+                        
                                     this.rdata = data
                                 })
                             },
@@ -85,7 +92,7 @@
                             },
                         
                             onChange(newValue, srId) {
-                                console.log(newValue, srId)
+                        
                         
                         
                                 let fd = new FormData();
@@ -97,7 +104,7 @@
                                     method: 'POST',
                                     body: fd
                                 }).then(res => res.json()).then(data => {
-                                    console.log(data)
+                        
                                     if (data.success) {
                                         this.refreshResults()
                                         this.loadResults()
@@ -105,55 +112,64 @@
                                 })
                             },
                         
+                        
+                        
                             init() {
                                 this.loadResults()
                             }
                         }">
 
-                            <div class="flex-grow">
+                            <div class="flex-grow  max-w-[80%] overflow-auto">
                                 <h2>{{ $serc->getName() }}</h2>
 
-
-                                <table class="table text-sm">
-                                    <thead class="text-xs text-gray-700 text-right uppercase bg-gray-100">
-                                        <tr>
-                                            <th class="py-3 px-6 text-left ">Team</th>
-                                            <template x-for="judge in sdata.judges" :key="judge.id">
-                                                <th class="p-2 text-center border-r  last-of-type:border-r-0"
-                                                    :colspan="judge.marking_points.length" x-text="judge.name">
+                                <div class="  relative w-full overflow-x-auto max-h-[85vh] ">
+                                    <table class="table text-sm">
+                                        <thead class="text-xs text-gray-700 text-right uppercase bg-gray-100">
+                                            <tr>
+                                                <th
+                                                    class="py-3 px-6 text-left sticky left-0 top-0 z-50 bg-gray-100 border-r ">
+                                                    Team
                                                 </th>
-                                            </template>
-                                        </tr>
-                                        <tr>
-                                            <th class="border-r text-left  px-6"></th>
-                                            <template x-for="mp in (onlyMps())" :key="mp.id">
-                                                <th class="px-2 border-r  last-of-type:border-r-0 text-center"
-                                                    x-text=" mp.name"></th>
-                                            </template>
-
-
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <template x-for="team in sdata.teams" :key="team.id">
-                                            <tr class="hover:bg-gray-100">
-                                                <td class="border-r py-3 text-left px-4 font-medium text-gray-900 whitespace-nowrap"
-                                                    x-text="team.name"></td>
-                                                <template x-for="mp in (onlyMps())" :key="mp.id">
-                                                    <td
-                                                        class=" border-r  last-of-type:border-r-0 hover:bg-gray-300  p-0">
-                                                        <input
-                                                            class=" w-full text-center bg-inherit  h-full inline-block relative outline-none"
-                                                            x-on:change.debounce="onChange($event.target.value, sdata.data[mp.id][team.id].id )"
-                                                            x-model=" Math.round(sdata.data[mp.id][team.id].result)"
-                                                            x-mask:dynamic="$input.length==1 ? '9' : '99' " />
-                                                    </td>
-
+                                                <template x-for="judge in sdata.judges" :key="judge.id">
+                                                    <th class="p-2 text-center border-r  last-of-type:border-r-0 sticky top-0 bg-gray-100 z-40"
+                                                        :colspan="judge.marking_points.length" x-text="judge.name">
+                                                    </th>
                                                 </template>
                                             </tr>
-                                        </template>
-                                    </tbody>
-                                </table>
+                                            <tr>
+                                                <th
+                                                    class="border-r text-left  px-6 sticky left-0 top-10 bg-gray-100 z-50 ">
+
+                                                </th>
+                                                <template x-for="mp in (onlyMps())" :key="mp.id">
+                                                    <th class="px-2 border-r border-t last-of-type:border-r-0 text-center sticky top-10  z-40 bg-gray-100"
+                                                        x-text=" mp.name"></th>
+                                                </template>
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <template x-for="team in sdata.teams" :key="team.id">
+                                                <tr class="hover:bg-gray-100">
+                                                    <td class="border-r border-b py-3 text-left px-4 font-medium text-gray-900 whitespace-nowrap sticky left-0 top-0 bg-white z-40"
+                                                        x-text="team.name"></td>
+                                                    <template x-for="mp in (onlyMps())" :key="mp.id">
+                                                        <td
+                                                            class=" border-r border-b last-of-type:border-r-0 hover:bg-gray-300  p-0">
+                                                            <input
+                                                                class=" w-full text-center bg-inherit  h-full inline-block relative outline-none"
+                                                                x-on:change.debounce="onChange($event.target.value, sdata.data[mp.id][team.id].id )"
+                                                                x-model="sdata.data[mp.id][team.id].result"
+                                                                x-mask:dynamic="$input.length==1 ? '9' : '99' " />
+                                                        </td>
+
+                                                    </template>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                             <div>
                                 <h2>&nbsp;</h2>
@@ -214,7 +230,7 @@
                             loadResults() {
                                 this.rdata = null
                                 fetch('{{ route('whatif.editor.speeds', $speed->id) }}').then(res => res.json()).then(data => {
-                                    console.log(data)
+                        
                                     this.rdata = data
                                 })
                             },
@@ -232,7 +248,7 @@
                             },
                         
                             onChange(newValue, srId, type = 'result') {
-                                console.log(newValue, srId, type)
+                        
                         
                         
                                 let fd = new FormData();
@@ -245,7 +261,7 @@
                                     method: 'POST',
                                     body: fd
                                 }).then(res => res.json()).then(data => {
-                                    console.log(data)
+                        
                                     if (data.success) {
                                         this.refreshResults()
                                         this.loadResults()
@@ -435,7 +451,94 @@
 
 
         </div>
+        <div class="modal" x-show="optionsOpen" style="display: none">
+            <div class="modal-content" @click.outside="optionsOpen=false">
+                <div class="flex justify-between items-center">
+                    <h3>Options</h3>
+                    <svg @click="optionsOpen=false" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" data-slot="icon"
+                        class="w-6 h-6 cursor-pointer transition-all transform hover:rotate-90">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                    </svg>
+
+                </div>
+                <p class="text-sm">Either open a previous editing session, start a new one, or delete the current one.
+                    Please note that
+                    editors older than 30 days are automatically deleted!</p>
+                <br>
+                <h5 class="mb-0">Previous Editors</h5>
+                <small>Shows the editor name, and when it was last <strong>used</strong></small>
+                <div class="w-full mt-2">
+
+                    @foreach (auth()->user()->getWhatIfEditors()->where('id', '!=', $comp->id)->orderBy('updated_at', 'desc')->get() as $editor)
+                        <a href="{{ route('whatif.switch', $editor->id) }}"
+                            class="flex justify-between items-center group hover:text-bulsca hover:font-semibold transition-all">
+                            <p>{{ $editor->name }} <small>({{ $editor->updated_at->format('d/m/Y @ H:i') }})</small>
+                            </p>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                data-slot="icon" class="w-4 h-4 group-hover:animate-pulse  ">
+                                <path fill-rule="evenodd"
+                                    d="M2 10a.75.75 0 0 1 .75-.75h12.59l-2.1-1.95a.75.75 0 1 1 1.02-1.1l3.5 3.25a.75.75 0 0 1 0 1.1l-3.5 3.25a.75.75 0 1 1-1.02-1.1l2.1-1.95H2.75A.75.75 0 0 1 2 10Z"
+                                    clip-rule="evenodd" />
+                            </svg>
+
+                        </a>
+                    @endforeach
+
+
+                </div>
+                <br>
+                <h5>New Editor</h5>
+                <form action="{{ route('whatif.internalCas') }}" method="POST" class="w-full flex flex-col"
+                    onsubmit="showSuccess('Generating editor session...')">
+                    @csrf
+                    <div class="form-input">
+
+
+                        <select name="competition" id="competition" class="input"
+                            style="padding-top: 0.65em; padding-bottom: 0.65em; margin-bottom: 0px !important">
+
+                            @php
+                                Config::set('database.default', 'mysql');
+                            @endphp
+
+                            @foreach (\App\Models\Season::all() as $season)
+                                <option value="null">Please select a competition</option>
+                                <optgroup label="{{ $season->name }}">
+                                    @foreach ($season->getCompetitions as $competition)
+                                        <option value="{{ $competition->id }}">{{ $competition->name }}</option>
+                                    @endforeach
+                                </optgroup>
+                            @endforeach
+                            @php
+                                Config::set('database.default', 'whatif');
+                            @endphp
+                        </select>
+
+
+                    </div>
+                    <button class="btn ml-auto">Start</button>
+                </form>
+                <br>
+                <h5>Delete Editor</h5>
+                <p class="text-sm">This will delete the current editor, and all of its data. This action cannot be
+                    undone.
+                </p>
+                <form action="{{ route('whatif.delete', $comp) }}" method="POST" class="w-full flex flex-col"
+                    onsubmit="return confirm('Are you sure you want to delete this editor? This action cannot be undone!')">
+                    @csrf
+                    <button class="btn btn-danger ml-auto">Delete</button>
+            </div>
+        </div>
     </div>
+
+    <div class="alert-banner z-50" id="alert">Test</div>
+
+
+
+
+    <script src="{{ asset('js/alert.js') }}"></script>
+
 
     <script>
         const frame = document.getElementById('resultsFrame')
@@ -448,6 +551,7 @@
                     'result-style': 'simple'
                 },
                 fullResults: false,
+                optionsOpen: false,
 
 
                 switchPill(pill, value) {
@@ -569,6 +673,35 @@
 
         // Attach the handler
         resizer.addEventListener('mousedown', mouseDownHandler);
+    </script>
+    <script>
+        console.log('WhatIf Editor v1.0.0')
+        console.log('Having a look around are we ;)')
+
+        console.log('⠀⠄⠠⠀⠄⠠⠀⠄⠠⠀⠄⠠⠀⠄⠠⠀⠄⣀⣤⣴⣶⡿⢿⡻⢟⡻⣛⡟⡟⣷⢶⣤⣄⡀⠀⢀⠀⠠⢀⠀⢰⣿⣿⣿⣿⣿⣿')
+        console.log('⠠⠈⢀⠐⠀⠂⠐⠀⠂⠐⠀⠂⢀⢂⣤⣶⣿⣿⢿⢯⣷⣹⢧⣻⣭⣳⣝⣾⣱⣏⡾⣭⣟⣿⣷⣤⡀⠂⢀⠠⢸⣿⣿⣿⣿⣿⣿')
+        console.log('⠀⡐⠀⠠⠈⠀⠂⠁⠐⠈⠀⢰⣴⣿⣿⣿⣯⣿⣯⣿⣾⣽⣿⣷⣿⣷⣿⣾⣷⣯⣿⣳⣟⣾⣽⣟⣿⣦⠀⠀⣾⣿⣿⣿⣿⣿⣿')
+        console.log('⠀⡀⠐⠀⡀⠁⠠⠈⠀⢠⣵⣿⣿⣿⣿⣿⣿⣷⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣿⣿⣯⣿⢿⣿⣿⣷⡀⣿⣿⣿⣿⣿⣿⣿')
+        console.log('⠀⢀⠐⠀⠀⠐⠀⠀⣱⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿')
+        console.log('⠀⠀⡀⠀⠁⠀⠀⣱⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⠙⢿⣿⣿⣿⣿')
+        console.log('⠀⠀⠀⢀⠀⠁⢀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠉⠁⣀⡉⠛⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠈⠛⠿⣿')
+        console.log('⠀⠀⠁⠀⠀⠀⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣏⠀⠠⣾⣿⣿⣷⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡏⠀⠀⠀⠀⠀⢾')
+        console.log('⠀⠀⠀⠀⠀⢰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡀⠀⠻⠿⠿⠋⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠁⠀⠀⠀⠀⠀⢸')
+        console.log('⠀⠀⠀⠀⠀⠸⣿⡿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣤⣤⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣟⢯⣛⢷⣲⣾')
+        console.log('⠀⠀⠀⠀⠀⢰⡏⢠⣍⢿⣿⣿⣿⣿⣿⣿⣿⣿⢿⡿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣞⣷⣯⣿')
+        console.log('⠀⠀⠀⠀⠀⠈⢳⣸⣿⡞⣿⣿⣿⣿⡟⢯⠹⡘⠦⡉⢖⡡⢏⡿⣻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣯⣷⣿')
+        console.log('⠀⠀⠀⠀⠀⠀⠀⢳⡛⢃⣿⣿⠿⣭⡙⢆⢣⡙⠴⣉⢦⡹⣎⣷⣻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿')
+        console.log('⠀⠀⠀⠀⠀⠀⠀⠀⠹⣿⣿⢏⡿⣴⡹⣎⢦⣝⣮⣳⢯⣷⣻⢾⣽⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿')
+        console.log('⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢿⢯⢾⣵⣻⣽⣻⣞⡷⣯⣟⡾⣽⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿')
+        console.log('⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢘⣯⢟⣼⣳⣳⢯⢾⣝⣳⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿')
+        console.log('⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠘⠿⢶⣭⡷⠯⠟⠚⢛⣿⣿⣿⣿⣿⣿⠿⠛⠛⠛⠛⠛⠿⠿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿')
+        console.log('⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠁⠀⠀⠀⢀⣾⣿⣿⣿⣿⡟⠁⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠙⠻⢿⣿⣿⣿⣿⣿⣿⣿')
+        console.log('⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠛⠿⣿⣿⣿⣿')
+        console.log('⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⣿⣿⣿⣿⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⣿⣿')
+        console.log('⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢻')
+        console.log('⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⣿⣿⣿⣿⣿⣷⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈')
+        console.log('   NOOT')
+        console.log('      NOOT')
     </script>
 </body>
 

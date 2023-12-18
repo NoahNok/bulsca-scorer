@@ -179,7 +179,7 @@ class SERC extends Model
             foreach ($judge->getMarkingPoints as $mp) {
                 foreach (SERCResult::where(['marking_point' => $mp->id])->get() as $result) {
                     $data[$mp->id][$result->team] = [
-                        'result' => $result->result,
+                        'result' => (int) $result->result,
                         'id' => $result->id
                     ];
                 }

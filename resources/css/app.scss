@@ -488,3 +488,13 @@ aside {
     }
   }
 }
+
+
+.modal {
+  @apply w-full h-full fixed top-0 left-0 flex items-center justify-center z-50 bg-gray-300 bg-opacity-50 ;
+
+
+  .modal-content {
+    @apply bg-white rounded-md p-4 w-[15vw];
+  }
+}
