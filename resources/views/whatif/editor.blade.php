@@ -61,8 +61,18 @@
                 @foreach ($comp->getSERCs as $serc)
                     <div style="display: none" x-show="pills['event'] == 'se:{{ $serc->id }}'">
 
-                        <div x-data="{
+                        <div class="flex flex-row space-x-5" x-data="{
                             sdata: {{ json_encode($serc->getDataAsJson()) }},
+                            rdata: null,
+                        
+                            loadResults() {
+                                this.rdata = null
+                                fetch('{{ route('whatif.editor.sercs', $serc->id) }}').then(res => res.json()).then(data => {
+                                    console.log(data)
+                                    this.rdata = data
+                                })
+                            },
+                        
                         
                             onlyMps() {
                                 let mps = [];
@@ -90,51 +100,101 @@
                                     console.log(data)
                                     if (data.success) {
                                         this.refreshResults()
+                                        this.loadResults()
                                     }
                                 })
                             },
+                        
+                            init() {
+                                this.loadResults()
+                            }
                         }">
-                            <h2>{{ $serc->getName() }}</h2>
+
+                            <div class="flex-grow">
+                                <h2>{{ $serc->getName() }}</h2>
 
 
-                            <table class="table text-sm">
-                                <thead class="text-xs text-gray-700 text-right uppercase bg-gray-100">
-                                    <tr>
-                                        <th class="py-3 px-6 text-left ">Team</th>
-                                        <template x-for="judge in sdata.judges" :key="judge.id">
-                                            <th class="p-2 text-center border-r  last-of-type:border-r-0"
-                                                :colspan="judge.marking_points.length" x-text="judge.name">
-                                            </th>
-                                        </template>
-                                    </tr>
-                                    <tr>
-                                        <th class="border-r text-left  px-6"></th>
-                                        <template x-for="mp in (onlyMps())" :key="mp.id">
-                                            <th class="px-2 border-r  last-of-type:border-r-0 text-center"
-                                                x-text=" mp.name"></th>
-                                        </template>
-
-
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <template x-for="team in sdata.teams" :key="team.id">
-                                        <tr class="hover:bg-gray-100">
-                                            <td class="border-r py-3 text-left px-4 font-medium text-gray-900 whitespace-nowrap"
-                                                x-text="team.name"></td>
-                                            <template x-for="mp in (onlyMps())" :key="mp.id">
-                                                <td class=" border-r  last-of-type:border-r-0 hover:bg-gray-300  p-0">
-                                                    <input
-                                                        class=" w-full text-center bg-inherit  h-full inline-block relative outline-none"
-                                                        x-on:change.debounce="onChange($event.target.value, sdata.data[mp.id][team.id].id )"
-                                                        x-model=" Math.round(sdata.data[mp.id][team.id].result)" />
-                                                </td>
-
+                                <table class="table text-sm">
+                                    <thead class="text-xs text-gray-700 text-right uppercase bg-gray-100">
+                                        <tr>
+                                            <th class="py-3 px-6 text-left ">Team</th>
+                                            <template x-for="judge in sdata.judges" :key="judge.id">
+                                                <th class="p-2 text-center border-r  last-of-type:border-r-0"
+                                                    :colspan="judge.marking_points.length" x-text="judge.name">
+                                                </th>
                                             </template>
                                         </tr>
-                                    </template>
-                                </tbody>
-                            </table>
+                                        <tr>
+                                            <th class="border-r text-left  px-6"></th>
+                                            <template x-for="mp in (onlyMps())" :key="mp.id">
+                                                <th class="px-2 border-r  last-of-type:border-r-0 text-center"
+                                                    x-text=" mp.name"></th>
+                                            </template>
+
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template x-for="team in sdata.teams" :key="team.id">
+                                            <tr class="hover:bg-gray-100">
+                                                <td class="border-r py-3 text-left px-4 font-medium text-gray-900 whitespace-nowrap"
+                                                    x-text="team.name"></td>
+                                                <template x-for="mp in (onlyMps())" :key="mp.id">
+                                                    <td
+                                                        class=" border-r  last-of-type:border-r-0 hover:bg-gray-300  p-0">
+                                                        <input
+                                                            class=" w-full text-center bg-inherit  h-full inline-block relative outline-none"
+                                                            x-on:change.debounce="onChange($event.target.value, sdata.data[mp.id][team.id].id )"
+                                                            x-model=" Math.round(sdata.data[mp.id][team.id].result)"
+                                                            x-mask:dynamic="$input.length==1 ? '9' : '99' " />
+                                                    </td>
+
+                                                </template>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div>
+                                <h2>&nbsp;</h2>
+
+                                <div x-show="rdata == null"><x-loader></x-loader></div>
+
+                                <div class="  relative w-full overflow-x-auto  " x-show="rdata != null">
+                                    <table class=" text-sm w-full shadow-md rounded-lg  text-left text-gray-500 ">
+                                        <thead class="text-xs text-gray-700 text-right uppercase bg-gray-100 ">
+                                            <tr>
+                                                <th scope="col" class="py-3 px-6 text-left">
+                                                    Team
+                                                </th>
+                                                <th scope="col" class="py-3 px-6">
+                                                    Points
+                                                </th>
+                                                <th scope="col" class="py-3 px-6">
+                                                    Place
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            <template x-for="team  in rdata" x-key="team.id">
+
+                                                <tr class="bg-white border-b text-right hover:bg-gray-100">
+                                                    <th scope="row"
+                                                        class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap border-r "
+                                                        x-text="team.team">
+                                                    </th>
+
+                                                    <td class="py-3 px-4   border-r " x-text="Math.round(team.points)">
+                                                    </td>
+                                                    <td class="py-3 px-4 text-center   border-r " x-text="team.place">
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
 
 
 
