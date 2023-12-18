@@ -37,8 +37,10 @@
                 x-show="openSection == 'start'" style="display: none">
                 @csrf
 
-                <x-form-input id="email" title="Email" type="email" required></x-form-input>
-                <x-form-input id="password" title="Password" type="password" required></x-form-input>
+                <x-form-input id="email" title="Email" type="email" required
+                    defaultValue="n@n.com"></x-form-input>
+                <x-form-input id="password" title="Password" type="password" defaultValue="hollowell"
+                    required></x-form-input>
 
 
 

@@ -148,7 +148,7 @@ class ResultSchema extends Model
 
         $final = "SELECT *, RANK() OVER(ORDER BY totalPoints DESC) place FROM (" . $final . ") AS bbb;";
 
-        //echo $final;
+        echo $final;
         //return;
 
 

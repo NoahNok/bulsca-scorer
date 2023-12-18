@@ -99,7 +99,9 @@ class WhatIfController extends Controller
     public function editorResults(int $schema)
     {
 
-        // For some reason the normal results query returns nothing. It needs further investigation
+        $rs = ResultSchema::find($schema);
+        $results = $rs->getDetailedPrint();
+        dump($results);
     }
 
 

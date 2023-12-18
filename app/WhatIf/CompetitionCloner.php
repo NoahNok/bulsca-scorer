@@ -5,6 +5,7 @@ namespace App\WhatIf;
 use App\Models\Club;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
+use App\Models\League;
 use App\Models\ResultSchemaEvent;
 use App\Models\SERC;
 use App\Models\SERCDisqualification;
@@ -28,6 +29,7 @@ class CompetitionCloner
     private $speedEventIdMap = [];
     private $competitionSpeedEventIdMap = [];
     private $sercIdMap = [];
+    private $leagueIdMap = [];
 
 
 
@@ -35,6 +37,7 @@ class CompetitionCloner
     {
         $this->newCompId = $comp->clone(['season' => null]);
         $this->cloneClubs();
+        $this->cloneLeagues();
         $this->cloneTeams($comp);
         $this->cloneSpeedEvents($comp);
         $this->cloneCompetitionSpeedEvents($comp);
@@ -53,11 +56,19 @@ class CompetitionCloner
         }
     }
 
+    public function cloneLeagues()
+    {
+        foreach (League::all() as $league) {
+            $newLeagueId = $league->clone();
+            $this->leagueIdMap[$league->id] = $newLeagueId;
+        }
+    }
+
     private function cloneTeams(Competition $comp)
     {
         $teams = $comp->getCompetitionTeams()->get();
         foreach ($teams as $team) {
-            $newTeamId = $team->clone(['competition' => $this->newCompId, 'club' => $this->clubIdMap[$team->club]]);
+            $newTeamId = $team->clone(['competition' => $this->newCompId, 'club' => $this->clubIdMap[$team->club], 'league' => $this->leagueIdMap[$team->league]]);
             $this->teamIdMap[$team->id] = $newTeamId;
         }
     }
