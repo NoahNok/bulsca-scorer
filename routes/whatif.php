@@ -20,8 +20,12 @@ function wir()
 
         Route::prefix('editor')->group(function () {
             Route::get('', [WhatIfController::class, 'editorIndex'])->name('whatif.editor');
+            Route::get('results/speeds/{speed}', [WhatIfController::class, 'getSpeedResults'])->name('whatif.editor.speeds');
+            Route::get('results/sercs/{serc}', [WhatIfController::class, 'getSercResults'])->name('whatif.editor.sercs');
             Route::get('results/{schema}', [WhatIfController::class, 'editorResults'])->name('whatif.editor.results');
+
             Route::post('userc', [WhatIfController::class, 'updateSercResult'])->name('whatif.userc');
+            Route::post('uspeed', [WhatIfController::class, 'updateSpeedResult'])->name('whatif.uspeed');
         });
     });
 }

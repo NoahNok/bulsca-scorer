@@ -51,7 +51,7 @@ class CompetitionCloner
     private function cloneClubs()
     {
         foreach (Club::all() as $club) {
-            $newClubId = $club->clone();
+            $newClubId = $club->cloneOnce(['name' => $club->name]);
             $this->clubIdMap[$club->id] = $newClubId;
         }
     }
@@ -59,7 +59,7 @@ class CompetitionCloner
     public function cloneLeagues()
     {
         foreach (League::all() as $league) {
-            $newLeagueId = $league->clone();
+            $newLeagueId = $league->cloneOnce(['name' => $league->name]);
             $this->leagueIdMap[$league->id] = $newLeagueId;
         }
     }
@@ -77,7 +77,7 @@ class CompetitionCloner
     {
         $speedEvents = SpeedEvent::all();
         foreach ($speedEvents as $speedEvent) {
-            $newSpeedEventId = $speedEvent->clone();
+            $newSpeedEventId = $speedEvent->cloneOnce(['name' => $speedEvent->name]);
             $this->speedEventIdMap[$speedEvent->id] = $newSpeedEventId;
         }
     }

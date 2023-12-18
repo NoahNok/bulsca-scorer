@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
 class CompetitionSpeedEvent extends Model
@@ -81,5 +82,18 @@ class CompetitionSpeedEvent extends Model
     public function getType()
     {
         return 'speed';
+    }
+
+    public function getDataAsJson()
+    {
+        $data = [];
+
+
+        foreach ($this->getSimpleResults as $result) {
+            $team = ['name' => $result->getTeam->getFullname(), 'id' => $result->id, 'result' => $result->getResultAsString(), 'disqualification' => $result->disqualification, 'penalties' => $result->getPenaltiesAsString()];
+            $data[] = $team;
+        }
+
+        return $data;
     }
 }

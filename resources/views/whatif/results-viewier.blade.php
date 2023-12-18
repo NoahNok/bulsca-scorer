@@ -8,14 +8,10 @@
 
 <body class="">
     <div class="  " id="raw_data">
-        <h2>
-            @if ($comp->areResultsProvisional())
-                (PROVISIONAL)
-            @endif{{ $schema->name }} | {{ $comp->name }}
-        </h2>
+
 
         <table class=" text-sm   rounded-lg text-left text-gray-500 ">
-            <thead class="text-xs text-gray-700 text-right uppercase bg-gray-50 ">
+            <thead class="text-xs text-gray-700 text-right uppercase bg-gray-100 ">
                 <tr>
 
 
@@ -28,8 +24,12 @@
                             @continue
                         @endif
 
-                        <th scope="col" class="py-2 px-4 whitespace-nowrap">
-                            {{ str_replace('_', ' ', preg_replace('/_[0-9]/mi', '', $key)) }}
+                        @if (str_ends_with($key, 'rsp') && Request::get('full', '') == '')
+                            @continue
+                        @endif
+
+                        <th scope="col" class="py-3 px-4 whitespace-nowrap">
+                            {{ str_replace('total', '', str_replace('rsp', '', str_replace('_', ' ', preg_replace('/_[0-9]/mi', '', $key)))) }}
                         </th>
                     @endforeach
 
@@ -46,6 +46,10 @@
                                     !str_ends_with($key, 'rsp') &&
                                     !str_ends_with($key, 'place') &&
                                     !str_contains($key, 'totalPoints'))
+                                @continue
+                            @endif
+
+                            @if (str_ends_with($key, 'rsp') && Request::get('full', '') == '')
                                 @continue
                             @endif
                             <td class="py-2 px-4 text-black text-sm whitespace-nowrap">
