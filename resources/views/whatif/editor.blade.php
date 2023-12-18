@@ -408,7 +408,25 @@
 
 
             <div class="grow  h-full z-50 bg-white ">
-                <h2>Results</h2>
+                <div class="flex flex-row  items-center space-x-5">
+                    <h2>Results</h2>
+                    <div class="pill-select space-x-1">
+                        <div class=" pill-select-option bg-gray-100"
+                            @click="() => {switchPill('result-style','simple'); updateResultsFrame()}"
+                            :class="pillActive('result-style', 'simple')">
+                            Simple</div>
+
+                        <div class=" pill-select-option bg-gray-100"
+                            @click="() => {switchPill('result-style','full'); updateResultsFrame()}"
+                            :class="pillActive('result-style', 'full')">
+                            Full</div>
+                    </div>
+
+
+
+
+                </div>
+
 
                 <iframe x-ref="resultsFrame"
                     src="{{ route('whatif.editor.results', $comp->getResultSchemas->first()) }}" frameborder="0"
@@ -426,7 +444,8 @@
             return {
                 pills: {
                     event: null,
-                    schema: '{{ $comp->getResultSchemas->first()->id }}'
+                    schema: '{{ $comp->getResultSchemas->first()->id }}',
+                    'result-style': 'simple'
                 },
                 fullResults: false,
 
@@ -451,7 +470,7 @@
 
                 updateResultsFrame() {
                     this.$refs.resultsFrame.contentDocument.location = "{{ route('whatif.editor.results', '') }}/" + this
-                        .pills['schema'] + (this.fullResults ? '?full=yes' : '')
+                        .pills['schema'] + (this.pills['result-style'] == 'full' ? '?full=yes' : '')
                 },
 
 
@@ -470,6 +489,9 @@
                     if (urlParams.has('full')) {
                         this.fullResults = true
                         shouldUpdateResults = true
+                    }
+                    if (urlParams.has('result-style')) {
+                        this.pills['result-style'] = urlParams.get('result-style')
                     }
 
                     if (shouldUpdateResults) {
