@@ -780,6 +780,9 @@ video {
 .min-h-screen {
   min-height: 100vh;
 }
+.min-h-\[85vh\] {
+  min-height: 85vh;
+}
 .w-5 {
   width: 1.25rem;
 }
