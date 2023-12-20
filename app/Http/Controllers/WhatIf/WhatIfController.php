@@ -125,6 +125,9 @@ class WhatIfController extends Controller
         $rs = ResultSchema::find($schema);
         $results = $rs->getDetailedPrint();
 
+        if (!auth()->user()) {
+            return redirect()->route('whatif');
+        }
 
         return view('whatif.results-viewier', [
             'comp' => auth()->user()->getCompetition,
@@ -360,6 +363,12 @@ class WhatIfController extends Controller
 
     public function logout()
     {
+
+
+        if (!auth()->user()) {
+            return redirect()->route('whatif');
+        }
+
         $comp = auth()->user()->getCompetition;
         if ($comp) {
             $comp->updated_at = now();
