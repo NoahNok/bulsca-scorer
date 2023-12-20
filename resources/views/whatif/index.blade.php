@@ -34,7 +34,7 @@
 
 
             <form method="POST" action="{{ route('whatif.clone') }}"
-                onsubmit="showSuccess('Generating you account and editor...')" class="w-full flex flex-col"
+                onsubmit="showSuccess('Generating your account and editor...')" class="w-full flex flex-col"
                 x-show="openSection == 'start'" style="display: none">
                 @csrf
 
