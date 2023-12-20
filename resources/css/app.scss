@@ -498,3 +498,11 @@ aside {
     @apply bg-white rounded-md p-4 w-[90%]  md:w-[60%] lg:w-[45%] xl:w-[30%] 4xl:w-[20%] ;
   }
 }
+
+.hide-number-arrows {
+  &::-webkit-inner-spin-button, 
+  &::-webkit-outer-spin-button { 
+    -webkit-appearance: none; 
+    margin: 0; 
+  }
+}

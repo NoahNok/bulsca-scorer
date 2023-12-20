@@ -91,7 +91,15 @@
                         
                             },
                         
-                            onChange(newValue, srId) {
+                            onChange(newValue, srId, mp, team) {
+                        
+                                if (newValue > 10) {
+                                    newValue = 10
+                                    this.sdata.data[mp][team].result = 10
+                                } else if (newValue < 0) {
+                                    newValue = 0
+                                    this.sdata.data[mp][team].result = 0
+                                }
                         
                         
                         
@@ -155,11 +163,14 @@
                                                     <td class="border-r border-b py-3 text-left px-4 font-medium text-gray-900 whitespace-nowrap sticky left-0 top-0 bg-white z-40"
                                                         x-text="team.name"></td>
                                                     <template x-for="mp in (onlyMps())" :key="mp.id">
-                                                        <td
-                                                            class=" border-r border-b last-of-type:border-r-0 hover:bg-gray-300  p-0">
+                                                        <td class=" border-r border-b last-of-type:border-r-0 hover:bg-gray-300  p-0 cursor-text"
+                                                            x-data="" x-on:click="$refs.i.select()">
                                                             <input
-                                                                class=" w-full text-center bg-inherit  h-full inline-block relative outline-none"
-                                                                x-on:change.debounce="onChange($event.target.value, sdata.data[mp.id][team.id].id )"
+                                                                class=" w-full text-center bg-inherit  h-full inline-block relative outline-none p-0 m-0 hide-number-arrows"
+                                                                type="number" min="0" max="10"
+                                                                step="1" x-ref="i"
+                                                                x-on:click="$event.target.select()"
+                                                                x-on:change.debounce="onChange($event.target.value, sdata.data[mp.id][team.id].id, mp.id, team.id )"
                                                                 x-model="sdata.data[mp.id][team.id].result"
                                                                 x-mask:dynamic="$input.length==1 ? '9' : '99' " />
                                                         </td>
