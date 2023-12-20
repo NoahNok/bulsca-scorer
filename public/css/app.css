@@ -1177,6 +1177,12 @@ video {
 .rounded-bl-md {
   border-bottom-left-radius: 0.375rem;
 }
+.rounded-tr {
+  border-top-right-radius: 0.25rem;
+}
+.rounded-tl {
+  border-top-left-radius: 0.25rem;
+}
 .border {
   border-width: 1px;
 }
@@ -1309,6 +1315,10 @@ video {
 }
 .bg-inherit {
   background-color: inherit;
+}
+.bg-bulsca_red {
+  --tw-bg-opacity: 1;
+  background-color: rgb(158 13 6 / var(--tw-bg-opacity));
 }
 .bg-opacity-50 {
   --tw-bg-opacity: 0.5;

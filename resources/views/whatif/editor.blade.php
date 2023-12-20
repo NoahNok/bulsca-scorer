@@ -566,6 +566,7 @@
         </div>
     </div>
 
+    <div class="fixed bottom-0 right-0 font-semibold text-white bg-bulsca_red p-1 px-3 rounded-tl">BETA</div>
 
 
     <div class="alert-banner z-50" id="alert">Test</div>
