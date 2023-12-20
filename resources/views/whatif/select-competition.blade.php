@@ -5,14 +5,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Select Editor| WhatIf | BULSCA</title>
+    <title>Select Editor | WhatIf | BULSCA</title>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/mask@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
 </head>
 
 <body>
-    <div class="modal">
+    <div class="modal" x-data="{
+        loader: {
+            show: false,
+            message: 'Please wait while we generate your editor session...'
+        },
+    
+    
+    
+    }">
         <div class="modal-content">
             <h3>Welcome Back</h3>
 
@@ -40,7 +48,7 @@
             <br>
             <h5>New Editor</h5>
             <form action="{{ route('whatif.internalCas') }}" method="POST" class="w-full flex flex-col"
-                onsubmit="showSuccess('Generating editor session...')">
+                x-on:submit="loader.show=true">
                 @csrf
                 <div class="form-input">
 
@@ -69,7 +77,20 @@
                 </div>
                 <button class="btn ml-auto">Start</button>
             </form>
+            <br>
 
+            <a href="{{ route('whatif.logout') }}" class="link">Logout</a>
+
+
+
+        </div>
+
+        <div class="w-full h-full bg-gray-300 bg-opacity-50 flex items-center justify-center z-50 fixed top-0 left-0"
+            x-show="loader.show" x-transition style="display: none">
+            <div class="card items-center">
+                <x-loader size=12 />
+                <p class="text-sm" x-text="loader.message">Please wait while we generate your editor session...</p>
+            </div>
         </div>
     </div>
     <div class="alert-banner z-50" id="alert">Test</div>

@@ -87,7 +87,7 @@ class WhatIfController extends Controller
     public function resume(WhatIfResumeRequest $request)
     {
         $validated = $request->validated();
-
+        Config::set('database.default', 'whatif');
 
         if (!Auth::attempt(['email' => $validated['email'], 'password' => $validated['password']])) {
             return back()->withFragment('#resume')->withErrors([
@@ -233,6 +233,8 @@ class WhatIfController extends Controller
 
         $results = $cse->getResults();
 
+
+
         return response()->json($results);
     }
 
@@ -241,6 +243,8 @@ class WhatIfController extends Controller
         $serc = SERC::find($serc);
 
         $results = $serc->getResults();
+
+
 
         return response()->json($results);
     }
@@ -354,6 +358,33 @@ class WhatIfController extends Controller
         $user->save();
 
         return redirect()->route('whatif.select');
+    }
+
+    public function resetCurrentCompetition()
+    {
+
+        $comp = auth()->user()->getCompetition;
+
+        Config::set('database.default', 'mysql');
+
+        $targetComp = Competition::where('name', $comp->name)->first();
+
+        $cloner = new CompetitionCloner();
+        $newCompId = $cloner->clone($targetComp);
+        Config::set('database.default', 'whatif');
+
+        $comp->delete();
+
+        DB::update('UPDATE competitions SET wi_user=? WHERE id=?', [auth()->user()->id, $newCompId]);
+
+        $user = auth()->user();
+        $user->competition = $newCompId;
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'result' => 'Reset competition'
+        ]);
     }
 
     public function select()

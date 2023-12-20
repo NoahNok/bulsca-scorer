@@ -62,7 +62,7 @@
         <div class="w-full h-full p-5 flex  ">
             <p style="display: none" class="w-[70%]" x-show="pills['event'] == null">Please select an event.</p>
 
-            <div style="display: none" class="w-[60%] z-10" x-show="pills['event'] != null">
+            <div style="display: none" class="w-[70%] z-10 mb-1" x-show="pills['event'] != null">
 
                 @foreach ($comp->getSERCs as $serc)
                     <div style="display: none" x-show="pills['event'] == 'se:{{ $serc->id }}'">
@@ -176,17 +176,17 @@
 
                                 <div x-show="rdata == null"><x-loader></x-loader></div>
 
-                                <div class="  relative w-full overflow-x-auto  " x-show="rdata != null">
+                                <div class="  relative w-full overflow-x-auto max-h-[85vh]  " x-show="rdata != null">
                                     <table class=" text-sm w-full shadow-md rounded-lg  text-left text-gray-500 ">
                                         <thead class="text-xs text-gray-700 text-right uppercase bg-gray-100 ">
                                             <tr>
-                                                <th scope="col" class="py-3 px-6 text-left">
+                                                <th scope="col" class="py-3 px-6 text-left sticky top-0 bg-gray-100">
                                                     Team
                                                 </th>
-                                                <th scope="col" class="py-3 px-6">
+                                                <th scope="col" class="py-3 px-6 sticky top-0 bg-gray-100">
                                                     Points
                                                 </th>
-                                                <th scope="col" class="py-3 px-6">
+                                                <th scope="col" class="py-3 px-6 sticky top-0 bg-gray-100">
                                                     Place
                                                 </th>
                                             </tr>
@@ -221,7 +221,7 @@
 
 
                 @foreach ($comp->getSpeedEvents as $speed)
-                    <div class="w" style="display: none" x-show="pills['event'] == 'sp:{{ $speed->id }}'">
+                    <div class="flex-grow " style="display: none" x-show="pills['event'] == 'sp:{{ $speed->id }}'">
 
                         <div class="flex flex-row space-x-5" x-data="{
                             sdata: {{ json_encode($speed->getDataAsJson()) }},
@@ -279,15 +279,16 @@
                                 <h2>{{ $speed->getName() }}</h2>
 
 
-                                <div class="  relative w-full overflow-x-auto  ">
+                                <div class="  relative w-full overflow-x-auto max-h-[85vh] ">
                                     <table class=" text-sm w-full shadow-md rounded-lg  text-left text-gray-500 ">
                                         <thead class="text-xs text-gray-700 text-right uppercase bg-gray-100 ">
                                             <tr>
-                                                <th scope="col" class="py-3 px-6 text-left">
+                                                <th scope="col"
+                                                    class="py-3 px-6 text-left sticky top-0 z-10 bg-gray-100">
                                                     Team
                                                 </th>
 
-                                                <th scope="col" class="py-3 px-6">
+                                                <th scope="col" class="py-3 px-6 sticky top-0 z-10 bg-gray-100">
                                                     @if ($speed->getName() == 'Rope Throw')
                                                         Ropes/Time
                                                     @else
@@ -295,12 +296,13 @@
                                                     @endif
                                                 </th>
 
-                                                <th scope="col" class="py-3 px-6">
+                                                <th scope="col" class="py-3 px-6 sticky top-0 z-10 bg-gray-100">
                                                     DQ
                                                 </th>
 
                                                 @if ($speed->hasPenalties())
-                                                    <th scope="col" class="py-3 px-6">
+                                                    <th scope="col"
+                                                        class="py-3 px-6 sticky top-0 z-10 bg-gray-100">
                                                         Penalties
                                                     </th>
                                                 @endif
@@ -368,17 +370,18 @@
 
                                 <div x-show="rdata == null"><x-loader></x-loader></div>
 
-                                <div class="  relative w-full overflow-x-auto  " x-show="rdata != null">
+                                <div class="  relative w-full overflow-x-auto max-h-[85vh]  " x-show="rdata != null">
                                     <table class=" text-sm w-full shadow-md rounded-lg  text-left text-gray-500 ">
                                         <thead class="text-xs text-gray-700 text-right uppercase bg-gray-100 ">
                                             <tr>
-                                                <th scope="col" class="py-3 px-6 text-left">
+                                                <th scope="col"
+                                                    class="py-3 px-6 text-left sticky top-0 bg-gray-100">
                                                     Team
                                                 </th>
-                                                <th scope="col" class="py-3 px-6">
+                                                <th scope="col" class="py-3 px-6 sticky top-0 bg-gray-100">
                                                     Points
                                                 </th>
-                                                <th scope="col" class="py-3 px-6">
+                                                <th scope="col" class="py-3 px-6 sticky top-0 bg-gray-100">
                                                     Place
                                                 </th>
                                             </tr>
@@ -418,13 +421,21 @@
 
             </div>
 
-            <div class="bg-white px-2 z-50" id="resize-drag">
-                <div class="border h-full cursor-col-resize  "></div>
+            <div class="bg-white px-2 z-50" id="resize-drag"
+                :class="pills['event'] == null ? 'cursor-not-allowed' : 'cursor-col-resize'">
+                <div class="bg-gray-100 h-full  rounded-full flex items-center  ">
+                    <div class="flex flex-col space-y-1 p-1 ">
+                        <div class="w-1 h-1 rounded-full bg-black"></div>
+                        <div class="w-1 h-1 rounded-full bg-black"></div>
+                        <div class="w-1 h-1 rounded-full bg-black"></div>
+                    </div>
+
+                </div>
             </div>
 
 
-            <div class="grow  h-full z-50 bg-white ">
-                <div class="flex flex-row  items-center space-x-5">
+            <div class="grow  h-full z-50 bg-white " x-show="showResults">
+                <div class="flex flex-row  items-center space-x-5 w-full">
                     <h2>Results</h2>
                     <div class="pill-select space-x-1">
                         <div class=" pill-select-option bg-gray-100"
@@ -436,11 +447,10 @@
                             @click="() => {switchPill('result-style','full'); updateResultsFrame()}"
                             :class="pillActive('result-style', 'full')">
                             Full</div>
+                        <div class=" pill-select-option bg-gray-100" @click="() => {toggleResults()}"
+                            :class="pillActive('result-style', 'close')">
+                            Close</div>
                     </div>
-
-
-
-
                 </div>
 
 
@@ -451,7 +461,7 @@
 
 
         </div>
-        <div class="modal" x-show="optionsOpen" style="display: none">
+        <div class="modal" x-show="optionsOpen" x-transition style="display: none">
             <div class="modal-content" @click.outside="optionsOpen=false">
                 <div class="flex justify-between items-center">
                     <h3>Options</h3>
@@ -520,17 +530,32 @@
                     <button class="btn ml-auto">Start</button>
                 </form>
                 <br>
-                <h5>Delete Editor</h5>
-                <p class="text-sm">This will delete the current editor, and all of its data. This action cannot be
+                <h5>Delete/Reset Editor</h5>
+                <p class="text-sm">This will delete/reset the current editor, and all of its data. This action cannot
+                    be
                     undone.
                 </p>
-                <form action="{{ route('whatif.delete', $comp) }}" method="POST" class="w-full flex flex-col"
-                    onsubmit="return confirm('Are you sure you want to delete this editor? This action cannot be undone!')">
-                    @csrf
-                    <button class="btn btn-danger ml-auto">Delete</button>
+                <div class="flex space-x-3">
+                    <a href="#" @click="resetCompetition()" class=" ml-auto btn btn-danger">Reset</a>
+                    <form action="{{ route('whatif.delete', $comp) }}" method="POST" class=" "
+                        onsubmit="return confirm('Are you sure you want to delete this editor? This action cannot be undone!')">
+                        @csrf
+                        <button class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-full h-full bg-gray-300 bg-opacity-50 flex items-center justify-center z-50 fixed top-0 left-0"
+            x-show="loader.show" x-transition>
+            <div class="card items-center">
+                <x-loader size=12 />
+                <p class="text-sm" x-text="loader.message">Please wait while we generate your editor session...</p>
             </div>
         </div>
     </div>
+
+
 
     <div class="alert-banner z-50" id="alert">Test</div>
 
@@ -550,8 +575,13 @@
                     schema: '{{ $comp->getResultSchemas->first()->id }}',
                     'result-style': 'simple'
                 },
+                loader: {
+                    show: true,
+                    message: 'Loading...'
+                },
                 fullResults: false,
                 optionsOpen: false,
+                showResults: true,
 
 
                 switchPill(pill, value) {
@@ -566,6 +596,10 @@
                     let newUrl = window.location.origin + window.location.pathname + '?' + decodeURIComponent(params
                         .toString())
                     window.history.pushState({}, '', newUrl)
+
+                    if (pill == 'schema') {
+                        this.showResults = true
+                    }
                 },
 
                 pillActive(pill, value) {
@@ -577,7 +611,33 @@
                         .pills['schema'] + (this.pills['result-style'] == 'full' ? '?full=yes' : '')
                 },
 
+                resetCompetition() {
 
+                    if (!confirm("Are you sure you want to reset this editor? This action cannot be undone!")) return
+
+                    this.optionsOpen = false
+                    this.loader.show = true
+                    this.loader.message = 'Resetting editor...'
+
+                    fetch('{{ route('whatif.reset') }}').then(res => res.json()).then(data => {
+                        if (data.success) {
+                            this.loader.show = false
+                            window.location.reload()
+                        } else {
+                            showAlert('Error resetting editor. Please try again later.')
+                        }
+                    })
+                },
+
+                toggleResults() {
+                    this.showResults = !this.showResults
+
+                    if (!this.showResults) {
+                        this.pills['schema'] = null
+                        leftSide.style.width = `100%`;
+
+                    }
+                },
 
                 init() {
                     let urlParams = new URLSearchParams(window.location.search);
@@ -601,6 +661,8 @@
                     if (shouldUpdateResults) {
                         this.updateResultsFrame()
                     }
+
+                    this.loader.show = false
 
 
 

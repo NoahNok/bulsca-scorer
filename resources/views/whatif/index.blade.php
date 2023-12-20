@@ -11,7 +11,14 @@
 </head>
 
 <body>
-    <div class="w-screen h-screen flex flex-col items-center justify-center bg-whatif">
+    <div class="w-screen h-screen flex flex-col items-center justify-center bg-whatif" x-data="{
+        loader: {
+            show: false,
+            message: 'Please wait while we generate your account and editor session...'
+        },
+    
+    
+    }">
         <div class="" x-data="{
             openSection: '{{ $errors->any() ? 'start' : 'main' }}' == 'start' ? (window.location.hash == '#resume' ? 'resume' : 'start') : 'main',
         
@@ -33,9 +40,8 @@
             </div>
 
 
-            <form method="POST" action="{{ route('whatif.clone') }}"
-                onsubmit="showSuccess('Generating your account and editor...')" class="w-full flex flex-col"
-                x-show="openSection == 'start'" style="display: none">
+            <form method="POST" action="{{ route('whatif.clone') }}" x-on:submit="loader.show=true"
+                class="w-full flex flex-col" x-show="openSection == 'start'" style="display: none">
                 @csrf
 
                 <x-form-input id="email" title="Email" type="email" required></x-form-input>
@@ -74,7 +80,13 @@
 
         </div>
 
-
+        <div class="w-full h-full bg-gray-300 bg-opacity-50 flex items-center justify-center z-50 fixed top-0 left-0"
+            x-show="loader.show" x-transition style="display: none">
+            <div class="card items-center">
+                <x-loader size=12 />
+                <p class="text-sm" x-text="loader.message">Please wait while we generate your editor session...</p>
+            </div>
+        </div>
 
     </div>
     <div class="alert-banner z-50" id="alert">Test</div>

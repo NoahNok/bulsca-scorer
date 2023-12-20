@@ -175,6 +175,10 @@ class SERC extends Model
             ];
         }
 
+        usort($teams, function ($item1, $item2) {
+            return $item2['name'] <= $item1['name'];
+        });
+
         foreach ($this->getJudges as $judge) {
             foreach ($judge->getMarkingPoints as $mp) {
                 foreach (SERCResult::where(['marking_point' => $mp->id])->get() as $result) {

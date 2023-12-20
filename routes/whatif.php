@@ -13,10 +13,10 @@ function wir()
     Route::get('', [WhatIfController::class, 'index'])->name('whatif');
 
     Route::post('cas', [WhatIfController::class, 'cloneAndStart'])->name('whatif.clone');
-
+    Route::post('resume', [WhatIfController::class, 'resume'])->name('whatif.resume');
     Route::group(['middleware' => ['whatif']], function () {
 
-        Route::post('resume', [WhatIfController::class, 'resume'])->name('whatif.resume');
+
 
 
         Route::prefix('editor')->group(function () {
@@ -31,6 +31,7 @@ function wir()
             Route::get('switch/{comp}', [WhatIfController::class, 'switchOpenEditor'])->name('whatif.switch');
             Route::post('internalCas', [WhatIfController::class, 'loggedInCloneAndSwitch'])->name('whatif.internalCas');
             Route::post('delete', [WhatIfController::class, 'deleteEditor'])->name('whatif.delete');
+            Route::get('reset', [WhatIfController::class, 'resetCurrentCompetition'])->name('whatif.reset');
 
             Route::get('select', [WhatIfController::class, 'select'])->name('whatif.select');
 

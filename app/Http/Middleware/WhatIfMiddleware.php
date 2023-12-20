@@ -18,6 +18,12 @@ class WhatIfMiddleware
     public function handle(Request $request, Closure $next)
     {
         Config::set('database.default', 'whatif');
+
+
+        if (!auth()->user()) {
+            return redirect()->route('whatif');
+        }
+
         return $next($request);
     }
 }
