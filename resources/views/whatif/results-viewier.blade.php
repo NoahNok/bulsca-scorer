@@ -28,7 +28,7 @@
                             @continue
                         @endif
 
-                        <th scope="col" class="py-3 px-4 whitespace-nowrap">
+                        <th scope="col" class="py-3 px-4 whitespace-nowrap sticky top-0 bg-gray-100">
                             {{ str_replace('total', '', str_replace('rsp', '', str_replace('_', ' ', preg_replace('/_[0-9]/mi', '', $key)))) }}
                         </th>
                     @endforeach

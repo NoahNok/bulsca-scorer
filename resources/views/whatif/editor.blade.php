@@ -456,7 +456,7 @@
 
                 <iframe x-ref="resultsFrame"
                     src="{{ route('whatif.editor.results', $comp->getResultSchemas->first()) }}" frameborder="0"
-                    class=" w-full h-full overflow-hidden"></iframe>
+                    class=" w-full max-h-[85vh]  overflow-hidden"></iframe>
             </div>
 
 
