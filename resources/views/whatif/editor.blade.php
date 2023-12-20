@@ -434,7 +434,7 @@
             </div>
 
 
-            <div class=" h-full z-50 bg-white " x-show="showResults">
+            <div class="grow  h-full z-50 bg-white " x-show="showResults">
                 <div class="flex flex-row  items-center space-x-5 w-full">
                     <h2>Results</h2>
                     <div class="pill-select space-x-1">
