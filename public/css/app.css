@@ -3178,16 +3178,12 @@ aside.open {
     width: 70vw;
   }
 
-  .md\:w-\[50\%\] {
-    width: 50%;
-  }
-
-  .md\:w-auto {
-    width: auto;
-  }
-
   .md\:w-\[70\%\] {
     width: 70%;
+  }
+
+  .md\:w-\[50\%\] {
+    width: 50%;
   }
 
   .md\:max-w-\[15\%\] {
