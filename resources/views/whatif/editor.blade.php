@@ -654,7 +654,8 @@
                     fetch('{{ route('whatif.reset') }}').then(res => res.json()).then(data => {
                         if (data.success) {
                             this.loader.show = false
-                            window.location.reload()
+                            window.location.search = ''
+
                         } else {
                             showAlert('Error resetting editor. Please try again later.')
                         }
