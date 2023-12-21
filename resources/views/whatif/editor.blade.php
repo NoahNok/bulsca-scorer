@@ -26,8 +26,10 @@
             <div class="flex-grow"></div>
             <h1 class="text-[1.5rem]" style="margin-bottom: 0 !important">{{ $comp->name }}</h1>
         </div>
-        <div class="w-full flex space-x-3 px-2  border rounded-full bg-gray-100 items-center">
-            <div class="py-1 px-3 ">Events</div>
+        <div
+            class="w-full flex flex-col md:flex-row space-x-3 px-2  border rounded-md md:rounded-full bg-gray-100 items-center">
+
+            <div class="py-1 px-3 hidden md:block">Events</div>
 
             <div class="pill-select">
                 @foreach ($comp->getSERCs as $serc)
@@ -40,9 +42,11 @@
                         :class="pillActive('event', 'sp:{{ $speed->id }}')">
                         {{ $speed->getName() }}</div>
                 @endforeach
+
             </div>
 
-            <div class="py-1 px-3" style="margin-left: auto">Results</div>
+
+            <div class="py-1 px-3 hidden md:block" style="margin-left: auto">Results</div>
 
             <div class="pill-select">
 
@@ -53,21 +57,22 @@
                         {{ $schema->name }}</div>
                 @endforeach
 
+
             </div>
 
         </div>
 
 
 
-        <div class="w-full h-full p-5 flex  ">
+        <div class="w-full h-full p-5 flex flex-col md:flex-row  ">
             <p style="display: none" class="w-[70%]" x-show="pills['event'] == null">Please select an event.</p>
 
-            <div style="display: none" class="w-[70%] z-10 mb-1" x-show="pills['event'] != null">
+            <div style="display: none" class="w-full md:w-[70%] z-10 mb-1" x-show="pills['event'] != null">
 
                 @foreach ($comp->getSERCs as $serc)
-                    <div style="display: none" x-show="pills['event'] == 'se:{{ $serc->id }}'">
+                    <div class="" style="display: none" x-show="pills['event'] == 'se:{{ $serc->id }}'">
 
-                        <div class="flex flex-row space-x-5" x-data="{
+                        <div class="flex flex-col md:flex-row space-x-5" x-data="{
                             sdata: {{ json_encode($serc->getDataAsJson()) }},
                             rdata: null,
                             void: 0,
@@ -232,7 +237,8 @@
 
 
                 @foreach ($comp->getSpeedEvents as $speed)
-                    <div class="flex-grow " style="display: none" x-show="pills['event'] == 'sp:{{ $speed->id }}'">
+                    <div class="flex-grow  " style="display: none"
+                        x-show="pills['event'] == 'sp:{{ $speed->id }}'">
 
                         <div class="flex flex-row space-x-5" x-data="{
                             sdata: {{ json_encode($speed->getDataAsJson()) }},
@@ -432,7 +438,7 @@
 
             </div>
 
-            <div class="bg-white px-2 z-50" id="resize-drag"
+            <div class="bg-white px-2 z-50 hidden md:block" id="resize-drag"
                 :class="pills['event'] == null ? 'cursor-not-allowed' : 'cursor-col-resize'">
                 <div class="bg-gray-100 h-full  rounded-full flex items-center  ">
                     <div class="flex flex-col space-y-1 p-1 ">
@@ -491,7 +497,7 @@
                 <small>Shows the editor name, and when it was last <strong>used</strong></small>
                 <div class="w-full mt-2">
 
-                    @foreach (auth()->user()->getWhatIfEditors()->where('id', '!=', $comp->id)->orderBy('updated_at', 'desc')->get() as $editor)
+                    @forelse (auth()->user()->getWhatIfEditors()->where('id', '!=', $comp->id)->orderBy('updated_at', 'desc')->get() as $editor)
                         <a href="{{ route('whatif.switch', $editor->id) }}"
                             class="flex justify-between items-center group hover:text-bulsca hover:font-semibold transition-all">
                             <p>{{ $editor->name }} <small>({{ $editor->updated_at->format('d/m/Y @ H:i') }})</small>
@@ -504,14 +510,16 @@
                             </svg>
 
                         </a>
-                    @endforeach
+                    @empty
+                        <small>You don't have any open editor sessions.</small>
+                    @endforelse
 
 
                 </div>
                 <br>
                 <h5>New Editor</h5>
                 <form action="{{ route('whatif.internalCas') }}" method="POST" class="w-full flex flex-col"
-                    onsubmit="showSuccess('Generating editor session...')">
+                    x-on:submit="() => {optionsOpen = false; loader.message = 'Please wait while we generate your editor session...'; loader.show = true}">
                     @csrf
                     <div class="form-input">
 
@@ -566,10 +574,22 @@
         </div>
     </div>
 
-    <div class="fixed bottom-0 right-0 font-semibold text-white bg-bulsca_red p-1 px-3 rounded-tl">BETA</div>
+    <div class="fixed bottom-0 right-0 font-semibold text-white bg-bulsca_red p-1 px-3 rounded-tl z-50">BETA</div>
 
 
     <div class="alert-banner z-50" id="alert">Test</div>
+
+
+    <div
+        class="bg-white z-50 lg:hidden fixed w-screen h-screen top-0 left-0 flex flex-col items-center justify-center">
+        <div>
+            <h3 class="-mb-6">BULSCA</h3>
+            <h1 class=" text-[7rem] text-transparent bg-clip-text bg-gradient-to-r from-bulsca via-purple-500 to-bulsca_red"
+                style="margin-bottom: 0 !important">
+                WhatIf</h1>
+            <p class="text-center">WhatIf is not available on mobile devices!</p>
+        </div>
+    </div>
 
 
 

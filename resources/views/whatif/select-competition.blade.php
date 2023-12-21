@@ -29,7 +29,7 @@
             <small>Shows the editor name, and when it was last <strong>used</strong></small>
             <div class="w-full mt-2">
 
-                @foreach (auth()->user()->getWhatIfEditors()->orderBy('updated_at', 'desc')->get() as $editor)
+                @forelse (auth()->user()->getWhatIfEditors()->orderBy('updated_at', 'desc')->get() as $editor)
                     <a href="{{ route('whatif.switch', $editor->id) }}"
                         class="flex justify-between items-center group hover:text-bulsca hover:font-semibold transition-all">
                         <p>{{ $editor->name }} <small>({{ $editor->updated_at->format('d/m/Y @ H:i') }})</small></p>
@@ -41,7 +41,9 @@
                         </svg>
 
                     </a>
-                @endforeach
+                @empty
+                    <small>You don't have any open editor sessions.</small>
+                @endforelse
 
 
             </div>

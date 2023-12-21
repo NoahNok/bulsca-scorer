@@ -91,7 +91,15 @@
     </div>
     <div class="alert-banner z-50" id="alert">Test</div>
 
-
+    <div class="bg-white z-50 lg:hidden fixed w-screen h-screen top-0 left-0 flex flex-col items-center justify-center">
+        <div>
+            <h3 class="-mb-6">BULSCA</h3>
+            <h1 class=" text-[7rem] text-transparent bg-clip-text bg-gradient-to-r from-bulsca via-purple-500 to-bulsca_red"
+                style="margin-bottom: 0 !important">
+                WhatIf</h1>
+            <p class="text-center">WhatIf is not available on mobile devices!</p>
+        </div>
+    </div>
 
 
     <script src="{{ asset('js/alert.js') }}"></script>

@@ -17,6 +17,7 @@ use App\Models\User;
 use App\WhatIf\CompetitionCloner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
@@ -123,7 +124,13 @@ class WhatIfController extends Controller
     {
 
         $rs = ResultSchema::find($schema);
-        $results = $rs->getDetailedPrint();
+
+
+        $results = Cache::rememberForever('result_comp_' . $rs->competition . '_schema_' . $rs->id, function () use ($rs) {
+            return $rs->getDetailedPrint();
+        });
+
+
 
         if (!auth()->user()) {
             return redirect()->route('whatif');
@@ -151,6 +158,10 @@ class WhatIfController extends Controller
 
 
         $result = DB::update("UPDATE serc_results SET result=? WHERE id=?", [$result, $id]);
+
+        $serc = SERCResult::find($id)->getSERC();
+        Cache::forget('serc_results_' . $serc->id);
+        $this->clearResultsCache();
 
         return response()->json([
             'success' => true,
@@ -221,6 +232,10 @@ class WhatIfController extends Controller
         }
 
 
+        $sr = SpeedResult::find($id);
+        Cache::forget('speed_results_' . $sr->getEvent->id);
+        $this->clearResultsCache();
+
         return response()->json([
             'success' => true,
             'result' => $value
@@ -231,7 +246,12 @@ class WhatIfController extends Controller
     {
         $cse = CompetitionSpeedEvent::find($speed);
 
-        $results = $cse->getResults();
+
+        $results = Cache::rememberForever('speed_results_' . $cse->id, function () use ($cse) {
+            return $cse->getResults();
+        });
+
+
 
 
 
@@ -242,7 +262,11 @@ class WhatIfController extends Controller
     {
         $serc = SERC::find($serc);
 
-        $results = $serc->getResults();
+        $results = Cache::rememberForever('serc_results_' . $serc->id, function () use ($serc) {
+            return $serc->getResults();
+        });
+
+
 
 
 
@@ -409,5 +433,16 @@ class WhatIfController extends Controller
         auth()->logout();
 
         return redirect()->route('whatif');
+    }
+
+    private function clearResultsCache()
+    {
+        $comp = auth()->user()->getCompetition;
+
+        if (!$comp) return;
+
+        foreach ($comp->getResultSchemas as $rs) {
+            Cache::forget('result_comp_' . $rs->competition . '_schema_' . $rs->id);
+        }
     }
 }
