@@ -136,7 +136,7 @@
                                 <h2>{{ $serc->getName() }}</h2>
 
                                 <div class="  relative w-full overflow-x-auto max-h-[85vh] ">
-                                    <table class="table text-sm">
+                                    <table class="table text-sm text-gray-500">
                                         <thead class="text-xs text-gray-700 text-right uppercase bg-gray-100">
                                             <tr>
                                                 <th
@@ -168,10 +168,10 @@
                                                     <td class="border-r border-b py-3 text-left px-4 font-medium text-gray-900 whitespace-nowrap sticky left-0 top-0 bg-white z-40"
                                                         x-text="team.name"></td>
                                                     <template x-for="mp in (onlyMps())" :key="mp.id">
-                                                        <td class=" border-r border-b last-of-type:border-r-0 hover:bg-gray-300  p-0 cursor-text"
+                                                        <td class=" border-r border-b last-of-type:border-r-0 hover:bg-gray-300  p-0 cursor-text hover:text-black"
                                                             x-data="" x-on:click="$refs.i.select()">
                                                             <input
-                                                                class=" w-full text-center bg-inherit  h-full inline-block relative outline-none p-0 m-0 hide-number-arrows"
+                                                                class=" w-full text-center bg-inherit  h-full inline-block relative outline-none p-0 m-0 hide-number-arrows focus:text-black"
                                                                 type="number" min="0" max="10"
                                                                 step="1" x-ref="i"
                                                                 x-on:click="$event.target.select()"
@@ -337,10 +337,11 @@
                                                         x-text="team.name">
                                                     </th>
 
-                                                    <td class="py-4  hover:bg-gray-300 border-r ">
+                                                    <td class="py-4  hover:bg-gray-300 border-r cursor-text hover:text-black "
+                                                        x-data x-on:click="$refs.i.focus()">
                                                         <input type="text"
-                                                            class=" px-4 text-right w-full bg-inherit outline-none"
-                                                            x-mask="99:99.999" x-model="team.result"
+                                                            class=" px-4 text-right w-full bg-inherit outline-none focus:text-black"
+                                                            x-ref="i" x-mask="99:99.999" x-model="team.result"
                                                             x-on:change.debounce="onChange($event.target.value, team.id)"
                                                             class="w-auto">
 
@@ -349,20 +350,22 @@
                                                     </td>
 
 
-                                                    <td
-                                                        class="py-4  hover:bg-gray-300 border-r last-of-type:border-r-0 ">
+                                                    <td class="py-4  hover:bg-gray-300 border-r last-of-type:border-r-0 cursor-text hover:text-black "
+                                                        x-data x-on:click="$refs.i.focus()">
                                                         <input type="text"
-                                                            class="text-right px-4 w-full bg-inherit outline-none"
-                                                            x-mask="DQ999" x-model="team.disqualification"
+                                                            class="text-right px-4 w-full bg-inherit outline-none focus:text-black"
+                                                            x-ref="i" x-mask="DQ999"
+                                                            x-model="team.disqualification"
                                                             x-on:change.debounce="  onDqChange($event.target.value, team.id, index)"
                                                             class="w-auto">
                                                     </td>
 
                                                     @if ($speed->hasPenalties())
-                                                        <td class="py-4  hover:bg-gray-300">
+                                                        <td class="py-4  hover:bg-gray-300 cursor-text hover:text-black"
+                                                            x-data x-on:click="$refs.i.focus()">
                                                             <input type="text"
-                                                                class=" text-right px-4 w-full bg-inherit outline-none"
-                                                                x-model="team.penalties"
+                                                                class=" text-right px-4 w-full bg-inherit outline-none focus:text-black"
+                                                                x-ref="i" x-model="team.penalties"
                                                                 x-on:change.debounce="onChange($event.target.value, team.id, 'pen')"
                                                                 class="w-auto">
 
