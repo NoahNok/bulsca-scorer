@@ -61,9 +61,8 @@
                         @php
                             Config::set('database.default', 'mysql');
                         @endphp
-
+                        <option value="null">Please select a competition</option>
                         @foreach (\App\Models\Season::all() as $season)
-                            <option value="null">Please select a competition</option>
                             <optgroup label="{{ $season->name }}">
                                 @foreach ($season->getCompetitions()->where('public_results', true)->get() as $competition)
                                     <option value="{{ $competition->id }}">{{ $competition->name }}</option>
