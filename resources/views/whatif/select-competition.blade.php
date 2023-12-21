@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Select Editor | WhatIf | BULSCA</title>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
+    <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/mask@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
 </head>
