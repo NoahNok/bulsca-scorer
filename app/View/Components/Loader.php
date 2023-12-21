@@ -6,14 +6,16 @@ use Illuminate\View\Component;
 
 class Loader extends Component
 {
+
+    private $size = 8;
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($size = 8)
     {
-        //
+        $this->size = $size;
     }
 
     /**
@@ -23,6 +25,6 @@ class Loader extends Component
      */
     public function render()
     {
-        return view('components.loader');
+        return view('components.loader', ['size' => $this->size]);
     }
 }

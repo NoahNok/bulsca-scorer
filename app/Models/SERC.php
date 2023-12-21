@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use App\Models\DigitalJudge\JudgeNote;
+use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 class SERC extends Model
 {
-    use HasFactory;
+    use HasFactory, Cloneable;
 
     protected $table = 'sercs';
 
@@ -149,5 +150,47 @@ class SERC extends Model
         }
 
         return $avgTime == 0 ? 360 : $avgTime;
+    }
+
+    public function getDataAsJson()
+    {
+
+        $data = [];
+        $teams = [];
+        $judges = [];
+
+        foreach ($this->getJudges as $judge) {
+            $judges[] = [
+                'id' => $judge->id,
+                'name' => $judge->name,
+                'marking_points' => $judge->getMarkingPoints->toArray()
+            ];
+        }
+
+        foreach ($this->getTeams() as $team) {
+            $teams[] = [
+                'name' => $team->getFullname(),
+                'id' => $team->id,
+
+            ];
+        }
+
+        usort($teams, function ($item1, $item2) {
+            return $item2['name'] <= $item1['name'];
+        });
+
+        foreach ($this->getJudges as $judge) {
+            foreach ($judge->getMarkingPoints as $mp) {
+                foreach (SERCResult::where(['marking_point' => $mp->id])->get() as $result) {
+                    $data[$mp->id][$result->team] = [
+                        'result' => (int) $result->result,
+                        'id' => $result->id
+                    ];
+                }
+            }
+        }
+
+
+        return ['judges' => $judges, 'teams' => $teams, 'data' => $data];
     }
 }

@@ -67,5 +67,6 @@ class Kernel extends HttpKernel
         'onlyViewOwnComp' => \App\Http\Middleware\CanOnlyViewOwnComp::class,
         'canJudge' => \App\Http\Middleware\DigitalJudge\CanJudge::class,
         'isHeadJudge' => \App\Http\Middleware\DigitalJudge\HeadJudgeOnly::class,
+        'whatif' => \App\Http\Middleware\WhatIfMiddleware::class,
     ];
 }
