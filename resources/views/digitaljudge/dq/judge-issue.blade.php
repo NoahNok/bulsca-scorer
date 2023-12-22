@@ -405,4 +405,4 @@
 
 
     </div>
-@endsection
+    {{ csrf_token() }}@endsection

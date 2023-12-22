@@ -209,7 +209,25 @@ class DJDQController extends Controller
 
     public function getSubmission(DigitalJudgeJudgeDQSubmission $submission)
     {
-
         return response()->json(['success' => true, 'result' => $submission->only('id', 'event_type', 'event_id', 'heat_lane', 'turn', 'length', 'code', 'details', 'name', 'position', 'seconder_name', 'seconder_position', 'resolved')]);
+    }
+
+    public function resolveSubmission(DigitalJudgeJudgeDQSubmission $submission, Request $request)
+    {
+
+        $result = $request->input('resolved') == "true" ? true : false;
+
+
+
+
+
+        $submission->resolved = $result;
+        $submission->save();
+
+        $activeSubmissions = Session::get('activeSubmissions', []);
+        $activeSubmissions = array_diff($activeSubmissions, [$submission->id]);
+        Session::put('activeSubmissions', $activeSubmissions);
+
+        return response()->json(['success' => true]);
     }
 }

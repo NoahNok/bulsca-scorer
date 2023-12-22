@@ -90,6 +90,7 @@ function r()
             Route::get('', [DJDQController::class, 'index'])->name('dj.dq.index');
             Route::get('/current/{event}/{team}/{type}', [DJDQController::class, 'current'])->name('dj.dq.current');
             Route::post('', [DJDQController::class, 'submit'])->name('dj.dq.index.post');
+            Route::post('/resolve/{submission}', [DJDQController::class, 'resolveSubmission'])->name('dj.dq.submission.resolve');
         });
 
         Route::prefix('confirm')->group(function () {

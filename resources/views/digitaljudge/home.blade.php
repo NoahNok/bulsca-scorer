@@ -42,6 +42,11 @@
                             <p class=" link">Start</p>
                         </a>
                     @endforeach
+                    <a href="{{ route('dj.dq.issue') }}?event=se:{{ $serc->id }}"
+                        class="flex justify-between items-center">
+                        <p>Issue DQ/Penalty</p>
+                        <p class=" link">Start</p>
+                    </a>
                 </div>
             </div>
         @endforeach
@@ -82,6 +87,12 @@
                             <p>Order of Finish</p>
                             <p class=" link">Start</p>
                         </a>
+                        <a href="{{ route('dj.dq.issue') }}?event=sp:{{ $speed->id }}"
+                            class="flex justify-between items-center">
+                            <p>Issue DQ/Penalty</p>
+                            <p class=" link">Start</p>
+                        </a>
+
 
 
                     </div>
