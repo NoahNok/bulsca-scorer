@@ -212,6 +212,17 @@
                                 this.startWaitingForResult(frm, true);
                             }).catch
                     }
+            
+                    if (frm == 0) {
+                        let url = new URLSearchParams(window.location.search);
+                        if (url.has('event')) {
+                            this.submission.event = url.get('event');
+            
+                        }
+                    }
+            
+            
+            
                 }
             }">
 
