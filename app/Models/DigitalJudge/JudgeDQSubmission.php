@@ -20,7 +20,7 @@ class JudgeDQSubmission extends Model
         return $this->morphTo(__FUNCTION__, 'event_type', 'event_id');
     }
 
-    public function getHeats()
+    public function getHeat()
     {
         return $this->hasOne(Heat::class, 'id', 'heat_lane');
     }

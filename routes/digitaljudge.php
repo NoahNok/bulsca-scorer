@@ -90,6 +90,8 @@ function r()
             Route::get('', [DJDQController::class, 'index'])->name('dj.dq.index');
             Route::get('/current/{event}/{team}/{type}', [DJDQController::class, 'current'])->name('dj.dq.current');
             Route::post('', [DJDQController::class, 'submit'])->name('dj.dq.index.post');
+            Route::Get('/resolve', [DJDQController::class, 'resolve'])->name('dj.dq.resolve');
+            Route::Get('/resolve/list', [DJDQController::class, 'getNeedingResolving'])->name('dj.dq.resolve.list');
             Route::post('/resolve/{submission}', [DJDQController::class, 'resolveSubmission'])->name('dj.dq.submission.resolve');
         });
 

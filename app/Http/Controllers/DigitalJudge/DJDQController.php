@@ -212,6 +212,11 @@ class DJDQController extends Controller
         return response()->json(['success' => true, 'result' => $submission->only('id', 'event_type', 'event_id', 'heat_lane', 'turn', 'length', 'code', 'details', 'name', 'position', 'seconder_name', 'seconder_position', 'resolved')]);
     }
 
+    public function resolve()
+    {
+        return view('digitaljudge.dq.head-resolve', ['comp' => DigitalJudge::getClientCompetition()]);
+    }
+
     public function resolveSubmission(DigitalJudgeJudgeDQSubmission $submission, Request $request)
     {
 
@@ -229,5 +234,19 @@ class DJDQController extends Controller
         Session::put('activeSubmissions', $activeSubmissions);
 
         return response()->json(['success' => true]);
+    }
+
+    public function getNeedingResolving()
+    {
+        $submissions = DigitalJudgeJudgeDQSubmission::where('competition', DigitalJudge::getClientCompetition()->id)->whereNull('resolved')->get();
+
+        foreach ($submissions as $submission) {
+            $submission->eventName = $submission->getEvent->getName();
+            $submission->teamName = $submission->getHeat->getTeam->getFullname();
+            $submission->heat = $submission->getHeat->heat;
+            $submission->lane = $submission->getHeat->lane;
+        }
+
+        return response()->json(['success' => true, 'result' => $submissions]);
     }
 }
