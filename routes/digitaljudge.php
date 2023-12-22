@@ -71,6 +71,11 @@ function r()
 
     Route::prefix('dq')->group(function () {
         Route::get('issue', [DJDQController::class, 'issue'])->name('dj.dq.issue');
+        Route::get('resolveCode/{code}', [DJDQController::class, 'resolveCode'])->name('dj.dq.resolveCode');
+
+        Route::post('submission', [DJDQController::class, 'submission'])->name('dj.dq.submission');
+        Route::get('submission/{submission}/info', [DJDQController::class, 'getSubmission'])->name('dj.dq.submission.info');
+        Route::get('submission/{submission}/status', [DJDQController::class, 'submissionStatus'])->name('dj.dq.submission.status');
     });
 
     Route::middleware('isHeadJudge')->group(function () {

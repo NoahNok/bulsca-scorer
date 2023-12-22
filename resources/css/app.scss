@@ -94,6 +94,13 @@ h5 {
 
    > input {
     @apply  pt-[0.621rem] pb-[0.621rem];
+    &:disabled {
+      @apply opacity-50 cursor-not-allowed;
+    }
+   }
+
+   > select:disabled {
+     @apply opacity-50 cursor-not-allowed;
    }
 
    > input[type=time] {
@@ -109,7 +116,7 @@ h5 {
   }
 
   &.is-invalid {
-    > input {
+    > input, select {
       @apply border-red-500;
     }
   }
@@ -122,6 +129,10 @@ h5 {
     }
 
    }
+
+
+
+
  }
 
  .btn {

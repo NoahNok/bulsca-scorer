@@ -5,14 +5,20 @@ namespace App\Http\Controllers\DigitalJudge;
 use App\DigitalJudge\DigitalJudge;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DigitalJudge\DQRequest;
+use App\Http\Requests\DigitalJudge\JudgeDQSubmission;
+use App\Models\CompetitionSpeedEvent;
 use App\Models\CompetitionTeam;
+use App\Models\DigitalJudge\JudgeDQSubmission as DigitalJudgeJudgeDQSubmission;
 use App\Models\DigitalJudge\JudgeLog;
+use App\Models\DQCode;
 use App\Models\Penalty;
+use App\Models\PenaltyCode;
 use App\Models\SERC;
 use App\Models\SERCDisqualification;
 use App\Models\SERCPenalty;
 use App\Models\SpeedResult;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class DJDQController extends Controller
 {
@@ -143,5 +149,67 @@ class DJDQController extends Controller
     public function issue()
     {
         return view('digitaljudge.dq.judge-issue', ['comp' => DigitalJudge::getClientCompetition()]);
+    }
+
+    public function resolveCode(string $code)
+    {
+
+
+
+        if (str_starts_with($code, 'p')) {
+            $code = substr($code, 1);
+
+            return response()->json(['description' => PenaltyCode::find($code)->description ?? "Penalty code not found"]);
+        } else {
+            $code = substr($code, 2);
+
+            return response()->json(['description' => DQCode::find($code)->description ?? "DQ code not found"]);
+        }
+    }
+
+    public function submission(JudgeDQSubmission $request)
+    {
+
+        $validated = $request->validated();
+
+        $event = null;
+        $eventId = substr($validated['event'], 3);
+        if (str_starts_with($validated['event'], 'sp')) {
+            $event = CompetitionSpeedEvent::find($eventId);
+        } else {
+            $event = SERC::find($eventId);
+        }
+
+        $submission = new DigitalJudgeJudgeDQSubmission();
+        $submission->competition = DigitalJudge::getClientCompetition()->id;
+        $submission->getEvent()->associate($event);
+        $submission->heat_lane = $validated['heat_lane'];
+        $submission->turn = $validated['turn'];
+        $submission->length = $validated['length'];
+        $submission->code = $validated['code'];
+        $submission->details = $validated['details'];
+        $submission->name = $validated['name'];
+        $submission->position = $validated['position'];
+        $submission->seconder_name = $validated['seconder_name'];
+        $submission->seconder_position = $validated['seconder_position'];
+        $submission->save();
+
+
+        $activeSubmissions = Session::get('activeSubmissions', []);
+        array_push($activeSubmissions, $submission->id);
+        Session::put('activeSubmissions', $activeSubmissions);
+
+        return response()->json(['success' => true, 'result' => $submission->id]);
+    }
+
+    public function submissionStatus(DigitalJudgeJudgeDQSubmission $submission)
+    {
+        return response()->json(['success' => true, 'result' => $submission->resolved]);
+    }
+
+    public function getSubmission(DigitalJudgeJudgeDQSubmission $submission)
+    {
+
+        return response()->json(['success' => true, 'result' => $submission->only('id', 'event_type', 'event_id', 'heat_lane', 'turn', 'length', 'code', 'details', 'name', 'position', 'seconder_name', 'seconder_position', 'resolved')]);
     }
 }
