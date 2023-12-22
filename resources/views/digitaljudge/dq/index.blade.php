@@ -65,6 +65,10 @@
         },
     }">
 
+        <div class="flex mb-3"><a href="{{ route('dj.dq.resolve') }}" class="btn btn-purple btn-thin w-full">Live DQ/Penalty
+                Review</a>
+        </div>
+
         <h4>Select an Event</h4>
         <div class="form-input ">
             <label for="" class="">Event</label>

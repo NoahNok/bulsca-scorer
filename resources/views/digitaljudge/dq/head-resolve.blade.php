@@ -43,7 +43,7 @@
     
             setInterval(() => {
                 this.fetchData();
-            }, 1000);
+            }, 3000);
     
     
     
@@ -82,6 +82,8 @@
                 },
             
                 makeDecision(resolved) {
+            
+                    if (this.complete) return;
             
                     this.complete = true;
                     this.resolved = resolved;
@@ -176,8 +178,7 @@
                 <div class="grid-2">
 
 
-                    <div @click="makeDecision(true)"
-                        class="flex flex-col items-center justify-center p-3 bg-green-500 rounded-md shadow-md font-semibold text-white"
+                    <button @click="makeDecision(true)" class="flex flex-col items-center justify-center btn btn-thicker "
                         :class="complete && resolved == true ? 'absolute top-0 left-0 w-full h-full' : ''">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-6 h-6">
@@ -185,11 +186,11 @@
                                 d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                         </svg>
 
-                        Approve
-                    </div>
+                        <span x-text="complete ? 'Approved' : 'Approve'"></span>
+                    </button>
 
-                    <div @click="makeDecision(false)"
-                        class="flex flex-col items-center justify-center p-3 bg-red-500 rounded-md shadow-md font-semibold text-white"
+                    <button @click="makeDecision(false)"
+                        class="flex flex-col items-center justify-center  btn btn-thicker btn-danger"
                         :class="complete && resolved == false ? 'absolute top-0 left-0 w-full h-full' : ''">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-6 h-6">
@@ -198,8 +199,8 @@
                         </svg>
 
 
-                        Reject
-                    </div>
+                        <span x-text="complete ? 'Rejected' : 'Reject'"></span>
+                    </button>
 
 
                 </div>

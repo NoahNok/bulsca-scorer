@@ -161,6 +161,10 @@ h5 {
     &.btn-small {
       @apply text-base py-1 px-2 rounded-[4px];
     }
+
+    &.btn-thicker {
+      @apply p-3;
+    }
  }
 
  .card {
