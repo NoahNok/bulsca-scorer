@@ -106,6 +106,7 @@
                                 el.disabled = false;
                                 this.showContent = true
                             })
+                            this.status = 'FORM';
                         });
             
                     //this.status = Math.random() > 0.5 ? 'APPROVED' : 'REJECTED';
@@ -266,8 +267,8 @@
                     </div>
 
                     <div class="form-input ">
-                        <label for="" class="">Heat & Lane</label>
-                        <select required name="heat-lane" x-model="submission.heat_lane" x-ref="event" class="input "
+                        <label for="" class="">Heat & Lane/Team</label>
+                        <select name="heat-lane" required x-model="submission.heat_lane" x-ref="event" class="input "
                             style="padding-top: 0.65em; padding-bottom: 0.65em;">
                             <option value="">Please select a heat and lane</option>
 
@@ -284,17 +285,19 @@
 
                         </select>
 
+
+
                     </div>
 
                     <div class="grid-2">
                         <div class="form-input ">
                             <label for="" class="">Turn #</label>
-                            <input type="number" required name="turn" x-model="submission.turn">
+                            <input type="number" name="turn" x-model="submission.turn">
 
                         </div>
                         <div class="form-input ">
                             <label for="" class="">Length #</label>
-                            <input type="number" required name="length" x-model="submission.length">
+                            <input type="number" name="length" x-model="submission.length">
 
                         </div>
 
@@ -339,13 +342,12 @@
                         </div>
                         <div class="form-input -mt-4" style="margin-bottom: 0px !important">
                             <label for="">Seconder Name</label>
-                            <input type="text" name="seconderName" required x-model="submission.seconder.name"
-                                placeholder="Name">
+                            <input type="text" name="seconderName" x-model="submission.seconder.name" placeholder="Name">
 
                         </div>
                         <div class="form-input -mt-4 " style="margin-bottom: 0px !important">
                             <label for="">Seconder Position</label>
-                            <input type="text" name="seconderPosition" required x-model="submission.seconder.position"
+                            <input type="text" name="seconderPosition" x-model="submission.seconder.position"
                                 placeholder="Position">
 
                         </div>

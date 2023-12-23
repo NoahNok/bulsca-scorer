@@ -5,10 +5,10 @@ namespace App\Http\Controllers\DigitalJudge;
 use App\DigitalJudge\DigitalJudge;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DigitalJudge\DQRequest;
-use App\Http\Requests\DigitalJudge\JudgeDQSubmission;
+use App\Http\Requests\DigitalJudge\JudgeDQSubmissionRequest;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\CompetitionTeam;
-use App\Models\DigitalJudge\JudgeDQSubmission as DigitalJudgeJudgeDQSubmission;
+use App\Models\DigitalJudge\JudgeDQSubmission;
 use App\Models\DigitalJudge\JudgeLog;
 use App\Models\DQCode;
 use App\Models\Penalty;
@@ -167,7 +167,7 @@ class DJDQController extends Controller
         }
     }
 
-    public function submission(JudgeDQSubmission $request)
+    public function submission(JudgeDQSubmissionRequest $request)
     {
 
         $validated = $request->validated();
@@ -180,7 +180,7 @@ class DJDQController extends Controller
             $event = SERC::find($eventId);
         }
 
-        $submission = new DigitalJudgeJudgeDQSubmission();
+        $submission = new JudgeDQSubmission();
         $submission->competition = DigitalJudge::getClientCompetition()->id;
         $submission->getEvent()->associate($event);
         $submission->heat_lane = $validated['heat_lane'];
@@ -202,12 +202,12 @@ class DJDQController extends Controller
         return response()->json(['success' => true, 'result' => $submission->id]);
     }
 
-    public function submissionStatus(DigitalJudgeJudgeDQSubmission $submission)
+    public function submissionStatus(JudgeDQSubmission $submission)
     {
         return response()->json(['success' => true, 'result' => $submission->resolved]);
     }
 
-    public function getSubmission(DigitalJudgeJudgeDQSubmission $submission)
+    public function getSubmission(JudgeDQSubmission $submission)
     {
         return response()->json(['success' => true, 'result' => $submission->only('id', 'event_type', 'event_id', 'heat_lane', 'turn', 'length', 'code', 'details', 'name', 'position', 'seconder_name', 'seconder_position', 'resolved')]);
     }
@@ -217,7 +217,7 @@ class DJDQController extends Controller
         return view('digitaljudge.dq.head-resolve', ['comp' => DigitalJudge::getClientCompetition()]);
     }
 
-    public function resolveSubmission(DigitalJudgeJudgeDQSubmission $submission, Request $request)
+    public function resolveSubmission(JudgeDQSubmission $submission, Request $request)
     {
 
         $result = $request->input('resolved') == "true" ? true : false;
@@ -238,13 +238,13 @@ class DJDQController extends Controller
 
     public function getNeedingResolving()
     {
-        $submissions = DigitalJudgeJudgeDQSubmission::where('competition', DigitalJudge::getClientCompetition()->id)->whereNull('resolved')->get();
+        $submissions = JudgeDQSubmission::where('competition', DigitalJudge::getClientCompetition()->id)->whereNull('resolved')->get();
 
         foreach ($submissions as $submission) {
             $submission->eventName = $submission->getEvent->getName();
-            $submission->teamName = $submission->getHeat->getTeam->getFullname();
-            $submission->heat = $submission->getHeat->heat;
-            $submission->lane = $submission->getHeat->lane;
+            $submission->teamName = $submission->getHeat?->getTeam->getFullname() ?? null;
+            $submission->heat = $submission->getHeat->heat ?? null;
+            $submission->lane = $submission->getHeat->lane ?? null;
         }
 
         return response()->json(['success' => true, 'result' => $submissions]);

@@ -30,9 +30,11 @@
                     d.seconder = { name: d.seconder_name, position: d.seconder_position };
                 })
     
-                this.found = []
+                // Lets find the difference and only get new entries
+                let newEntries = data.result.filter(d => !this.found.find(f => f.id == d.id));
     
-                this.found = data.result;
+                // This still contains old entires that are complete. They are just hidden - this fixes the buggy behaviour
+                this.found.push.apply(this.found, newEntries);
             })
         },
     
@@ -50,9 +52,9 @@
         }
     }">
 
-        <template x-for="sub in found">
+        <template x-for="sub in found" x-key="sub.id">
 
-            <div class="mb-20 relative" x-ref="form" x-data="{
+            <div class="mb-20 relative" x-show="!complete" x-collapse x-ref="form" x-data="{
             
                 submission: sub,
                 complete: false,
@@ -122,20 +124,21 @@
 
                 </div>
 
-                <div x-show="showContent" x-collapse>
+                <div>
 
 
                     <div class="flex justify-between">
                         <p><strong>Event</strong>: <span x-text="submission.eventName"></span></p>
-                        <p><strong>Heat</strong>: <span x-text="submission.heat"></span>
-                            <strong>Lane</strong>: <span x-text="submission.lane"></span>
+                        <p><strong>Heat</strong>: <span x-text="submission.heat ?? '-'"></span>
+                            <strong>Lane</strong>: <span x-text="submission.lane ?? '-'"></span>
                         </p>
                     </div>
 
                     <div class="flex justify-between">
                         <p><strong>Team</strong>: <span x-text="submission.teamName"></span></p>
-                        <p><strong>Turn</strong>: <span x-text="submission.turn"></span> <strong>Length</strong>: <span
-                                x-text="submission.length"></span></p>
+                        <p><strong>Turn</strong>: <span x-text="submission.turn ?? '-'"></span> <strong>Length</strong>:
+                            <span x-text="submission.length ?? '-'"></span>
+                        </p>
                     </div>
 
 
@@ -146,8 +149,8 @@
                         <p><strong>Reporter</strong>: <span x-text="submission.name"></span> (<span
                                 x-text="submission.position"></span>)
                         </p>
-                        <p><strong>Seconder</strong>: <span x-text="submission.seconder.name"></span> (<span
-                                x-text="submission.seconder.position"></span>)</p>
+                        <p><strong>Seconder</strong>: <span x-text="submission.seconder.name ?? '-'"></span> (<span
+                                x-text="submission.seconder.position ?? '-'"></span>)</p>
                     </div>
 
 

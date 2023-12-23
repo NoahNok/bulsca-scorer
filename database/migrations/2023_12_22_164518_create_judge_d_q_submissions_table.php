@@ -17,15 +17,15 @@ return new class extends Migration
             $table->id();
             $table->foreignId('competition')->constrained('competitions');
             $table->morphs('event');
-            $table->foreignId('heat_lane')->constrained('heats');
-            $table->integer('turn');
-            $table->integer('length');
+            $table->foreignId('heat_lane')->nullable()->constrained('heats');
+            $table->integer('turn')->nullable();
+            $table->integer('length')->nullable();
             $table->char('code', 5);
             $table->text('details')->nullable();
             $table->string('name');
             $table->string('position');
-            $table->string('seconder_name');
-            $table->string('seconder_position');
+            $table->string('seconder_name')->nullable();
+            $table->string('seconder_position')->nullable();
             $table->boolean('resolved')->nullable()->default(null); // null - open, true - accepted, false - rejected
             $table->timestamps();
         });
