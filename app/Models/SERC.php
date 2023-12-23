@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-use App\Models\DigitalJudge\JudgeNote;
+use App\Models\Interfaces\IPenalisable;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class SERC extends Model
+class SERC extends Model implements IPenalisable
 {
     use HasFactory, Cloneable;
 
@@ -192,5 +192,24 @@ class SERC extends Model
 
 
         return ['judges' => $judges, 'teams' => $teams, 'data' => $data];
+    }
+
+
+    public function addTeamPenalty($teamId, $code)
+    {
+        $penalty = SERCPenalty::firstOrNew(['team' => $teamId, 'serc' => $this->id]);
+
+        $codes = explode(",", $penalty->codes);
+        $codes[] = $code;
+        $penalty->codes = implode(",", $codes);
+
+        $penalty->save();
+    }
+
+    public function addTeamDQ($teamId, $code)
+    {
+        $dq = SERCDisqualification::firstOrNew(['team' => $teamId, 'serc' => $this->id]);
+        $dq->code = $code;
+        $dq->save();
     }
 }

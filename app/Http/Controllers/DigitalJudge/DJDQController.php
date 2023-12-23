@@ -19,6 +19,7 @@ use App\Models\SERCPenalty;
 use App\Models\SpeedResult;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 
 class DJDQController extends Controller
 {
@@ -221,13 +222,23 @@ class DJDQController extends Controller
     {
 
         $result = $request->input('resolved') == "true" ? true : false;
-
-
-
-
-
         $submission->resolved = $result;
         $submission->save();
+
+        // If true actually apply the DQ/Penalty to the team
+        if ($result) {
+            $event = $submission->getEvent;
+            $teamId = $submission->getHeat->team;
+            $code = Str::upper($submission->code);
+
+            dump($code);
+
+            if (str_starts_with($code, 'P')) {
+                $event->addTeamPenalty($teamId, $code);
+            } else {
+                $event->addTeamDQ($teamId, $code);
+            }
+        }
 
         $activeSubmissions = Session::get('activeSubmissions', []);
         $activeSubmissions = array_diff($activeSubmissions, [$submission->id]);

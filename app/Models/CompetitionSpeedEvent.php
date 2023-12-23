@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Interfaces\IPenalisable;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
-class CompetitionSpeedEvent extends Model
+class CompetitionSpeedEvent extends Model implements IPenalisable
 {
     use HasFactory, Cloneable;
 
@@ -95,5 +96,21 @@ class CompetitionSpeedEvent extends Model
         }
 
         return $data;
+    }
+
+    public function addTeamPenalty($teamId, $code)
+    {
+        $result = SpeedResult::where('event', $this->id)->where('competition_team', $teamId)->first();
+        $penalty = new Penalty();
+        $penalty->speed_result = $result->id;
+        $penalty->code = $code;
+        $penalty->save();
+    }
+
+    public function addTeamDQ($teamId, $code)
+    {
+        $result = SpeedResult::where('event', $this->id)->where('competition_team', $teamId)->first();
+        $result->disqualification = $code;
+        $result->save();
     }
 }
