@@ -38,6 +38,16 @@
             })
         },
     
+        showLoader() {
+            console.log(this.found.length)
+            let ret = true
+            this.found.forEach(f => {
+                if (!f.complete) { ret = ret && false }
+            })
+            return ret;
+        },
+    
+    
         init() {
     
     
@@ -52,11 +62,11 @@
         }
     }">
 
-        <template x-for="sub in found" x-key="sub.id">
+        <template x-for="submission in found" x-key="submission.id">
 
             <div class="mb-20 relative" x-show="!complete" x-collapse x-ref="form" x-data="{
             
-                submission: sub,
+            
                 complete: false,
                 showContent: true,
                 resolved: null,
@@ -97,11 +107,12 @@
                     fd.append('_token', '{{ csrf_token() }}');
             
             
-                    fetch('{{ route('dj.dq.submission.resolve', '') }}/' + this.sub.id, { method: 'POST', body: fd })
+                    fetch('{{ route('dj.dq.submission.resolve', '') }}/' + this.submission.id, { method: 'POST', body: fd })
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
                                 this.complete = true;
+                                this.submission.complete = true;
                             }
                         })
             
@@ -219,7 +230,7 @@
             </div>
         </template>
 
-        <div x-show="found.length == 0" x-transition>
+        <div x-show="showLoader()" x-transition>
             <x-loader />
             <p class="text-sm text-center">Waiting for submissions...</p>
         </div>

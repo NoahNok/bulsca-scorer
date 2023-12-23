@@ -23,209 +23,211 @@
 
         <template x-for="(frm,ind) in total">
 
-            <form method="POST" @submit="handleFormSubmit" class="mb-20" x-ref="form" x-data="{
-            
-                submission: {
-                    event: '',
-                    heat_lane: '',
-                    turn: '',
-                    length: '',
-                    code: '',
-                    details: '',
-                    name: '',
-                    position: '',
-                    seconder: { name: '', position: '' }
-                },
-                status: 'FORM',
-                showContent: true,
-                code: {
-                    description: 'Please enter a DQ/Penalty code above',
-                    cache: {}
-                },
-                resolveCode(code) {
-                    code = code.toLowerCase();
-                    if ((code.length < 3 && code[0] !== 'p') || (code.length < 2 && code[0] == 'p')) { this.code.description = 'Please enter a DQ/Penalty code above'; return; }
-                    if (this.code.cache[code]) {
-                        this.code.description = this.code.cache[code];
-                        return;
-                    }
-                    fetch('{{ route('dj.dq.resolveCode', '') }}/' + code)
-                        .then(response => response.json())
-                        .then(data => {
-            
-            
-            
-                            this.code.description = data.description;
-            
-                            this.code.cache[code] = data.description;
-                        })
-                },
-            
-                handleFormSubmit(event) {
-                    event.preventDefault();
-                    this.status = 'WAITING';
-                    this.$refs.form.querySelectorAll('input, select, textarea').forEach((el) => {
-                        el.disabled = true
-                    })
-            
-                    this.showContent = false;
-            
-                    let fd = new FormData();
-            
-                    for (var key in this.submission) {
-            
-                        if (key == 'seconder') {
-                            for (var subkey in this.submission.seconder) {
-                                fd.append('seconder_' + subkey, this.submission.seconder[subkey]);
-                            }
-                            continue;
+            <form method="POST" @submit="handleFormSubmit" class="mb-20" x-show="!hideForm" x-collapse x-ref="form"
+                x-data="{
+                
+                    submission: {
+                        event: '',
+                        heat_lane: '',
+                        turn: '',
+                        length: '',
+                        code: '',
+                        details: '',
+                        name: '',
+                        position: '',
+                        seconder: { name: '', position: '' }
+                    },
+                    status: 'FORM',
+                    showContent: true,
+                    hideForm: false,
+                    code: {
+                        description: 'Please enter a DQ/Penalty code above',
+                        cache: {}
+                    },
+                    resolveCode(code) {
+                        code = code.toLowerCase();
+                        if ((code.length < 3 && code[0] !== 'p') || (code.length < 2 && code[0] == 'p')) { this.code.description = 'Please enter a DQ/Penalty code above'; return; }
+                        if (this.code.cache[code]) {
+                            this.code.description = this.code.cache[code];
+                            return;
                         }
-            
-                        fd.append(key, this.submission[key]);
-            
-                    }
-            
-                    fetch('{{ route('dj.dq.submission') }}', {
-                            method: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            body: fd,
-            
-                        }).then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                this.startWaitingForResult(data.result);
-            
-                            }
-            
-            
-                        }).catch((error) => {
-                            showAlert('Something went wrong. Please try again.')
-                            this.$refs.form.querySelectorAll('input, select, textarea ').forEach((el) => {
-                                el.disabled = false;
-                                this.showContent = true
-                            })
-                            this.status = 'FORM';
-                        });
-            
-                    //this.status = Math.random() > 0.5 ? 'APPROVED' : 'REJECTED';
-                },
-            
-                startWaitingForResult(id, updateNow = false) {
-            
-                    let doo = () => {
-                        fetch('{{ route('dj.dq.submission.status', 'X') }}'.replace('X', id))
+                        fetch('{{ route('dj.dq.resolveCode', '') }}/' + code)
                             .then(response => response.json())
                             .then(data => {
-                                if (data.result != null) {
-            
-                                    clearInterval(interval);
-            
-                                    this.status = data.result == true ? 'APPROVED' : 'REJECTED';
-            
-                                    if (!data.result) {
-                                        this.$refs.form.querySelectorAll('input, select, textarea ').forEach((el) => {
-                                            el.disabled = false;
-            
-                                        })
-                                        this.showContent = true
-                                    }
-            
-                                }
-            
-            
+                
+                
+                
+                                this.code.description = data.description;
+                
+                                this.code.cache[code] = data.description;
                             })
-                    }
-            
-                    let interval = setInterval(doo,
-                        3000)
-                    if (updateNow) {
-                        doo();
-                    }
-            
-                },
-            
-                init() {
-                    this.$refs.form.querySelectorAll('input, select, textarea').forEach((el) => {
-                        el.addEventListener('invalid', () => {
-                            el.parentNode.classList.add('is-invalid');
+                    },
+                
+                    handleFormSubmit(event) {
+                        event.preventDefault();
+                        this.status = 'WAITING';
+                        this.$refs.form.querySelectorAll('input, select, textarea').forEach((el) => {
+                            el.disabled = true
                         })
-            
-                        el.addEventListener('input', () => {
-            
-                            if (el.checkValidity()) {
-                                el.parentNode.classList.remove('is-invalid');
-                            } else {
-                                el.parentNode.classList.add('is-invalid');
+                
+                        this.showContent = false;
+                
+                        let fd = new FormData();
+                
+                        for (var key in this.submission) {
+                
+                            if (key == 'seconder') {
+                                for (var subkey in this.submission.seconder) {
+                                    fd.append('seconder_' + subkey, this.submission.seconder[subkey]);
+                                }
+                                continue;
                             }
-            
-                        })
-            
-                        if (el.type == 'select-one') {
-                            el.addEventListener('change', () => {
-                                if (el.value != '') {
+                
+                            fd.append(key, this.submission[key]);
+                
+                        }
+                
+                        fetch('{{ route('dj.dq.submission') }}', {
+                                method: 'POST',
+                                headers: {
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                },
+                                body: fd,
+                
+                            }).then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    this.startWaitingForResult(data.result);
+                
+                                }
+                
+                
+                            }).catch((error) => {
+                                showAlert('Something went wrong. Please try again.')
+                                this.$refs.form.querySelectorAll('input, select, textarea ').forEach((el) => {
+                                    el.disabled = false;
+                                    this.showContent = true
+                                })
+                                this.status = 'FORM';
+                            });
+                
+                        //this.status = Math.random() > 0.5 ? 'APPROVED' : 'REJECTED';
+                    },
+                
+                    startWaitingForResult(id, updateNow = false) {
+                
+                        let doo = () => {
+                            fetch('{{ route('dj.dq.submission.status', 'X') }}'.replace('X', id))
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.result != null) {
+                
+                                        clearInterval(interval);
+                
+                                        this.status = data.result == true ? 'APPROVED' : 'REJECTED';
+                
+                                        if (!data.result) {
+                                            this.$refs.form.querySelectorAll('input, select, textarea ').forEach((el) => {
+                                                el.disabled = false;
+                
+                                            })
+                                            this.showContent = true
+                                        }
+                
+                                    }
+                
+                
+                                })
+                        }
+                
+                        let interval = setInterval(doo,
+                            3000)
+                        if (updateNow) {
+                            doo();
+                        }
+                
+                    },
+                
+                    init() {
+                        this.$refs.form.querySelectorAll('input, select, textarea').forEach((el) => {
+                            el.addEventListener('invalid', () => {
+                                el.parentNode.classList.add('is-invalid');
+                            })
+                
+                            el.addEventListener('input', () => {
+                
+                                if (el.checkValidity()) {
                                     el.parentNode.classList.remove('is-invalid');
                                 } else {
                                     el.parentNode.classList.add('is-invalid');
                                 }
+                
                             })
-                        }
-            
-            
-            
-                    })
-            
-                    this.$refs.focus.focus();
-                    this.$refs.focus.scrollIntoView({ behavior: 'smooth' });
-            
-                    if (frm != 0) {
-                        this.status = 'WAITING'
-                        this.showContent = false
-            
-                        fetch('{{ route('dj.dq.submission.info', 'X') }}'.replace('X', frm))
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.result != null) {
-            
-            
-                                    let d = data.result;
-            
-                                    if (d.event_type.endsWith('SERC')) {
-                                        d.event = `se:${d.event_id}`;
+                
+                            if (el.type == 'select-one') {
+                                el.addEventListener('change', () => {
+                                    if (el.value != '') {
+                                        el.parentNode.classList.remove('is-invalid');
                                     } else {
-                                        d.event = `sp:${d.event_id}`;
+                                        el.parentNode.classList.add('is-invalid');
                                     }
-            
-                                    d.seconder = { name: d.seconder_name, position: d.seconder_position };
-            
-                                    this.submission = d;
-            
-                                    this.$refs.form.querySelectorAll('input, select, textarea ').forEach((el) => {
-                                        el.disabled = true;
-            
-                                    })
-            
-                                }
-            
-            
-            
-                                this.startWaitingForResult(frm, true);
-                            }).catch
-                    }
-            
-                    if (frm == 0) {
-                        let url = new URLSearchParams(window.location.search);
-                        if (url.has('event')) {
-                            this.submission.event = url.get('event');
-            
+                                })
+                            }
+                
+                
+                
+                        })
+                
+                        this.$refs.focus.focus();
+                        this.$refs.focus.scrollIntoView({ behavior: 'smooth' });
+                
+                        if (frm != 0) {
+                            this.status = 'WAITING'
+                            this.showContent = false
+                
+                            fetch('{{ route('dj.dq.submission.info', 'X') }}'.replace('X', frm))
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.result != null) {
+                
+                
+                                        let d = data.result;
+                
+                                        if (d.event_type.endsWith('SERC')) {
+                                            d.event = `se:${d.event_id}`;
+                                        } else {
+                                            d.event = `sp:${d.event_id}`;
+                                        }
+                
+                                        d.seconder = { name: d.seconder_name, position: d.seconder_position };
+                
+                                        this.submission = d;
+                
+                                        this.$refs.form.querySelectorAll('input, select, textarea ').forEach((el) => {
+                                            el.disabled = true;
+                
+                                        })
+                
+                                    }
+                
+                
+                
+                                    this.startWaitingForResult(frm, true);
+                                }).catch
                         }
+                
+                        if (frm == 0) {
+                            let url = new URLSearchParams(window.location.search);
+                            if (url.has('event')) {
+                                this.submission.event = url.get('event');
+                
+                            }
+                        }
+                
+                
+                
                     }
-            
-            
-            
-                }
-            }">
+                }">
 
                 <div @click="showContent = !showContent" class="flex justify-between items-center">
                     <h2>Submission <span x-text="ind+1"></span></h2>
@@ -386,6 +388,9 @@
 
                     <button x-show="status=='FORM'" class="btn w-full">Submit</button>
                     <button x-show="status=='REJECTED'" class="btn w-full mt-2">Re-submit</button>
+                    <button type="button" x-show="status=='REJECTED'" @click="hideForm = true"
+                        class="btn w-full btn-thin btn-danger mt-2">Or
+                        clear</button>
                 </div>
 
 
