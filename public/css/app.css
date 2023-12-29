@@ -1049,6 +1049,15 @@ video {
 .list-decimal {
   list-style-type: decimal;
 }
+.grid-flow-row {
+  grid-auto-flow: row;
+}
+.grid-flow-dense {
+  grid-auto-flow: dense;
+}
+.grid-flow-row-dense {
+  grid-auto-flow: row dense;
+}
 .grid-cols-5 {
   grid-template-columns: repeat(5, minmax(0, 1fr));
 }
@@ -1079,8 +1088,14 @@ video {
 .items-start {
   align-items: flex-start;
 }
+.items-end {
+  align-items: flex-end;
+}
 .items-center {
   align-items: center;
+}
+.items-baseline {
+  align-items: baseline;
 }
 .justify-end {
   justify-content: flex-end;
@@ -1386,6 +1401,14 @@ video {
   --tw-bg-opacity: 1;
   background-color: rgb(158 13 6 / var(--tw-bg-opacity));
 }
+.bg-violet-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(139 92 246 / var(--tw-bg-opacity));
+}
+.bg-slate-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(100 116 139 / var(--tw-bg-opacity));
+}
 .bg-opacity-50 {
   --tw-bg-opacity: 0.5;
 }
@@ -1394,6 +1417,9 @@ video {
 }
 .bg-gradient-to-bl {
   background-image: linear-gradient(to bottom left, var(--tw-gradient-stops));
+}
+.bg-gradient-to-tr {
+  background-image: linear-gradient(to top right, var(--tw-gradient-stops));
 }
 .from-bulsca {
   --tw-gradient-from: #070660;
@@ -1405,6 +1431,26 @@ video {
   --tw-gradient-to: rgb(126 34 206 / 0);
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
 }
+.from-violet-500 {
+  --tw-gradient-from: #8b5cf6;
+  --tw-gradient-to: rgb(139 92 246 / 0);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+.from-purple-500 {
+  --tw-gradient-from: #a855f7;
+  --tw-gradient-to: rgb(168 85 247 / 0);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+.from-purple-800 {
+  --tw-gradient-from: #6b21a8;
+  --tw-gradient-to: rgb(107 33 168 / 0);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+.from-bulsca_red {
+  --tw-gradient-from: #9e0d06;
+  --tw-gradient-to: rgb(158 13 6 / 0);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
 .via-purple-500 {
   --tw-gradient-to: rgb(168 85 247 / 0);
   --tw-gradient-stops: var(--tw-gradient-from), #a855f7, var(--tw-gradient-to);
@@ -1414,6 +1460,15 @@ video {
 }
 .to-bulsca {
   --tw-gradient-to: #070660;
+}
+.to-slate-500 {
+  --tw-gradient-to: #64748b;
+}
+.to-slate-400 {
+  --tw-gradient-to: #94a3b8;
+}
+.to-purple-800 {
+  --tw-gradient-to: #6b21a8;
 }
 .bg-clip-text {
   -webkit-background-clip: text;

@@ -16,7 +16,7 @@ function wir()
     Route::post('resume', [WhatIfController::class, 'resume'])->name('whatif.resume');
     Route::group(['middleware' => ['whatif']], function () {
 
-
+        Route::get('admin', [WhatIfController::class, 'adminIndex'])->name('whatif.admin');
 
 
         Route::prefix('editor')->group(function () {

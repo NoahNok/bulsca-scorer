@@ -445,4 +445,19 @@ class WhatIfController extends Controller
             Cache::forget('result_comp_' . $rs->competition . '_schema_' . $rs->id);
         }
     }
+
+    public function adminIndex()
+    {
+        if (!auth()->user()) {
+            return redirect()->route('whatif');
+        }
+
+        if (!auth()->user()->isAdmin()) {
+            return redirect()->route('whatif.editor');
+        }
+
+        return view('whatif.admin', [
+            'comps' => Competition::orderBy('created_at', 'DESC')->paginate(12)
+        ]);
+    }
 }
