@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\AbstractClasses\Loggable;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\SERC;
 
-class SERCResult extends Model
+class SERCResult extends Loggable
 {
     use HasFactory, Cloneable;
 
@@ -32,5 +33,35 @@ class SERCResult extends Model
     public function getSerc(): SERC
     {
         return SERC::find($this->getMarkingPoint->serc);
+    }
+
+    public function getTeam()
+    {
+        return $this->belongsTo(CompetitionTeam::class, 'team', 'id');
+    }
+
+    public function getJudgeLogTitle()
+    {
+        return "SERC: {judge} marked {team} for {event}";
+    }
+
+    public function getJudgeLogDescription()
+    {
+        return  $this->getMarkingPointName() . " (" . $this->getMarkingPoint->getJudge->name . "): " . round($this->result);
+    }
+
+    public function resolveJudgeLogTeam(): CompetitionTeam
+    {
+        return $this->getTeam;
+    }
+
+    public function resolveJudgeLogName()
+    {
+        return $this->getSerc()->getName();
+    }
+
+    public function resolveJudgeLogAssociation()
+    {
+        return $this->getMarkingPoint->getJudge;
     }
 }

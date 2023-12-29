@@ -25,4 +25,9 @@ class SERCMarkingPoint extends Model
             return SERCResult::where('marking_point', $mpId)->where('team', $team)->first()?->result ?: null;
         });
     }
+
+    public function getJudge()
+    {
+        return $this->belongsTo(SERCJudge::class, 'judge', 'id');
+    }
 }

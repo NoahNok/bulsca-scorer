@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\AbstractClasses\Loggable;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SpeedResult extends Model
+class SpeedResult extends Loggable
 {
     use HasFactory, Cloneable;
 
@@ -63,5 +64,30 @@ class SpeedResult extends Model
 
             return sprintf('%02d', $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT);
         }
+    }
+
+    public function getJudgeLogTitle()
+    {
+        return "Speed: {judge} marked {team} for {event}";
+    }
+
+    public function getJudgeLogDescription()
+    {
+        return "Result: " . $this->prettyTime($this->result) . " | Penalties: " . (strlen($this->getPenaltiesAsString()) > 0 ? $this->getPenaltiesAsString() : '-') . " | DQ: " . ($this->disqualification ?? '-');
+    }
+
+    public function resolveJudgeLogTeam(): CompetitionTeam
+    {
+        return $this->getTeam;
+    }
+
+    public function resolveJudgeLogName()
+    {
+        return $this->getEvent->getName();
+    }
+
+    public function resolveJudgeLogAssociation()
+    {
+        return $this->getEvent;
     }
 }

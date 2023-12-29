@@ -88,6 +88,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/digital-judge-settings', [DigitalJudgeController::class, 'settings'])->name('dj.settings');
             Route::post('/digital-judge-settings', [DigitalJudgeController::class, 'settingsPost'])->name('dj.settings.post');
             Route::get('/judge-log', [DigitalJudgeController::class, 'judgeLog'])->name('dj.judgeLog');
+            Route::get('/better-judge-log', [DigitalJudgeController::class, 'betterJudgeLog'])->name('dj.betterJudgeLog');
 
 
             // EVENTS
