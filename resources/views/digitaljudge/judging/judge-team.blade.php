@@ -72,7 +72,7 @@
 
                         @foreach ($mJudge->getMarkingPoints as $mp)
                             @php
-                                $mpValue = $head ? $mp->getScoreForTeam($team->id) : -1;
+                                $mpValue = $mp->getScoreForTeam($team->id) ?: -1;
                                 $mpIds[] = $mp->id;
                             @endphp
                             <div class="flex flex-col space-y-2 border-b pb-4" id="mpcontainer-{{ $mp->id }}">

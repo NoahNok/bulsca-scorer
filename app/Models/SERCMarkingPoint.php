@@ -22,7 +22,7 @@ class SERCMarkingPoint extends Model
         $mpId = $this->id;
 
         return Cache::rememberForever('mp.' . $mpId . '.team.' . $team, function () use ($team, $mpId) {
-            return SERCResult::where('marking_point', $mpId)->where('team', $team)->first()?->result;
+            return SERCResult::where('marking_point', $mpId)->where('team', $team)->first()?->result ?: null;
         });
     }
 }
