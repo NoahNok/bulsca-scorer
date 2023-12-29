@@ -96,26 +96,32 @@
 
 
                                 </td>
-                                <td class="py-4 px-6"
+                                <td class="py-4 px-6 hover:underline"
                                     title="{{ $result->disqualification ? App\Models\DQCode::message($result->disqualification) : '' }}">
                                     {{ $result->disqualification ?: '-' }}
                                 </td>
 
                                 @if ($event->hasPenalties())
-                                    <td class="py-3 px-6">
+                                    <td class="py-3 px-6 ">
 
                                         @php
                                             $blank = true;
                                         @endphp
                                         @if ($result->penalties != 0)
-                                            {{ App\Models\Penalty::where('speed_result', $result->id)->get('code')->implode('code', ', ') }}
-                                            @php
-                                                $blank = false;
-                                            @endphp
+                                            @foreach (App\Models\Penalty::where('speed_result', $result->id)->get('code') as $penalty)
+                                                <span class="hover:underline"
+                                                    title="{{ App\Models\PenaltyCode::message($penalty->code) }}">{{ $penalty->code . ($loop->last ? '' : ',') }}</span>
+                                                @php
+                                                    $blank = false;
+                                                @endphp
+                                            @endforeach
                                         @endif
                                         @if ($event->getName() == 'Swim & Tow' && $result->{'900_penalties'} != 0)
-                                            (P900
-                                            x{{ $result->{'900_penalties'} }})
+                                            <span class="hover:underline"
+                                                title="{{ App\Models\PenaltyCode::message('P900') }}">
+                                                (P900
+                                                x{{ $result->{'900_penalties'} }})
+                                            </span>
                                             @php
                                                 $blank = false;
                                             @endphp
