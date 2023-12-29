@@ -33,6 +33,10 @@
                         considered accurate or final!</p>
                 </div>
             @endif
+            <div>
+                <p class="text-center text-sm">Hovering over/clicking a Penalty/DQ will tell you more about it.
+                </p>
+            </div>
             <div class="flex justify-between items-center mx-3 lg:mx-0">
                 <h3>Results</h3>
                 <a class="link"
@@ -97,7 +101,8 @@
 
                                 </td>
                                 <td class="py-4 px-6 hover:underline"
-                                    title="{{ $result->disqualification ? App\Models\DQCode::message($result->disqualification) : '' }}">
+                                    title="{{ $result->disqualification ? App\Models\DQCode::message($result->disqualification) : '' }}"
+                                    onclick="alert(this.getAttribute('title'))">
                                     {{ $result->disqualification ?: '-' }}
                                 </td>
 
@@ -110,7 +115,8 @@
                                         @if ($result->penalties != 0)
                                             @foreach (App\Models\Penalty::where('speed_result', $result->id)->get('code') as $penalty)
                                                 <span class="hover:underline"
-                                                    title="{{ App\Models\PenaltyCode::message($penalty->code) }}">{{ $penalty->code . ($loop->last ? '' : ',') }}</span>
+                                                    title="{{ App\Models\PenaltyCode::message($penalty->code) }}"
+                                                    onclick="alert(this.getAttribute('title'))">{{ $penalty->code . ($loop->last ? '' : ',') }}</span>
                                                 @php
                                                     $blank = false;
                                                 @endphp
