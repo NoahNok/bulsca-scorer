@@ -1,7 +1,7 @@
 @extends('layout')
 
 @section('title')
-    {{ $comp->name }}
+    Log | {{ $comp->name }}
 @endsection
 
 @section('breadcrumbs')
@@ -17,12 +17,19 @@
             class="w-3 h-3">
             <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
         </svg>
-        <a href="">Judge Log</a>
+        <a href="{{ route('comps.view', $comp) }}">{{ $comp->name }}</a>
+    </div>
+    <div>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+            class="w-3 h-3">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+        </svg>
+        <a href="">Log</a>
     </div>
 @endsection
 
 @section('content')
-    <h2 class="mb-0">Judge Log</h2>
+    <h2 class="mb-0">Log</h2>
     <br>
 
 
@@ -49,9 +56,19 @@
 
                     <optgroup label="Speeds">
                         @foreach ($comp->getSpeedEvents as $speed)
-                            <option value="sp{{ $speed->id }}" @if (Request::input('filterEvent') == 'sp' . $speed->id) selected @endif>
+                            <option value="sp{{ $speed->id }}" @if (Request::input('filterType') == 'sp' . $speed->id) selected @endif>
                                 {{ $speed->getName() }}</option>
                         @endforeach
+                    </optgroup>
+
+                    <optgroup label="DQ/Penalties">
+                        <option value="dppending" @if (Request::input('filterType') == 'dppending') selected @endif>
+                            Pending</option>
+                        <option value="dpaccepted" @if (Request::input('filterType') == 'dpaccepted') selected @endif>
+                            Accepted</option>
+                        <option value="dprejected" @if (Request::input('filterType') == 'dprejected') selected @endif>
+                            Rejected</option>
+
                     </optgroup>
 
                 </select>
@@ -61,9 +78,9 @@
                 <label for="judge-filter">Judge Name</label>
                 <select name="filterJudge" id="judge-filter">
                     <option value="">All</option>
-                    @foreach (\App\Models\DigitalJudge\JudgeLog::where('competition', $comp->id)->select('judgeName')->distinct()->get() as $name)
-                        <option value="{{ $name->judgeName }}" @if (Request::input('filterJudge') == $name->judgeName) selected @endif>
-                            {{ $name->judgeName }}</option>
+                    @foreach (\App\Models\DigitalJudge\BetterJudgeLog::where('competition', $comp->id)->select('judge_name')->distinct()->get() as $name)
+                        <option value="{{ $name->judge_name }}" @if (Request::input('filterJudge') == $name->judge_name) selected @endif>
+                            {{ $name->judge_name }}</option>
                     @endforeach
                 </select>
             </div>

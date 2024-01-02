@@ -51,4 +51,9 @@ class JudgeDQSubmission extends Loggable
     {
         return $this->getEvent->getName();
     }
+
+    public function resolveJudgeLogAssociation()
+    {
+        return $this;
+    }
 }

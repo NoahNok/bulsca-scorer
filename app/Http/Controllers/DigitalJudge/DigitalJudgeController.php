@@ -8,6 +8,7 @@ use App\Http\Requests\DigitalJudge\LoginRequest;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\DigitalJudge\BetterJudgeLog;
+use App\Models\DigitalJudge\JudgeDQSubmission;
 use App\Models\DigitalJudge\JudgeLog;
 use App\Models\SERC;
 use App\Models\SERCJudge;
@@ -184,10 +185,21 @@ class DigitalJudgeController extends Controller
                 $log = $log->whereHasMorph('associated_with', SERCJudge::class, function ($query) use ($request) {
                     $query->where('id', substr($request->input('filterType'), 2));
                 });
-            } else {
+            } else if (str_starts_with($request->input('filterType'), 'sp')) {
                 $log = $log->whereHasMorph('associated_with', CompetitionSpeedEvent::class, function ($query) use ($request) {
                     $query->where('id', substr($request->input('filterType'), 2));
                 });
+            } else {
+
+                $rawType = substr($request->input('filterType'), 2);
+
+                if ($rawType == 'pending') {
+                    $log = $log->where('loggable_type', JudgeDQSubmission::class)->whereNot('loggable_data', 'LIKE', '%resolved%');
+                } else {
+                    $type = $rawType == 'accepted' ? true : false;
+
+                    $log = $log->where('loggable_type', JudgeDQSubmission::class)->whereJsonContains('loggable_data->resolved', $type);
+                }
             }
         }
 

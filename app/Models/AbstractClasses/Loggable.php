@@ -39,14 +39,13 @@ abstract class Loggable extends Model
     private function log($action)
     {
 
-        if (!str_starts_with(Route::currentRouteName(), 'dj.')) {
-            return;
-        }
+        $judgeName = "SCORER";
 
+        // GET CURRENT ROUTE NAME
+        $routeName = Route::currentRouteName();
 
-        // If this wasn't from a logged in judge skip it
-        if (DigitalJudge::getClientName() == 'UNKNOWN') {
-            return;
+        if (str_starts_with($routeName, 'dj.') && DigitalJudge::getClientName() != 'UNKNOWN') {
+            $judgeName = DigitalJudge::getClientName();
         }
 
 
@@ -57,7 +56,7 @@ abstract class Loggable extends Model
         $log->team = $this->resolveJudgeLogTeam()->id;
         $log->action = $action;
         $log->competition = DigitalJudge::getClientCompetition()->id;
-        $log->judge_name = DigitalJudge::getClientName();
+        $log->judge_name = $judgeName;
         $log->save();
     }
 }

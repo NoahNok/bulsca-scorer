@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\DigitalJudge\JudgeLog;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -139,5 +140,10 @@ class Competition extends Model
         }
 
         return $heatsFinished;
+    }
+
+    public function resolveJudgeLogVersionUrl()
+    {
+        return JudgeLog::where('competition', $this->id)->exists() ? route('dj.judgeLog', $this) : route('dj.betterJudgeLog', $this);
     }
 }
