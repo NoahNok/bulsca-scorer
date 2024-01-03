@@ -173,6 +173,10 @@ h5 {
     @apply hover:shadow-lg hover:border-gray-300 focus:shadow-lg active:shadow-lg focus:border-gray-300 active:border-gray-300;
   }
 
+  &.card-thin {
+    @apply px-4 py-2;
+  }
+
   &.card-row {
     @apply md:flex-row flex-col;
   }

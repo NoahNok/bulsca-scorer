@@ -25,6 +25,87 @@
         </div>
         <br>
 
+
+        {{-- <h3>Results</h3>
+        <small>Double click to see full results</small>
+        <div class="block overflow-y-hidden w-full h-[30%] relative" id="results-scroller">
+
+            <div class="w-full h-full p-2 flex space-x-3 ">
+
+                @foreach ($comp->getSERCs as $serc)
+                    <div class="grow flex flex-col items-center">
+                        <h4>{{ $serc->name }}</h4>
+                        <div class=" overflow-hidden">
+                            <div class=" flex flex-col space-y-1 " data-autoscroll>
+                                @foreach ($serc->getResults() as $result)
+                                    <div class="card card-thin card-row w-full ">
+                                        {{ $result->place }}.
+                                        {{ $result->team }}
+                                        <span class="ml-auto"> &nbsp; ({{ round($result->points) }})</span>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+
+                    </div>
+                @endforeach
+
+
+            </div>
+            <div class="w-full h-full p-2 flex space-x-3 ">
+
+                @foreach ($comp->getSpeedEvents as $speed)
+                    <div class="grow flex flex-col items-center">
+                        <h4>{{ $speed->getName() }}</h4>
+                        <div class=" overflow-hidden">
+                            <div class=" flex flex-col space-y-1 " data-autoscroll>
+                                @foreach ($speed->getResults() as $result)
+                                    <div class="card card-thin card-row w-full ">
+                                        {{ $result->place }}.
+                                        {{ $result->team }}
+                                        <span class="ml-auto"> &nbsp; ({{ round($result->points) }})</span>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+
+                    </div>
+                @endforeach
+
+
+            </div>
+
+
+            <div class="w-full h-full p-2 flex space-x-3 ">
+                @foreach ($comp->getResultSchemas as $schema)
+                    <div class="grow flex flex-col items-center">
+                        <h4>{{ $schema->name }}</h4>
+                        <div class=" overflow-hidden">
+                            <div class=" flex flex-col space-y-1 " data-autoscroll>
+                                @foreach ($schema->getDetailedPrint() as $result)
+                                    <div class="card card-thin card-row w-full ">
+                                        {{ $result->place }}.
+                                        {{ $result->team }}
+                                        <span class="ml-auto"> &nbsp; ({{ round($result->totalPoints) }})</span>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+
+                    </div>
+                @endforeach
+            </div>
+
+
+
+        </div>
+        <br> --}}
+
+
+
         <h3>SERC Order</h3>
         <div class="flex space-x-4 mb-2">
             <p>Finished:</p>
@@ -42,7 +123,7 @@
                 <p>No SERC Order available yet!</p>
             @else
                 @foreach ($comp->getCompetitionTeams as $team)
-                    <div class="card whitespace-nowrap transition-colors" data-team="{{ $team->id }}">
+                    <div class="card whitespace-nowrap transition-colors " data-team="{{ $team->id }}">
                         {{ $loop->index + 1 }}. {{ $team->getFullname() }}
                         <br>
                         <small class="text-xs font-semibold">Est: <span data-team-time>-</span></small>
@@ -218,6 +299,57 @@
             }
             setInterval(update, 5000);
             window.onload = update;
+        </script>
+
+        <script>
+            var elements = [];
+
+            [...document.getElementById('results-scroller').children].forEach(el => {
+                elements.push(el)
+                el.addEventListener('click', () => {
+                    run(true)
+                    resetInterval()
+                })
+                el.addEventListener('dblclick', () => {
+                    window.open("{{ route('public.results.comp', $comp->resultsSlug()) }}")
+                })
+            })
+
+            var paused = false
+            var index = 1;
+
+            document.getElementById('results-scroller').addEventListener('mouseenter', () => {
+                paused = true;
+            });
+            document.getElementById('results-scroller').addEventListener('mouseleave', () => {
+                paused = false;
+            })
+
+
+
+            function run(ignorePause = false) {
+                if (paused && !ignorePause) {
+                    return;
+                }
+
+                var element = elements[index]
+                element.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'nearest',
+                    inline: 'start'
+                });
+                index++;
+                if (index >= elements.length) {
+                    index = 0;
+                }
+            }
+            var interv = null;
+            interv = setInterval(() => run(), 5000)
+
+            function resetInterval() {
+                clearInterval(interv)
+                interv = setInterval(() => run(), 5000)
+            }
         </script>
 </body>
 
