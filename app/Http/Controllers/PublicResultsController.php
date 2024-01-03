@@ -8,6 +8,7 @@ use App\Models\CompetitionTeam;
 use App\Models\Penalty;
 use App\Models\ResultSchema;
 use App\Models\SERC;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class PublicResultsController extends Controller
@@ -208,5 +209,15 @@ class PublicResultsController extends Controller
     public function viewTeamSercNotes(Competition $comp_slug, SERC $event, CompetitionTeam $team)
     {
         return view('public-results.view-team-serc-notes', ['comp' => $comp_slug, 'serc' => $event, 'team' => $team]);
+    }
+
+    public function resolve($date, $name)
+    {
+
+        $d = Carbon::parse($date);
+
+        $comp = Competition::where('when', $d)->firstOrFail();
+
+        return redirect()->route('public.results.comp', ['comp_slug' => $comp->resultsSlug()]);
     }
 }
