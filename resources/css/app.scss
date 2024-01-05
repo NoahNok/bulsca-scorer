@@ -6,8 +6,8 @@
 .sidebar {
     @apply p-3 flex flex-col space-y-3;
 
-    > a {
-        @apply flex flex-row space-x-4 rounded-md p-3 hover:bg-gray-200;
+     a {
+        @apply flex flex-row md:space-x-4 rounded-md p-3 hover:bg-gray-200;
 
         &.selected {
             @apply bg-gray-200;
@@ -33,6 +33,53 @@
     }
 
 
+
+
+}
+
+aside {
+  .aside-brand {
+    @apply hidden md:block;
+  }
+
+  .aside-brand-logo {
+    @apply block md:hidden;
+  }
+
+
+}
+
+aside.collapsed {
+  .aside-brand {
+    @apply hidden;
+  }
+
+  .aside-brand-logo {
+    @apply block;
+  }
+
+  .sidebar {
+    div.section {
+      @apply items-center justify-center;
+
+      > p {
+        @apply text-sm ;
+      }
+
+      > svg {
+        @apply hidden;
+      }
+    }
+
+    a {
+      @apply space-x-0 items-center justify-center ;
+      > div:last-child{
+        @apply w-0 overflow-hidden block;
+      }
+    }
+
+    
+  }
 }
 
 .breadcrumbs {
