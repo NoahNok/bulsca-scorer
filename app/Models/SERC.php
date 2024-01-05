@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\DigitalJudge\JudgeNote;
 use App\Models\Interfaces\IPenalisable;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
