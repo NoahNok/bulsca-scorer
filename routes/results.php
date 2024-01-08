@@ -19,6 +19,7 @@ function rr()
     Route::get('/{comp_slug}/results/{schema}', [PublicResultsController::class, 'viewResults'])->name("public.results.results");
 
     Route::prefix('stats')->group(function () {
+        Route::get('/clubs', [PublicStatsController::class, 'clubs'])->name('public.results.stats.clubs');
         Route::get('/club/{clubName}', [PublicStatsController::class, 'club'])->name('public.results.stats.club');
     });
 }

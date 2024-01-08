@@ -69,4 +69,9 @@ class Club extends Model
     {
         return DB::select($this->bestSercBase("cl.id=?", "total DESC LIMIT 5"), [$this->id]);
     }
+
+    public static function getStatableClubs()
+    {
+        return DB::select("SELECT c.name FROM competition_teams ct INNER JOIN clubs c ON c.id=ct.club INNER JOIN competitions cp ON cp.id=ct.competition WHERE cp.isLeague=true GROUP BY c.name ORDER BY c.name;");
+    }
 }
