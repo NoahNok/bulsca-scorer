@@ -67,7 +67,7 @@ class Club extends Model
 
     public function getBestSercs()
     {
-        return DB::select($this->bestSercBase("cl.id=?", "total DESC LIMIT 5"), [$this->id]);
+        return DB::select($this->bestSercBase("cl.id=?", "total/max DESC LIMIT 5"), [$this->id]);
     }
 
     public static function getStatableClubs()
