@@ -49,8 +49,24 @@ class Club extends Model
         return DB::select('SELECT c.name, c.id FROM competitions c INNER JOIN competition_teams ct ON ct.competition=c.id INNER JOIN clubs cl ON cl.id=ct.club WHERE cl.id=? AND c.isLeague = true GROUP BY c.id;', [$this->id]);
     }
 
+
+    // Base SERC query producing table of results grouped by competition > serc > club > team > totalPoints
+    // Need to replace :WHERE: with required bits if at all
+    private function bestSercBase($where = "", $order = "")
+    {
+        $where = $where == "" ? "" : "WHERE " . $where;
+        $order = $order == "" ? "" : "ORDER BY " . $order;
+        return "SELECT c.name AS comp_name, serc.name AS serc_name, cl.name AS club_name, ct.team, SUM(result*weight) AS total, SUM(10*weight) AS max FROM serc_results sr INNER JOIN serc_marking_points smp ON smp.id=sr.marking_point INNER JOIN sercs serc ON serc.id=smp.serc INNER JOIN competitions c ON c.id=serc.competition INNER JOIN competition_teams ct ON ct.id=sr.team INNER JOIN clubs cl ON cl.id=ct.club $where GROUP BY c.name, serc.name, cl.id, sr.team $order;";
+    }
+    private $bestSercBase = "SELECT c.name AS comp_name, serc.name AS serc_name, cl.name AS club_name, ct.team, SUM(result*weight) AS total FROM serc_results sr INNER JOIN serc_marking_points smp ON smp.id=sr.marking_point INNER JOIN sercs serc ON serc.id=smp.serc INNER JOIN competitions c ON c.id=serc.competition INNER JOIN competition_teams ct ON ct.id=sr.team INNER JOIN clubs cl ON cl.id=ct.club :WHERE: GROUP BY c.name, serc.name, cl.id, sr.team :ORDER:;";
+
     public function getBestSerc()
     {
         return DB::select('SELECT sr.team, smp.serc, SUM(result*weight) AS total, SUM(10*weight) AS max, s.name AS serc_name, c.name, ct.team FROM serc_results sr INNER JOIN serc_marking_points smp ON smp.id=sr.marking_point INNER JOIN competition_teams ct ON ct.id=sr.team INNER JOIN sercs s ON s.id=smp.serc INNER JOIN competitions c ON c.id=s.competition WHERE ct.club=? AND c.isLeague = true GROUP BY smp.serc,sr.team ORDER BY total DESC LIMIT 1;', [$this->id]);
+    }
+
+    public function getBestSercs()
+    {
+        return DB::select($this->bestSercBase("cl.id=?", "total DESC LIMIT 5"), [$this->id]);
     }
 }

@@ -66,14 +66,41 @@
                     @endforeach
             </div>
             <div class="card">
-                <h3>Best Serc</h3>
+                <h3>Best SERCs</h3>
+                <table class="table-auto">
+                    <thead class="text-left">
+                        <tr>
+                            <th>SERC</th>
+                            <th>Points</th>
+                            <th>Team</th>
+                            <th>Competition</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($club->getBestSercs() as $serc)
+                            <tr>
+                                @php
+
+                                @endphp
+                                <td>{{ $serc->serc_name }}</td>
+                                <td>{{ round($serc->total) }}/{{ round($serc->max) }}
+                                    (<strong>{{ round(($serc->total / $serc->max) * 100, 2) }}%</strong>)
+                                </td>
+                                <td>{{ $serc->team }}</td>
+                                <td>{{ $serc->comp_name }}</td>
+
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+
+
+
                 @php
                     $bestSerc = $club->getBestSerc()[0];
                 @endphp
-                <p><strong>{{ $bestSerc->serc_name }}</strong> at {{ $bestSerc->name }}</p>
-                <p>{{ round($bestSerc->total) }}/{{ round($bestSerc->max) }}
-                    (<strong>{{ round(($bestSerc->total / $bestSerc->max) * 100, 2) }}%</strong>) by
-                    {{ $club->name }} <strong>{{ $bestSerc->team }}</strong></p>
+
             </div>
         </div>
 
