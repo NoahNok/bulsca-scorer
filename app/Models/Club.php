@@ -54,7 +54,7 @@ class Club extends Model
     // Need to replace :WHERE: with required bits if at all
     private function bestSercBase($where = "", $order = "")
     {
-        $where = $where == "" ? "" : "WHERE " . $where;
+        $where = $where == "" ? "WHERE c.isLeague=true " : "WHERE c.isLeague=true AND " . $where;
         $order = $order == "" ? "" : "ORDER BY " . $order;
         return "SELECT c.name AS comp_name, serc.name AS serc_name, cl.name AS club_name, ct.team, SUM(result*weight) AS total, SUM(10*weight) AS max FROM serc_results sr INNER JOIN serc_marking_points smp ON smp.id=sr.marking_point INNER JOIN sercs serc ON serc.id=smp.serc INNER JOIN competitions c ON c.id=serc.competition INNER JOIN competition_teams ct ON ct.id=sr.team INNER JOIN clubs cl ON cl.id=ct.club $where GROUP BY c.name, serc.name, cl.id, sr.team $order;";
     }

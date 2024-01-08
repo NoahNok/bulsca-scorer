@@ -97,9 +97,7 @@
 
 
 
-                @php
-                    $bestSerc = $club->getBestSerc()[0];
-                @endphp
+
 
             </div>
         </div>
