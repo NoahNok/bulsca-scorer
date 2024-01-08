@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PublicResultsController;
+use App\Http\Controllers\PublicStatsController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -16,6 +17,10 @@ function rr()
     Route::get('/{comp_slug}/serc/{event}', [PublicResultsController::class, 'viewSerc'])->name("public.results.serc");
     Route::get('/{comp_slug}/serc/{event}/notes/{team}', [PublicResultsController::class, 'viewTeamSercNotes'])->name("public.results.serc.team-notes");
     Route::get('/{comp_slug}/results/{schema}', [PublicResultsController::class, 'viewResults'])->name("public.results.results");
+
+    Route::prefix('stats')->group(function () {
+        Route::get('/club/{clubName}', [PublicStatsController::class, 'club'])->name('public.results.stats.club');
+    });
 }
 
 if (env('APP_ENV') == 'local') {
