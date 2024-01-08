@@ -6,7 +6,7 @@
     <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Results | BULSCA</title>
+    <title>{{ $club->name }} | Stats | BULSCA</title>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
 
 </head>
