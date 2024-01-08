@@ -56,9 +56,9 @@ class Club extends Model
     {
         $where = $where == "" ? "WHERE c.isLeague=true " : "WHERE c.isLeague=true AND " . $where;
         $order = $order == "" ? "" : "ORDER BY " . $order;
-        return "SELECT c.name AS comp_name, serc.name AS serc_name, cl.name AS club_name, ct.team, SUM(result*weight) AS total, SUM(10*weight) AS max FROM serc_results sr INNER JOIN serc_marking_points smp ON smp.id=sr.marking_point INNER JOIN sercs serc ON serc.id=smp.serc INNER JOIN competitions c ON c.id=serc.competition INNER JOIN competition_teams ct ON ct.id=sr.team INNER JOIN clubs cl ON cl.id=ct.club $where GROUP BY c.name, serc.name, cl.id, sr.team $order;";
+        return "SELECT c.name AS comp_name, c.id AS comp_id, serc.name AS serc_name, serc.id AS serc_id, cl.name AS club_name, ct.team, SUM(result*weight) AS total, SUM(10*weight) AS max FROM serc_results sr INNER JOIN serc_marking_points smp ON smp.id=sr.marking_point INNER JOIN sercs serc ON serc.id=smp.serc INNER JOIN competitions c ON c.id=serc.competition INNER JOIN competition_teams ct ON ct.id=sr.team INNER JOIN clubs cl ON cl.id=ct.club $where GROUP BY c.id, serc.id, cl.id, sr.team $order;";
     }
-    private $bestSercBase = "SELECT c.name AS comp_name, serc.name AS serc_name, cl.name AS club_name, ct.team, SUM(result*weight) AS total FROM serc_results sr INNER JOIN serc_marking_points smp ON smp.id=sr.marking_point INNER JOIN sercs serc ON serc.id=smp.serc INNER JOIN competitions c ON c.id=serc.competition INNER JOIN competition_teams ct ON ct.id=sr.team INNER JOIN clubs cl ON cl.id=ct.club :WHERE: GROUP BY c.name, serc.name, cl.id, sr.team :ORDER:;";
+    private $bestSercBase = "SELECT c.name AS comp_name, serc.name AS serc_name, serc.id AS serc_id, cl.name AS club_name, ct.team, SUM(result*weight) AS total FROM serc_results sr INNER JOIN serc_marking_points smp ON smp.id=sr.marking_point INNER JOIN sercs serc ON serc.id=smp.serc INNER JOIN competitions c ON c.id=serc.competition INNER JOIN competition_teams ct ON ct.id=sr.team INNER JOIN clubs cl ON cl.id=ct.club :WHERE: GROUP BY c.name, serc.name, cl.id, sr.team :ORDER:;";
 
     public function getBestSerc()
     {

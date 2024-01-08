@@ -83,12 +83,18 @@
                                 @php
 
                                 @endphp
-                                <td>{{ $serc->serc_name }}</td>
+                                <td><a href="{{ route('public.results.serc', [$serc->comp_name . '.' . $serc->comp_id, $serc->serc_id]) }}"
+                                        class="link">{{ $serc->serc_name }}</a>
+                                </td>
                                 <td>{{ round($serc->total) }}/{{ round($serc->max) }}
                                     (<strong>{{ round(($serc->total / $serc->max) * 100, 2) }}%</strong>)
                                 </td>
                                 <td>{{ $serc->team }}</td>
-                                <td>{{ $serc->comp_name }}</td>
+                                <td><a href="{{ route('public.results.comp', $serc->comp_name . '.' . $serc->comp_id) }}"
+                                        class="link  whitespace-nowrap">
+                                        {{ $serc->comp_name }}
+                                    </a></li>
+                                </td>
 
                             </tr>
                         @endforeach
