@@ -59,7 +59,8 @@
                 <h3>Competed at</h3>
                 <ol class=" columns-2">
                     @foreach ($club->getCompetitionsCompetedAt() as $comp)
-                        <li><a href="{{ route('public.results.comp', $comp->id) }}" class="link  whitespace-nowrap">
+                        <li><a href="{{ route('public.results.comp', $comp->name . '.' . $comp->id) }}"
+                                class="link  whitespace-nowrap">
                                 {{ $comp->name }}
                             </a></li>
                     @endforeach
