@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class Club extends Model
@@ -67,6 +68,10 @@ class Club extends Model
 
     public function getBestSercs()
     {
-        return DB::select($this->bestSercBase("cl.id=?", "total/max DESC LIMIT 5"), [$this->id]);
+
+
+        return Cache::remember('stats_club_' . $this->id . '_bestSercs', 60 * 60 * 24, function () {
+            return DB::select($this->bestSercBase("cl.id=?", "total DESC LIMIT 5"), [$this->id]);
+        });
     }
 }
