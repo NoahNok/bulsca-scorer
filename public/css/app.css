@@ -587,11 +587,17 @@ video {
 .z-40 {
   z-index: 40;
 }
+.col-span-2 {
+  grid-column: span 2 / span 2;
+}
 .col-start-5 {
   grid-column-start: 5;
 }
 .col-start-3 {
   grid-column-start: 3;
+}
+.col-start-2 {
+  grid-column-start: 2;
 }
 .row-start-1 {
   grid-row-start: 1;
@@ -1074,6 +1080,10 @@ video {
 .columns-2 {
   -moz-columns: 2;
        columns: 2;
+}
+.columns-3 {
+  -moz-columns: 3;
+       columns: 3;
 }
 .grid-cols-5 {
   grid-template-columns: repeat(5, minmax(0, 1fr));

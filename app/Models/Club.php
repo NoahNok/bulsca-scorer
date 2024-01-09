@@ -32,7 +32,7 @@ class Club extends Model
             $minimal[$event->id]['se'] =  $event->name;
         }
 
-        $results = DB::select(' SELECT result, ct.team, se.name AS se, se.id, cp.name AS comp_name, cp.when, c.name FROM speed_results sr INNER JOIN competition_teams ct on ct.id=sr.competition_team INNER JOIN clubs c ON c.id=ct.club INNER JOIN competition_speed_events cse ON cse.id=sr.event INNER JOIN speed_events se ON se.id=cse.event INNER JOIN competitions cp ON cp.id=cse.competition WHERE c.id=? AND result IS NOT NULL AND result>4 AND cp.isLeague = true;', [$this->id]);
+        $results = DB::select(' SELECT result, ct.team, se.name AS se, se.id, cp.name AS comp_name, cp.id AS comp_id, cp.when, c.name FROM speed_results sr INNER JOIN competition_teams ct on ct.id=sr.competition_team INNER JOIN clubs c ON c.id=ct.club INNER JOIN competition_speed_events cse ON cse.id=sr.event INNER JOIN speed_events se ON se.id=cse.event INNER JOIN competitions cp ON cp.id=cse.competition WHERE c.id=? AND result IS NOT NULL AND result>4 AND cp.isLeague = true;', [$this->id]);
 
         foreach ($results as $result) {
             $result = (array) $result;
@@ -68,10 +68,5 @@ class Club extends Model
     public function getBestSercs()
     {
         return DB::select($this->bestSercBase("cl.id=?", "total/max DESC LIMIT 5"), [$this->id]);
-    }
-
-    public static function getStatableClubs()
-    {
-        return DB::select("SELECT c.name FROM competition_teams ct INNER JOIN clubs c ON c.id=ct.club INNER JOIN competitions cp ON cp.id=ct.competition WHERE cp.isLeague=true GROUP BY c.name ORDER BY c.name;");
     }
 }

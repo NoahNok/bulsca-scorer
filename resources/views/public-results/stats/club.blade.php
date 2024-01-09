@@ -53,7 +53,9 @@
                                         {{ $record['result'] == 99999999999999999 ? '-' : App\Models\SpeedResult::getPrettyTime($record['result']) }}
                                     </td>
                                     <td class="px-2">{{ $record['team'] ?? '-' }}</td>
-                                    <td class="px-2">{{ $record['comp_name'] ?? '-' }}</td>
+                                    <td class="px-2"><a class="link"
+                                            href="{{ route('public.results.comp', ($record['comp_name'] ?? '') . '.' . ($record['comp_id'] ?? '')) }}">{{ $record['comp_name'] ?? '-' }}</a>
+                                    </td>
 
                                 </tr>
                             @endforeach
