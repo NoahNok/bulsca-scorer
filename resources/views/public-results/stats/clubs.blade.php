@@ -18,14 +18,47 @@
 
         <br>
 
-        <p>
-            @foreach (App\Models\Club::getStatableClubs() as $club)
-                <a href="{{ route('public.results.stats.club', $club->name) }}" class="link ">
-                    {{ $club->name }}
-                </a>
-                <br>
-            @endforeach
-        </p>
+        <div class="grid-4">
+            <p>
+                @foreach (App\Models\Club::getStatableClubs() as $club)
+                    <a href="{{ route('public.results.stats.club', $club->name) }}" class="link ">
+                        {{ $club->name }}
+                    </a>
+                    <br>
+                @endforeach
+            </p>
+
+            <div class="card">
+                <h3>Records</h3>
+                <div class="w-full h-full overflow-x-auto">
+                    <table class="table-auto">
+                        <thead class="text-left">
+                            <tr class="gap-1">
+                                <th class="px-2 pl-0">Event</th>
+                                <th class="px-2">Time</th>
+                                <th class="px-2">Team</th>
+                                <th class="px-2">Competition</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (App\Stats\Stats::getGlobalSpeedEventRecords() as $record)
+                                <tr class=" space">
+
+                                    <td class="px-2 pl-0 whitespace-nowrap">{{ $record->event_name }}</td>
+                                    <td class="px-2">
+                                        {{ App\Models\SpeedResult::getPrettyTime($record->record) }}
+                                    </td>
+                                    <td class="px-2">{{ $record->name }}{{ $record->team }}</td>
+                                    <td class="px-2">{{ $record->comp_name ?? '-' }}</td>
+
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
 
     </div>
