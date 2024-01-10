@@ -213,4 +213,45 @@ class SERC extends Model implements IPenalisable
         $dq->code = $code;
         $dq->save();
     }
+
+    public function getSERCData()
+    {
+
+        $dbData = DB::select('SELECT j.name AS judge_name, smp.name AS mp_name, smp.weight AS mp_weight , sr.marking_point AS mp_id, sr.team, result FROM serc_results sr INNER JOIN serc_marking_points smp ON smp.id=sr.marking_point INNER JOIN serc_judges j ON j.id=smp.judge WHERE smp.serc=? ORDER BY j.id,smp.id;', [$this->id]);
+
+
+        $judges = [];
+        $results = [];
+
+
+
+        foreach ($dbData as $row) {
+
+            if (!in_array($row->mp_id, $judges[$row->judge_name] ?? [])) {
+                $judges[$row->judge_name][$row->mp_id]['name'] = $row->mp_name;
+                $judges[$row->judge_name][$row->mp_id]['weight'] = $row->mp_weight;
+            }
+
+            $results[$row->team]['results'][$row->mp_id] = $row->result;
+        }
+
+        $placeResults = $this->getResults();
+
+        foreach ($placeResults as $placeResult) {
+            $results[$placeResult->tid]['place'] = $placeResult->place;
+            $results[$placeResult->tid]['points'] = $placeResult->points;
+
+            $results[$placeResult->tid]['team'] = $placeResult->team;
+            $results[$placeResult->tid]['raw'] = $placeResult->score;
+            $results[$placeResult->tid]['tid'] = $placeResult->tid;
+        }
+
+        usort($results, function ($item1, $item2) {
+            return $item1['place'] > $item2['place'];
+        });
+
+
+
+        return compact('judges', 'results');
+    }
 }

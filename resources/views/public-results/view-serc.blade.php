@@ -41,6 +41,10 @@
                 <a class="link"
                     href="{{ route('public.results.comp', $comp->resultsSlug()) }}"><small>Back</small></a>
             </div>
+
+
+
+
             <div class="  relative overflow-x-auto w-screen  lg:max-w-[80vw] h-[90vh] lg:h-[80vh] resize-y ">
                 <table id="table"
                     class="table-highlight text-sm w-full shadow-md rounded-lg top-0 text-left text-gray-500 border-collapse  relative "
@@ -50,10 +54,10 @@
                         <tr class="">
                             <th class=""></th>
                             <th class=""></th>
-                            @foreach ($event->getJudges as $judge)
-                                <th colspan="{{ $judge->getMarkingPoints->count() + 1 }}"
+                            @foreach ($fsd['judges'] as $judge => $mps)
+                                <th colspan="{{ count($mps) + 1 }}"
                                     class="py-3 px-6 border-x text-center sticky top-0 ">
-                                    {{ $judge->name }}</th>
+                                    {{ $judge }}</th>
                             @endforeach
                             <th></th>
                             <th></th>
@@ -68,15 +72,15 @@
                                 Notes
                             </th>
 
-                            @foreach ($event->getJudges as $judge)
-                                @foreach ($judge->getMarkingPoints as $markingPoint)
+                            @foreach ($fsd['judges'] as $judge => $mpIds)
+                                @foreach ($mpIds as $markingPoint)
                                     <th scope="col"
                                         class="py-3 px-6  @if ($loop->first) border-l @endif group max-h-52 lg:whitespace-nowrap overflow-hidden text-ellipsis hover:whitespace-normal"
-                                        style="writing-mode: vertical-rl; " title="{{ $markingPoint->name }}"
+                                        style="writing-mode: vertical-rl; " title="{{ $markingPoint['name'] }}"
                                         data-sortable>
 
-                                        {{ $markingPoint->name }}
-                                        <!--<p class="text-center">{{ number_format($markingPoint->weight, 1) }}</p>-->
+                                        {{ $markingPoint['name'] }}
+                                        <!--<p class="text-center">{{ number_format($markingPoint['weight'], 1) }}</p>-->
 
                                     </th>
                                 @endforeach
@@ -107,11 +111,11 @@
                         <tr class="">
                             <th class=""></th>
                             <th class=""></th>
-                            @foreach ($event->getJudges as $judge)
-                                @foreach ($judge->getMarkingPoints as $mp)
+                            @foreach ($fsd['judges'] as $judge => $mpIds)
+                                @foreach ($mpIds as $markingPoint)
                                     <th
                                         class="py-3 px-6 text-center sticky top-0   @if ($loop->first) border-l @endif">
-                                        {{ $mp->weight }}</th>
+                                        {{ $markingPoint['weight'] }}</th>
                                 @endforeach
                                 <th class="py-3 px-6 text-center sticky top-0   border-r ">
                                     -</th>
@@ -125,46 +129,47 @@
                     </thead>
                     <tbody id="table-body">
 
-                        @forelse ($event->getResults() as $result)
-                            <tr class="bg-white border-b text-right  place-{{ $result->place }} ">
+                        @forelse ($fsd['results'] as $tid => $team)
+                            <tr class="bg-white border-b text-right  place-{{ $team['place'] }} ">
                                 <th scope="row"
                                     class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap  ">
-                                    {{ $result->team }}
+                                    {{ $team['team'] }}
                                 </th>
                                 <td class="py-4 px-6 ">
-                                    <a href="{{ route('public.results.serc.team-notes', [$comp->resultsSlug(), $event, $result->tid]) }}"
+                                    <a href="{{ route('public.results.serc.team-notes', [$comp->resultsSlug(), $event, $team['tid']]) }}"
                                         class="link">Notes</a>
                                 </td>
 
-                                @foreach ($event->getJudges as $judge)
+                                @foreach ($fsd['judges'] as $judge => $mpIds)
                                     @php
                                         $localTotal = 0;
                                     @endphp
-                                    @foreach ($judge->getMarkingPoints as $markingPoint)
+                                    @foreach ($mpIds as $mpId => $markingPoint)
                                         @php
-                                            $localTotal += $markingPoint->getScoreForTeam($result->tid) * $markingPoint->weight;
+                                            $localTotal += ($team['results'][$mpId] ?? 0) * $markingPoint['weight'];
                                         @endphp
                                         <td class="py-3 px-6 text-center">
-                                            {{ round($markingPoint->getScoreForTeam($result->tid)) }}
+                                            {{ round($team['results'][$mpId] ?? 0) }}
                                         </td>
                                     @endforeach
                                     <td class="py-3 px-6 text-center border-x font-semibold" data-total-row>
                                         {{ $localTotal }}</td>
                                 @endforeach
 
+
                                 <td class="py-4 px-6"
-                                    title="{{ $event->getTeamDQ(\App\Models\CompetitionTeam::find($result->tid))?->code ? App\Models\DQCode::message($event->getTeamDQ(\App\Models\CompetitionTeam::find($result->tid))?->code) : '' }}">
-                                    {{ $event->getTeamDQ(\App\Models\CompetitionTeam::find($result->tid))?->code ?: '-' }}
+                                    title="{{ $event->getTeamDQ(\App\Models\CompetitionTeam::find($team['tid']))?->code ? App\Models\DQCode::message($event->getTeamDQ(\App\Models\CompetitionTeam::find($team['tid']))?->code) : '' }}">
+                                    {{ $event->getTeamDQ(\App\Models\CompetitionTeam::find($team['tid']))?->code ?: '-' }}
 
                                 </td>
                                 <td class="py-4 px-6 font-semibold ">
-                                    {{ round($result->score) }}
+                                    {{ round($team['raw']) }}
                                 </td>
                                 <td class="py-4 px-6 font-bold ">
-                                    {{ round($result->points) }}
+                                    {{ round($team['points']) }}
                                 </td>
                                 <td class="py-4 px-6 ">
-                                    {{ $result->place }}
+                                    {{ $team['place'] }}
                                 </td>
 
 
@@ -185,6 +190,14 @@
                 </table>
 
             </div>
+
+
+
+
+
+
+
+
             <div class="mt-2 flex flex-col md:flex-row space-y-4 md:space-y-0 items-center ">
                 <div class="flex flex-col ">
                     <div class="form-input" style="margin-bottom: 0px !important;"><input placeholder="Filter"
@@ -221,7 +234,7 @@
                 <p>The following charts show the raw and rolling average for each of the judges marking points, in the
                     order of the SERC draw</p>
                 <br>
-                @foreach ($event->getJudges as $judge)
+                {{-- @foreach ($event->getJudges as $judge)
                     <h5>{{ $judge->name }}</h5>
                     <div class="grid-4">
                         @foreach ($judge->getMarkingPoints as $mp)
@@ -230,7 +243,7 @@
                             </div>
                         @endforeach
                     </div>
-                @endforeach
+                @endforeach --}}
             </details>
         </div>
 
@@ -330,115 +343,6 @@
         window.onload = function() {
             initTable()
             Sorttable()
-        }
-
-        function charts() {
-            let ctx = document.getElementById('mark-dist');
-            let chart = new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: {{ Js::from($event->getMarkDistribution()['labels']) }},
-                    datasets: [{
-                        label: 'Mark Distribution',
-                        data: {{ Js::from($event->getMarkDistribution()['values']) }},
-
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                        },
-                        title: {
-                            display: true,
-                            text: 'Mark Distribution'
-                        }
-                    }
-                }
-            });
-
-
-            new Chart(document.getElementById('rolling-judge'), {
-                type: 'line',
-                data: {
-                    labels: {{ Js::from($event->getRollingAverageForMP(1)['labels']) }},
-                    datasets: [{
-                            label: 'Raw Mark',
-                            data: {{ Js::from($event->getRollingAverageForMP(1)['raw']) }},
-
-                        },
-                        {
-                            label: 'Rolling Avg',
-                            data: {{ Js::from($event->getRollingAverageForMP(1)['rolling']) }},
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                        },
-                        title: {
-                            display: true,
-                            text: 'Mark Distribution'
-                        }
-                    }
-                }
-            });
-
-
-
-            @foreach ($event->getJudges as $judge)
-
-
-                @foreach ($judge->getMarkingPoints as $mp)
-                    @php
-                        $cached = $event->getRollingAverageForMP($mp->id);
-                    @endphp
-                    new Chart(document.getElementById("rolling-mp-{{ $mp->id }}"), {
-                        type: 'line',
-                        data: {
-                            labels: {{ Js::from($cached['labels']) }},
-                            datasets: [{
-                                    label: 'Raw Mark',
-                                    data: {{ Js::from($cached['raw']) }},
-
-                                },
-                                {
-                                    label: 'Rolling Avg',
-                                    data: {{ Js::from($cached['rolling']) }},
-                                }
-                            ]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    position: 'bottom',
-                                },
-                                title: {
-                                    display: true,
-                                    text: '{{ $mp->name }}'
-                                }
-                            }
-                        }
-                    });
-                @endforeach
-            @endforeach
-        }
-
-        let generatedCharts = false;
-
-        function generateCharts() {
-            if (generatedCharts) return;
-            charts();
-
         }
     </script>
 
