@@ -208,13 +208,13 @@
                     y: {
 
                         reverse: true,
-                        min: 0,
+
+                        beginAtZero: true,
                         ticks: {
                             callback: function(value, index, values) {
                                 return addSuffix(value);
                             },
-                            min: 1,
-                            beginAtZero: false,
+
                         }
                     }
                 }
@@ -226,7 +226,7 @@
                 b = i % 100;
 
             if (i == 0) {
-                return ""
+                return "0"
             }
 
             if (a == 1 && b != 11) {
