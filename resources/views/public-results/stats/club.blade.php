@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $club->name }} | Stats | BULSCA</title>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
 
@@ -138,7 +139,7 @@
                                     <td class="px-2 pl-0">{{ $team->team }}</td>
                                     @foreach ($competedAt as $comp)
                                         <td class="px-2 ">
-                                            {{ ($placings[$team->team] ?? false) && ($placings[$team->team][$comp->id] ?? false) ? $nf->format($placings[$team->team][$comp->id]) : '-' }}
+                                            {{ ($placings[$team->team] ?? false) && ($placings[$team->team][$comp->id] ?? false) ? $nf->format($placings[$team->team][$comp->id]['place']) : '-' }}
                                         </td>
                                     @endforeach
                                 </tr>
@@ -149,6 +150,9 @@
                     </table>
                 </div>
             </div>
+            <div class="card row-start-2 col-start-3">
+                <canvas id="placingChart"></canvas>
+            </div>
 
         </div>
 
@@ -157,6 +161,49 @@
 
 
     </div>
+
+    <script>
+        var ctx = document.getElementById('placingChart').getContext('2d');
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [
+                    @foreach ($competedAt as $comp)
+                        '{{ $comp->name }}',
+                    @endforeach
+                ],
+                datasets: [
+                    @foreach ($distinctTeams as $team)
+                        {
+                            label: '{{ $team->team }}',
+                            data: [
+                                @foreach ($competedAt as $comp)
+                                    {{ ($placings[$team->team] ?? false) && ($placings[$team->team][$comp->id] ?? false) ? $placings[$team->team][$comp->id]['place'] : 'null' }},
+                                @endforeach
+                            ],
+
+                            fill: false,
+                            tension: 0.1
+                        },
+                    @endforeach
+                ]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        reverse: true,
+                        ticks: {
+                            callback: function(value, index, values) {
+                                return value + 'th';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
 
 </body>
 

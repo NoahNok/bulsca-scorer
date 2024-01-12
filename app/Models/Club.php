@@ -95,7 +95,8 @@ class Club extends Model
             $compPlacings = DB::select($altQuery, [$this->id]);
 
             foreach ($compPlacings as $placing) {
-                $placings[substr($placing->team, -1)][$competition->id] = $placing->place;
+                $placings[substr($placing->team, -1)][$competition->id]['place'] = $placing->place;
+                $placings[substr($placing->team, -1)][$competition->id]['name'] = $competition->name;
             }
         }
 
