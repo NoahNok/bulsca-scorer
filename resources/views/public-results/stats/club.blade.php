@@ -123,7 +123,7 @@
                             <tr>
                                 <th class="px-2 pl-0">Team</th>
                                 @foreach ($competedAt as $comp)
-                                    <th class="px-2 ">{{ $comp->name }}</th>
+                                    <th class="px-2 whitespace-nowrap ">{{ $comp->name }}</th>
                                 @endforeach
                             </tr>
                         </thead>
