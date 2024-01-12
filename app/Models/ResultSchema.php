@@ -52,7 +52,7 @@ class ResultSchema extends Model
         }
     }
 
-    public function getDetailedPrint()
+    public function getRawQuery()
     {
         $events = $this->getEvents;
 
@@ -86,7 +86,7 @@ class ResultSchema extends Model
         }
 
         $finalQuery = rtrim($finalQuery, ", ");
-        $finalQuery .= " SELECT " . $mysqlEventNamesArray[0] . ".team, ";
+        $finalQuery .= " SELECT " . $mysqlEventNamesArray[0] . ".team, " . $mysqlEventNamesArray[0] . ".tid, " . $mysqlEventNamesArray[0] . ".club, ";
 
         foreach ($events as $event) {
             // If you remove an event from a created RS it gets a null, so skip it
@@ -147,10 +147,12 @@ class ResultSchema extends Model
 
 
         $final = "SELECT *, RANK() OVER(ORDER BY totalPoints DESC) place FROM (" . $final . ") AS bbb;";
+        return $final;
+    }
 
-        //echo $final;
-        //return;
-
+    public function getDetailedPrint()
+    {
+        $final = $this->getRawQuery();
 
 
 

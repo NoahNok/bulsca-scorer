@@ -21,7 +21,7 @@ class Club extends Model
 
     public function getDistinctTeams()
     {
-        return DB::select("SELECT DISTINCT team FROM competition_teams WHERE club=? ORDER BY team", [$this->id]);
+        return DB::select("SELECT DISTINCT team FROM competition_teams ct INNER JOIN competitions c ON c.id=ct.competition  WHERE club=? AND c.isLeague=true ORDER BY team", [$this->id]);
     }
 
     public function getClubRecords()
@@ -73,5 +73,30 @@ class Club extends Model
         return Cache::remember('stats_club_' . $this->id . '_bestSercs', 60 * 60 * 24, function () {
             return DB::select($this->bestSercBase("cl.id=?", "total DESC LIMIT 5"), [$this->id]);
         });
+    }
+
+
+    public function getPlacings()
+    {
+
+
+
+        $placings = [];
+
+        foreach (Competition::where('isLeague', true)->get() as $competition) {
+            $overallSchema = $competition->getResultSchemas->where('league', 'O')->first();
+
+            $altQuery = "SELECT * FROM (" . rtrim($overallSchema->getRawQuery(), ';') . ") AS c1 WHERE c1.club=?;";
+
+
+
+            $compPlacings = DB::select($altQuery, [$this->id]);
+
+            foreach ($compPlacings as $placing) {
+                $placings[substr($placing->team, -1)][$competition->id] = $placing->place;
+            }
+        }
+
+        return $placings;
     }
 }

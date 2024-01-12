@@ -23,7 +23,7 @@
 
 
         <div class="flex divide-x ">Teams:
-            @foreach ($club->getDistinctTeams() as $team)
+            @foreach ($distinctTeams as $team)
                 <a href="" class="link px-2">
                     {{ $team->team }}
                 </a>
@@ -32,7 +32,7 @@
         <br>
         <div class="grid-4">
             <div class="card">
-                <h3>Club Records</h3>
+                <h3>Speed Records</h3>
                 <div class="w-full h-full overflow-x-auto">
                     <table class="table-auto">
                         <thead class="text-left">
@@ -45,7 +45,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($club->getClubRecords() as $record)
+                            @foreach ($speedRecords as $record)
                                 <tr class=" space">
 
                                     <td class="px-2 pl-0 whitespace-nowrap">{{ $record['se'] }}</td>
@@ -64,17 +64,7 @@
                 </div>
             </div>
             <div class="card">
-                <h3>Competed at</h3>
-                <ol class=" columns-2">
-                    @foreach ($club->getCompetitionsCompetedAt() as $comp)
-                        <li><a href="{{ route('public.results.comp', $comp->name . '.' . $comp->id) }}"
-                                class="link  whitespace-nowrap">
-                                {{ $comp->name }}
-                            </a></li>
-                    @endforeach
-            </div>
-            <div class="card">
-                <h3>Best SERCs</h3>
+                <h3>SERC Records</h3>
                 <div class="w-full h-full overflow-x-auto">
                     <table class="table-auto">
                         <thead class="text-left">
@@ -87,7 +77,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($club->getBestSercs() as $serc)
+                            @foreach ($sercRecords as $serc)
                                 <tr>
                                     @php
 
@@ -113,12 +103,53 @@
                         </tbody>
                     </table>
                 </div>
-
-
-
-
-
             </div>
+            <div class="card">
+                <h3>Competed at</h3>
+                <ol class=" columns-2">
+                    @foreach ($competedAt as $comp)
+                        <li><a href="{{ route('public.results.comp', $comp->name . '.' . $comp->id) }}"
+                                class="link  whitespace-nowrap">
+                                {{ $comp->name }}
+                            </a></li>
+                    @endforeach
+            </div>
+            <div class="card row-start-2 col-span-2">
+                <h3>Placings</h3>
+
+                <div class="w-full h-full overflow-x-auto">
+                    <table class="table-auto ">
+                        <thead class="text-left">
+                            <tr>
+                                <th class="px-2 pl-0">Team</th>
+                                @foreach ($competedAt as $comp)
+                                    <th class="px-2 ">{{ $comp->name }}</th>
+                                @endforeach
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                $nf = new NumberFormatter('en-GB', NumberFormatter::ORDINAL);
+
+                            @endphp
+
+                            @foreach ($distinctTeams as $team)
+                                <tr>
+                                    <td class="px-2 pl-0">{{ $team->team }}</td>
+                                    @foreach ($competedAt as $comp)
+                                        <td class="px-2 ">
+                                            {{ ($placings[$team->team] ?? false) && ($placings[$team->team][$comp->id] ?? false) ? $nf->format($placings[$team->team][$comp->id]) : '-' }}
+                                        </td>
+                                    @endforeach
+                                </tr>
+                            @endforeach
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
 
     </div>
