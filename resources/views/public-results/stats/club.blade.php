@@ -208,7 +208,7 @@
                     y: {
 
                         reverse: true,
-                        min: 1,
+                        min: 0,
                         ticks: {
                             callback: function(value, index, values) {
                                 return addSuffix(value);
@@ -224,6 +224,10 @@
         function addSuffix(i) {
             var a = i % 10,
                 b = i % 100;
+
+            if (i == 0) {
+                return ""
+            }
 
             if (a == 1 && b != 11) {
                 return i + "st";
