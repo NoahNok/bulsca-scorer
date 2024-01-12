@@ -150,7 +150,7 @@
                     </table>
                 </div>
             </div>
-            <div class="card row-start-2 col-start-3">
+            <div class="card row-start-2 col-start-3 col-span-2">
                 <canvas id="placingChart"></canvas>
             </div>
 
@@ -184,7 +184,8 @@
                             ],
 
                             fill: false,
-                            tension: 0.1
+                            tension: 0.1,
+                            spanGaps: true,
                         },
                     @endforeach
                 ]
