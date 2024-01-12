@@ -222,29 +222,7 @@
 
         </div>
 
-        <div class="w-screen  lg:max-w-[80vw]">
-            <details>
-                <summary class="text-bulsca font-semibold text-3xl" onclick="generateCharts()">Charts</summary>
-                <div>
-                    <canvas id="mark-dist"></canvas>
-                </div>
-                <br>
-                <h4>Judges </h4>
-                <p>The following charts show the raw and rolling average for each of the judges marking points, in the
-                    order of the SERC draw</p>
-                <br>
-                {{-- @foreach ($event->getJudges as $judge)
-                    <h5>{{ $judge->name }}</h5>
-                    <div class="grid-4">
-                        @foreach ($judge->getMarkingPoints as $mp)
-                            <div>
-                                <canvas id="rolling-mp-{{ $mp->id }}"></canvas>
-                            </div>
-                        @endforeach
-                    </div>
-                @endforeach --}}
-            </details>
-        </div>
+
 
         <div class=" pb-16">
             <small>
