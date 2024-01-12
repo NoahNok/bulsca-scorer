@@ -118,12 +118,14 @@
             </div>
             <div class="card md:row-start-2 md:col-span-2" x-data="{ show: 1 }">
 
-                <div class="flex space-x-2 items-center">
-                    <h3 class="mr-4">Placings</h3>
-                    <div class=" transition-colors rounded-full py-1 px-4 text-xs bg-gray-200 cursor-pointer hover:bg-bulsca hover:text-white"
-                        :class="show == 1 && 'bg-bulsca text-white'" @click="show=1">Graph</div>
-                    <div class=" transition-colors rounded-full py-1 px-4 text-xs bg-gray-200 cursor-pointer hover:bg-bulsca hover:text-white"
-                        :class="show == 2 && 'bg-bulsca text-white'" @click="show=2">Table</div>
+                <div class="flex space-x-2 items-center justify-between">
+                    <h3>Placings</h3>
+                    <div class="flex space-x-2">
+                        <div class=" transition-colors rounded-full py-1 px-4 text-xs bg-gray-200 cursor-pointer hover:bg-bulsca hover:text-white"
+                            :class="show == 1 && 'bg-bulsca text-white'" @click="show=1">Graph</div>
+                        <div class="  transition-colors rounded-full py-1 px-4 text-xs bg-gray-200 cursor-pointer hover:bg-bulsca hover:text-white"
+                            :class="show == 2 && 'bg-bulsca text-white'" @click="show=2">Table</div>
+                    </div>
                 </div>
                 <canvas id="placingChart" x-show="show==1"></canvas>
 
