@@ -9,6 +9,7 @@
     <title>{{ $club->name }} | Stats | BULSCA</title>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
 </head>
 
@@ -115,10 +116,20 @@
                             </a></li>
                     @endforeach
             </div>
-            <div class="card row-start-2 col-span-2">
-                <h3>Placings</h3>
+            <div class="card md:row-start-2 md:col-span-2" x-data="{ show: 1 }">
 
-                <div class="w-full h-full overflow-x-auto">
+                <div class="flex space-x-2 items-center">
+                    <h3 class="mr-4">Placings</h3>
+                    <div class=" transition-colors rounded-full py-1 px-4 text-xs bg-gray-200 cursor-pointer hover:bg-bulsca hover:text-white"
+                        :class="show == 1 && 'bg-bulsca text-white'" @click="show=1">Graph</div>
+                    <div class=" transition-colors rounded-full py-1 px-4 text-xs bg-gray-200 cursor-pointer hover:bg-bulsca hover:text-white"
+                        :class="show == 2 && 'bg-bulsca text-white'" @click="show=2">Table</div>
+                </div>
+                <canvas id="placingChart" x-show="show==1"></canvas>
+
+
+
+                <div class="w-full h-full overflow-x-auto" x-show="show==2" style="display:none">
                     <table class="table-auto ">
                         <thead class="text-left">
                             <tr>
@@ -149,10 +160,10 @@
                         </tbody>
                     </table>
                 </div>
+
+
             </div>
-            <div class="card row-start-2 col-start-3 col-span-2">
-                <canvas id="placingChart"></canvas>
-            </div>
+
 
         </div>
 
