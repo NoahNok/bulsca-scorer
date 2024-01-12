@@ -86,6 +86,8 @@ class Club extends Model
         foreach (Competition::where('isLeague', true)->get() as $competition) {
             $overallSchema = $competition->getResultSchemas->where('league', 'O')->first();
 
+            if ($overallSchema == null) continue;
+
             $altQuery = "SELECT * FROM (" . rtrim($overallSchema->getRawQuery(), ';') . ") AS c1 WHERE c1.club=?;";
 
 
