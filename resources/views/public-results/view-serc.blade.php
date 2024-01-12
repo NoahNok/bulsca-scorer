@@ -157,9 +157,8 @@
                                 @endforeach
 
 
-                                <td class="py-4 px-6"
-                                    title="{{ $event->getTeamDQ(\App\Models\CompetitionTeam::find($team['tid']))?->code ? App\Models\DQCode::message($event->getTeamDQ(\App\Models\CompetitionTeam::find($team['tid']))?->code) : '' }}">
-                                    {{ $event->getTeamDQ(\App\Models\CompetitionTeam::find($team['tid']))?->code ?: '-' }}
+                                <td class="py-4 px-6" title="{{ $team['disqualification'] ?: '-' }}">
+                                    {{ $team['disqualification'] ?: '-' }}
 
                                 </td>
                                 <td class="py-4 px-6 font-semibold ">
