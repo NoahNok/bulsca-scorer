@@ -240,7 +240,6 @@ class SERC extends Model implements IPenalisable
         foreach ($placeResults as $placeResult) {
             $results[$placeResult->tid]['place'] = $placeResult->place;
             $results[$placeResult->tid]['points'] = $placeResult->points;
-            dump($placeResult);
 
             $results[$placeResult->tid]['team'] = $placeResult->team;
             $results[$placeResult->tid]['raw'] = $placeResult->score;
