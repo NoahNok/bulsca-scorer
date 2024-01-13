@@ -24,13 +24,15 @@ class PublicStatsController extends Controller
         $data = Cache::remember('club-stats-' . $clubName, 60 * 60 * 24, function () use ($clubName) {
             $club = \App\Models\Club::where('name', 'LIKE', '%' . $clubName . '%')->firstOrFail();
 
-            $placings = $club->getPlacings();
+            $allPlacings['Overall'] = $club->getPlacings();
+            $allPlacings['A-League'] = $club->getPlacings('A');
+            $allPlacings['B-League'] = $club->getPlacings('B');
             $speedRecords = $club->getClubRecords();
             $sercRecords = $club->getBestSercs();
             $distinctTeams = $club->getDistinctTeams();
             $competedAt = $club->getCompetitionsCompetedAt();
 
-            return compact('club', 'placings', 'speedRecords', 'sercRecords', 'distinctTeams', 'competedAt');
+            return compact('club', 'allPlacings', 'speedRecords', 'sercRecords', 'distinctTeams', 'competedAt');
         });
 
 

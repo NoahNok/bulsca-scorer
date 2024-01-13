@@ -76,7 +76,7 @@ class Club extends Model
     }
 
 
-    public function getPlacings()
+    public function getPlacings($league = 'O')
     {
 
 
@@ -84,7 +84,7 @@ class Club extends Model
         $placings = [];
 
         foreach (Competition::where('isLeague', true)->get() as $competition) {
-            $overallSchema = $competition->getResultSchemas->where('league', 'O')->first();
+            $overallSchema = $competition->getResultSchemas->where('league', $league)->first();
 
             if ($overallSchema == null) continue;
 
