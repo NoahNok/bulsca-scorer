@@ -32,7 +32,7 @@
             @endforeach
         </div>
         <br>
-        <div class="grid-4">
+        <div class="grid-3">
             <div class="card">
                 <h3>Speed Records</h3>
                 <div class="w-full h-full overflow-x-auto">
@@ -108,7 +108,7 @@
             </div>
             <div class="card">
                 <h3>Competed at</h3>
-                <ol class=" columns-2">
+                <ol class=" columns-3">
                     @foreach ($competedAt as $comp)
                         <li><a href="{{ route('public.results.comp', $comp->name . '.' . $comp->id) }}"
                                 class="link  whitespace-nowrap">
@@ -116,7 +116,7 @@
                             </a></li>
                     @endforeach
             </div>
-            <div class="card md:row-start-2 md:col-span-2" x-data="{ show: 1 }">
+            <div class="card md:row-start-2 " x-data="{ show: 1 }">
 
                 <div class="flex space-x-2 items-center justify-between">
                     <h3>Placings</h3>
