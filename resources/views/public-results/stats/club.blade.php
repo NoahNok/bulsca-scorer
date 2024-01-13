@@ -221,6 +221,7 @@
 
                             beginAtZero: true,
                             ticks: {
+                                precision: 0,
                                 callback: function(value, index, values) {
                                     return addSuffix(value);
                                 },
