@@ -21,6 +21,7 @@ function rr()
     Route::prefix('stats')->group(function () {
         Route::get('/clubs', [PublicStatsController::class, 'clubs'])->name('public.results.stats.clubs');
         Route::get('/clubs/{clubName}', [PublicStatsController::class, 'club'])->name('public.results.stats.club');
+        Route::get('/clubs/{clubName}/{teamName}', [PublicStatsController::class, 'team'])->name('public.results.stats.club.team');
     });
 }
 

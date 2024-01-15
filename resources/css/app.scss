@@ -263,6 +263,16 @@ h5 {
   @apply text-blue-700 text-base font-semibold hover:underline cursor-pointer
  }
 
+ a.link-stats {
+  @apply text-blue-700 text-base font-semibold cursor-pointer flex items-center hover:bg-bulsca hover:text-white rounded-md px-2 transition-colors;
+ 
+  &.link-stats-selected {
+    @apply text-white px-2 bg-bulsca rounded-md mx-1 font-bold;
+   }
+ }
+
+ 
+
  .label-killer {
 
     div:not(:first-of-type) > div {

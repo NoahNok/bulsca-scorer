@@ -24,9 +24,10 @@
 
 
 
-        <div class="flex divide-x ">Teams:
+        <div class="flex  ">Teams:
             @foreach ($distinctTeams as $team)
-                <a href="" class="link px-2">
+                <a href="{{ route('public.results.stats.club.team', [$club->name, $team->team]) }}"
+                    class="link-stats px-2 first-of-type:ml-1">
                     {{ $team->team }}
                 </a>
             @endforeach
