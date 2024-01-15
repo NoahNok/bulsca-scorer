@@ -152,7 +152,7 @@
                                     $nf = new NumberFormatter('en-GB', NumberFormatter::ORDINAL);
 
                                 @endphp
-                                @dump($placings)
+
 
                                 <tr>
 
