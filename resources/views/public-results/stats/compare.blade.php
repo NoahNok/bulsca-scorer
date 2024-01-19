@@ -44,7 +44,7 @@
             class="link  items-center space-x-1  z-50 cursor-pointer">All Clubs</a>
 
 
-        <div class="w-full flex justify-between bg-white rounded-b-md py-2 px-3 sticky top-0 left-0"
+        <div class="w-full flex md:flex-row flex-col md:justify-between bg-white rounded-b-md py-2 px-3 sticky top-0 left-0"
             x-data="{
             
                 leftTeam: '{{ $data1 ? $data1['team']->getTeamSlug() : 'none.none' }}',
@@ -67,7 +67,7 @@
                     window.location = targetUrl
                 }
             }">
-            <h1 class="font-bold  " style="font">
+            <h1 class="font-bold  text-3xl md:text-5xl" style="font">
                 <select name="" id="" style="min-width: 0 !important;" @change="swapLeftTeam">
                     <option value="none.none" class="text-base">Please select a team</option>
                     @foreach (App\Stats\Stats::getAllTeams() as $team)
@@ -78,11 +78,14 @@
 
                 </select>
             </h1>
-            <h1 class="font-bold text-bulsca_red text-3xl absolute bottom-0  left-[49.25%] ">vs</h1>
-            <h1 class="font-bold  " style="font">
+            <h1
+                class="font-bold text-bulsca_red text-xl md:text-3xl absolute md:bottom-4 bottom-[35%]  left-5 md:left-[49.25%] ">
+                vs
+            </h1>
+            <h1 class="font-bold text-3xl md:text-5xl  " style="font">
 
 
-                <select name="" id="" class="text-right" @change="swapRightTeam">
+                <select name="" id="" class="md:text-right" @change="swapRightTeam">
                     <option value="none.none" class="text-base">Please select a team</option>
                     @foreach (App\Stats\Stats::getAllTeams() as $team)
                         <option value="{{ $team->name }}.{{ $team->team }}" class="text-base"
@@ -96,7 +99,7 @@
 
 
 
-        <div class="grid-2">
+        <div class="grid-2 w-full">
             @if ($data1 && $data2)
                 @foreach ($stats as $stat)
                     @php
