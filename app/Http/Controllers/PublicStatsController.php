@@ -15,7 +15,7 @@ use NumberFormatter;
 class PublicStatsController extends Controller
 {
 
-    private array $clubStats = [];
+    private array $clubStats = [], $teamStats = [];
 
     public function __construct()
     {
@@ -26,6 +26,15 @@ class PublicStatsController extends Controller
             new ClubLeagueData('O'),
             new ClubLeagueData('A'),
             new ClubLeagueData('B'),
+        ];
+
+        $this->teamStats = [
+            new \App\Stats\Statables\Team\TeamSpeedRecords(),
+            new \App\Stats\Statables\Team\TeamSercRecords(),
+            new \App\Stats\Statables\Team\TeamCompetedAt(),
+            new \App\Stats\Statables\Team\TeamLeagueData('O'),
+            new \App\Stats\Statables\Team\TeamLeagueData('A'),
+            new \App\Stats\Statables\Team\TeamLeagueData('B'),
         ];
     }
 
@@ -61,18 +70,18 @@ class PublicStatsController extends Controller
             $club = \App\Models\Club::where('name', 'LIKE', '%' . $clubName . '%')->firstOrFail();
             $team = new StatsTeam($club, $teamName);
 
-            $allPlacings['Overall'] = $team->getPlacings();
-            $allPlacings['A-League'] = $team->getPlacings('A');
-            $allPlacings['B-League'] = $team->getPlacings('B');
-            $speedRecords = $team->getTeamRecords();
-            $sercRecords = $team->getBestSercs();
-            $distinctTeams = $club->getDistinctTeams();
-            $competedAt = $team->getCompetitionsCompetedAt();
 
-            return compact('club', 'team', 'allPlacings', 'speedRecords', 'sercRecords', 'distinctTeams',  'competedAt');
+
+            $distinctTeams = $club->getDistinctTeams();
+
+            return compact('club', 'team', 'distinctTeams');
         });
 
-        return view('public-results.stats.team', $data);
+        foreach ($this->teamStats as $stat) {
+            $stat->computeFor(['club' => $clubName, 'team' => $teamName]);
+        }
+
+        return view('public-results.stats.team', ['clubData' => $data, 'stats' => $this->teamStats]);
     }
 
     public function compare(string $team1, string $team2)
