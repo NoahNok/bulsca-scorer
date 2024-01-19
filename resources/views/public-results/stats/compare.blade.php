@@ -134,6 +134,34 @@
     </div>
 
 
+    <script>
+        function setCommonMax(league) {
+            let max = -1;
+
+            document.body.querySelectorAll(`[x-league=${league}]`).forEach((c) => {
+                let chart = Chart.getChart(c);
+
+                let chartMax = chart.scales.y.max
+
+                if (chartMax > max) {
+                    max = chartMax
+                }
+            })
+
+            document.body.querySelectorAll(`[x-league=${league}]`).forEach((c) => {
+                let chart = Chart.getChart(c);
+
+                chart.options.scales.y.max = max;
+                chart.update()
+            })
+
+
+        }
+
+        ['Overall', 'A', 'B'].forEach((league) => {
+            setCommonMax(league)
+        })
+    </script>
 
 </body>
 

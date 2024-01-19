@@ -9,7 +9,8 @@
                 :class="show == 2 && 'bg-bulsca text-white'" @click="show=2">Table</div>
         </div>
     </div>
-    <canvas id="placingChart-{{ $data['team'] }}-{{ $data['league']  }}" x-show="show==1"></canvas>
+    <canvas id="placingChart-{{ $data['team'] }}-{{ $data['league']  }}" x-league="{{ $data['league']  }}" x-show="show==1"></canvas>
+
 
 
 
