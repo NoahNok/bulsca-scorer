@@ -76,4 +76,9 @@ class StatsTeam
     {
         return Str::upper($this->teamLetter);
     }
+
+    public function getTeamName()
+    {
+        return $this->club->name . ' ' . $this->getTeamLetter();
+    }
 }

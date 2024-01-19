@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Stats\Statables\Club\ClubCompetedAt;
+use App\Stats\Statables\Club\ClubLeagueData;
+use App\Stats\Statables\Club\ClubSercRecords;
+use App\Stats\Statables\Club\ClubSpeedRecords;
 use App\Stats\StatsTeam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -11,6 +15,19 @@ use NumberFormatter;
 class PublicStatsController extends Controller
 {
 
+    private array $clubStats = [];
+
+    public function __construct()
+    {
+        $this->clubStats = [
+            new ClubSpeedRecords(),
+            new ClubSercRecords(),
+            new ClubCompetedAt(),
+            new ClubLeagueData('O'),
+            new ClubLeagueData('A'),
+            new ClubLeagueData('B'),
+        ];
+    }
 
     public function clubs()
     {
@@ -19,25 +36,20 @@ class PublicStatsController extends Controller
 
     public function club(string $clubName)
     {
-
         $clubName = Str::lower($clubName);
 
         $data = Cache::remember('club-stats-' . $clubName, 60 * 60 * 24, function () use ($clubName) {
             $club = \App\Models\Club::where('name', 'LIKE', '%' . $clubName . '%')->firstOrFail();
-
-            $allPlacings['Overall'] = $club->getPlacings();
-            $allPlacings['A-League'] = $club->getPlacings('A');
-            $allPlacings['B-League'] = $club->getPlacings('B');
-            $speedRecords = $club->getClubRecords();
-            $sercRecords = $club->getBestSercs();
             $distinctTeams = $club->getDistinctTeams();
-            $competedAt = $club->getCompetitionsCompetedAt();
 
-            return compact('club', 'allPlacings', 'speedRecords', 'sercRecords', 'distinctTeams', 'competedAt');
+            return compact('club', 'distinctTeams');
         });
 
+        foreach ($this->clubStats as $stat) {
+            $stat->computeFor(['club' => $clubName]);
+        }
 
-        return view('public-results.stats.club', $data);
+        return view('public-results.stats.club', ['clubData' => $data, 'stats' => $this->clubStats]);
     }
 
     public function team(string $clubName, string $teamName)
@@ -61,5 +73,43 @@ class PublicStatsController extends Controller
         });
 
         return view('public-results.stats.team', $data);
+    }
+
+    public function compare(string $team1, string $team2)
+    {
+        $t1s = explode('.', $team1 = Str::lower($team1), 2);
+        $t2s = explode('.', $team2 = Str::lower($team2), 2);
+
+        $data1 = Cache::remember('team-stats-' . $t1s[0] . '-' . $t1s[1], 60 * 60 * 24, function () use ($t1s) {
+            $club = \App\Models\Club::where('name', 'LIKE', '%' . $t1s[0] . '%')->firstOrFail();
+            $team = new StatsTeam($club, $t1s[1]);
+
+            $allPlacings['Overall'] = $team->getPlacings();
+            $allPlacings['A-League'] = $team->getPlacings('A');
+            $allPlacings['B-League'] = $team->getPlacings('B');
+            $speedRecords = $team->getTeamRecords();
+            $sercRecords = $team->getBestSercs();
+            $distinctTeams = $club->getDistinctTeams();
+            $competedAt = $team->getCompetitionsCompetedAt();
+
+            return compact('club', 'team', 'allPlacings', 'speedRecords', 'sercRecords', 'distinctTeams',  'competedAt');
+        });
+
+        $data2 = Cache::remember('team-stats-' . $t2s[0] . '-' . $t2s[1], 60 * 60 * 24, function () use ($t2s) {
+            $club = \App\Models\Club::where('name', 'LIKE', '%' . $t2s[0] . '%')->firstOrFail();
+            $team = new StatsTeam($club, $t2s[1]);
+
+            $allPlacings['Overall'] = $team->getPlacings();
+            $allPlacings['A-League'] = $team->getPlacings('A');
+            $allPlacings['B-League'] = $team->getPlacings('B');
+            $speedRecords = $team->getTeamRecords();
+            $sercRecords = $team->getBestSercs();
+            $distinctTeams = $club->getDistinctTeams();
+            $competedAt = $team->getCompetitionsCompetedAt();
+
+            return compact('club', 'team', 'allPlacings', 'speedRecords', 'sercRecords', 'distinctTeams',  'competedAt');
+        });
+
+        return view('public-results.stats.compare', compact('data1', 'data2'));
     }
 }
