@@ -26,6 +26,7 @@ class TeamLeagueData extends TeamBase
         $data['competedAt'] = $team->getCompetitionsCompetedAt();
         $data['distinctTeams'] = $club->getDistinctTeams();
         $data['league'] = $options['league'] == 'O' ? 'Overall' : $options['league'];
+        $data['team'] = $team->getTeamName();
 
         return $data;
     }

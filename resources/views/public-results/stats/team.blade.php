@@ -38,8 +38,24 @@
         <a href="{{ route('public.results.stats.clubs') }}"
             class="link flex items-center space-x-1  z-50 cursor-pointer">All Clubs</a>
 
-        <h1 class="font-bold  " style="font">{{ $clubData['club']->name }} {{ $clubData['team']->getTeamLetter() }}
-        </h1>
+        <div class="flex justify-between items-center" x-data="{
+            compareUrl: '{{ route('public.results.stats.compare', ['L', 'R']) }}',
+            leftTeam: '{{ $clubData['team']->getTeamSlug() }}',
+            rightTeam: 'none.none',
+        
+            compare() {
+        
+                let targetUrl = this.compareUrl.replace('L', this.leftTeam).replace('R', this.rightTeam)
+        
+                window.location = targetUrl
+        
+            }
+        }">
+            <h1 class="font-bold  " style="font">{{ $clubData['club']->name }}
+                {{ $clubData['team']->getTeamLetter() }}
+            </h1>
+            <p class="link" @click="compare">Compare against another team</p>
+        </div>
 
 
         <div class="flex  ">Teams:

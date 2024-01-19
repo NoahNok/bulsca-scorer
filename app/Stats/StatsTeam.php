@@ -81,4 +81,9 @@ class StatsTeam
     {
         return $this->club->name . ' ' . $this->getTeamLetter();
     }
+
+    public function getTeamSlug()
+    {
+        return $this->club->name . '.' . $this->getTeamLetter();
+    }
 }

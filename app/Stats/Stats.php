@@ -18,4 +18,9 @@ class Stats
         AS UNSIGNED))) AS place FROM speed_results sr INNER JOIN competition_speed_events cse ON cse.id=sr.event INNER JOIN speed_events se ON se.id=cse.event INNER JOIN competition_teams ct ON ct.id=sr.competition_team INNER JOIN clubs
         c ON c.id=ct.club INNER JOIN competitions cp ON cp.id=ct.competition WHERE result>4 AND disqualification IS NULL AND cp.isLeague=true GROUP BY se.id,sr.competition_team ORDER BY se.id, record) AS t WHERE t.place=1;');
     }
+
+    public static function getAllTeams()
+    {
+        return DB::select('SELECT DISTINCT ct.team, c.name FROM competition_teams ct INNER JOIN clubs c ON c.id=ct.club INNER JOIN competitions cp ON cp.id=ct.competition WHERE cp.isLeague=true ORDER BY c.name, ct.team;');
+    }
 }
