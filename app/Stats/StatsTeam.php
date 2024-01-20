@@ -63,7 +63,7 @@ class StatsTeam
 
 
         return Cache::remember('stats_club.' . $this->club->id . '.bestSercs.' . $this->teamLetter, 60 * 60 * 24, function () {
-            return DB::select($this->club->bestSercBase("cl.id=? AND ct.team=?", "total DESC LIMIT 5"), [$this->club->id, Str::upper($this->teamLetter)]);
+            return DB::select($this->club->bestSercBase("cl.id=? AND ct.team=?", "total/max DESC LIMIT 5"), [$this->club->id, Str::upper($this->teamLetter)]);
         });
     }
 

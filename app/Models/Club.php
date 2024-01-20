@@ -66,7 +66,7 @@ class Club extends Model
 
 
         return Cache::remember('stats_club.' . $this->id . '.bestSercs', 60 * 60 * 24, function () {
-            return DB::select($this->bestSercBase("cl.id=?", "total DESC LIMIT 5"), [$this->id]);
+            return DB::select($this->bestSercBase("cl.id=?", "total/max DESC LIMIT 5"), [$this->id]);
         });
     }
 
