@@ -1,7 +1,7 @@
 <div class="card">
     <h3>Speed Records</h3>
     <div class="w-full h-full overflow-x-auto">
-        <table class="table-auto">
+        <table class="table-auto min-w-full">
             <thead class="text-left">
                 <tr class="gap-1">
                     <th class="px-2 pl-0">Event</th>
@@ -13,7 +13,7 @@
             </thead>
             <tbody>
                 @foreach ($data as $record)
-                    <tr class=" space">
+                    <tr class=" space" x-speed-event="{{ $record['se'] }}" x-speed-record="{{ $record['result'] }}">
 
                         <td class="px-2 pl-0 whitespace-nowrap">{{ $record['se'] }}</td>
                         <td class="px-2">

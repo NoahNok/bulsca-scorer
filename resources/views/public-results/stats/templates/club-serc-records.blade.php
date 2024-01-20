@@ -1,7 +1,7 @@
 <div class="card">
     <h3>SERC Records</h3>
     <div class="w-full h-full overflow-x-auto">
-        <table class="table-auto">
+        <table class="table-auto min-w-full">
             <thead class="text-left">
                 <tr>
                     <th class="px-2 pl-0">SERC</th>

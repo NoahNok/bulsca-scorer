@@ -164,6 +164,40 @@
         ['Overall', 'A', 'B'].forEach((league) => {
             setCommonMax(league)
         })
+
+        function compareSpeedTimes() {
+            let allEvents = []
+            document.body.querySelectorAll('[x-speed-event]').forEach((el) => {
+
+                let eventName = el.getAttribute('x-speed-event')
+
+                if (!allEvents.includes(eventName)) {
+                    allEvents.push(eventName)
+                }
+
+            })
+
+            allEvents.forEach(event => {
+                let fasterElement = null;
+
+                document.body.querySelectorAll(`[x-speed-event='${event}']`).forEach((el) => {
+                    if (!fasterElement) {
+                        fasterElement = el
+                    } else {
+                        let fasterTime = parseInt(fasterElement.getAttribute('x-speed-record'))
+                        let thisTime = parseInt(el.getAttribute('x-speed-record'))
+
+                        if (thisTime < fasterTime) {
+                            fasterElement = el
+                        }
+                    }
+                })
+
+                fasterElement.classList.add('bg-green-100')
+
+            })
+        }
+        compareSpeedTimes()
     </script>
 
 </body>
