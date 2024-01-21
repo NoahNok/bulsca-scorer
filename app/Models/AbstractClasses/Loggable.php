@@ -7,6 +7,7 @@ use App\Models\CompetitionTeam;
 use App\Models\DigitalJudge\BetterJudgeLog;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
 
 abstract class Loggable extends Model
 {
@@ -55,7 +56,8 @@ abstract class Loggable extends Model
         $log->associated_with()->associate($this->resolveJudgeLogAssociation());
         $log->team = $this->resolveJudgeLogTeam()->id;
         $log->action = $action;
-        $log->competition = DigitalJudge::getClientCompetition() ? DigitalJudge::getClientCompetition()->id : auth()->user()->getCompetition()->id;
+
+        $log->competition = DigitalJudge::getClientCompetition() ? DigitalJudge::getClientCompetition()->id : (auth()->user()->getCompetition()?->id ?? Session::get('ac'));
         $log->judge_name = $judgeName;
         $log->save();
     }
