@@ -57,7 +57,7 @@ abstract class Loggable extends Model
         $log->team = $this->resolveJudgeLogTeam()->id;
         $log->action = $action;
 
-        $log->competition = DigitalJudge::getClientCompetition() ? DigitalJudge::getClientCompetition()->id : (auth()->user()->getCompetition()?->id ?? Session::get('ac'));
+        $log->competition = DigitalJudge::getClientCompetition() ? DigitalJudge::getClientCompetition()->id : (auth()->user()->getCompetition()?->id ?? Session::get('ac')->id);
         $log->judge_name = $judgeName;
         $log->save();
     }
