@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('better_judge_logs', function (Blueprint $table) {
 
-            $table->foreignId('team')->change()->onDelete('SET NULL');
+            $table->foreignId('team')->onDelete('SET NULL')->change();
         });
     }
 
