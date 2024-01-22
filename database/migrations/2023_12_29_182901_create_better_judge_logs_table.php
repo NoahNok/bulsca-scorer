@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('better_judge_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('competition')->constrained('competitions')->cascade();
-            $table->foreignId('team')->nullable()->constrained('competition_teams')->cascade();
+            $table->foreignId('team')->nullable()->constrained('competition_teams')->onDelete('cascade')->onUpdate('cascade');
             $table->json('loggable_data')->nullable();
             $table->string('loggable_type', 255)->nullable();
             $table->morphs('associated');

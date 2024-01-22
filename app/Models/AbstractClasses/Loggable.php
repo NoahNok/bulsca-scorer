@@ -16,7 +16,7 @@ abstract class Loggable extends Model
 
     abstract public function getJudgeLogTitle();
     abstract public function getJudgeLogDescription();
-    abstract public function resolveJudgeLogTeam(): CompetitionTeam;
+    abstract public function resolveJudgeLogTeam(): ?CompetitionTeam;
     abstract public function resolveJudgeLogName();
     abstract public function resolveJudgeLogAssociation();
 
