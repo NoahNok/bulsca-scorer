@@ -96,8 +96,12 @@
                                                 ->where('team', $result->tid)
                                                 ->first();
                                         @endphp
-                                        H{{ $h->heat }}L{{ $h->lane }}:
-                                        {{ $h->getOOF($event->id)?->oof ?: '-' }}
+                                        @if ($h)
+                                            H{{ $h->heat }}L{{ $h->lane }}:
+                                            {{ $h->getOOF($event->id)?->oof ?: '-' }}
+                                        @else
+                                            -
+                                        @endif
                                     </td>
                                 @endif
                                 <td class="py-4 px-6">
