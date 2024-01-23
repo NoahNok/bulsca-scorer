@@ -17,13 +17,6 @@ function rr()
     Route::get('/{comp_slug}/serc/{event}', [PublicResultsController::class, 'viewSerc'])->name("public.results.serc");
     Route::get('/{comp_slug}/serc/{event}/notes/{team}', [PublicResultsController::class, 'viewTeamSercNotes'])->name("public.results.serc.team-notes");
     Route::get('/{comp_slug}/results/{schema}', [PublicResultsController::class, 'viewResults'])->name("public.results.results");
-
-    Route::prefix('stats')->group(function () {
-        Route::get('/clubs', [PublicStatsController::class, 'clubs'])->name('public.results.stats.clubs');
-        Route::get('/clubs/{clubName}', [PublicStatsController::class, 'club'])->name('public.results.stats.club');
-        Route::get('/clubs/{clubName}/{teamName}', [PublicStatsController::class, 'team'])->name('public.results.stats.club.team');
-        Route::get('/compare/{team1}/{team2}', [PublicStatsController::class, 'compare'])->name('public.results.stats.compare');
-    });
 }
 
 if (env('APP_ENV') == 'local') {

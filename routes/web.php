@@ -42,6 +42,9 @@ require __DIR__ . '/live.php';
 // Import WHATIF routes first so results. overrides
 require __DIR__ . '/whatif.php';
 
+// Import STATS routes first so results. overrides
+require __DIR__ . '/stats.php';
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
