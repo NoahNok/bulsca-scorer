@@ -50,7 +50,7 @@ class SERCResult extends Loggable
         return  $this->getMarkingPointName() . " (" . $this->getMarkingPoint->getJudge->name . "): " . round($this->result);
     }
 
-    public function resolveJudgeLogTeam(): CompetitionTeam
+    public function resolveJudgeLogTeam(): ?CompetitionTeam
     {
         return $this->getTeam;
     }

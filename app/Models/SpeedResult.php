@@ -76,7 +76,7 @@ class SpeedResult extends Loggable
         return "Result: " . $this->prettyTime($this->result) . " | Penalties: " . (strlen($this->getPenaltiesAsString()) > 0 ? $this->getPenaltiesAsString() : '-') . " | DQ: " . ($this->disqualification ?? '-');
     }
 
-    public function resolveJudgeLogTeam(): CompetitionTeam
+    public function resolveJudgeLogTeam(): ?CompetitionTeam
     {
         return $this->getTeam;
     }
