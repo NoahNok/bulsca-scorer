@@ -46,7 +46,7 @@
                 <h4 style="margin-bottom: 0 !important">Management</h4>
             </a>
 
-            <a href="{{ route('dj.index') }}"
+            <a href="{{ route('public.results.stats.clubs') }}"
                 class="card  card-pad-y-sm  bg-gradient-to-bl from-purple-700 to-bulsca hover:to-bulsca_red  items-center justify-center  "
                 style="">
 
