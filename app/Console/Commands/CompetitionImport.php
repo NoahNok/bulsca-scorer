@@ -30,7 +30,7 @@ class CompetitionImport extends Command
      */
     public function handle()
     {
-        $filePath = "/home/noah/L2023.xlsm";
+        $filePath = text('What is the path to the score sheet?');
 
         $loader = new \App\Importer\Loader($this);
         $data = $loader->load($filePath);
