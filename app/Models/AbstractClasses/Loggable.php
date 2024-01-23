@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Session;
 abstract class Loggable extends Model
 {
 
-
+    private bool $shouldLog = true;
 
     abstract public function getJudgeLogTitle();
     abstract public function getJudgeLogDescription();
@@ -39,18 +39,28 @@ abstract class Loggable extends Model
         });
     }
 
+
+    public function disableLogging()
+    {
+        $this->shouldLog = false;
+
     public static function setLogging(bool $logging)
     {
         self::$skipLogging = !$logging;
+
     }
 
     private function log($action)
     {
 
-        if (self::$skipLogging) {
+        if (!$this->shouldLog) {
             return;
         }
 
+
+        if (self::$skipLogging) {
+            return;
+        }
 
         $judgeName = "SCORER";
 
