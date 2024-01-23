@@ -7,6 +7,7 @@ use App\Http\Requests\WhatIf\WhatIfBeginRequest;
 use App\Http\Requests\WhatIf\WhatIfResumeRequest;
 use App\Http\Requests\WhatIf\WhatIfUpdateSercResult;
 use App\Http\Requests\WhatIf\WhatIfUpdateSpeedResult;
+use App\Models\AbstractClasses\Loggable;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\ResultSchema;
@@ -40,7 +41,7 @@ class WhatIfController extends Controller
     public function cloneAndStart(WhatIfBeginRequest $request)
     {
 
-
+        Loggable::setLogging(false);
 
 
 
@@ -80,6 +81,7 @@ class WhatIfController extends Controller
 
 
         Auth::login($user);
+
 
 
         return redirect()->route('whatif.editor');

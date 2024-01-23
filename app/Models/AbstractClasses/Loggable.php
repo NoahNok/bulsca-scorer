@@ -20,6 +20,8 @@ abstract class Loggable extends Model
     abstract public function resolveJudgeLogName();
     abstract public function resolveJudgeLogAssociation();
 
+    private static bool $skipLogging = false;
+
     protected static function boot()
     {
         parent::boot();
@@ -37,13 +39,18 @@ abstract class Loggable extends Model
         });
     }
 
+    public static function setLogging(bool $logging)
+    {
+        self::$skipLogging = !$logging;
+    }
+
     private function log($action)
     {
 
-        // Skip logging if using whatif database conection
-        if (config('database.default') == 'whatif') {
+        if (self::$skipLogging) {
             return;
         }
+
 
         $judgeName = "SCORER";
 
