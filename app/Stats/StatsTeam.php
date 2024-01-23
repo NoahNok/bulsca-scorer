@@ -69,7 +69,7 @@ class StatsTeam
 
     public function getCompetitionsCompetedAt()
     {
-        return DB::select('SELECT c.name, c.id FROM competitions c INNER JOIN competition_teams ct ON ct.competition=c.id INNER JOIN clubs cl ON cl.id=ct.club WHERE cl.id=? AND c.isLeague = true AND ct.team=? GROUP BY c.id ORDER BY c.when;', [$this->club->id, Str::upper($this->teamLetter)]);
+        return DB::select('SELECT c.name, c.id FROM competitions c INNER JOIN competition_teams ct ON ct.competition=c.id INNER JOIN clubs cl ON cl.id=ct.club WHERE cl.id=? AND c.isLeague = true AND ct.team=? AND c.public_results=true GROUP BY c.id ORDER BY c.when;', [$this->club->id, Str::upper($this->teamLetter)]);
     }
 
     public function getTeamLetter()
