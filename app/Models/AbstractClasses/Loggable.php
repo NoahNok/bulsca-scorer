@@ -43,11 +43,11 @@ abstract class Loggable extends Model
     public function disableLogging()
     {
         $this->shouldLog = false;
+    }
 
     public static function setLogging(bool $logging)
     {
         self::$skipLogging = !$logging;
-
     }
 
     private function log($action)
