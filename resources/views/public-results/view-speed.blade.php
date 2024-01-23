@@ -167,7 +167,14 @@
                     <small class="text-gray-600">team:x, league:x</small>
                 </div>
                 @if (!$comp->areResultsProvisional())
-                    <a href="{{ Request::url() }}?dlCSV" class="link">Download as CSV</a>
+                    <div class="md:ml-auto flex flex-col items-center md:items-end">
+                        <div>
+                            <a href="{{ route('whatif') }}" class="link ">Edit in WhatIf</a>
+                            or
+                            <a href="{{ Request::url() }}?dlCSV" class="link ">Download as CSV</a>
+                        </div>
+                        <small>WhatIf lets you explore how changes would effect overall results!</small>
+                    </div>
                 @endif
             </div>
 

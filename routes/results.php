@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PublicResultsController;
+use App\Http\Controllers\PublicStatsController;
 use Illuminate\Support\Facades\Route;
 
 

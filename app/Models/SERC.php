@@ -35,7 +35,7 @@ class SERC extends Model implements IPenalisable
         // Raw query
         // SELECT *, RANK() OVER (ORDER BY points DESC) place FROM (SELECT *, IF(EXISTS (SELECT * FROM serc_disqualifications WHERE serc=16 AND team=tid) , 0, (score/max)*1000) AS points FROM (WITH tbl AS (SELECT CONCAT(c.name, ' ', ct.team) AS team, sr.team AS tid, SUM(result*weight) as score FROM serc_results sr INNER JOIN serc_marking_points mp ON marking_point=mp.id INNER JOIN competition_teams ct ON ct.id=sr.team INNER JOIN clubs c ON c.id=ct.club WHERE mp.serc=16 GROUP BY team, tid) SELECT *, (SELECT MAX(score) FROM tbl) AS max FROM tbl) AS t) AS f;
 
-        $results = DB::select("SELECT *, RANK() OVER (ORDER BY points DESC) place FROM (SELECT *, IF(EXISTS (SELECT * FROM serc_disqualifications WHERE serc=? AND team=tid) , 0, (score/max)*1000) AS points FROM (WITH tbl AS (SELECT CONCAT(c.name, ' ', ct.team) AS team, sr.team AS tid, SUM(result*weight) as score FROM serc_results sr INNER JOIN serc_marking_points mp ON marking_point=mp.id INNER JOIN competition_teams ct ON ct.id=sr.team INNER JOIN clubs c ON c.id=ct.club WHERE mp.serc=? GROUP BY team, tid) SELECT *, (SELECT MAX(score) FROM tbl) AS max FROM tbl) AS t) AS f;", [$this->id, $this->id]);
+        $results = DB::select("SELECT *, RANK() OVER (ORDER BY points DESC) place, (SELECT code FROM serc_disqualifications WHERE serc=? AND team=tid LIMIT 1) AS disqualification FROM (SELECT *, IF(EXISTS (SELECT * FROM serc_disqualifications WHERE serc=? AND team=tid) , 0, (score/max)*1000) AS points FROM (WITH tbl AS (SELECT CONCAT(c.name, ' ', ct.team) AS team, sr.team AS tid, ct.club AS club, SUM(result*weight) as score FROM serc_results sr INNER JOIN serc_marking_points mp ON marking_point=mp.id INNER JOIN competition_teams ct ON ct.id=sr.team INNER JOIN clubs c ON c.id=ct.club WHERE mp.serc=? GROUP BY team, tid) SELECT *, (SELECT MAX(score) FROM tbl) AS max FROM tbl) AS t) AS f;", [$this->id, $this->id, $this->id]);
 
         return $results;
     }
@@ -52,7 +52,7 @@ class SERC extends Model implements IPenalisable
 
     public function getResultQuery()
     {
-        return str_replace("?", $this->id, "SELECT *, RANK() OVER (ORDER BY points DESC) place FROM (SELECT *, (SELECT id FROM serc_disqualifications WHERE serc=? AND team=tid ) AS disqualification, IF(EXISTS (SELECT * FROM serc_disqualifications WHERE serc=? AND team=tid) , 0, (score/max)*1000) AS points FROM (WITH tbl AS (SELECT CONCAT(c.name, ' ', ct.team) AS team, sr.team AS tid, SUM(result*weight) as score FROM serc_results sr INNER JOIN serc_marking_points mp ON marking_point=mp.id INNER JOIN competition_teams ct ON ct.id=sr.team INNER JOIN clubs c ON c.id=ct.club INNER JOIN leagues l on l.id=ct.league WHERE mp.serc=? :league_conds: GROUP BY team, tid) SELECT *, (SELECT MAX(score) FROM tbl) AS max FROM tbl) AS t) AS f;");
+        return str_replace("?", $this->id, "SELECT *, RANK() OVER (ORDER BY points DESC) place FROM (SELECT *, (SELECT id FROM serc_disqualifications WHERE serc=? AND team=tid ) AS disqualification, IF(EXISTS (SELECT * FROM serc_disqualifications WHERE serc=? AND team=tid) , 0, (score/max)*1000) AS points FROM (WITH tbl AS (SELECT CONCAT(c.name, ' ', ct.team) AS team, sr.team AS tid, ct.club AS club, SUM(result*weight) as score FROM serc_results sr INNER JOIN serc_marking_points mp ON marking_point=mp.id INNER JOIN competition_teams ct ON ct.id=sr.team INNER JOIN clubs c ON c.id=ct.club INNER JOIN leagues l on l.id=ct.league WHERE mp.serc=? :league_conds: GROUP BY team, tid) SELECT *, (SELECT MAX(score) FROM tbl) AS max FROM tbl) AS t) AS f;");
     }
 
     public function getType()
@@ -212,5 +212,47 @@ class SERC extends Model implements IPenalisable
         $dq = SERCDisqualification::firstOrNew(['team' => $teamId, 'serc' => $this->id]);
         $dq->code = $code;
         $dq->save();
+    }
+
+    public function getSERCData()
+    {
+
+        $dbData = DB::select('SELECT j.name AS judge_name, smp.name AS mp_name, smp.weight AS mp_weight , sr.marking_point AS mp_id, sr.team, result FROM serc_results sr INNER JOIN serc_marking_points smp ON smp.id=sr.marking_point INNER JOIN serc_judges j ON j.id=smp.judge WHERE smp.serc=? ORDER BY j.id,smp.id;', [$this->id]);
+
+
+        $judges = [];
+        $results = [];
+
+
+
+        foreach ($dbData as $row) {
+
+            if (!in_array($row->mp_id, $judges[$row->judge_name] ?? [])) {
+                $judges[$row->judge_name][$row->mp_id]['name'] = $row->mp_name;
+                $judges[$row->judge_name][$row->mp_id]['weight'] = $row->mp_weight;
+            }
+
+            $results[$row->team]['results'][$row->mp_id] = $row->result;
+        }
+
+        $placeResults = $this->getResults();
+
+        foreach ($placeResults as $placeResult) {
+            $results[$placeResult->tid]['place'] = $placeResult->place;
+            $results[$placeResult->tid]['points'] = $placeResult->points;
+
+            $results[$placeResult->tid]['team'] = $placeResult->team;
+            $results[$placeResult->tid]['raw'] = $placeResult->score;
+            $results[$placeResult->tid]['tid'] = $placeResult->tid;
+            $results[$placeResult->tid]['disqualification'] = $placeResult->disqualification;
+        }
+
+        usort($results, function ($item1, $item2) {
+            return $item1['place'] > $item2['place'];
+        });
+
+
+
+        return compact('judges', 'results');
     }
 }

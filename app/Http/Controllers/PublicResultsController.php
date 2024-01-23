@@ -37,7 +37,11 @@ class PublicResultsController extends Controller
 
         if ($request->exists('dlCSV')) return $this->getSercAsCSV($event, $comp_slug);
 
-        else return view('public-results.view-serc', ['comp' => $comp_slug, 'event' => $event]);
+
+        $fasterSercData = $event->getSERCData();
+
+
+        return view('public-results.view-serc', ['comp' => $comp_slug, 'event' => $event, 'fsd' => $fasterSercData]);
     }
 
     public function viewResults(Competition $comp_slug, ResultSchema $schema)

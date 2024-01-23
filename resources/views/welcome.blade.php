@@ -22,7 +22,8 @@
 
 
         <div class="grid-2 w-[80%] md:w-[50%] xl:w-[40%] 4xl:w-[30%]">
-            <a href="{{ route('public.results') }}" class="card card-bulsca card-pad-y items-center justify-center">
+            <a href="{{ route('public.results') }}"
+                class="card card-bulsca card-pad-y items-center justify-center relative">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                     stroke="currentColor" class="w-12 h-12">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -30,6 +31,8 @@
                 </svg>
 
                 <h4 style="margin-bottom: 0 !important">Results</h4>
+
+
 
             </a>
             <a href="{{ route('login') }}"
@@ -43,14 +46,22 @@
                 <h4 style="margin-bottom: 0 !important">Management</h4>
             </a>
 
+            <a href="{{ route('public.results.stats.clubs') }}"
+                class="card  card-pad-y-sm  bg-gradient-to-bl from-purple-700 to-bulsca hover:to-bulsca_red  items-center justify-center  "
+                style="">
+
+
+                <h4 style="margin-bottom: 0 !important" class="text-white">Stats</h4>
+            </a>
 
             <a href="{{ route('dj.index') }}"
-                class="card  card-pad-y-sm  bg-gradient-to-bl from-purple-700 to-bulsca hover:to-bulsca_red  items-center justify-center md:col-span-2 "
+                class="card  card-pad-y-sm  bg-gradient-to-bl to-purple-700 from-bulsca hover:from-bulsca_red hover:to-purple-700  items-center justify-center  "
                 style="">
 
 
                 <h4 style="margin-bottom: 0 !important" class="text-white">Judge</h4>
             </a>
+
         </div>
 
         <a href="https://bulsca.co.uk" class="link">bulsca.co.uk</a>

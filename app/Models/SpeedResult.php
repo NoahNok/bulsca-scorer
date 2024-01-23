@@ -90,4 +90,16 @@ class SpeedResult extends Loggable
     {
         return $this->getEvent;
     }
+
+    public static function getPrettyTime($time)
+    {
+
+
+        $minutes = floor($time / 60000);
+        $seconds = floor(($time - ($minutes * 60000)) / 1000);
+        $milliseconds = $time - ($minutes * 60000) - ($seconds * 1000);
+
+        $result = str_pad($minutes, 2, "0", STR_PAD_LEFT) . ":" . str_pad($seconds, 2, "0", STR_PAD_LEFT) . "." . str_pad($milliseconds, 3, "0", STR_PAD_LEFT);
+        return $result;
+    }
 }
