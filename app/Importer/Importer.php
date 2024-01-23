@@ -180,6 +180,11 @@ class Importer
             $mpIds[$judge['name']] = [];
 
             foreach ($judge['markingPoints'] as $markingPoint) {
+
+                if (empty($markingPoint['weight'])) {
+                    continue;
+                }
+
                 $sercMP = new \App\Models\SERCMarkingPoint();
                 $sercMP->judge = $sercJudge->id;
                 $sercMP->name = $markingPoint['name'];
@@ -199,6 +204,10 @@ class Importer
                 $judgeName = $mark['judge'];
 
                 foreach ($mark['results'] as $index => $result) {
+
+
+
+
                     $sercResult = new \App\Models\SERCResult();
                     $sercResult->team = $ct;
                     $sercResult->marking_point = $mpIds[$judgeName][$index];
