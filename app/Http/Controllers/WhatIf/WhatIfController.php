@@ -29,7 +29,7 @@ class WhatIfController extends Controller
 {
     public function index()
     {
-
+        Loggable::setLogging(false);
 
         if (auth()->user()) {
             return redirect()->route('whatif.editor');
@@ -89,6 +89,7 @@ class WhatIfController extends Controller
 
     public function resume(WhatIfResumeRequest $request)
     {
+        Loggable::setLogging(false);
         $validated = $request->validated();
         Config::set('database.default', 'whatif');
 
@@ -103,7 +104,7 @@ class WhatIfController extends Controller
 
     public function editorIndex()
     {
-
+        Loggable::setLogging(false);
 
         if (!auth()->user()) {
             return redirect()->route('whatif');
@@ -124,7 +125,7 @@ class WhatIfController extends Controller
 
     public function editorResults(int $schema)
     {
-
+        Loggable::setLogging(false);
         $rs = ResultSchema::find($schema);
 
 
@@ -150,7 +151,7 @@ class WhatIfController extends Controller
     {
 
 
-
+        Loggable::setLogging(false);
 
 
         $validated = $request->validated();
@@ -173,6 +174,7 @@ class WhatIfController extends Controller
 
     public function updateSpeedResult(WhatIfUpdateSpeedResult $request)
     {
+        Loggable::setLogging(false);
         $validated = $request->validated();
 
         $value = $validated['value'];
@@ -246,6 +248,7 @@ class WhatIfController extends Controller
 
     public function getSpeedResults(int $speed)
     {
+        Loggable::setLogging(false);
         $cse = CompetitionSpeedEvent::find($speed);
 
 
@@ -262,6 +265,7 @@ class WhatIfController extends Controller
 
     public function getSercResults(int $serc)
     {
+        Loggable::setLogging(false);
         $serc = SERC::find($serc);
 
         $results = Cache::rememberForever('serc_results_' . $serc->id, function () use ($serc) {
@@ -279,7 +283,7 @@ class WhatIfController extends Controller
     {
 
 
-
+        Loggable::setLogging(false);
         $comp = Competition::find($comp);
 
         if ($comp->wi_user != auth()->user()->id) {
@@ -306,7 +310,7 @@ class WhatIfController extends Controller
     public function loggedInCloneAndSwitch(Request $request)
     {
 
-
+        Loggable::setLogging(false);
         $compId = $request->input('competition', '');
 
         if ($compId == '') {
@@ -346,7 +350,7 @@ class WhatIfController extends Controller
 
     public function deleteEditor(Request $request)
     {
-
+        Loggable::setLogging(false);
 
         if (!auth()->user()->getCompetition) {
             return redirect()->route('whatif.select');
@@ -388,7 +392,7 @@ class WhatIfController extends Controller
 
     public function resetCurrentCompetition()
     {
-
+        Loggable::setLogging(false);
         $comp = auth()->user()->getCompetition;
 
         Config::set('database.default', 'mysql');
@@ -415,12 +419,13 @@ class WhatIfController extends Controller
 
     public function select()
     {
+        Loggable::setLogging(false);
         return view('whatif.select-competition');
     }
 
     public function logout()
     {
-
+        Loggable::setLogging(false);
 
         if (!auth()->user()) {
             return redirect()->route('whatif');
