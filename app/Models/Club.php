@@ -80,7 +80,7 @@ class Club extends Model
 
         $placings = Cache::rememberForever('stats_club.' . $this->id . '.placings.' . $league, function () use ($league) {
             $placings = [];
-            foreach (Competition::where('isLeague', true)->orderBy('when')->get() as $competition) {
+            foreach (Competition::where('isLeague', true)->where('public_results', true)->orderBy('when')->get() as $competition) {
                 $overallSchema = $competition->getResultSchemas->where('league', $league)->first();
 
                 if ($overallSchema == null) continue;
