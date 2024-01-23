@@ -40,6 +40,11 @@ abstract class Loggable extends Model
     private function log($action)
     {
 
+        // Skip logging if using whatif database conection
+        if (config('database.default') == 'whatif') {
+            return;
+        }
+
         $judgeName = "SCORER";
 
         // GET CURRENT ROUTE NAME
