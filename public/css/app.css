@@ -740,6 +740,9 @@ video {
 .mr-3 {
   margin-right: 0.75rem;
 }
+.mt-0 {
+  margin-top: 0px;
+}
 .block {
   display: block;
 }
@@ -907,17 +910,6 @@ video {
 .w-40 {
   width: 10rem;
 }
-.w-12 {
-  width: 3rem;
-}
-.w-7 {
-  width: 1.75rem;
-}
-.w-max {
-  width: -moz-max-content;
-  width: max-content;
-}
-
 .w-12 {
   width: 3rem;
 }
@@ -1181,21 +1173,17 @@ video {
   --tw-space-x-reverse: 0;
   margin-right: calc(1rem * var(--tw-space-x-reverse));
   margin-left: calc(1rem * calc(1 - var(--tw-space-x-reverse)));
-
 }
-
 .space-y-2 > :not([hidden]) ~ :not([hidden]) {
   --tw-space-y-reverse: 0;
   margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
 }
-
 .space-y-3 > :not([hidden]) ~ :not([hidden]) {
   --tw-space-y-reverse: 0;
   margin-top: calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(0.75rem * var(--tw-space-y-reverse));
 }
-
 .space-x-1 > :not([hidden]) ~ :not([hidden]) {
   --tw-space-x-reverse: 0;
   margin-right: calc(0.25rem * var(--tw-space-x-reverse));
@@ -3373,10 +3361,6 @@ aside.open {
 
   .md\:hidden {
     display: none;
-  }
-
-  .md\:w-\[75\%\] {
-    width: 75%;
   }
 
   .md\:w-\[15\%\] {
