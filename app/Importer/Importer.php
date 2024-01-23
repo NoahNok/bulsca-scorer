@@ -2,324 +2,211 @@
 
 namespace App\Importer;
 
-use Illuminate\Console\Command;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Protection;
+use App\Models\Competition;
+use App\Models\CompetitionSpeedEvent;
+use App\Models\CompetitionTeam;
+use App\Models\League;
+use App\Models\Penalty;
+use App\Models\SERC;
+use App\Models\SpeedEvent;
 
-use function Laravel\Prompts\alert;
-use function Laravel\Prompts\multiselect;
-use function Laravel\Prompts\info;
+use function Laravel\Prompts\select;
 use function Laravel\Prompts\spin;
-use function Laravel\Prompts\progress;
 use function Laravel\Prompts\text;
 
 class Importer
 {
 
-    private Spreadsheet $spreadsheet;
-    private Command $command;
-    private array $teams = [];
+    private Competition $competition;
 
-    public function __construct(Command $command)
+    private $teamNameIdMap = [];
+
+    public function import($competitionDetails, $teams, $speedsData, $sercData)
     {
-        $this->command = $command;
+
+        $this->competition = new Competition();
+        $this->competition->name = $competitionDetails['name'];
+        $this->competition->when = $competitionDetails['when'];
+        $this->competition->max_lanes = 8;
+        $this->competition->save();
+
+
+        spin(fn () => $this->importTeams($teams), 'Importing Teams');
+
+        spin(fn () => $this->importSpeeds($speedsData), 'Importing Speed Events');
+
+        spin(fn () => $this->importSercs($sercData), 'Importing SERCs');
+
+        info("Import Complete");
+
+        return $this->competition;
     }
 
-    public function import(string $filePath)
+    private function importTeams($teams)
     {
 
-        info('Setup Import for ' . basename($filePath));
-        $speedEvents = multiselect('Which speed events would you like to import?', ['Swim&Tow', 'RopeThrow', 'Medley', 'Obstacle', 'Manikin'], ['RopeThrow', 'Swim&Tow'], hint: "Select 'Medley' for Pool Lifesaver.");
-        $sercs = multiselect('Which SERCs would you like to import?', ['Dry Incident', 'Wet Incident'], ['Dry Incident', 'Wet Incident']);
+        foreach ($teams as $team) {
+            $club = \App\Models\Club::firstOrCreate(['name' => $team['club']]);
 
+            $ct = new CompetitionTeam();
+            $ct->competition = $this->competition->id;
+            $ct->club = $club->id;
+            $ct->team = $team['team'];
+            $ct->league = League::where('name', $team['league'])->first()->id;
 
+            $timeParts = explode(":", $team['s&t']);
+            $seconds = $timeParts[0] * 60 + $timeParts[1];
+            $ct->st_time = $seconds;
 
-        spin(fn () => $this->loadSheet($filePath), 'Loading Spreadsheet');
-        spin(fn () => $this->getTeams(), 'Loading Teams');
+            $ct->save();
 
-        $teamCount = count($this->teams);
-        info('Loaded ' . $teamCount . ' teams');
-
-
-        $allSercResults = [];
-
-        foreach ($sercs as $serc) {
-            $loader = new SercLoader($this->spreadsheet, $serc, $this->command, $teamCount);
-            $allSercResults[] = [
-                'event' => $serc,
-                'results' => $loader->load()
-            ];
+            $this->teamNameIdMap[$team['club'] . " " . $team['team']] = $ct->id;
         }
-
-        $allSpeedResults = progress("Loading Speed Events", $speedEvents, function ($speedEvent, $progress) use ($teamCount) {
-            $progress->label("Loading {$speedEvent}");
-            $loader = new SpeedLoader($this->spreadsheet, $speedEvent, $this->command, $teamCount);
-            return [
-                'event' => $speedEvent,
-                'results' => $loader->load()
-            ];
-        });
-
-        info("All events loaded. Starting import");
     }
 
-
-
-    private function loadSheet($filePath)
+    private function importSpeeds($speedsData)
     {
-        $reader = new Xlsx();
-        $reader->setReadDataOnly(true);
-        $this->spreadsheet = $reader->load($filePath);
-    }
 
-    private function getTeams()
-    {
-        $setupSheet = $this->spreadsheet->getSheetByName('Set UP');
-
-        $teamStartRow = 7;
-        $teamColStart = "D";
-        $teamColEnd = "H";
-
-        $hasMoreTeams = true;
-
-        $teams = [];
-
-        while ($hasMoreTeams) {
-            $teamRow = $setupSheet->rangeToArray($teamColStart . $teamStartRow . ":" . $teamColEnd . $teamStartRow, null, true, true, false);
-
-            if (empty($teamRow[0][0])) {
-                $hasMoreTeams = false;
-                continue;
-            }
-
-            $teams[] = [
-                'club' => $teamRow[0][0],
-                'team' => $teamRow[0][1],
-                'league' => $teamRow[0][2],
-                's&t' => $teamRow[0][3] . ":" . $teamRow[0][4]
-            ];
-
-            $teamStartRow++;
+        foreach ($speedsData as $speed) {
+            $this->importSpeed($speed['event'], $speed['results']);
         }
-
-        $this->teams = $teams;
-    }
-}
-
-class SercLoader
-{
-
-    private Spreadsheet $spreadsheet;
-    private string $sheetName;
-    private Command $command;
-    private int $totalTeams;
-
-    public function __construct($spreadsheet, $sheetName, $command, $totalTeams)
-    {
-        $this->spreadsheet = $spreadsheet;
-        $this->sheetName = $sheetName;
-        $this->command = $command;
-        $this->totalTeams = $totalTeams;
     }
 
-    private function prefix()
+
+    private function getSpeedEventFromName($eventName): SpeedEvent
     {
-        return "[" . $this->sheetName . "] ";
-    }
 
-    public function gatherJudgeInformation()
-    {
-        $judges = [];
+        if ($eventName === 'Swim&Tow') {
+            return SpeedEvent::where('name', 'Swim & Tow')->first();
+        } else if ($eventName === 'RopeThrow') {
+            return SpeedEvent::where('name', 'Rope Throw')->first();
+        } else if ($eventName === 'Medley') {
 
-        alert($this->prefix() . "Judge entry");
+            $actual = select('Which Medley Relay?', ['Medley', 'Pool Lifesaver'], 'Medley Relay');
 
-        while (true) {
-            $name = text($this->prefix() . 'Enter a judge name or leave blank to continue');
-
-            if (empty($name)) {
-                break;
-            }
-
-            $judges[] = $this->gatherJudge($name);
-
-
-
-            info($this->prefix() . 'Judge ' . $name . ' added');
+            return SpeedEvent::where('name', $actual)->first();
+        } else if ($eventName === 'Obstacle') {
+            return SpeedEvent::where('name', 'Obstacle')->first();
+        } else if ($eventName === 'Manikin') {
+            return SpeedEvent::where('name', 'Manikin')->first();
+        } else {
+            return null; # Turn this into an option select
         }
-
-        return $judges;
     }
 
-    private function gatherJudge(string $name)
+
+    private function importSpeed($eventName, $speedData)
     {
+        $speedEvent = $this->getSpeedEventFromName($eventName);
 
-
-        return [
-            'name' => $name,
-            'startCol' => text($this->prefix() . 'Enter the column of the first marking point for ' . $name),
-            'length' => text($this->prefix() . 'How many marking points does this judge have? ' . $name),
-        ];
-    }
-
-    public function load()
-    {
-        $sheet = $this->spreadsheet->getSheetByName($this->sheetName);
+        $cse = new CompetitionSpeedEvent();
+        $cse->competition = $this->competition->id;
+        $cse->event = $speedEvent->id;
 
 
 
-        $mpNameIndex = 18;
-        $mpWeightIndex = 19;
+        $minSecSplit = explode(":", text("What was the record for {$speedEvent->name}?"));
+        $min = $minSecSplit[0];
+        $secMillisSplit = explode(".", $minSecSplit[1]);
 
-        $loadedJudges = [];
-
-        $judges = $this->gatherJudgeInformation();
-
-        foreach ($judges as $judge) {
+        $totalMillis = $min * 60000 + $secMillisSplit[0] * 1000 + $secMillisSplit[1];
 
 
-            $namesStart = $judge['startCol'] . $mpNameIndex;
-            $namesEnd = Coordinate::stringFromColumnIndex(Coordinate::columnIndexFromString($judge['startCol']) + $judge['length'] - 1) . $mpNameIndex;
+        $cse->record = $totalMillis;
 
-            $weightsStart = $judge['startCol'] . $mpWeightIndex;
-            $weightsEnd = Coordinate::stringFromColumnIndex(Coordinate::columnIndexFromString($judge['startCol']) + $judge['length'] - 1) . $mpWeightIndex;
+        $cse->save();
+
+        foreach ($speedData as $speedResult) {
+            $ct = $this->teamNameIdMap[$speedResult['team']];
+
+            $sr = new \App\Models\SpeedResult();
+            $sr->disableLogging();
+            $sr->competition_team = $ct;
+            $sr->event = $cse->id;
+
+            $minSecSplit = explode(":", $speedResult['time']);
+
+            if (count($minSecSplit) == 1) {
+                $sr->result = $speedResult['time'];
+            } else {
+
+                $min = $minSecSplit[0];
+                $secMillisSplit = explode(".", $minSecSplit[1]);
+
+                $totalMillis = $min * 60000 + $secMillisSplit[0] * 1000 + ($secMillisSplit[1] * 10);
 
 
-
-            $mpNames = $sheet->rangeToArray($namesStart . ":" . $namesEnd, null, true, true, false);
-            $mpWeights = $sheet->rangeToArray($weightsStart . ":" . $weightsEnd, null, true, true, false);
-
-            $loadedMarkingPoints = [];
-
-            foreach ($mpNames[0] as $index => $mpName) {
-                $mpName = trim($mpName);
-                $mpWeight = trim($mpWeights[0][$index]);
-
-                if (empty($mpName)) {
-                    continue;
-                }
-
-                $loadedMarkingPoints[] = [
-                    'name' => $mpName,
-                    'weight' => $mpWeight
-                ];
+                $sr->result = $totalMillis;
             }
 
-            $loadedJudges[] = [
-                'name' => $judge['name'],
-                'markingPoints' => $loadedMarkingPoints
-            ];
-        }
+            $sr->disqualification = empty($speedResult['dq']) ? null : $speedResult['dq'];
+            $sr->save();
 
-        // Now that we have the judge info, lets load the team marks where $i is the row number
-        $max = 21 + $this->totalTeams;
-        $teamCol = "D";
-        $allTeamMarks = [];
-        for ($i = 21; $i < $max; $i++) {
-            $teamName = trim($sheet->getCell($teamCol . $i)->getCalculatedValue());
+            if ($speedEvent->has_penalties) {
 
-
-
-
-            $teamMarks = [];
-
-            foreach ($judges as $judge) {
-                $judgeName = $judge['name'];
-
-                $judgeResults = $sheet->rangeToArray($judge['startCol'] . $i . ":" . Coordinate::stringFromColumnIndex(Coordinate::columnIndexFromString($judge['startCol']) + $judge['length'] - 1) . $i, null, true, true, false)[0];
-
-                $teamMarks[] = [
-                    'judge' => $judgeName,
-                    'results' => $judgeResults
-                ];
-            }
-
-            $allTeamMarks[] = [
-                'team' => $teamName,
-                'marks' => $teamMarks
-            ];
-        }
-
-        return $allTeamMarks;
-    }
-}
-
-class SpeedLoader
-{
-
-    private Spreadsheet $spreadsheet;
-    private string $sheetName;
-    private Command $command;
-    private int $totalTeams;
-
-    public function __construct($spreadsheet, $sheetName, $command, $totalTeams)
-    {
-        $this->spreadsheet = $spreadsheet;
-        $this->sheetName = $sheetName;
-        $this->command = $command;
-        $this->totalTeams = $totalTeams;
-    }
-
-    public function load()
-    {
-        $sheet = $this->spreadsheet->getSheetByName($this->sheetName);
-
-
-        $dqCol = "J";
-        $penCols = $this->sheetName == "Swim&Tow" ? ["K", "L", "M", "N", "O"] : ["L", "M", "N", "O"];
-
-        $teams = [];
-
-        $max = 7 + $this->totalTeams;
-        for ($i = 7; $i < $max; $i++) {
-            $teamName = trim($sheet->getCell("D" . $i)->getCalculatedValue());
-
-            $cellTimes = $sheet->rangeToArray("F" . $i . ":" . "H" . $i, null, true, true, false)[0];
-            $time = $cellTimes[0] . ":" . $cellTimes[1] . "." . $cellTimes[2];
-
-
-            $dq = trim($sheet->getCell($dqCol . $i)->getCalculatedValue());
-
-            if ($dq == "Finished") {
-                $dq = "";
-            }
-            if (str_starts_with($dq, "DNF")) {
-
-
-                $splt = explode(" ", $dq);
-                $dq = "";
-
-                $time = $splt[2];
-            }
-
-            $penalties = [];
-
-            if ($this->sheetName == "Swim&Tow" || $this->sheetName == "RopeThrow") {
-                foreach ($penCols as $penCol) {
-                    $pen = trim($sheet->getCell($penCol . $i)->getCalculatedValue());
-
-                    if (str_starts_with($pen, "DQ")) {
-                        continue;
-                    }
-
-                    if (!empty($pen)) {
-                        $penalties[] = $pen;
-                    }
+                foreach ($speedResult['penalties'] as $penalty) {
+                    $srp = new Penalty();
+                    $srp->speed_result = $sr->id;
+                    $srp->code = $penalty;
+                    $srp->save();
                 }
             }
+        }
+    }
 
+    private function importSercs($sercsData)
+    {
+        foreach ($sercsData as $serc) {
+            $this->importSerc($serc['event'], $serc['results']);
+        }
+    }
 
+    private function importSerc($sercName, $sercData)
+    {
 
-            $teams[] = [
-                'team' => $teamName,
-                'time' => $time,
-                'dq' => $dq,
-                'penalties' => $penalties
-            ];
+        $serc = new SERC();
+        $serc->competition = $this->competition->id;
+        $serc->name = $sercName;
+        $serc->save();
+
+        $mpIds = [];
+
+        foreach ($sercData['judges'] as $judge) {
+            $sercJudge = new \App\Models\SERCJudge();
+            $sercJudge->serc = $serc->id;
+            $sercJudge->name = $judge['name'];
+            $sercJudge->save();
+
+            $mpIds[$judge['name']] = [];
+
+            foreach ($judge['markingPoints'] as $markingPoint) {
+                $sercMP = new \App\Models\SERCMarkingPoint();
+                $sercMP->judge = $sercJudge->id;
+                $sercMP->name = $markingPoint['name'];
+                $sercMP->weight = $markingPoint['weight'];
+                $sercMP->serc = $serc->id;
+                $sercMP->save();
+
+                $mpIds[$judge['name']][] = $sercMP->id;
+            }
         }
 
-        return $teams;
+
+        foreach ($sercData['teamMarks'] as $teamMark) {
+            $ct = $this->teamNameIdMap[$teamMark['team']];
+
+            foreach ($teamMark['marks'] as $mark) {
+                $judgeName = $mark['judge'];
+
+                foreach ($mark['results'] as $index => $result) {
+                    $sercResult = new \App\Models\SERCResult();
+                    $sercResult->team = $ct;
+                    $sercResult->marking_point = $mpIds[$judgeName][$index];
+                    $sercResult->result = $result;
+                    $sercResult->disableLogging();
+                    $sercResult->save();
+                }
+            }
+        }
     }
 }

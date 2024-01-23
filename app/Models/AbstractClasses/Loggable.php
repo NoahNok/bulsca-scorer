@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 abstract class Loggable extends Model
 {
 
-
+    private bool $shouldLog = true;
 
     abstract public function getJudgeLogTitle();
     abstract public function getJudgeLogDescription();
@@ -36,8 +36,17 @@ abstract class Loggable extends Model
         });
     }
 
+    public function disableLogging()
+    {
+        $this->shouldLog = false;
+    }
+
     private function log($action)
     {
+
+        if (!$this->shouldLog) {
+            return;
+        }
 
         $judgeName = "SCORER";
 
