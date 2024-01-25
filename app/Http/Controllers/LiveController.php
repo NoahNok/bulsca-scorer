@@ -95,7 +95,7 @@ class LiveController extends Controller
         }
 
 
-        $dqs = JudgeDQSubmission::where('event_id', $realEvent->id)->where('event_type', $realEvent::class)->where('competition', $comp->id)->get();
+        $dqs = JudgeDQSubmission::where('event_id', $realEvent->id)->where('event_type', $realEvent::class)->where('competition', $comp->id)->where('resolved', true)->get();
 
         return view('live.dqs.event', ['comp' => $comp, 'event' => $realEvent, 'dqs' => $dqs]);
     }
