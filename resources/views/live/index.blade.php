@@ -17,13 +17,22 @@
     <div class="w-[90vw] md:w-[70vw] my-12">
         <div class="w-full flex items-center justify-between">
             <h1 class="mb-0">{{ $comp->name }}</h1>
+
             <h2 id="time-now"></h2>
         </div>
-        <div class="flex items-center space-x-2 ml-2 ">
-            <div id="live-status-ping" class="w-2 h-2 rounded-full animate-pulse bg-orange-400"></div>
-            <small id="live-status">Waiting...</small>
+
+        <div class="flex justify-between items-center -mt-3">
+
+            <div class="flex items-center space-x-2 ml-2 ">
+                <div id="live-status-ping" class="w-2 h-2 rounded-full animate-pulse bg-orange-400"></div>
+                <small id="live-status">Waiting...</small>
+            </div>
+
+            <div class="mt-1 mb-2"><a href="{{ route('live.dqs') }}" class="link">DQs & Penalties</a></div>
         </div>
-        <br>
+
+
+
 
 
         {{-- <h3>Results</h3>
