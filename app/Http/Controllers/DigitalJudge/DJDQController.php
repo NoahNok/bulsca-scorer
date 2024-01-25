@@ -231,7 +231,6 @@ class DJDQController extends Controller
             $teamId = $submission->getHeat->team;
             $code = Str::upper($submission->code);
 
-            dump($code);
 
             if (str_starts_with($code, 'P')) {
                 $event->addTeamPenalty($teamId, $code);

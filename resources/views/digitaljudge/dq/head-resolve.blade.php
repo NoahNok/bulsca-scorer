@@ -11,6 +11,7 @@
 
     <div class="flex flex-col  " x-data="{
         found: [],
+        approved: JSON.parse(sessionStorage.getItem('approved')) ?? [],
     
     
         fetchData() {
@@ -59,12 +60,18 @@
     
     
     
+        },
+    
+        clearApproved() {
+            this.approved = []
+            sessionStorage.setItem('approved', JSON.stringify(this.approved));
+    
         }
     }">
 
         <template x-for="submission in found" x-key="submission.id">
 
-            <div class="mb-20 relative" x-show="!complete" x-collapse x-ref="form" x-data="{
+            <div class="mb-20 relative" x-ref="form" x-show="!complete" x-collapse x-data="{
             
             
                 complete: false,
@@ -106,6 +113,10 @@
                     fd.append('resolved', resolved);
                     fd.append('_token', '{{ csrf_token() }}');
             
+                    this.complete = true;
+                    this.submission.complete = true;
+            
+                    var toPush = this.submission;
             
                     fetch('{{ route('dj.dq.submission.resolve', '') }}/' + this.submission.id, { method: 'POST', body: fd })
                         .then(response => response.json())
@@ -113,6 +124,11 @@
                             if (data.success) {
                                 this.complete = true;
                                 this.submission.complete = true;
+            
+                                if (resolved) {
+                                    this.approved.push(toPush);
+                                    sessionStorage.setItem('approved', JSON.stringify(this.approved));
+                                }
                             }
                         })
             
@@ -217,6 +233,10 @@
                     </button>
 
 
+
+
+
+
                 </div>
 
 
@@ -234,6 +254,116 @@
             <x-loader />
             <p class="text-sm text-center">Waiting for submissions...</p>
         </div>
+
+
+        <div class="flex items-center justify-between mb-2 mt-6" x-show="approved.length > 0">
+            <h1>Approved Submissions</h1>
+            <button @click="clearApproved" class="btn btn-danger">Clear</button>
+        </div>
+        <p x-show="approved.length > 0" class="mb-5">You'll want to hit clear after each heat!</p>
+
+        <template x-for="submission in approved" x-key="submission.id">
+
+            <div class="mb-5 relative card" x-ref="form" x-data="{
+            
+            
+                complete: false,
+                showContent: true,
+                resolved: null,
+                code: {
+                    description: 'Please enter a DQ/Penalty code above',
+                    cache: {}
+                },
+                resolveCode(code) {
+                    code = code.toLowerCase();
+                    if ((code.length < 3 && code[0] !== 'p') || (code.length < 2 && code[0] == 'p')) { this.code.description = 'Please enter a DQ/Penalty code above'; return; }
+                    if (this.code.cache[code]) {
+                        this.code.description = this.code.cache[code];
+                        return;
+                    }
+                    fetch('{{ route('dj.dq.resolveCode', '') }}/' + code)
+                        .then(response => response.json())
+                        .then(data => {
+            
+            
+            
+                            this.code.description = data.description;
+            
+                            this.code.cache[code] = data.description;
+                        })
+                },
+            
+            
+            
+            
+            
+                init() {
+                    this.resolveCode(this.submission.code);
+            
+                }
+            }">
+
+
+
+
+
+                <div>
+
+
+                    <div class="flex justify-between">
+                        <p><strong>Event</strong>: <span x-text="submission.eventName"></span></p>
+                        <p><strong>Heat</strong>: <span x-text="submission.heat ?? '-'"></span>
+                            <strong>Lane</strong>: <span x-text="submission.lane ?? '-'"></span>
+                        </p>
+                    </div>
+
+                    <div class="flex justify-between">
+                        <p><strong>Team</strong>: <span x-text="submission.teamName"></span></p>
+                        <p><strong>Turn</strong>: <span x-text="submission.turn ?? '-'"></span> <strong>Length</strong>:
+                            <span x-text="submission.length ?? '-'"></span>
+                        </p>
+                    </div>
+
+
+                    <br>
+
+
+                    <div class="flex space-x-4">
+                        <p><strong>Reporter</strong>: <span x-text="submission.name"></span> (<span
+                                x-text="submission.position"></span>)
+                        </p>
+                        <p><strong>Seconder</strong>: <span x-text="submission.seconder.name ?? '-'"></span> (<span
+                                x-text="submission.seconder.position ?? '-'"></span>)</p>
+                    </div>
+
+
+
+                    <br>
+
+
+
+                    <h4 class="text-bulsca_red" x-text="submission.code"></h4>
+
+
+
+                    <div name="" id="" readonly class="w-full  -mt-2 text-sm text-gray-500 mb-6"
+                        x-text="code.description">
+                        Manual
+                        DQ/P description fills here
+                    </div>
+
+                    <p class="font-semibold">Aditional Judge Details</p>
+                    <p class="" x-text="submission.details"></p>
+
+
+
+
+
+                </div>
+
+
+            </div>
+        </template>
 
 
 
