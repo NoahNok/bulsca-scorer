@@ -13,10 +13,27 @@
     </title>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
     <script src="{{ asset('js/sorttable.js') }}?{{ config('version.hash') }}"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
 
 </head>
 
-<body class="overflow-x-hidden">
+<body class="overflow-x-hidden"  x-data="{
+    showModal: false,
+
+    modalUrl: '',
+    modalBaseUrl: '{{ route('public.results.dq-pen', [$comp->id, 'T', 'C']) }}',
+
+    showDqPen(code, teamId) {
+        this.showModal = true;
+
+        this.modalUrl = this.modalBaseUrl.replace('T', teamId).replace('C', code);
+
+    },
+    hideDqPen() {
+        this.showModal = false;
+
+    }
+}">
     <div class="flex flex-col items-center w-screen h-screen p-8 space-y-6 ">
         <div class="flex flex-row space-x-6 items-center">
             <img src="https://www.bulsca.co.uk/storage/logo/blogo.png" class="w-32 h-32" alt="">
@@ -157,7 +174,7 @@
                                 @endforeach
 
 
-                                <td class="py-4 px-6" title="{{ $team['disqualification'] ?: '-' }}">
+                                <td class="py-4 px-6" @click="showDqPen('{{$team['disqualification']}}', {{ $team['tid'] }})" title="{{ $team['disqualification'] ?: '-' }}">
                                     {{ $team['disqualification'] ?: '-' }}
 
                                 </td>
@@ -238,6 +255,12 @@
 
 
 
+    </div>
+
+    <div class="modal" x-show="showModal" x-transition style="display: none">
+        <div class="modal-content " @click.outside="showModal=false">
+           <iframe :src="modalUrl" frameborder="0" scrolling="no"  class="w-full" onload="this.height=this.contentWindow.document.body.scrollHeight;"></iframe>
+        </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ asset('js/analysis.js') }}"></script>

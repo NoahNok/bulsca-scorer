@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\CompetitionTeam;
+use App\Models\DigitalJudge\JudgeDQSubmission;
 use App\Models\Penalty;
 use App\Models\ResultSchema;
 use App\Models\SERC;
@@ -223,5 +224,17 @@ class PublicResultsController extends Controller
         $comp = Competition::where('when', $d)->firstOrFail();
 
         return redirect()->route('public.results.comp', ['comp_slug' => $comp->resultsSlug()]);
+    }
+
+    public function viewDqPen(Competition $comp, CompetitionTeam $team, string $code)
+    {
+    
+        $judgeSubmission = JudgeDQSubmission::with('getHeat')->where('competition', $comp->id)->whereHas('getHeat', function($query) use ($team) {
+            $query->where('team', $team->id);
+        })->where('code', $code)->first();
+
+        if (!$judgeSubmission) return "No Digital DQ/Pen submission found for this team. It was most likely done on paper!";
+
+        return view('public-results.view-dqpen', ['dq' => $judgeSubmission]);
     }
 }

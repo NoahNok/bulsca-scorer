@@ -12,10 +12,27 @@
         @endif{{ $event->getName() }} | {{ $comp->name }} | Results | BULSCA
     </title>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
 
 </head>
 
-<body class="overflow-x-hidden">
+<body class="overflow-x-hidden" x-data="{
+    showModal: false,
+
+    modalUrl: '',
+    modalBaseUrl: '{{ route('public.results.dq-pen', [$comp->id, 'T', 'C']) }}',
+
+    showDqPen(code, teamId) {
+        this.showModal = true;
+
+        this.modalUrl = this.modalBaseUrl.replace('T', teamId).replace('C', code);
+
+    },
+    hideDqPen() {
+        this.showModal = false;
+
+    }
+}">
     <div class="flex flex-col items-center w-screen h-screen p-8 space-y-6 ">
         <div class="flex flex-row space-x-6 items-center">
             <img src="https://www.bulsca.co.uk/storage/logo/blogo.png" class="w-32 h-32" alt="">
@@ -100,9 +117,9 @@
 
 
                                 </td>
-                                <td class="py-4 px-6 hover:underline"
+                                <td class="py-4 px-6 hover:underline cursor-pointer"
                                     title="{{ $result->disqualification ? App\Models\DQCode::message($result->disqualification) : '' }}"
-                                    onclick="alert(this.getAttribute('title'))">
+                                    @click="showDqPen('{{$result->disqualification}}', {{ $result->tid }})">
                                     {{ $result->disqualification ?: '-' }}
                                 </td>
 
@@ -114,9 +131,9 @@
                                         @endphp
                                         @if ($result->penalties != 0)
                                             @foreach (App\Models\Penalty::where('speed_result', $result->id)->get('code') as $penalty)
-                                                <span class="hover:underline"
+                                                <span class="hover:underline cursor-pointer"
                                                     title="{{ App\Models\PenaltyCode::message($penalty->code) }}"
-                                                    onclick="alert(this.getAttribute('title'))">{{ $penalty->code . ($loop->last ? '' : ',') }}</span>
+                                                    @click="showDqPen('{{$penalty->code}}', {{ $result->tid }})">{{ $penalty->code . ($loop->last ? '' : ',') }}</span>
                                                 @php
                                                     $blank = false;
                                                 @endphp
@@ -192,6 +209,13 @@
 
 
     </div>
+
+    <div class="modal" x-show="showModal" x-transition style="display: none">
+        <div class="modal-content " @click.outside="showModal=false">
+           <iframe :src="modalUrl" frameborder="0" scrolling="no"  class="w-full" onload="this.height=this.contentWindow.document.body.scrollHeight;"></iframe>
+        </div>
+    </div>
+
     <script>
         function initTable() {
             let table = document.getElementById("table");
