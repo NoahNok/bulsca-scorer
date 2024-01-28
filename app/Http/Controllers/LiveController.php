@@ -17,7 +17,7 @@ class LiveController extends Controller
 
     private function resolveComp(Request $request)
     {
-        $comp = Competition::where(DB::raw('DATEDIFF(competitions.when, NOW())'), '>', -2)->where('isLeague', true)->orderBy(DB::raw('DATEDIFF(competitions.when, NOW())'), 'asc')->first();
+        $comp = Competition::where(DB::raw('DATEDIFF(competitions.when, NOW())'), '>', -2)->where('can_be_live', true)->orderBy(DB::raw('DATEDIFF(competitions.when, NOW())'), 'asc')->first();
 
         if (auth()->user() && auth()->user()->isAdmin() && $request->has('comp')) {
             $comp = Competition::find($request->input('comp'));
@@ -27,7 +27,7 @@ class LiveController extends Controller
 
         if (!$comp) return view('live.unavailable', ['message' => 'No competitions are currently available to view live.']);
 
-        if ($comp->can_be_live == false) return view('live.unavailable', ['message' => $comp->name . ' is not currently available to view live.']);
+
 
         return $comp;
     }
@@ -56,7 +56,7 @@ class LiveController extends Controller
         $avgTime = Cache::remember('live.' . $comp->id . '.getAverageSercTime', 10, function () use ($serc) {
             // This is not ideal, should make comp org select which serc is dry
 
-
+            if (!$serc) return 360;
 
             return $serc->getAverageTimeBetweenTeams();
         });
