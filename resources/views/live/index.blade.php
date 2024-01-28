@@ -28,7 +28,7 @@
                 <small id="live-status">Waiting...</small>
             </div>
 
-            <div class="mt-1 mb-2"><a href="{{ route('live.dqs') }}" class="link">DQs & Penalties</a></div>
+            <div class="mt-1 mb-2"><a href="{{ route('live.dqs', request()->all()) }}" class="link">DQs & Penalties</a></div>
         </div>
 
 

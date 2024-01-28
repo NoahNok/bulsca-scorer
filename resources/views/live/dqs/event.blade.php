@@ -23,7 +23,7 @@
         </div>
         <br>
         <h3 class="-mb-1"> {{ $event->getName() }} - DQs & Penalties</h3>
-        <a href="{{ route('live.dqs') }}" class="link "><span class="text-sm">Back</span></a>
+        <a href="{{ route('live.dqs', request()->all()) }}" class="link "><span class="text-sm">Back</span></a>
         <br>
         <br>
         @forelse ($dqs as $dq)
