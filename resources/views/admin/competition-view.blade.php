@@ -65,7 +65,19 @@
 
             </div>
             <x-form-input id="lanes" title="Lanes" required type="number"
-                defaultValue="{{ $comp->max_lanes }}"></x-form-input>
+            defaultValue="{{ $comp->max_lanes }}"></x-form-input>
+            <div class="form-input ">
+                <label for="anytimepin" class="">Anytime Pin</label>
+                <select required id="anytimepin" name="anytimepin" class="input "
+                    style="padding-top: 0.65em; padding-bottom: 0.75em;">
+
+                    <option value="1" @if ($comp->anytimepin == true) selected @endif>Yes</option>
+                    <option value="0" @if ($comp->anytimepin == false) selected @endif>No</option>
+
+                </select>
+
+            </div>
+      
 
             <x-form-select id="season" title="Season" :options="\App\Models\Season::all()"
                 defaultValue="{{ $comp->season }}"></x-form-select>

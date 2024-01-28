@@ -34,6 +34,7 @@ class AdminController extends Controller
         $comp->when = $validated['when'];
         $comp->isLeague = $validated['isLeague'];
         $comp->max_lanes = $validated['lanes'];
+        $comp->anytimepin = $validated['anytimepin'];
 
         $comp->save();
 
@@ -61,6 +62,7 @@ class AdminController extends Controller
         $comp->when = $validated['when'];
         $comp->isLeague = $validated['isLeague'];
         $comp->max_lanes = $validated['lanes'];
+        $comp->anytimepin = $validated['anytimepin'];
 
         if ($validated['season'] !== 'null') {
             $comp->season = $validated['season'];
@@ -68,7 +70,7 @@ class AdminController extends Controller
 
         $comp->save();
 
-        return back();
+        return back()->with('success', "Competition updated!");
     }
 
     public function viewComp(Competition $comp)

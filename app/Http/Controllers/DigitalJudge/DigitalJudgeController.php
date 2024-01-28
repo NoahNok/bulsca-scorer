@@ -30,11 +30,16 @@ class DigitalJudgeController extends Controller
         $pin = $validated['pin'];
         $clientName = strip_tags($validated['judgeName']);
 
-        $comp = Competition::where('digitalJudgePin', $pin)->where('digitalJudgeEnabled', true)->where('when', DB::raw('CURDATE()'))->first();
+        $comp = Competition::where('digitalJudgePin', $pin)->where('digitalJudgeEnabled', true)->where(function($query) {
+            $query->where('anytimepin', true)->orWhere('when', DB::raw('CURDATE()'));
+        })->first();
+   
 
         if ($comp) $this->startJudging($comp, false, $clientName);
 
-        $headComp = Competition::where('digitalJudgeHeadPin', $pin)->where('digitalJudgeEnabled', true)->first();
+        $headComp = Competition::where('digitalJudgeHeadPin', $pin)->where('digitalJudgeEnabled', true)->where(function($query) {
+            $query->where('anytimepin', true)->orWhere('when', DB::raw('CURDATE()'));
+        })->first();
 
         if ($headComp) $this->startJudging($headComp, true, $clientName);
 

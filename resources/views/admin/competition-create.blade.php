@@ -36,7 +36,18 @@ Create Competition | Admin
             </select>
      
         </div>
+
         <x-form-input id="lanes" title="Lanes" required type="number"></x-form-input>
+        <div class="form-input ">
+            <label for="anytimepin" class="">Anytime Pin</label>
+            <select  required id="anytimepin" name="anytimepin" class="input " style="padding-top: 0.65em; padding-bottom: 0.75em;">
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+                
+              
+            </select>
+     
+        </div>
     </div>
     <button type="submit" class="btn">Add</button>
 </form>
