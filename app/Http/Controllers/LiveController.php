@@ -19,7 +19,7 @@ class LiveController extends Controller
     {
         $comp = Competition::where(DB::raw('DATEDIFF(competitions.when, NOW())'), '>', -2)->where('can_be_live', true)->orderBy(DB::raw('DATEDIFF(competitions.when, NOW())'), 'asc')->first();
 
-        if (auth()->user() && auth()->user()->isAdmin() && $request->has('comp')) {
+        if ($request->has('comp')) {
             $comp = Competition::find($request->input('comp'));
             if (!$comp) return view('live.unavailable', ['message' => 'No competitions with that ID exists!']);
             $comp->can_be_live = true;
