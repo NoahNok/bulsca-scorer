@@ -261,4 +261,9 @@ class DigitalJudgeController extends Controller
 
         return redirect()->back()->with('success', 'Settings saved');
     }
+
+    public function qrs(Competition $comp) {
+        return view('digitaljudge.qrs', compact('comp'));
+
+    }
 }
