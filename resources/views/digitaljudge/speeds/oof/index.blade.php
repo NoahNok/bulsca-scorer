@@ -18,9 +18,9 @@
 
 
         @if ($head)
-            <p>Heats will turn green once complete <strong>and</strong> maybe be edited at any time</p>
+            <p>Heats will turn green once complete (unless no teams finish) <strong>and</strong> maybe be edited at any time</p>
         @else
-            <p>Heats will turn green once complete!</p>
+            <p>Heats will turn green once complete (unless no teams finish)</p>
         @endif
 
         @for ($heat = 1; $heat <= $comp->getMaxHeats(); $heat++)
