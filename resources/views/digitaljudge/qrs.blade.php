@@ -8,9 +8,9 @@
 </head>
 <body class="flex flex-col space-y-3 items-center mt-52 w-screen h-screen">
     <h2>{{ $comp->name }}</h2>
-      {!! QrCode::size(300)->style('round')->generate(route('dj.login', ['pin' => $comp->digitalJudgePin])) !!}
+      {!! QrCode::size(300)->style('round')->generate(route('dj.index', ['pin' => $comp->digitalJudgePin])) !!}
       <small class="text-center">
-        {{ route('dj.login') }}
+        {{ route('dj.index') }}
         <br>
         PIN: {{ $comp->digitalJudgePin }}
       </small>
