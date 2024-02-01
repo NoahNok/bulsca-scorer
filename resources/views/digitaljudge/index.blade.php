@@ -9,7 +9,7 @@
 
     <form action="{{ route('dj.login') }}" method="POST">
         <div class="form-input">
-            <input type="number" id="pin" value="{{ request()->input('pin', '') }}" maxlength="6" required oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="text-center" value="{{ old('pin') }}" name="pin" placeholder="PIN">
+            <input type="number" id="pin" value="{{ request()->input('pin', old('pin')) }}" maxlength="6" required oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="text-center"  name="pin" placeholder="PIN">
             @error('pin')
             <small class="ml-auto">{{ $message }}</small>
             @enderror
