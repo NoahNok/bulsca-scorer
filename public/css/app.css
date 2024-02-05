@@ -740,11 +740,11 @@ video {
 .mr-3 {
   margin-right: 0.75rem;
 }
-.mt-0 {
-  margin-top: 0px;
-}
 .mt-52 {
   margin-top: 13rem;
+}
+.mt-0 {
+  margin-top: 0px;
 }
 .block {
   display: block;
