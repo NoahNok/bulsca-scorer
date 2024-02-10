@@ -115,6 +115,11 @@ class SpeedJudgingController extends Controller
                     continue;
                 }
 
+                # Judge side no uses centiseconds, so multiply by 10 for millis
+                if (strlen($secMillisSplit[1]) == 2) {
+                    $secMillisSplit[1] = $secMillisSplit[1] * 10;
+                }
+
                 $totalMillis = $min * 60000 + $secMillisSplit[0] * 1000 + $secMillisSplit[1];
 
 

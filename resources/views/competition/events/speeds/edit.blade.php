@@ -107,7 +107,7 @@
                                     @if ($event->getName() == 'Rope Throw')
                                         @if ($result->result < 4)
                                             <input class="table-input" table-cell table-cell-name="result"
-                                                placeholder="Ropes In OR 00:00.000" type="text" x-data x-mask="99:99.999"
+                                                placeholder="Ropes In OR 00:00.00" type="text" x-data x-mask="99:99.99"
                                                 value="{{ $result->result }}">
                                         @else
                                             @php
@@ -116,7 +116,7 @@
                                             @endphp
 
                                             <input class="table-input" table-cell table-cell-name="result"
-                                                placeholder="00:00.000" type="text" x-data x-mask="99:99.999"
+                                                placeholder="00:00.00" type="text" x-data x-mask="99:99.99"
                                                 value="{{ $result->result != null ? sprintf('%02d', $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT) : '' }}">
                                         @endif
                                     @else
@@ -126,7 +126,7 @@
                                         @endphp
 
                                         <input class="table-input" table-cell table-cell-name="result"
-                                            placeholder="00:00.000" type="text" x-data x-mask="99:99.999"
+                                            placeholder="00:00.00" type="text" x-data x-mask="99:99.99"
                                             value="{{ $result->result != null ? sprintf('%02d', $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT) : '' }}">
                                     @endif
 

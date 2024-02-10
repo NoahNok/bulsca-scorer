@@ -71,16 +71,16 @@
                                     <td class="">
 
                                         @if ($speed->getName() == 'Rope Throw')
-                                            <input class="p-2 px-4" type="text" placeholder="Ropes In OR 00:00.000"
+                                            <input class="p-2 px-4" type="text" placeholder="Ropes In OR 00:00.00"
                                                 name="team-{{ $pLane->team }}-time" id="team-{{ $pLane->team }}-time"
                                                 required x-data
-                                                x-mask:dynamic="$input.startsWith('D') ? 'DNa' : '99:99.999'"
+                                                x-mask:dynamic="$input.startsWith('D') ? 'DNa' : '99:99.99'"
                                                 value="{{ in_array($sr->disqualification, ['DQ004', 'DQ015']) ? ($sr->disqualification == 'DQ004' ? 'DNS' : 'DNF') : ($sr->result != null ? ($sr->result > 4 ? sprintf('%02d', $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT) : $sr->result) : '') }}">
                                         @else
-                                            <input class="p-2 px-4" type="text" placeholder="00:00.000"
+                                            <input class="p-2 px-4" type="text" placeholder="00:00.00"
                                                 name="team-{{ $pLane->team }}-time" id="team-{{ $pLane->team }}-time"
                                                 required x-data
-                                                x-mask:dynamic="$input.startsWith('D') ? 'DNa' : '99:99.999'"
+                                                x-mask:dynamic="$input.startsWith('D') ? 'DNa' : '99:99.99'"
                                                 value="{{ in_array($sr->disqualification, ['DQ004', 'DQ015']) ? ($sr->disqualification == 'DQ004' ? 'DNS' : 'DNF') : ($sr->result != null ? sprintf('%02d', $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT) : '') }}">
                                         @endif
 

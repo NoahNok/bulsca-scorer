@@ -80,7 +80,7 @@ class SpeedsEventController extends Controller
 
 
             if ($row->values->disqualification != "") {
-                if (preg_match("/^DQ[0-9]{3}$/", $row->values->disqualification) == 0) {
+                if (preg_match("/^DQ[0-9]{1,3}$/", $row->values->disqualification) == 0) {
                     array_push($errors, ["id" => $id, "option" => "disqualification"]);
                     continue;
                 } else {
@@ -99,7 +99,7 @@ class SpeedsEventController extends Controller
                     $valid = [];
                     foreach ($penaltiesSplit as $penalty) {
                         $penalty = trim($penalty);
-                        if (preg_match("/^P[0-9]{3}$/", $penalty) == 0) {
+                        if (preg_match("/^P[0-9]{1,3}$/", $penalty) == 0) {
                             $hasError = true;
                             break;
                         }
@@ -138,7 +138,7 @@ class SpeedsEventController extends Controller
 
 
             if ($event->getName() == "Rope Throw") {
-                if (preg_match("/^[0-9]{1,2}:[0-9]{1,2}.[0-9]{3}|[0-3]$/", $row->values->result) == 0) {
+                if (preg_match("/^[0-9]{1,2}:[0-9]{1,2}.[0-9]{2}|[0-3]$/", $row->values->result) == 0) {
                     array_push($errors, ["id" => $id, "option" => "result"]);
                     continue;
                 }
@@ -154,13 +154,17 @@ class SpeedsEventController extends Controller
                 $min = $minSecSplit[0];
                 $secMillisSplit = explode(".", $minSecSplit[1]);
 
+                if (strlen($secMillisSplit[1]) == 2) {
+                    $secMillisSplit[1] = $secMillisSplit[1] * 10;
+                }
+
                 $totalMillis = $min * 60000 + $secMillisSplit[0] * 1000 + $secMillisSplit[1];
 
 
                 $sr->result = $totalMillis;
                 $sr->save();
             } else {
-                if (preg_match("/^[0-9]{1,2}:[0-9]{1,2}.[0-9]{3}$/", $row->values->result) == 0) {
+                if (preg_match("/^[0-9]{1,2}:[0-9]{1,2}.[0-9]{2}$/", $row->values->result) == 0) {
                     array_push($errors, ["id" => $id, "option" => "result"]);
                     continue;
                 }
@@ -168,6 +172,11 @@ class SpeedsEventController extends Controller
                 $minSecSplit = explode(":", $row->values->result);
                 $min = $minSecSplit[0];
                 $secMillisSplit = explode(".", $minSecSplit[1]);
+
+                
+                if (strlen($secMillisSplit[1]) == 2) {
+                    $secMillisSplit[1] = $secMillisSplit[1] * 10;
+                }
 
                 $totalMillis = $min * 60000 + $secMillisSplit[0] * 1000 + $secMillisSplit[1];
 
