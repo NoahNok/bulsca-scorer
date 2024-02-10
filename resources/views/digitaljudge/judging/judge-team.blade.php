@@ -52,7 +52,7 @@
             <br>
             <p class="text-xl">Team: <strong class="text-bulsca">{{ $team->getFullname() }}</strong></p>
 
-            <button class="btn btn-purple btn-thin w-full" onclick="zeroAll()">ZERO for All</button>
+           
 
 
             <hr>
@@ -65,11 +65,11 @@
                     @foreach ($judges as $mJudge)
                         <div>
                             <h4>{{ $mJudge->name }} </h4>
-                            <p x-on:click="loadMarks()" class="-mt-2 text-sm text-blue-700 hover:underline cursor-pointer">
+                            <p x-on:click="loadMarks()" class="-mt-2 -mb-4 text-sm text-blue-700 hover:underline cursor-pointer">
                                 Previous Marks</p>
                         </div>
 
-
+                        <button class="btn btn-purple btn-thin w-full" style="margin-bottom: -0.75rem" type="button" onclick="zeroAll({{ $mJudge->id }})">ZERO all</button>
                         @foreach ($mJudge->getMarkingPoints as $mp)
                             @php
                                 $mpValue = $mp->getScoreForTeam($team->id) ?: -1;
@@ -79,7 +79,7 @@
                                 <div class="flex justify-between items-center ">
                                     <p>{{ $mp->name }}</p>
                                     <div class="flex items-center justify-center">
-                                        <input type="radio" required class="w-0 h-0 peer" value="0"
+                                        <input type="radio" required class="w-0 h-0 peer" value="0" x-judge="{{ $mJudge->id }}"
                                             name="mp-{{ $mp->id }}" @if ($mpValue == 0) checked @endif
                                             id="mp-{{ $mp->id }}-0">
                                         <label for="mp-{{ $mp->id }}-0"
@@ -319,10 +319,10 @@
             return allGood;
         }
 
-        function zeroAll() {
-            if (!confirm('Are you sure you want to zero all marking points for this team?')) return;
+        function zeroAll(judgeId) {
+            if (!confirm('Are you sure you want to zero all marking points for this judge?')) return;
 
-            document.querySelectorAll("input[value='0']").forEach(i => i.checked = true)
+            document.querySelectorAll(`input[value='0'][x-judge='${judgeId}']`).forEach(i => i.checked = true)
         }
     </script>
 @endsection
