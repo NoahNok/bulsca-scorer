@@ -92,11 +92,11 @@
                             @foreach ($fsd['judges'] as $judge => $mpIds)
                                 @foreach ($mpIds as $markingPoint)
                                     <th scope="col"
-                                        class="py-3 px-6  @if ($loop->first) border-l @endif group max-h-52 lg:whitespace-nowrap overflow-hidden text-ellipsis hover:whitespace-normal"
+                                        class="py-3 px-6  @if ($loop->first) border-l @endif group  lg:whitespace-nowrap hover:whitespace-normal"
                                         style="writing-mode: vertical-rl; " title="{{ $markingPoint['name'] }}"
                                         data-sortable>
 
-                                        {{ $markingPoint['name'] }}
+                                        <span class="block max-h-52 overflow-hidden text-ellipsis">{{ $markingPoint['name'] }}</span>
                                         <!--<p class="text-center">{{ number_format($markingPoint['weight'], 1) }}</p>-->
 
                                     </th>
