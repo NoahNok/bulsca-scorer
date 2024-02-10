@@ -62,7 +62,8 @@
 
 
 
-            <div class="  relative overflow-x-auto w-screen  lg:max-w-[80vw] h-[90vh] lg:h-[80vh] resize-y ">
+            <div id="table-wrapper" class="  relative overflow-x-auto w-screen  lg:max-w-[80vw] h-[90vh] lg:h-[80vh] resize-y bg-white ">
+                <p class="link hidden text-center" id="cfs">Close Fullscreen</p>
                 <table id="table"
                     class="table-highlight text-sm w-full shadow-md rounded-lg top-0 text-left text-gray-500 border-collapse  relative "
                     sortable>
@@ -204,6 +205,7 @@
                     </tbody>
 
                 </table>
+         
 
             </div>
 
@@ -225,6 +227,9 @@
                     <label for="anal">Analysis</label>
                     <input type="checkbox" name="" id="anal">
                 </div>
+
+                <div class="md:ml-auto"><p class="link" id="fs">Fullscreen</p>
+                    </div>
 
                 @if (!$comp->areResultsProvisional())
                     <div class="md:ml-auto flex flex-col items-center md:items-end">
@@ -269,6 +274,26 @@
             let table = document.getElementById("table");
             let tableBody = document.getElementById("table-body");
             let tableRows = tableBody.querySelectorAll("tr")
+
+            let tableWrapper = document.getElementById("table-wrapper")
+            let fs = document.getElementById("fs")
+            let cfs = document.getElementById("cfs")
+
+            fs.onclick = () => {
+                tableWrapper.requestFullscreen()
+                tableWrapper.classList.add("h-screen")
+                table.classList.add("h-screen")
+                fs.classList.add("hidden")
+                cfs.classList.remove("hidden")
+            }
+
+            cfs.onclick = () => {
+                document.exitFullscreen()
+                tableWrapper.classList.remove("h-screen")
+                table.classList.remove("h-screen")
+                fs.classList.remove("hidden")
+                cfs.classList.add("hidden")
+            }
 
 
             analyze(tableRows)
