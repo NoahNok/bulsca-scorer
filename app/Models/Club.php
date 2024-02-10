@@ -81,6 +81,11 @@ class Club extends Model
             $result['result'] = $actualResult;
 
             if ($actualResult <= $minimal[$result['id']]['result']) {
+                // Skip over any rope throw results taht werent in
+                if ($actualResult < 4) {
+                    continue;
+                }
+
                 $minimal[$result['id']] = $result;
             }
         }
