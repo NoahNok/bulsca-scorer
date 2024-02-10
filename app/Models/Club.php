@@ -33,11 +33,55 @@ class Club extends Model
             $minimal[$event->id]['se'] =  $event->name;
         }
 
-        $results = DB::select(' SELECT result, ct.team, se.name AS se, se.id, cp.name AS comp_name, cp.id AS comp_id, cp.when, c.name FROM speed_results sr INNER JOIN competition_teams ct on ct.id=sr.competition_team INNER JOIN clubs c ON c.id=ct.club INNER JOIN competition_speed_events cse ON cse.id=sr.event INNER JOIN speed_events se ON se.id=cse.event INNER JOIN competitions cp ON cp.id=cse.competition WHERE c.id=? AND result IS NOT NULL AND result>4 AND cp.isLeague = true;', [$this->id]);
+        $results = DB::select(' SELECT result, ct.team, se.name AS se, se.id, cp.name AS comp_name, cp.id AS comp_id, cp.when, c.name, ct.st_time AS st_time, (SELECT COUNT(*) FROM speed_result_penalties WHERE speed_result=sr.id) AS pens FROM speed_results sr INNER JOIN competition_teams ct on ct.id=sr.competition_team INNER JOIN clubs c ON c.id=ct.club INNER JOIN competition_speed_events cse ON cse.id=sr.event INNER JOIN speed_events se ON se.id=cse.event INNER JOIN competitions cp ON cp.id=cse.competition WHERE c.id=? AND result IS NOT NULL AND result>4 AND disqualification IS NULL AND cp.isLeague = true; ', [$this->id]);
 
         foreach ($results as $result) {
             $result = (array) $result;
-            if ($result['result'] <= $minimal[$result['id']]['result']) {
+
+            $actualResult = (float) $result['result'];
+
+            if ($result['se'] === "Rope Throw" && $result['pens'] > 0) {
+                $pensToApply = $result['pens'];
+
+                // If you had a time
+                if ($actualResult > 3) {
+                    // Drop to 3 in
+                    $actualResult = 3;
+                    $pensToApply--;
+                }
+
+                // Now sub pens from actual result with a min of 0
+                $actualResult = max(0, $actualResult - $pensToApply);
+
+            } 
+            if ($result['se'] === "Swim & Tow") {
+                $pensToApply = $result['pens'];
+                
+
+                // If you have > 5 non P900 skip as thats a DQ
+                if ($pensToApply > 5) {
+                    continue;
+                }
+                
+                dump($result['st_time']*1000*1.1);
+                dump($actualResult);
+                // Otherwise lets see if they are 10% slower than submitted
+                if ($actualResult > $result['st_time']*1000*1.1){
+                    $pensToApply++;
+                    # Lets work out how many more amount of 15s they were out by
+                    $diff = $actualResult - ($result['st_time']*1000*1.1) - 15000;
+                    dump($diff/15000.0);
+                    $pensToApply += floor($diff/15000.0);
+                }
+                dump($pensToApply);
+
+                // Add 15s for each pen
+                $actualResult += $pensToApply * 15000;
+
+            }
+            $result['result'] = $actualResult;
+
+            if ($actualResult <= $minimal[$result['id']]['result']) {
                 $minimal[$result['id']] = $result;
             }
         }
