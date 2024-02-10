@@ -63,17 +63,16 @@ class Club extends Model
                     continue;
                 }
                 
-                dump($result['st_time']*1000*1.1);
-                dump($actualResult);
+          
                 // Otherwise lets see if they are 10% slower than submitted
                 if ($actualResult > $result['st_time']*1000*1.1){
                     $pensToApply++;
                     # Lets work out how many more amount of 15s they were out by
                     $diff = $actualResult - ($result['st_time']*1000*1.1) - 15000;
-                    dump($diff/15000.0);
+                   
                     $pensToApply += floor($diff/15000.0);
                 }
-                dump($pensToApply);
+          
 
                 // Add 15s for each pen
                 $actualResult += $pensToApply * 15000;
