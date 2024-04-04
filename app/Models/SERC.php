@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use App\Models\DigitalJudge\JudgeNote;
+use App\Models\Interfaces\IEvent;
 use App\Models\Interfaces\IPenalisable;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class SERC extends Model implements IPenalisable
+class SERC extends Model implements IEvent, IPenalisable
 {
     use HasFactory, Cloneable;
 
@@ -25,12 +26,12 @@ class SERC extends Model implements IPenalisable
         return CompetitionTeam::where('competition', $this->competition)->orderBy('serc_order')->get();
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function getResults()
+    public function getResults(): array
     {
         // Raw query
         // SELECT *, RANK() OVER (ORDER BY points DESC) place FROM (SELECT *, IF(EXISTS (SELECT * FROM serc_disqualifications WHERE serc=16 AND team=tid) , 0, (score/max)*1000) AS points FROM (WITH tbl AS (SELECT CONCAT(c.name, ' ', ct.team) AS team, sr.team AS tid, SUM(result*weight) as score FROM serc_results sr INNER JOIN serc_marking_points mp ON marking_point=mp.id INNER JOIN competition_teams ct ON ct.id=sr.team INNER JOIN clubs c ON c.id=ct.club WHERE mp.serc=16 GROUP BY team, tid) SELECT *, (SELECT MAX(score) FROM tbl) AS max FROM tbl) AS t) AS f;
@@ -55,7 +56,7 @@ class SERC extends Model implements IPenalisable
         return str_replace("?", $this->id, "SELECT *, RANK() OVER (ORDER BY points DESC) place FROM (SELECT *, (SELECT id FROM serc_disqualifications WHERE serc=? AND team=tid ) AS disqualification, IF(EXISTS (SELECT * FROM serc_disqualifications WHERE serc=? AND team=tid) , 0, (score/max)*1000) AS points FROM (WITH tbl AS (SELECT CONCAT(c.name, ' ', ct.team) AS team, sr.team AS tid, ct.club AS club, SUM(result*weight) as score FROM serc_results sr INNER JOIN serc_marking_points mp ON marking_point=mp.id INNER JOIN competition_teams ct ON ct.id=sr.team INNER JOIN clubs c ON c.id=ct.club INNER JOIN leagues l on l.id=ct.league WHERE mp.serc=? :league_conds: GROUP BY team, tid) SELECT *, (SELECT MAX(score) FROM tbl) AS max FROM tbl) AS t) AS f;");
     }
 
-    public function getType()
+    public function getType(): string
     {
         return 'serc';
     }
