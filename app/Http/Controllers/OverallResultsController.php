@@ -16,194 +16,25 @@ class OverallResultsController extends Controller
     public function computeResults(ResultSchema $schema)
     {
 
-        $events = $schema->getEvents;
-
-        $targetLeagueQueryExtra = $schema->getTargetLeagueQueryExtra();
-
-        $finalQuery = "WITH ";
-
-        $mysqlEventNames = [];
-        $mysqlEventNamesArray = [];
-
-
-        foreach ($events as $event) {
-            $actualEvent = $event->getActualEvent;
-            // If you remove an event from a created RS it gets a null, so skip it
-            if (!$actualEvent) continue;
-            $query = $actualEvent->getResultQuery();
-            $query = str_replace(":league_conds:", $targetLeagueQueryExtra, $query);
-            $eventName = $actualEvent->getName();
-
-
-
-            $eventMysqlName = str_replace("&", "", str_replace(" ", "_", Str::lower($eventName))) . "_" . $actualEvent->id;
-            //echo $eventMysqlName;
-
-            $mysqlEventNames[$event->id] = $eventMysqlName;
-            array_push($mysqlEventNamesArray, $eventMysqlName);
-
-            $finalQuery .= $eventMysqlName . " AS (" . rtrim($query, ";") . "), ";
+        $results = [];
+        $final = $schema->getRawQuery(); 
+        if ($final != null) {
+            $results = DB::select($final);
         }
 
-        $finalQuery = rtrim($finalQuery, ", ");
-
-        if (count($mysqlEventNamesArray) == 0) return view('competition.results.view', ['results' => [], 'schema' => $schema, 'comp' => $schema->getCompetition]);
-
-        $finalQuery .= " SELECT " . $mysqlEventNamesArray[0] . ".team, ";
-
-        foreach ($events as $event) {
-            // If you remove an event from a created RS it gets a null, so skip it
-            if (!array_key_exists($event->id, $mysqlEventNames)) continue;
-            $mysqlTableName = $mysqlEventNames[$event->id];
-            $finalQuery .= $mysqlTableName . ".points AS " . $mysqlTableName . "_points, ";
-            $finalQuery .=  $event->weight . " AS " . $mysqlTableName . "_weight, ";
-            $finalQuery .= "(SELECT MIN(points) FROM " . $mysqlTableName . " WHERE " . $mysqlTableName . ".disqualification IS NULL) AS " . $mysqlTableName . "_min, ";
-            $finalQuery .= "(SELECT MAX(points) FROM " . $mysqlTableName . ") AS " . $mysqlTableName . "_max, ";
-            $finalQuery .= "900/((SELECT MAX(points) FROM " . $mysqlTableName . ") - (SELECT MIN(points) FROM " . $mysqlTableName . " WHERE " . $mysqlTableName . ".disqualification IS NULL)) AS " . $mysqlTableName . "_mult_factor, ";
-            $finalQuery .=  "IF(" . $mysqlTableName . ".points = 0,  IF(" . $mysqlTableName . ".disqualification IS NULL, 100, 0)    ,(" . $mysqlTableName . ".points" . "-" . "(SELECT MIN(points) FROM " . $mysqlTableName . " WHERE " . $mysqlTableName . ".disqualification IS NULL))" . "*" . "(900/((SELECT MAX(points) FROM " . $mysqlTableName . ") - (SELECT MIN(points) FROM " . $mysqlTableName . " WHERE " . $mysqlTableName . ".disqualification IS NULL )))+100) * " . $event->weight . " AS " . $mysqlTableName . "_rsp, ";
-            
-        }
-
-        $finalQuery = rtrim($finalQuery, ", ");
-
-
-
-
-        $finalQuery .= " FROM " . $mysqlEventNamesArray[0];
-
-        $first = true;
-
-        $prev = $mysqlEventNamesArray[0];
-        foreach ($mysqlEventNamesArray as $event) {
-            if ($first) {
-                $first = false;
-                continue;
-            }
-
-            $finalQuery .= " INNER JOIN " . $event . " ON " . $event . ".team=" . $prev . ".team ";
-            $prev = $event;
-        }
-
-        $finalQuery = rtrim($finalQuery, " ");
-
-        $final = "SELECT *, ";
-        foreach ($mysqlEventNamesArray as $event) {
-            $final .= $event . "_rsp + ";
-        }
-
-        //echo $finalQuery;
-
-        $final = rtrim($final, "+ ") . " AS totalPoints FROM (" . $finalQuery . ") AS bb";
-
-        $final = "SELECT *, RANK() OVER(ORDER BY totalPoints DESC) place FROM (" . $final . ") AS bbb;";
-
-        //echo $final;
-        //return;
-
-
-
-
-        $results = DB::select($final);
-
+       
         return view('competition.results.view', ['results' => $results, 'schema' => $schema, 'comp' => $schema->getCompetition]);
     }
 
     public function viewForPrintBasic(ResultSchema $schema)
     {
-
-        $events = $schema->getEvents;
-
-        $targetLeagueQueryExtra = $schema->getTargetLeagueQueryExtra();
-
-        $finalQuery = "WITH ";
-
-        $mysqlEventNames = [];
-        $mysqlEventNamesArray = [];
-
-
-        foreach ($events as $event) {
-            $actualEvent = $event->getActualEvent;
-            // If you remove an event from a created RS it gets a null, so skip it
-            if (!$actualEvent) continue;
-            $query = $actualEvent->getResultQuery();
-            $query = str_replace(":league_conds:", $targetLeagueQueryExtra, $query);
-            $eventName = $actualEvent->getName();
-
-
-
-            $eventMysqlName = str_replace("&", "", str_replace(" ", "_", Str::lower($eventName))) . "_" . $actualEvent->id;
-            //echo $eventMysqlName;
-
-            $mysqlEventNames[$event->id] = $eventMysqlName;
-            array_push($mysqlEventNamesArray, $eventMysqlName);
-
-            $finalQuery .= $eventMysqlName . " AS (" . rtrim($query, ";") . "), ";
-        }
-
-        $finalQuery = rtrim($finalQuery, ", ");
-        $finalQuery .= " SELECT " . $mysqlEventNamesArray[0] . ".team, ";
-
-        foreach ($events as $event) {
-            // If you remove an event from a created RS it gets a null, so skip it
-            if (!array_key_exists($event->id, $mysqlEventNames)) continue;
-            $mysqlTableName = $mysqlEventNames[$event->id];
-            $finalQuery .= $mysqlTableName . ".points AS " . $mysqlTableName . "_points, ";
-            $finalQuery .=  $event->weight . " AS " . $mysqlTableName . "_weight, ";
-            $finalQuery .= "(SELECT MIN(points) FROM " . $mysqlTableName . " WHERE " . $mysqlTableName . ".disqualification IS NULL) AS " . $mysqlTableName . "_min, ";
-            $finalQuery .= "(SELECT MAX(points) FROM " . $mysqlTableName . ") AS " . $mysqlTableName . "_max, ";
-            $finalQuery .= "900/((SELECT MAX(points) FROM " . $mysqlTableName . ") - (SELECT MIN(points) FROM " . $mysqlTableName . " WHERE " . $mysqlTableName . ".disqualification IS NULL)) AS " . $mysqlTableName . "_mult_factor, ";
-            $finalQuery .=  "IF(" . $mysqlTableName . ".points = 0, IF(" . $mysqlTableName . ".disqualification IS NULL, 100, 0)    ,(" . $mysqlTableName . ".points" . "-" . "(SELECT MIN(points) FROM " . $mysqlTableName . " WHERE " . $mysqlTableName . ".disqualification IS NULL))" . "*" . "(900/((SELECT MAX(points) FROM " . $mysqlTableName . ") - (SELECT MIN(points) FROM " . $mysqlTableName . " WHERE " . $mysqlTableName . ".disqualification IS NULL)))+100) * " . $event->weight . " AS " . $mysqlTableName . "_rsp, ";
-        }
-
-        $finalQuery = rtrim($finalQuery, ", ");
-
-        $finalQuery .= " FROM " . $mysqlEventNamesArray[0];
-
-        $first = true;
-
-        $prev = $mysqlEventNamesArray[0];
-        foreach ($mysqlEventNamesArray as $event) {
-            if ($first) {
-                $first = false;
-                continue;
-            }
-
-            $finalQuery .= " INNER JOIN " . $event . " ON " . $event . ".team=" . $prev . ".team ";
-            $prev = $event;
-        }
-
-        $finalQuery = rtrim($finalQuery, " ");
-
-        $final = "SELECT *, ";
-        foreach ($mysqlEventNamesArray as $event) {
-            $final .= $event . "_rsp + ";
-        }
-
-        //echo $finalQuery;
-
-        $final = rtrim($final, "+ ") . " AS totalPoints FROM (" . $finalQuery . ") AS bb";
-
-        $final = "SELECT *, RANK() OVER(ORDER BY totalPoints DESC) place FROM (" . $final . ") AS bbb;";
-
-        //echo $final;
-        //return;
-
-
-
-
-        $results = DB::select($final);
-
+        $results = DB::select($schema->getRawQuery());
         return view('competition.results.view-for-print-basic', ['results' => $results, 'schema' => $schema, 'comp' => $schema->getCompetition]);
     }
 
     public function viewForPrint(ResultSchema $schema)
     {
-
-
-
-
-        $results = $schema->getDetailedPrint();
-
+        $results = $results = DB::select($schema->getRawQuery());
         return view('competition.results.view-for-print', ['results' => $results, 'schema' => $schema, 'comp' => $schema->getCompetition]);
     }
 
