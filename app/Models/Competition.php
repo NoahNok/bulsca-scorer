@@ -13,10 +13,10 @@ class Competition extends Model
 {
     use HasFactory, Cloneable;
 
-    public function speedEvents()
-    {
-        return $this->hasManyThrough(SpeedEvent::class, CompetitionSpeedEvent::class, 'event', 'id', 'id', 'event');
-    }
+    protected $casts = [
+        'when' => 'datetime',
+        'serc_start_time' => 'datetime',
+    ];
 
     public function getSpeedEvents()
     {
@@ -40,10 +40,7 @@ class Competition extends Model
         return $this->hasMany(Heat::class, 'competition', 'id');
     }
 
-    protected $casts = [
-        'when' => 'datetime',
-        'serc_start_time' => 'datetime',
-    ];
+
 
     public function getResultSchemas()
     {
