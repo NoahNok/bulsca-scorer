@@ -6,7 +6,9 @@ use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\CompetitionTeam;
 use App\Models\DigitalJudge\JudgeDQSubmission;
+use App\Models\DQCode;
 use App\Models\Penalty;
+use App\Models\PenaltyCode;
 use App\Models\ResultSchema;
 use App\Models\SERC;
 use Carbon\Carbon;
@@ -233,7 +235,19 @@ class PublicResultsController extends Controller
             $query->where('team', $team->id);
         })->where('code', $code)->first();
 
-        if (!$judgeSubmission) return "No Digital DQ/Pen submission found for this team. It was most likely done on paper!";
+        if (!$judgeSubmission) {
+            $code = strtoupper($code);
+            
+
+            if (str_starts_with($code, 'P')) {
+                $number = substr($code, 1);
+
+                return PenaltyCode::where('id', $number)->first()->description ?? "Unknown Penalty Code";
+            } else {
+                $number = substr($code, 2);
+                return DQCode::where('id', $number)->first()->description ?? "Unknown DQ Code";
+            }
+        }
 
         return view('public-results.view-dqpen', ['dq' => $judgeSubmission]);
     }
