@@ -137,11 +137,6 @@ class DigitalJudgeController extends Controller
 
     function judgeLog(Request $request, Competition $comp)
     {
-
-
-
-
-
         $log = JudgeLog::WHERE('competition', $comp->id);
 
         if ($request->filled('filterEvent')) {

@@ -52,10 +52,15 @@ class ResultSchema extends Model
         }
     }
 
-    public function getRawQuery()
+    /**
+     * I'm aware that this looks like alot of sphagetti
+     * but it works well and it quite fast, and it the best way I could think of doing it
+     * 
+     * Doing it with ORM would be absolutely ass
+     */
+    public function getRawQuery(): ?string
     {
         $events = $this->getEvents;
-
         $targetLeagueQueryExtra = $this->getTargetLeagueQueryExtra();
 
         $finalQuery = "WITH ";
@@ -63,7 +68,7 @@ class ResultSchema extends Model
         $mysqlEventNames = [];
         $mysqlEventNamesArray = [];
 
-
+        // Buildup CTE's with each events result query
         foreach ($events as $event) {
             $actualEvent = $event->getActualEvent;
 
@@ -74,10 +79,7 @@ class ResultSchema extends Model
             $query = str_replace(":league_conds:", $targetLeagueQueryExtra, $query);
             $eventName = $actualEvent->getName();
 
-
-
             $eventMysqlName = str_replace("&", "", str_replace(" ", "_", Str::lower($eventName))) . "_" . $actualEvent->id;
-            //echo $eventMysqlName;
 
             $mysqlEventNames[$event->id] = $eventMysqlName;
             array_push($mysqlEventNamesArray, $eventMysqlName);
@@ -85,9 +87,14 @@ class ResultSchema extends Model
             $finalQuery .= $eventMysqlName . " AS (" . rtrim($query, ";") . "), ";
         }
 
+
+        if (count($mysqlEventNamesArray) == 0) return null;
+
+
         $finalQuery = rtrim($finalQuery, ", ");
         $finalQuery .= " SELECT " . $mysqlEventNamesArray[0] . ".team, " . $mysqlEventNamesArray[0] . ".tid, " . $mysqlEventNamesArray[0] . ".club, ";
 
+        // Buildup linear redistirbution of points
         foreach ($events as $event) {
             // If you remove an event from a created RS it gets a null, so skip it
             if (!array_key_exists($event->id, $mysqlEventNames)) continue;
@@ -107,6 +114,7 @@ class ResultSchema extends Model
         $first = true;
 
         $prev = $mysqlEventNamesArray[0];
+        // Can't remember what this is doing
         foreach ($mysqlEventNamesArray as $event) {
             if ($first) {
                 $first = false;
@@ -119,43 +127,24 @@ class ResultSchema extends Model
 
         $finalQuery = rtrim($finalQuery, " ");
 
+        // Calculate totals
         $final = "SELECT *, ";
         foreach ($mysqlEventNamesArray as $event) {
             $final .= $event . "_rsp + ";
         }
 
-
-
-
-        //echo $finalQuery;
-
         $final = rtrim($final, "+ ") . " AS totalPoints, ";
 
-
-
+        // Calculate places for each individual event
         foreach ($mysqlEventNamesArray as $event) {
             $final .= "RANK() OVER (ORDER BY " . $event . "_rsp DESC) AS " . $event . "_rsp_places, ";
         }
 
-
         $final = rtrim($final, ", ")  . " FROM (" . $finalQuery . ") AS bb";
 
-
-
-
-
-
-
+        // Calculate overall place
         $final = "SELECT *, RANK() OVER(ORDER BY totalPoints DESC) place FROM (" . $final . ") AS bbb;";
         return $final;
     }
 
-    public function getDetailedPrint()
-    {
-        $final = $this->getRawQuery();
-
-
-
-        return DB::select($final);
-    }
 }

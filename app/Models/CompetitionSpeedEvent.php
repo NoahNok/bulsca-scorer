@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Interfaces\IEvent;
 use App\Models\Interfaces\IPenalisable;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,11 +10,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
-class CompetitionSpeedEvent extends Model implements IPenalisable
+class CompetitionSpeedEvent extends Model implements IEvent, IPenalisable
 {
     use HasFactory, Cloneable;
 
-    public function getName()
+    public function getName(): string
     {
         return $this->hasOne(SpeedEvent::class, 'id', 'event')->first()->name;
     }
@@ -28,13 +29,8 @@ class CompetitionSpeedEvent extends Model implements IPenalisable
         return $this->getCompetition->getCompetitionTeams();
     }
 
-    public function getResults()
+    public function getResults(): array
     {
-
-        $record = 377030;
-
-
-
         $results = null;
 
         if ($this->getName() == "Swim & Tow") {
@@ -49,8 +45,6 @@ class CompetitionSpeedEvent extends Model implements IPenalisable
             //echo "i also ran";
             $results = DB::select('SELECT *, RANK() OVER (ORDER BY points DESC) place FROM (SELECT sr.id, CONCAT(c.name, " ", ct.team) AS team, se.name as event, sr.result, sr.disqualification, IF(sr.disqualification IS NOT NULL, 0, IF(sr.result, (1-((sr.result-cse.record)/(cse.record))) * 1000, 0)) AS points, ct.id as tid, sr.result as base_result FROM speed_results sr INNER JOIN competition_speed_events cse ON cse.id=sr.event INNER JOIN speed_events se ON cse.event=se.id INNER JOIN competition_teams ct ON ct.id=sr.competition_team INNER JOIN clubs c ON c.id=ct.club WHERE cse.id=? ORDER BY result) t ORDER BY place;', [$this->id]);
         }
-
-
 
         return $results;
     }
@@ -80,7 +74,7 @@ class CompetitionSpeedEvent extends Model implements IPenalisable
         return str_replace("?", $this->id, $results);
     }
 
-    public function getType()
+    public function getType(): string
     {
         return 'speed';
     }

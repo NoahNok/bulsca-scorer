@@ -10,8 +10,7 @@ use Illuminate\Support\Facades\Route;
 
 
 
-function r()
-{
+Route::domain("judge.".env('APP_SUBDOMAIN_BASE'))->group(function () {
     Route::get('', [DigitalJudgeController::class, 'index'])->name('dj.index');
     Route::post('login', [DigitalJudgeController::class, 'login'])->name('dj.login');
     Route::get('logout', [DigitalJudgeController::class, 'logout'])->name('dj.logout');
@@ -112,15 +111,6 @@ function r()
             return redirect()->back();
         })->name('LOCAL.dj.toggle-head-ref');
     }
-}
+});
 
-if (env('APP_ENV') == 'local') {
-    Route::prefix('dj')->group(function () {
-        r();
-    });
-} else {
 
-    Route::domain('judge.bulsca.co.uk')->group(function () {
-        r();
-    });
-}

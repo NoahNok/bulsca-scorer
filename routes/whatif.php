@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\Route;
 
 
 
-function wir()
-{
+
+Route::domain("whatif.".env('APP_SUBDOMAIN_BASE'))->group(function () {
     /* LIVE VIEWING */
 
     Route::get('', [WhatIfController::class, 'index'])->name('whatif');
@@ -38,15 +38,4 @@ function wir()
             Route::get('logout', [WhatIfController::class, 'logout'])->name('whatif.logout');
         });
     });
-}
-
-if (env('APP_ENV') == 'local') {
-    Route::prefix('whatif')->group(function () {
-        wir();
-    });
-} else {
-
-    Route::domain('whatif.bulsca.co.uk')->group(function () {
-        wir();
-    });
-}
+});
