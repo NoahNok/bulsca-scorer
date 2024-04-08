@@ -147,4 +147,11 @@ class ResultSchema extends Model
         return $final;
     }
 
+    public function getResults()
+    {
+        $query = $this->getRawQuery();
+        if (!$query) return null;
+        return DB::select($query);
+    }
+
 }

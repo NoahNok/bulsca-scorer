@@ -50,7 +50,7 @@ class PublicResultsController extends Controller
 
         if (!$schema->viewable) return redirect()->route('public.results.comp', ['comp_slug' => $comp_slug->resultsSlug()]);
 
-        return view('public-results.view-results', ['comp' => $comp_slug, 'schema' => $schema, 'results' => $schema->getDetailedPrint()]);
+        return view('public-results.view-results', ['comp' => $comp_slug, 'schema' => $schema, 'results' => $schema->getResults()]);
     }
 
 
