@@ -41,4 +41,13 @@ class CompetitionController extends Controller
 
         return view('competition.teams', ['comp' => $comp]);
     }
+
+    public function createCompetitionStats(Competition $comp) {
+        
+        $comp->generateStats();
+
+        return back()->with('success', 'Stats created');
+
+
+    }
 }

@@ -21,7 +21,7 @@
         <div class="grid-3 ">
             <div class="card">
                 <p class="columns-3 ">
-                    @foreach (App\Stats\Stats::getStatableClubs() as $club)
+                    @foreach ($clubs as $club)
                         <a href="{{ route('public.results.stats.club', $club->name) }}" class="link ">
                             {{ $club->name }}
                         </a>

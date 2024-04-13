@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\DigitalJudge\JudgeLog;
+use App\Stats\StatsManager;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -142,5 +143,11 @@ class Competition extends Model
     public function resolveJudgeLogVersionUrl()
     {
         return JudgeLog::where('competition', $this->id)->exists() ? route('dj.judgeLog', $this) : route('dj.betterJudgeLog', $this);
+    }
+
+    public function generateStats()
+    {
+        $manager = new StatsManager($this);
+        $manager->computeStats();
     }
 }

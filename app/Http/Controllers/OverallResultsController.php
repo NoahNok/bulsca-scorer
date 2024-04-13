@@ -191,6 +191,11 @@ class OverallResultsController extends Controller
         $comp->results_provisional = !$comp->results_provisional;
         $comp->save();
 
+        if (!$comp->results_provisional) {
+            $comp->generateStats();
+            return redirect()->back()->with("success","Generated stats");
+        }
+
         return redirect()->back();
     }
 
