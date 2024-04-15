@@ -20,5 +20,19 @@ mix.js("resources/js/*", "public/js")
         postCss: [require("tailwindcss")],
     }); //.bladeReload();
 
-mix.browserSync("127.0.0.1:8000");
-mix.serve();
+
+
+mix.browserSync({
+    proxy: {
+        target: "localhost", // route to the nginx instance running
+        proxyReq: [
+            function (proxyReq, req, res) {
+
+                proxyReq.setHeader("Host", req.headers.host); // Allows us to access the hot reload at something like subdomain.bulsca.local:3000 or without the port for non-hot realod
+            },
+        ],
+        
+    },
+    host: "0.0.0.0",
+});
+
