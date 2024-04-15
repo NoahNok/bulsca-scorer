@@ -1107,6 +1107,9 @@ video {
 .grid-cols-2 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
+.grid-cols-6 {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
 .grid-rows-6 {
   grid-template-rows: repeat(6, minmax(0, 1fr));
 }
@@ -1118,6 +1121,9 @@ video {
 }
 .flex-wrap {
   flex-wrap: wrap;
+}
+.content-between {
+  align-content: space-between;
 }
 .items-start {
   align-items: flex-start;
@@ -1137,6 +1143,9 @@ video {
 .justify-between {
   justify-content: space-between;
 }
+.justify-evenly {
+  justify-content: space-evenly;
+}
 .justify-items-center {
   justify-items: center;
 }
@@ -1154,6 +1163,14 @@ video {
 }
 .gap-y-4 {
   row-gap: 1rem;
+}
+.gap-x-2 {
+  -moz-column-gap: 0.5rem;
+       column-gap: 0.5rem;
+}
+.gap-x-5 {
+  -moz-column-gap: 1.25rem;
+       column-gap: 1.25rem;
 }
 .space-x-4 > :not([hidden]) ~ :not([hidden]) {
   --tw-space-x-reverse: 0;

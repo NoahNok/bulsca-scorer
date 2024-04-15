@@ -2,40 +2,74 @@
 
 namespace App\Stats;
 
+use App\Models\Club;
 use Illuminate\Support\Facades\Cache;
 
 abstract class Statable
 {
 
-    private string $name, $view;
-    private $data;
-    public array $baseOptions = [];
+    private StatTarget $target;
+    protected string $templateName;
 
-    public function __construct(string $name, string $view = "")
-    {
-        $this->name = $name;
-        $this->view = $view === "" ? $name : $view;
+    private ?Club $club;
+    private ?string $team;
+
+    private string $viewBase = "public-results.stats.templates.";
+
+    abstract public function forGlobal(): array;
+    abstract function forClub(Club $club): array;
+    abstract function forTeam(Club $club, string $team): array;
+
+
+    public function __construct(StatTarget $target, Club $club = null, string $team = null) {
+        $this->target = $target;
+   
+        $this->club = $club;
+        $this->team = $team;
+
+        if (($this->target == StatTarget::CLUB || $this->target == StatTarget::TEAM) && $this->club == null) {
+            throw new \Exception("Club must be provided when target is CLUB or TEAM");
+        }
+
+        if ($this->target == StatTarget::TEAM && $this->team == null) {
+            throw new \Exception("Team must be provided when target is TEAM");
+        }
     }
 
-    /**
-     * Implement data collection method
-     * $options might contain things like 'team', 'club' etc
-     * Data is automatically cached by the class forever
-     */
-    public abstract function compute(array $options);
+    
 
-    public function computeFor(array $options)
-    {
-
-        $options = array_merge($this->baseOptions, $options);
-
-        $this->data = Cache::rememberForever('stats-statable-cache:' . $this->name . ':' . implode('.', $options), function () use ($options) {
-            return $this->compute($options);
-        });
+    public function computeAndRender() {
+        $data = $this->compute();
+        return $this->render($data);
     }
 
-    public function render()
-    {
-        return view('public-results.stats.templates.' . $this->view, ['data' => $this->data]);
+    private function compute(): array {
+        $data = [];
+
+        switch ($this->target) {
+            case StatTarget::GLOBAL:
+                $data = $this->forGlobal();
+                break;
+            case StatTarget::CLUB:
+                $data = $this->forClub($this->club);
+                break;
+            case StatTarget::TEAM:
+                $data = $this->forTeam($this->club, $this->team);
+                break;
+        }
+
+        return $data;
+
     }
+
+    private function render(array $data) {
+        return view($this->viewBase . $this->templateName, ['data' => $data]);
+    }
+    
+}
+
+enum StatTarget {
+    case GLOBAL;
+    case CLUB;
+    case TEAM;
 }

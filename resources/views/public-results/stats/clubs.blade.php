@@ -18,6 +18,10 @@
 
         <br>
 
+        {!! $fastestTimes !!}
+
+        <br>
+
         <div class="grid-3 ">
             <div class="card">
                 <p class="columns-3 ">
@@ -29,6 +33,8 @@
                     @endforeach
                 </p>
             </div>
+
+            
 
      
         </div>

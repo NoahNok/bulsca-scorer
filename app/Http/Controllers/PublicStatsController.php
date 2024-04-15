@@ -6,8 +6,10 @@ use App\Stats\Statables\Club\ClubCompetedAt;
 use App\Stats\Statables\Club\ClubLeagueData;
 use App\Stats\Statables\Club\ClubSercRecords;
 use App\Stats\Statables\Club\ClubSpeedRecords;
+use App\Stats\Statables\FastestTimesStat;
 use App\Stats\StatsManager;
 use App\Stats\StatsTeam;
+use App\Stats\StatTarget;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
@@ -22,7 +24,8 @@ class PublicStatsController extends Controller
 
     public function clubs()
     {
-        return view('public-results.stats.clubs', ['clubs' => StatsManager::getStatableClubs()]);
+        $fts = new FastestTimesStat(StatTarget::GLOBAL);
+        return view('public-results.stats.clubs', ['clubs' => StatsManager::getStatableClubs(), 'fastestTimes' => $fts->computeAndRender()]);
     }
 
     public function club(string $clubName)
