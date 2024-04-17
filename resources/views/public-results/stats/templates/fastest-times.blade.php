@@ -1,21 +1,42 @@
-<div class="grid grid-cols-6 gap-x-5 w-full ">
-    @foreach ($data as $record)
-    <div class="card " x-speed-event="{{ $record->event }}" x-speed-record="{{ $record->time }}">
+<div class=" flex flex-row  md:grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 4xl:grid-cols-6 gap-x-5 w-full gap-y-2  snap-x snap-mandatory overflow-x-auto w-full">
 
-        <div class="flex ">
-            <p class="font-semibold  ">{{ $record->event }}</p>
-            <a class="link ml-auto" href="{{ route('public.results.comp', ($record->competition ?? '') . '.' . ($record->competition_id ?? '')) }}"><span class="text-sm">{{ $record->competition ?? '-' }}</span></a>
+
+    @foreach (App\Models\SpeedEvent::orderBy('name')->get() as $event)
+
+        @php
+            $record = null;
+            foreach ($data as $r) {
+                if ($r->event == $event->id) {
+                    $record = $r;
+                    break;
+                }
+            }
+        @endphp
+
+        <div class="card  min-w-full  snap-center " >
+
+            <div class="flex ">
+                <p class="font-semibold  ">{{ $event->name }}</p>
+                <a class="link ml-auto" href="{{ route('public.results.comp', ($record->competition ?? '') . '.' . ($record->competition_id ?? '')) }}"><span class="text-sm">{{ $record->competition ?? '-' }}</span></a>
+            </div>
+            <h3 class="hmb-0">
+                @if ($record)
+                    {{  $record->time == 99999999999999999 ? '-' : App\Models\SpeedResult::getPrettyTime($record->time) }}
+                @else
+                    -    
+                @endif
+                
+            </h3>
+            <p class=" text-sm flex">
+                <span>@if ($record) {{ round($record->points) }} pts @else No data @endif</span>
+                <span class="ml-auto">@if($record){{ $record->club }} {{ $record->team }}@endif  </span>
+            
+            </p>
+            
+
         </div>
-        <h3 class="hmb-0">
-            {{ $record->time == 99999999999999999 ? '-' : App\Models\SpeedResult::getPrettyTime($record->time) }}
-        </h3>
-        <p class=" text-sm flex">
-            <span>{{ round($record->points) }}pts</span>
-            <span class="ml-auto">{{ $record->club }} {{ $record->team }}  </span>
-           
-        </p>
-        
+    @endforeach
 
-    </div>
-@endforeach
+
 </div>
+<div class="md:hidden"><small>Swipe for more</small></div>
