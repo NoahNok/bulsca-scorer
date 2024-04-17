@@ -25,12 +25,12 @@ class FastestTimesStat extends Statable
 
     public function forClub(Club $club): array
     {
-        return DB::select(str_replace(":WHERE:", "cl.name = ?", $this->baseQuery), $club->id);
+        return DB::select(str_replace(":WHERE:", "  WHERE cl.id = ?", $this->baseQuery), [$club->id]);
     }
 
     public function forTeam(Club $club, string $team): array
     {
-        return DB::select(str_replace(":WHERE:", "cl.name = ? AND ct.team = ?", $this->baseQuery), [$club->id, $team]);
+        return DB::select(str_replace(":WHERE:", "WHERE cl.id = ? AND ct.team = ?", $this->baseQuery), [$club->id, $team]);
     }
 
 

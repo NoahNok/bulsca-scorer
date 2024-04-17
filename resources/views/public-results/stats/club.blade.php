@@ -34,13 +34,20 @@
 </head>
 
 <body class="overflow-x-hidden flex w-full h-full justify-center">
-    <div class=" w-full md:w-[75%] m-6 md:my-28 md:mx-0 ">
-        <img src="https://www.bulsca.co.uk/storage/logo/blogo.png" class=" w-40 mb-2 " alt="">
+    <div class=" w-full md:w-[75%] p-6 md:my-28 md:mx-0 ">
+      
+            <img src="https://www.bulsca.co.uk/storage/logo/blogo.png" class=" w-40 mb-2 " alt="">    
+    
+   
 
         <a href="{{ route('public.results.stats.clubs') }}"
             class="link flex items-center space-x-1  z-50 cursor-pointer">All Clubs</a>
 
-        <h1 class="font-bold  " style="font">{{ $club->name }}</h1>
+      
+                
+                <h1 class="font-bold  " style="font">{{ $club->name }}</h1>
+           
+        
 
 
 
@@ -53,8 +60,11 @@
             @endforeach
         </div>
         <br>
-        <div class="grid-3">
+     
 
+            @foreach ($data as $d)
+                {{ $d }}
+            @endforeach
 
             {{-- @foreach ($stats as $stat)
                 {{ $stat->render() }}
@@ -62,7 +72,6 @@
 
 
 
-        </div>
 
     </div>
 

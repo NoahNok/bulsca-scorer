@@ -1,4 +1,4 @@
-<div class=" flex flex-row  md:grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 4xl:grid-cols-6 gap-x-5 w-full gap-y-2  snap-x snap-mandatory overflow-x-auto w-full">
+<div class=" flex flex-row  md:grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 4xl:grid-cols-6 gap-x-5 w-full gap-y-2  snap-x snap-mandatory overflow-x-auto ">
 
 
     @foreach (App\Models\SpeedEvent::orderBy('name')->get() as $event)

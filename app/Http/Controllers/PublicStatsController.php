@@ -18,9 +18,8 @@ use NumberFormatter;
 class PublicStatsController extends Controller
 {
 
-    private array $clubStats = [], $teamStats = [];
+    private array $clubStats = [FastestTimesStat::class], $teamStats = [];
 
- 
 
     public function clubs()
     {
@@ -33,7 +32,14 @@ class PublicStatsController extends Controller
         $club = StatsManager::getClubFromName($clubName);
         $teams = StatsManager::getClubTeams($club);
 
-        return view('public-results.stats.club', ['club' => $club, 'teams' => $teams]);
+        $data = [];
+
+        foreach ($this->clubStats as $stat) {
+            $stat = new $stat(StatTarget::CLUB, $club);
+            $data[] = $stat->computeAndRender();
+        }
+
+        return view('public-results.stats.club', ['club' => $club, 'teams' => $teams, 'data' => $data]);
       
     }
 
