@@ -99,6 +99,9 @@ class StatsManager {
     private function computeResultStats() {
 
         foreach ($this->competition->getResultSchemas as $schema) {
+
+            if ($schema->league == 'F') continue;
+
             $results = $schema->getResults();
 
             $data = [];
