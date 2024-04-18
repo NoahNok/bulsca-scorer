@@ -35,6 +35,12 @@
             @endforeach
 
         </div>
+
+        <br>
+
+        <dib class="grid grid-cols-6 gap-5">
+            {!! $sercStats !!}
+        </dib>
     </div>
     </div>
 </body>

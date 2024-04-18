@@ -61,10 +61,14 @@
         </div>
         <br>
      
-
+        <div class="grid grid-cols-6 gap-5">
             @foreach ($data as $d)
-                {{ $d }}
+            {{ $d }}
+           
             @endforeach
+        </div>
+
+    
 
             {{-- @foreach ($stats as $stat)
                 {{ $stat->render() }}

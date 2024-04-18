@@ -38,9 +38,9 @@ abstract class Statable
 
     
 
-    public function computeAndRender() {
+    public function computeAndRender(array $optionalData = []) {
         $data = $this->compute();
-        return $this->render($data);
+        return $this->render($data, $optionalData);
     }
 
     private function compute(): array {
@@ -62,8 +62,9 @@ abstract class Statable
 
     }
 
-    private function render(array $data) {
-        return view($this->viewBase . $this->templateName, ['data' => $data]);
+    private function render(array $data, array $optionalData = []) {
+        $viewData = array_merge(['data' => $data, 'stat_target' => $this->target], $optionalData);
+        return view($this->viewBase . $this->templateName, $viewData);
     }
     
 }

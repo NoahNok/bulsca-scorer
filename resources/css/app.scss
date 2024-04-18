@@ -243,6 +243,11 @@ h5 {
 
    
   }
+
+  &.card-bulsca-solid {
+    @apply bg-bulsca;
+  }
+
   &.disabled {
     @apply bg-gray-400 cursor-not-allowed;
   }

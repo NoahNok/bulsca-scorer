@@ -107,6 +107,7 @@ class StatsManager {
                 $team = $result->tid;
                 $points = $result->totalPoints;
                 $place = $result->place;
+                dump($result);
 
                 $data[] = [
                     'competition' => $this->competition->id,
@@ -129,12 +130,16 @@ class StatsManager {
         return DB::select("SELECT DISTINCT c.name FROM clubs c INNER JOIN competition_teams ct ON c.id=ct.club INNER JOIN competitions cp ON cp.id=ct.competition WHERE cp.results_provisional=false ORDER BY c.name");
     }
 
-    static function getClubFromName(string $clubName): Club {
+    static function getClubFromName(string $clubName): ?Club {
         return Club::where('name', $clubName)->first();
     }
 
     static function getClubTeams(Club $club) {
         return DB::select("SELECT DISTINCT ct.team FROM competition_teams ct INNER JOIN competitions cp ON cp.id=ct.competition WHERE cp.results_provisional=false AND ct.club=? ORDER BY ct.team", [$club->id]);
+    }
+
+    static function getAllTeams(): array {
+        return DB::select("SELECT DISTINCT ct.team AS team, c.name FROM competition_teams ct INNER JOIN clubs c ON c.id=ct.club INNER JOIN competitions cp ON cp.id=ct.competition WHERE cp.results_provisional=false ORDER BY c.name, ct.team");
     }
 
 
