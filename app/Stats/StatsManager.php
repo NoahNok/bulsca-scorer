@@ -107,7 +107,7 @@ class StatsManager {
                 $team = $result->tid;
                 $points = $result->totalPoints;
                 $place = $result->place;
-                dump($result);
+                
 
                 $data[] = [
                     'competition' => $this->competition->id,
