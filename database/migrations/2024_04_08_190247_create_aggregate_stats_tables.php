@@ -20,7 +20,7 @@ return new class extends Migration
             $table->decimal('points');
             $table->integer('place');
 
-            //$table->unique(['competition', 'team', 'league']);
+            $table->unique(['competition', 'team', 'league']);
 
         });
 
