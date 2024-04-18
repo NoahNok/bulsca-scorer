@@ -11,5 +11,5 @@ class ResultStat extends Model
 
     protected $table = 'stats_results';
 
-    protected $fillable = ['competition', 'team', 'event', 'score', 'points', 'place'];
+    protected $fillable = ['competition', 'team', 'league', 'points', 'place'];
 }
