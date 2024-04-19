@@ -64,12 +64,26 @@ class CompetitionPlacingGraph extends Statable
             $leagueData[$leagueKey][$row->team][$row->competition] = ['place' => $row->place, 'points' => $row->points, 'competition_id' => $row->competition_id, 'competition_name' => $row->competition];
         }
         
+        $orderedLeagueData = [];
 
+        if (array_key_exists('Overall', $leagueData)) {
+            $orderedLeagueData['Overall'] = $leagueData['Overall'];
+        }
+
+        if (array_key_exists('A', $leagueData)) {
+            $orderedLeagueData['A'] = $leagueData['A'];
+        }
+
+        if (array_key_exists('B', $leagueData)) {
+            $orderedLeagueData['B'] = $leagueData['B'];
+        }
+
+    
 
 
 
         return [
-            "leagues" => $leagueData,
+            "leagues" => $orderedLeagueData,
             "competitions" => $uniqueCompetitions,
         ];
     }
