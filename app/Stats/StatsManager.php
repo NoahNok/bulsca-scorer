@@ -131,7 +131,7 @@ class StatsManager {
 
     static function getStatableClubs() {
         
-        return DB::select("SELECT DISTINCT c.name FROM clubs c INNER JOIN competition_teams ct ON c.id=ct.club INNER JOIN competitions cp ON cp.id=ct.competition WHERE cp.results_provisional=false ORDER BY c.name");
+        return DB::select("SELECT DISTINCT c.name FROM clubs c INNER JOIN competition_teams ct ON c.id=ct.club INNER JOIN competitions cp ON cp.id=ct.competition WHERE cp.results_provisional=false AND cp.isLeague=true ORDER BY c.name");
     }
 
     static function getClubFromName(string $clubName): ?Club {
@@ -139,11 +139,11 @@ class StatsManager {
     }
 
     static function getClubTeams(Club $club) {
-        return DB::select("SELECT DISTINCT ct.team FROM competition_teams ct INNER JOIN competitions cp ON cp.id=ct.competition WHERE cp.results_provisional=false AND ct.club=? ORDER BY ct.team", [$club->id]);
+        return DB::select("SELECT DISTINCT ct.team FROM competition_teams ct INNER JOIN competitions cp ON cp.id=ct.competition WHERE cp.results_provisional=false AND cp.isLeague=true AND ct.club=? ORDER BY ct.team", [$club->id]);
     }
 
     static function getAllTeams(): array {
-        return DB::select("SELECT DISTINCT ct.team AS team, c.name FROM competition_teams ct INNER JOIN clubs c ON c.id=ct.club INNER JOIN competitions cp ON cp.id=ct.competition WHERE cp.results_provisional=false ORDER BY c.name, ct.team");
+        return DB::select("SELECT DISTINCT ct.team AS team, c.name FROM competition_teams ct INNER JOIN clubs c ON c.id=ct.club INNER JOIN competitions cp ON cp.id=ct.competition WHERE cp.results_provisional=false AND cp.isLeague=true ORDER BY c.name, ct.team");
     }
 
 
