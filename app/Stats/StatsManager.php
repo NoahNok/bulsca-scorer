@@ -40,7 +40,7 @@ class StatsManager {
 
             foreach ($results as $result) {
 
-                if ($result->result == null) {
+                if ($result->result == null || $result->disqualification != null) {
                     continue;
                 }
 
