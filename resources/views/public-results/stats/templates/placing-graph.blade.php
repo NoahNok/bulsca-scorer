@@ -1,32 +1,5 @@
-@php
-    $order = [];
-    $compNames = [];
 
-    foreach ($data as $comp) {
-        $order[$comp->league][$comp->team][] = $comp;
-
-        if (!in_array($comp->competition, $compNames)) {
-            $compNames[] = $comp->competition;
-        }
-    }
-
-    $reform = [];
-
-    if (isset($order['O'])) {
-        $reform['Overall'] = $order['O'];
-    }
-
-    if (isset($order['A'])) {
-        $reform['A'] = $order['A'];
-    }
-
-    if (isset($order['B'])) {
-        $reform['B'] = $order['B'];
-    }
-
-@endphp
-
-@foreach ($reform as $league => $league_data)
+@foreach ($data['leagues'] as $league => $league_data)
     @php
 
         ksort($league_data);
@@ -40,21 +13,33 @@
 
         $avgPlace = 0;
 
-        foreach ($league_data as $team => $data) {
-            foreach ($data as $comp) {
-                $totalPoints += $comp->points;
+        foreach ($league_data as $team => $team_data) {
+          
+            foreach ($team_data as $comp_name => $comp) {
+
+                if ($comp == null) continue;
+
+               
+
+                $totalPoints += $comp['points'];
                 $totalEntries++;
-                if ($comp->points > $maxPoints) {
-                    $maxPoints = $comp->points;
+                if ($comp['points'] > $maxPoints) {
+                    $maxPoints = $comp['points'];
                     $maxPointsTeam = $team;
                     $maxPointsComp = $comp;
                 }
-                $avgPlace += $comp->place;
+                $avgPlace += $comp['place'];
             }
+        }
+
+        if ($totalEntries == 0) {
+            $totalEntries = 1;
         }
 
         $avgPoints = $totalPoints / $totalEntries;
         $avgPlace = $avgPlace / $totalEntries;
+
+      
 
     @endphp
 
@@ -82,8 +67,8 @@
                 <thead class="text-left">
                     <tr>
                         <th class="px-2 whitespace-nowrap ">Team</th>
-                        @foreach ($compNames as $name)
-                            <th class="px-2 whitespace-nowrap ">{{ $name }}</th>
+                        @foreach ($data['competitions'] as $comp)
+                            <th class="px-2 whitespace-nowrap ">{{ $comp['name'] }}</th>
                         @endforeach
                     </tr>
                 </thead>
@@ -94,14 +79,20 @@
                     @endphp
 
 
-                    @foreach ($league_data as $key => $data)
+
+
+                    @foreach ($league_data as $team => $comp_data)
+                       
                         <tr>
                             <td class="px-2 ">
-                                {{ $key }}
+                                {{ $team }}
                             </td>
-                            @foreach ($data as $comp)
+                            @foreach ($data['competitions'] as $comp)
                                 <td class="px-2 ">
-                                    {{ $nf->format($comp->place) }}
+                                    @php
+                                        $team_data = array_key_exists($comp['name'], $comp_data) ? $comp_data[$comp['name']] : null;
+                                    @endphp
+                                    {{ $team_data ? $nf->format($team_data['place']) : '-' }}
                                 </td>
                             @endforeach
                         </tr>
@@ -120,6 +111,7 @@
 
     <div class="grid grid-rows-3 col-span-full lg:col-span-2  3xl:col-span-1 gap-y-2 z-20">
 
+        
         <div class="card  min-w-full  relative justify-center ">
 
             <div class="absolute w-6 h-1 bg-bulsca_red -left-6 hidden lg:block "></div>
@@ -132,8 +124,8 @@
             <div class="flex ">
                 <p class="font-semibold  ">Best Score</p>
                 <a class="link ml-auto"
-                    href="{{ route('public.results.comp', $maxPointsComp->competition . '.' . $maxPointsComp->competition_id) }}"><span
-                        class="text-sm">{{ $maxPointsComp->competition }}</span></a>
+                    href="{{ route('public.results.comp', $maxPointsComp['competition_name'] . '.' . $maxPointsComp['competition_id']) }}"><span
+                        class="text-sm">{{ $maxPointsComp['competition_name'] }}</span></a>
             </div>
             <h3 class="hmb-0">
                 {{ round($maxPoints) }} pts
@@ -198,19 +190,22 @@
             type: 'line',
             data: {
                 labels: [
-                    @foreach ($compNames as $name)
-                        '{{ $name }}',
+                    @foreach ($data['competitions'] as $comp)
+                        '{{ $comp['name'] }}',
                     @endforeach
                 ],
                 datasets: [
 
-                    @foreach ($league_data as $key => $data)
+                    @foreach ($league_data as $team => $comp_data)
                         {
-                            label: '{{ $key }}',
+                            label: '{{ $team }}',
                             data: [
-                                @foreach ($data as $comp)
-                                    {{ $comp->place }},
-                                @endforeach
+                                @foreach ($data['competitions'] as $comp)
+                                @php
+                                    $team_data = array_key_exists($comp['name'], $comp_data) ? $comp_data[$comp['name']] : null;
+                                @endphp
+                                {{ $team_data ? $team_data['place'] : 'null' }},                            
+                            @endforeach
                             ],
 
                             fill: false,

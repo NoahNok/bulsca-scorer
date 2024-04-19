@@ -24,12 +24,54 @@ class CompetitionPlacingGraph extends Statable
 
     public function forClub(Club $club): array
     {
-        return DB::select(str_replace(":WHERE:", "  WHERE cl.id = ? ", $this->baseQuery), [$club->id]);
+        return $this->process(DB::select(str_replace(":WHERE:", "  WHERE cl.id = ? ", $this->baseQuery), [$club->id]));
     }
 
     public function forTeam(Club $club, string $team): array
     {
-        return DB::select(str_replace(":WHERE:", "WHERE cl.id = ? AND ct.team = ? ", $this->baseQuery), [$club->id, $team]);
+        return $this->process(DB::select(str_replace(":WHERE:", "WHERE cl.id = ? AND ct.team = ? ", $this->baseQuery), [$club->id, $team]));
+    }
+
+
+    private function process(array $data): array {
+       
+        $uniqueCompetitions = [];
+     
+        
+        foreach ($data as $row) {
+
+  
+            $newData = ['name' => $row->competition, 'id' => $row->competition_id];
+            // Add a new comp to the array if it doesn't exist for our unique comps
+            if (!in_array($newData, $uniqueCompetitions)) {
+                $uniqueCompetitions[] = $newData;
+            }
+
+        }
+       
+        // Now lets produce a array in the form [league][team] = place/null
+        // which is ordered by the uniqueCompetitions array, where it is null if it has no entry
+
+        $leagueData = [];
+      
+        foreach($data as $row) {
+            $leagueKey = $row->league;
+
+            if ($leagueKey == "O") {
+                $leagueKey = "Overall";
+            }
+
+            $leagueData[$leagueKey][$row->team][$row->competition] = ['place' => $row->place, 'points' => $row->points, 'competition_id' => $row->competition_id, 'competition_name' => $row->competition];
+        }
+        
+
+
+
+
+        return [
+            "leagues" => $leagueData,
+            "competitions" => $uniqueCompetitions,
+        ];
     }
 
 

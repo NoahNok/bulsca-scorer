@@ -614,20 +614,11 @@ video {
 .col-span-2 {
   grid-column: span 2 / span 2;
 }
-.col-span-3 {
-  grid-column: span 3 / span 3;
-}
-.col-span-1 {
-  grid-column: span 1 / span 1;
-}
 .col-start-5 {
   grid-column-start: 5;
 }
 .col-start-3 {
   grid-column-start: 3;
-}
-.row-span-2 {
-  grid-row: span 2 / span 2;
 }
 .row-start-1 {
   grid-row-start: 1;
@@ -997,14 +988,14 @@ video {
 .w-48 {
   width: 12rem;
 }
+.w-\[200\%\] {
+  width: 200%;
+}
 .w-\[70\%\] {
   width: 70%;
 }
 .w-10 {
   width: 2.5rem;
-}
-.w-\[200\%\] {
-  width: 200%;
 }
 .min-w-\[20px\] {
   min-width: 20px;
@@ -1017,9 +1008,6 @@ video {
 }
 .min-w-\[2\.5rem\] {
   min-width: 2.5rem;
-}
-.min-w-0 {
-  min-width: 0px;
 }
 .max-w-full {
   max-width: 100%;
@@ -1155,14 +1143,14 @@ video {
 .grid-cols-1 {
   grid-template-columns: repeat(1, minmax(0, 1fr));
 }
-.grid-cols-2 {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
 .grid-cols-4 {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 .grid-cols-5 {
   grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+.grid-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 .grid-cols-6 {
   grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -1172,9 +1160,6 @@ video {
 }
 .grid-rows-3 {
   grid-template-rows: repeat(3, minmax(0, 1fr));
-}
-.grid-rows-1 {
-  grid-template-rows: repeat(1, minmax(0, 1fr));
 }
 .flex-row {
   flex-direction: row;
@@ -1723,12 +1708,6 @@ video {
 }
 .indent-4 {
   text-indent: 1rem;
-}
-.indent-1 {
-  text-indent: 0.25rem;
-}
-.indent-2 {
-  text-indent: 0.5rem;
 }
 .font-mono {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -3476,10 +3455,6 @@ aside.open {
     left: 49.25%;
   }
 
-  .md\:col-span-1 {
-    grid-column: span 1 / span 1;
-  }
-
   .md\:row-span-2 {
     grid-row: span 2 / span 2;
   }
@@ -3539,12 +3514,12 @@ aside.open {
     width: 75%;
   }
 
-  .md\:w-\[70\%\] {
-    width: 70%;
-  }
-
   .md\:w-full {
     width: 100%;
+  }
+
+  .md\:w-\[70\%\] {
+    width: 70%;
   }
 
   .md\:max-w-\[15\%\] {
@@ -3756,10 +3731,6 @@ aside.open {
 }
 
 @media (min-width: 1536px) {
-
-  .\32xl\:col-span-2 {
-    grid-column: span 2 / span 2;
-  }
 
   .\32xl\:min-w-\[23\%\] {
     min-width: 23%;
