@@ -6,7 +6,7 @@
     <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $data1 ? $data1['team']->getTeamName() : '-' }} vs {{ $data2 ? $data2['team']->getTeamName() : '-' }} |
+    <title>{{ $data1 ? $team1 : '-' }} vs {{ $data2 ? $team2 : '-' }} |
         Stats |
         BULSCA
     </title>
@@ -44,11 +44,11 @@
             class="link  items-center space-x-1  z-50 cursor-pointer">All Clubs</a>
 
 
-        <div class="w-full flex md:flex-row flex-col md:justify-between bg-white rounded-b-md py-2 px-3 sticky top-0 left-0"
+        <div class="w-full flex md:flex-row flex-col md:justify-between bg-white rounded-b-md py-2 px-3 sticky top-0 left-0 z-50"
             x-data="{
             
-                leftTeam: '{{ $data1 ? $data1['team']->getTeamSlug() : 'none.none' }}',
-                rightTeam: '{{ $data2 ? $data2['team']->getTeamSlug() : 'none.none' }}',
+                leftTeam: '{{ $data1 ? $team1Slug : 'none.none' }}',
+                rightTeam: '{{ $data2 ? $team2Slug : 'none.none' }}',
                 rawUrl: '{{ route('public.results.stats.compare', ['L', 'R']) }}',
             
                 swapRightTeam(event) {
@@ -67,12 +67,12 @@
                     window.location = targetUrl
                 }
             }">
-            <h1 class="font-bold  text-3xl md:text-5xl" style="font">
-                <select name="" id="" style="min-width: 0 !important;" @change="swapLeftTeam">
+            <h1 class="font-bold  text-3xl md:text-5xl " style="min-width: 0px !important;">
+                <select name="" id="" class="w-full" style="min-width: 0 !important;" @change="swapLeftTeam">
                     <option value="none.none" class="text-base">Please select a team</option>
-                    @foreach (App\Stats\Stats::getAllTeams() as $team)
+                    @foreach (App\Stats\StatsManager::getAllTeams() as $team)
                         <option value="{{ $team->name }}.{{ $team->team }}" class="text-base"
-                            @if ($data1 && $team->name . '.' . $team->team == $data1['team']->getTeamSlug()) selected @endif>{{ $team->name }}
+                            @if ($data1 && $team->name . '.' . $team->team == $team1Slug) selected @endif>{{ $team->name }}
                             {{ $team->team }}</option>
                     @endforeach
 
@@ -82,14 +82,14 @@
                 class="font-bold text-bulsca_red text-xl md:text-3xl absolute md:bottom-4 bottom-[35%]  left-5 md:left-[49.25%] ">
                 vs
             </h1>
-            <h1 class="font-bold text-3xl md:text-5xl  " style="font">
+            <h1 class="font-bold text-3xl md:text-5xl   " style="min-width: 0px !important;">
 
 
-                <select name="" id="" class="md:text-right" @change="swapRightTeam">
+                <select name="" id="" class="md:text-right w-full" @change="swapRightTeam">
                     <option value="none.none" class="text-base">Please select a team</option>
-                    @foreach (App\Stats\Stats::getAllTeams() as $team)
+                    @foreach (App\Stats\StatsManager::getAllTeams() as $team)
                         <option value="{{ $team->name }}.{{ $team->team }}" class="text-base"
-                            @if ($data2 && $team->name . '.' . $team->team == $data2['team']->getTeamSlug()) selected @endif>{{ $team->name }}
+                            @if ($data2 && $team->name . '.' . $team->team == $team2Slug) selected @endif>{{ $team->name }}
                             {{ $team->team }}</option>
                     @endforeach
 
@@ -97,24 +97,29 @@
             </h1>
         </div>
 
+        <div class="md:hidden mb-2 font-semibold">
+            <p class="indent-4">Swipe left/right to move between teams</p>
+        </div>
 
 
-        <div class="grid-2 w-full">
-            @if ($data1 && $data2)
-                @foreach ($stats as $stat)
-                    @php
-                        $stat->computeFor(['club' => $data1['strClub'], 'team' => $data1['strTeam']]);
-                    @endphp
-                    {{ $stat->render() }}
-                    @php
-                        $stat->computeFor(['club' => $data2['strClub'], 'team' => $data2['strTeam']]);
-                    @endphp
-                    {{ $stat->render() }}
-                @endforeach
-            @else
-                <p class="w-full col-span-2 text-center font-semibold text-lg">Please select another team!</p>
-            @endif
-
+        <div class="overflow-auto max-w-screen snap-x snap-mandatory ">
+            <div class="grid grid-cols-2  gap-4 min-w-full w-[200%] md:w-full ">
+                @if ($data1 && $data2)
+                    <div class="flex flex-col space-y-4 snap-center">
+                        @foreach ($data1 as $d1)
+                            {{ $d1 }}
+                        @endforeach
+                    </div>
+                    <div class="flex flex-col space-y-4 snap-center">
+                        @foreach ($data2 as $d2)
+                            {{ $d2 }}
+                        @endforeach
+                    </div>
+                @else
+                    <p class="w-full col-span-2 text-center font-semibold text-lg">Please select another team!</p>
+                @endif
+    
+            </div>
         </div>
 
 
@@ -198,6 +203,13 @@
             })
         }
         compareSpeedTimes()
+
+        document.querySelectorAll('.absolute').forEach((el) => {
+            el.style.backgroundColor = 'transparent'
+        });
+
+
+
     </script>
 
 </body>

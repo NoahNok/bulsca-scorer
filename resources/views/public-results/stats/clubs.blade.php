@@ -12,34 +12,36 @@
 </head>
 
 <body class="overflow-x-hidden flex w-full h-full justify-center">
-    <div class=" w-full md:w-[75%] m-6 md:my-28 md:mx-0 ">
+    <div class=" w-full md:w-[75%] p-6 md:my-28 md:mx-0 ">
         <img src="https://www.bulsca.co.uk/storage/logo/blogo.png" class=" w-40 mb-2 " alt="">
-        <h1 class="font-bold ">Clubs</h1>
+        <h1 class="font-bold">Stats</h1>
 
         <br>
 
-        <div class="grid-3 ">
-            <div class="card">
-                <p class="columns-3 ">
-                    @foreach (App\Stats\Stats::getStatableClubs() as $club)
-                        <a href="{{ route('public.results.stats.club', $club->name) }}" class="link ">
-                            {{ $club->name }}
-                        </a>
-                        <br>
-                    @endforeach
-                </p>
-            </div>
+            {!! $fastestTimes !!}
 
-     
+  
+        <h3 class="font-semibold mt-4">Clubs</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 4xl:grid-cols-9 gap-4 ">
+          
+            @foreach ($clubs as $club)
+
+                <a href="{{ route('public.results.stats.club', $club->name) }}"  class="  link flex items-center  space-x-3 mb-2 w-full  ">
+                 
+                    <img src="https://bulsca.co.uk/api/uni-logo/{{ $club->name }}" class="h-10 w-10 min-w-[2.5rem]  overflow-hidden" onerror="this.src='https://www.bulsca.co.uk/storage/logo/blogo.png'" alt="" srcset="" style="">
+                    <span class="text-lg overflow-hidden overflow-ellipsis whitespace-nowrap hover:whitespace-normal">{{ $club->name }}</span>
+                </a>
+
+            @endforeach
+
         </div>
 
+        <br>
 
+        <dib class="grid grid-cols-6 gap-5">
+            {!! $sercStats !!}
+        </dib>
     </div>
-
-
-
     </div>
-
 </body>
-
 </html>

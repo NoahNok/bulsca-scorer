@@ -6,7 +6,7 @@
     <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $clubData['club']->name }} | Stats | BULSCA</title>
+    <title>{{ $club->name }} | Stats | BULSCA</title>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -34,35 +34,48 @@
 </head>
 
 <body class="overflow-x-hidden flex w-full h-full justify-center">
-    <div class=" w-full md:w-[75%] m-6 md:my-28 md:mx-0 ">
-        <img src="https://www.bulsca.co.uk/storage/logo/blogo.png" class=" w-40 mb-2 " alt="">
+    <div class=" w-full md:w-[75%] p-6 md:my-28 md:mx-0 ">
+      
+            <img src="https://www.bulsca.co.uk/storage/logo/blogo.png" class=" w-40 mb-2 " alt="">    
+    
+   
 
         <a href="{{ route('public.results.stats.clubs') }}"
             class="link flex items-center space-x-1  z-50 cursor-pointer">All Clubs</a>
 
-        <h1 class="font-bold  " style="font">{{ $clubData['club']->name }}</h1>
+      
+                
+                <h1 class="font-bold  " style="font">{{ $club->name }}</h1>
+           
+        
 
 
 
         <div class="flex  ">Teams:
-            @foreach ($clubData['distinctTeams'] as $team)
-                <a href="{{ route('public.results.stats.club.team', [$clubData['club']->name, $team->team]) }}"
+            @foreach ($teams as $team)
+                <a href="{{ route('public.results.stats.club.team', [$club->name, $team->team]) }}"
                     class="link-stats px-2 first-of-type:ml-1">
                     {{ $team->team }}
                 </a>
             @endforeach
         </div>
         <br>
-        <div class="grid-3">
-
-
-            @foreach ($stats as $stat)
-                {{ $stat->render() }}
+     
+        <div class="grid grid-cols-6 gap-5">
+            @foreach ($data as $d)
+            {{ $d }}
+           
             @endforeach
-
-
-
         </div>
+
+    
+
+            {{-- @foreach ($stats as $stat)
+                {{ $stat->render() }}
+            @endforeach --}}
+
+
+
 
     </div>
 
