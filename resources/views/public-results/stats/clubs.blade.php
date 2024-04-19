@@ -20,7 +20,7 @@
 
             {!! $fastestTimes !!}
 
-  
+        <br>
         <h3 class="font-semibold mt-4">Clubs</h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 4xl:grid-cols-9 gap-4 ">
           
@@ -37,8 +37,9 @@
         </div>
 
         <br>
+        <br>
 
-        <dib class="grid grid-cols-6 gap-5" style="gap: 3rem 1.25rem">
+        <dib class="grid grid-cols-6 gap-5" >
             {!! $sercStats !!}
         </dib>
     </div>

@@ -72,7 +72,7 @@
 
         <br>
       
-        <div class="grid grid-cols-6 gap-5">
+        <div class="grid grid-cols-6 gap-5" style="gap: 3rem 1.25rem">
             @foreach ($data as $d)
                 {{ $d }}
             @endforeach
