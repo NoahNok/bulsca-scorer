@@ -38,7 +38,7 @@
 
         <br>
 
-        <dib class="grid grid-cols-6 gap-5">
+        <dib class="grid grid-cols-6 gap-5" style="gap: 3rem 1.25rem">
             {!! $sercStats !!}
         </dib>
     </div>

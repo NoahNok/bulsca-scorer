@@ -14,7 +14,7 @@
                 }
             @endphp
     
-            <div class="card  min-w-full  snap-center " >
+            <div class="card  min-w-full  snap-center  " >
     
                 <div class="flex ">
                     <p class="font-semibold  ">{{ $event->name }}</p>

@@ -103,7 +103,7 @@
 
 
         <div class="overflow-auto max-w-screen snap-x snap-mandatory ">
-            <div class="grid grid-cols-2  gap-4 min-w-full w-[200%] md:w-full ">
+            <div class="grid grid-cols-2  gap-4 min-w-full w-[200%] md:w-full " >
                 @if ($data1 && $data2)
                     <div class="flex flex-col space-y-4 snap-center">
                         @foreach ($data1 as $d1)
