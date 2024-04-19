@@ -26,10 +26,10 @@
           
             @foreach ($clubs as $club)
 
-                <a href="{{ route('public.results.stats.club', $club->name) }}"  class="link flex items-center  space-x-3 mb-2 w-full ">
+                <a href="{{ route('public.results.stats.club', $club->name) }}"  class="  link flex items-center  space-x-3 mb-2 w-full  ">
                  
                     <img src="https://bulsca.co.uk/api/uni-logo/{{ $club->name }}" class="h-10 w-10 min-w-[2.5rem]  overflow-hidden" onerror="this.src='https://www.bulsca.co.uk/storage/logo/blogo.png'" alt="" srcset="" style="">
-                    <span class="text-lg overflow-hidden overflow-ellipsis whitespace-nowrap">{{ $club->name }}</span>
+                    <span class="text-lg overflow-hidden overflow-ellipsis whitespace-nowrap hover:whitespace-normal">{{ $club->name }}</span>
                 </a>
 
             @endforeach
