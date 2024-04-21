@@ -209,6 +209,11 @@ h5 {
     &.btn-thicker {
       @apply p-3;
     }
+
+    &.btn-disabled {
+      @apply bg-gray-400 cursor-not-allowed pointer-events-none;
+    
+    }
  }
 
  .card {

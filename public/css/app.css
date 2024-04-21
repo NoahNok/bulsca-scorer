@@ -620,8 +620,14 @@ video {
 .col-start-3 {
   grid-column-start: 3;
 }
+.col-start-1 {
+  grid-column-start: 1;
+}
 .row-start-1 {
   grid-row-start: 1;
+}
+.row-start-2 {
+  grid-row-start: 2;
 }
 .m-6 {
   margin: 1.5rem;
@@ -769,6 +775,9 @@ video {
 }
 .mb-auto {
   margin-bottom: auto;
+}
+.ml-5 {
+  margin-left: 1.25rem;
 }
 .block {
   display: block;
@@ -997,9 +1006,6 @@ video {
 .w-10 {
   width: 2.5rem;
 }
-.w-\[50\%\] {
-  width: 50%;
-}
 .min-w-\[20px\] {
   min-width: 20px;
 }
@@ -1011,15 +1017,6 @@ video {
 }
 .min-w-\[2\.5rem\] {
   min-width: 2.5rem;
-}
-.min-w-\[50\%\] {
-  min-width: 50%;
-}
-.min-w-\[40\%\] {
-  min-width: 40%;
-}
-.min-w-\[45\%\] {
-  min-width: 45%;
 }
 .max-w-full {
   max-width: 100%;
@@ -2362,6 +2359,12 @@ div.form-input.checkbox > input {
 }
 .btn.btn-thicker {
   padding: 0.75rem;
+}
+.btn.btn-disabled {
+  pointer-events: none;
+  cursor: not-allowed;
+  --tw-bg-opacity: 1;
+  background-color: rgb(156 163 175 / var(--tw-bg-opacity));
 }
 
 .card {
