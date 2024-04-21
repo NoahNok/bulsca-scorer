@@ -20,7 +20,7 @@
         <h2 class="font-bold  w-full break-words">
             Heat {{ $heat }}
         </h2>
-        <p>Times must match the format <strong>XX:XX.XXX</strong> exactly!. Enter <strong>DNF or DNS</strong> as required!
+        <p>Times must match the format <strong>XX:XX.XX</strong> exactly! (include leading/trailing 0).<br> Enter <strong>DNF or DNS</strong> as required!
             <br>
             @if ($speed->getName() == 'Rope Throw')
                 <strong>OR</strong> enter the total amount of people pulled in from 0-3
