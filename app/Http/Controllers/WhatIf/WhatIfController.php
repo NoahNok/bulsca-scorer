@@ -130,7 +130,7 @@ class WhatIfController extends Controller
 
 
         $results = Cache::rememberForever('result_comp_' . $rs->competition . '_schema_' . $rs->id, function () use ($rs) {
-            return $rs->getDetailedPrint();
+            return $rs->getResults();
         });
 
 
