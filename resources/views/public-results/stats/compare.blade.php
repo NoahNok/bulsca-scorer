@@ -116,7 +116,7 @@
                         @endforeach
                     </div>
                 @else
-                    <p class="w-full col-span-2 text-center font-semibold text-lg">Please select another team!</p>
+                    <p class="w-full col-span-2 md:text-center font-semibold text-lg">Please select another team!</p>
                 @endif
     
             </div>

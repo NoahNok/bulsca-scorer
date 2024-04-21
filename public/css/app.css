@@ -873,11 +873,11 @@ video {
 .h-1 {
   height: 0.25rem;
 }
-.h-\[30\%\] {
-  height: 30%;
-}
 .h-10 {
   height: 2.5rem;
+}
+.h-\[30\%\] {
+  height: 30%;
 }
 .max-h-\[90vh\] {
   max-height: 90vh;
@@ -997,6 +997,9 @@ video {
 .w-10 {
   width: 2.5rem;
 }
+.w-\[50\%\] {
+  width: 50%;
+}
 .min-w-\[20px\] {
   min-width: 20px;
 }
@@ -1008,6 +1011,15 @@ video {
 }
 .min-w-\[2\.5rem\] {
   min-width: 2.5rem;
+}
+.min-w-\[50\%\] {
+  min-width: 50%;
+}
+.min-w-\[40\%\] {
+  min-width: 40%;
+}
+.min-w-\[45\%\] {
+  min-width: 45%;
 }
 .max-w-full {
   max-width: 100%;
@@ -1206,12 +1218,6 @@ video {
 .gap-5 {
   gap: 1.25rem;
 }
-.gap-8 {
-  gap: 2rem;
-}
-.gap-6 {
-  gap: 1.5rem;
-}
 .gap-y-4 {
   row-gap: 1rem;
 }
@@ -1221,12 +1227,6 @@ video {
 }
 .gap-y-2 {
   row-gap: 0.5rem;
-}
-.gap-y-10 {
-  row-gap: 2.5rem;
-}
-.gap-y-8 {
-  row-gap: 2rem;
 }
 .space-x-4 > :not([hidden]) ~ :not([hidden]) {
   --tw-space-x-reverse: 0;
@@ -3534,6 +3534,10 @@ aside.open {
     width: 70%;
   }
 
+  .md\:min-w-\[45\%\] {
+    min-width: 45%;
+  }
+
   .md\:max-w-\[15\%\] {
     max-width: 15%;
   }
@@ -3778,11 +3782,11 @@ aside.open {
     width: 30%;
   }
 
-  .\34xl\:grid-cols-6 {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-  }
-
   .\34xl\:grid-cols-9 {
     grid-template-columns: repeat(9, minmax(0, 1fr));
+  }
+
+  .\34xl\:grid-cols-6 {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 }

@@ -1,6 +1,5 @@
 <div class=" col-span-full">
-    <div class=" flex flex-row  md:grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 4xl:grid-cols-6 gap-x-5 w-full gap-y-2  snap-x snap-mandatory overflow-x-auto ">
-
+    <div class=" flex flex-row @if (Route::currentRouteName() != 'public.results.stats.compare') md:grid @endif  grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 4xl:grid-cols-6 gap-x-5 w-full gap-y-2  snap-x snap-mandatory overflow-x-auto ">
 
         @foreach (App\Models\SpeedEvent::orderBy('name')->get() as $event)
     
@@ -14,7 +13,7 @@
                 }
             @endphp
     
-            <div class="card  min-w-full  snap-center  " >
+            <div class="card snap-center min-w-full  @if (Route::currentRouteName() == 'public.results.stats.compare') md:min-w-[45%] @endif " >
     
                 <div class="flex ">
                     <p class="font-semibold  ">{{ $event->name }}</p>
