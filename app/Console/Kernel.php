@@ -22,7 +22,7 @@ class Kernel extends ConsoleKernel
             
             Config::set('database.default', 'whatif');
 
-            Competition::whereNotNull('wi_user')->delete();
+            Competition::whereNotNull('wi_user')->where('updated_at', '<', now()->subDays(14))->delete();
 
             Config::set('database.default', 'mysql');
         })->daily();
