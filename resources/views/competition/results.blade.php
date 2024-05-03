@@ -156,12 +156,12 @@
         </div>
         @if($comp->getResultSchemas->count() == 0)
   
-        <div class="alert-box row-start-2 col-start-1 col-span-2 ">
+        <div class="alert-box md:row-start-2 md:col-start-1 md:col-span-2 ">
 
-        <h1>Options unavailable</h1>
-        <p>Publishing and additional settings are unavailable until result sheets have been generated!</p>
+            <h1>Options unavailable</h1>
+            <p>Publishing and additional settings are unavailable until result sheets have been generated!</p>
 
-    </div>
+        </div>
     @endif
     </div>
 @endsection
