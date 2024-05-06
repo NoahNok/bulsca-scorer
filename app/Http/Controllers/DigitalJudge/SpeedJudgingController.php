@@ -5,7 +5,7 @@ namespace App\Http\Controllers\DigitalJudge;
 use App\DigitalJudge\DigitalJudge;
 use App\Http\Controllers\Controller;
 use App\Models\CompetitionSpeedEvent;
-use App\Models\DigitalJudge\JudgeLog;
+
 use App\Models\EventOOF;
 use App\Models\Heat;
 use App\Models\Penalty;
@@ -138,15 +138,7 @@ class SpeedJudgingController extends Controller
 
 
 
-            $jl = new JudgeLog();
-
-            $jl->competition = DigitalJudge::getClientCompetition()->id;
-            $jl->team = $team;
-            $jl->judgeName = DigitalJudge::getClientName();
-            $jl->speed_event = $speed->id;
-            $jl->from = $from;
-            $jl->to = $to;
-            $jl->save();
+ 
         }
 
 
