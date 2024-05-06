@@ -997,6 +997,9 @@ video {
 .w-10 {
   width: 2.5rem;
 }
+.w-\[50\%\] {
+  width: 50%;
+}
 .min-w-\[20px\] {
   min-width: 20px;
 }
@@ -1008,6 +1011,18 @@ video {
 }
 .min-w-\[2\.5rem\] {
   min-width: 2.5rem;
+}
+.min-w-\[20\%\] {
+  min-width: 20%;
+}
+.min-w-\[30\%\] {
+  min-width: 30%;
+}
+.min-w-\[40\%\] {
+  min-width: 40%;
+}
+.min-w-\[500px\] {
+  min-width: 500px;
 }
 .max-w-full {
   max-width: 100%;
@@ -1041,6 +1056,15 @@ video {
 }
 .max-w-\[200px\] {
   max-width: 200px;
+}
+.max-w-\[40vw\] {
+  max-width: 40vw;
+}
+.max-w-\[50vw\] {
+  max-width: 50vw;
+}
+.max-w-\[1000px\] {
+  max-width: 1000px;
 }
 .flex-1 {
   flex: 1 1 0%;
@@ -3706,6 +3730,10 @@ aside.open {
     width: auto;
   }
 
+  .lg\:w-\[50\%\] {
+    width: 50%;
+  }
+
   .lg\:max-w-\[80vw\] {
     max-width: 80vw;
   }
@@ -3752,6 +3780,10 @@ aside.open {
     width: 40%;
   }
 
+  .xl\:w-\[60\%\] {
+    width: 60%;
+  }
+
   .xl\:grid-cols-4 {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
@@ -3762,6 +3794,14 @@ aside.open {
 }
 
 @media (min-width: 1536px) {
+
+  .\32xl\:w-\[40\%\] {
+    width: 40%;
+  }
+
+  .\32xl\:w-\[50\%\] {
+    width: 50%;
+  }
 
   .\32xl\:min-w-\[23\%\] {
     min-width: 23%;

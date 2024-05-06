@@ -21,7 +21,7 @@
 
 
 
-        <div class="grid-2 w-[80%] md:w-[50%] xl:w-[40%] 4xl:w-[30%]">
+        <div class="grid-2 w-[70%] md:w-[50%] max-w-[1000px] ">
             <a href="{{ route('public.results') }}"
                 class="card card-bulsca card-pad-y items-center justify-center relative">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
