@@ -62,7 +62,7 @@
                                         $secs = ($sr->result - $mins * 60000) / 1000;
 
                                     @endphp
-                                    <td class="p-2 pr-8 border-r whitespace-nowrap sticky left-4 bg-white">
+                                    <td class="p-2 pr-6 border-r whitespace-nowrap hover:max-w-none bg-white max-w-[200px] overflow-hidden overflow-ellipsis">
 
                                         {{ $pLane->getTeam->getFullname() }}
 
