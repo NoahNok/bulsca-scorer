@@ -12,6 +12,7 @@ use App\Models\DigitalJudge\JudgeDQSubmission;
 use App\Models\DigitalJudge\JudgeLog;
 use App\Models\SERC;
 use App\Models\SERCJudge;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -249,7 +250,8 @@ class DigitalJudgeController extends Controller
         }
 
         $comp->max_lanes = $request->input('lanes', $comp->max_lanes);
-        $comp->serc_start_time = $request->input('serc_start_time', $comp->serc_start_time);
+        $newDateTime = $request->input('serc_start_time', $comp->serc_start_time);
+        $comp->serc_start_time = Carbon::parse($newDateTime, auth()->user()->timezone)->setTimezone('UTC');
         $comp->can_be_live = $request->has('can_be_live');
 
         $comp->save();
