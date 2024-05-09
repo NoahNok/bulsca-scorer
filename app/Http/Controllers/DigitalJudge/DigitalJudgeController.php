@@ -251,7 +251,10 @@ class DigitalJudgeController extends Controller
 
         $comp->max_lanes = $request->input('lanes', $comp->max_lanes);
         $newDateTime = $request->input('serc_start_time', $comp->serc_start_time);
-        $comp->serc_start_time = Carbon::parse($newDateTime, 'en-GB')->setTimezone('UTC');
+        $utcDate = Carbon::parse($newDateTime, 'BST');
+        $utcDate->setTimezone('UTC');
+   
+        $comp->serc_start_time = $utcDate;
         $comp->can_be_live = $request->has('can_be_live');
 
         $comp->save();

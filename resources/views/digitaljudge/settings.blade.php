@@ -77,8 +77,12 @@
 
             <div class="card">
                 <h4>Other</h4>
+                @php
+                    $sercStart = $comp->serc_start_time;
+                    $sercStart?->setTimezone('BST');
+                @endphp
                 <x-form-input id="serc_start_time" title="SERC Start Time" required="false" type="datetime-local"
-                    defaultValue="{{ $comp->serc_start_time }}"></x-form-input>
+                    defaultValue="{{ $sercStart }}"></x-form-input>
                 <div class="flex space-x-2">
                     <input type="checkbox" name="can_be_live" @if ($comp->can_be_live) checked @endif
                         id="can_be_live">
