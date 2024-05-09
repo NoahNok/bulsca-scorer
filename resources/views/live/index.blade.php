@@ -225,6 +225,7 @@
                 document.getElementById('time-now').innerText = timeNow.toLocaleTimeString('en-GB', {
                     hour: '2-digit',
                     minute: '2-digit',
+                    timeZone: 'UTC',
                 });
             }
             updateTime();
@@ -274,7 +275,8 @@
 
                         teamTime.innerText = timeNow.toLocaleTimeString('en-GB', {
                             hour: '2-digit',
-                            minute: '2-digit'
+                            minute: '2-digit',
+                            timeZone: 'UTC',
                         });
                         timeNow = addSeconds(timeNow, avgTeamTime);
 
