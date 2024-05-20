@@ -88,6 +88,16 @@
                         id="can_be_live">
                     <label for="can_be_live">Viewable Live</label>
                 </div>
+                <div class="flex space-x-2 items-start">
+                    <input type="checkbox" name="show_teams_to_judges" @if ($comp->show_teams_to_judges) checked @endif
+                        id="show_teams_to_judges" class="mt-[0.375rem]">
+                        
+                    <label for="show_teams_to_judges" class="flex flex-col">
+                        Show Team names
+                        <small>If enabled, Judges will see team names when marking instead of the number</small>
+                    </label>
+                </div>
+                
             </div>
         </div>
     </form>

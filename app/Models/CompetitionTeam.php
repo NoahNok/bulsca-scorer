@@ -38,4 +38,18 @@ class CompetitionTeam extends Model
     {
         return $this->getClubName() . " " . $this->team;
     }
+
+    public function getCompetition() {
+        return $this->belongsTo(Competition::class, 'competition');
+    }
+
+    public function getPositionInDraw() {
+        $drawOrder = $this->getCompetition->getCompetitionTeams; // getCompetitionTeams() is ordered by the serc draw
+
+        $id = $this->id;
+
+        $position = $drawOrder->search(function($team) use ($id) {return $team->id === $id;}) + 1;
+
+        return $position;
+    }
 }

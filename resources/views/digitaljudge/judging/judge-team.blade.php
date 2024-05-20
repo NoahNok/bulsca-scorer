@@ -50,7 +50,7 @@
                     @endforelse
                 </strong></p>
             <br>
-            <p class="text-xl">Team: <strong class="text-bulsca">{{ $team->getFullname() }}</strong></p>
+            <p class="text-xl">Team: <strong class="text-bulsca">{{ $comp->show_teams_to_judges || $head ? $team->getFullname() : $team->getPositionInDraw() }} </strong></p>
 
            
 
@@ -245,7 +245,7 @@
             <div class="flex flex-col items-start ">
                 @foreach ($judges[0]->getNotes as $note)
                     <div class="border-b pb-4 mb-3 last-of-type:border-b-0 border-b-gray-300">
-                        <h3>{{ $note->getTeam->getFullname() }}</h3>
+                        <h3> {{ $comp->show_teams_to_judges || $head ? $note->getTeam->getFullname() : $note->getTeam->getPositionInDraw() }}</h3>
                         <p>{{ $note->note }}</p>
                     </div>
                 @endforeach

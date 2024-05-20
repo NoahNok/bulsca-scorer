@@ -52,6 +52,8 @@
 
 
         <h4>Team Order</h4>
+
+        @if ($comp->show_teams_to_judges || $head)
         <ul class=" list-decimal ">
             @foreach ($comp->getCompetitionTeams as $team)
                 @if ($head)
@@ -66,6 +68,13 @@
                 @endif
             @endforeach
         </ul>
+        @else
+        <div>
+            <p class="mb-0">There are <strong>{{ $comp->getCompetitionTeams->count() }}</strong> teams. You <strong>are not</strong> permitted to view team names.</p>
+        </div>
+        @endif
+
+ 
         <br>
 
 

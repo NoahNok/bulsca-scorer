@@ -167,6 +167,8 @@ class DJJudgingController extends Controller
 
         foreach (DigitalJudge::getClientJudges() as $judge) {
 
+            $head = DigitalJudge::isClientHeadJudge();
+
             $judgeData = [];
             $judgeData['name'] = $judge->name;
 
@@ -177,7 +179,7 @@ class DJJudgingController extends Controller
 
                 foreach (DigitalJudge::getClientCompetition()->getCompetitionTeams as $team) {
                     $mpData['marks'][] = [
-                        'team' => $team->getFullname(),
+                        'team' => DigitalJudge::getClientCompetition()->show_teams_to_judges || $head ? $team->getFullname() : $team->getPositionInDraw(),
                         'mark' => $mp->getScoreForTeam($team->id)
                     ];
                 }

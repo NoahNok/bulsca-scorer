@@ -256,6 +256,7 @@ class DigitalJudgeController extends Controller
    
         $comp->serc_start_time = $utcDate;
         $comp->can_be_live = $request->has('can_be_live');
+        $comp->show_teams_to_judges = $request->has('show_teams_to_judges');
 
         $comp->save();
 
