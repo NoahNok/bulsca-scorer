@@ -69,25 +69,11 @@
 
             </div>
 
-            <div class="card">
-                <h4>Heats</h4>
-                <x-form-input id="lanes" title="Lanes" type="number" defaultValue="{{ $comp->max_lanes }}" />
-
-            </div>
 
             <div class="card">
                 <h4>Other</h4>
-                @php
-                    $sercStart = $comp->serc_start_time;
-                    $sercStart?->setTimezone('BST');
-                @endphp
-                <x-form-input id="serc_start_time" title="SERC Start Time" required="false" type="datetime-local"
-                    defaultValue="{{ $sercStart }}"></x-form-input>
-                <div class="flex space-x-2">
-                    <input type="checkbox" name="can_be_live" @if ($comp->can_be_live) checked @endif
-                        id="can_be_live">
-                    <label for="can_be_live">Viewable Live</label>
-                </div>
+              
+ 
                 <div class="flex space-x-2 items-start">
                     <input type="checkbox" name="show_teams_to_judges" @if ($comp->show_teams_to_judges) checked @endif
                         id="show_teams_to_judges" class="mt-[0.375rem]">

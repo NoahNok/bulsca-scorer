@@ -249,18 +249,12 @@ class DigitalJudgeController extends Controller
             $speed->save();
         }
 
-        $comp->max_lanes = $request->input('lanes', $comp->max_lanes);
-        $newDateTime = $request->input('serc_start_time', $comp->serc_start_time);
-        $utcDate = Carbon::parse($newDateTime, 'BST');
-        $utcDate->setTimezone('UTC');
-   
-        $comp->serc_start_time = $utcDate;
-        $comp->can_be_live = $request->has('can_be_live');
+     
         $comp->show_teams_to_judges = $request->has('show_teams_to_judges');
 
         $comp->save();
 
-        return redirect()->back()->with('success', 'Settings saved');
+        return redirect()->route('comps.view', ['comp' => $comp])->with('success', 'DigitalJudge settings saved');
     }
 
     public function qrs(Competition $comp) {

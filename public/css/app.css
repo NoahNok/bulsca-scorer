@@ -734,6 +734,9 @@ video {
 .ml-4 {
   margin-left: 1rem;
 }
+.mt-\[0\.375rem\] {
+  margin-top: 0.375rem;
+}
 .ml-8 {
   margin-left: 2rem;
 }
@@ -766,9 +769,6 @@ video {
 }
 .mb-auto {
   margin-bottom: auto;
-}
-.mt-\[0\.375rem\] {
-  margin-top: 0.375rem;
 }
 .block {
   display: block;
@@ -1076,6 +1076,10 @@ video {
 }
 .rotate-180 {
   --tw-rotate: 180deg;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.rotate-90 {
+  --tw-rotate: 90deg;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 .scale-95 {
@@ -1563,6 +1567,15 @@ video {
 .fill-current {
   fill: currentColor;
 }
+.fill-black {
+  fill: #000;
+}
+.stroke-orange-50 {
+  stroke: #fff7ed;
+}
+.stroke-orange-500 {
+  stroke: #f97316;
+}
 .p-4 {
   padding: 1rem;
 }
@@ -1586,6 +1599,9 @@ video {
 }
 .p-0 {
   padding: 0px;
+}
+.p-\[0\.375rem\] {
+  padding: 0.375rem;
 }
 .px-4 {
   padding-left: 1rem;
@@ -1714,9 +1730,6 @@ video {
 }
 .indent-4 {
   text-indent: 1rem;
-}
-.indent-3 {
-  text-indent: 0.75rem;
 }
 .font-mono {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -3015,6 +3028,17 @@ aside.open {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
+@keyframes pulse {
+
+  50% {
+    opacity: .5;
+  }
+}
+
+.hover\:animate-pulse:hover {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
 .hover\:whitespace-normal:hover {
   white-space: normal;
 }
@@ -3076,6 +3100,11 @@ aside.open {
 .hover\:bg-red-500:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(239 68 68 / var(--tw-bg-opacity));
+}
+
+.hover\:bg-black:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(0 0 0 / var(--tw-bg-opacity));
 }
 
 .hover\:from-bulsca_red:hover {

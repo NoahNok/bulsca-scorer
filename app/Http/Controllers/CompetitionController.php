@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Competition;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class CompetitionController extends Controller
@@ -49,5 +50,23 @@ class CompetitionController extends Controller
         return back()->with('success', 'Stats created');
 
 
+    }
+
+    public function settings(Competition $comp) {
+        return view('competition.settings', ['comp' => $comp]);
+    }
+
+    public function updateCompetitionSettings(Competition $comp, Request $request) {
+        $comp->max_lanes = $request->input('lanes', $comp->max_lanes);
+        $newDateTime = $request->input('serc_start_time', $comp->serc_start_time);
+        $utcDate = Carbon::parse($newDateTime, 'BST');
+        $utcDate->setTimezone('UTC');
+   
+        $comp->serc_start_time = $utcDate;
+        $comp->can_be_live = $request->has('can_be_live');
+
+        $comp->save();
+
+        return redirect()->route('comps.view', $comp)->with('success', 'Settings updated');
     }
 }

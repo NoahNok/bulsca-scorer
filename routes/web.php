@@ -96,6 +96,8 @@ Route::middleware('auth')->group(function () {
             
             Route::get('/create-stats', [CompetitionController::class, 'createCompetitionStats'])->name('comps.createStats');
 
+            Route::get('/settings', [CompetitionController::class, 'settings'])->name('comps.settings');
+            Route::post('/settings', [CompetitionController::class, 'updateCompetitionSettings'])->name('comps.settings.post');
 
             // EVENTS
             Route::prefix('/events')->group(function () {
