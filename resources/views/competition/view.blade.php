@@ -23,7 +23,10 @@
 
 @section('content')
 <div class="flex items-center justify-between">
-    <h2 class="mb-0">{{ $comp->name }}</h2>
+    <div>
+        <h2 class="mb-0">{{ $comp->name }}</h2>
+        <small class="text-gray-500">Scoring v{{ $comp->scoring_version }}</small>
+    </div>
 
 
     <x-settings-cog href="{{ route('comps.settings', $comp) }}" />
@@ -31,8 +34,8 @@
       
 </div>
 
-    <br>
-    <p>Welcome to the scorer for {{ $comp->name }}. If you run into any issues please contact the Data Manager (<a
+  
+    <p class="mt-2">Welcome to the scorer for {{ $comp->name }}. If you run into any issues please contact the Data Manager (<a
             class="link" href="mailto:data@bulsca.co.uk">data@bulsca.co.uk</a>) or find them on the day!
 
     </p>
