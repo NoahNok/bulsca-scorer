@@ -16,7 +16,19 @@
 
 <body class="flex  overflow-x-hidden" x-data="{ asideCollapsed: false }">
 
+    @if (auth()->user()->getCompetition->brand != null || Session::get('ac')->brand != null)
+    @php
+        $brand = auth()->user()->getCompetition->getBrand ?? Session::get('ac')->getBrand;
+    @endphp
+        <style>
+            :root {
+                --brand-primary: {{ $brand->primary_color }};
+                --brand-secondary: {{ $brand->secondary_color }};
+            }
 
+        </style>
+        
+    @endif
 
     <aside class="  h-screen flex flex-col" :class="asideCollapsed ? 'collapsed' : ''" id="nav">
         <div class="flex flex-row items-center w-full  sm:justify-center  text-white bg-bulsca p-5 h-[8vh]  ">
