@@ -35,6 +35,7 @@ class AdminController extends Controller
         $comp->isLeague = $validated['isLeague'];
         $comp->max_lanes = $validated['lanes'];
         $comp->anytimepin = $validated['anytimepin'];
+        $comp->scoring_Version = "1.1.0"; // Must forcibly set the updated version 1.1.0 programatically - UPDATE THIS WITH EACH NEW SCORING UPDATE
 
         $comp->save();
 
