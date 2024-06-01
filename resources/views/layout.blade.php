@@ -16,7 +16,7 @@
 
 <body class="flex  overflow-x-hidden" x-data="{ asideCollapsed: false }">
 
-    @if (auth()->user()->getCompetition->brand != null || Session::get('ac')->brand != null)
+    @if (auth()->user()->getCompetition?->brand != null || Session::get('ac')?->brand != null)
     @php
         $brand = auth()->user()->getCompetition->getBrand ?? Session::get('ac')->getBrand;
     @endphp

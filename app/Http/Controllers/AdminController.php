@@ -82,7 +82,7 @@ class AdminController extends Controller
     public function updateCompUserPassword(Competition $comp)
     {
 
-        $compUserEmail = Str::replace(" ", "-", Str::lower($comp->name)) . "@bulsca.co.uk";
+        $compUserEmail = Str::replace(" ", "-", Str::lower($comp->name)) . "." . $comp->id . "@bulsca.co.uk";
         $compUserPasswordRaw =  Str::random(16);
         $compUserPassword = Hash::make($compUserPasswordRaw);
 
