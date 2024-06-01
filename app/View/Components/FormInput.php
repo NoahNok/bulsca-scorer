@@ -22,6 +22,7 @@ class FormInput extends Component
         $this->deny = $deny;
 
         if ($defaultObject != null) {
+            
             $this->defaultValue = $defaultObject[$id];
         }
 
