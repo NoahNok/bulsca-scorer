@@ -44,7 +44,7 @@
     <aside class="  h-screen flex flex-col" :class="asideCollapsed ? 'collapsed' : ''" id="nav">
         <div class="flex flex-row items-center w-full  sm:justify-center  text-white bg-bulsca p-5 h-[8vh]  ">
             <p class="md:text-2xl text-xs  font-bold md:whitespace-nowrap aside-brand">BULSCA Scorer</p>
-            <img src="https://www.bulsca.co.uk/storage/logo/blogo.png" alt=""
+            <img src="{{ $brand?->getLogo() ?? 'https://www.bulsca.co.uk/storage/logo/blogo.png' }}" alt=""
                 class="aside-brand-logo hidden w-12  ">
 
 

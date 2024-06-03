@@ -1,11 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 
+@php
+    if (\App\DigitalJudge\DigitalJudge::getClientCompetition()?->brand != null) {
+        $brand = \App\DigitalJudge\DigitalJudge::getClientCompetition()->getBrand;
+    }
+@endphp
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DigitalJudge</title>
+
+    @if (isset($brand))
+    <link rel="icon" type="image/png" href="{{ $brand->getLogo() }}" />
+    @else
+    <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
+    @endif
+
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/mask@3.13.3/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
@@ -14,6 +27,17 @@
 </head>
 
 <body class="overflow-x-hidden">
+    
+    @isset($brand)
+        <style>
+            :root {
+                --brand-primary: {{ $brand->primary_color }};
+                --brand-secondary: {{ $brand->secondary_color }};
+            }
+
+        </style>
+        
+    @endisset
 
     @if (\App\DigitalJudge\DigitalJudge::isClientHeadJudge())
         <div class="w-full fixed top-0 left-0 bg-bulsca text-white text-sm font-semibold text-center z-10 ">
