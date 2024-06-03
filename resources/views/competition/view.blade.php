@@ -29,7 +29,7 @@
           
             <div class="flex  items-center text-sm">
                 @if ($comp->brand)
-                <img src="{{ asset('storage/' . $comp->getBrand->logo) }}" alt="{{ $comp->getBrand->name }}"
+                <img src="{{ $comp->getBrand->getLogo() }}" alt="{{ $comp->getBrand->name }}"
                     class="max-w-[20px] max-h-[20px] ">
                 <p class="mb-0 ml-[2px]">{{ $comp->getBrand->name }} </p>
 

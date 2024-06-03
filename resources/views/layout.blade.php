@@ -1,9 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 
+@php
+    if (!request()->is('admin*') && (auth()->user()->getCompetition?->brand != null || Session::get('ac')?->brand != null)) {
+        $brand = auth()->user()->getCompetition->getBrand ?? Session::get('ac')->getBrand;
+    }
+@endphp
+
 <head>
     <meta charset="UTF-8">
+
+    @if (isset($brand))
+    <link rel="icon" type="image/png" href="{{ $brand->getLogo() }}" />
+    @else
     <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
+    @endif
+
+   
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title') | BULSCA Scorer</title>
@@ -15,11 +28,9 @@
 </head>
 
 <body class="flex  overflow-x-hidden" x-data="{ asideCollapsed: false }">
+    
 
-    @if (auth()->user()->getCompetition?->brand != null || Session::get('ac')?->brand != null)
-    @php
-        $brand = auth()->user()->getCompetition->getBrand ?? Session::get('ac')->getBrand;
-    @endphp
+    @isset($brand)
         <style>
             :root {
                 --brand-primary: {{ $brand->primary_color }};
@@ -28,7 +39,7 @@
 
         </style>
         
-    @endif
+    @endisset
 
     <aside class="  h-screen flex flex-col" :class="asideCollapsed ? 'collapsed' : ''" id="nav">
         <div class="flex flex-row items-center w-full  sm:justify-center  text-white bg-bulsca p-5 h-[8vh]  ">

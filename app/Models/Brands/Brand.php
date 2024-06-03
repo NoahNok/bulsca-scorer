@@ -17,4 +17,8 @@ class Brand extends Model
         'secondary_color',
         'logo',
     ];
+
+    public function getLogo(): string {
+        return asset('storage/' . $this->logo);
+    }
 }
