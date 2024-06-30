@@ -30,6 +30,7 @@ class AdminCreateCompRequest extends FormRequest
             'lanes' => 'required',
             'season' => '',
             'anytimepin' => 'required|boolean',
+            'brand' => '',
         ];
     }
 }

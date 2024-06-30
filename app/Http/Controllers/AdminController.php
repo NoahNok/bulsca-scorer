@@ -37,6 +37,10 @@ class AdminController extends Controller
         $comp->anytimepin = $validated['anytimepin'];
         $comp->scoring_Version = "1.1.0"; // Must forcibly set the updated version 1.1.0 programatically - UPDATE THIS WITH EACH NEW SCORING UPDATE
 
+        if ($validated['brand'] !== 'null') {
+            $comp->brand = $validated['brand'] == 'none' ? null : $validated['brand'];
+        }
+
         $comp->save();
 
 
@@ -67,6 +71,10 @@ class AdminController extends Controller
 
         if ($validated['season'] !== 'null') {
             $comp->season = $validated['season'];
+        }
+
+        if ($validated['brand'] !== 'null') {
+            $comp->brand = $validated['brand'] == 'none' ? null : $validated['brand'];
         }
 
         $comp->save();
