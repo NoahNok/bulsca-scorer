@@ -1,43 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
 
-@php
-    if ($comp->getBrand != null) {
-        $brand = $comp->getBrand;
-    }
-@endphp
+@extends('live.layout')
 
-<head>
-    <meta charset="UTF-8">
-
-    @if (isset($brand))
-    <link rel="icon" type="image/png" href="{{ $brand->getLogo() }}" />
-    <title>{{ $comp->name }} | Live | {{ $brand->name }}</title>
-    @else
-    <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
-    <title>{{ $comp->name }} | Live | BULSCA</title>
-    @endif
-
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
-    <style>
-
-    </style>
-</head>
-
-<body class="overflow-x-hidden flex justify-center w-screen h-screen">
-    @isset($brand)
-    <style>
-        :root {
-            --brand-primary: {{ $brand->primary_color }};
-            --brand-secondary: {{ $brand->secondary_color }};
-        }
-
-    </style>
-    
-@endisset
+@section('content')
     <div class="w-[90vw] md:w-[70vw] my-12">
         <div class="w-full flex items-center justify-between">
             <h1 class="mb-0">{{ $comp->name }}</h1>
@@ -384,6 +348,4 @@
                 interv = setInterval(() => run(), 5000)
             }
         </script>
-</body>
-
-</html>
+@endsection
