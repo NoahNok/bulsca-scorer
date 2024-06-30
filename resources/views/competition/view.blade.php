@@ -109,8 +109,8 @@
                 <h5>Judges</h5>
                 <a href="{{ route('dj.qrs', $comp) }}" target="_blank" class="btn btn-thin btn-primary ">Print QR</a>
                 <p class="text-center font-semibold text-bulsca_red">OR</p>
-                <p>Please instruct Judges to go to here: <a href="{{ route('dj.index') }}"
-                        class="link">{{ route('dj.index') }}</a> and enter the following pin:</p>
+                <p>Please instruct Judges to go to here: <a href="{{ route('dj.index') }}@if($comp->brand)?b={{ $comp->brand }}@endif"
+                        class="link">{{ route('dj.index') }}@if($comp->brand)/?b={{ $comp->brand }}@endif</a> and enter the following pin:</p>
 
                 <p class="text-xl"><strong>{{ $comp->digitalJudgePin }}</strong></p>
 

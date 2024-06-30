@@ -1,9 +1,42 @@
 @extends('digitaljudge.layout')
 
+
+@if (request()->input('b', '') !== '')
+
+@php
+    $brand = \App\Models\Brands\Brand::find(request()->input('b'));
+@endphp
+
+@endif
+
+
+@section('extra-head')
+@if ($brand ?? false != null)
+<link rel="icon" type="image/png" href="{{ $brand->getLogo() }}" />
+@endif
+@endsection
+
+
+
+
 @section('content')
+
+
+
 <div class="h-screen w-screen flex flex-col items-center justify-center space-y-4">
 
-    <img src="{{ asset('blogo.png') }}" alt="BULSCA Logo" class=" w-52 h-52 ">
+    @isset($brand)
+    <style>
+        :root {
+            --brand-primary: {{ $brand->primary_color }};
+            --brand-secondary: {{ $brand->secondary_color }};
+        }
+
+    </style>
+    
+@endisset
+
+    <img src="{{ isset($brand) ? $brand?->getLogo() : asset('blogo.png')  }}" alt="BULSCA Logo" class=" w-52 h-52 ">
     <br>
     <h2 class="font-bold">DigitalJudge</h2>
 

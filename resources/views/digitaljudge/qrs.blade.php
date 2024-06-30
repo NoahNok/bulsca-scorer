@@ -8,9 +8,15 @@
 </head>
 <body class="flex flex-col space-y-3 items-center mt-52 w-screen h-screen">
     <h2>{{ $comp->name }}</h2>
-      {!! QrCode::size(300)->style('round')->generate(route('dj.index', ['pin' => $comp->digitalJudgePin])) !!}
+    @php
+      $params = ['pin' => $comp->digitalJudgePin];
+      if ($comp->brand) {
+        $params['b'] = $comp->brand;
+      }
+    @endphp
+      {!! QrCode::size(300)->style('round')->generate(route('dj.index', $params)) !!}
       <small class="text-center">
-        {{ route('dj.index') }}
+        {{ route('dj.index', $params) }}
         <br>
         PIN: {{ $comp->digitalJudgePin }}
       </small>
