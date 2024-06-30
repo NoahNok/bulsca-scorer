@@ -23,7 +23,8 @@
         @endphp
         @foreach ($brands as $brand)
             <a href="{{ route('admin.brands.show', $brand) }}"
-                class="flex flex-row items-center shadow-md hover:shadow-lg bg-white p-4 rounded-md border hover:border-black transition-all">
+                class="flex flex-row items-center shadow-md hover:shadow-lg bg-white p-4 rounded-md border hover:border-black transition-all space-x-2">
+                <img src="{{ $brand->getLogo() }}" alt="" class="w-8 h-8">
                 <h5 class="mb-0">{{ $brand->name }}</h5>
             </a>
         @endforeach

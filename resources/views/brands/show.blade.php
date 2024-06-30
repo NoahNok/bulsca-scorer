@@ -105,4 +105,17 @@
         </div>
         <button type="submit" class="btn">Update</button>
     </form>
+    <br><br>
+    <h3 class="mb-0">Delete Brand</h3>
+    <br>
+    <form action="{{ route('admin.brands.delete', $brand) }}"
+        onsubmit="return confirm('This action cannot be undone! Are you sure?')" method="post">
+        @csrf
+        @method('DELETE')
+       
+        
+            <input type="hidden" name="brand" value="{{ $brand->id }}">
+     
+        <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
 @endsection

@@ -217,6 +217,8 @@ Route::prefix('/admin')->middleware('isAdmin')->group(function () {
         Route::post('edit/{brand}', [BrandController::class, 'update'])->name('admin.brands.update');
 
         Route::get('{brand}', [BrandController::class, 'show'])->name('admin.brands.show');
+
+        Route::delete('{brand}', [BrandController::class, 'destroy'])->name('admin.brands.delete');
     });
 });
 

@@ -53,4 +53,5 @@
     </div>
     {{ $comps->links() }}
     <br><a href="{{ route('admin.records') }}" class="link">Edit Speed Event Record Times</a>
+    <br><a href="{{ route('admin.brands') }}" class="link">Edit Brands</a>
 @endsection
