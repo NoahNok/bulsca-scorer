@@ -12,12 +12,12 @@ class BrandController extends Controller
     
     public function index()
     {
-        return view('brands.index');
+        return view('admin.brands.index');
     }
 
     public function create()
     {
-        return view('brands.create');
+        return view('admin.brands.create');
     }
 
     public function store(Request $request)
@@ -45,12 +45,12 @@ class BrandController extends Controller
 
     public function show(Brand $brand)
     {
-        return view('brands.show', compact('brand'));
+        return view('admin.brands.show', compact('brand'));
     }
 
     public function edit(Brand $brand)
     {
-        return view('brands.edit', compact('brand'));
+        return view('admin.brands.edit', compact('brand'));
     }
 
     public function update(Request $request, Brand $brand)

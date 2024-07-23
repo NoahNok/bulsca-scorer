@@ -19,9 +19,7 @@
     <br>
     <div class="grid-4">
         @php
-            $comps = \App\Models\Competition::where('isLeague', true)
-                ->orderBy('when', 'desc')
-                ->paginate(8);
+            $comps = \App\Models\Competition::where('isLeague', true)->orderBy('when', 'desc')->paginate(8);
         @endphp
         @foreach ($comps as $comp)
             <a href="{{ route('admin.comp.view', $comp) }}"
