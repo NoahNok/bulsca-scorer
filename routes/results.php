@@ -1,13 +1,12 @@
 <?php
 
+use App\Helpers\RouteHelpers;
 use App\Http\Controllers\PublicResultsController;
 use App\Http\Controllers\PublicStatsController;
 use Illuminate\Support\Facades\Route;
 
 
-
-
-Route::domain("results.".env('APP_SUBDOMAIN_BASE'))->group(function () {
+Route::domain(RouteHelpers::domainRemap("results."))->group(function () {
     Route::get('', [PublicResultsController::class, 'index'])->name('public.results');
     Route::get('resolve/{date}/{name}', [PublicResultsController::class, 'resolve'])->name('public.results.resolve');
     Route::get('/{comp_slug}', [PublicResultsController::class, 'viewComp'])->name("public.results.comp");

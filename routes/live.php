@@ -1,11 +1,12 @@
 <?php
 
+use App\Helpers\RouteHelpers;
 use App\Http\Controllers\LiveController;
 use Illuminate\Support\Facades\Route;
 
 
 
-Route::domain("live.".env('APP_SUBDOMAIN_BASE'))->group(function () {
+Route::domain(RouteHelpers::domainRemap("live."))->group(function () {
     /* LIVE VIEWING */
 
     Route::get('', [LiveController::class, 'index'])->name('live');
