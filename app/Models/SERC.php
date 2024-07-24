@@ -18,10 +18,6 @@ class SERC extends IEvent implements IPenalisable
     protected $table = 'sercs';
 
 
-    public function __construct()
-    {
-        parent::__construct(new BulscaSercScoring());
-    }
 
 
     public function getJudges()

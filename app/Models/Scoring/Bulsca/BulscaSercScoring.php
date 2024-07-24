@@ -22,4 +22,5 @@ class BulscaSercScoring implements IScoring {
     
     }
 
+
 }

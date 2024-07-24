@@ -18,10 +18,6 @@ class CompetitionSpeedEvent extends IEvent implements IPenalisable
 
 
 
-    public function __construct()
-    {
-        parent::__construct(new BulscaSpeedScoring());
-    }
 
     public function getName(): string
     {
