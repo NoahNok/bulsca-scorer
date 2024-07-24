@@ -1,31 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 
+@php
+    if ($comp->getBrand != null) {
+        $brand = $comp->getBrand;
+    }
+@endphp
+
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
+
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@if ($comp->areResultsProvisional()) (PROVISIONAL) @endif{{ $comp->name }} | Results | BULSCA</title>
+
+
+
+    @if (isset($brand))
+        <link rel="icon" type="image/png" href="{{ $brand->getLogo() }}" />
+        <title>
+            @if ($comp->areResultsProvisional())
+                (PROVISIONAL)
+            @endif{{ $comp->name }} | Results | {{ $brand->name }}
+        </title>
+    @else
+        <title>
+            @if ($comp->areResultsProvisional())
+                (PROVISIONAL)
+            @endif
+            {{ $comp->name }} | Results | BULSCA
+        </title>
+        <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
+    @endif
+
+
+
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
 
 </head>
 
 <body class="overflow-x-hidden">
+    @isset($brand)
+        <style>
+            :root {
+                --brand-primary: {{ $brand->primary_color }};
+                --brand-secondary: {{ $brand->secondary_color }};
+            }
+        </style>
+    @endisset
     <div class="w-screen  min-h-screen flex flex-col items-center lg:justify-center space-y-2 my-8  ">
-        <img src="https://www.bulsca.co.uk/storage/logo/blogo.png" class=" w-60 h-60" alt="">
+        <img src="@if (isset($brand)) {{ $brand->getLogo() }}@else https://www.bulsca.co.uk/storage/logo/blogo.png @endif"
+            class=" w-60 h-60" alt="">
         <h1 class="font-bold">{{ $comp->name }}</h1>
         <a class="link  text-center" href="{{ route('public.results') }}"><small>Back</small></a>
 
 
         <hr class="w-96">
-        <a href="https://forms.gle/FEc8XJM3SyUma3Br6" target="_blank" rel="noopener noreferrer" class="link">Give Feedback</a>
+        <a href="https://forms.gle/FEc8XJM3SyUma3Br6" target="_blank" rel="noopener noreferrer" class="link">Give
+            Feedback</a>
         @if ($comp->areResultsProvisional())
-        <div class="p-2 text-center text-lg">
-            <p>These results are provisional! <strong>They are subject to change</strong> and should not be considered accurate or final!</p>
-        </div>
+            <div class="p-2 text-center text-lg">
+                <p>These results are provisional! <strong>They are subject to change</strong> and should not be
+                    considered accurate or final!</p>
+            </div>
         @else
-        <br>
+            <br>
         @endif
 
         <div class="flex flex-col space-y-4 w-[80%] lg:w-[65%] xl:w-[50%]">
@@ -36,12 +74,11 @@
                 <div class="grid-4">
 
                     @forelse ($comp->getSERCs as $serc)
-                    <a href="{{ route('public.results.serc', [$comp->resultsSlug(), $serc]) }}" class="card card-hover">
-                        <h4 class="mb-0 text-center">{{ $serc->getName() }}</h4>
-                    </a>
+                        <a href="{{ route('public.results.serc', [$comp->resultsSlug(), $serc]) }}"
+                            class="card card-hover">
+                            <h4 class="mb-0 text-center">{{ $serc->getName() }}</h4>
+                        </a>
                     @empty
-
-
                     @endforelse
 
                 </div>
@@ -52,12 +89,11 @@
                 <div class="grid-4">
 
                     @forelse ($comp->getSpeedEvents as $speed)
-                    <a href="{{ route('public.results.speed', [$comp->resultsSlug(), $speed]) }}" class="card card-hover">
-                        <h4 class="mb-0 text-center">{{ $speed->getName() }}</h4>
-                    </a>
+                        <a href="{{ route('public.results.speed', [$comp->resultsSlug(), $speed]) }}"
+                            class="card card-hover">
+                            <h4 class="mb-0 text-center">{{ $speed->getName() }}</h4>
+                        </a>
                     @empty
-
-
                     @endforelse
 
                 </div>
@@ -71,12 +107,11 @@
                 <div class="grid-4">
 
                     @forelse ($comp->getResultSchemas->where('viewable', true) as $schema)
-                    <a href="{{ route('public.results.results', [$comp->resultsSlug(), $schema]) }}" class="card card-hover">
-                        <h4 class="mb-0 text-center">{{ $schema->name }}</h4>
-                    </a>
+                        <a href="{{ route('public.results.results', [$comp->resultsSlug(), $schema]) }}"
+                            class="card card-hover">
+                            <h4 class="mb-0 text-center">{{ $schema->name }}</h4>
+                        </a>
                     @empty
-
-
                     @endforelse
 
                 </div>

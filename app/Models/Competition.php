@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Brands\Brand;
 use App\Models\DigitalJudge\JudgeLog;
 use App\Stats\StatsManager;
 use App\Traits\Cloneable;
@@ -106,6 +107,11 @@ class Competition extends Model
     public function getHeats()
     {
         return $this->hasMany(Heat::class, 'competition', 'id');
+    }
+
+    public function getBrand()
+    {
+        return $this->hasOne(Brand::class, 'id', 'brand');
     }
 
 

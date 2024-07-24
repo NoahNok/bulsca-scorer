@@ -48,6 +48,12 @@ Create Competition | Admin
             </select>
      
         </div>
+        
+
+        <x-form-select id="brand" title="Brand" :options="\App\Models\Brands\Brand::all()"
+        >
+        <option value="none">No brand</option>
+    </x-form-select>
     </div>
     <button type="submit" class="btn">Add</button>
 </form>

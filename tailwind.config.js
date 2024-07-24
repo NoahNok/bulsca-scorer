@@ -14,8 +14,8 @@ module.exports = {
                 sans: ["Nunito", ...defaultTheme.fontFamily.sans],
             },
             colors: {
-                bulsca: "#070660",
-                bulsca_red: "#9e0d06",
+                bulsca: "var(--brand-primary)",
+                bulsca_red: "var(--brand-secondary)",
             },
             screens: {
                 "3xl": "1600px",

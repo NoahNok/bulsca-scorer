@@ -1,23 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 
+@php
+    if ($comp->getBrand != null) {
+        $brand = $comp->getBrand;
+    }
+@endphp
+
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
+
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        @if ($comp->areResultsProvisional())
-            (PROVISIONAL)
-        @endif{{ $event->getName() }} | {{ $comp->name }} | Results | BULSCA
-    </title>
+
+
+
+    @if (isset($brand))
+        <link rel="icon" type="image/png" href="{{ $brand->getLogo() }}" />
+        <title>
+            @if ($comp->areResultsProvisional())
+                (PROVISIONAL)
+            @endif{{ $event->getName() }} | {{ $comp->name }} | Results | {{ $brand->name }}
+        </title>
+    @else
+        <title>
+            @if ($comp->areResultsProvisional())
+                (PROVISIONAL)
+            @endif{{ $event->getName() }} | {{ $comp->name }} | Results | BULSCA
+        </title>
+        <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
+    @endif
+
+
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
     <script src="{{ asset('js/sorttable.js') }}?{{ config('version.hash') }}"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
 
 </head>
 
-<body class="overflow-x-hidden"  x-data="{
+<body class="overflow-x-hidden" x-data="{
     showModal: false,
 
     modalUrl: '',
@@ -34,9 +55,18 @@
 
     }
 }">
+    @isset($brand)
+        <style>
+            :root {
+                --brand-primary: {{ $brand->primary_color }};
+                --brand-secondary: {{ $brand->secondary_color }};
+            }
+        </style>
+    @endisset
     <div class="flex flex-col items-center w-screen h-screen p-8 space-y-6 ">
         <div class="flex flex-row space-x-6 items-center">
-            <img src="https://www.bulsca.co.uk/storage/logo/blogo.png" class="w-32 h-32" alt="">
+            <img src="@if (isset($brand)) {{ $brand->getLogo() }}@else https://www.bulsca.co.uk/storage/logo/blogo.png @endif"
+                class="w-32 h-32" alt="">
             <div class="flex flex-col">
                 <h2 class="font-bold mb-0">{{ $event->getName() }}</h2>
                 <h4>{{ $comp->name }}</h4>
@@ -62,7 +92,8 @@
 
 
 
-            <div id="table-wrapper" class="  relative overflow-x-auto w-screen  lg:max-w-[80vw] h-[90vh] lg:h-[80vh] resize-y bg-white ">
+            <div id="table-wrapper"
+                class="  relative overflow-x-auto w-screen  lg:max-w-[80vw] h-[90vh] lg:h-[80vh] resize-y bg-white ">
                 <p class="link hidden text-center" id="cfs">Close Fullscreen</p>
                 <table id="table"
                     class="table-highlight text-sm w-full shadow-md rounded-lg top-0 text-left text-gray-500 border-collapse  relative "
@@ -97,7 +128,8 @@
                                         style="writing-mode: vertical-rl; " title="{{ $markingPoint['name'] }}"
                                         data-sortable>
 
-                                        <span class="block max-h-52 overflow-hidden text-ellipsis">{{ $markingPoint['name'] }}</span>
+                                        <span
+                                            class="block max-h-52 overflow-hidden text-ellipsis">{{ $markingPoint['name'] }}</span>
                                         <!--<p class="text-center">{{ number_format($markingPoint['weight'], 1) }}</p>-->
 
                                     </th>
@@ -175,7 +207,9 @@
                                 @endforeach
 
 
-                                <td class="py-4 px-6" @click="showDqPen('{{$team['disqualification']}}', {{ $team['tid'] }})" title="{{ $team['disqualification'] ?: '-' }}">
+                                <td class="py-4 px-6"
+                                    @click="showDqPen('{{ $team['disqualification'] }}', {{ $team['tid'] }})"
+                                    title="{{ $team['disqualification'] ?: '-' }}">
                                     {{ $team['disqualification'] ?: '-' }}
 
                                 </td>
@@ -205,7 +239,7 @@
                     </tbody>
 
                 </table>
-         
+
 
             </div>
 
@@ -228,8 +262,9 @@
                     <input type="checkbox" name="" id="anal">
                 </div>
 
-                <div class="md:ml-auto"><p class="link" id="fs">Fullscreen</p>
-                    </div>
+                <div class="md:ml-auto">
+                    <p class="link" id="fs">Fullscreen</p>
+                </div>
 
                 @if (!$comp->areResultsProvisional())
                     <div class="md:ml-auto flex flex-col items-center md:items-end">
@@ -250,9 +285,15 @@
 
 
 
-        <div class=" pb-16">
+        <div class=" pb-16 text-center">
             <small>
-                &copy; BULSCA 2023
+                &copy;
+                Noah Hollowell, BULSCA
+                2022-{{ date('Y') }}
+                @if (isset($brand))
+                    <br>Other logos, styles and assets are the property of their respective owners
+                    ({{ $brand->name }})
+                @endif
             </small>
         </div>
 
@@ -264,7 +305,8 @@
 
     <div class="modal" x-show="showModal" x-transition style="display: none">
         <div class="modal-content " @click.outside="showModal=false">
-           <iframe :src="modalUrl" frameborder="0" scrolling="no"  class="w-full" onload="this.height=this.contentWindow.document.body.scrollHeight;"></iframe>
+            <iframe :src="modalUrl" frameborder="0" scrolling="no" class="w-full"
+                onload="this.height=this.contentWindow.document.body.scrollHeight;"></iframe>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

@@ -1,6 +1,7 @@
 <?php
 
 use App\DigitalJudge\DigitalJudge;
+use App\Helpers\RouteHelpers;
 use App\Http\Controllers\DigitalJudge\DigitalJudgeController;
 use App\Http\Controllers\DigitalJudge\DJDQController;
 use App\Http\Controllers\DigitalJudge\DJJudgingController;
@@ -10,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 
 
 
-Route::domain("judge.".env('APP_SUBDOMAIN_BASE'))->group(function () {
+Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
     Route::get('', [DigitalJudgeController::class, 'index'])->name('dj.index');
     Route::post('login', [DigitalJudgeController::class, 'login'])->name('dj.login');
     Route::get('logout', [DigitalJudgeController::class, 'logout'])->name('dj.logout');

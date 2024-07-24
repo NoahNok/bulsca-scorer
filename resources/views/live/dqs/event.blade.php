@@ -1,21 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('live.layout')
 
-<head>
-    <meta charset="UTF-8">
-    <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $comp->name }} | Live | BULSCA</title>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
-    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
-    <style>
-
-    </style>
-</head>
-
-<body class="overflow-x-hidden flex justify-center w-screen h-screen">
+@section('content')
     <div class="w-[90vw] md:w-[70vw] my-12">
         <div class="w-full flex items-center justify-between">
             <h1 class="mb-0">{{ $comp->name }}</h1>
@@ -115,5 +100,4 @@
 
 
 </body>
-
-</html>
+@endsection

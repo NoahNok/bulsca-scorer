@@ -22,21 +22,38 @@
 @endsection
 
 @section('content')
-<div class="flex items-center justify-between">
-    <div>
-        <h2 class="mb-0">{{ $comp->name }}</h2>
-        <small class="text-gray-500">Scoring v{{ $comp->scoring_version }}</small>
+    <div class="flex items-center justify-between">
+        <div>
+          
+            <h2 class="@if (!$comp->brand) mb-0 @endif">{{ $comp->name }}</h2>
+          
+            <div class="flex  items-center text-sm">
+                @if ($comp->brand)
+                <img src="{{ $comp->getBrand->getLogo() }}" alt="{{ $comp->getBrand->name }}"
+                    class="max-w-[20px] max-h-[20px] ">
+                <p class="mb-0 ml-[2px]">{{ $comp->getBrand->name }} </p>
+
+                
+                <span class="w-1 h-1 bg-black rounded-full mx-2"></span>                
+
+
+                @endif      
+
+                <small class="text-gray-500">Scoring v{{ $comp->scoring_version }}</small>
+            </div>
+          
+          
+        </div>
+
+
+        <x-settings-cog href="{{ route('comps.settings', $comp) }}" />
+
+
     </div>
 
 
-    <x-settings-cog href="{{ route('comps.settings', $comp) }}" />
-
-      
-</div>
-
-  
-    <p class="mt-2">Welcome to the scorer for {{ $comp->name }}. If you run into any issues please contact the Data Manager (<a
-            class="link" href="mailto:data@bulsca.co.uk">data@bulsca.co.uk</a>) or find them on the day!
+    <p class="mt-2">Welcome to the scorer for {{ $comp->name }}. If you run into any issues please contact the Data
+        Manager (<a class="link" href="mailto:data@bulsca.co.uk">data@bulsca.co.uk</a>) or find them on the day!
 
     </p>
     <br>
@@ -78,23 +95,22 @@
             <div class="flex items-center justify-between">
                 <h3>Digital Judging</h3>
                 @if ($comp->digitalJudgeEnabled)
-                <x-settings-cog href="{{ route('dj.settings', $comp) }}" />
+                    <x-settings-cog href="{{ route('dj.settings', $comp) }}" />
                 @endif
             </div>
-           
-        
+
+
             <p>Digital judging allows Judges to enter SERC marks on their own device. It is enabled per comp.</p>
             <strong>If you need to DQ a SERC team, please talk with the competitions Scorer or Organiser!</strong>
             <p><a href="https://docs.google.com/document/d/1HKTR9HUzgTKadyE7vyVqDWXeaheK4XFmzlw9Hrn1Q1s/edit?usp=sharing"
                     target="_blank" rel="noopener noreferrer" class="link">DigitalJudge Manual</a></p>
             <br>
             @if ($comp->digitalJudgeEnabled)
-          
                 <h5>Judges</h5>
                 <a href="{{ route('dj.qrs', $comp) }}" target="_blank" class="btn btn-thin btn-primary ">Print QR</a>
                 <p class="text-center font-semibold text-bulsca_red">OR</p>
-                <p>Please instruct Judges to go to here: <a href="{{ route('dj.index') }}"
-                        class="link">{{ route('dj.index') }}</a> and enter the following pin:</p>
+                <p>Please instruct Judges to go to here: <a href="{{ route('dj.index') }}@if($comp->brand)?b={{ $comp->brand }}@endif"
+                        class="link">{{ route('dj.index') }}@if($comp->brand)/?b={{ $comp->brand }}@endif</a> and enter the following pin:</p>
 
                 <p class="text-xl"><strong>{{ $comp->digitalJudgePin }}</strong></p>
 

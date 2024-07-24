@@ -37,6 +37,10 @@ class AdminController extends Controller
         $comp->anytimepin = $validated['anytimepin'];
         $comp->scoring_Version = "1.1.0"; // Must forcibly set the updated version 1.1.0 programatically - UPDATE THIS WITH EACH NEW SCORING UPDATE
 
+        if ($validated['brand'] !== 'null') {
+            $comp->brand = $validated['brand'] == 'none' ? null : $validated['brand'];
+        }
+
         $comp->save();
 
 
@@ -69,6 +73,10 @@ class AdminController extends Controller
             $comp->season = $validated['season'];
         }
 
+        if ($validated['brand'] !== 'null') {
+            $comp->brand = $validated['brand'] == 'none' ? null : $validated['brand'];
+        }
+
         $comp->save();
 
         return back()->with('success', "Competition updated!");
@@ -82,7 +90,7 @@ class AdminController extends Controller
     public function updateCompUserPassword(Competition $comp)
     {
 
-        $compUserEmail = Str::replace(" ", "-", Str::lower($comp->name)) . "@bulsca.co.uk";
+        $compUserEmail = Str::replace(" ", "-", Str::lower($comp->name)) . "." . $comp->id . "@bulsca.co.uk";
         $compUserPasswordRaw =  Str::random(16);
         $compUserPassword = Hash::make($compUserPasswordRaw);
 

@@ -3,6 +3,11 @@
 @tailwind utilities;
 
 
+:root {
+  --brand-primary: #070660;
+  --brand-secondary: #9e0d06;
+}
+
 .sidebar {
     @apply p-3 flex flex-col space-y-3;
 
@@ -125,6 +130,8 @@ h5 {
     @apply mb-1;
    }
 
+   
+
    input, select {
     @apply border-2 rounded-md py-2 px-4 shadow-sm focus:outline-none hover:border-bulsca focus:border-bulsca mb-4;
 
@@ -149,6 +156,9 @@ h5 {
 
    > input[type=time] {
     @apply pb-[0.59rem] pt-[0.59rem];
+   }
+   > input[type=color] {
+    @apply w-12 h-8 p-0;
    }
 
    > small {

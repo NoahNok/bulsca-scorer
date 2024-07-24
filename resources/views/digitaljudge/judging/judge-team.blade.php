@@ -232,7 +232,7 @@
 
     </div>
 
-    <div class="fixed top-0 right-0 border-b border-l rounded-bl-md p-1 pb-2 px-4 text-md border-gray-300 bg-bulsca text-white font-semibold"
+    <div class="fixed top-0 right-0 border-b border-l rounded-bl-md p-1 pb-2 px-4 text-md border-gray-300 bg-bulsca text-white font-semibold z-20"
         id="notes-open">
         Notes
     </div>

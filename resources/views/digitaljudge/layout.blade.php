@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/mask@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    @yield('extra-head')
 </head>
 
 <body class="overflow-x-hidden">

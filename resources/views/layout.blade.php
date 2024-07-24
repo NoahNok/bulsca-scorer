@@ -1,9 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 
+@php
+    if (
+        !request()->is('admin*') &&
+        (auth()->user()->getCompetition?->brand != null || Session::get('ac')?->brand != null)
+    ) {
+        $brand = auth()->user()->getCompetition->getBrand ?? Session::get('ac')->getBrand;
+    }
+@endphp
+
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
+
+    @if (isset($brand))
+        <link rel="icon" type="image/png" href="{{ $brand->getLogo() }}" />
+    @else
+        <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
+    @endif
+
+
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title') | BULSCA Scorer</title>
@@ -17,11 +33,19 @@
 <body class="flex  overflow-x-hidden" x-data="{ asideCollapsed: false }">
 
 
+    @isset($brand)
+        <style>
+            :root {
+                --brand-primary: {{ $brand->primary_color }};
+                --brand-secondary: {{ $brand->secondary_color }};
+            }
+        </style>
+    @endisset
 
     <aside class="  h-screen flex flex-col" :class="asideCollapsed ? 'collapsed' : ''" id="nav">
         <div class="flex flex-row items-center w-full  sm:justify-center  text-white bg-bulsca p-5 h-[8vh]  ">
             <p class="md:text-2xl text-xs  font-bold md:whitespace-nowrap aside-brand">BULSCA Scorer</p>
-            <img src="https://www.bulsca.co.uk/storage/logo/blogo.png" alt=""
+            <img src="{{ $brand?->getLogo() ?? 'https://www.bulsca.co.uk/storage/logo/blogo.png' }}" alt=""
                 class="aside-brand-logo hidden w-12  ">
 
 
@@ -49,8 +73,7 @@
             @endif
 
 
-            @if (Session::get('ac') &&
-                    auth()->user()->isAdmin())
+            @if (Session::get('ac') && auth()->user()->isAdmin())
                 <div class="section" @click="sectionOpen = !sectionOpen">
                     <p>{{ Session::get('ac')->name }}</p>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -140,8 +163,7 @@
                 </div>
             @endif
 
-            @if (auth()->user()->getCompetition &&
-                    !auth()->user()->isAdmin())
+            @if (auth()->user()->getCompetition && !auth()->user()->isAdmin())
                 <div class="section">
                     <p>{{ auth()->user()->getCompetition->name }}</p>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"

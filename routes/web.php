@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Brands\BrandController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -207,6 +208,18 @@ Route::prefix('/admin')->middleware('isAdmin')->group(function () {
     Route::post('season/edit/{season}', [AdminController::class, 'seasonEditPost'])->name('admin.seasons.edit.post');
 
     Route::delete('/competition/{comp}/delete', [AdminController::class, 'deleteCompPost'])->name('admin.comp.delete');
+
+    Route::prefix('/brands')->group(function() {
+        Route::get('', [BrandController::class, 'index'])->name('admin.brands');
+        Route::get('create', [BrandController::class, 'create'])->name('admin.brands.create');
+        Route::post('create', [BrandController::class, 'store'])->name('admin.brands.store');
+        
+        Route::post('edit/{brand}', [BrandController::class, 'update'])->name('admin.brands.update');
+
+        Route::get('{brand}', [BrandController::class, 'show'])->name('admin.brands.show');
+
+        Route::delete('{brand}', [BrandController::class, 'destroy'])->name('admin.brands.delete');
+    });
 });
 
 

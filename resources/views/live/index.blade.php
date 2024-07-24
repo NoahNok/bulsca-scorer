@@ -1,19 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $comp->name }} | Live | BULSCA</title>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
-    <style>
+@extends('live.layout')
 
-    </style>
-</head>
-
-<body class="overflow-x-hidden flex justify-center w-screen h-screen">
+@section('content')
     <div class="w-[90vw] md:w-[70vw] my-12">
         <div class="w-full flex items-center justify-between">
             <h1 class="mb-0">{{ $comp->name }}</h1>
@@ -360,6 +348,4 @@
                 interv = setInterval(() => run(), 5000)
             }
         </script>
-</body>
-
-</html>
+@endsection

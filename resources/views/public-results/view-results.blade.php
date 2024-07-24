@@ -1,53 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
+@php
+    if ($comp->getBrand != null) {
+        $brand = $comp->getBrand;
+    }
+@endphp
 
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
+
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@if ($comp->areResultsProvisional()) (PROVISIONAL) @endif{{ $schema->name }} | {{ $comp->name }} | Results | BULSCA</title>
+
+
+
+    @if (isset($brand))
+        <link rel="icon" type="image/png" href="{{ $brand->getLogo() }}" />
+        <title>
+            @if ($comp->areResultsProvisional())
+                (PROVISIONAL)
+            @endif{{ $schema->name }} | {{ $comp->name }} | Results | {{ $brand->name }}
+        </title>
+    @else
+        <title>
+            @if ($comp->areResultsProvisional())
+                (PROVISIONAL)
+            @endif{{ $schema->name }} | {{ $comp->name }} | Results | BULSCA
+        </title>
+        <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
+    @endif
+
+
+
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
 
 </head>
 
 <body class="overflow-x-hidden">
+    @isset($brand)
+        <style>
+            :root {
+                --brand-primary: {{ $brand->primary_color }};
+                --brand-secondary: {{ $brand->secondary_color }};
+            }
+        </style>
+    @endisset
 
 
     <div class="flex flex-col items-center w-screen h-screen p-8 space-y-6 ">
         <div class="flex flex-row space-x-6 items-center">
-            <img src="https://www.bulsca.co.uk/storage/logo/blogo.png" class="w-32 h-32" alt="">
+            <img src="@if (isset($brand)) {{ $brand->getLogo() }}@else https://www.bulsca.co.uk/storage/logo/blogo.png @endif"
+                class="w-32 h-32" alt="">
             <div class="flex flex-col">
                 <h2 class="font-bold mb-0">{{ $schema->name }}</h2>
                 <h4>{{ $comp->name }}</h4>
             </div>
         </div>
-        <a href="https://forms.gle/FEc8XJM3SyUma3Br6" target="_blank" rel="noopener noreferrer" class="link">Give Feedback</a>
+        <a href="https://forms.gle/FEc8XJM3SyUma3Br6" target="_blank" rel="noopener noreferrer" class="link">Give
+            Feedback</a>
         <div class="">
             @if ($comp->areResultsProvisional())
-            <div class="p-2 text-center text-lg">
-                <p>These results are provisional! <strong>They are subject to change</strong> and should not be considered accurate or final!</p>
-            </div>
+                <div class="p-2 text-center text-lg">
+                    <p>These results are provisional! <strong>They are subject to change</strong> and should not be
+                        considered accurate or final!</p>
+                </div>
             @endif
             <div class="flex justify-between items-center mx-3 lg:mx-0">
                 <h3>Results</h3>
-                <a class="link" href="{{ route('public.results.comp', $comp->resultsSlug()) }}"><small>Back</small></a>
+                <a class="link"
+                    href="{{ route('public.results.comp', $comp->resultsSlug()) }}"><small>Back</small></a>
             </div>
             <div class="  relative overflow-x-auto w-screen  lg:max-w-[80vw] max-h-[90vh] lg:max-h-[80vh]  ">
-                <table id="table" class="table-highlight text-sm w-full shadow-md rounded-lg top-0 text-left text-gray-500 border-collapse relative">
+                <table id="table"
+                    class="table-highlight text-sm w-full shadow-md rounded-lg top-0 text-left text-gray-500 border-collapse relative">
                     <thead class="text-xs text-gray-700 text-right uppercase bg-gray-50 ">
                         <tr>
 
 
                             @foreach ($results[0] as $key => $value)
+                                @if (
+                                    !str_contains($key, 'team') &&
+                                        !str_ends_with($key, 'rsp') &&
+                                        !str_ends_with($key, 'place') &&
+                                        !str_contains($key, 'totalPoints'))
+                                    @continue
+                                @endif
 
-                            @if (!str_contains($key, "team") && !str_ends_with($key, "rsp") && !str_ends_with($key, "place") && !str_contains($key, "totalPoints") ) @continue
-
-                            @endif
-
-                            <th scope="col" class="py-3 px-6  whitespace-nowrap ">
-                                {{ str_replace("_", " ", preg_replace("/_[0-9]*/mi", " ", $key)) }}
-                            </th>
+                                <th scope="col" class="py-3 px-6  whitespace-nowrap ">
+                                    {{ str_replace('_', ' ', preg_replace('/_[0-9]*/mi', ' ', $key)) }}
+                                </th>
                             @endforeach
 
 
@@ -56,36 +97,40 @@
                     <tbody id="table-body">
 
                         @forelse ($results as $result)
-                        <tr class="bg-white border-b text-right    ">
-                            @foreach ($result as $key => $value)
-                            @if (!str_contains($key, "team") && !str_ends_with($key, "rsp") && !str_ends_with($key, "place") && !str_contains($key, "totalPoints") ) @continue
+                            <tr class="bg-white border-b text-right    ">
+                                @foreach ($result as $key => $value)
+                                    @if (
+                                        !str_contains($key, 'team') &&
+                                            !str_ends_with($key, 'rsp') &&
+                                            !str_ends_with($key, 'place') &&
+                                            !str_contains($key, 'totalPoints'))
+                                        @continue
+                                    @endif
+                                    <td
+                                        class="py-3 px-6 text-black text-sm whitespace-nowrap @if ($key == 'team') bg-white @endif">
+                                        @if ($key == 'team')
+                                            <span class="font-semibold">{{ $value }}</span>
+                                        @else
+                                            @if (str_contains($key, 'rsp'))
+                                                ({{ $result->{$key . '_places'} }})
+                                            @endif
 
-                            @endif
-                            <td class="py-3 px-6 text-black text-sm whitespace-nowrap @if($key=='team')  bg-white @endif">
-                                @if ($key == "team")
-                                <span class="font-semibold">{{ $value }}</span>
-                                @else
+                                            {{ round((float) $value) }}
+                                        @endif
 
-                                @if (str_contains($key, "rsp"))
-                                ({{ $result->{$key . "_places"} }})
-
-                                @endif
-
-                                {{ round((float)$value) }}
-                                @endif
-
-                            </td>
-                            @endforeach
+                                    </td>
+                                @endforeach
 
 
 
-                        </tr>
+                            </tr>
                         @empty
-                        <tr class="bg-white border-b text-right ">
-                            <th colspan="100" scope="row" class="py-4 text-left px-6 text-center font-medium text-gray-900 whitespace-nowrap ">
-                                None
-                            </th>
-                        </tr>
+                            <tr class="bg-white border-b text-right ">
+                                <th colspan="100" scope="row"
+                                    class="py-4 text-left px-6 text-center font-medium text-gray-900 whitespace-nowrap ">
+                                    None
+                                </th>
+                            </tr>
                         @endforelse
 
 
@@ -97,7 +142,8 @@
 
             <div class="mt-2 flex items-center justify-between">
                 <div class="flex flex-col  ">
-                    <div class="form-input" style="margin-bottom: 0px !important;"><input placeholder="Filter" id="team-filter" style="margin-bottom: 0 !important" type="text"></div>
+                    <div class="form-input" style="margin-bottom: 0px !important;"><input placeholder="Filter"
+                            id="team-filter" style="margin-bottom: 0 !important" type="text"></div>
                     <small class="text-gray-600">team:x, league:x</small>
                 </div>
 
@@ -105,11 +151,19 @@
 
         </div>
 
-        <div class="pt-8 pb-16">
+
+        <div class=" pb-16 text-center">
             <small>
-                &copy; BULSCA 2023
+                &copy;
+                Noah Hollowell, BULSCA
+                2022-{{ date('Y') }}
+                @if (isset($brand))
+                    <br>Other logos, styles and assets are the property of their respective owners
+                    ({{ $brand->name }})
+                @endif
             </small>
         </div>
+
 
 
 
