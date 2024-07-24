@@ -65,7 +65,7 @@
 
             </div>
             <x-form-input id="lanes" title="Lanes" required type="number"
-            defaultValue="{{ $comp->max_lanes }}"></x-form-input>
+                defaultValue="{{ $comp->max_lanes }}"></x-form-input>
             <div class="form-input ">
                 <label for="anytimepin" class="">Anytime Pin</label>
                 <select required id="anytimepin" name="anytimepin" class="input "
@@ -77,16 +77,32 @@
                 </select>
 
             </div>
-      
+
 
             <x-form-select id="season" title="Season" :options="\App\Models\Season::all()"
                 defaultValue="{{ $comp->season }}"></x-form-select>
 
 
-            <x-form-select id="brand" title="Brand" :options="\App\Models\Brands\Brand::all()"
-                defaultValue="{{ $comp->brand }}">
+            <x-form-select id="brand" title="Brand" :options="\App\Models\Brands\Brand::all()" defaultValue="{{ $comp->brand }}">
                 <option value="none">No brand</option>
             </x-form-select>
+
+            <div class="form-input ">
+                <label for="scoring_type" class="">Scoring Type</label>
+                <select required id="scoring_type" name="scoring_type" class="input "
+                    style="padding-top: 0.65em; padding-bottom: 0.75em;">
+                    @foreach (\App\Helpers\ScoringHelper::$availableTypes as $key => $name)
+                        <option value="{{ $key }}" @if ($comp->scoring_type == $key) selected @endif>
+                            {{ $name }}</option>
+                    @endforeach
+
+
+
+
+                </select>
+
+            </div>
+
         </div>
         <button type="submit" class="btn">Save</button>
     </form>

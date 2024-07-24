@@ -7,6 +7,10 @@ use App\Models\Scoring\Bulsca\BulscaSpeedScoring;
 
 class ScoringHelper {
 
+
+    static $availableTypes = ['bulsca' => 'BULSCA', 'rlss-nationals' => 'RLSS Nationals'];
+
+
     static function resolve($scoringType, $eventType) {
 
         return match ($scoringType) {
@@ -17,6 +21,8 @@ class ScoringHelper {
         };
 
     }
+
+    
 
     
 

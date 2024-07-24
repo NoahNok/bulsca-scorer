@@ -41,6 +41,8 @@ class AdminController extends Controller
             $comp->brand = $validated['brand'] == 'none' ? null : $validated['brand'];
         }
 
+        $comp->scoring_type = $validated['scoring_type'];
+
         $comp->save();
 
 
@@ -76,6 +78,8 @@ class AdminController extends Controller
         if ($validated['brand'] !== 'null') {
             $comp->brand = $validated['brand'] == 'none' ? null : $validated['brand'];
         }
+
+        $comp->scoring_type = $validated['scoring_type'];
 
         $comp->save();
 
