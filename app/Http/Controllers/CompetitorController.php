@@ -73,7 +73,8 @@ class CompetitorController extends Controller
                         'club' => $clubName,
                         'id' => $clubId,
                         'swimmers' => $swimmers
-                    ]
+                    ],
+                    'hide' => false
                 ];
             }
 
@@ -101,21 +102,36 @@ class CompetitorController extends Controller
                 $clubName = $bracket->competitors->club;
                 $swimmers = $bracket->competitors->swimmers; // [{name: , id?:}]
 
+             
+
                 // Find club by id or create a new one
                 $club = null;
                 if (property_exists($bracket->competitors, 'id')) {
                     $club = Club::find($bracket->competitors->id);
                 } else {
+                    if ($clubName == "") {
+                        continue;
+                    }
                     $club = new Club(); // Dont reuse old clubs incase of region change, which would break results
                     $club->region = $region->name;
                
     
       
-                 }
-                 $club->name = $clubName;
-                    $club->save();
+                }
+                $club->name = $clubName;
+                $club->save();
 
+                if ($clubName == "") { // If club name is empty we are delete the club
+                    $club->delete();
+                    continue;
+                }
+
+                $addedAny = false;
                 foreach ($swimmers as $swimmer) {
+
+                    if ($swimmer->name == "") {
+                        continue;
+                    }
 
                     $swim = null;
                     if (property_exists($swimmer, 'id')) {
@@ -131,6 +147,12 @@ class CompetitorController extends Controller
                     $swim->league = $bracket->id;
                     $swim->st_time = 0; // Not used
                     $swim->save();
+
+                    $addedAny = true;
+                }
+
+                if (!$addedAny) {
+                    $club->delete();
                 }
 
       
