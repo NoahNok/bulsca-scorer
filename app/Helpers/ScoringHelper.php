@@ -2,13 +2,14 @@
 
 namespace App\Helpers;
 
+use App\Models\Competition;
 use App\Models\Scoring\Bulsca\BulscaSercScoring;
 use App\Models\Scoring\Bulsca\BulscaSpeedScoring;
 
 class ScoringHelper {
 
 
-    static $availableTypes = ['bulsca' => 'BULSCA', 'rlss-nationals' => 'RLSS Nationals'];
+    static $availableTypes = ['bulsca' => ['name' => 'BULSCA', 'use_competitors' => false], 'rlss-nationals' => ['name' => 'RLSS Nationals', 'use_competitors' => true]];
 
 
     static function resolve($scoringType, $eventType) {
@@ -17,8 +18,19 @@ class ScoringHelper {
             'bulsca' => match ($eventType) {
                 'speed' => new BulscaSpeedScoring(),
                 'serc' => new BulscaSercScoring()
-            }
+            },
+            'rlss-nationals' => match ($eventType) {
+                'speed' => new BulscaSpeedScoring(),
+                'serc' => new BulscaSercScoring()
+            },
         };
+
+    }
+
+
+    static function getCompetitionScoringDetails(Competition $competition) {
+
+        return self::$availableTypes[$competition->scoring_type];
 
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Data\TeamAdditionalDetailsData;
 use App\Traits\Cloneable;
 use Carbon\CarbonInterval;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,6 +17,11 @@ class CompetitionTeam extends Model
     public function getClubName()
     {
         return $this->hasOne(Club::class, 'id', 'club')->first()->name;
+    }
+
+    public function getClub()
+    {
+        return $this->hasOne(Club::class, 'id', 'club');
     }
 
 

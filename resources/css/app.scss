@@ -142,6 +142,14 @@ h5 {
     
    }
 
+   &.imb-0 {
+      @apply mb-0;
+
+      > input {
+        @apply mb-0;
+      }
+   }
+
 
    > input {
     @apply  pt-[0.621rem] pb-[0.621rem];

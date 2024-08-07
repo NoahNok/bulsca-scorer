@@ -43,6 +43,13 @@ class CompetitionController extends Controller
         return view('competition.teams', ['comp' => $comp]);
     }
 
+    public function competitors(Competition $comp, Request $request)
+    {
+        $request->session()->put('ac', $comp);
+
+        return view('competition.competitors', ['comp' => $comp]);
+    }
+
     public function createCompetitionStats(Competition $comp) {
         
         $comp->generateStats();

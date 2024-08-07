@@ -91,9 +91,9 @@
                 <label for="scoring_type" class="">Scoring Type</label>
                 <select required id="scoring_type" name="scoring_type" class="input "
                     style="padding-top: 0.65em; padding-bottom: 0.75em;">
-                    @foreach (\App\Helpers\ScoringHelper::$availableTypes as $key => $name)
+                    @foreach (\App\Helpers\ScoringHelper::$availableTypes as $key => $data)
                         <option value="{{ $key }}" @if ($comp->scoring_type == $key) selected @endif>
-                            {{ $name }}</option>
+                            {{ $data['name'] }}</option>
                     @endforeach
 
 

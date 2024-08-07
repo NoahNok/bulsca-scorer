@@ -169,7 +169,7 @@
                                             style="padding-top: 0.65em; padding-bottom: 0.65em; margin-bottom: 0 !important"
                                             x-model="team.league">
                                             <option value="null">Please select an option...</option>
-                                            @foreach (App\Models\League::all() as $option)
+                                            @foreach (App\Models\League::where('scoring_type', 'bulsca')->get() as $option)
                                                 <option value="{{ $option->id }}">
                                                     {{ $option->name }}</option>
                                             @endforeach

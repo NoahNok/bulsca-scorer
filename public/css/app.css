@@ -1227,6 +1227,10 @@ video {
 .gap-y-4 {
   row-gap: 1rem;
 }
+.gap-x-1 {
+  -moz-column-gap: 0.25rem;
+       column-gap: 0.25rem;
+}
 .gap-x-5 {
   -moz-column-gap: 1.25rem;
        column-gap: 1.25rem;
@@ -2240,6 +2244,12 @@ div.form-input input.file::file-selector-button, div.form-input select.file::fil
 div.form-input input.file::file-selector-button:hover, div.form-input select.file::file-selector-button:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(229 231 235 / var(--tw-bg-opacity));
+}
+div.form-input.imb-0 {
+  margin-bottom: 0px;
+}
+div.form-input.imb-0 > input {
+  margin-bottom: 0px;
 }
 div.form-input > input {
   padding-top: 0.621rem;
