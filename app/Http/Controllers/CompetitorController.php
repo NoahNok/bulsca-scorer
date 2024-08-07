@@ -6,6 +6,7 @@ use App\Models\Club;
 use App\Models\Competition;
 use App\Models\Competitor;
 use App\Models\League;
+use App\Models\SpeedResult;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -140,10 +141,12 @@ class CompetitorController extends Controller
                     }
 
                     $swim = null;
+                    $wasCreated = false;
                     if (property_exists($swimmer, 'id')) {
                         $swim = Competitor::find($swimmer->id);
                     } else {
                         $swim = new Competitor();
+                        $wasCreated = true;
                     }
 
                
@@ -153,6 +156,15 @@ class CompetitorController extends Controller
                     $swim->league = $bracket->id;
                     $swim->st_time = 0; // Not used
                     $swim->save();
+
+                    if ($wasCreated) {
+                        foreach ($comp->getSpeedEvents as $event) {
+                            $sr = new SpeedResult();
+                            $sr->competition_team = $swim->id;
+                            $sr->event = $event->id;
+                            $sr->save();
+                        }
+                    }
 
                     $addedAny = true;
                 }

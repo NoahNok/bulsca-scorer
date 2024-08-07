@@ -5,6 +5,7 @@ namespace App\Helpers;
 use App\Models\Competition;
 use App\Models\Scoring\Bulsca\BulscaSercScoring;
 use App\Models\Scoring\Bulsca\BulscaSpeedScoring;
+use App\Models\Scoring\Nationals\NationalsSpeedScoring;
 
 class ScoringHelper {
 
@@ -20,7 +21,7 @@ class ScoringHelper {
                 'serc' => new BulscaSercScoring()
             },
             'rlss-nationals' => match ($eventType) {
-                'speed' => new BulscaSpeedScoring(),
+                'speed' => new NationalsSpeedScoring(),
                 'serc' => new BulscaSercScoring()
             },
         };
