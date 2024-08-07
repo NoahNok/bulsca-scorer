@@ -238,7 +238,15 @@
 
 
             </div>
-            <div class=" row-start-1 md:row-start-auto">
+            <div class=" row-start-1 md:row-start-auto flex flex-col space-y-2">
+                <div class="alert-box alert-info">
+                    <h1>Important</h1>
+                    <p>Leaving fields <strong>blank</strong> will result in them being <strong>removed</strong> on saving.
+                        <br>Leaving the club name blank will result in the <strong>entire bracket being removed</strong>
+                        along with its swimmers and <strong>any attached results</strong>!
+                    </p>
+                </div>
+
                 <div class="alert-box alert-warning">
                     <h1>Heat & SERC Order</h1>
                     <p>You will need to <strong>regenerate</strong> the Heat and SERC Order after adding any
@@ -247,7 +255,7 @@
                         <strong>Tip:</strong> Only generate the heats and SERC Order after adding all your teams!
                     </p>
                 </div>
-                <br>
+
                 <div class="alert-box" x-show="hasChanges" style="display: none">
                     <h1>Unsaved Changes</h1>
                     <p>You have <strong>unsaved</strong> changes. You need to click the save button to keep your current

@@ -62,6 +62,12 @@ class CompetitorController extends Controller
                     }
                 }
 
+                // check if pairs and check if we need to add a blank team
+                
+                if (str_contains($bracket->name, 'Pairs') && count($swimmers) == 1) {
+                    $swimmers[] = ['name' => ''];
+                }
+
                 if (count($swimmers) == 0) {
                     continue;
                 }
