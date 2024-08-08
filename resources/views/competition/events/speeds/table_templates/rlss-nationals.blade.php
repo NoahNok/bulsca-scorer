@@ -2,7 +2,7 @@
     <thead class="text-xs text-gray-700 text-right uppercase bg-gray-50 ">
         <tr>
             <th scope="col" class="py-3 px-6 text-left">
-                Competitor - Club (Region)
+                Competitor - Club (Region) - League
             </th>
             @if ($event->digitalJudgeEnabled)
                 <th scope="col" class="py-3 px-6">
@@ -43,11 +43,11 @@
 
             <tr class="bg-white border-b text-right ">
                 <th scope="row" class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap ">
-                    {{ $result->team }}
+                    {{ $result->team }} - {{ $result->league }}
 
                     @if ($pair)
                         <br>
-                        {{ $result->pair->name }}
+                        {{ $result->pair->name }} - {{ $result->league }}
                     @endif
 
                 </th>
@@ -99,6 +99,10 @@
 
                 <td class="py-4 px-6">
                     {{ $result->disqualification ?: '-' }}
+                    @if ($pair)
+                        <br>
+                        {{ $result->pair->disqualification ?: '-' }}
+                    @endif
                 </td>
 
 

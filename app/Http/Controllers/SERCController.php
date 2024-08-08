@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ClassHelpers;
 use App\Models\Competition;
 use App\Models\CompetitionTeam;
+use App\Models\Competitor;
 use App\Models\SERC;
 use App\Models\SERCDisqualification;
 use App\Models\SERCJudge;
@@ -135,6 +137,11 @@ class SERCController extends Controller
 
     public function editResultsView(Competition $comp, SERC $serc, CompetitionTeam $team)
     {
+
+        if ($comp->scoring_type == "rlss-nationals") {
+            $team = ClassHelpers::castToClass($team, Competitor::class);
+        }
+
         return view('competition.events.sercs.edit-team-results', ['comp' => $comp, 'serc' => $serc, 'team' => $team]);
     }
 
