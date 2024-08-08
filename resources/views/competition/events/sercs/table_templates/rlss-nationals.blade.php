@@ -63,3 +63,16 @@
 
     </tbody>
 </table>
+
+<form action="" x-data x-ref="bracket_form">
+    <div class="form-input mt-2">
+        <label for="event-bracket">Bracket</label>
+        <select name="bracket" id="event-bracket" class="input" @change="$refs.bracket_form.submit()">
+            <option value="">All</option>
+            @foreach (\App\Models\League::where('scoring_type', 'rlss-nationals')->get() as $bracket)
+                <option value="{{ $bracket->id }}" @if (request()->get('bracket') == $bracket->id) selected @endif>
+                    {{ $bracket->name }}</option>
+            @endforeach
+        </select>
+    </div>
+</form>
