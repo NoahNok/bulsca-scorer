@@ -16,25 +16,32 @@ class NationalsSpeedScoring implements IScoring {
        $currentPlace = 0;
        $previousCid = -1;
        $previousResult = -1;
+       $previousObject = null;
        $skipBy = 0;
 
        foreach ($results as $result) {
        
-        $result->result_penalties = '';
-        $result->result_penalties = $result->result;
-        $result->{'900_penalties'} = 0;
-        $result->penalties = 0;
+
       
 
-        if ($result->cid == $previousCid) { // pairs given same place
-            $result->points = $currentPlace;
+        if ($result->cid == $previousCid && $previousObject != null) { // pairs combined into one row
+      
+            $previousObject->pair = new \stdClass();
+            $previousObject->pair->name = $result->team;
+            $previousObject->pair->result = $result->result;
+            $previousObject->pair->disqualification = $result->disqualification;
+            $previousObject->pair->base_result = $result->base_result;
 
-        $result->place = $currentPlace;
+            // remove this result from the array
+            $result->skip = true;
+            
+        
             continue;
         }
 
 
         $previousCid = $result->cid;
+        $previousObject = $result;
 
 
 
