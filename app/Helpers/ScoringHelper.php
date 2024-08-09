@@ -11,6 +11,7 @@ use App\Models\Scoring\Bulsca\BulscaSercScoring;
 use App\Models\Scoring\Bulsca\BulscaSpeedScoring;
 use App\Models\Scoring\Nationals\NationalsSercScoring;
 use App\Models\Scoring\Nationals\NationalsSpeedScoring;
+use stdClass;
 
 class ScoringHelper {
 
@@ -45,7 +46,23 @@ class ScoringHelper {
         $type = $comp->scoring_type;
 
         function nationals(Competition $comp) {
-            foreach (League::where('scoring_type', 'rlss-nationals')->get() as $league) {
+
+            $leagues = League::where('scoring_type', 'rlss-nationals')->get();
+
+            $overall = new stdClass();
+            $overall->name = "Overall";
+            $overall->id = "O";
+
+            $overallMasters = new stdClass();
+            $overallMasters->name = "Overall Masters";
+            $overallMasters->id = "OM";
+
+            $leagues->push($overall);
+            $leagues->push($overallMasters);
+
+
+
+            foreach ($leagues as $league) {
                 $resultSchema = new NationalsResultSchema();
                 $resultSchema->competition = $comp->id;
                 $resultSchema->name = $league->name;

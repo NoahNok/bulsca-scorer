@@ -46,7 +46,10 @@
 
             <h4>Results</h4>
             <div class="  relative w-full  ">
-                @include('competition.results.table_templates.' . $comp->scoring_type)
+                @include(
+                    'competition.results.table_templates.' .
+                        $comp->scoring_type .
+                        (array_key_exists('overalls', $results) ? '-overalls' : ''))
             </div>
 
 

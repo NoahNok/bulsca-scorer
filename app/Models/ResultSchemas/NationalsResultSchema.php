@@ -2,6 +2,8 @@
 
 namespace App\Models\ResultSchemas;
 
+use App\Models\Interfaces\IEvent;
+use App\Models\League;
 use App\Models\ResultSchema;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,8 +14,18 @@ class NationalsResultSchema extends  ResultSchema
 
     public function getResults() {
 
+        if ($this->league == "O" || $this->league == "OM") { // overall and overall masters
+            return $this->handleOveralls();
+        }
 
-        request()->merge(['bracket' => $this->league]);
+        return $this->getBracketResults($this->league);
+
+
+        
+    }
+
+    private function getBracketResults($bracket) {
+        request()->merge(['bracket' => $bracket]);
 
       
         $results = $this->getEvents->map(function($revent) {
@@ -63,6 +75,7 @@ class NationalsResultSchema extends  ResultSchema
         
 
             $result->name = $nameData->team . (property_exists($nameData, 'pair') ? ' & ' . $nameData->pair : '') . " - " . $nameData->club_name . " (" . $nameData->club_region . ")";
+            $result->region = $nameData->club_region;
             $result->events = $results->map(function($event) use ($tid) {
 
        
@@ -124,13 +137,20 @@ class NationalsResultSchema extends  ResultSchema
                 return 0;
             }
 
-            $result1Wet = $result1->events->where('type', 'WET')->first()->place ?? 0;
-            $result2Wet = $result2->events->where('type', 'WET')->first()->place ?? 0;
+            $result1Wet = $result1->events->where('sub_type', 'WET')->first()->place ?? 0;
+            $result2Wet = $result2->events->where('sub_type', 'WET')->first()->place ?? 0;
 
-            $result1Dry = $result1->events->where('type', 'DRY')->first()->place ?? 0;
-            $result2Dry = $result2->events->where('type', 'DRY')->first()->place ?? 0;
+            $result1Dry = $result1->events->where('sub_type', 'DRY')->first()->place ?? 0;
+            $result2Dry = $result2->events->where('sub_type', 'DRY')->first()->place ?? 0;
 
             if ($result1Wet == $result2Wet) {
+
+   
+                if ($result1Dry == $result2Dry) {
+                    $result2->draw = true;
+                    return 0;
+                }
+                
                 return $result1Dry <=> $result2Dry;
             }
 
@@ -139,6 +159,21 @@ class NationalsResultSchema extends  ResultSchema
 
         })->values();
 
+        // re iterate the palces from 1 to 16 - there are 
+        $currentPlace = 0;
+
+        foreach ($finalResults as $result) {
+
+            if ($result?->draw ?? false) {
+                
+                $result->place = $currentPlace;
+                continue;
+            }
+
+            $currentPlace++;
+            $result->place = $currentPlace;
+        }
+
 
         $eventOrder = $this->getEvents->map(function($event) {
             return $event->getActualEvent->getName();
@@ -146,6 +181,87 @@ class NationalsResultSchema extends  ResultSchema
 
 
         return ['results' => $finalResults, 'eventOrder' => $eventOrder];
+    }
+
+    private function handleOveralls(){
+
+        $brackets = [];
+
+        if ($this->league == "O") {
+            $brackets = League::where('name', 'not like', 'Masters%')->where('scoring_type', 'rlss-nationals')->get();
+        } else {
+            $brackets = League::where('name', 'like', 'Masters%')->where('scoring_type', 'rlss-nationals')->get();
+        }
+
+
+  
+
+        $resultsPerBracket = [];
+
+        foreach ($brackets as $bracket) {
+            $resultsPerBracket[$bracket->name] = $this->getBracketResults($bracket->id);
+        }
+
+
+   
+
+        // join up the results via the region name. each regions final score is the sum of its brackets scores. if there are no entires for a bracket they get 16
+
+        $allRegions = ['All Ireland', 'East Midlands', 'East', 'North East', 'North West', 'Scotland', 'South East', 'South', 'South West', 'Wales', 'West Midlands', 'West', 'Yorkshire'];
+
+        $regionResults = [];
+
+        foreach ($allRegions as $region) {
+            $regionScore = 0;
+            foreach ($resultsPerBracket as $bracketName => $results) {
+
+
+                $regionScore += $results['results']->where('region', $region)->first()->place ?? 16;
+            }
+
+            $regionResults[$region] = $regionScore;
+           
+        }
+
+        
+        // sort the regions by score
+        $regionResults = collect($regionResults)->sort()->toArray();
+
+        // rank region results by their score, where same sores tie for palce but next plaec is skipped
+        $currentPlace = 0;
+        $previousResult = null;
+        $skipBy = 0;
+
+        $finalResults = [];
+
+        foreach ($regionResults as $region => $score) {
+            if ($score == $previousResult) { // same results given same place
+                $skipBy++;
+            } else {
+                $currentPlace++;
+                if ($skipBy > 0) {
+                    $currentPlace += $skipBy;
+                    $skipBy = 0;
+                }
+            }
+            $previousResult = $score;
+
+            $data = new \stdClass();
+            $data->place = $currentPlace;
+            $data->score = $score;
+            $data->name = $region;
+            $data->events = [];
+
+            $finalResults[$region] = $data;
+        }
+
+
+
+
+
+
+
+        return ['results' => $finalResults, 'eventOrder' => [],  'overalls' => true];
     }
 
 }
