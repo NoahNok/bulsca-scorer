@@ -779,14 +779,14 @@ video {
 .h-8 {
   height: 2rem;
 }
+.h-12 {
+  height: 3rem;
+}
 .h-full {
   height: 100%;
 }
 .h-1 {
   height: 0.25rem;
-}
-.h-12 {
-  height: 3rem;
 }
 .h-52 {
   height: 13rem;
@@ -873,6 +873,15 @@ video {
 .w-8 {
   width: 2rem;
 }
+.w-screen {
+  width: 100vw;
+}
+.w-52 {
+  width: 13rem;
+}
+.w-\[70\%\] {
+  width: 70%;
+}
 .w-1 {
   width: 0.25rem;
 }
@@ -887,15 +896,6 @@ video {
 }
 .w-\[5\%\] {
   width: 5%;
-}
-.w-screen {
-  width: 100vw;
-}
-.w-52 {
-  width: 13rem;
-}
-.w-\[70\%\] {
-  width: 70%;
 }
 .w-48 {
   width: 12rem;
@@ -967,14 +967,14 @@ video {
 .max-w-\[85vw\] {
   max-width: 85vw;
 }
+.max-w-\[1000px\] {
+  max-width: 1000px;
+}
 .max-w-\[20px\] {
   max-width: 20px;
 }
 .max-w-7xl {
   max-width: 80rem;
-}
-.max-w-\[1000px\] {
-  max-width: 1000px;
 }
 .max-w-full {
   max-width: 100%;
@@ -1203,15 +1203,15 @@ video {
   margin-top: calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(0.75rem * var(--tw-space-y-reverse));
 }
-.space-y-1 > :not([hidden]) ~ :not([hidden]) {
-  --tw-space-y-reverse: 0;
-  margin-top: calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));
-  margin-bottom: calc(0.25rem * var(--tw-space-y-reverse));
-}
 .space-y-12 > :not([hidden]) ~ :not([hidden]) {
   --tw-space-y-reverse: 0;
   margin-top: calc(3rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(3rem * var(--tw-space-y-reverse));
+}
+.space-y-1 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.25rem * var(--tw-space-y-reverse));
 }
 .space-x-8 > :not([hidden]) ~ :not([hidden]) {
   --tw-space-x-reverse: 0;
@@ -1595,11 +1595,11 @@ video {
 .pr-5 {
   padding-right: 1.25rem;
 }
-.pr-2 {
-  padding-right: 0.5rem;
-}
 .pb-2 {
   padding-bottom: 0.5rem;
+}
+.pr-2 {
+  padding-right: 0.5rem;
 }
 .pt-1 {
   padding-top: 0.25rem;
@@ -1687,13 +1687,13 @@ video {
   font-size: 1.875rem;
   line-height: 2.25rem;
 }
-.text-xl {
-  font-size: 1.25rem;
-  line-height: 1.75rem;
-}
 .text-6xl {
   font-size: 3.75rem;
   line-height: 1;
+}
+.text-xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
 }
 .text-base {
   font-size: 1rem;
@@ -1762,6 +1762,9 @@ video {
 .text-bulsca {
   color: var(--brand-primary);
 }
+.text-transparent {
+  color: transparent;
+}
 .text-red-600 {
   --tw-text-opacity: 1;
   color: rgb(220 38 38 / var(--tw-text-opacity));
@@ -1772,9 +1775,6 @@ video {
 .text-gray-800 {
   --tw-text-opacity: 1;
   color: rgb(31 41 55 / var(--tw-text-opacity));
-}
-.text-transparent {
-  color: transparent;
 }
 .text-indigo-600 {
   --tw-text-opacity: 1;

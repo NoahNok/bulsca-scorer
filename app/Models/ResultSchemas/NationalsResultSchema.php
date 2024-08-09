@@ -24,7 +24,7 @@ class NationalsResultSchema extends  ResultSchema
             foreach ($results as $result) {
                 $result->weight = $revent->weight;
                 $result->type = $event->getType();
-                $result->sub_type = $event->getType() == "serc" ? $event->type : '';
+                $result->sub_type = $event->getType() == "serc" ? $event->type : $event->getName();
             }
 
 
@@ -141,7 +141,7 @@ class NationalsResultSchema extends  ResultSchema
 
 
         $eventOrder = $this->getEvents->map(function($event) {
-            $event = $event->getActualEvent->getName();
+            return $event->getActualEvent->getName();
         });
 
 

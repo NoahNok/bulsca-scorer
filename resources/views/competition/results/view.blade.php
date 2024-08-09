@@ -185,6 +185,57 @@
                 </table>
             </div>
         </div>
+    @else
+        <div class=" overflow-hidden " id="raw_data">
+            <h2>Raw Data</h2>
+            <div class=" relative overflow-x-auto max-w-[85vw]  ">
+                <table class="w-full text-sm shadow-md  rounded-lg text-left text-gray-500 ">
+                    <thead class="text-xs text-gray-700  uppercase bg-gray-50 ">
+                        <tr>
+                            <th scope="col" class="py-2 px-4 whitespace-nowrap">Name</th>
+
+                            @foreach ($results['eventOrder'] as $event)
+                                <th scope="col" class="py-2 px-4 whitespace-nowrap">
+                                    {{ $event }}
+                                </th>
+                            @endforeach
+                            <th scope="col" class="py-2 px-4 whitespace-nowrap">Total</th>
+                            <th scope="col" class="py-2 px-4 whitespace-nowrap">Position</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($results['results'] as $result)
+                            <tr class="bg-white border-b text-left ">
+
+                                <td class="py-2 px-4 text-black text-xs whitespace-nowrap">
+                                    {{ $result->name }}
+                                </td>
+
+
+                                @foreach ($result->events as $event)
+                                    <td class="py-2 px-4 text-black text-xs whitespace-nowrap">
+                                        {{ $event?->place ?? 16 }}
+                                    </td>
+                                @endforeach
+
+                                <td class="py-2 px-4 text-black text-xs whitespace-nowrap">
+                                    {{ $result->score }}
+                                </td>
+
+                                <td class="py-2 px-4 text-black text-xs whitespace-nowrap">
+                                    {{ $result->place }}
+                                </td>
+
+
+
+
+
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+
+
     @endif
 
 @endsection
