@@ -7,6 +7,7 @@ use App\Models\League;
 use App\Models\ResultSchema;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use stdClass;
 
 class NationalsResultSchema extends  ResultSchema
 {
@@ -211,12 +212,21 @@ class NationalsResultSchema extends  ResultSchema
 
         $regionResults = [];
 
+        $regionBrackets = [];
+
         foreach ($allRegions as $region) {
             $regionScore = 0;
             foreach ($resultsPerBracket as $bracketName => $results) {
 
+                $t = $results['results']->where('region', $region)->first()->place ?? 16;
+                $regionScore += $t;
 
-                $regionScore += $results['results']->where('region', $region)->first()->place ?? 16;
+                $tt = new stdClass();
+                $tt->place = $t;
+
+                $regionBrackets[$region][$bracketName] = $tt;
+    
+               
             }
 
             $regionResults[$region] = $regionScore;
@@ -250,18 +260,22 @@ class NationalsResultSchema extends  ResultSchema
             $data->place = $currentPlace;
             $data->score = $score;
             $data->name = $region;
-            $data->events = [];
+            $data->events = $regionBrackets[$region];
+     
+            
 
             $finalResults[$region] = $data;
         }
 
+      
+
+        $eventOrder = $brackets->map(function($bracket) {
+            return $bracket->name;
+        });
 
 
 
-
-
-
-        return ['results' => $finalResults, 'eventOrder' => [],  'overalls' => true];
+        return ['results' => $finalResults, 'eventOrder' => $eventOrder,  'overalls' => true];
     }
 
 }
