@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Helpers\ClassHelpers;
+use App\Models\ResultSchemas\NationalsResultSchema;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,6 +13,9 @@ use Illuminate\Support\Str;
 class ResultSchema extends Model
 {
     use HasFactory, Cloneable;
+
+
+
 
     public function getEvents()
     {
@@ -152,6 +157,17 @@ class ResultSchema extends Model
         $query = $this->getRawQuery();
         if (!$query) return null;
         return DB::select($query);
+    }
+
+
+    public function autoCast() {
+
+        if ($this->getCompetition->scoring_type == "rlss-nationals") {
+            return ClassHelpers::castToClass($this, NationalsResultSchema::class);
+        }
+
+        return $this;
+
     }
 
 }

@@ -88,6 +88,7 @@ class SERCController extends Controller
         $serc = SERC::find($json->serc_id);
 
         $serc->name = $json->serc_name;
+        $serc->type = $json->serc_type;
 
         $serc->save();
 
