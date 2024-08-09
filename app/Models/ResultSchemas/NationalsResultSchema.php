@@ -23,6 +23,8 @@ class NationalsResultSchema extends  ResultSchema
 
             foreach ($results as $result) {
                 $result->weight = $revent->weight;
+                $result->type = $event->getType();
+                $result->sub_type = $event->getType() == "serc" ? $event->type : '';
             }
 
 
@@ -114,6 +116,28 @@ class NationalsResultSchema extends  ResultSchema
             $previousResult = $result->score;
             $result->place = $currentPlace;
         }
+
+        // sort results with same place first by wet score the nby dry score otherwise leave as is
+        $finalResults = $finalResults->sort(function($result1, $result2) {
+            
+            if ($result1->place != $result2->place) {
+                return 0;
+            }
+
+            $result1Wet = $result1->events->where('type', 'WET')->first()->place ?? 0;
+            $result2Wet = $result2->events->where('type', 'WET')->first()->place ?? 0;
+
+            $result1Dry = $result1->events->where('type', 'DRY')->first()->place ?? 0;
+            $result2Dry = $result2->events->where('type', 'DRY')->first()->place ?? 0;
+
+            if ($result1Wet == $result2Wet) {
+                return $result1Dry <=> $result2Dry;
+            }
+
+            return $result1Wet <=> $result2Wet;
+
+
+        })->values();
 
 
         $eventOrder = $this->getEvents->map(function($event) {
