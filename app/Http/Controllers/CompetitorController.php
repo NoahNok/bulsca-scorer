@@ -16,6 +16,12 @@ class CompetitorController extends Controller
 
         
         $curRegions = ['All Ireland', 'East Midlands', 'East', 'North East', 'North West', 'Scotland', 'South East', 'South', 'South West', 'Wales', 'West Midlands', 'West', 'Yorkshire'];
+        // Add duplicate of all regions with B for places allowed to send a 2nd place
+        $curRegions = array_merge($curRegions, array_map(function($region) {
+            return $region . ' B';
+        }, $curRegions));
+
+
         // Can also include duplicates ammended with B for places allowed to send a 2nd place
         $dbBrackets = League::where('scoring_type', 'rlss-nationals')->get();
         $brackets = [];
