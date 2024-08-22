@@ -41,7 +41,7 @@ class NationalsSpeedScoring implements IScoring {
         foreach ($results as $result) {
         
 
-        
+            $result->skip = false;
 
             if ($result->cid == $previousCid && $previousObject != null) { // pairs combined into one row
         
@@ -50,9 +50,10 @@ class NationalsSpeedScoring implements IScoring {
                 $previousObject->pair->result = $result->result;
                 $previousObject->pair->disqualification = $result->disqualification;
                 $previousObject->pair->base_result = $result->base_result;
-
+                
                 // remove this result from the array
                 $result->skip = true;
+       
                 
             
                 continue;
@@ -84,6 +85,11 @@ class NationalsSpeedScoring implements IScoring {
         
 
         }
+
+        // remove skipped results
+        $results = array_filter($results, function($result) {
+            return !$result->skip;
+        });
 
         // Special case for events with less than 4 competitors
         if (count($results) < 4) {

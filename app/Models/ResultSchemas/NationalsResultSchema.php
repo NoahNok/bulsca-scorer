@@ -59,7 +59,8 @@ class NationalsResultSchema extends  ResultSchema
                 return $result->tid;
             });
         })->flatten()->unique();
-
+      
+        
         // Now loop the tids to get the results
         $finalResults = $tids->map(function($tid) use ($results) {
             $result = new \stdClass();
@@ -72,18 +73,21 @@ class NationalsResultSchema extends  ResultSchema
                 $found = collect($event['results'])->where('tid', $tid)->first();
                 return $found != null && property_exists($found, 'club_name');
             })['results'])->where('tid', $tid)->first();
+
+            $targetCid = $nameData->cid;
          
         
 
             $result->name = $nameData->team . (property_exists($nameData, 'pair') ? ' & ' . $nameData->pair : '') . " - " . $nameData->club_name . " (" . $nameData->club_region . ")";
             $result->region = $nameData->club_region;
-            $result->events = $results->map(function($event) use ($tid) {
+            $result->events = $results->map(function($event) use ($targetCid) {
+             
 
-       
-
-                return collect($event['results'])->where('tid', $tid)->first(default: $event['event']?->type ?? null);
+                return collect($event['results'])->where('cid', $targetCid)->first();
             });
-
+      
+    
+            
             // get final summed score across events
             $result->score = $result->events->sum(function($event) {
 
@@ -94,11 +98,10 @@ class NationalsResultSchema extends  ResultSchema
                 if (!is_string($event) && $event != null) {
                     
 
-                    if ($event?->skip ?? false) {
-                        return 0;
-                    }
+                 
 
                     $score = $event->place;
+                    
                 }
 
                 $score *= $event?->weight ?? 1;
@@ -202,6 +205,8 @@ class NationalsResultSchema extends  ResultSchema
         foreach ($brackets as $bracket) {
             $resultsPerBracket[$bracket->name] = $this->getBracketResults($bracket->id);
         }
+
+        
 
 
    
