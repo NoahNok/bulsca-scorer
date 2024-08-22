@@ -33,9 +33,7 @@
 
         @forelse ($event->getResults() as $result)
 
-            @if (property_exists($result, 'skip'))
-                @continue
-            @endif
+
 
             @php
                 $pair = property_exists($result, 'pair');
