@@ -45,16 +45,30 @@ class CompetitionTeam extends Model
         return $this->getClubName() . " " . $this->team;
     }
 
-    public function getCompetition() {
+    public function formatName($format = ':C :N (:S)')
+    {
+
+        if ($this->getCompetition->scoring_type == 'rlss-nationals') {
+            $format = ":N - :C (:R) - :L";
+        }
+
+        return str_replace([":C", ":L", ":N", ":S", ":R"], [$this->getClub->name, $this->getLeague->name, $this->team, $this->getSwimTowTimeForDefault(), $this->getClub->region], $format);
+    }
+
+    public function getCompetition()
+    {
         return $this->belongsTo(Competition::class, 'competition');
     }
 
-    public function getPositionInDraw() {
+    public function getPositionInDraw()
+    {
         $drawOrder = $this->getCompetition->getCompetitionTeams; // getCompetitionTeams() is ordered by the serc draw
 
         $id = $this->id;
 
-        $position = $drawOrder->search(function($team) use ($id) {return $team->id === $id;}) + 1;
+        $position = $drawOrder->search(function ($team) use ($id) {
+            return $team->id === $id;
+        }) + 1;
 
         return $position;
     }
