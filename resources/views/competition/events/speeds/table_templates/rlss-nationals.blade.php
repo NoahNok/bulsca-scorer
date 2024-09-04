@@ -39,7 +39,8 @@
                 $pair = property_exists($result, 'pair');
             @endphp
 
-            <tr class="bg-white border-b text-right ">
+            <tr class="bg-white border-b text-right " x-data="{ name: `{{ $result->team . ' - ' . $result->league . ' ' . (property_exists($result, 'pair') ? $result->pair->name : '') }}` }"
+                x-show="name.toLowerCase().includes(search.toLowerCase())">
                 <th scope="row" class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap ">
                     {{ $result->team }} - {{ $result->league }}
 

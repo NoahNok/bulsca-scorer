@@ -37,7 +37,9 @@
 
 @section('content')
     <div class="grid-2">
-        <div class="flex flex-col space-y-4">
+        <div class="flex flex-col space-y-4" x-data="{
+            search: '',
+        }">
             <div class="flex justify-between">
                 <h2 class="mb-0 mt-0">{{ $event->getName() }}</h2>
                 <a href="{{ route('comps.view.events.speeds.edit', [$comp, $event]) }}" class="btn">Edit</a>
@@ -45,6 +47,11 @@
 
 
             <div class="  relative w-full overflow-x-auto  ">
+                <div class="form-input imb-0 ">
+                    <input type="text" table-search placeholder="Search teams" x-model="search">
+                </div>
+
+                <br>
                 @include('competition.events.speeds.table_templates.' . $comp->scoring_type)
             </div>
 
