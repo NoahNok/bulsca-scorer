@@ -25,7 +25,8 @@
     <tbody>
 
         @forelse ($serc->getResults() as $result)
-            <tr class="bg-white border-b text-right ">
+            <tr class="bg-white border-b text-right " x-data="{ name: `{{ $result->team . (property_exists($result, 'pair') ? ' & ' . $result->pair : '') . ' - ' . $result->club_name . '(' . $result->club_region . ') - ' . $result->league }}` }"
+                x-show="name.toLowerCase().includes(search.toLowerCase())">
                 <th scope="row" class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap ">
                     {{ $result->team . (property_exists($result, 'pair') ? ' & ' . $result->pair : '') }} -
                     {{ $result->club_name }} ({{ $result->club_region }}) - {{ $result->league }}

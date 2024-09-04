@@ -37,7 +37,9 @@
 
 @section('content')
     <div class="grid-2">
-        <div class="flex flex-col space-y-4">
+        <div class="flex flex-col space-y-4" x-data="{
+            search: 'test',
+        }">
 
             <div class="flex justify-between">
                 <h2 class="mb-0">{{ $serc->name }}</h2>
@@ -46,6 +48,11 @@
 
             <h4>Marked Teams</h4>
             <div class="  relative w-full overflow-x-auto  ">
+                <div class="form-input imb-0 ">
+                    <input type="text" table-search placeholder="Search teams" x-model="search">
+                </div>
+
+                <br>
                 @include('competition.events.sercs.table_templates.' . $comp->scoring_type)
             </div>
 
@@ -63,6 +70,12 @@
                 </div>
             @endif
             <div class="  relative w-full  ">
+                <div class="form-input imb-0 ">
+                    <input type="text" table-search placeholder="Search teams" x-model="search">
+                </div>
+
+                <br>
+
                 <table class=" text-sm w-full shadow-md rounded-lg overflow-hidden text-left text-gray-500 ">
                     <thead class="text-xs text-gray-700 text-right uppercase bg-gray-50 ">
                         <tr>
@@ -79,7 +92,8 @@
                     <tbody>
 
                         @forelse ($serc->getTeams() as $team)
-                            <tr class="bg-white border-b text-right ">
+                            <tr class="bg-white border-b text-right " x-data="{ name: `{{ $team->getFullname() }}` }"
+                                x-show="name.toLowerCase().includes(search.toLowerCase())">
                                 <th scope="row" class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap ">
                                     {{ $loop->index + 1 }}: {{ $team->getFullname() }}
                                 </th>
