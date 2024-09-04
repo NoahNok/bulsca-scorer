@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ScoringHelper;
 use App\Http\Requests\AdminCreateCompRequest;
 use App\Http\Requests\AdminDeleteCompetition;
 use App\Models\Competition;
@@ -41,7 +42,13 @@ class AdminController extends Controller
             $comp->brand = $validated['brand'] == 'none' ? null : $validated['brand'];
         }
 
+        $comp->scoring_type = $validated['scoring_type'];
+
+     
+
         $comp->save();
+
+        
 
 
         $compUserEmail = Str::replace([" ", "@", "_"], "-", Str::lower($comp->name)) . "." . $comp->id . "@bulsca.co.uk";
@@ -76,6 +83,8 @@ class AdminController extends Controller
         if ($validated['brand'] !== 'null') {
             $comp->brand = $validated['brand'] == 'none' ? null : $validated['brand'];
         }
+
+        $comp->scoring_type = $validated['scoring_type'];
 
         $comp->save();
 

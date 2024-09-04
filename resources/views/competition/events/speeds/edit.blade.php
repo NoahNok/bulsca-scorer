@@ -66,6 +66,12 @@
 
 
             <div class="  relative w-full  ">
+                <div class="form-input imb-0 ">
+                    <input type="text" table-search placeholder="Search teams">
+                </div>
+
+                <br>
+
                 <table editable-table="scores" table-submit-csrf="{{ csrf_token() }}"
                     table-after-url="{{ route('comps.view.events.speeds.view', [$comp, $event]) }}"
                     table-submit-url="{{ route('comps.view.events.speeds.editPost', [$comp, $event]) }}"

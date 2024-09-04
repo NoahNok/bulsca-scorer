@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 use App\Http\Controllers\CompetitionController;
+use App\Http\Controllers\CompetitorController;
 use App\Http\Controllers\DigitalJudge\DigitalJudgeController;
 use App\Http\Controllers\HeatController;
 use App\Http\Controllers\OverallResultsController;
@@ -146,6 +147,14 @@ Route::middleware('auth')->group(function () {
                 Route::get('/edit', [TeamsController::class, 'edit'])->name('comps.view.teams.edit');
                 Route::post('/edit', [TeamsController::class, 'editPost'])->name('comps.view.teams.editPost');
                 Route::delete('/delete', [TeamsController::class, 'delete'])->name('comps.view.teams.delete');
+            });
+
+            // COMPETITORS - Only shows if socring type is set to use it instead of teams
+            Route::prefix('/competitors')->group(function () {
+                Route::get('', [CompetitionController::class, 'competitors'])->name('comps.view.competitors');
+                Route::get('/edit', [CompetitorController::class, 'edit'])->name('comps.view.competitors.edit');
+                Route::post('/edit', [CompetitorController::class, 'save'])->name('comps.view.competitors.save');
+                // Route::delete('/delete', [TeamsController::class, 'delete'])->name('comps.view.competitors.delete');
             });
 
             // RESULTS

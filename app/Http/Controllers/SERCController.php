@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ClassHelpers;
 use App\Models\Competition;
 use App\Models\CompetitionTeam;
+use App\Models\Competitor;
 use App\Models\SERC;
 use App\Models\SERCDisqualification;
 use App\Models\SERCJudge;
@@ -86,6 +88,7 @@ class SERCController extends Controller
         $serc = SERC::find($json->serc_id);
 
         $serc->name = $json->serc_name;
+        $serc->type = $json->serc_type;
 
         $serc->save();
 
@@ -135,6 +138,11 @@ class SERCController extends Controller
 
     public function editResultsView(Competition $comp, SERC $serc, CompetitionTeam $team)
     {
+
+        if ($comp->scoring_type == "rlss-nationals") {
+            $team = ClassHelpers::castToClass($team, Competitor::class);
+        }
+
         return view('competition.events.sercs.edit-team-results', ['comp' => $comp, 'serc' => $serc, 'team' => $team]);
     }
 
@@ -187,7 +195,7 @@ class SERCController extends Controller
         }
 
 
-        $teamIds = CompetitionTeam::where('competition', $comp->id)->orderBy('serc_order')->pluck('id')->toArray();
+        $teamIds = $serc->getTeams()->pluck('id')->toArray();
         $index = array_search($team->id, array_values($teamIds));
 
 

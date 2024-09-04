@@ -46,52 +46,10 @@
 
             <h4>Results</h4>
             <div class="  relative w-full  ">
-                <table class=" text-sm w-full shadow-md rounded-lg overflow-hidden text-left text-gray-500 ">
-                    <thead class="text-xs text-gray-700 text-right uppercase bg-gray-50 ">
-                        <tr>
-                            <th scope="col" class="py-3 px-6 text-left">
-                                Team
-                            </th>
-                            <th scope="col" class="py-3 px-6">
-                                Points
-                            </th>
-                            <th scope="col" class="py-3 px-6">
-                                Position
-                            </th>
-
-
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                        @forelse ($results as $result)
-                            <tr class="bg-white border-b text-right ">
-                                <th scope="row" class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap ">
-                                    {{ $result->team }}
-                                </th>
-                                <td class="py-4 px-6">
-                                    {{ round($result->totalPoints) }}
-                                </td>
-
-                                <td class="py-4 px-6">
-                                    {{ $result->place }}
-                                </td>
-
-
-                            </tr>
-                        @empty
-                            <tr class="bg-white border-b text-right ">
-                                <th colspan="100" scope="row"
-                                    class="py-4 text-left px-6 text-center font-medium text-gray-900 whitespace-nowrap ">
-                                    None
-                                </th>
-                            </tr>
-                        @endforelse
-
-
-
-                    </tbody>
-                </table>
+                @include(
+                    'competition.results.table_templates.' .
+                        $comp->scoring_type .
+                        (array_key_exists('overalls', $results) ? '-overalls' : ''))
             </div>
 
 
@@ -174,59 +132,113 @@
         </ul>
         <br>
         <h3>League</h3>
-        <p><strong>Target League</strong>: {{ $schema->league }}</p>
+        <p><strong>Target League</strong>:
+            {{ is_numeric($schema->league) ? \App\Models\League::find($schema->league)->name : $schema->league }}</p>
         <small>Overall (O), A League (A), B League (B), Freshers League (F), Non-counting (NC), Non-student (NS)</small>
     </div>
 
     <br>
-    <div class=" overflow-hidden " id="raw_data">
-        <h2>Raw Data</h2>
-        <div class=" relative overflow-x-auto max-w-[85vw]  ">
-            <table class="w-full text-sm shadow-md  rounded-lg text-left text-gray-500 ">
-                <thead class="text-xs text-gray-700 text-right uppercase bg-gray-50 ">
-                    <tr>
+    @if ($comp->scoring_type == 'bulsca')
+        <div class=" overflow-hidden " id="raw_data">
+            <h2>Raw Data</h2>
+            <div class=" relative overflow-x-auto max-w-[85vw]  ">
+                <table class="w-full text-sm shadow-md  rounded-lg text-left text-gray-500 ">
+                    <thead class="text-xs text-gray-700 text-right uppercase bg-gray-50 ">
+                        <tr>
 
 
-                        @if (count($results) != 0)
-                            @foreach ($results[0] as $key => $value)
+                            @if (count($results) != 0)
+                                @foreach ($results[0] as $key => $value)
+                                    <th scope="col" class="py-2 px-4 whitespace-nowrap">
+                                        {{ str_replace('_', ' ', preg_replace('/_[0-9]/mi', '', $key)) }}
+                                    </th>
+                                @endforeach
+                            @endif
+
+
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @forelse ($results as $result)
+                            <tr class="bg-white border-b text-right ">
+                                @foreach ($result as $key => $value)
+                                    <td class="py-2 px-4 text-black text-xs whitespace-nowrap">
+                                        {{ $value }}
+                                    </td>
+                                @endforeach
+
+
+
+                            </tr>
+                        @empty
+                            <tr class="bg-white border-b text-right ">
+                                <th colspan="100" scope="row"
+                                    class="py-4 text-left px-6 text-center font-medium text-gray-900 whitespace-nowrap ">
+                                    None
+                                </th>
+                            </tr>
+                        @endforelse
+
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    @else
+        <div class=" overflow-hidden " id="raw_data">
+            <h2>Raw Data</h2>
+            <div class=" relative overflow-x-auto max-w-[85vw]  ">
+                <table class="w-full text-sm shadow-md  rounded-lg text-left text-gray-500 ">
+                    <thead class="text-xs text-gray-700  uppercase bg-gray-50 ">
+                        <tr>
+                            <th scope="col" class="py-2 px-4 whitespace-nowrap">Name</th>
+
+                            @foreach ($results['eventOrder'] as $event)
                                 <th scope="col" class="py-2 px-4 whitespace-nowrap">
-                                    {{ str_replace('_', ' ', preg_replace('/_[0-9]/mi', '', $key)) }}
+                                    {{ $event }}
                                 </th>
                             @endforeach
-                        @endif
+                            <th scope="col" class="py-2 px-4 whitespace-nowrap">Total</th>
+                            <th scope="col" class="py-2 px-4 whitespace-nowrap">Position</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($results['results'] as $result)
+                            <tr class="bg-white border-b text-left ">
 
-
-
-
-                    </tr>
-                </thead>
-                <tbody>
-
-                    @forelse ($results as $result)
-                        <tr class="bg-white border-b text-right ">
-                            @foreach ($result as $key => $value)
                                 <td class="py-2 px-4 text-black text-xs whitespace-nowrap">
-                                    {{ $value }}
+                                    {{ $result->name }}
                                 </td>
-                            @endforeach
+
+
+                                @foreach ($result->events as $event)
+                                    <td class="py-2 px-4 text-black text-xs whitespace-nowrap">
+                                        {{ $event?->place ?? 16 }}
+                                    </td>
+                                @endforeach
+
+                                <td class="py-2 px-4 text-black text-xs whitespace-nowrap">
+                                    {{ $result->score }}
+                                </td>
+
+                                <td class="py-2 px-4 text-black text-xs whitespace-nowrap">
+                                    {{ $result->place }}
+                                </td>
 
 
 
-                        </tr>
-                    @empty
-                        <tr class="bg-white border-b text-right ">
-                            <th colspan="100" scope="row"
-                                class="py-4 text-left px-6 text-center font-medium text-gray-900 whitespace-nowrap ">
-                                None
-                            </th>
-                        </tr>
-                    @endforelse
 
 
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
 
-                </tbody>
-            </table>
-        </div>
-    </div>
+
+    @endif
 
 @endsection

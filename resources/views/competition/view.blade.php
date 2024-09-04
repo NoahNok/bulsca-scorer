@@ -24,25 +24,23 @@
 @section('content')
     <div class="flex items-center justify-between">
         <div>
-          
+
             <h2 class="@if (!$comp->brand) mb-0 @endif">{{ $comp->name }}</h2>
-          
+
             <div class="flex  items-center text-sm">
                 @if ($comp->brand)
-                <img src="{{ $comp->getBrand->getLogo() }}" alt="{{ $comp->getBrand->name }}"
-                    class="max-w-[20px] max-h-[20px] ">
-                <p class="mb-0 ml-[2px]">{{ $comp->getBrand->name }} </p>
-
-                
-                <span class="w-1 h-1 bg-black rounded-full mx-2"></span>                
+                    <img src="{{ $comp->getBrand->getLogo() }}" alt="{{ $comp->getBrand->name }}"
+                        class="max-w-[20px] max-h-[20px] ">
+                    <p class="mb-0 ml-[2px]">{{ $comp->getBrand->name }} </p>
 
 
-                @endif      
+                    <span class="w-1 h-1 bg-black rounded-full mx-2"></span>
+                @endif
 
                 <small class="text-gray-500">Scoring v{{ $comp->scoring_version }}</small>
             </div>
-          
-          
+
+
         </div>
 
 
@@ -58,10 +56,20 @@
     </p>
     <br>
     <div class="grid-4">
-        <a href="{{ route('comps.view.teams', $comp) }}"
-            class="p-5 border shadow-md bg-white rounded-md flex items-center justify-center space-x-2 hover:bg-gray-400 hover:text-white transition-colors cursor-pointer">
-            <p class="text-lg font-semibold">Teams</p>
-        </a>
+
+        @if (\App\Helpers\ScoringHelper::getCompetitionScoringDetails($comp)['use_competitors'])
+            <a href="{{ route('comps.view.competitors', $comp) }}"
+                class="p-5 border shadow-md bg-white rounded-md flex items-center justify-center space-x-2 hover:bg-gray-400 hover:text-white transition-colors cursor-pointer">
+                <p class="text-lg font-semibold">Competitors</p>
+            </a>
+        @else
+            <a href="{{ route('comps.view.teams', $comp) }}"
+                class="p-5 border shadow-md bg-white rounded-md flex items-center justify-center space-x-2 hover:bg-gray-400 hover:text-white transition-colors cursor-pointer">
+                <p class="text-lg font-semibold">Teams</p>
+            </a>
+        @endif
+
+
         <a href="{{ route('comps.view.heats', $comp) }}"
             class="p-5 border shadow-md bg-white rounded-md flex items-center justify-center space-x-2 hover:bg-gray-400 hover:text-white transition-colors cursor-pointer">
             <p class="text-lg font-semibold">Heats/Orders</p>
@@ -109,8 +117,12 @@
                 <h5>Judges</h5>
                 <a href="{{ route('dj.qrs', $comp) }}" target="_blank" class="btn btn-thin btn-primary ">Print QR</a>
                 <p class="text-center font-semibold text-bulsca_red">OR</p>
-                <p>Please instruct Judges to go to here: <a href="{{ route('dj.index') }}@if($comp->brand)?b={{ $comp->brand }}@endif"
-                        class="link">{{ route('dj.index') }}@if($comp->brand)/?b={{ $comp->brand }}@endif</a> and enter the following pin:</p>
+                <p>Please instruct Judges to go to here: <a
+                        href="{{ route('dj.index') }}@if ($comp->brand) ?b={{ $comp->brand }} @endif"
+                        class="link">{{ route('dj.index') }}@if ($comp->brand)
+                            /?b={{ $comp->brand }}
+                        @endif
+                    </a> and enter the following pin:</p>
 
                 <p class="text-xl"><strong>{{ $comp->digitalJudgePin }}</strong></p>
 

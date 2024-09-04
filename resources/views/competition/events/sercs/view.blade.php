@@ -37,7 +37,9 @@
 
 @section('content')
     <div class="grid-2">
-        <div class="flex flex-col space-y-4">
+        <div class="flex flex-col space-y-4" x-data="{
+            search: '',
+        }">
 
             <div class="flex justify-between">
                 <h2 class="mb-0">{{ $serc->name }}</h2>
@@ -46,70 +48,12 @@
 
             <h4>Marked Teams</h4>
             <div class="  relative w-full overflow-x-auto  ">
-                <table class=" text-sm w-full shadow-md rounded-lg overflow-hidden text-left text-gray-500 ">
-                    <thead class="text-xs text-gray-700 text-right uppercase bg-gray-50 ">
-                        <tr>
-                            <th scope="col" class="py-3 px-6 text-left">
-                                Team
-                            </th>
-                            <th scope="col" class="py-3 px-6">
-                                DQ
-                            </th>
-                            <th scope="col" class="py-3 px-6">
-                                Raw Mark
-                            </th>
-                            <th scope="col" class="py-3 px-6">
-                                Points
-                            </th>
-                            <th scope="col" class="py-3 px-6">
-                                Position
-                            </th>
-                            <th scope="col" class="py-3 px-6">
-                                Results
-                            </th>
+                <div class="form-input imb-0 ">
+                    <input type="text" table-search placeholder="Search teams" x-model="search">
+                </div>
 
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                        @forelse ($serc->getResults() as $result)
-                            <tr class="bg-white border-b text-right ">
-                                <th scope="row" class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap ">
-                                    {{ $result->team }}
-                                </th>
-                                <td class="py-4 px-6">
-                                    {{ $serc->getTeamDQ(\App\Models\CompetitionTeam::find($result->tid))?->code ?: '-' }}
-                                </td>
-                                <td class="py-4 px-6">
-                                    {{ round($result->score, 1) }}
-                                </td>
-                                <td class="py-4 px-6">
-                                    {{ round($result->points) }}
-                                </td>
-                                <td class="py-4 px-6">
-                                    {{ $result->place }}
-                                </td>
-                                <td class="py-4 px-6">
-                                    <a href="{{ route('comps.view.events.sercs.editResults', [$comp, $serc, $result->tid]) }}"
-                                        class="btn btn-primary btn-thin">
-                                        Edit
-                                    </a>
-                                </td>
-
-                            </tr>
-                        @empty
-                            <tr class="bg-white border-b text-right ">
-                                <th colspan="100" scope="row"
-                                    class="py-4 text-left px-6 text-center font-medium text-gray-900 whitespace-nowrap ">
-                                    None
-                                </th>
-                            </tr>
-                        @endforelse
-
-
-
-                    </tbody>
-                </table>
+                <br>
+                @include('competition.events.sercs.table_templates.' . $comp->scoring_type)
             </div>
 
             <h4>All teams</h4>
@@ -126,6 +70,12 @@
                 </div>
             @endif
             <div class="  relative w-full  ">
+                <div class="form-input imb-0 ">
+                    <input type="text" table-search placeholder="Search teams" x-model="search">
+                </div>
+
+                <br>
+
                 <table class=" text-sm w-full shadow-md rounded-lg overflow-hidden text-left text-gray-500 ">
                     <thead class="text-xs text-gray-700 text-right uppercase bg-gray-50 ">
                         <tr>
@@ -142,7 +92,8 @@
                     <tbody>
 
                         @forelse ($serc->getTeams() as $team)
-                            <tr class="bg-white border-b text-right ">
+                            <tr class="bg-white border-b text-right " x-data="{ name: `{{ $team->getFullname() }}` }"
+                                x-show="name.toLowerCase().includes(search.toLowerCase())">
                                 <th scope="row" class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap ">
                                     {{ $loop->index + 1 }}: {{ $team->getFullname() }}
                                 </th>

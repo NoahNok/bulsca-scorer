@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ScoringHelper;
 use App\Models\Competition;
 use App\Models\ResultSchema;
 use App\Models\ResultSchemaEvent;
@@ -16,11 +17,12 @@ class OverallResultsController extends Controller
     public function computeResults(ResultSchema $schema)
     {
 
-        $results = [];
-        $final = $schema->getRawQuery(); 
-        if ($final != null) {
-            $results = DB::select($final);
-        }
+        $schema = $schema->autoCast();
+
+        $results = $schema->getResults() ?? [];
+        // if ($final != null) {
+        //     $results = DB::select($final);
+        // }
 
        
         return view('competition.results.view', ['results' => $results, 'schema' => $schema, 'comp' => $schema->getCompetition]);
@@ -28,13 +30,15 @@ class OverallResultsController extends Controller
 
     public function viewForPrintBasic(ResultSchema $schema)
     {
-        $results = DB::select($schema->getRawQuery());
+        $schema = $schema->autoCast();
+        $results = $schema->getResults() ?? [];
         return view('competition.results.view-for-print-basic', ['results' => $results, 'schema' => $schema, 'comp' => $schema->getCompetition]);
     }
 
     public function viewForPrint(ResultSchema $schema)
     {
-        $results = $results = DB::select($schema->getRawQuery());
+        $schema = $schema->autoCast();
+        $results = $schema->getResults() ?? [];
         return view('competition.results.view-for-print', ['results' => $results, 'schema' => $schema, 'comp' => $schema->getCompetition]);
     }
 
@@ -115,65 +119,7 @@ class OverallResultsController extends Controller
 
     public function quickGen(Competition $comp)
     {
-        $overall = new ResultSchema();
-        $overall->competition = $comp->id;
-        $overall->name = "Overall";
-        $overall->league = "O";
-        $overall->save();
-
-        $a = new ResultSchema();
-        $a->competition = $comp->id;
-        $a->name = "A-League";
-        $a->league = "A";
-        $a->save();
-
-        $b = new ResultSchema();
-        $b->competition = $comp->id;
-        $b->name = "B-League";
-        $b->league = "B";
-        $b->save();
-
-        foreach ($comp->getSERCs as $serc) {
-            $rse = new ResultSchemaEvent();
-            $rse->schema = $overall->id;
-            $rse->event_id = $serc->id;
-            $rse->event_type = "\App\Models\SERC";
-            $rse->weight = 2;
-            $rse->save();
-            $rse = new ResultSchemaEvent();
-            $rse->schema = $a->id;
-            $rse->event_id = $serc->id;
-            $rse->event_type = "\App\Models\SERC";
-            $rse->weight = 2;
-            $rse->save();
-            $rse = new ResultSchemaEvent();
-            $rse->schema = $b->id;
-            $rse->event_id = $serc->id;
-            $rse->event_type = "\App\Models\SERC";
-            $rse->weight = 2;
-            $rse->save();
-        }
-
-        foreach ($comp->getSpeedEvents as $serc) {
-            $rse = new ResultSchemaEvent();
-            $rse->schema = $overall->id;
-            $rse->event_id = $serc->id;
-            $rse->event_type = "\App\Models\CompetitionSpeedEvent";
-            $rse->weight = 1;
-            $rse->save();
-            $rse = new ResultSchemaEvent();
-            $rse->schema = $a->id;
-            $rse->event_id = $serc->id;
-            $rse->event_type = "\App\Models\CompetitionSpeedEvent";
-            $rse->weight = 1;
-            $rse->save();
-            $rse = new ResultSchemaEvent();
-            $rse->schema = $b->id;
-            $rse->event_id = $serc->id;
-            $rse->event_type = "\App\Models\CompetitionSpeedEvent";
-            $rse->weight = 1;
-            $rse->save();
-        }
+        ScoringHelper::generateDefaultResultSheets($comp);
 
         return redirect()->route('comps.view.results', $comp);
     }
