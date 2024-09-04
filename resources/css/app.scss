@@ -2,6 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  @font-face {
+    font-family: 'Astoria';
+    font-style: normal;
+    font-weight: 700;
+    src: url('/AstoriaBold.ttf');
+  }
+  @font-face {
+    font-family: 'Astoria';
+    font-style: normal;
+    font-weight: 800;
+    src: url('/AstoriaExtraBold.ttf');
+  }
+  @font-face {
+    font-family: 'Astoria';
+    font-style: normal;
+    font-weight: 400;
+    src: url('/AstoriaMedium.ttf');
+  }
+  @font-face {
+    font-family: 'greycliff';
+    font-style: normal;
+    font-weight: 400;
+    src: url('/Greycliff-CF-Regular.otf');
+  }
+}
 
 :root {
   --brand-primary: #070660;

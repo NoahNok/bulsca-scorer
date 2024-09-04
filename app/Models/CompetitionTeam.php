@@ -48,7 +48,7 @@ class CompetitionTeam extends Model
     public function formatName($format = ':C :N (:S)')
     {
 
-        if ($this->getCompetition->scoring_type == 'rlss-nationals') {
+        if ($this->getCompetition->scoring_type == 'rlss-nationals' && $format == ':C :N (:S)') {
             $format = ":N - :C (:R) - :L";
         }
 
