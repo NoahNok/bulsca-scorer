@@ -38,7 +38,7 @@
 @section('content')
     <div class="grid-2">
         <div class="flex flex-col space-y-4" x-data="{
-            search: 'test',
+            search: '',
         }">
 
             <div class="flex justify-between">
