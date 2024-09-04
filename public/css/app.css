@@ -509,6 +509,9 @@ video {
 .left-0 {
   left: 0px;
 }
+.-left-14 {
+  left: -3.5rem;
+}
 .right-0 {
   right: 0px;
 }
@@ -541,15 +544,6 @@ video {
 }
 .-top-3 {
   top: -0.75rem;
-}
-.-left-10 {
-  left: -2.5rem;
-}
-.-left-14 {
-  left: -3.5rem;
-}
-.-left-16 {
-  left: -4rem;
 }
 .z-0 {
   z-index: 0;

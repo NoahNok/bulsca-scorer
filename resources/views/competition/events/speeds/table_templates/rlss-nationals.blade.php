@@ -4,11 +4,11 @@
             <th scope="col" class="py-3 px-6 text-left">
                 Competitor - Club (Region) - League
             </th>
-            @if ($event->digitalJudgeEnabled)
-                <th scope="col" class="py-3 px-6">
-                    OOF
-                </th>
-            @endif
+
+            <th scope="col" class="py-3 px-6">
+                Heat
+            </th>
+
             <th scope="col" class="py-3 px-6">
 
                 Time
@@ -49,19 +49,9 @@
                     @endif
 
                 </th>
-                @if ($event->digitalJudgeEnabled)
+                @if ($result->heat)
                     <td scope="col" class="py-3 px-6">
-                        @php
-                            $h = App\Models\Heat::where('competition', $comp->id)
-                                ->where('team', $result->tid)
-                                ->first();
-                        @endphp
-                        @if ($h)
-                            H{{ $h->heat }}L{{ $h->lane }}:
-                            {{ $h->getOOF($event->id)?->oof ?: '-' }}
-                        @else
-                            -
-                        @endif
+                        H{{ sprintf('%02d', $result->heat) }} L{{ $result->lane }}
                     </td>
                 @endif
                 <td class="py-4 px-6 ">
