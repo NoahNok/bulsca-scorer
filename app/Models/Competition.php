@@ -156,4 +156,22 @@ class Competition extends Model
         $manager = new StatsManager($this);
         $manager->computeStats();
     }
+
+    public function getCompetitorsPerLeague()
+    {
+        return DB::select('WITH totals AS (SELECT league, COUNT(*) as count FROM competition_teams WHERE competition=? GROUP BY league) SELECT t.league, l.name, t.count FROM totals t INNER JOIN leagues l ON l.id=t.league', [$this->id]);
+    }
+
+    public function getTanks()
+    {
+
+        $data = collect(DB::select('WITH totals AS (SELECT serc_tank, league, COUNT(*) AS count FROM competition_teams WHERE competition=? AND serc_tank>0 GROUP BY league, serc_tank ORDER BY serc_tank) SELECT t.league, l.name, t.count, t.serc_tank FROM totals t INNER JOIN leagues l ON l.id=t.league', [$this->id]));
+        $return = [];
+
+        foreach ($data->groupBy('serc_tank') as $group) {
+            $return[] = $group;
+        }
+
+        return $return;
+    }
 }

@@ -95,7 +95,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/digital-judge-qrs', [DigitalJudgeController::class, 'qrs'])->name('dj.qrs');
             Route::get('/judge-log/v1', [DigitalJudgeController::class, 'judgeLog'])->name('dj.judgeLog');
             Route::get('/judge-log/v2', [DigitalJudgeController::class, 'betterJudgeLog'])->name('dj.betterJudgeLog');
-            
+
             Route::get('/create-stats', [CompetitionController::class, 'createCompetitionStats'])->name('comps.createStats');
 
             Route::get('/settings', [CompetitionController::class, 'settings'])->name('comps.settings');
@@ -182,6 +182,7 @@ Route::middleware('auth')->group(function () {
                 Route::prefix('/serc-order')->group(function () {
                     Route::get('/edit', [HeatController::class, 'editSERCOrder'])->name('comps.view.serc-order.edit');
                     Route::post('/edit', [HeatController::class, 'editSERCOrderPost'])->name('comps.view.serc-order.editPost');
+                    Route::post('/edit-tanks', [HeatController::class, 'editTanksPost'])->name('comps.view.serc-order.editTanksPost');
                     Route::get('/regen', [HeatController::class, 'regenSERCOrder'])->name('comps.view.serc-order.regen');
                 });
             });
@@ -218,11 +219,11 @@ Route::prefix('/admin')->middleware('isAdmin')->group(function () {
 
     Route::delete('/competition/{comp}/delete', [AdminController::class, 'deleteCompPost'])->name('admin.comp.delete');
 
-    Route::prefix('/brands')->group(function() {
+    Route::prefix('/brands')->group(function () {
         Route::get('', [BrandController::class, 'index'])->name('admin.brands');
         Route::get('create', [BrandController::class, 'create'])->name('admin.brands.create');
         Route::post('create', [BrandController::class, 'store'])->name('admin.brands.store');
-        
+
         Route::post('edit/{brand}', [BrandController::class, 'update'])->name('admin.brands.update');
 
         Route::get('{brand}', [BrandController::class, 'show'])->name('admin.brands.show');

@@ -76,11 +76,7 @@
                         </div>
                     </div>
                 @else
-                    @foreach ($comp->getCompetitionTeams as $team)
-                        <div class="card">
-                            {{ $loop->index + 1 }}. {{ $team->getFullname() }}
-                        </div>
-                    @endforeach
+                    @include('competition.heats-and-orders.serc_list_templates.' . $comp->scoring_type)
                 @endif
 
             </div>
@@ -88,5 +84,4 @@
 
         </div>
     </div>
-
 @endsection

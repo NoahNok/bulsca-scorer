@@ -7,6 +7,7 @@ use App\Models\Competition;
 use App\Models\CompetitionTeam;
 use App\Models\Heat;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class HeatController extends Controller
 {
@@ -77,6 +78,12 @@ class HeatController extends Controller
 
     private function createDefaultSERCorderForComp(Competition $comp)
     {
+
+        if ($comp->scoring_type == 'rlss-nationals') {
+            return view('competition.heats-and-orders.serc-order.tank-based', ['comp' => $comp]);
+        }
+
+
         $index = 1;
 
         foreach ($comp->getCompetitionTeams->shuffle() as $team) {
@@ -88,12 +95,22 @@ class HeatController extends Controller
 
     public function regenSERCOrder(Competition $comp)
     {
-        $this->createDefaultSERCorderForComp($comp);
+        $ret = $this->createDefaultSERCorderForComp($comp);
+
+        if ($ret instanceof View) {
+            return $ret;
+        }
+
         return redirect()->route('comps.view.heats', $comp);
     }
 
     public function editSERCOrder(Competition $comp)
     {
+
+        if ($comp->scoring_type == 'rlss-nationals') {
+            return view('competition.heats-and-orders.serc-order.tank-based', ['comp' => $comp]);
+        }
+
         return view('competition.heats-and-orders.serc-order.edit', ['comp' => $comp]);
     }
 
@@ -115,5 +132,40 @@ class HeatController extends Controller
         $teamTo->save();
 
         return redirect()->route('comps.view.serc-order.edit', $comp);
+    }
+
+    public function editTanksPost(Competition $comp, Request $request)
+    {
+        $data = $request->json()->all();
+
+        $comp->getCompetitionTeams()->update(['serc_order' => 0, 'serc_tank' => 0]);
+
+
+
+        foreach ($data as $ind => $tank) {
+            $tankTotal = 0;
+            foreach ($tank as $bracket) {
+                // Get all teams/competitors for this bracket and assign them this tank and random order
+                $bracketId = $bracket['league'];
+
+                $competitors = $comp->getCompetitionTeams()->where('league', $bracketId)->get();
+
+                $competitors->shuffle();
+
+                foreach ($competitors as $competitor) {
+                    echo ($competitor);
+                    $tankTotal++;
+
+                    $competitor->serc_tank = $ind + 1;
+                    $competitor->serc_order = $tankTotal;
+
+                    $competitor->save();
+                }
+            }
+        }
+
+
+
+        return response()->json();
     }
 }
