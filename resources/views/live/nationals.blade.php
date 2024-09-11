@@ -47,7 +47,13 @@
         <h2 class="font-astoria text-rlss-blue font-extrabold">Event Order - Diving Pit Side</h2>
 
         @php
-            $heats = $comp->getHeatEntries->sortBy(['heat', 'lane'])->groupBy('heat');
+            $entries = collect(
+                DB::select(
+                    'SELECT h.id, h.heat, h.lane, ct.team, l.name AS league, c.name AS club, c.region FROM heats h INNER JOIN competition_teams ct ON ct.id=h.team INNER JOIN leagues l ON l.id=ct.league INNER JOIN clubs c ON c.id=ct.club WHERE h.competition = ? ORDER BY heat, lane;',
+                    [$comp->id],
+                ),
+            );
+            $heats = $entries->sortBy(['heat', 'lane'])->groupBy('heat');
         @endphp
 
         <div class="w-full overflow-x-auto  ">
@@ -75,7 +81,7 @@
                                 {{ $heat->first()->heat }}</td>
                             <td
                                 class="py-2 px-3 bg-rlss-blue bg-opacity-40 text-rlss-blue border border-rlss-blue text-center  ">
-                                {{ $heat->where('lane', 4)->first()->getTeam->getLeague->name }}
+                                {{ $heat->where('lane', 4)->first()->league }}
                             </td>
 
                             @for ($l = 1; $l <= $comp->max_lanes; $l++)
@@ -86,7 +92,7 @@
 
                                 <td class="py-2 px-3 text-center border border-rlss-blue">
                                     @if ($lane)
-                                        {{ $lane->getTeam->formatName(':N') }}
+                                        {{ $lane->team }}
                                     @else
                                         -
                                     @endif
@@ -129,7 +135,7 @@
                                 {{ $heat->first()->heat }}</td>
                             <td
                                 class="py-2 px-3 bg-rlss-blue bg-opacity-40 text-rlss-blue border border-rlss-blue text-center">
-                                {{ $heat->where('lane', 4)->first()->getTeam->getLeague->name }}
+                                {{ $heat->where('lane', 4)->first()->league }}
                             </td>
 
                             @for ($l = 1; $l <= $comp->max_lanes; $l++)
@@ -140,7 +146,7 @@
 
                                 <td class="py-2 px-3 text-center border border-rlss-blue">
                                     @if ($lane)
-                                        {{ $lane->getTeam->formatName(':N') }}
+                                        {{ $lane->team }}
                                     @else
                                         -
                                     @endif
@@ -161,7 +167,7 @@
 
         <div class="grid-4">
 
-            @foreach ($comp->getCompetitionTeams->groupBy('serc_tank')->sortKeys() as $tankNo => $tank)
+            @foreach ($comp->getSercTanks()->groupBy('serc_tank')->sortKeys() as $tankNo => $tank)
                 <div>
                     <h4 class=" text-rlss-red font-astoria">Tank {{ $tankNo }}</h4>
 
@@ -184,14 +190,14 @@
                                         {{ $heatNo + 1 }}</td>
                                     <td
                                         class="py-2 px-3 bg-rlss-blue bg-opacity-40 text-rlss-blue border border-rlss-blue text-center">
-                                        {{ $competitor->formatName(':L') }}
+                                        {{ $competitor->league }}
                                     </td>
 
                                     <td class="py-2 px-3 text-center border border-rlss-blue">
-                                        {{ $competitor->formatName(':R') }}
+                                        {{ $competitor->region }}
                                     </td>
                                     <td class="py-2 px-3 text-center border border-rlss-blue">
-                                        {{ $competitor->formatName(':N') }}
+                                        {{ $competitor->team }}
                                     </td>
 
                                 </tr>
