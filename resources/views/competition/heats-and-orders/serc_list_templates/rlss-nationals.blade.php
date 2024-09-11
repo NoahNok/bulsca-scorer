@@ -1,12 +1,14 @@
 <div class="grid-4">
-    @foreach ($comp->getCompetitionTeams->groupBy('serc_tank')->sortKeys() as $ind => $tank)
+    @foreach ($comp->getSercTanks()->groupBy('serc_tank')->sortKeys() as $ind => $tank)
         <div class="card">
             <h4>Tank {{ $ind }}</h4>
-            <ul>
-                @foreach ($tank as $competitor)
-                    <li>{{ $competitor->formatName() }}</li>
+            <ol class=" list-decimal list-inside">
+                @foreach ($tank->sortBy('serc_order') as $competitor)
+                    <li class="list-item">{{ $competitor->team }}
+
+                    </li>
                 @endforeach
-            </ul>
+            </ol>
         </div>
     @endforeach
 </div>

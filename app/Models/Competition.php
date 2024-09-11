@@ -174,4 +174,10 @@ class Competition extends Model
 
         return $return;
     }
+
+    // Like above but for just simple listing of names
+    public function getSercTanks()
+    {
+        return collect(DB::select('SELECT ct.team, l.name AS league, c.name AS club, c.region, ct.serc_tank, ct.serc_order FROM competition_teams ct INNER JOIN clubs c ON c.id=ct.club INNER JOIN leagues l ON l.id=ct.league WHERE competition=? ORDER BY serc_tank, serc_order;', [$this->id]));
+    }
 }

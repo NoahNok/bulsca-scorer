@@ -19,8 +19,8 @@
 
                         <li class="card relative ">
                             @if ($lane)
-                                <span
-                                    class="whitespace-nowrap overflow-ellipsis overflow-hidden">{{ $lane->getTeam->formatName() }}</span>
+                                <span class="whitespace-nowrap overflow-ellipsis overflow-hidden">{{ $lane->team }} -
+                                    {{ $lane->club }} ({{ $lane->region }}) - {{ $lane->league }}</span>
                             @else
                                 &nbsp;
                             @endif

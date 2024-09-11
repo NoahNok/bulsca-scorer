@@ -7,6 +7,7 @@ use App\Models\Competition;
 use App\Models\CompetitionTeam;
 use App\Models\Heat;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class HeatController extends Controller
@@ -18,9 +19,9 @@ class HeatController extends Controller
 
 
 
+        $heatEntries = collect(DB::select('SELECT h.id, h.heat, h.lane, ct.team, l.name AS league, c.name AS club, c.region FROM heats h INNER JOIN competition_teams ct ON ct.id=h.team INNER JOIN leagues l ON l.id=ct.league INNER JOIN clubs c ON c.id=ct.club WHERE h.competition = ? ORDER BY heat, lane;', [$comp->id]));
 
-
-        $heatEntries = $comp->getHeatEntries;
+        //$heatEntries = $comp->getHeatEntries;
 
         return view('competition.heats-and-orders.index', ['comp' => $comp, 'heatEntries' => $heatEntries]);
     }
