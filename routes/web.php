@@ -21,6 +21,7 @@ use App\Http\Controllers\CompetitorController;
 use App\Http\Controllers\DigitalJudge\DigitalJudgeController;
 use App\Http\Controllers\HeatController;
 use App\Http\Controllers\OverallResultsController;
+use App\Http\Controllers\Pdf\PdfController;
 use App\Http\Controllers\PrintableController;
 use App\Http\Controllers\PublicResultsController;
 use App\Http\Controllers\SpeedsEventController;
@@ -191,6 +192,8 @@ Route::middleware('auth')->group(function () {
             Route::prefix('printables')->group(function () {
 
                 Route::get('serc-sheets/{serc}', [PrintableController::class, 'sercSheets'])->name('comps.view.printables.serc-sheets');
+
+                Route::get('pdf-test', [PdfController::class, 'test']);
             });
         });
     });

@@ -37,13 +37,6 @@ class Competition extends Model
         return $this->hasMany(CompetitionTeam::class, 'competition', 'id')->orderBy('serc_order');
     }
 
-    public function getHeatEntries()
-    {
-        return $this->hasMany(Heat::class, 'competition', 'id');
-    }
-
-
-
     public function getResultSchemas()
     {
         return $this->hasMany(ResultSchema::class, 'competition', 'id');
@@ -104,7 +97,7 @@ class Competition extends Model
         return $this->hasOne(Season::class, 'id', 'season');
     }
 
-    public function getHeats()
+    public function getHeatEntries()
     {
         return $this->hasMany(Heat::class, 'competition', 'id');
     }
@@ -179,5 +172,10 @@ class Competition extends Model
     public function getSercTanks()
     {
         return collect(DB::select('SELECT ct.team, l.name AS league, c.name AS club, c.region, ct.serc_tank, ct.serc_order FROM competition_teams ct INNER JOIN clubs c ON c.id=ct.club INNER JOIN leagues l ON l.id=ct.league WHERE competition=? ORDER BY serc_tank, serc_order;', [$this->id]));
+    }
+
+    public function getHeats()
+    {
+        return collect(DB::select('SELECT h.id, h.heat, h.lane, ct.team, l.name AS league, c.name AS club, c.region FROM heats h INNER JOIN competition_teams ct ON ct.id=h.team INNER JOIN leagues l ON l.id=ct.league INNER JOIN clubs c ON c.id=ct.club WHERE h.competition = ? ORDER BY heat, lane;', [$this->id]));
     }
 }
