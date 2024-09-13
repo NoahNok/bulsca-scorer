@@ -15,6 +15,6 @@ class PdfController extends Controller
         $pdfCreator = new CompetitionPdfCreator($comp);
 
 
-        return  $pdfCreator->chiefTimekeeper();
+        return  $pdfCreator->sercMarking();
     }
 }

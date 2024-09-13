@@ -36,4 +36,13 @@ class CompetitionPdfCreator
         $heats = $this->comp->getHeats();
         return view('pdfs.heats.chief-timekeeper', ['brand' => $this->brand, 'location' => $location, 'poolNames' => $poolNames, 'eventNames' => $eventNames, 'heats' => $heats, 'comp' => $this->comp]);
     }
+
+    public function sercMarking()
+    {
+        $location = 'John Charles Centre for Sport, Leeds';
+
+        $events = $this->comp->getSERCs;
+        $tanks = $this->comp->getSercTanks();
+        return view('pdfs.sercs.serc-marking', ['brand' => $this->brand, 'location' => $location, 'events' => $events, 'tanks' => $tanks, 'comp' => $this->comp]);
+    }
 }
