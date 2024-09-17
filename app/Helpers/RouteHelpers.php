@@ -26,13 +26,15 @@ class RouteHelpers
         return $sub . $defaultDomain;
     }
 
-    static function externalRoute($name, $options = [])
+    static function externalRoute($sub, $name, $options = [])
     {
 
         $domain = request()->getHost();
 
+        $host = substr($domain, strpos($domain, '.') + 1);
+
         $parts = parse_url(route($name, $options));
 
-        return $domain . $parts['path'];
+        return $sub . '.' . $host . $parts['path'];
     }
 }
