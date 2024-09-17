@@ -114,7 +114,7 @@
                     class="btn @if ($comp->getResultSchemas->count() == 0) btn-disabled @endif ">Publish Results</a>
             @else
                 <p class="mb-2"><strong>Results link:</strong> <a
-                        href="{{ \App\Helpers\RouteHelpers::externalRoute('public.results.comp', $comp->resultsSlug(), true) }}"
+                        href="{{ \App\Helpers\RouteHelpers::externalRoute('results', 'public.results.comp', $comp->resultsSlug(), true) }}"
                         class="link">Click
                         to view public
                         results</a>
