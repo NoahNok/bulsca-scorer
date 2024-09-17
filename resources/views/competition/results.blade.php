@@ -114,7 +114,8 @@
                     class="btn @if ($comp->getResultSchemas->count() == 0) btn-disabled @endif ">Publish Results</a>
             @else
                 <p class="mb-2"><strong>Results link:</strong> <a
-                        href="test.com{{ route('public.results.comp', $comp->resultsSlug(), true) }}" class="link">Click
+                        href="{{ \App\Helpers\RouteHelpers::externalRoute('public.results.comp', $comp->resultsSlug(), true) }}"
+                        class="link">Click
                         to view public
                         results</a>
                     <br>Or scan the QR below

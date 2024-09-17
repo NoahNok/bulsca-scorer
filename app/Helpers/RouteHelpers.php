@@ -26,14 +26,13 @@ class RouteHelpers
         return $sub . $defaultDomain;
     }
 
-    static function isCustomHost(): bool
+    static function externalRoute($name, $options = [])
     {
+
         $domain = request()->getHost();
 
-        $hostOnly = substr($domain, strpos($domain, '.') + 1);
+        $parts = parse_url(route($name, $options));
 
-        $ADDITIONAL_DOMAINS = explode(",", env('APP_ADDITIONAL_DOMAINS'));
-
-        return in_array($hostOnly, $ADDITIONAL_DOMAINS);
+        return $domain . $parts['path'];
     }
 }
