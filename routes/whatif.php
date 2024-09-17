@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\RouteHelpers;
 use App\Http\Controllers\LiveController;
 use App\Http\Controllers\WhatIf\WhatIfController;
 use Illuminate\Support\Facades\Route;
@@ -7,7 +8,7 @@ use Illuminate\Support\Facades\Route;
 
 
 
-Route::domain("whatif.".env('APP_SUBDOMAIN_BASE'))->group(function () {
+Route::domain(RouteHelpers::domainRemap("whatif."))->group(function () {
     /* LIVE VIEWING */
 
     Route::get('', [WhatIfController::class, 'index'])->name('whatif');
