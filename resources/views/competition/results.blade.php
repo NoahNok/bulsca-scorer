@@ -110,10 +110,12 @@
             @if (!$comp->areResultsPublic())
                 <p class="mb-4">Click the button below to make results publicly viewable</p>
 
-                <a href="{{ route('comps.view.results.publishToggle', $comp) }}" class="btn @if($comp->getResultSchemas->count() == 0) btn-disabled @endif ">Publish Results</a>
+                <a href="{{ route('comps.view.results.publishToggle', $comp) }}"
+                    class="btn @if ($comp->getResultSchemas->count() == 0) btn-disabled @endif ">Publish Results</a>
             @else
                 <p class="mb-2"><strong>Results link:</strong> <a
-                        href="{{ route('public.results.comp', $comp->resultsSlug()) }}" class="link">Click to view public
+                        href="test.com{{ route('public.results.comp', $comp->resultsSlug(), true) }}" class="link">Click
+                        to view public
                         results</a>
                     <br>Or scan the QR below
                 </p>
@@ -129,7 +131,7 @@
                 <a href="{{ route('comps.view.results.publishToggle', $comp) }}" class="btn btn-danger">Unpublish
                     Results</a>
             @endif
-     
+
         </div>
         <div>
             <h3>Result Settings</h3>
@@ -148,20 +150,20 @@
                     @if (!$comp->areResultsProvisional())
                         <a href="{{ route('comps.view.results.provToggle', $comp) }}" class="btn">Make Provisional</a>
                     @else
-                        <a href="{{ route('comps.view.results.provToggle', $comp) }}" class="btn @if($comp->getResultSchemas->count() == 0) btn-disabled @endif">Make Final</a>
+                        <a href="{{ route('comps.view.results.provToggle', $comp) }}"
+                            class="btn @if ($comp->getResultSchemas->count() == 0) btn-disabled @endif">Make Final</a>
                     @endif
                 </div>
             </div>
-    
-        </div>
-        @if($comp->getResultSchemas->count() == 0)
-  
-        <div class="alert-box md:row-start-2 md:col-start-1 md:col-span-2 ">
-
-            <h1>Options unavailable</h1>
-            <p>Publishing and additional settings are unavailable until result sheets have been generated!</p>
 
         </div>
-    @endif
+        @if ($comp->getResultSchemas->count() == 0)
+            <div class="alert-box md:row-start-2 md:col-start-1 md:col-span-2 ">
+
+                <h1>Options unavailable</h1>
+                <p>Publishing and additional settings are unavailable until result sheets have been generated!</p>
+
+            </div>
+        @endif
     </div>
 @endsection
