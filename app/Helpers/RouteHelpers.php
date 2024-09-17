@@ -35,6 +35,11 @@ class RouteHelpers
 
         $host = substr($domain, strpos($domain, '.') + 1);
 
+
+        if ($domain == env('APP_SUBDOMAIN_BASE')) {
+            return route($name, $options);
+        }
+
         $parts = parse_url(route($name, $options));
 
 
