@@ -113,11 +113,9 @@
                 <a href="{{ route('comps.view.results.publishToggle', $comp) }}"
                     class="btn @if ($comp->getResultSchemas->count() == 0) btn-disabled @endif ">Publish Results</a>
             @else
-                @php
-                    \App\Helpers\RouteHelpers::externalRoute('results', 'public.results.comp', $comp->resultsSlug());
-                @endphp
-                <p class="mb-2"><strong>Results link:</strong> <a
-                        href="{{ \App\Helpers\RouteHelpers::externalRoute('results', 'public.results.comp', $comp->resultsSlug()) }}"
+                <p class="mb-2"><strong>Results link:
+                        {{ \App\Helpers\RouteHelpers::externalRoute('results', 'public.results.comp', $comp->resultsSlug()) }}</strong>
+                    <a href="{{ \App\Helpers\RouteHelpers::externalRoute('results', 'public.results.comp', $comp->resultsSlug()) }}"
                         class="link">Click
                         to view public
                         results</a>

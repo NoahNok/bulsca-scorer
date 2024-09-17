@@ -2,6 +2,8 @@
 
 namespace App\Helpers;
 
+use Illuminate\Support\Facades\Route;
+
 class RouteHelpers
 {
     static function domainRemap($sub)
