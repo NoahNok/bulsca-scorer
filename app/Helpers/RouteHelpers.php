@@ -30,7 +30,7 @@ class RouteHelpers
     {
         $domain = request()->getHost();
 
-        $hostOnly = parse_url($domain, PHP_URL_HOST);
+        $hostOnly = substr($domain, strpos($domain, '.') + 1);
 
         $ADDITIONAL_DOMAINS = explode(",", env('APP_ADDITIONAL_DOMAINS'));
 
