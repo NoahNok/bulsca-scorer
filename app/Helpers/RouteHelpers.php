@@ -35,6 +35,8 @@ class RouteHelpers
 
         $parts = parse_url(route($name, $options));
 
+        dump($parts);
+
         return $sub . '.' . $host . $parts['path'];
     }
 }
