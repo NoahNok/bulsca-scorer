@@ -122,7 +122,7 @@
                     <br>Or scan the QR below
                 </p>
 
-                {!! QrCode::size(150)->style('round')->generate(route('public.results.comp', $comp->resultsSlug())) !!}
+                {!! QrCode::size(150)->style('round')->generate(\App\Helpers\RouteHelpers::externalRoute('results', 'public.results.comp', $comp->resultsSlug())) !!}
 
                 <p class="mb-4 mt-6">
 
