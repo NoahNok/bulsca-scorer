@@ -118,10 +118,8 @@
                 <a href="{{ route('dj.qrs', $comp) }}" target="_blank" class="btn btn-thin btn-primary ">Print QR</a>
                 <p class="text-center font-semibold text-bulsca_red">OR</p>
                 <p>Please instruct Judges to go to here: <a
-                        href="{{ \App\Helpers\RouteHelpers::externalRoute('judge', 'dj.index') . ($comp->brand ? $comp->brand : '') }}"
-                        class="link">{{ route('dj.index') }}@if ($comp->brand)
-                            /?b={{ $comp->brand }}
-                        @endif
+                        href="{{ \App\Helpers\RouteHelpers::externalRoute('judge', 'dj.index') . ($comp->brand ? '?b=' . $comp->brand : '') }}"
+                        class="link">{{ \App\Helpers\RouteHelpers::externalRoute('judge', 'dj.index') . ($comp->brand ? '?b=' . $comp->brand : '') }}
                     </a> and enter the following pin:</p>
 
                 <p class="text-xl"><strong>{{ $comp->digitalJudgePin }}</strong></p>
