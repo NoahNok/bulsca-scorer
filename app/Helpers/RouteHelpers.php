@@ -39,6 +39,6 @@ class RouteHelpers
 
 
 
-        return $sub . '.' . $host . $parts['path'];
+        return 'https://' . $sub . '.' . $host . $parts['path'];
     }
 }
