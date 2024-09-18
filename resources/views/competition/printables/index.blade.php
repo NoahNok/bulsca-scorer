@@ -66,7 +66,7 @@
                                 <p class="text-sm">Contains a list of competitior names grouped and ordered by heat.</p>
                             </div>
 
-                            <a href="{{ route('comps.view.printables.chief-timekeeper-pack', $comp) }}" target="_blank"
+                            <a href="{{ route('comps.view.printables.marshalling', $comp) }}?type=speed" target="_blank"
                                 class="btn btn-icon ml-auto ">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class=" w-8 h-8">
@@ -108,7 +108,7 @@
                                 <p class="text-sm">Contains a list of competitior names grouped and ordered by tank.</p>
                             </div>
 
-                            <a href="{{ route('comps.view.printables.chief-timekeeper-pack', $comp) }}" target="_blank"
+                            <a href="{{ route('comps.view.printables.marshalling', $comp) }}?type=serc" target="_blank"
                                 class="btn btn-icon ml-auto ">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class=" w-8 h-8">

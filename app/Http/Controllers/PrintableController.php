@@ -33,4 +33,11 @@ class PrintableController extends Controller
     {
         return view('competition.printables.serc-sheet', ['comp' => $comp, 'serc' => $serc]);
     }
+
+    public function printMarshalling(Competition $comp, Request $request)
+    {
+        $pdfCreator = new CompetitionPdfCreator($comp);
+
+        return $pdfCreator->marshalling($request->input('type', 'speed'));
+    }
 }

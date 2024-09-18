@@ -196,7 +196,8 @@ Route::middleware('auth')->group(function () {
                 Route::get('serc-sheets/{serc}', [PrintableController::class, 'sercSheets'])->name('comps.view.printables.serc-sheets');
 
                 Route::get('serc-marking-pack', [PrintableController::class, 'printSMS'])->name('comps.view.printables.serc-marking-pack');
-                route::get('chief-timekeeper-pack', [PrintableController::class, 'printCTP'])->name('comps.view.printables.chief-timekeeper-pack');
+                Route::get('chief-timekeeper-pack', [PrintableController::class, 'printCTP'])->name('comps.view.printables.chief-timekeeper-pack');
+                Route::get('marshalling', [PrintableController::class, 'printMarshalling'])->name('comps.view.printables.marshalling');
             });
         });
     });
