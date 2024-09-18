@@ -259,6 +259,10 @@ h5 {
     
     }
 
+    &.btn-info {
+      @apply bg-blue-600 hover:bg-blue-700;
+    }
+
     &.btn-icon {
       @apply flex items-center justify-center grow-0 w-12 h-12 min-w-12 min-h-12 p-1 bg-blue-600 hover:bg-blue-700;
     }
