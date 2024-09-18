@@ -33,20 +33,19 @@ class CompetitionPdfCreator
     public function chiefTimekeeper()
     {
 
-        $location = 'John Charles Centre for Sport, Leeds';
+
         $poolNames = ['Main Pool - Scoreboard End', 'Main Pool - Diving Pit End'];
         $eventNames = $this->comp->getSpeedEvents->map(fn($event) => $event->getName());
         $heats = $this->comp->getHeats();
-        return view('pdfs.heats.chief-timekeeper', ['brand' => $this->brand, 'location' => $location, 'poolNames' => $poolNames, 'eventNames' => $eventNames, 'heats' => $heats, 'comp' => $this->comp]);
+        return view('pdfs.heats.chief-timekeeper', ['brand' => $this->brand, 'location' => $this->comp->where, 'poolNames' => $poolNames, 'eventNames' => $eventNames, 'heats' => $heats, 'comp' => $this->comp]);
     }
 
     public function sercMarking()
     {
-        $location = 'John Charles Centre for Sport, Leeds';
 
         $events = $this->comp->getSERCs;
         $tanks = $this->comp->getSercTanks();
-        return view('pdfs.sercs.serc-marking', ['brand' => $this->brand, 'location' => $location, 'events' => $events, 'tanks' => $tanks, 'comp' => $this->comp]);
+        return view('pdfs.sercs.serc-marking', ['brand' => $this->brand, 'location' => $this->comp->where, 'events' => $events, 'tanks' => $tanks, 'comp' => $this->comp]);
     }
 
     public function marshalling(string $type)
@@ -76,7 +75,7 @@ class CompetitionPdfCreator
                 }
         }
 
-        $location = 'John Charles Centre for Sport, Leeds';
-        return view('pdfs.marshalling', ['brand' => $this->brand, 'location' => $location, 'data' => $data, 'comp' => $this->comp, 'type' => $type]);
+
+        return view('pdfs.marshalling', ['brand' => $this->brand, 'location' => $this->comp->where, 'data' => $data, 'comp' => $this->comp, 'type' => $type]);
     }
 }

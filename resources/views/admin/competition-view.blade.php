@@ -53,6 +53,7 @@
                 defaultValue="{{ $comp->name }}"></x-form-input>
             <x-form-input id="when" title="When" required type="datetime-local"
                 defaultValue="{{ $comp->when }}"></x-form-input>
+            <x-form-input id="where" title="Where" required defaultValue="{{ $comp->where }}"></x-form-input>
             <div class="form-input ">
                 <label for="isLeague" class="">League Competition</label>
                 <select required id="isLeague" name="isLeague" class="input "

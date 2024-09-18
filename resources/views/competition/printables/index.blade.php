@@ -1,7 +1,7 @@
 @extends('layout')
 
 @section('title')
-    Heats and Orders | {{ $comp->name }}
+    Printables | {{ $comp->name }}
 @endsection
 
 @section('breadcrumbs')

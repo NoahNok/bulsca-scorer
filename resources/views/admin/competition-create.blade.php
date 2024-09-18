@@ -27,6 +27,7 @@
         <div class="grid-4">
             <x-form-input id="name" title="Name" required placeholder="Uni Year (e.g. Warwick 2023)"></x-form-input>
             <x-form-input id="when" title="When" required type="datetime-local"></x-form-input>
+            <x-form-input id="where" title="Where" required></x-form-input>
             <div class="form-input ">
                 <label for="isLeague" class="">League Competition</label>
                 <select required id="isLeague" name="isLeague" class="input "
