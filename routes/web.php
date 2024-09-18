@@ -191,9 +191,12 @@ Route::middleware('auth')->group(function () {
             // PRINTABLES
             Route::prefix('printables')->group(function () {
 
+                Route::get('', [PrintableController::class, 'index'])->name('comps.view.printables');
+
                 Route::get('serc-sheets/{serc}', [PrintableController::class, 'sercSheets'])->name('comps.view.printables.serc-sheets');
 
-                Route::get('pdf-test', [PdfController::class, 'test']);
+                Route::get('serc-marking-pack', [PrintableController::class, 'printSMS'])->name('comps.view.printables.serc-marking-pack');
+                route::get('chief-timekeeper-pack', [PrintableController::class, 'printCTP'])->name('comps.view.printables.chief-timekeeper-pack');
             });
         });
     });

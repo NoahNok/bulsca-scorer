@@ -32,6 +32,8 @@
     <div class="">
         <div class="flex flex-col space-y-4">
 
+
+
             <div class="flex justify-between">
                 <h2 class="mb-0">Heats</h2>
                 <a href="{{ route('comps.view.heats.edit', $comp) }}" class="btn">Edit Heats</a>

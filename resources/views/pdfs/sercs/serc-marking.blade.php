@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
-    <title>Document</title>
+    <title>SERC Marking Pack</title>
 
     <style>
         @page {
@@ -41,7 +41,7 @@
 
 
     <div class="min-h-[297mm] min-w-[210mm] bg-white p-5 flex flex-col  items-center justify-center text-center">
-        <h1>Initiative Marking Pack</h1>
+        <h1>SERC Marking Pack</h1>
         <h3>{{ $comp->name }}</h3>
         <p>{{ $location }}<br>{{ $comp->when->format('jS F Y') }}</p>
         <br>

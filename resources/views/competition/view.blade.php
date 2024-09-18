@@ -55,7 +55,7 @@
 
     </p>
     <br>
-    <div class="grid-4">
+    <div class="grid-5">
 
         @if (\App\Helpers\ScoringHelper::getCompetitionScoringDetails($comp)['use_competitors'])
             <a href="{{ route('comps.view.competitors', $comp) }}"
@@ -73,6 +73,10 @@
         <a href="{{ route('comps.view.heats', $comp) }}"
             class="p-5 border shadow-md bg-white rounded-md flex items-center justify-center space-x-2 hover:bg-gray-400 hover:text-white transition-colors cursor-pointer">
             <p class="text-lg font-semibold">Heats/Orders</p>
+        </a>
+        <a href="{{ route('comps.view.printables', $comp) }}"
+            class="p-5 border shadow-md bg-white rounded-md flex items-center justify-center space-x-2 hover:bg-gray-400 hover:text-white transition-colors cursor-pointer">
+            <p class="text-lg font-semibold">Printables</p>
         </a>
         <a href="{{ route('comps.view.events', $comp) }}"
             class="p-5 border shadow-md bg-white rounded-md flex items-center justify-center space-x-2 hover:bg-gray-400 hover:text-white transition-colors cursor-pointer">
