@@ -97,7 +97,7 @@
                     <tbody id="table-body">
 
                         @forelse ($results as $result)
-                            <tr class="bg-white border-b text-right    ">
+                            <tr class="bg-white border-b text-right place-{{ $loop->index + 1 }}   ">
                                 @foreach ($result as $key => $value)
                                     @if (
                                         !str_contains($key, 'team') &&
