@@ -949,9 +949,6 @@ video {
 .h-screen {
   height: 100vh;
 }
-.h-auto {
-  height: auto;
-}
 .max-h-32 {
   max-height: 8rem;
 }
@@ -1045,6 +1042,9 @@ video {
 .w-\[200\%\] {
   width: 200%;
 }
+.w-\[210mm\] {
+  width: 210mm;
+}
 .w-\[40\%\] {
   width: 40%;
 }
@@ -1081,9 +1081,6 @@ video {
 }
 .w-screen {
   width: 100vw;
-}
-.w-\[210mm\] {
-  width: 210mm;
 }
 .min-w-\[2\.5rem\] {
   min-width: 2.5rem;
@@ -1441,9 +1438,6 @@ video {
 }
 .whitespace-nowrap {
   white-space: nowrap;
-}
-.whitespace-pre-line {
-  white-space: pre-line;
 }
 .break-words {
   overflow-wrap: break-word;

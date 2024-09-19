@@ -22,7 +22,7 @@
                               <li class="card  ">
                                   @if ($lane)
                                       <span
-                                          class="whitespace-nowrap overflow-ellipsis overflow-hidden">{{ $lane->getTeam->formatName() }}</span>
+                                          class="whitespace-nowrap overflow-ellipsis overflow-hidden">{{ $lane->club . ' ' . $lane->team }}</span>
                                   @else
                                       &nbsp;
                                   @endif
