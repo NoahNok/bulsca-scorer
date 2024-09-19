@@ -84,8 +84,8 @@
                         <th></th>
                     </tr>
                     <tr data-sortable-row class="">
-                        <th scope="col" class="py-3 px-6 text-left z-20" data-sortable>
-                            Team
+                        <th scope="col" class="py-3 px-6 text-left z-20  max-w-[40vw] break-words" data-sortable>
+                            Competitor - Club (Region) - League
                         </th>
                         <th scope="col" class="py-3 px-6">
                             Notes
@@ -150,7 +150,7 @@
                     @forelse ($fsd['results'] as $tid => $team)
                         <tr class="bg-white border-b text-right  place-{{ $team['place'] }} ">
                             <th scope="row"
-                                class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap  ">
+                                class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap max-w-[40vw] overflow-x-auto ">
                                 {{ $team['team'] }}
                                 @php
                                     $pair = \App\Models\CompetitionTeam::find($team['tid'])

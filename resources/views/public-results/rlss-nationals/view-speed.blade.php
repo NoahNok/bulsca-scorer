@@ -51,7 +51,8 @@
             <table id="table" class="table-highlight text-sm w-full shadow-md rounded-lg  text-left text-gray-500 ">
                 <thead class="text-xs text-gray-700 text-right uppercase bg-gray-50  ">
                     <tr class="">
-                        <th scope="col" class="py-3 px-6 text-left sticky left-0 bg-gray-50">
+                        <th scope="col"
+                            class="py-3 px-6 text-left sticky left-0 bg-gray-50 max-w-[40vw] break-words">
                             Competitor - Club (Region) - League
 
                         </th>
@@ -78,7 +79,7 @@
                         @endphp
                         <tr class="bg-white border-b text-right place-{{ $result->place }} ">
                             <th scope="row"
-                                class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap sticky left-0 bg-white ">
+                                class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap sticky left-0 bg-white  max-w-[40vw] overflow-x-auto ">
                                 {{ $result->team }} - {{ $result->league }}
 
                                 @if ($pair)

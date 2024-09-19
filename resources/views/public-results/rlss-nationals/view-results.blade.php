@@ -55,7 +55,7 @@
 
 
 
-                        <th scope="col" class="py-3 px-6  whitespace-nowrap ">
+                        <th scope="col" class="py-3 px-6  whitespace-nowrap  max-w-[40vw] break-words ">
                             Competitior(s)
                         </th>
                         @foreach ($results['eventOrder'] as $event)
@@ -66,7 +66,7 @@
                         <th scope="col" class="py-3 px-6  whitespace-nowrap ">
                             Total Points
                         </th>
-                        <th scope="col" class="py-3 px-6  whitespace-nowrap sticky top-0 right-0">
+                        <th scope="col" class="py-3 px-6  whitespace-nowrap relative  top-0 md:right-0">
                             Place
                         </th>
 
@@ -79,7 +79,8 @@
                     @forelse ($results['results'] as $result)
                         <tr class="bg-white border-b  place-{{ $result->place }} ">
 
-                            <td class="py-3 px-6 text-black text-sm whitespace-nowrap bg-white">
+                            <td
+                                class="py-3 px-6 text-black text-sm whitespace-nowrap bg-white max-w-[40vw] overflow-x-auto">
                                 {{ $result->name }}
 
                             </td>
@@ -96,7 +97,7 @@
 
                             </td>
 
-                            <td class="py-3 px-6 text-black text-sm whitespace-nowrap sticky top-0 right-0 ">
+                            <td class="py-3 px-6 text-black text-sm whitespace-nowrap  md:sticky top-0 right-0 ">
                                 {{ $result->place }}
 
                             </td>
