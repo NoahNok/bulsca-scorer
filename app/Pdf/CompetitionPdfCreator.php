@@ -14,6 +14,7 @@ class CompetitionPdfCreator
 
     private Competition $comp;
     private ?Brand $brand = null;
+    private string $scoringType;
 
     public function __construct(Competition $comp)
     {
@@ -23,11 +24,13 @@ class CompetitionPdfCreator
         if ($comp->getBrand != null) {
             $this->brand = $comp->getBrand;
         }
+
+        $this->scoringType = $comp->scoring_type;
     }
 
     public function test()
     {
-        return view('pdfs.heats.chief-timekeeper');
+        return view("pdfs.heats.chief-timekeeper:$this->scoringType");
     }
 
     public function chiefTimekeeper()
@@ -37,7 +40,7 @@ class CompetitionPdfCreator
         $poolNames = ['Main Pool - Scoreboard End', 'Main Pool - Diving Pit End'];
         $eventNames = $this->comp->getSpeedEvents->map(fn($event) => $event->getName());
         $heats = $this->comp->getHeats();
-        return view('pdfs.heats.chief-timekeeper', ['brand' => $this->brand, 'location' => $this->comp->where, 'poolNames' => $poolNames, 'eventNames' => $eventNames, 'heats' => $heats, 'comp' => $this->comp]);
+        return view("pdfs.heats.chief-timekeeper:$this->scoringType", ['brand' => $this->brand, 'location' => $this->comp->where, 'poolNames' => $poolNames, 'eventNames' => $eventNames, 'heats' => $heats, 'comp' => $this->comp]);
     }
 
     public function sercMarking()
@@ -45,7 +48,7 @@ class CompetitionPdfCreator
 
         $events = $this->comp->getSERCs;
         $tanks = $this->comp->getSercTanks();
-        return view('pdfs.sercs.serc-marking', ['brand' => $this->brand, 'location' => $this->comp->where, 'events' => $events, 'tanks' => $tanks, 'comp' => $this->comp]);
+        return view("pdfs.sercs.serc-marking:$this->scoringType", ['brand' => $this->brand, 'location' => $this->comp->where, 'events' => $events, 'tanks' => $tanks, 'comp' => $this->comp]);
     }
 
     public function marshalling(string $type)
@@ -58,7 +61,7 @@ class CompetitionPdfCreator
                 foreach ($this->comp->getSercTanks()->groupBy('serc_tank') as $ind => $tank) {
                     $uniqueBrackets = $tank->unique('league')->pluck('league')->join(', ');
                     $tank = $tank->map(function ($t) {
-                        return "$t->serc_order. $t->team ($t->region)";
+                        return $this->scoringType === 'rlss-nationals' ? "$t->serc_order. $t->team ($t->region)" : "$t->serc_order. $t->club $t->team";
                     });
                     $data[] = ['name' => "Tank $ind ($uniqueBrackets)", 'data' => $tank];
                 }
@@ -68,7 +71,7 @@ class CompetitionPdfCreator
                 foreach ($this->comp->getHeats()->groupBy('heat') as $ind => $heat) {
                     $uniqueBrackets = $heat->unique('league')->pluck('league')->join(', ');
                     $heat = $heat->sortBy('lane')->map(function ($l) {
-                        return "Lane $l->lane: $l->team ($l->region)";
+                        return $this->scoringType === 'rlss-nationals' ?  "Lane $l->lane: $l->team ($l->region)" : "Lane $l->lane: $l->club $l->team";
                     });
 
                     $data[] = ['name' => "Heat $ind ($uniqueBrackets)", 'data' => $heat];
@@ -76,6 +79,6 @@ class CompetitionPdfCreator
         }
 
 
-        return view('pdfs.marshalling', ['brand' => $this->brand, 'location' => $this->comp->where, 'data' => $data, 'comp' => $this->comp, 'type' => $type]);
+        return view("pdfs.marshalling:$this->scoringType", ['brand' => $this->brand, 'location' => $this->comp->where, 'data' => $data, 'comp' => $this->comp, 'type' => $type]);
     }
 }
