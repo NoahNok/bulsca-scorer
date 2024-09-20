@@ -90,7 +90,8 @@
                                     </svg>
 
                                 </div>
-                                <article class="block prose prose-neutral prose-p:mb-0 prose-ul:my-0 prose-li:my-0"
+                                <article
+                                    class="block prose prose-neutral prose-p:mb-0 prose-ul:my-0 prose-ol:my-0 prose-li:my-0 !leading-5"
                                     x-show="open" x-collapse>
                                     {!! $mJudge->description !!}
                                 </article>

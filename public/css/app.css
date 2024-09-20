@@ -2635,6 +2635,15 @@ video {
 .leading-tight {
   line-height: 1.25;
 }
+.\!leading-3 {
+  line-height: .75rem !important;
+}
+.\!leading-4 {
+  line-height: 1rem !important;
+}
+.\!leading-5 {
+  line-height: 1.25rem !important;
+}
 .tracking-wider {
   letter-spacing: 0.05em;
 }
@@ -4269,6 +4278,11 @@ aside.open {
 }
 
 .prose-p\:mb-0 :is(:where(p):not(:where([class~="not-prose"],[class~="not-prose"] *))) {
+  margin-bottom: 0px;
+}
+
+.prose-ol\:my-0 :is(:where(ol):not(:where([class~="not-prose"],[class~="not-prose"] *))) {
+  margin-top: 0px;
   margin-bottom: 0px;
 }
 
