@@ -39,6 +39,10 @@ class LiveController extends Controller
         $comp = $this->resolveComp($request);
         if ($comp instanceof \Illuminate\View\View) return $comp;
 
+        if ($comp->scoring_type == "rlss-nationals") {
+            return view('live.nationals', ['comp' => $comp]);
+        }
+
         return view('live.index', ['comp' => $comp]);
     }
 

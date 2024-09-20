@@ -124,7 +124,7 @@
                     <tbody id="table-body">
 
                         @forelse ($event->getResults() as $result)
-                            <tr class="bg-white border-b text-right ">
+                            <tr class="bg-white border-b text-right place-{{ $result->place }}">
                                 <th scope="row"
                                     class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap sticky left-0 bg-white ">
                                     {{ $result->team }}

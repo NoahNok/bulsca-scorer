@@ -26,6 +26,7 @@ class AdminCreateCompRequest extends FormRequest
         return [
             'name' => 'required',
             'when' => 'required',
+            'where' => 'required',
             'isLeague' => 'required|boolean',
             'lanes' => 'required',
             'season' => '',

@@ -32,6 +32,8 @@
     <div class="">
         <div class="flex flex-col space-y-4">
 
+
+
             <div class="flex justify-between">
                 <h2 class="mb-0">Heats</h2>
                 <a href="{{ route('comps.view.heats.edit', $comp) }}" class="btn">Edit Heats</a>
@@ -76,11 +78,7 @@
                         </div>
                     </div>
                 @else
-                    @foreach ($comp->getCompetitionTeams as $team)
-                        <div class="card">
-                            {{ $loop->index + 1 }}. {{ $team->getFullname() }}
-                        </div>
-                    @endforeach
+                    @include('competition.heats-and-orders.serc_list_templates.' . $comp->scoring_type)
                 @endif
 
             </div>
@@ -88,5 +86,4 @@
 
         </div>
     </div>
-
 @endsection

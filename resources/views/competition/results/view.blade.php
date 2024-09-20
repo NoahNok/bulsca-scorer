@@ -77,9 +77,11 @@
                             show!</small>
                     </div>
                     <div class="flex flex-col space-y-2">
-                        <a href="{{ route('comps.results.view-schema-print-basic', $schema) }}" class="btn">Print
+                        <a href="{{ route('comps.results.view-schema-print-basic', $schema) }}" target="_blank"
+                            class="btn">Print
                             Places</a>
-                        <a href="{{ route('comps.results.view-schema-print', $schema) }}" class="btn">Print Detailed</a>
+                        <a href="{{ route('comps.results.view-schema-print', $schema) }}" target="_blank"
+                            class="btn">Print Detailed</a>
                     </div>
                 </div>
                 @if ($schema->viewable)

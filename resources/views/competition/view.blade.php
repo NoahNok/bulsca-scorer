@@ -55,7 +55,7 @@
 
     </p>
     <br>
-    <div class="grid-4">
+    <div class="grid-5">
 
         @if (\App\Helpers\ScoringHelper::getCompetitionScoringDetails($comp)['use_competitors'])
             <a href="{{ route('comps.view.competitors', $comp) }}"
@@ -73,6 +73,10 @@
         <a href="{{ route('comps.view.heats', $comp) }}"
             class="p-5 border shadow-md bg-white rounded-md flex items-center justify-center space-x-2 hover:bg-gray-400 hover:text-white transition-colors cursor-pointer">
             <p class="text-lg font-semibold">Heats/Orders</p>
+        </a>
+        <a href="{{ route('comps.view.printables', $comp) }}"
+            class="p-5 border shadow-md bg-white rounded-md flex items-center justify-center space-x-2 hover:bg-gray-400 hover:text-white transition-colors cursor-pointer">
+            <p class="text-lg font-semibold">Printables</p>
         </a>
         <a href="{{ route('comps.view.events', $comp) }}"
             class="p-5 border shadow-md bg-white rounded-md flex items-center justify-center space-x-2 hover:bg-gray-400 hover:text-white transition-colors cursor-pointer">
@@ -177,11 +181,10 @@
         <div>
             <h4>Time Format</h4>
             <ul class=" list-disc list-inside space-y-1">
-                <li>When entering a time please enter it in the following format: <code>xx:xx.xxx</code>, where each x is a
+                <li>When entering a time please enter it in the following format: <code>xx:xx.xx</code>, where each x is a
                     digit between 0-9!</li>
-                <li>You may omit leading zeros for the minute and seconds but you must include all 3 digits for millis.</li>
-                <li>If your stopwatch only reports 2 digits for millis then append a <code>0</code> to the end of the millis
-                    time when entering into the results box.</li>
+                <li>You may omit leading zeros for the minute and seconds but you must include both digits for millis.</li>
+
             </ul>
         </div>
         <div>
@@ -197,7 +200,9 @@
             <ul class=" list-disc list-inside space-y-1">
                 <li><strong>Only one</strong> disqualification should be entered into the disqualification box.</li>
                 <li>They should be in the form of <code>DQxxx</code> with x being a digit and there must be 3 digits!</li>
-                <li>DQ501 relating to excessive penalties may be left out as the system automatically applies it to relevant
+                <li>DQ501 relating to excessive penalties <strong>MUST</strong> be left out as the system automatically
+                    applies it to
+                    relevant
                     events (Swim & Tow)</li>
             </ul>
         </div>

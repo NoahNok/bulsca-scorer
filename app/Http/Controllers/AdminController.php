@@ -33,6 +33,7 @@ class AdminController extends Controller
         $comp = new Competition();
         $comp->name = $validated['name'];
         $comp->when = $validated['when'];
+        $comp->where = $validated['where'];
         $comp->isLeague = $validated['isLeague'];
         $comp->max_lanes = $validated['lanes'];
         $comp->anytimepin = $validated['anytimepin'];
@@ -44,11 +45,11 @@ class AdminController extends Controller
 
         $comp->scoring_type = $validated['scoring_type'];
 
-     
+
 
         $comp->save();
 
-        
+
 
 
         $compUserEmail = Str::replace([" ", "@", "_"], "-", Str::lower($comp->name)) . "." . $comp->id . "@bulsca.co.uk";
@@ -72,6 +73,7 @@ class AdminController extends Controller
 
         $comp->name = $validated['name'];
         $comp->when = $validated['when'];
+        $comp->where = $validated['where'];
         $comp->isLeague = $validated['isLeague'];
         $comp->max_lanes = $validated['lanes'];
         $comp->anytimepin = $validated['anytimepin'];

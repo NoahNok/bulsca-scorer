@@ -37,13 +37,6 @@ class Competition extends Model
         return $this->hasMany(CompetitionTeam::class, 'competition', 'id')->orderBy('serc_order');
     }
 
-    public function getHeatEntries()
-    {
-        return $this->hasMany(Heat::class, 'competition', 'id');
-    }
-
-
-
     public function getResultSchemas()
     {
         return $this->hasMany(ResultSchema::class, 'competition', 'id');
@@ -104,7 +97,7 @@ class Competition extends Model
         return $this->hasOne(Season::class, 'id', 'season');
     }
 
-    public function getHeats()
+    public function getHeatEntries()
     {
         return $this->hasMany(Heat::class, 'competition', 'id');
     }
@@ -155,5 +148,34 @@ class Competition extends Model
     {
         $manager = new StatsManager($this);
         $manager->computeStats();
+    }
+
+    public function getCompetitorsPerLeague()
+    {
+        return DB::select('WITH totals AS (SELECT league, COUNT(*) as count FROM competition_teams WHERE competition=? GROUP BY league) SELECT t.league, l.name, t.count FROM totals t INNER JOIN leagues l ON l.id=t.league', [$this->id]);
+    }
+
+    public function getTanks()
+    {
+
+        $data = collect(DB::select('WITH totals AS (SELECT serc_tank, league, COUNT(*) AS count FROM competition_teams WHERE competition=? AND serc_tank>0 GROUP BY league, serc_tank ORDER BY serc_tank) SELECT t.league, l.name, t.count, t.serc_tank FROM totals t INNER JOIN leagues l ON l.id=t.league', [$this->id]));
+        $return = [];
+
+        foreach ($data->groupBy('serc_tank') as $group) {
+            $return[] = $group;
+        }
+
+        return $return;
+    }
+
+    // Like above but for just simple listing of names
+    public function getSercTanks()
+    {
+        return collect(DB::select('SELECT ct.team, l.name AS league, c.name AS club, c.region, ct.serc_tank, ct.serc_order FROM competition_teams ct INNER JOIN clubs c ON c.id=ct.club INNER JOIN leagues l ON l.id=ct.league WHERE competition=? ORDER BY serc_tank, serc_order;', [$this->id]));
+    }
+
+    public function getHeats()
+    {
+        return collect(DB::select('SELECT h.id, h.heat, h.lane, ct.team, l.name AS league, c.name AS club, c.region FROM heats h INNER JOIN competition_teams ct ON ct.id=h.team INNER JOIN leagues l ON l.id=ct.league INNER JOIN clubs c ON c.id=ct.club WHERE h.competition = ? ORDER BY heat, lane;', [$this->id]));
     }
 }
