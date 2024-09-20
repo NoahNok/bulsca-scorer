@@ -50,9 +50,11 @@
                     @endforelse
                 </strong></p>
             <br>
-            <p class="text-xl">Team: <strong class="text-bulsca">{{ $comp->show_teams_to_judges || $head ? $team->getFullname() : $team->getPositionInDraw() }} </strong></p>
+            <p class="text-xl">Team: <strong
+                    class="text-bulsca">{{ $comp->show_teams_to_judges || $head ? $team->getFullname() : $team->getPositionInDraw() }}
+                </strong></p>
 
-           
+
 
 
             <hr>
@@ -65,11 +67,43 @@
                     @foreach ($judges as $mJudge)
                         <div>
                             <h4>{{ $mJudge->name }} </h4>
-                            <p x-on:click="loadMarks()" class="-mt-2 -mb-4 text-sm text-blue-700 hover:underline cursor-pointer">
+                            <p x-on:click="loadMarks()"
+                                class="-mt-2 -mb-4 text-sm text-blue-700 hover:underline cursor-pointer">
                                 Previous Marks</p>
                         </div>
 
-                        <button class="btn btn-purple btn-thin w-full" style="margin-bottom: -0.75rem" type="button" onclick="zeroAll({{ $mJudge->id }})">ZERO all</button>
+                        @php
+                            $hasDescription = strip_tags($mJudge->description) != '';
+                        @endphp
+
+                        @if ($hasDescription)
+                            <div x-data="{ open: false }">
+
+                                <div class="w-full flex items-center justify-between" @click="open = !open">
+                                    <p class="font-bold">Marking Hints/Specification</p>
+
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="size-4 transition-transform"
+                                        :class="open ? '' : '-rotate-180'">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                                    </svg>
+
+                                </div>
+                                <article class="block prose prose-neutral prose-p:mb-0 prose-ul:my-0 prose-li:my-0"
+                                    x-show="open" x-collapse>
+                                    {!! $mJudge->description !!}
+                                </article>
+                            </div>
+                        @endif
+
+
+                        <button class="btn btn-purple btn-thin w-full @if ($hasDescription) !mt-3 @endif"
+                            style="margin-bottom: -0.75rem" type="button" onclick="zeroAll({{ $mJudge->id }})">ZERO
+                            all</button>
+
+
+
                         @foreach ($mJudge->getMarkingPoints as $mp)
                             @php
                                 $mpValue = $mp->getScoreForTeam($team->id) ?: -1;
@@ -79,9 +113,9 @@
                                 <div class="flex justify-between items-center ">
                                     <p>{{ $mp->name }}</p>
                                     <div class="flex items-center justify-center">
-                                        <input type="radio" required class="w-0 h-0 peer" value="0" x-judge="{{ $mJudge->id }}"
-                                            name="mp-{{ $mp->id }}" @if ($mpValue == 0) checked @endif
-                                            id="mp-{{ $mp->id }}-0">
+                                        <input type="radio" required class="w-0 h-0 peer" value="0"
+                                            x-judge="{{ $mJudge->id }}" name="mp-{{ $mp->id }}"
+                                            @if ($mpValue == 0) checked @endif id="mp-{{ $mp->id }}-0">
                                         <label for="mp-{{ $mp->id }}-0"
                                             class="  flex items-center justify-center px-4 py-0.5 font-semibold  rounded-sm bg-gray-200 text-xs peer-checked:bg-bulsca_red peer-checked:text-white ">
                                             ZERO
@@ -245,7 +279,8 @@
             <div class="flex flex-col items-start ">
                 @foreach ($judges[0]->getNotes as $note)
                     <div class="border-b pb-4 mb-3 last-of-type:border-b-0 border-b-gray-300">
-                        <h3> {{ $comp->show_teams_to_judges || $head ? $note->getTeam->getFullname() : $note->getTeam->getPositionInDraw() }}</h3>
+                        <h3> {{ $comp->show_teams_to_judges || $head ? $note->getTeam->getFullname() : $note->getTeam->getPositionInDraw() }}
+                        </h3>
                         <p>{{ $note->note }}</p>
                     </div>
                 @endforeach
