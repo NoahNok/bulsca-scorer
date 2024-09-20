@@ -54,7 +54,7 @@
         </ol>
         <br>
         <p class="  "><span class="font-semibold">Pages with a black strip at the top mark the begining of a new
-                tank!</span><br><span class=" print:hidden">(Ensure 'Background graphics' is ticked when
+                team!</span><br><span class=" print:hidden">(Ensure 'Background graphics' is ticked when
                 printing)</span></p>
     </div>
 
