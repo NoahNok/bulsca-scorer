@@ -92,10 +92,21 @@
                         </svg>
                     </div>
                 </div>
-                <div class="form-input">
+                <div class="form-input imb-0">
                     <label for="">Name</label>
                     <input type="text" placeholder="Judge 1" value="{{ $judge->name }}" serc-builder-judge-name>
                 </div>
+
+                <div class="mt-2"></div>
+                <div class="form-input">
+                    <label for="">Marking Hints</label>
+                    <div id="editor" serc-builder-judge-description>
+                        {!! $judge->description !!}
+
+                    </div>
+                </div>
+
+
                 <h5>Marking Points</h5>
                 <div serc-builder-marking-points class="mp-list">
                     @forelse ($judge->getMarkingPoints as $mp)
@@ -111,8 +122,8 @@
                                 @if ($loop->index == 0)
                                     <label for="">Weight</label>
                                 @endif
-                                <input type="number" step="0.1" style="margin-bottom: 0 !important;" placeholder="1.0"
-                                    value="{{ $mp->weight }}" serc-builder-marking-point-weight>
+                                <input type="number" step="0.1" style="margin-bottom: 0 !important;"
+                                    placeholder="1.0" value="{{ $mp->weight }}" serc-builder-marking-point-weight>
                             </div>
                             <div class="w-[5%] flex items-center justify-center" title="Delete Marking Point">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"

@@ -33,6 +33,10 @@ class SERCBuilder {
             // Reset any values
             newJudge.setAttribute("serc-builder-judge-id", "null");
 
+            newJudge.querySelector(
+                "[serc-builder-judge-description]"
+            ).innerHTML = "";
+
             newJudge.querySelectorAll("input").forEach((i) => {
                 i.value = null;
             });
@@ -170,6 +174,32 @@ class SERCJudge {
             clazz.element.outerHTML = "";
             judges_list.splice(judges_list.indexOf(clazz), 1);
         };
+
+        this.initDescription();
+    }
+
+    initDescription() {
+        let judge_description = this.element.querySelector(
+            "[serc-builder-judge-description]"
+        );
+
+        this.judge_description = new Quill(judge_description, {
+            theme: "snow",
+            placeholder: "Enter marking hints/help/specification here.",
+            modules: {
+                toolbar: [
+                    ["bold", "italic", "underline"],
+                    [
+                        {
+                            list: "ordered",
+                        },
+                        {
+                            list: "bullet",
+                        },
+                    ],
+                ],
+            },
+        });
     }
 
     toData(judgeNo) {
@@ -179,6 +209,7 @@ class SERCJudge {
                 this.judge_name.value != ""
                     ? this.judge_name.value
                     : `Objective ${judgeNo}`,
+            description: this.judge_description.getSemanticHTML(),
             marking_points: [],
         };
 

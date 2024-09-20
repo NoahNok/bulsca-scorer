@@ -102,6 +102,7 @@ class SERCController extends Controller
             }
 
             $j->name = $judge->name;
+            $j->description = $judge->description;
             $j->serc = $serc->id;
             $j->save();
 
