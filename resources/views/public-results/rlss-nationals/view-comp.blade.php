@@ -10,8 +10,8 @@
     <meta charset="UTF-8">
 
 
-    <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
-    <title>{{ $comp->name }} | Live | RLSS</title>
+    <link rel="icon" type="image/png" href="{{ $brand->getLogo() }}" />
+    <title>{{ $comp->name }} | Results | RLSS</title>
 
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -31,13 +31,20 @@
 <body class="overflow-x-hidden  w-screen h-screen">
 
 
-    <div class="w-full h-48 bg-rlss-blue flex flex-col justify-center px-12 overflow-x-hidden "
+    <div class="w-full h-48 bg-rlss-blue flex  items-center px-12 overflow-x-hidden "
         style="background-image: url('/rlss-transparent.svg'); background-position-y: center; background-position-x: -100px; background-repeat: no-repeat;">
 
-        <div class="container mx-auto">
-            <h1 class="text-white font-astoria hmb-0">{{ $comp->name }}</h1>
-            <p class=" font-ariel text-rlss-yellow font-semibold">John Charles Centre for Sport</p>
+        <div class="container mx-auto flex flex-row items-center">
+            <div>
+                <h1 class="text-white font-astoria hmb-0">{{ $comp->name }}</h1>
+                <p class=" font-ariel text-rlss-yellow font-semibold">{{ $comp->where }}</p>
+            </div>
+
+            <div class="!ml-auto   ">
+                <img src="{{ $brand->getLogo() }}" class=" w-20 h-20" alt="">
+            </div>
         </div>
+
 
 
     </div>

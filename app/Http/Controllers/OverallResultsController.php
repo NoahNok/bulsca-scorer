@@ -24,7 +24,7 @@ class OverallResultsController extends Controller
         //     $results = DB::select($final);
         // }
 
-       
+
         return view('competition.results.view', ['results' => $results, 'schema' => $schema, 'comp' => $schema->getCompetition]);
     }
 
@@ -32,14 +32,16 @@ class OverallResultsController extends Controller
     {
         $schema = $schema->autoCast();
         $results = $schema->getResults() ?? [];
-        return view('competition.results.view-for-print-basic', ['results' => $results, 'schema' => $schema, 'comp' => $schema->getCompetition]);
+        $comp = $schema->getCompetition;
+        return view("competition.results.print.$comp->scoring_type.view-for-print-basic", ['results' => $results, 'schema' => $schema, 'comp' => $comp]);
     }
 
     public function viewForPrint(ResultSchema $schema)
     {
         $schema = $schema->autoCast();
         $results = $schema->getResults() ?? [];
-        return view('competition.results.view-for-print', ['results' => $results, 'schema' => $schema, 'comp' => $schema->getCompetition]);
+        $comp = $schema->getCompetition;
+        return view("competition.results.print.$comp->scoring_type.view-for-print", ['results' => $results, 'schema' => $schema, 'comp' => $comp]);
     }
 
 
@@ -139,7 +141,7 @@ class OverallResultsController extends Controller
 
         if (!$comp->results_provisional && $comp->isLeague) { // Only generate stats for league comps
             $comp->generateStats();
-            return redirect()->back()->with("success","Generated stats");
+            return redirect()->back()->with("success", "Generated stats");
         }
 
         return redirect()->back();

@@ -10,8 +10,8 @@
     <meta charset="UTF-8">
 
 
-    <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
-    <title>{{ $event->getName() }} | {{ $comp->name }} | Live | RLSS</title>
+    <link rel="icon" type="image/png" href="{{ $brand->getLogo() }}" />
+    <title>{{ $event->getName() }} | {{ $comp->name }} | Results | RLSS</title>
 
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -31,13 +31,20 @@
 <body class="overflow-x-hidden  w-screen h-screen">
 
 
-    <div class="w-full h-48 bg-rlss-blue flex flex-col justify-center px-12 overflow-x-hidden "
+    <div class="w-full h-48 bg-rlss-blue flex  items-center px-12 overflow-x-hidden "
         style="background-image: url('/rlss-transparent.svg'); background-position-y: center; background-position-x: -100px; background-repeat: no-repeat;">
 
-        <div class="container mx-auto">
-            <h1 class="text-white font-astoria hmb-0">{{ $comp->name }}</h1>
-            <p class=" font-ariel text-rlss-yellow font-semibold">John Charles Centre for Sport</p>
+        <div class="container mx-auto flex flex-row items-center">
+            <div>
+                <h1 class="text-white font-astoria hmb-0">{{ $comp->name }}</h1>
+                <p class=" font-ariel text-rlss-yellow font-semibold">{{ $comp->where }}</p>
+            </div>
+
+            <div class="!ml-auto   ">
+                <img src="{{ $brand->getLogo() }}" class=" w-20 h-20" alt="">
+            </div>
         </div>
+
 
 
     </div>
@@ -46,6 +53,7 @@
         <a class="link" href="{{ route('public.results.comp', [$comp->resultsSlug()]) }}"><small>Back</small></a>
 
         <h2 class="font-astoria text-rlss-blue font-extrabold">{{ $event->getName() }} Results</h2>
+        <p>You may need to scroll/drag on the table to see more results.</p>
         <br>
         <div class="  relative overflow-x-auto w-full lg:w-auto  ">
             <table id="table" class="table-highlight text-sm w-full shadow-md rounded-lg  text-left text-gray-500 ">
