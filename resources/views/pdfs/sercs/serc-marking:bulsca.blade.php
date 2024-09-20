@@ -87,7 +87,14 @@
                     </div>
 
 
-
+                    @if (strip_tags($judge->description) != '')
+                        <p class="font-bold">Marking Hints/Specification</p>
+                        <article
+                            class="block prose prose-sm prose-neutral prose-p:mb-0 prose-ul:my-0 prose-ol:my-0 prose-li:my-0 !leading-5">
+                            {!! $judge->description !!}
+                        </article>
+                        <div class="mt-3"></div>
+                    @endif
                     <table class=" table-fixed text-left ">
                         <thead class="border-b border-black">
 
