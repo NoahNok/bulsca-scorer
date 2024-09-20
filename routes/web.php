@@ -119,6 +119,8 @@ Route::middleware('auth')->group(function () {
 
 
                     Route::get('/{event}/digital-judge-toggle', [DigitalJudgeController::class, 'speedToggle'])->name('dj.speedToggle');
+
+                    Route::get('/{event}/hide', [SpeedsEventController::class, 'hide'])->name('comps.view.speeds.hide');
                 });
 
                 // SERCS
@@ -138,6 +140,7 @@ Route::middleware('auth')->group(function () {
                     Route::post('/results/{team}/edit', [SERCController::class, 'updateTeamResults'])->name('comps.view.events.sercs.editResultsPost');
 
                     Route::get('/digital-judge-toggle', [DigitalJudgeController::class, 'sercToggle'])->name('dj.sercToggle');
+                    Route::get('/hide', [SERCController::class, 'hide'])->name('comps.view.sercs.hide');
                 });
             });
 

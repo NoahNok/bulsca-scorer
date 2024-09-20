@@ -73,7 +73,7 @@
                 <h3>SERCs</h3>
                 <div class="grid-4">
 
-                    @forelse ($comp->getSERCs as $serc)
+                    @forelse ($comp->getSERCs->where('viewable', true) as $serc)
                         <a href="{{ route('public.results.serc', [$comp->resultsSlug(), $serc]) }}"
                             class="card card-hover">
                             <h4 class="mb-0 text-center">{{ $serc->getName() }}</h4>
@@ -88,7 +88,7 @@
                 <h3>Speeds</h3>
                 <div class="grid-4">
 
-                    @forelse ($comp->getSpeedEvents as $speed)
+                    @forelse ($comp->getSpeedEvents->where('viewable', true) as $speed)
                         <a href="{{ route('public.results.speed', [$comp->resultsSlug(), $speed]) }}"
                             class="card card-hover">
                             <h4 class="mb-0 text-center">{{ $speed->getName() }}</h4>

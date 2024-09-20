@@ -84,6 +84,34 @@
                     @endif
                 </div>
 
+                @if ($event->viewable)
+                    <div class="flex justify-between items-center">
+                        <div class="flex flex-col">
+                            <strong>Hide from Results</strong>
+                            <small>This will make this event hidden on the public results area!</small>
+                        </div>
+
+                        <div>
+                            <a href="{{ route('comps.view.speeds.hide', [$comp, $event]) }}" class="btn btn-danger">Hide
+                                Event</a>
+                        </div>
+
+                    </div>
+                @else
+                    <div class="flex justify-between items-center">
+                        <div class="flex flex-col">
+                            <strong>Unhide from Results</strong>
+                            <small>This will make this event visible on the public results area!</small>
+                        </div>
+
+                        <div>
+                            <a href="{{ route('comps.view.speeds.hide', [$comp, $event]) }}" class="btn ">Unhide
+                                Event</a>
+
+                        </div>
+                    </div>
+                @endif
+
             </div>
         </div>
     </div>

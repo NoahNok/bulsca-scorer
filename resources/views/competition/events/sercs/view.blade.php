@@ -148,6 +148,33 @@
                         class="btn btn-purple">Print</a>
 
                 </div>
+                @if ($serc->viewable)
+                    <div class="flex justify-between items-center">
+                        <div class="flex flex-col">
+                            <strong>Hide from Results</strong>
+                            <small>This will make this SERC hidden on the public results area!</small>
+                        </div>
+
+                        <div>
+                            <a href="{{ route('comps.view.sercs.hide', [$comp, $serc]) }}" class="btn btn-danger">Hide
+                                SERC</a>
+                        </div>
+
+                    </div>
+                @else
+                    <div class="flex justify-between items-center">
+                        <div class="flex flex-col">
+                            <strong>Unhide from Results</strong>
+                            <small>This will make this SERC visible on the public results area!</small>
+                        </div>
+
+                        <div>
+                            <a href="{{ route('comps.view.sercs.hide', [$comp, $serc]) }}" class="btn ">Unhide
+                                SERC</a>
+
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
     </div>

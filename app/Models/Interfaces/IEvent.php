@@ -10,12 +10,14 @@ use App\Models\SERCJudge;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-abstract class IEvent extends Model {
+abstract class IEvent extends Model
+{
 
     protected IScoring $scoring;
 
 
-    private function initScoring() {
+    private function initScoring()
+    {
 
         if (isset($this->{'scoring'})) {
             return;
@@ -25,7 +27,7 @@ abstract class IEvent extends Model {
     }
 
 
-    
+
 
     abstract public function getName(): string;
     abstract public function getCompetition();
@@ -33,17 +35,25 @@ abstract class IEvent extends Model {
      * @return CompetitionTeam[]
      */
     abstract public function getTeams();
-    public function getResults(): array {
+    public function getResults(): array
+    {
 
         $this->initScoring();
 
         return $this->scoring->getResults($this);
     }
-    public function getResultQuery(): string {
+    public function getResultQuery(): string
+    {
 
         $this->initScoring();
 
         return $this->scoring->getResultQuery($this);
     }
     abstract public function getType(): string;
+
+    public function hide()
+    {
+        $this->viewable = !$this->viewable;
+        $this->save();
+    }
 }

@@ -209,4 +209,10 @@ class SERCController extends Controller
 
         return response()->json(['url' => Route('comps.view.events.sercs.editResults', [$comp, $serc, $nextTeamId])]);
     }
+
+    public function hide($comp, SERC $serc)
+    {
+        $serc->hide();
+        return redirect()->back();
+    }
 }

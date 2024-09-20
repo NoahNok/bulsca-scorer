@@ -173,7 +173,7 @@ class SpeedsEventController extends Controller
                 $min = $minSecSplit[0];
                 $secMillisSplit = explode(".", $minSecSplit[1]);
 
-                
+
                 if (strlen($secMillisSplit[1]) == 2) {
                     $secMillisSplit[1] = $secMillisSplit[1] * 10;
                 }
@@ -205,5 +205,11 @@ class SpeedsEventController extends Controller
         $event->delete();
 
         return redirect()->route('comps.view.events', $comp);
+    }
+
+    public function hide($comp, CompetitionSpeedEvent $event)
+    {
+        $event->hide();
+        return redirect()->back();
     }
 }
