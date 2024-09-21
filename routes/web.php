@@ -273,6 +273,8 @@ Route::prefix('/admin')->middleware('isAdmin')->group(function () {
 
 
         Route::delete('{brand}', [BrandController::class, 'destroy'])->name('admin.brands.delete');
+
+        Route::get('{brand}/user/{user}/reset-password', [BrandController::class, 'userResetPassword'])->name('admin.brands.users.reset-password');
     });
 });
 
