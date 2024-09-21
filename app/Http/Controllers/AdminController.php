@@ -63,6 +63,10 @@ class AdminController extends Controller
         $compUser->competition = $comp->id;
         $compUser->save();
 
+        if ($comp->brand) {
+            $compUser->getBrands()->attach($comp->brand);
+        }
+
         return view('admin.competiton-created', ['email' => $compUserEmail, 'password' => $compUserPasswordRaw, "comp" => $comp]);
     }
 
@@ -83,7 +87,12 @@ class AdminController extends Controller
         }
 
         if ($validated['brand'] !== 'null') {
+            $oldBrand = $comp->brand;
             $comp->brand = $validated['brand'] == 'none' ? null : $validated['brand'];
+
+            $compUser = User::where('competition', $comp->id)->first();
+            $compUser->getBrands()->detach($oldBrand);
+            $compUser->getBrands()->attach($comp->brand);
         }
 
         $comp->scoring_type = $validated['scoring_type'];

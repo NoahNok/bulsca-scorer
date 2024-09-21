@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Brands;
 
 use App\Http\Controllers\Controller;
 use App\Models\Brands\Brand;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class BrandController extends Controller
 {
@@ -91,5 +93,19 @@ class BrandController extends Controller
         $brand->delete();
 
         return redirect()->route('admin.brands')->with('success', 'Deleted brand successfully');
+    }
+
+    public function userResetPassword(Brand $brand, User $user)
+    {
+
+
+        $passwordRaw = Str::random(16);
+        $password = Hash::make($passwordRaw);
+
+        $user->password = $password;
+
+        $user->save();
+
+        return response()->json(['password' => $passwordRaw]);
     }
 }
