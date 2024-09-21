@@ -42,7 +42,20 @@ class BrandController extends Controller
             ]);
         }
 
-        return redirect()->route('admin.brands.show', $brand)->with('success', 'Created brand successfully');
+
+
+        // Create the brand owner
+        $brandUser = new User();
+        $brandUser->name = $brand->name;
+        $brandUser->email = $brand->email;
+
+        $password = Str::random(16);
+        $brandUser->password = Hash::make($password);
+        $brandUser->save();
+
+        $brandUser->getBrands()->attach($brand, ['role' => 'admin']);
+
+        return redirect()->route('admin.brands.show', $brand)->with('success', 'Created brand successfully')->with('brand-password', $password);
     }
 
     public function show(Brand $brand)
@@ -90,6 +103,11 @@ class BrandController extends Controller
 
     public function destroy(Brand $brand)
     {
+
+        // Get all brand accounts that are admins and remove them - preserve welfare and hosts
+        $brand->getUsers()->wherePivot('role', 'admin')->delete();
+
+
         $brand->delete();
 
         return redirect()->route('admin.brands')->with('success', 'Deleted brand successfully');
