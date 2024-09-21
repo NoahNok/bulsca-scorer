@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Brands;
 
 use App\Http\Controllers\Controller;
 use App\Models\Brands\Brand;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class BrandController extends Controller
 {
-    
+
     public function index()
     {
         return view('admin.brands.index');
@@ -30,7 +32,7 @@ class BrandController extends Controller
             'secondary_color' => 'nullable|string',
             'logo' => 'nullable|image',
         ]);
-        
+
 
         $brand = Brand::create($request->all());
 
@@ -75,7 +77,7 @@ class BrandController extends Controller
                 unlink(public_path() . '/storage/' . $oldImage);
             }
 
-     
+
 
 
             $brand->update([
@@ -85,11 +87,25 @@ class BrandController extends Controller
 
         return redirect()->route('admin.brands.show', $brand)->with('success', 'Updated brand successfully');
     }
-    
+
     public function destroy(Brand $brand)
     {
         $brand->delete();
 
         return redirect()->route('admin.brands')->with('success', 'Deleted brand successfully');
+    }
+
+    public function userResetPassword(Brand $brand, User $user)
+    {
+
+
+        $passwordRaw = Str::random(16);
+        $password = Hash::make($passwordRaw);
+
+        $user->password = $password;
+
+        $user->save();
+
+        return response()->json(['password' => $passwordRaw]);
     }
 }
