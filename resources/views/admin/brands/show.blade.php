@@ -135,26 +135,32 @@
                 @forelse ($brand->getUsers as $user)
                     <tr class="bg-white border-b text-right " x-data="{
                         resetPassword() {
-                            if (!confirm('Are you sure you want to reset this users password?')) return
+                                if (!confirm('Are you sure you want to reset this users password?')) return
                     
-                            fetch('{{ route('admin.brands.users.reset-password', [$brand, $user]) }}').then(resp => resp.json()).then(data => {
-                                if (data.password) {
-                                    navigator.clipboard.writeText(data.password)
-                                    showSuccess('Password copied to clipboard.')
-                                } else {
-                                    showAlert('Failed to reset password. Try again later.')
+                                fetch('{{ route('admin.brands.users.reset-password', [$brand, $user]) }}').then(resp => resp.json()).then(data => {
+                                    if (data.password) {
+                                        navigator.clipboard.writeText(data.password)
+                                        showSuccess('Password copied to clipboard.')
+                                    } else {
+                                        showAlert('Failed to reset password. Try again later.')
                     
-                                }
+                                    }
                     
-                            })
-                        }
+                                })
+                            },
+                    
+                            viewPassword
                     }">
                         <th scope="row" class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap ">
                             {{ $user->name }} ({{ $user->email }})
                         </th>
                         <td class="py-4 px-6">
-                            <a class="link" href="{{ route('comps.view', $user->getCompetition) }}">
-                                {{ $user->getCompetition->name }}</a>
+                            @if ($user->competition)
+                                <a class="link" href="{{ route('comps.view', $user->getCompetition) }}">
+                                    {{ $user->getCompetition->name }}</a>
+                            @else
+                                -
+                            @endif
 
 
                         </td>
@@ -172,6 +178,7 @@
                                             d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" />
                                     </svg>
                                 </div>
+
                             </div>
 
 
@@ -208,4 +215,16 @@
 
         <button type="submit" class="btn btn-danger">Delete</button>
     </form>
+
+
+    @if (Session::has('brand-password'))
+        <script>
+            navigator.clipboard.writeText('{{ Session::get('brand-password') }}')
+            setTimeout(() => {
+                alert(
+                    'A Brand account has been created under the same email as this brand. The account password has been copied to you clipboard.'
+                )
+            }, 500);
+        </script>
+    @endif
 @endsection
