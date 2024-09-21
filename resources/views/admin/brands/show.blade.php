@@ -132,7 +132,7 @@
             </thead>
             <tbody>
 
-                @forelse ($brand->getUsers as $user)
+                @forelse ($brand->getUsers->sortBy([['pivot.role', 'asc'], ['name', 'asc']]) as $user)
                     <tr class="bg-white border-b text-right " x-data="{
                         resetPassword() {
                                 if (!confirm('Are you sure you want to reset this users password?')) return
