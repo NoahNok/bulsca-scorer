@@ -1367,6 +1367,9 @@ video {
 .\!ml-auto {
   margin-left: auto !important;
 }
+.\!mt-3 {
+  margin-top: 0.75rem !important;
+}
 .-mb-1 {
   margin-bottom: -0.25rem;
 }
@@ -1490,15 +1493,6 @@ video {
 .mt-auto {
   margin-top: auto;
 }
-.\!mt-0 {
-  margin-top: 0px !important;
-}
-.\!mt-2 {
-  margin-top: 0.5rem !important;
-}
-.\!mt-3 {
-  margin-top: 0.75rem !important;
-}
 .block {
   display: block;
 }
@@ -1539,13 +1533,13 @@ video {
   width: 2.5rem;
   height: 2.5rem;
 }
-.size-6 {
-  width: 1.5rem;
-  height: 1.5rem;
-}
 .size-4 {
   width: 1rem;
   height: 1rem;
+}
+.size-6 {
+  width: 1.5rem;
+  height: 1.5rem;
 }
 .h-0 {
   height: 0px;
@@ -1854,12 +1848,12 @@ video {
   --tw-translate-y: 1rem;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
-.rotate-180 {
-  --tw-rotate: 180deg;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-}
 .-rotate-180 {
   --tw-rotate: -180deg;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.rotate-180 {
+  --tw-rotate: 180deg;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 .scale-100 {
@@ -1964,6 +1958,9 @@ video {
 }
 .items-start {
   align-items: flex-start;
+}
+.items-end {
+  align-items: flex-end;
 }
 .items-center {
   align-items: center;
@@ -2623,6 +2620,9 @@ video {
 .capitalize {
   text-transform: capitalize;
 }
+.\!leading-5 {
+  line-height: 1.25rem !important;
+}
 .leading-4 {
   line-height: 1rem;
 }
@@ -2634,15 +2634,6 @@ video {
 }
 .leading-tight {
   line-height: 1.25;
-}
-.\!leading-3 {
-  line-height: .75rem !important;
-}
-.\!leading-4 {
-  line-height: 1rem !important;
-}
-.\!leading-5 {
-  line-height: 1.25rem !important;
 }
 .tracking-wider {
   letter-spacing: 0.05em;
