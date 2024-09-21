@@ -149,7 +149,6 @@
                                 })
                             },
                     
-                            viewPassword
                     }">
                         <th scope="row" class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap ">
                             {{ $user->name }} ({{ $user->email }})
@@ -201,6 +200,36 @@
             </tbody>
         </table>
     </div>
+
+    <div class="w-1 h-2"></div>
+    <h5>Add User</h5>
+    <form class="grid-4"
+        @submit="(e) => {
+            console.log($refs.accountRole)
+        if ($refs.accountRole.value === 'null') {
+            e.preventDefault()
+            $refs.accountRole.setCustomValidity('Please select a role.')
+            $refs.accountRole.reportValidity()
+            
+        } 
+    }">
+        <x-form-input id="account-name" title="" required placeholder="Account name"></x-form-input>
+        <x-form-input id="account-email" title="" required placeholder="Account Email"></x-form-input>
+        <div class="form-input select">
+            <label for=""></label>
+            <select name="" id="" x-ref="accountRole" required
+                @change="(e) => e.target.setCustomValidity('')" style="padding-top: 0.65em; padding-bottom: 0.75em;">
+                <option value="null">Please select a role</option>
+                <option value="admin">Admin</option>
+                <option value="welfare">Welfare</option>
+            </select>
+        </div>
+        <div class="">
+
+            <button class="btn ml-auto mt-2 w-full">Add</button>
+
+        </div>
+    </form>
 
     <br><br>
     <h3 class="mb-0">Delete Brand</h3>
