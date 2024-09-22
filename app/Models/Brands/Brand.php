@@ -38,4 +38,16 @@ class Brand extends Model
     {
         $this->getUsers()->detach($user);
     }
+
+    public function isBrandRole(User $user, string $role)
+    {
+
+        if ($user->admin) return true;
+
+        $brand = $user->getBrands()->where('brand', $this->id)->first();
+
+        if (!$brand) return false;
+
+        return $brand->pivot->role == $role;
+    }
 }
