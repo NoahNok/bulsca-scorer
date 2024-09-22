@@ -219,6 +219,10 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('brand')->group(function () {
         Route::get('dashboard', [BrandHomeController::class, 'index'])->name('brand.index');
+
+        Route::prefix('competition')->middleware('brandAdmin')->group(function () {
+            Route::get('create', [BrandHomeController::class, 'createCompetition'])->name('brand.create');
+        });
     });
 
     Route::get('/comp/results/view-schema/{schema}', [OverallResultsController::class, 'computeResults'])->name("comps.results.view-schema");

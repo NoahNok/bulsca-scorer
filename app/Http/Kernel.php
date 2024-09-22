@@ -70,5 +70,6 @@ class Kernel extends HttpKernel
         'isHeadJudge' => \App\Http\Middleware\DigitalJudge\HeadJudgeOnly::class,
         'whatif' => \App\Http\Middleware\WhatIfMiddleware::class,
         'editBrand' => \App\Http\Middleware\CanEditBrandSettings::class,
+        'brandAdmin' => \App\Http\Middleware\BrandAdminOnly::class,
     ];
 }
