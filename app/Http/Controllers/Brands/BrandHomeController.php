@@ -11,4 +11,9 @@ class BrandHomeController extends Controller
     {
         return view('brand.index');
     }
+
+    public function createCompetition()
+    {
+        return "hi";
+    }
 }
