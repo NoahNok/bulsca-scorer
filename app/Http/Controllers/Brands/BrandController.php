@@ -145,7 +145,7 @@ class BrandController extends Controller
 
         $brand->attachUser($user, $validated['accountRole']);
 
-        return redirect()->back()->with('success', 'Created brand account successfully')->with('brand-password', $password);
+        return redirect()->back()->with('success', 'Created brand account successfully')->with('brand-password', $passwordRaw);
     }
 
     public function deleteBrandUser(Brand $brand, User $user)

@@ -30,7 +30,15 @@ class CanOnlyViewOwnComp
             $targetId = $compIdAttempted;
         }
 
-        if (auth()->user()->isAdmin() || auth()->user()->getCompetition->id == $targetId) return $next($request);
+
+        /** @var User $user */
+        $user = auth()->user();
+
+        if ($user->isAdmin() || ($user->competition && $user->getCompetition->id == $targetId)) return $next($request);
+
+        // Check if user can view the competition because they are a brand account
+        $targetCompetition = Competition::find($targetId);
+        if ($targetCompetition->brand && $targetCompetition->getBrand->isBrandRole($user, ['admin', 'welfare'])) return $next($request);
 
         return redirect('/');
     }

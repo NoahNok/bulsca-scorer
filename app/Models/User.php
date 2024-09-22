@@ -61,6 +61,16 @@ class User extends Authenticatable
 
     public function getBrands()
     {
-        return $this->belongsToMany(Brand::class, 'brand_users', 'user', 'brand');
+        return $this->belongsToMany(Brand::class, 'brand_users', 'user', 'brand')->withPivot('role');
+    }
+
+    public function hasBrand()
+    {
+        return $this->getBrands()->exists();
+    }
+
+    public function isAdminOfABrand(): bool
+    {
+        return $this->getBrands()->where('brand_users.role', 'admin')->exists();
     }
 }
