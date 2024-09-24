@@ -221,7 +221,12 @@ Route::middleware('auth')->group(function () {
         Route::get('dashboard', [BrandHomeController::class, 'index'])->name('brand.index');
 
         Route::prefix('competition')->middleware('brandAdmin')->group(function () {
-            Route::get('create', [BrandHomeController::class, 'createCompetition'])->name('brand.create');
+            Route::get('create', [BrandHomeController::class, 'createCompetition'])->name('brand.comp.create');
+            Route::post('create', [BrandHomeController::class, 'storeCompetition'])->name('brand.comp.store');
+
+            Route::get('{comp}', [BrandHomeController::class, 'editCompetition'])->name('brand.comp.edit');
+            Route::post('{comp}', [BrandHomeController::class, 'updateCompetition'])->name('brand.comp.update');
+            Route::delete('{comp}/delete', [BrandHomeController::class, 'deleteCompetition'])->name('brand.comp.delete');
         });
     });
 

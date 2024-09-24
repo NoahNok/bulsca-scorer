@@ -26,12 +26,12 @@
             $comps = $brand->getCompetitions()->orderBy('when', 'desc')->paginate(8);
         @endphp
         @foreach ($comps as $comp)
-            <a href="{{ route('comps.view', $comp) }}"
+            <a href="{{ route('brand.comp.edit', $comp) }}"
                 class="flex flex-row items-center shadow-md hover:shadow-lg bg-white p-4 rounded-md border hover:border-black transition-all">
                 <h5 class="mb-0">{{ $comp->name }}</h5>
             </a>
         @endforeach
-        <x-add-card text="Competition" link="#"></x-add-card>
+        <x-add-card text="Competition" link="{{ route('brand.comp.create') }}"></x-add-card>
 
 
     </div>
