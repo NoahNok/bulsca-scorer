@@ -80,7 +80,7 @@ class SpeedsEventController extends Controller
 
 
             if ($row->values->disqualification != "") {
-                if (preg_match("/^DQ[0-9]{1,3}$/", $row->values->disqualification) == 0) {
+                if (preg_match("/^DQ[0-9]{1,4}$/", $row->values->disqualification) == 0) {
                     array_push($errors, ["id" => $id, "option" => "disqualification"]);
                     continue;
                 } else {
@@ -132,6 +132,21 @@ class SpeedsEventController extends Controller
             if ($row->values->result == "") {
 
                 $sr->result = null;
+                $sr->save();
+                continue;
+            }
+
+
+            if (str_starts_with($row->values->result, 'DN')) {
+                $sr->result = 0;
+                $sr->disqualification = str_starts_with($row->values->result, 'DNS') ? 'DQ004' : 'DQ015';
+                $sr->save();
+                continue;
+            }
+
+            if (str_starts_with($row->values->result, 'OOT')) {
+                $sr->result = 0;
+                $sr->disqualification = 'DQ1001';
                 $sr->save();
                 continue;
             }

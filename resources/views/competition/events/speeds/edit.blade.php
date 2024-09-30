@@ -110,11 +110,39 @@
                                 </th>
                                 <td class="">
 
-                                    @if ($event->getName() == 'Rope Throw')
-                                        @if ($result->result < 4)
-                                            <input class="table-input" table-cell table-cell-name="result"
-                                                placeholder="Ropes In OR 00:00.00" type="text" x-data x-mask="99:99.99"
-                                                value="{{ $result->result }}">
+                                    @if (in_array($result->disqualification, ['DQ015', 'DQ004', 'DQ1001']))
+                                        @php
+
+                                            $code = match ($result->disqualification) {
+                                                'DQ015' => 'DNF',
+                                                'DQ004' => 'DNS',
+                                                'DQ1001' => 'OOT',
+                                            };
+
+                                        @endphp
+
+                                        <input class="table-input" table-cell table-cell-name="result"
+                                            placeholder="00:00.00" type="text" x-data
+                                            x-mask:dynamic="$input.toUpperCase().startsWith('D') ? 'DNa' : ($input.startsWith('O') ? 'OOT' : '99:99.99')"
+                                            value="{{ $code }}">
+                                    @else
+                                        @if ($event->getName() == 'Rope Throw')
+                                            @if ($result->result < 4)
+                                                <input class="table-input" table-cell table-cell-name="result"
+                                                    placeholder="Ropes In OR 00:00.00" type="text" x-data
+                                                    x-mask:dynamic="$input.startsWith('D') ? 'DNa' : ($input.startsWith('O') ? 'OOT' : '99:99.99')"
+                                                    value="{{ $result->result }}">
+                                            @else
+                                                @php
+                                                    $mins = floor($result->result / 60000);
+                                                    $secs = ($result->result - $mins * 60000) / 1000;
+                                                @endphp
+
+                                                <input class="table-input" table-cell table-cell-name="result"
+                                                    placeholder="00:00.00" type="text" x-data
+                                                    x-mask:dynamic="$input.startsWith('D') ? 'DNa' : ($input.startsWith('O') ? 'OOT' : '99:99.99')"
+                                                    value="{{ $result->result != null ? sprintf('%02d', $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT) : '' }}">
+                                            @endif
                                         @else
                                             @php
                                                 $mins = floor($result->result / 60000);
@@ -122,19 +150,12 @@
                                             @endphp
 
                                             <input class="table-input" table-cell table-cell-name="result"
-                                                placeholder="00:00.00" type="text" x-data x-mask="99:99.99"
+                                                placeholder="00:00.00" type="text" x-data
+                                                x-mask:dynamic="$input.startsWith('D') ? 'DNa' : ($input.startsWith('O') ? 'OOT' : '99:99.99')"
                                                 value="{{ $result->result != null ? sprintf('%02d', $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT) : '' }}">
                                         @endif
-                                    @else
-                                        @php
-                                            $mins = floor($result->result / 60000);
-                                            $secs = ($result->result - $mins * 60000) / 1000;
-                                        @endphp
-
-                                        <input class="table-input" table-cell table-cell-name="result"
-                                            placeholder="00:00.00" type="text" x-data x-mask="99:99.99"
-                                            value="{{ $result->result != null ? sprintf('%02d', $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT) : '' }}">
                                     @endif
+
 
 
 
@@ -142,7 +163,8 @@
                                 <td class="">
 
                                     <input class="table-input" ts table-cell table-cell-name="disqualification"
-                                        table-cell-optional placeholder="DQ###" type="text" x-data x-mask="DQ999"
+                                        table-cell-optional placeholder="DQ###" type="text" x-data
+                                        x-mask:dynamic="$input.startsWith('DQ100') ? 'DQ9999' : 'DQ999'"
                                         value="{{ $result->disqualification }}">
 
                                 </td>

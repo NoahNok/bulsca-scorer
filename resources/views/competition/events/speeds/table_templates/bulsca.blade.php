@@ -78,7 +78,7 @@
 
 
                 <td class="py-4 px-6">
-                    {{ $result->disqualification ?: '-' }}
+                    {{ App\Models\SpeedResult::remapDq($result->disqualification) ?: '-' }}
                 </td>
 
                 @if ($event->hasPenalties())

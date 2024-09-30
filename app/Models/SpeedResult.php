@@ -102,4 +102,14 @@ class SpeedResult extends Loggable
         $result = str_pad($minutes, 2, "0", STR_PAD_LEFT) . ":" . str_pad($seconds, 2, "0", STR_PAD_LEFT) . "." . str_pad($milliseconds, 3, "0", STR_PAD_LEFT);
         return $result;
     }
+
+    public static function remapDq($dq)
+    {
+        return match ($dq) {
+            'DQ015' => 'DNF',
+            'DQ004' => 'DNS',
+            'DQ1001' => 'OOT',
+            default => $dq,
+        };
+    }
 }
