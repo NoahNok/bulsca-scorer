@@ -62,7 +62,7 @@
     @foreach ($events as $event)
         @forelse ($tanks->groupBy('serc_tank') as $key => $tank)
             @foreach ($tank as $draw => $competitior)
-                <div class="min-h-[297mm] min-w-[210mm] bg-white p-5 flex flex-col grow-0 relative">
+                <div class="min-h-[297mm] min-w-[210mm] max-w-[210mm] bg-white p-5 flex flex-col grow-0 relative">
                     @if ($loop->index == 0)
                         <div class="absolute top-0 left-0 w-full h-2 bg-black">&nbsp;</div>
                     @endif
@@ -86,6 +86,12 @@
                         </p>
                     </div>
 
+                    @if ($event->image)
+                        <div class="flex items-center justify-center">
+                            <img src="{{ asset('storage/' . $event->image) }}" alt="SERC Image" class=" w-[70%] ">
+
+                        </div>
+                    @endif
 
 
                     <table class=" table-fixed text-left ">

@@ -216,4 +216,38 @@ class SERCController extends Controller
         $serc->hide();
         return redirect()->back();
     }
+
+    public function addSercImage(Competition $comp, SERC $serc, Request $request)
+    {
+        $request->validate([
+            'image' => 'nullable|image',
+        ]);
+
+        $oldImage = $serc->image;
+        if ($request->hasFile('image')) {
+            // Remove old file
+
+
+
+            if ($oldImage !== null) {
+                unlink(public_path() . '/storage/' . $oldImage);
+            }
+
+
+
+
+            $serc->image = $request->file('image')->store('serc-images', 'public');
+            $serc->save();
+        }
+
+        return redirect()->back();
+    }
+
+    public function removeSercImage(Competition $comp, SERC $serc)
+    {
+        unlink(public_path() . '/storage/' . $serc->image);
+        $serc->image = null;
+        $serc->save();
+        return redirect()->back();
+    }
 }

@@ -175,6 +175,30 @@
                         </div>
                     </div>
                 @endif
+
+                <div class="flex justify-between items-center">
+                    <div class="flex flex-col">
+                        <strong>SERC Image</strong>
+                        <small>Upload an image to display at the top of SERC marking sheets and digital judge</small>
+                    </div>
+
+                    <form action="{{ route('comps.view.sercs.image', [$comp, $serc]) }}" method="POST"
+                        enctype="multipart/form-data">
+                        @csrf
+                        <div class="form-input imb-0 ">
+                            <input type="file" name="image" id="" onchange="form.submit()">
+                        </div>
+                    </form>
+
+                </div>
+
+                @if ($serc->image)
+                    <div class="flex justify-between items-center">
+                        <img src="{{ asset('storage/' . $serc->image) }}" alt="SERC Image" class=" max-w-[25%] ">
+                        <a href="{{ route('comps.view.sercs.image.remove', [$comp, $serc]) }}"
+                            class="btn btn-danger">Remove</a>
+                    </div>
+                @endif
             </div>
         </div>
     </div>

@@ -141,6 +141,9 @@ Route::middleware('auth')->group(function () {
 
                     Route::get('/digital-judge-toggle', [DigitalJudgeController::class, 'sercToggle'])->name('dj.sercToggle');
                     Route::get('/hide', [SERCController::class, 'hide'])->name('comps.view.sercs.hide');
+
+                    Route::post('/image', [SERCController::class, 'addSercImage'])->name('comps.view.sercs.image');
+                    Route::get('/image/remove', [SERCController::class, 'removeSercImage'])->name('comps.view.sercs.image.remove');
                 });
             });
 

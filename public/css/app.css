@@ -1750,6 +1750,12 @@ video {
 .w-screen {
   width: 100vw;
 }
+.w-1\/2 {
+  width: 50%;
+}
+.w-\[50\%\] {
+  width: 50%;
+}
 .min-w-\[2\.5rem\] {
   min-width: 2.5rem;
 }
@@ -1806,6 +1812,15 @@ video {
 }
 .max-w-xl {
   max-width: 36rem;
+}
+.max-w-\[50\%\] {
+  max-width: 50%;
+}
+.max-w-\[25\%\] {
+  max-width: 25%;
+}
+.max-w-\[210mm\] {
+  max-width: 210mm;
 }
 .flex-1 {
   flex: 1 1 0%;

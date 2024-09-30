@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Storage;
 
 class BrandController extends Controller
 {
-    
+
     public function index()
     {
         return view('admin.brands.index');
@@ -30,7 +30,7 @@ class BrandController extends Controller
             'secondary_color' => 'nullable|string',
             'logo' => 'nullable|image',
         ]);
-        
+
 
         $brand = Brand::create($request->all());
 
@@ -75,7 +75,7 @@ class BrandController extends Controller
                 unlink(public_path() . '/storage/' . $oldImage);
             }
 
-     
+
 
 
             $brand->update([
@@ -85,7 +85,7 @@ class BrandController extends Controller
 
         return redirect()->route('admin.brands.show', $brand)->with('success', 'Updated brand successfully');
     }
-    
+
     public function destroy(Brand $brand)
     {
         $brand->delete();

@@ -62,7 +62,8 @@
     @foreach ($events as $event)
         @foreach ($tanks->sortBy('serc_order') as $draw => $competitior)
             @foreach ($event->getJudges as $judge)
-                <div class="min-h-[297mm] min-w-[210mm] bg-white p-5 flex flex-col grow-0 relative   print:mt-2">
+                <div
+                    class="min-h-[297mm] min-w-[210mm] max-w-[210mm] bg-white p-5 flex flex-col grow-0 relative   print:mt-2">
                     @if ($loop->index == 0)
                         <div class="absolute top-0 left-0 w-full h-2 bg-black">&nbsp;</div>
                     @endif
@@ -85,6 +86,13 @@
                         <p class="text-small text-gray-500">
                         </p>
                     </div>
+
+                    @if ($event->image)
+                        <div class="flex items-center justify-center">
+                            <img src="{{ asset('storage/' . $event->image) }}" alt="SERC Image" class=" w-[70%] ">
+
+                        </div>
+                    @endif
 
 
                     @if (strip_tags($judge->description) != '')
