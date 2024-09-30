@@ -151,7 +151,7 @@
                                 <td class="py-4 px-6 hover:underline cursor-pointer"
                                     title="{{ $result->disqualification ? App\Models\DQCode::message($result->disqualification) : '' }}"
                                     @click="showDqPen('{{ $result->disqualification }}', {{ $result->tid }})">
-                                    {{ $result->disqualification ?: '-' }}
+                                    {{ App\Models\SpeedResult::remapDq($result->disqualification) ?: '-' }}
                                 </td>
 
                                 @if ($event->hasPenalties())

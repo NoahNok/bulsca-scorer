@@ -124,10 +124,10 @@
 
                             </td>
                             <td class="py-4 px-6 hover:underline cursor-pointer">
-                                {{ $result->disqualification ?: '-' }}
+                                {{ App\Models\SpeedResult::remapDq($result->disqualification) ?: '-' }}
                                 @if ($pair)
                                     <br>
-                                    {{ $result->pair->disqualification ?: '-' }}
+                                    {{ App\Models\SpeedResult::remapDq($result->disqualification) ?: '-' }}
                                 @endif
                             </td>
 
