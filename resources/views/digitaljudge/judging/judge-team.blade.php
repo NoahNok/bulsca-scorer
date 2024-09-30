@@ -58,6 +58,14 @@
 
 
             <hr>
+            @if ($serc->image)
+                <div class="flex items-center justify-center">
+                    <img src="{{ asset('storage/' . $serc->image) }}" alt="SERC Image" class=" w-full ">
+
+                </div>
+                <hr>
+            @endif
+
             @php
                 $mpIds = [];
             @endphp
