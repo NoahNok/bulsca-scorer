@@ -160,14 +160,13 @@ class ResultSchema extends Model
     }
 
 
-    public function autoCast() {
+    public function autoCast()
+    {
 
         if ($this->getCompetition->scoring_type == "rlss-nationals") {
             return ClassHelpers::castToClass($this, NationalsResultSchema::class);
         }
 
         return $this;
-
     }
-
 }

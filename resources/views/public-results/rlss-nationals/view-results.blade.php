@@ -49,13 +49,19 @@
 
     </div>
 
+
+
     <div class="container mx-auto py-6 overflow-x-hidden">
         <a class="link" href="{{ route('public.results.comp', [$comp->resultsSlug()]) }}"><small>Back</small></a>
 
-        <h2 class="font-astoria text-rlss-blue font-extrabold hmb-0">{{ $schema->name }}</h2>
+        <h2 class="font-astoria text-rlss-blue font-extrabold hmb-0">{{ $schema->name }}
+        </h2>
         <p>You may need to scroll/drag on the table to see more results.</p>
         <br>
         <div class="  relative overflow-x-auto w-full  lg:max-w-[80vw] max-h-[90vh] lg:max-h-[80vh]  ">
+            @php
+                $overalls = str_starts_with($schema->league, 'O');
+            @endphp
             <table id="table"
                 class="table-highlight text-sm w-full shadow-md rounded-lg top-0 text-left text-gray-500 border-collapse relative">
                 <thead class="text-xs text-gray-700  uppercase bg-gray-50 ">
@@ -67,12 +73,21 @@
                             Competitior(s)
                         </th>
                         @foreach ($results['eventOrder'] as $event)
-                            <th scope="col" class="py-2 px-4 whitespace-nowrap">
-                                {{ $event }} Points
-                            </th>
+                            @if (!$overalls)
+                                <th scope="col" class="py-2 px-4 whitespace-nowra text-right">
+                                    {{ $event }} Result
+                                </th>
+                                <th scope="col" class="py-2 px-4 whitespace-nowrap text-center">
+                                    Pos
+                                </th>
+                            @else
+                                <th scope="col" class="py-2 px-4 whitespace-nowra text-right">
+                                    {{ $event }}
+                                </th>
+                            @endif
                         @endforeach
                         <th scope="col" class="py-3 px-6  whitespace-nowrap ">
-                            Total Points
+                            Total
                         </th>
                         <th scope="col" class="py-3 px-6  whitespace-nowrap relative  top-0 md:right-0">
                             Place
@@ -87,6 +102,7 @@
                     @forelse ($results['results'] as $result)
                         <tr class="bg-white border-b  place-{{ $result->place }} ">
 
+
                             <td
                                 class="py-3 px-6 text-black text-sm whitespace-nowrap bg-white max-w-[40vw] overflow-x-auto">
                                 {{ $result->name }}
@@ -95,7 +111,62 @@
 
 
                             @foreach ($result->events as $event)
-                                <td class="py-2 px-4 text-black text-xs whitespace-nowrap">
+                                @php
+                                    $pair = property_exists($event, 'pair');
+                                @endphp
+
+                                @if (!$overalls)
+                                    <td class="py-2 px-4 text-black text-xs whitespace-nowrap">
+
+                                        <div class="flex items-center  justify-end ">
+                                            @if ($event->type == 'speed')
+                                                @if ($pair)
+                                                    <div class="flex items-center justify-end">
+                                                        <div class="border-r pr-2">
+
+                                                            @if ($event->disqualification)
+                                                                {{ App\Models\SpeedResult::remapDq($event->disqualification) }}
+                                                            @else
+                                                                {{ App\Models\SpeedResult::prettyTime($event->base_result) }}
+                                                            @endif
+
+
+                                                            <br>
+                                                            @if ($event->pair->disqualification)
+                                                                {{ App\Models\SpeedResult::remapDq($event->pair->disqualification) }}
+                                                            @else
+                                                                {{ App\Models\SpeedResult::prettyTime($event->pair->base_result) }}
+                                                            @endif
+
+
+                                                        </div>
+                                                        <div class="ml-2">
+                                                            {{ App\Models\SpeedResult::prettyTime($event->result) }}
+                                                        </div>
+
+                                                    </div>
+                                                @else
+                                                    {{ App\Models\SpeedResult::prettyTime($event->result) }}
+
+                                                    @if ($event->result != $event->base_result)
+                                                        <br>
+                                                        <small>
+                                                            Was
+                                                            {{ App\Models\SpeedResult::prettyTime((int) $event->base_result) }}
+                                                        </small>
+                                                    @endif
+                                                @endif
+                                            @else
+                                                <div>
+                                                    {{ round($event->score) }}
+                                                </div>
+                                            @endif
+
+
+                                        </div>
+                                    </td>
+                                @endif
+                                <td class="py-2 px-4 text-black text-xs text-center whitespace-nowrap">
                                     {{ ($event?->place ?? 16) * ($event?->weight ?? 1) }}
                                 </td>
                             @endforeach

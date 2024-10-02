@@ -13,28 +13,28 @@ class NationalsResultSchema extends  ResultSchema
 {
     protected $table = 'result_schemas';
 
-    public function getResults() {
+    public function getResults()
+    {
 
         if ($this->league == "O" || $this->league == "OM") { // overall and overall masters
             return $this->handleOveralls();
         }
 
         return $this->getBracketResults($this->league);
-
-
-        
     }
 
-    private function getBracketResults($bracket) {
+    private function getBracketResults($bracket)
+    {
         request()->merge(['bracket' => $bracket]);
 
-      
-        $results = $this->getEvents->map(function($revent) {
+
+        $results = $this->getEvents->map(function ($revent) {
             $event = $revent->getActualEvent;
 
             $results = $event->getResults();
 
             foreach ($results as $result) {
+
                 $result->weight = $revent->weight;
                 $result->type = $event->getType();
                 $result->sub_type = $event->getType() == "serc" ? $event->type : $event->getName();
@@ -49,23 +49,23 @@ class NationalsResultSchema extends  ResultSchema
 
 
         // get all the unique tid that appear across all events
-        $tids = $results->map(function($event) {
-      
+        $tids = $results->map(function ($event) {
+
             if ($event['event']->getType() != "serc") {
                 return [];
             }
 
-            return collect($event['results'])->map(function($result) {
+            return collect($event['results'])->map(function ($result) {
                 return $result->tid;
             });
         })->flatten()->unique();
-      
-        
+
+
         // Now loop the tids to get the results
-        $finalResults = $tids->map(function($tid) use ($results) {
+        $finalResults = $tids->map(function ($tid) use ($results) {
             $result = new \stdClass();
             $result->tid = $tid;
-            
+
 
             // attempt to find the team name from any of the events
 
@@ -75,33 +75,32 @@ class NationalsResultSchema extends  ResultSchema
             })['results'])->where('tid', $tid)->first();
 
             $targetCid = $nameData->cid;
-         
-        
+
+
 
             $result->name = $nameData->team . (property_exists($nameData, 'pair') ? ' & ' . $nameData->pair : '') . " - " . $nameData->club_name . " (" . $nameData->club_region . ")";
             $result->region = $nameData->club_region;
-            $result->events = $results->map(function($event) use ($targetCid) {
-             
+            $result->events = $results->map(function ($event) use ($targetCid) {
+
 
                 return collect($event['results'])->where('cid', $targetCid)->first();
             });
-      
-    
-            
+
+
+
             // get final summed score across events
-            $result->score = $result->events->sum(function($event) {
+            $result->score = $result->events->sum(function ($event) {
 
 
                 $score = 16;
-                
+
 
                 if (!is_string($event) && $event != null) {
-                    
 
-                 
+
+
 
                     $score = $event->place;
-                    
                 }
 
                 $score *= $event?->weight ?? 1;
@@ -109,7 +108,7 @@ class NationalsResultSchema extends  ResultSchema
                 return $score;
             });
 
-            
+
             return $result;
         });
 
@@ -135,8 +134,8 @@ class NationalsResultSchema extends  ResultSchema
         }
 
         // sort results with same place first by wet score the nby dry score otherwise leave as is
-        $finalResults = $finalResults->sort(function($result1, $result2) {
-            
+        $finalResults = $finalResults->sort(function ($result1, $result2) {
+
             if ($result1->place != $result2->place) {
                 return 0;
             }
@@ -149,18 +148,16 @@ class NationalsResultSchema extends  ResultSchema
 
             if ($result1Wet == $result2Wet) {
 
-   
+
                 if ($result1Dry == $result2Dry) {
                     $result2->draw = true;
                     return 0;
                 }
-                
+
                 return $result1Dry <=> $result2Dry;
             }
 
             return $result1Wet <=> $result2Wet;
-
-
         })->values();
 
         // re iterate the palces from 1 to 16 - there are 
@@ -169,7 +166,7 @@ class NationalsResultSchema extends  ResultSchema
         foreach ($finalResults as $result) {
 
             if ($result?->draw ?? false) {
-                
+
                 $result->place = $currentPlace;
                 continue;
             }
@@ -179,15 +176,17 @@ class NationalsResultSchema extends  ResultSchema
         }
 
 
-        $eventOrder = $this->getEvents->map(function($event) {
+        $eventOrder = $this->getEvents->map(function ($event) {
             return $event->getActualEvent->getName();
         });
+
 
 
         return ['results' => $finalResults, 'eventOrder' => $eventOrder];
     }
 
-    private function handleOveralls(){
+    private function handleOveralls()
+    {
 
         $brackets = [];
 
@@ -198,7 +197,7 @@ class NationalsResultSchema extends  ResultSchema
         }
 
 
-  
+
 
         $resultsPerBracket = [];
 
@@ -206,10 +205,10 @@ class NationalsResultSchema extends  ResultSchema
             $resultsPerBracket[$bracket->name] = $this->getBracketResults($bracket->id);
         }
 
-        
 
 
-   
+
+
 
         // join up the results via the region name. each regions final score is the sum of its brackets scores. if there are no entires for a bracket they get 16
 
@@ -230,15 +229,12 @@ class NationalsResultSchema extends  ResultSchema
                 $tt->place = $t;
 
                 $regionBrackets[$region][$bracketName] = $tt;
-    
-               
             }
 
             $regionResults[$region] = $regionScore;
-           
         }
 
-        
+
         // sort the regions by score
         $regionResults = collect($regionResults)->sort()->toArray();
 
@@ -266,15 +262,15 @@ class NationalsResultSchema extends  ResultSchema
             $data->score = $score;
             $data->name = $region;
             $data->events = $regionBrackets[$region];
-     
-            
+
+
 
             $finalResults[$region] = $data;
         }
 
-      
 
-        $eventOrder = $brackets->map(function($bracket) {
+
+        $eventOrder = $brackets->map(function ($bracket) {
             return $bracket->name;
         });
 
@@ -282,5 +278,4 @@ class NationalsResultSchema extends  ResultSchema
 
         return ['results' => $finalResults, 'eventOrder' => $eventOrder,  'overalls' => true];
     }
-
 }
