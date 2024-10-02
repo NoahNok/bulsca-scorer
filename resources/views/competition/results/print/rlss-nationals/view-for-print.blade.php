@@ -11,7 +11,7 @@
     <div class="  " id="raw_data">
 
 
-        <div class="w-screen h-48 bg-rlss-blue flex  items-center justify-start px-6 overflow-x-hidden space-x-6"
+        <div class="w-screen h-36 bg-rlss-blue flex  items-center justify-start px-6 overflow-x-hidden space-x-6"
             style="background-image: url('/rlss-transparent.svg'); background-position-y: center; background-position-x: -100px; background-repeat: no-repeat;">
 
             <div class="">
@@ -23,6 +23,12 @@
 
             <div class="">
                 <h3 class=" text-white font-astoria hmb-0">{{ $schema->name }}</h3>
+
+            </div>
+
+            <div class=" flex items-center justify-center space-x-3 pl-12">
+                <p class="text-white font-ariel text-xs -mt-1">Result breakdowns availalbe online</p>
+                {!! QrCode::size(75)->style('round')->generate(\App\Helpers\RouteHelpers::externalRoute('results', 'public.results.comp', $comp->resultsSlug())) !!}
             </div>
 
             <div class="!ml-auto   ">
@@ -91,7 +97,7 @@
     </div>
     <script>
         window.onload = function() {
-            window.print()
+            // window.print()
         }
     </script>
 </body>
