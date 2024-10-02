@@ -97,6 +97,7 @@
 
                     </tr>
                 </thead>
+
                 <tbody id="table-body">
 
                     @forelse ($results['results'] as $result)
@@ -105,7 +106,32 @@
 
                             <td
                                 class="py-3 px-6 text-black text-sm whitespace-nowrap bg-white max-w-[40vw] overflow-x-auto">
-                                {{ $result->name }}
+
+                                @php
+                                    $nameGroup = collect($result->events)
+                                        ->where('type', 'speed')
+                                        ->first();
+
+                                @endphp
+
+                                @if ($nameGroup && property_exists($nameGroup, 'pair'))
+                                    @if ($nameGroup->team > $nameGroup->pair->name)
+                                        {{ $nameGroup->team }}
+                                        <br>
+                                        {{ $nameGroup->pair->name }}
+                                    @else
+                                        {{ $nameGroup->pair->name }}
+                                        <br>
+                                        {{ $nameGroup->team }}
+                                    @endif
+                                @else
+                                    {{ $result->name }}
+                                @endif
+
+
+
+
+
 
                             </td>
 
@@ -124,19 +150,35 @@
                                                     <div class="flex items-center justify-end">
                                                         <div class="border-r pr-2">
 
-                                                            @if ($event->disqualification)
-                                                                {{ App\Models\SpeedResult::remapDq($event->disqualification) }}
+                                                            @if ($event->team > $event->pair->name)
+                                                                @if ($event->disqualification)
+                                                                    {{ App\Models\SpeedResult::remapDq($event->disqualification) }}
+                                                                @else
+                                                                    {{ App\Models\SpeedResult::prettyTime($event->base_result) }}
+                                                                @endif
+
+
+                                                                <br>
+                                                                @if ($event->pair->disqualification)
+                                                                    {{ App\Models\SpeedResult::remapDq($event->pair->disqualification) }}
+                                                                @else
+                                                                    {{ App\Models\SpeedResult::prettyTime($event->pair->base_result) }}
+                                                                @endif
                                                             @else
-                                                                {{ App\Models\SpeedResult::prettyTime($event->base_result) }}
+                                                                @if ($event->pair->disqualification)
+                                                                    {{ App\Models\SpeedResult::remapDq($event->pair->disqualification) }}
+                                                                @else
+                                                                    {{ App\Models\SpeedResult::prettyTime($event->pair->base_result) }}
+                                                                @endif
+                                                                <br>
+                                                                @if ($event->disqualification)
+                                                                    {{ App\Models\SpeedResult::remapDq($event->disqualification) }}
+                                                                @else
+                                                                    {{ App\Models\SpeedResult::prettyTime($event->base_result) }}
+                                                                @endif
                                                             @endif
 
 
-                                                            <br>
-                                                            @if ($event->pair->disqualification)
-                                                                {{ App\Models\SpeedResult::remapDq($event->pair->disqualification) }}
-                                                            @else
-                                                                {{ App\Models\SpeedResult::prettyTime($event->pair->base_result) }}
-                                                            @endif
 
 
                                                         </div>
@@ -158,7 +200,7 @@
                                                 @endif
                                             @else
                                                 <div>
-                                                    {{ round($event->score) }}
+                                                    {{ round($event->score, 1) }}
                                                 </div>
                                             @endif
 
