@@ -37,6 +37,7 @@ class SERCController extends Controller
         $serc = new SERC();
         $serc->name = $json->serc_name;
         $serc->competition = $comp->id;
+        $serc->type = $json->serc_type;
         $serc->save();
 
         foreach ($json->judges as $judge) {
