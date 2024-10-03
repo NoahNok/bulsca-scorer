@@ -28,7 +28,9 @@
 
             <div class=" flex items-center justify-center space-x-3 pl-12">
                 <p class="text-white font-ariel text-xs -mt-1">Result breakdowns availalbe online</p>
-                {!! QrCode::size(75)->style('round')->generate(\App\Helpers\RouteHelpers::externalRoute('results', 'public.results.comp', $comp->resultsSlug())) !!}
+                {!! QrCode::size(75)->style('round')->generate(
+                        \App\Helpers\RouteHelpers::externalRoute('results', 'public.results.results', [$comp->resultsSlug(), $schema]),
+                    ) !!}
             </div>
 
             <div class="!ml-auto   ">
