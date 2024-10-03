@@ -183,6 +183,11 @@ class SERCJudge {
             "[serc-builder-judge-description]"
         );
 
+        let existingToolbar = this.element.querySelector(".ql-toolbar");
+        if (existingToolbar) {
+            existingToolbar.outerHTML = "";
+        }
+
         this.judge_description = new Quill(judge_description, {
             theme: "snow",
             placeholder: "Enter marking hints/help/specification here.",

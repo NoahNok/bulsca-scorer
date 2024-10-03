@@ -45,6 +45,7 @@ class SERCController extends Controller
             $j = new SERCJudge();
             $j->name = $judge->name;
             $j->serc = $serc->id;
+            $j->description = $judge->description;
             $j->save();
 
             foreach ($judge->marking_points as $marking_point) {
