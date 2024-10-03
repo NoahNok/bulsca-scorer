@@ -57,10 +57,15 @@
             </p>
 
         </div>
+        <br>
     @endif
 
 
-    <h2>Results</h2>
+    <div class="flex items-center justify-between">
+        <h2>Results</h2>
+        <a href="{{ route('comps,.view.results.print-all', $comp) }}" target="_blank"
+            class="btn @if ($comp->scoring_type != 'rlss-nationals') btn-disabled @endif">Print All</a>
+    </div>
 
     <p><strong>Do not</strong> make a results sheet until you have made all your events! (You cannot edit which events are
         part of a results sheet after it has been made!)</p>

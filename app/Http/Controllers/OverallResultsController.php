@@ -44,6 +44,18 @@ class OverallResultsController extends Controller
         return view("competition.results.print.$comp->scoring_type.view-for-print", ['results' => $results, 'schema' => $schema, 'comp' => $comp]);
     }
 
+    public function printAll(Competition $comp)
+    {
+        $data = [];
+        foreach ($comp->getResultSchemas as $schema) {
+            $schema = $schema->autoCast();
+            $results = $schema->getResults() ?? [];
+            array_push($data, ['results' => $results, 'schema' => $schema]);
+        }
+
+        return view("competition.results.print.all", ['data' => $data, 'comp' => $comp]);
+    }
+
 
     public function view(Competition $comp)
     {

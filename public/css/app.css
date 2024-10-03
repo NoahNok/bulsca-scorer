@@ -1616,6 +1616,9 @@ video {
 .h-screen {
   height: 100vh;
 }
+.h-\[210mm\] {
+  height: 210mm;
+}
 .max-h-32 {
   max-height: 8rem;
 }
@@ -1631,6 +1634,12 @@ video {
 .max-h-\[90vh\] {
   max-height: 90vh;
 }
+.max-h-24 {
+  max-height: 6rem;
+}
+.max-h-4 {
+  max-height: 1rem;
+}
 .min-h-\[20px\] {
   min-height: 20px;
 }
@@ -1639,6 +1648,9 @@ video {
 }
 .min-h-screen {
   min-height: 100vh;
+}
+.min-h-\[210mm\] {
+  min-height: 210mm;
 }
 .w-0 {
   width: 0px;
@@ -1921,6 +1933,14 @@ video {
 }
 .list-none {
   list-style-type: none;
+}
+.break-before-page {
+  -moz-column-break-before: page;
+       break-before: page;
+}
+.break-after-page {
+  -moz-column-break-after: page;
+       break-after: page;
 }
 .grid-cols-1 {
   grid-template-columns: repeat(1, minmax(0, 1fr));
@@ -4774,6 +4794,10 @@ aside.open {
 
   .print\:hidden {
     display: none;
+  }
+
+  .print\:h-\[210mm\] {
+    height: 210mm;
   }
 
   .print\:space-y-0 > :not([hidden]) ~ :not([hidden]) {

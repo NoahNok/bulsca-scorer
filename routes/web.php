@@ -174,6 +174,7 @@ Route::middleware('auth')->group(function () {
                 Route::post('', [OverallResultsController::class, 'addPost'])->name('comps.view.results.addPost');
                 Route::delete('/{schema}', [OverallResultsController::class, 'delete'])->name('comps.view.results.delete');
                 Route::get('/{schema}/hide', [OverallResultsController::class, 'hide'])->name('comps.view.results.hide');
+                Route::get('/print-all', [OverallResultsController::class, 'printAll'])->name('comps,.view.results.print-all');
             });
 
             // HEATS AND SERC ORDER
