@@ -51,9 +51,11 @@
 
         <br>
 
-        <h2 class="font-astoria text-rlss-blue font-extrabold">Event Order - Diving Pit Side</h2>
+        <h2 class="font-astoria text-rlss-blue font-extrabold md:hidden ">Event Order</h2>
+        <h2 class="font-astoria text-rlss-blue font-extrabold hidden md:block ">Event Order - Diving Pit Side</h2>
 
         @php
+            $pools = ['Diving Pit End', 'Scoreboard End'];
             $entries = collect(
                 DB::select(
                     'SELECT h.id, h.heat, h.lane, ct.team, l.name AS league, c.name AS club, c.region FROM heats h INNER JOIN competition_teams ct ON ct.id=h.team INNER JOIN leagues l ON l.id=ct.league INNER JOIN clubs c ON c.id=ct.club WHERE h.competition = ? ORDER BY heat, lane;',
@@ -63,14 +65,45 @@
             $heats = $entries->sortBy(['heat', 'lane'])->groupBy('heat');
         @endphp
 
-        <div class="w-full overflow-x-auto  ">
-            <table class="table-auto font-greycliff">
+        <div class="w-full font-greycliff flex flex-col md:hidden">
+            @foreach ($heats as $key => $heat)
+                <div class=" bg-rlss-blue px-4 pt-3 pb-[0.375rem]">
+                    <h3 class="text-3xl text-white font-astoria hmb-0 flex items-center justify-between">Heat
+                        {{ $heat->first()->heat }}
+                        <span class="text-base text-rlss-yellow">{{ $pools[($key + 1) % 2] }}</span>
+                    </h3>
+                </div>
+
+
+
+                @for ($l = 1; $l <= $comp->max_lanes; $l++)
+                    @php
+                        $lane = $heat->where('lane', $l)->first();
+                    @endphp
+                    @if ($lane)
+                        <div class="flex grow">
+                            <div class=" bg-rlss-blue text-white font-greycliff font-semibold py-3 w-8 text-center">
+                                {{ $l }}
+                            </div>
+                            <div class="py-2 px-3  grow">
+
+                                {{ $lane->team }}
+
+                            </div>
+                        </div>
+                    @endif
+                @endfor
+            @endforeach
+        </div>
+
+        <div class="w-full overflow-x-auto hidden md:block ">
+            <table class="table-auto font-greycliff min-w-full">
                 <thead>
                     <tr class=" text-rlss-blue font-bold  ">
-                        <th class="bg-rlss-blue py-2 px-3 border border-rlss-blue sticky left-0 "></th>
-                        <th class=" bg-rlss-blue bg-opacity-40 py-2 px-3 border border-rlss-blue w-48  ">
+                        <th class="bg-rlss-blue py-2 px-3 border border-rlss-blue sticky left-0 top-0"></th>
+                        <th class=" bg-rlss-blue bg-opacity-40 py-2 px-3 border border-rlss-blue w-48 sticky top-0  ">
                             Category</th>
-                        <th class="border border-rlss-blue w-48">Lane 1</th>
+                        <th class="border border-rlss-blue w-48 sticky top-0 ">Lane 1</th>
                         <th class="border border-rlss-blue w-48">Lane 2</th>
                         <th class="border border-rlss-blue w-48">Lane 3</th>
                         <th class="border border-rlss-blue w-48">Lane 4</th>
@@ -84,7 +117,7 @@
                     @forelse ($heats->nth(2) as $key => $heat)
                         <tr class="relative">
                             <td
-                                class=" bg-rlss-blue text-white  text-center py-2 px-3 border border-rlss-blue sticky left-0 ">
+                                class=" bg-rlss-blue text-white  text-center py-2 px-3 border border-rlss-blue sticky left-0 w-2 ">
                                 {{ $heat->first()->heat }}</td>
                             <td
                                 class="py-2 px-3 bg-rlss-blue bg-opacity-40 text-rlss-blue border border-rlss-blue text-center  ">
@@ -116,9 +149,9 @@
         </div>
 
         <br>
-        <h2 class="font-astoria text-rlss-blue font-extrabold ">Event Order - Scoreboard Side </h2>
-        <div class="w-full overflow-x-auto ">
-            <table class="table-auto font-greycliff">
+        <h2 class="font-astoria text-rlss-blue font-extrabold hidden md:block ">Event Order - Scoreboard Side </h2>
+        <div class="w-full overflow-x-auto hidden md:block ">
+            <table class="table-auto font-greycliff w-full">
                 <thead>
                     <tr class=" text-rlss-blue font-bold sticky top-0 left-0">
                         <th class="bg-rlss-blue py-2 px-3 border border-rlss-blue sticky left-0"></th>
@@ -138,7 +171,7 @@
                     @forelse ($heats->nth(2,1) as $key => $heat)
                         <tr>
                             <td
-                                class=" bg-rlss-blue text-white  text-center py-2 px-3 border border-rlss-blue sticky left-0">
+                                class=" bg-rlss-blue text-white  text-center py-2 px-3 border border-rlss-blue sticky left-0 w-2">
                                 {{ $heat->first()->heat }}</td>
                             <td
                                 class="py-2 px-3 bg-rlss-blue bg-opacity-40 text-rlss-blue border border-rlss-blue text-center">
@@ -172,7 +205,7 @@
         <br>
         <h2 class="font-astoria text-rlss-blue font-extrabold " id="tanks">Initiative Tanks </h2>
 
-        <div class="grid-4">
+        <div class="grid-3">
 
             @foreach ($comp->getSercTanks()->groupBy('serc_tank')->sortKeys() as $tankNo => $tank)
                 <div>
@@ -181,8 +214,8 @@
                     <table class="table-auto font-greycliff">
                         <thead>
                             <tr class=" text-rlss-blue font-bold">
-                                <th class="bg-rlss-blue py-2 px-3 border border-rlss-blue"></th>
-                                <th class=" bg-rlss-blue bg-opacity-40 py-2 px-3 border border-rlss-blue w-48">Category
+                                <th class="bg-rlss-blue py-2 px-2 border border-rlss-blue"></th>
+                                <th class=" bg-rlss-blue bg-opacity-40 py-2 px-2 border border-rlss-blue w-48">Category
                                 </th>
                                 <th class="border border-rlss-blue w-48 ">Region</th>
                                 <th class="border border-rlss-blue w-48">Competitor</th>
@@ -191,19 +224,19 @@
                         </thead>
                         <tbody>
                             @forelse ($tank as $heatNo => $competitor)
-                                <tr>
+                                <tr class="">
                                     <td
-                                        class=" bg-rlss-blue text-white  text-center py-2 px-3 border border-rlss-blue ">
+                                        class=" bg-rlss-blue text-white  text-center py-2 px-2 border border-rlss-blue ">
                                         {{ $heatNo + 1 }}</td>
                                     <td
-                                        class="py-2 px-3 bg-rlss-blue bg-opacity-40 text-rlss-blue border border-rlss-blue text-center">
+                                        class="py-2 px-2 bg-rlss-blue bg-opacity-40 text-rlss-blue border border-rlss-blue text-center">
                                         {{ $competitor->league }}
                                     </td>
 
-                                    <td class="py-2 px-3 text-center border border-rlss-blue">
+                                    <td class="py-2 px-2 text-center border border-rlss-blue">
                                         {{ $competitor->region }}
                                     </td>
-                                    <td class="py-2 px-3 text-center border border-rlss-blue">
+                                    <td class="py-2 px-2 text-center border border-rlss-blue">
                                         {{ $competitor->team }}
                                     </td>
 

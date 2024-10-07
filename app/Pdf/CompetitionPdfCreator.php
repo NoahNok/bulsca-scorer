@@ -37,7 +37,7 @@ class CompetitionPdfCreator
     {
 
 
-        $poolNames = ['Main Pool - Scoreboard End', 'Main Pool - Diving Pit End'];
+        $poolNames = ['Main Pool - Diving Pit End', 'Main Pool - Scoreboard End'];
         $eventNames = $this->comp->getSpeedEvents->map(fn($event) => $event->getName());
         $heats = $this->comp->getHeats();
         return view("pdfs.heats.chief-timekeeper:$this->scoringType", ['brand' => $this->brand, 'location' => $this->comp->where, 'poolNames' => $poolNames, 'eventNames' => $eventNames, 'heats' => $heats, 'comp' => $this->comp]);
