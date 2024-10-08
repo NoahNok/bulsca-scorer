@@ -265,7 +265,7 @@
                                         {{ $competitor->region }}
                                     </td>
                                     <td class="py-2 px-2 text-center border border-rlss-blue"
-                                        x-bind:class="shouldShow ? 'bg-rlss-blue text-rlss-yellow' : ''">
+                                        x-bind:class="shouldShow && searchTerm.trim() != '' ? 'bg-rlss-blue text-rlss-yellow' : ''">
                                         {{ $competitor->team }}
                                     </td>
 
