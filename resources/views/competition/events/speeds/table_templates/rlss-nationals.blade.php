@@ -90,7 +90,7 @@
                     {{ App\Models\SpeedResult::remapDq($result->disqualification) ?: '-' }}
                     @if ($pair)
                         <br>
-                        {{ App\Models\SpeedResult::remapDq($result->disqualification) ?: '-' }}
+                        {{ App\Models\SpeedResult::remapDq($result->pair->disqualification) ?: '-' }}
                     @endif
                 </td>
 
