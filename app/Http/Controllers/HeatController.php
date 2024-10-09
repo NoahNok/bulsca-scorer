@@ -149,16 +149,23 @@ class HeatController extends Controller
                 // Get all teams/competitors for this bracket and assign them this tank and random order
                 $bracketId = $bracket['league'];
 
-                $competitors = $comp->getCompetitionTeams()->where('league', $bracketId)->get();
+                $competitors = $comp->getCompetitionTeams()->where('league', $bracketId)->get()->unique('club');
 
                 $competitors->shuffle();
 
+
+
                 foreach ($competitors as $competitor) {
+
+
+
                     echo ($competitor);
                     $tankTotal++;
 
                     $competitor->serc_tank = $ind + 1;
                     $competitor->serc_order = $tankTotal;
+
+
 
                     $competitor->save();
                 }

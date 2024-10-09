@@ -146,4 +146,14 @@ class DigitalJudge
     {
         return CompetitionSpeedEvent::where('competition', $comp->id)->where('digitalJudgeEnabled', true)->where('digitalJudgeConfirmed', false)->get();
     }
+
+    public static function setTank(int|null $tank)
+    {
+        Session::put('digitalJudgeJudgeTank', $tank);
+    }
+
+    public static function getTank(): int
+    {
+        return (int) Session::get('digitalJudgeJudgeTank');
+    }
 }

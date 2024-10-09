@@ -81,7 +81,12 @@
 
                     <br>
                     <div class="flex justify-between items-center">
-                        <h4>{{ $competitior->team }}</h4>
+                        @php
+                            $team = App\Models\Competitor::find($competitior->tid);
+                            $name = $team->getFUllname();
+                            $name = Str::substr($name, 0, strpos($name, '-'));
+                        @endphp
+                        <h4>{{ $name }}</h4>
                         <p class="text-small text-gray-500">{{ $competitior->region }} | {{ $competitior->league }}
                         </p>
                     </div>

@@ -5,6 +5,8 @@ namespace App\Pdf;
 use App\Models\Brands\Brand;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
+use App\Models\CompetitionTeam;
+use App\Models\Competitor;
 use App\Models\Interfaces\IEvent;
 use App\Models\SERC;
 use PhpParser\Node\Stmt\Foreach_;
@@ -61,7 +63,15 @@ class CompetitionPdfCreator
                 foreach ($this->comp->getSercTanks()->groupBy('serc_tank') as $ind => $tank) {
                     $uniqueBrackets = $tank->unique('league')->pluck('league')->join(', ');
                     $tank = $tank->map(function ($t) {
-                        return $this->scoringType === 'rlss-nationals' ? "$t->serc_order. $t->team ($t->region)" : "$t->serc_order. $t->club $t->team";
+
+                        if ($this->scoringType === 'rlss-nationals') {
+
+                            $c = Competitor::find($t->tid);
+                            $name = $c->getFullname();
+                            return "$t->serc_order. $name ($t->region)";
+                        } else {
+                            return  "$t->serc_order. $t->club $t->team";
+                        }
                     });
                     $data[] = ['name' => "Tank $ind ($uniqueBrackets)", 'data' => $tank];
                 }

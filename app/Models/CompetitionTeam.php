@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Data\TeamAdditionalDetailsData;
+use App\Helpers\ClassHelpers;
 use App\Traits\Cloneable;
 use Carbon\CarbonInterval;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -71,5 +72,10 @@ class CompetitionTeam extends Model
         }) + 1;
 
         return $position;
+    }
+
+    public function asCompetitior()
+    {
+        return ClassHelpers::castToClass($this, Competitor::class);
     }
 }

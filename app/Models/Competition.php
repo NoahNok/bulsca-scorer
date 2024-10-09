@@ -79,6 +79,12 @@ class Competition extends Model
 
     public function needsToRegenerateSERCDraw(): bool
     {
+
+        if ($this->scoring_type == 'rlss-nationals') {
+            $tanks = $this->getCompetitionTeams->unique('serc_tank')->pluck('serc_tank')->toArray();
+            return count($tanks) == 1 && $tanks[0] == '0';
+        }
+
         return $this->getCompetitionTeams()->where('serc_order', 0)->exists();
     }
 
@@ -171,7 +177,12 @@ class Competition extends Model
     // Like above but for just simple listing of names
     public function getSercTanks()
     {
-        return collect(DB::select('SELECT ct.team, l.name AS league, c.name AS club, c.region, ct.serc_tank, ct.serc_order FROM competition_teams ct INNER JOIN clubs c ON c.id=ct.club INNER JOIN leagues l ON l.id=ct.league WHERE competition=? ORDER BY serc_tank, serc_order;', [$this->id]));
+
+        if ($this->scoring_type == 'rlss-nationals') {
+            return collect(DB::select('SELECT ct.team, ct.id AS tid, l.name AS league, c.name AS club, c.region, ct.serc_tank, ct.serc_order FROM competition_teams ct INNER JOIN clubs c ON c.id=ct.club INNER JOIN leagues l ON l.id=ct.league WHERE competition=? AND serc_tank > 0 ORDER BY serc_tank, serc_order;', [$this->id]));
+        } else {
+            return collect(DB::select('SELECT ct.team, ct.id AS tid, l.name AS league, c.name AS club, c.region, ct.serc_tank, ct.serc_order FROM competition_teams ct INNER JOIN clubs c ON c.id=ct.club INNER JOIN leagues l ON l.id=ct.league WHERE competition=? ORDER BY serc_tank, serc_order;', [$this->id]));
+        }
     }
 
     public function getHeats()

@@ -50,6 +50,12 @@
                     @endforelse
                 </strong></p>
             <br>
+            @php
+
+                if ($comp->scoring_type == 'rlss-nationals') {
+                    $team = $team->asCompetitior();
+                }
+            @endphp
             <p class="text-xl">Team: <strong
                     class="text-bulsca">{{ $comp->show_teams_to_judges || $head ? $team->getFullname() : $team->getPositionInDraw() }}
                 </strong></p>

@@ -23,6 +23,10 @@
             @endforelse
         </h2>
 
+        @if (App\DigitalJudge\DigitalJudge::getTank())
+            <p class="font-bold">Marking Tank {{ App\DigitalJudge\DigitalJudge::getTank() }}</p>
+        @endif
+
 
 
         <p class="px-4">There are {{ $comp->getCompetitionTeams->count() }} teams. If you need to officiate multiple
@@ -54,27 +58,35 @@
         <h4>Team Order</h4>
 
         @if ($comp->show_teams_to_judges || $head)
-        <ul class=" list-decimal ">
-            @foreach ($comp->getCompetitionTeams as $team)
-                @if ($head)
-                    <li class="">
-                        <div class="grid grid-cols-2">
-                            <p>{{ $team->getFullname() }}</p> <a href="{{ route('dj.judging.judge-team', [$team]) }}"
-                                class="link col-start-5">Edit</a>
-                        </div>
-                    </li>
-                @else
-                    <li>{{ $team->getFullname() }}</li>
-                @endif
-            @endforeach
-        </ul>
+            <ul class=" list-decimal ">
+                @foreach ($comp->getCompetitionTeams->where('serc_tank', App\DigitalJudge\DigitalJudge::getTank()) as $team)
+                    @php
+
+                        if ($comp->scoring_type == 'rlss-nationals') {
+                            $team = $team->asCompetitior();
+                        }
+                    @endphp
+                    @if ($head)
+                        <li class="">
+                            <div class="grid grid-cols-2">
+                                <p>{{ $team->getFullname() }}</p> <a href="{{ route('dj.judging.judge-team', [$team]) }}"
+                                    class="link col-start-5">Edit</a>
+                            </div>
+                        </li>
+                    @else
+                        <li>{{ $team->getFullname() }}</li>
+                    @endif
+                @endforeach
+            </ul>
         @else
-        <div>
-            <p class="mb-0">There are <strong>{{ $comp->getCompetitionTeams->count() }}</strong> teams. You <strong>are not</strong> permitted to view team names.</p>
-        </div>
+            <div>
+                <p class="mb-0">There are <strong>{{ $comp->getCompetitionTeams->count() }}</strong> teams. You
+                    <strong>are not</strong> permitted to view team names.
+                </p>
+            </div>
         @endif
 
- 
+
         <br>
 
 

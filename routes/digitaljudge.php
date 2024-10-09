@@ -26,6 +26,10 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
         });
 
         Route::prefix('judging')->group(function () {
+
+            Route::get('tank', [DJJudgingController::class, 'selectTank'])->name('dj.judging.tank');
+            Route::get('tank/{tank}', [DJJudgingController::class, 'setTank'])->name('dj.judging.tank.set');
+
             Route::get('home', [DJJudgingController::class, 'home'])->name('dj.judging.home');
 
             Route::get('add-judge', [DJJudgingController::class, 'addJudge'])->name('dj.judging.add-judge');
@@ -113,5 +117,3 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
         })->name('LOCAL.dj.toggle-head-ref');
     }
 });
-
-

@@ -35,6 +35,12 @@ class DJJudgingController extends Controller
     public function confirmJudgePost(SERCJudge $judge)
     {
         DigitalJudge::setClientJudge($judge);
+
+        if (DigitalJudge::getClientCompetition()->scoring_type == 'rlss-nationals') {
+            return redirect()->route('dj.judging.tank');
+        }
+        DigitalJudge::setTank(null);
+
         return redirect()->route('dj.judging.home');
     }
 
@@ -50,6 +56,29 @@ class DJJudgingController extends Controller
     }
 
 
+    public function selectTank()
+    {
+        $tanks = DB::select("SELECT DISTINCT serc_tank FROM competition_teams WHERE competition=? AND serc_tank > 0 ORDER BY serc_tank ASC", [DigitalJudge::getClientCompetition()->id]);
+
+        return view('digitaljudge.judging.select-tank', array_merge(DigitalJudge::getBladeProps(), ['head' => DigitalJudge::isClientHeadJudge(), 'tanks' => $tanks]));
+    }
+
+    public function setTank(int $tank)
+    {
+
+        if ($tank < 1) $tank = 1;
+
+        $max = DB::select("SELECT MAX(serc_tank) AS max FROM competition_teams WHERE competition=?;", [DigitalJudge::getClientCompetition()->id])[0]->max;
+
+
+        if ($tank > $max) $tank = $max;
+
+        DigitalJudge::setTank($tank);
+
+        return redirect()->route('dj.judging.home');
+    }
+
+
 
     public function nextTeamForJudge(SERCJudge $judge)
     {
@@ -58,7 +87,17 @@ class DJJudgingController extends Controller
 
         $j = DigitalJudge::getClientJudges()[0]->id;
         $c = DigitalJudge::getClientCompetition()->id;
-        $nextTeamIdRow = DB::select("SELECT id FROM (SELECT id, (SELECT COUNT(*) FROM serc_results WHERE team=competition_teams.id AND marking_point IN (SELECT id FROM serc_marking_points WHERE judge=?)) AS markedPoints FROM competition_teams WHERE competition=? ORDER BY serc_order) AS b WHERE b.markedPoints = 0 LIMIT 1;", [$j, $c]);
+
+        $nextTeamIdRow = null;
+
+        if (DigitalJudge::getTank()) {
+            $nextTeamIdRow = DB::select("SELECT id FROM (SELECT id, (SELECT COUNT(*) FROM serc_results WHERE team=competition_teams.id AND marking_point IN (SELECT id FROM serc_marking_points WHERE judge=?)) AS markedPoints FROM competition_teams WHERE competition=? AND serc_tank=? ORDER BY serc_order) AS b WHERE b.markedPoints = 0 LIMIT 1;", [$j, $c, DigitalJudge::getTank()]);
+        } else {
+            $nextTeamIdRow = DB::select("SELECT id FROM (SELECT id, (SELECT COUNT(*) FROM serc_results WHERE team=competition_teams.id AND marking_point IN (SELECT id FROM serc_marking_points WHERE judge=?)) AS markedPoints FROM competition_teams WHERE competition=? ORDER BY serc_order) AS b WHERE b.markedPoints = 0 LIMIT 1;", [$j, $c]);
+        }
+
+
+
 
         $nextTeamId = $nextTeamIdRow ? $nextTeamIdRow[0]->id : null;
 

@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
 
 class RouteHelpers
@@ -44,6 +45,6 @@ class RouteHelpers
 
 
 
-        return 'https://' . $sub . '.' . $host . ($parts['path'] ?? '/');
+        return Request::getScheme() . "://" . $sub . '.' . $host . ($parts['path'] ?? '/');
     }
 }
