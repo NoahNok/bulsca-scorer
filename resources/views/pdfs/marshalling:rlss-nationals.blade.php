@@ -51,36 +51,46 @@
         </ol>
     </div>
 
-    @php
-        $data = collect($data);
+    @foreach ($data as $eventData)
+        @php
 
-        $chunks = $type == 'SERC' ? $data->chunk(1) : $data->chunk(3);
-    @endphp
+            $data = collect($eventData['heats']);
 
-    @foreach ($chunks as $chunk)
-        <div class="min-h-[297mm]   w-[210mm] bg-white p-5 flex flex-col grow ">
-            <div class="flex w-full justify-between items-center">
-                <h2 class="hmb-0">Marshalling</h2>
-                <p class=" font-semibold text-right break-words">{{ $comp->name }} -
-                    {{ $comp->when->format('jS F') }}<br><small>{{ $location }}</small></p>
+            $chunks = $type == 'SERC' ? $data->chunk(1) : $data->chunk(3);
+        @endphp
+
+        @foreach ($chunks as $chunk)
+            <div class="min-h-[297mm]   w-[210mm] bg-white p-5 flex flex-col grow ">
+                <div class="flex w-full justify-between items-center">
+                    <h2 class="hmb-0">Marshalling - {{ $eventData['event'] }}</h2>
+                    <p class=" font-semibold text-right break-words">{{ $comp->name }} -
+                        {{ $comp->when->format('jS F') }}<br><small>{{ $location }}</small></p>
+                </div>
+
+                <br>
+
+
+                @foreach ($chunk as $group)
+                    <div class="flex items-center justify-between">
+                        <h4 class="mt-1">{{ $group['name'] }}
+                        </h4>
+
+                        @if ($type != 'SERC')
+                            <p>{{ $poolNames[($group['number'] - 1) % count($poolNames)] }}</p>
+                        @endif
+                    </div>
+                    <ol class=" space-y-1">
+                        @foreach ($group['data'] as $name)
+                            <li>{{ $name }}</li>
+                        @endforeach
+                    </ol>
+                @endforeach
+
+
+
+
             </div>
-
-            <br>
-
-
-            @foreach ($chunk as $group)
-                <h4 class="mt-1">{{ $group['name'] }}</h4>
-                <ol class=" space-y-1">
-                    @foreach ($group['data'] as $name)
-                        <li>{{ $name }}</li>
-                    @endforeach
-                </ol>
-            @endforeach
-
-
-
-
-        </div>
+        @endforeach
     @endforeach
 
 

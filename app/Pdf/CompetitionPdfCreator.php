@@ -41,7 +41,12 @@ class CompetitionPdfCreator
 
         $poolNames = ['Main Pool - Diving Pit End', 'Main Pool - Scoreboard End'];
         $eventNames = $this->comp->getSpeedEvents->map(fn($event) => $event->getName());
-        $heats = $this->comp->getHeats();
+        $heats = [];
+        foreach ($this->comp->getSpeedEvents as $event) {
+            $heats[$event->getName()] = $this->comp->getHeats($event->id);
+        }
+
+
         return view("pdfs.heats.chief-timekeeper:$this->scoringType", ['brand' => $this->brand, 'location' => $this->comp->where, 'poolNames' => $poolNames, 'eventNames' => $eventNames, 'heats' => $heats, 'comp' => $this->comp]);
     }
 
@@ -60,7 +65,9 @@ class CompetitionPdfCreator
 
         switch ($type) {
             case 'serc':
+                $hd = [];
                 foreach ($this->comp->getSercTanks()->groupBy('serc_tank') as $ind => $tank) {
+
                     $uniqueBrackets = $tank->unique('league')->pluck('league')->join(', ');
                     $tank = $tank->map(function ($t) {
 
@@ -73,22 +80,28 @@ class CompetitionPdfCreator
                             return  "$t->serc_order. $t->club $t->team";
                         }
                     });
-                    $data[] = ['name' => "Tank $ind ($uniqueBrackets)", 'data' => $tank];
+                    $hd[] = ['name' => "Tank $ind ($uniqueBrackets)", 'data' => $tank, 'number' => $ind];
                 }
+                $data[] = ['event' => "SERC", 'heats' => $hd];
                 $type = strtoupper($type);
                 break;
             case 'speed':
-                foreach ($this->comp->getHeats()->groupBy('heat') as $ind => $heat) {
-                    $uniqueBrackets = $heat->unique('league')->pluck('league')->join(', ');
-                    $heat = $heat->sortBy('lane')->map(function ($l) {
-                        return $this->scoringType === 'rlss-nationals' ?  "Lane $l->lane: $l->team ($l->region)" : "Lane $l->lane: $l->club $l->team";
-                    });
+                foreach ($this->comp->getSpeedEvents as $event) {
+                    $hd = [];
+                    foreach ($this->comp->getHeats($event->id)->groupBy('heat') as $ind => $heat) {
+                        $uniqueBrackets = $heat->unique('league')->pluck('league')->join(', ');
+                        $heat = $heat->sortBy('lane')->map(function ($l) {
+                            return $this->scoringType === 'rlss-nationals' ?  "Lane $l->lane: $l->team ($l->region)" : "Lane $l->lane: $l->club $l->team";
+                        });
 
-                    $data[] = ['name' => "Heat $ind ($uniqueBrackets)", 'data' => $heat];
+                        $hd[] = ['name' => "Heat $ind ($uniqueBrackets)", 'data' => $heat, 'number' => $ind];
+                    }
+
+                    $data[] = ['event' => $event->getName(), 'heats' => $hd];
                 }
         }
 
-
-        return view("pdfs.marshalling:$this->scoringType", ['brand' => $this->brand, 'location' => $this->comp->where, 'data' => $data, 'comp' => $this->comp, 'type' => $type]);
+        $poolNames = ['Main Pool - Diving Pit End', 'Main Pool - Scoreboard End'];
+        return view("pdfs.marshalling:$this->scoringType", ['brand' => $this->brand, 'location' => $this->comp->where, 'data' => $data, 'poolNames' => $poolNames, 'comp' => $this->comp, 'type' => $type]);
     }
 }
