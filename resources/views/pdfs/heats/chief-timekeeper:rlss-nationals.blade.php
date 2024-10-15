@@ -48,14 +48,14 @@
         <br>
         <ol class="lis list-disc">
             @foreach ($eventNames as $eventName)
-                <li>{{ count($heats->groupBy('heat')) }}x {{ $eventName }} Heats</li>
+                <li>{{ count($heats[$eventName]->groupBy('heat')) }}x {{ $eventName }} Heats</li>
             @endforeach
         </ol>
     </div>
 
 
     @foreach ($eventNames as $eventName)
-        @forelse ($heats->sortBy(['heat','lane'])->groupBy('heat') as $key => $heat)
+        @forelse ($heats[$eventName]->sortBy(['heat','lane'])->groupBy('heat') as $key => $heat)
             <div class="min-h-[297mm] min-w-[210mm] bg-white p-5 flex flex-col grow-0 ">
                 <div class="flex w-full justify-between items-center">
                     <h2 class="hmb-0">{{ $eventName }}</h2>
@@ -70,7 +70,8 @@
 
 
                 <br>
-                <h3>Heat {{ $key }}</h3>
+
+                <h3>Heat {{ $heat->first()->heat }}</h3>
 
                 <table class=" table-fixed text-left ">
                     <thead class="border-b border-black">

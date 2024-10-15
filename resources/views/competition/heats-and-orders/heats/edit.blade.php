@@ -94,6 +94,11 @@
                 <input type="text" name="team" id="team">
                 <input type="text" name="target-lane" id="target-lane">
                 <input type="text" name="target-heat" id="target-heat">
+
+                @if (request()->has('event'))
+                    <input type="text" name="event" id="target-event" value="{{ request('event') }}">
+                @endif
+
             </form>
 
 

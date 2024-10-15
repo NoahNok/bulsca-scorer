@@ -36,7 +36,7 @@
 
             <div class="flex justify-between">
                 <h2 class="mb-0">Heats</h2>
-                <a href="{{ route('comps.view.heats.edit', $comp) }}" class="btn">Edit Heats</a>
+                <a href="{{ route('comps.view.heats.edit', $comp) }}" id="edit-heats-kill" class="btn">Edit Heats</a>
             </div>
 
             @if ($comp->getCompetitionTeams->count() == 0)

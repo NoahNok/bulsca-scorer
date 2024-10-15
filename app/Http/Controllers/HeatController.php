@@ -19,7 +19,7 @@ class HeatController extends Controller
 
 
 
-        $heatEntries = collect(DB::select('SELECT h.id, h.heat, h.lane, ct.team, l.name AS league, c.name AS club, c.region FROM heats h INNER JOIN competition_teams ct ON ct.id=h.team INNER JOIN leagues l ON l.id=ct.league INNER JOIN clubs c ON c.id=ct.club WHERE h.competition = ? ORDER BY heat, lane;', [$comp->id]));
+        $heatEntries = collect(DB::select('SELECT h.id, h.event, h.heat, h.lane, ct.team, l.name AS league, c.name AS club, c.region FROM heats h INNER JOIN competition_teams ct ON ct.id=h.team INNER JOIN leagues l ON l.id=ct.league INNER JOIN clubs c ON c.id=ct.club WHERE h.competition = ? ORDER BY heat, lane;', [$comp->id]));
 
         //$heatEntries = $comp->getHeatEntries;
 
@@ -36,9 +36,13 @@ class HeatController extends Controller
 
 
 
-    public function edit(Competition $comp)
+    public function edit(Competition $comp, Request $request)
     {
         $heatEntries = $comp->getHeatEntries;
+
+        if ($request->input('event', null) != null) {
+            $heatEntries = $heatEntries->where('event', $request->input('event'));
+        }
 
         return view('competition.heats-and-orders.heats.edit', ['comp' => $comp, 'heatEntries' => $heatEntries]);
     }
@@ -49,16 +53,25 @@ class HeatController extends Controller
         $lane = $request->input('target-lane');
         $heat = $request->input('target-heat');
 
+        $eventId = $request->input('event', null);
+
         // Check if a team exists as the target location, if so we need to swap teams
-        $foundHeat = Heat::where('competition', $comp->id)->where('lane', $lane)->where('heat', $heat)->first();
+        $foundHeat = Heat::where('competition', $comp->id)->where('lane', $lane)->where('heat', $heat)->where('event', $eventId)->first();
 
         if ($foundHeat == null) {
             // No team at target location simple update
             $theat = Heat::where('team', $team)->first();
             $theat->lane = $lane;
             $theat->heat = $heat;
+            $theat->event = $eventId;
             $theat->save();
-            return redirect()->route('comps.view.heats.edit', $comp);
+
+
+            if ($eventId) {
+                return redirect()->route('comps.view.heats.edit', ['comp' => $comp, 'event' => $eventId]);
+            } else {
+                return redirect()->route('comps.view.heats.edit', $comp);
+            }
         }
 
         $theat = Heat::where('team', $team)->first();
@@ -67,13 +80,21 @@ class HeatController extends Controller
 
         $theat->lane = $lane;
         $theat->heat = $heat;
+        $theat->event = $eventId;
         $theat->save();
 
         $foundHeat->lane = $toriglane;
         $foundHeat->heat = $torigheat;
+        $foundHeat->event = $eventId;
         $foundHeat->save();
 
-        return redirect()->route('comps.view.heats.edit', $comp);
+
+
+        if ($eventId) {
+            return redirect()->route('comps.view.heats.edit', ['comp' => $comp, 'event' => $eventId]);
+        } else {
+            return redirect()->route('comps.view.heats.edit', $comp);
+        }
     }
 
 
