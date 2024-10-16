@@ -60,7 +60,7 @@ class HeatController extends Controller
 
         if ($foundHeat == null) {
             // No team at target location simple update
-            $theat = Heat::where('team', $team)->first();
+            $theat = Heat::where('team', $team)->where('event', $eventId)->first();
             $theat->lane = $lane;
             $theat->heat = $heat;
             $theat->event = $eventId;
@@ -74,7 +74,7 @@ class HeatController extends Controller
             }
         }
 
-        $theat = Heat::where('team', $team)->first();
+        $theat = Heat::where('team', $team)->where('event', $eventId)->first();
         $toriglane = $theat->lane;
         $torigheat = $theat->heat;
 
