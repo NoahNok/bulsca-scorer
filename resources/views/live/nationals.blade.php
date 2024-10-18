@@ -165,7 +165,7 @@
                                         {{ $heat->first()->heat }}</td>
                                     <td
                                         class="py-2 px-3 bg-rlss-blue bg-opacity-40 text-rlss-blue border border-rlss-blue text-center  ">
-                                        {{ $heat->where('lane', 4)->first()->league }}
+                                        {{ $heat->first()->league }}
                                     </td>
 
                                     @for ($l = 1; $l <= $comp->max_lanes; $l++)
@@ -228,7 +228,7 @@
                                         {{ $heat->first()->heat }}</td>
                                     <td
                                         class="py-2 px-3 bg-rlss-blue bg-opacity-40 text-rlss-blue border border-rlss-blue text-center">
-                                        {{ $heat->where('lane', 4)->first()->league }}
+                                        {{ $heat->first()->league }}
                                     </td>
 
                                     @for ($l = 1; $l <= $comp->max_lanes; $l++)
