@@ -69,5 +69,6 @@ class Kernel extends HttpKernel
         'canJudge' => \App\Http\Middleware\DigitalJudge\CanJudge::class,
         'isHeadJudge' => \App\Http\Middleware\DigitalJudge\HeadJudgeOnly::class,
         'whatif' => \App\Http\Middleware\WhatIfMiddleware::class,
+        'allowPublicResults' => \App\Http\Middleware\PublicResultAllowed::class,
     ];
 }

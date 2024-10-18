@@ -16,6 +16,11 @@ use Illuminate\Http\Request;
 
 class PublicResultsController extends Controller
 {
+
+
+
+
+
     public function index()
     {
 
