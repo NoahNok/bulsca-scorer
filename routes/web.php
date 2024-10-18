@@ -136,6 +136,8 @@ Route::middleware('auth')->group(function () {
                     Route::post('/edit', [SERCController::class, 'editPost'])->name('comps.view.events.sercs.editPost');
                     Route::delete('', [SERCController::class, 'delete'])->name('comps.view.events.sercs.delete');
 
+                    Route::get('results/{team}/next', [SERCController::class, 'next'])->name('comps.view.events.sercs.next');
+
                     Route::get('/results/{team}/edit', [SERCController::class, 'editResultsView'])->name('comps.view.events.sercs.editResults');
                     Route::post('/results/{team}/edit', [SERCController::class, 'updateTeamResults'])->name('comps.view.events.sercs.editResultsPost');
 

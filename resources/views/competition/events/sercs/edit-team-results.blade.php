@@ -47,13 +47,20 @@
     <div class="grid-2">
         <div class="flex flex-col space-y-4">
 
+
+
             <div class="flex justify-between items-start">
                 <div>
                     <h2 class="mb-0">{{ $team->getFullname() }}</h2>
                     <small>{{ $serc->name }}</small>
                 </div>
 
-                <button class="btn" table-submit="scores">Save & Next</button>
+
+            </div>
+            <div class="flex justify-end items-center space-x-3">
+                <a href="{{ route('comps.view.events.sercs.next', [$comp, $serc, $team]) }}"
+                    class="btn btn-white btn-thin">Next</a>
+                <button class="btn whitespace-nowrap btn-thin " table-submit="scores">Save & Next</button>
             </div>
 
             <div class="  relative w-full  ">
@@ -146,7 +153,11 @@
             </div>
 
 
-
+            <div class="flex justify-end items-center space-x-3">
+                <a href="{{ route('comps.view.events.sercs.next', [$comp, $serc, $team]) }}"
+                    class="btn btn-white btn-thin">Next</a>
+                <button class="btn whitespace-nowrap btn-thin " table-submit="scores">Save & Next</button>
+            </div>
         </div>
 
 

@@ -213,6 +213,23 @@ class SERCController extends Controller
         return response()->json(['url' => Route('comps.view.events.sercs.editResults', [$comp, $serc, $nextTeamId])]);
     }
 
+    public function next(Competition $comp, SERC $serc, CompetitionTeam $team)
+    {
+        $teamIds = $serc->getTeams()->pluck('id')->toArray();
+        $index = array_search($team->id, array_values($teamIds));
+
+
+
+        if ($index + 2 > count($teamIds)) {
+
+            return redirect()->route('comps.view.events.sercs.view', compact('comp', 'serc'));
+        }
+
+        $nextTeamId = $teamIds[$index + 1];
+
+        return redirect()->route('comps.view.events.sercs.editResults', [$comp, $serc, $nextTeamId]);
+    }
+
     public function hide($comp, SERC $serc)
     {
         $serc->hide();
