@@ -20,7 +20,8 @@
         <h2 class="font-bold  w-full break-words">
             Heat {{ $heat }}
         </h2>
-        <p>Times must match the format <strong>XX:XX.XX</strong> exactly! (include leading/trailing 0).<br> Enter <strong>DNF or DNS</strong> as required!
+        <p>Times must match the format <strong>XX:XX.XX</strong> exactly! (include leading/trailing 0).<br> Enter
+            <strong>DNF or DNS</strong> as required!
             <br>
             @if ($speed->getName() == 'Rope Throw')
                 <strong>OR</strong> enter the total amount of people pulled in from 0-3
@@ -29,11 +30,7 @@
 
 
         @php
-            $existingLanes = $comp
-                ->getHeatEntries()
-                ->where('heat', $heat)
-                ->orderBy('lane')
-                ->get();
+            $existingLanes = $comp->getHeatEntries()->where('heat', $heat)->orderBy('lane')->get();
         @endphp
 
         <form action=""
@@ -58,11 +55,16 @@
                                             ->where('event', $speed->id)
                                             ->first();
 
+                                        if ($sr->disqualification) {
+                                            $sr->result = 0;
+                                        }
+
                                         $mins = floor($sr->result / 60000);
                                         $secs = ($sr->result - $mins * 60000) / 1000;
 
                                     @endphp
-                                    <td class="p-2 pr-6 border-r whitespace-nowrap hover:max-w-none bg-white max-w-[200px] overflow-hidden overflow-ellipsis">
+                                    <td
+                                        class="p-2 pr-6 border-r whitespace-nowrap hover:max-w-none bg-white max-w-[200px] overflow-hidden overflow-ellipsis">
 
                                         {{ $pLane->getTeam->getFullname() }}
 
@@ -70,18 +72,27 @@
 
                                     <td class="">
 
+                                        @php
+                                            $code = match ($sr->disqualification) {
+                                                'DQ015' => 'DNF',
+                                                'DQ004' => 'DNS',
+                                                'DQ1001' => 'OOT',
+                                                default => '-',
+                                            };
+                                        @endphp
+
                                         @if ($speed->getName() == 'Rope Throw')
                                             <input class="p-2 px-4" type="text" placeholder="Ropes In OR 00:00.00"
                                                 name="team-{{ $pLane->team }}-time" id="team-{{ $pLane->team }}-time"
                                                 required x-data
-                                                x-mask:dynamic="$input.startsWith('D') ? 'DNa' : '99:99.99'"
-                                                value="{{ in_array($sr->disqualification, ['DQ004', 'DQ015']) ? ($sr->disqualification == 'DQ004' ? 'DNS' : 'DNF') : ($sr->result != null ? ($sr->result > 4 ? sprintf('%02d', $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT) : $sr->result) : '') }}">
+                                                x-mask:dynamic="$input.toUpperCase().startsWith('D') ? 'DNa' : ($input.startsWith('O') ? 'OOT' : '99:99.99')"
+                                                value="{{ in_array($sr->disqualification, ['DQ004', 'DQ015', 'DQ1001']) ? $code : ($sr->result != null ? ($sr->result > 4 ? sprintf('%02d', $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT) : $sr->result) : '') }}">
                                         @else
                                             <input class="p-2 px-4" type="text" placeholder="00:00.00"
                                                 name="team-{{ $pLane->team }}-time" id="team-{{ $pLane->team }}-time"
                                                 required x-data
-                                                x-mask:dynamic="$input.startsWith('D') ? 'DNa' : '99:99.99'"
-                                                value="{{ in_array($sr->disqualification, ['DQ004', 'DQ015']) ? ($sr->disqualification == 'DQ004' ? 'DNS' : 'DNF') : ($sr->result != null ? sprintf('%02d', $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT) : '') }}">
+                                                x-mask:dynamic="$input.toUpperCase().startsWith('D') ? 'DNa' : ($input.startsWith('O') ? 'OOT' : '99:99.99')"
+                                                value="{{ in_array($sr->disqualification, ['DQ004', 'DQ015', 'DQ1001']) ? $code : ($sr->result != null ? sprintf('%02d', $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT) : '') }}">
                                         @endif
 
 

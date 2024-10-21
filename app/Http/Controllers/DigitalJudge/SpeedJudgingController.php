@@ -82,6 +82,20 @@ class SpeedJudgingController extends Controller
 
             $sr = SpeedResult::where('competition_team', $team)->where('event', $speed->id)->first();
 
+            if (str_starts_with($values['time'], "DN")) {
+                $sr->result = 0;
+                $sr->disqualification = str_starts_with($values['time'], 'DNS') ? 'DQ004' : 'DQ015';
+                $sr->save();
+                continue;
+            }
+
+            if (str_starts_with($values['time'], "OOT")) {
+                $sr->result = 0;
+                $sr->disqualification = 'DQ1001';
+                $sr->save();
+                continue;
+            }
+
 
             $fromResult = $sr->getResultAsString();
 
@@ -89,12 +103,7 @@ class SpeedJudgingController extends Controller
 
 
             // See if time value starts with DNF
-            if (str_starts_with($values['time'], "DN")) {
-                $sr->result = 0;
-                $sr->disqualification = str_starts_with($values['time'], 'DNS') ? 'DQ004' : 'DQ015';
-                $sr->save();
-                continue;
-            }
+
 
 
 
@@ -133,12 +142,6 @@ class SpeedJudgingController extends Controller
 
             $from = "Result: " . $fromResult;
             $to = "Result: " . $toResult;
-
-
-
-
-
- 
         }
 
 
