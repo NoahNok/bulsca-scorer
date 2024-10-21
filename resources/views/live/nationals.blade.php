@@ -22,7 +22,12 @@
 </head>
 
 <body class="overflow-x-hidden  w-screen h-screen" x-data="{
-    searchTerm: '',
+    search: '',
+
+
+    get searchTerm() {
+        return this.search.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    }
 }">
 
 
@@ -53,7 +58,7 @@
     }">
 
         <div class="form-input search">
-            <input type="text" id="competitor_search" placeholder="Competitior name..." x-model="searchTerm">
+            <input type="text" id="competitor_search" placeholder="Competitior name..." x-model="search">
 
 
         </div>
