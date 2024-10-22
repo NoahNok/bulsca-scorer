@@ -50,7 +50,7 @@ class TeamsController extends Controller
         $teamIdsToKeep = [];
 
         foreach ($json as $json_club) {
-            $club = Club::firstOrCreate(['name' => $json_club->name]);
+            $club = Club::firstOrCreate(['name' => $json_club->name], ['region' => '']);
             foreach ($json_club->teams as $json_team) {
 
 

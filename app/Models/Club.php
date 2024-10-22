@@ -12,7 +12,7 @@ class Club extends Model
 {
     use HasFactory, Cloneable;
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'region'];
 
     public function getTeams()
     {
@@ -52,31 +52,29 @@ class Club extends Model
 
                 // Now sub pens from actual result with a min of 0
                 $actualResult = max(0, $actualResult - $pensToApply);
-
-            } 
+            }
             if ($result['se'] === "Swim & Tow") {
                 $pensToApply = $result['pens'];
-                
+
 
                 // If you have > 5 non P900 skip as thats a DQ
                 if ($pensToApply > 5) {
                     continue;
                 }
-                
-          
+
+
                 // Otherwise lets see if they are 10% slower than submitted
-                if ($actualResult > $result['st_time']*1000*1.1){
+                if ($actualResult > $result['st_time'] * 1000 * 1.1) {
                     $pensToApply++;
                     # Lets work out how many more amount of 15s they were out by
-                    $diff = $actualResult - ($result['st_time']*1000*1.1) - 15000;
-                   
-                    $pensToApply += floor($diff/15000.0);
+                    $diff = $actualResult - ($result['st_time'] * 1000 * 1.1) - 15000;
+
+                    $pensToApply += floor($diff / 15000.0);
                 }
-          
+
 
                 // Add 15s for each pen
                 $actualResult += $pensToApply * 15000;
-
             }
             $result['result'] = $actualResult;
 
