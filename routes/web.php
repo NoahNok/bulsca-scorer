@@ -188,6 +188,7 @@ Route::middleware('auth')->group(function () {
                     Route::get('/edit', [HeatController::class, 'edit'])->name('comps.view.heats.edit');
                     Route::post('/edit', [HeatController::class, 'editPost'])->name('comps.view.heats.editPost');
                     Route::get('/gen', [HeatController::class, 'createDefaultHeatsForComp'])->name('comps.view.heats.gen');
+                    Route::post('/swap-heats', [HeatController::class, 'swapHeats'])->name('comps.view.heats.swap');
                 });
                 Route::prefix('/serc-order')->group(function () {
                     Route::get('/edit', [HeatController::class, 'editSERCOrder'])->name('comps.view.serc-order.edit');

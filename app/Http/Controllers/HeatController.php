@@ -197,4 +197,38 @@ class HeatController extends Controller
 
         return response()->json();
     }
+
+    public function swapHeats(Competition $comp, Request $request)
+    {
+        $first = $request->input('first', -1);
+        $second = $request->input('second', -1);
+        $eventId = $request->input('event', null);
+
+        if ($first == -1 || $second == -1) {
+            return response()->json(['result' => 'error'], 500);
+        }
+
+
+        $firstLanes = Heat::where('competition', $comp->id)->where('heat', $first)->where('event', $eventId)->get();
+        $secondLanes = Heat::where('competition', $comp->id)->where('heat', $second)->where('event', $eventId)->get();
+
+
+        $firstLanes->each(function ($lane) {
+            $lane->heat = -3;
+            $lane->save();
+        });
+
+        $secondLanes->each(function ($lane) use ($first) {
+            $lane->heat = $first;
+            $lane->save();
+        });
+
+
+        $firstLanes->each(function ($lane) use ($second) {
+            $lane->heat = $second;
+            $lane->save();
+        });
+
+        return response()->json(['result' => 'ok']);
+    }
 }

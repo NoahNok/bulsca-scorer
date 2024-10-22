@@ -4280,6 +4280,19 @@ aside.open {
   color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
+.peer\/title:hover ~ .peer-hover\/title\:bg-bulsca {
+  background-color: var(--brand-primary);
+}
+
+.peer\/title:hover ~ .peer-hover\/title\:\*\:bg-bulsca > * {
+  background-color: var(--brand-primary);
+}
+
+.peer\/title:hover ~ .peer-hover\/title\:\*\:text-white > * {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
 .prose-p\:mb-0 :is(:where(p):not(:where([class~="not-prose"],[class~="not-prose"] *))) {
   margin-bottom: 0px;
 }

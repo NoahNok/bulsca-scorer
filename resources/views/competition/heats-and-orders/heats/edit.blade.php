@@ -46,6 +46,8 @@
 
             <p>To swap teams, click the first team, it will turn blue. Then click the team you want to swap it with
                 (including blank spaces). The page will automatically update and save.</p>
+            <p>To swap heats, click the title of the first heat, the whole heat will turn blue. Then select the heat title
+                to swap with. The page will automatically update and save.</p>
 
             <div class="flex space-x-2  ">
                 <div class=" hidden md:block  ">
@@ -61,15 +63,15 @@
 
 
                     @foreach ($heatEntries->sortBy(['heat', 'lane'])->groupBy('heat') as $key => $heat)
-                        <div>
-                            <h5>Heat {{ $key }}</h5>
-                            <ol class=" list-item space-y-2">
+                        <div data-heat="{{ $key }}">
+                            <h5 data-hn class="peer/title cursor-pointer ">Heat {{ $key }}</h5>
+                            <ol class=" list-item space-y-2 peer-hover/title:*:bg-bulsca peer-hover/title:*:text-white">
                                 @for ($l = 1; $l <= $comp->max_lanes; $l++)
                                     @php
                                         $lane = $heat->where('lane', $l)->first();
                                     @endphp
 
-                                    <li class="card cursor-pointer hover:bg-bulsca hover:text-white "
+                                    <li class="card cursor-pointer hover:bg-bulsca hover:text-white  "
                                         data-team="{{ $lane->getTeam->id ?? -1 }}" data-heat="{{ $key }}"
                                         data-lane="{{ $l }}">
                                         @if ($lane)
@@ -158,6 +160,73 @@
                 }
 
             });
+
+            let hasClickedHeat = false
+            let firstHeat = "-1"
+
+            document.getElementById('all-teams').querySelectorAll('[data-heat]').forEach(element => {
+
+                let lanes = element.querySelectorAll('[data-lane]')
+                let title = element.querySelector('[data-hn]')
+
+                let heat = element.getAttribute('data-heat')
+
+
+                if (title == null) return
+
+                title.onclick = (event) => {
+                    if (!hasClickedHeat) {
+
+                        if (element.getAttribute('data-team') === "-1") return
+
+                        lanes.forEach(l => l.classList.toggle('selected'))
+                        firstHeat = heat
+
+                        hasClickedHeat = !hasClickedHeat;
+                        return;
+                    }
+
+                    if (heat === firstHeat) {
+                        lanes.forEach(l => l.classList.toggle('selected'))
+                        hasClickedHeat = !hasClickedHeat
+                        firstHeat = ""
+
+                        return
+                    }
+
+                    console.log("first heat", firstHeat, "second heat", heat)
+
+                    let fd = new FormData()
+                    fd.append('first', firstHeat)
+                    fd.append('second', heat)
+                    fd.append('_token', '{{ csrf_token() }}')
+                    @if (request()->has('event'))
+                        fd.append('event', '{{ request('event') }}')
+                    @endif
+
+
+                    fetch('{{ route('comps.view.heats.swap', $comp) }}', {
+                        method: 'POST',
+                        body: fd
+                    }).then(res => res.json()).then(data => {
+                        if (data.result === "ok") {
+                            window.location.reload()
+                        }
+                    })
+
+
+
+
+
+
+                }
+
+            });
+
+
+
+
+
 
         }
 
