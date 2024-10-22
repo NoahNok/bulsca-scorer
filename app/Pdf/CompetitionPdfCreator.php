@@ -43,7 +43,14 @@ class CompetitionPdfCreator
         $eventNames = $this->comp->getSpeedEvents->map(fn($event) => $event->getName());
         $heats = [];
         foreach ($this->comp->getSpeedEvents as $event) {
-            $heats[$event->getName()] = $this->comp->getHeats($event->id);
+
+            $targetId = null;
+            if ($this->comp->scoring_type == 'rlss-nationals') {
+                $targetId = $event->id;
+            }
+
+
+            $heats[$event->getName()] = $this->comp->getHeats($targetId);
         }
 
 
@@ -88,7 +95,14 @@ class CompetitionPdfCreator
             case 'speed':
                 foreach ($this->comp->getSpeedEvents as $event) {
                     $hd = [];
-                    foreach ($this->comp->getHeats($event->id)->groupBy('heat') as $ind => $heat) {
+                    $targetId = null;
+                    if ($this->comp->scoring_type == 'rlss-nationals') {
+                        $targetId = $event->id;
+                    }
+                    foreach ($this->comp->getHeats($targetId)->groupBy('heat') as $ind => $heat) {
+
+
+
                         $uniqueBrackets = $heat->unique('league')->pluck('league')->join(', ');
                         $heat = $heat->sortBy('lane')->map(function ($l) {
                             return $this->scoringType === 'rlss-nationals' ?  "Lane $l->lane: $l->team ($l->region)" : "Lane $l->lane: $l->club $l->team";

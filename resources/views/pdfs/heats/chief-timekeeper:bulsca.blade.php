@@ -38,7 +38,10 @@
 
 
 <body class="w-screen h-screen  flex flex-col space-y-12 print:space-y-0 items-center overflow-x-hidden ">
-
+    @php
+        $heats = collect($heats);
+    @endphp
+    @dump($heats)
 
     <div class="min-h-[297mm] min-w-[210mm] bg-white p-5 flex flex-col  items-center justify-center text-center">
         <h1>Chief Timekeeper Pack</h1>
@@ -47,14 +50,14 @@
         <br>
         <br>
         <ol class="lis list-disc">
-            @foreach ($eventNames as $eventName)
-                <li>{{ count($heats->groupBy('heat')) }}x {{ $eventName }} Heats</li>
+            @foreach ($heats as $eventName => $heat)
+                <li>{{ count($heat->groupBy('heat')) }}x {{ $eventName }} Heats</li>
             @endforeach
         </ol>
     </div>
 
 
-    @foreach ($eventNames as $eventName)
+    @foreach ($heats as $eventName => $heats)
         @forelse ($heats->sortBy(['heat','lane'])->groupBy('heat') as $key => $heat)
             <div class="min-h-[297mm] min-w-[210mm] bg-white p-5 flex flex-col grow-0 ">
                 <div class="flex w-full justify-between items-center">
