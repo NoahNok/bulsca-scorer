@@ -18,7 +18,7 @@
     @else
         <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
     @endif
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,6 +31,11 @@
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
 
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+    @auth
+        <script src="{{ asset('js/enable-push.js') }}"></script>
+    @endauth
+
+
 </head>
 
 <body class="flex  overflow-x-hidden" x-data="{ asideCollapsed: false }">

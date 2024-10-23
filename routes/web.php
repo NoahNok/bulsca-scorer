@@ -24,6 +24,7 @@ use App\Http\Controllers\OverallResultsController;
 use App\Http\Controllers\Pdf\PdfController;
 use App\Http\Controllers\PrintableController;
 use App\Http\Controllers\PublicResultsController;
+use App\Http\Controllers\Push\PushController;
 use App\Http\Controllers\SpeedsEventController;
 use App\Http\Controllers\TeamsController;
 use App\Http\Controllers\SERCController;
@@ -83,6 +84,9 @@ Route::middleware('auth')->group(function () {
 
 
     // Route::get('/comps', [CompetitionController::class, 'index'])->name('comps');
+
+    Route::post('push', [PushController::class, 'store'])->name('push.store');
+    Route::get('push-test', [PushController::class, 'push'])->name('push.test');
 
     Route::redirect('/comps', '/')->name('comps');
 

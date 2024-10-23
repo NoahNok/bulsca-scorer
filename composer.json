@@ -11,6 +11,7 @@
         "php": "^8.0.2",
         "doctrine/dbal": "^3.6",
         "guzzlehttp/guzzle": "^7.2",
+        "laravel-notification-channels/webpush": "^9.0",
         "laravel/framework": "^10.0",
         "laravel/prompts": "^0.1.15",
         "laravel/sanctum": "^3.2",

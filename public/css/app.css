@@ -4280,10 +4280,6 @@ aside.open {
   color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
-.peer\/title:hover ~ .peer-hover\/title\:bg-bulsca {
-  background-color: var(--brand-primary);
-}
-
 .peer\/title:hover ~ .peer-hover\/title\:\*\:bg-bulsca > * {
   background-color: var(--brand-primary);
 }
