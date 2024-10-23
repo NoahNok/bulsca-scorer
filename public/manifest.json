@@ -1,0 +1,15 @@
+{
+    "name": "Scoring Bulsca",
+    "short_name": "Scoring",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#3367D6",
+    "icons": [
+        {
+            "src": "/blogo.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
