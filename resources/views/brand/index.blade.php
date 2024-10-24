@@ -26,7 +26,7 @@
             $comps = $brand->getCompetitions()->orderBy('when', 'desc')->paginate(8);
         @endphp
         @foreach ($comps as $comp)
-            @can('access', [Session::get('ac'), '*'])
+            @can('access', [Session::get('ac')])
                 <a href="{{ route('brand.comp.edit', $comp) }}"
                     class="flex flex-row items-center shadow-md hover:shadow-lg bg-white p-4 rounded-md border hover:border-black transition-all">
                     <h5 class="mb-0">{{ $comp->name }}</h5>
@@ -39,7 +39,7 @@
             @endcan
         @endforeach
 
-        @can('access', [Session::get('ac'), '*'])
+        @can('access', [Session::get('ac')])
             <x-add-card text="Competition" link="{{ route('brand.comp.create') }}"></x-add-card>
         @endcan
 
