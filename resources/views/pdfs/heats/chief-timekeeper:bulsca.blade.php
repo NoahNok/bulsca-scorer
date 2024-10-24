@@ -41,7 +41,7 @@
     @php
         $heats = collect($heats);
     @endphp
-    @dump($heats)
+
 
     <div class="min-h-[297mm] min-w-[210mm] bg-white p-5 flex flex-col  items-center justify-center text-center">
         <h1>Chief Timekeeper Pack</h1>

@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -26,6 +29,25 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        View::composer('*', function ($view) {
+
+            if (!Auth::check()) {
+                return;
+            }
+
+            $user = Auth::user();
+
+            // Try and get brand from connected competition
+            if ($user->competition && $user->getCompetition->brand) {
+                $view->with('brand', $user->getCompetition->getBrand);
+                return;
+            }
+
+            // Try and get brand if user is a brand account
+            if ($user->getBrands()->exists()) {
+                $view->with('brand', $user->getBrands->first());
+                return;
+            }
+        });
     }
 }

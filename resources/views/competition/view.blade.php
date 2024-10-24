@@ -56,36 +56,40 @@
     </p>
     <br>
     <div class="grid-5">
+        @can('access', $comp)
+            @if (\App\Helpers\ScoringHelper::getCompetitionScoringDetails($comp)['use_competitors'])
+                <a href="{{ route('comps.view.competitors', $comp) }}"
+                    class="p-5 border shadow-md bg-white rounded-md flex items-center justify-center space-x-2 hover:bg-gray-400 hover:text-white transition-colors cursor-pointer">
+                    <p class="text-lg font-semibold">Competitors</p>
+                </a>
+            @else
+                <a href="{{ route('comps.view.teams', $comp) }}"
+                    class="p-5 border shadow-md bg-white rounded-md flex items-center justify-center space-x-2 hover:bg-gray-400 hover:text-white transition-colors cursor-pointer">
+                    <p class="text-lg font-semibold">Teams</p>
+                </a>
+            @endif
+        @endcan
 
-        @if (\App\Helpers\ScoringHelper::getCompetitionScoringDetails($comp)['use_competitors'])
-            <a href="{{ route('comps.view.competitors', $comp) }}"
+        @can('access', [$comp, '*'])
+            <a href="{{ route('comps.view.heats', $comp) }}"
                 class="p-5 border shadow-md bg-white rounded-md flex items-center justify-center space-x-2 hover:bg-gray-400 hover:text-white transition-colors cursor-pointer">
-                <p class="text-lg font-semibold">Competitors</p>
+                <p class="text-lg font-semibold">Heats/Orders</p>
             </a>
-        @else
-            <a href="{{ route('comps.view.teams', $comp) }}"
+        @endcan
+        @can('access', $comp)
+            <a href="{{ route('comps.view.printables', $comp) }}"
                 class="p-5 border shadow-md bg-white rounded-md flex items-center justify-center space-x-2 hover:bg-gray-400 hover:text-white transition-colors cursor-pointer">
-                <p class="text-lg font-semibold">Teams</p>
+                <p class="text-lg font-semibold">Printables</p>
             </a>
-        @endif
-
-
-        <a href="{{ route('comps.view.heats', $comp) }}"
-            class="p-5 border shadow-md bg-white rounded-md flex items-center justify-center space-x-2 hover:bg-gray-400 hover:text-white transition-colors cursor-pointer">
-            <p class="text-lg font-semibold">Heats/Orders</p>
-        </a>
-        <a href="{{ route('comps.view.printables', $comp) }}"
-            class="p-5 border shadow-md bg-white rounded-md flex items-center justify-center space-x-2 hover:bg-gray-400 hover:text-white transition-colors cursor-pointer">
-            <p class="text-lg font-semibold">Printables</p>
-        </a>
-        <a href="{{ route('comps.view.events', $comp) }}"
-            class="p-5 border shadow-md bg-white rounded-md flex items-center justify-center space-x-2 hover:bg-gray-400 hover:text-white transition-colors cursor-pointer">
-            <p class="text-lg font-semibold">Events</p>
-        </a>
-        <a href="{{ route('comps.view.results', $comp) }}"
-            class="p-5 border shadow-md bg-white rounded-md flex items-center justify-center space-x-2 hover:bg-gray-400 hover:text-white transition-colors cursor-pointer">
-            <p class="text-lg font-semibold">Results</p>
-        </a>
+            <a href="{{ route('comps.view.events', $comp) }}"
+                class="p-5 border shadow-md bg-white rounded-md flex items-center justify-center space-x-2 hover:bg-gray-400 hover:text-white transition-colors cursor-pointer">
+                <p class="text-lg font-semibold">Events</p>
+            </a>
+            <a href="{{ route('comps.view.results', $comp) }}"
+                class="p-5 border shadow-md bg-white rounded-md flex items-center justify-center space-x-2 hover:bg-gray-400 hover:text-white transition-colors cursor-pointer">
+                <p class="text-lg font-semibold">Results</p>
+            </a>
+        @endcan
 
     </div>
     <br>

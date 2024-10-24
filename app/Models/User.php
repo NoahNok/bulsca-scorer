@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Models\Brands\Brand;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -56,5 +58,20 @@ class User extends Authenticatable
     public function getWhatIfEditors()
     {
         return $this->hasMany(Competition::class, 'wi_user', 'id');
+    }
+
+    public function getBrands()
+    {
+        return $this->belongsToMany(Brand::class, 'brand_users', 'user', 'brand')->withPivot('role');
+    }
+
+    public function hasBrand()
+    {
+        return $this->getBrands()->exists();
+    }
+
+    public function isAdminOfABrand(): bool
+    {
+        return $this->getBrands()->where('brand_users.role', 'admin')->exists();
     }
 }

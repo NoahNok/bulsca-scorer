@@ -1537,6 +1537,10 @@ video {
   width: 1rem;
   height: 1rem;
 }
+.size-6 {
+  width: 1.5rem;
+  height: 1.5rem;
+}
 .h-0 {
   height: 0px;
 }
@@ -1967,6 +1971,9 @@ video {
 }
 .items-start {
   align-items: flex-start;
+}
+.items-end {
+  align-items: flex-end;
 }
 .items-center {
   align-items: center;

@@ -3,9 +3,13 @@
 namespace App\Http\Controllers\Brands;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Brand\CreateBrandUserRequest;
 use App\Models\Brands\Brand;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class BrandController extends Controller
 {
@@ -40,7 +44,20 @@ class BrandController extends Controller
             ]);
         }
 
-        return redirect()->route('admin.brands.show', $brand)->with('success', 'Created brand successfully');
+
+
+        // Create the brand owner
+        $brandUser = new User();
+        $brandUser->name = $brand->name;
+        $brandUser->email = $brand->email;
+
+        $password = Str::random(16);
+        $brandUser->password = Hash::make($password);
+        $brandUser->save();
+
+        $brandUser->getBrands()->attach($brand, ['role' => 'admin']);
+
+        return redirect()->route('admin.brands.show', $brand)->with('success', 'Created brand successfully')->with('brand-password', $password);
     }
 
     public function show(Brand $brand)
@@ -88,8 +105,62 @@ class BrandController extends Controller
 
     public function destroy(Brand $brand)
     {
+
+        // Get all brand accounts that are admins and remove them - preserve welfare and hosts
+        $brand->getUsers()->wherePivot('role', 'admin')->delete();
+
+
         $brand->delete();
 
         return redirect()->route('admin.brands')->with('success', 'Deleted brand successfully');
+    }
+
+    public function userResetPassword(Brand $brand, User $user)
+    {
+
+
+        $passwordRaw = Str::random(16);
+        $password = Hash::make($passwordRaw);
+
+        $user->password = $password;
+
+        $user->save();
+
+        return response()->json(['password' => $passwordRaw]);
+    }
+
+    public function createBrandUser(CreateBrandUserRequest $request, Brand $brand)
+    {
+        $validated = $request->validated();
+
+        $user = new User();
+        $user->name = $validated['accountName'];
+        $user->email = $validated['accountEmail'];
+
+        $passwordRaw = Str::random(16);
+        $password = Hash::make($passwordRaw);
+        $user->password = $password;
+
+        $user->save();
+
+        $brand->attachUser($user, $validated['accountRole']);
+
+        return redirect()->back()->with('success', 'Created brand account successfully')->with('brand-password', $passwordRaw);
+    }
+
+    public function deleteBrandUser(Brand $brand, User $user)
+    {
+
+        if (!$brand->isBrandRole(Auth::user(), 'admin')) {
+            return redirect()->back()->with('alert-error', 'Only brand admins can delete brand accounts.');
+        }
+
+        if ($user->competition) {
+            return redirect()->back()->with('alert-error', 'Cannot delete a brand account linked to a competition.');
+        }
+
+        $user->delete();
+
+        return redirect()->back()->with('success', 'Deleted brand account.');
     }
 }
