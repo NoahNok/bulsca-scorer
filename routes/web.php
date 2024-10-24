@@ -289,6 +289,15 @@ Route::prefix('/admin/brands')->middleware('editBrand')->group(function () {
     Route::post('{brand}/user/{user}', [BrandController::class, 'deleteBrandUser'])->name('admin.brands.users.delete');
 });
 
+Route::prefix('/admin/brands')->middleware('editBrand')->group(function () {
+    Route::post('edit/{brand}', [BrandController::class, 'update'])->name('admin.brands.update');
+
+    Route::get('{brand}', [BrandController::class, 'show'])->name('admin.brands.show');
+    Route::get('{brand}/user/{user}/reset-password', [BrandController::class, 'userResetPassword'])->name('admin.brands.users.reset-password');
+    Route::post('{brand}/user/create', [BrandController::class, 'createBrandUser'])->name('admin.brands.users.create');
+    Route::post('{brand}/user/{user}', [BrandController::class, 'deleteBrandUser'])->name('admin.brands.users.delete');
+});
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
