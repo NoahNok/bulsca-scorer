@@ -23,6 +23,8 @@ class PushController extends Controller
         $user = Auth::user();
         $user->updatePushSubscription($endpoint, $key, $token);
 
+        Notification::send(Auth::user(), new GenericPush("Notifications On", "You have enabled notifications. You can turn them off at any time!"));
+
         return response()->json(['success' => true], 200);
     }
 
