@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Notification as FacadesNotification;
 use NotificationChannels\WebPush\WebPushChannel;
 use NotificationChannels\WebPush\WebPushMessage;
 
-class BrandBasePushNotification extends Notification
+class BrandBasePushNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
