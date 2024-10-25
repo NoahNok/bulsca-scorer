@@ -1,15 +1,47 @@
 {
-    "name": "Scoring Bulsca",
-    "short_name": "Scoring",
+    "name": "BULSCA Scorer",
+    "short_name": "Scorer",
     "start_url": "/",
     "display": "standalone",
-    "background_color": "#ffffff",
-    "theme_color": "#3367D6",
+    "background_color": "#070660",
+    "theme_color": "#070660",
     "icons": [
         {
-            "src": "/blogo.png",
+            "src": "/blogo-512.png",
             "sizes": "512x512",
             "type": "image/png"
+        },
+        {
+            "src": "/blogo-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/blogo-180.png",
+            "sizes": "180x180",
+            "type": "image/png"
+        },
+        {
+            "src": "/blogo-120.png",
+            "sizes": "120x120",
+            "type": "image/png"
         }
-    ]
+    ],
+    "screenshots": [
+        {
+            "src": "/screenshot.png",
+            "sizes": "1170x2532",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "Competition Overview"
+        },
+        {
+            "src": "/screenshotd.png",
+            "sizes": "3840x2160",
+            "type": "image/png",
+            "form_factor": "wide",
+            "label": "Results Page"
+        }
+    ],
+    "description": "BULSCA Scorer allows you to effectively organise, manager and score your lifesaving competitions."
 }

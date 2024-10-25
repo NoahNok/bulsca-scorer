@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Push;
 
 use App\Http\Controllers\Controller;
+use App\Models\Competition;
+use App\Notifications\BrandBasePushNotification;
 use App\Notifications\GenericPush;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,6 +32,10 @@ class PushController extends Controller
 
     public function push()
     {
-        Notification::send(Auth::user(), new GenericPush("Hello Title", "This is cool"));
+
+
+        $n = new BrandBasePushNotification("BrandBase", "hello world");
+
+        $n->sendTo(Competition::find(53), sendToAdmin: true);
     }
 }

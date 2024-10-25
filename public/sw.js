@@ -23,6 +23,16 @@ self.addEventListener("push", function (e) {
     }
 });
 
+self.addEventListener("notificationclick", function (event) {
+    event.notification.close(); // Close the notification
+
+    if (event.action === "url") {
+        clients.openWindow(event.notification.data.url); // Open the specific URL
+    } else {
+        // Handle other actions or do nothing for dismiss
+    }
+});
+
 function subscribeUser() {
     navigator.serviceWorker.ready
         .then((registration) => {

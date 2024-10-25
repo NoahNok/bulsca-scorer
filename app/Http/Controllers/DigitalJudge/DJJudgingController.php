@@ -7,8 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Competition;
 use App\Models\CompetitionTeam;
 use App\Models\DigitalJudge\JudgeNote;
+use App\Models\SERC;
 use App\Models\SERCJudge;
 use App\Models\SERCResult;
+use App\Notifications\General\DigitalJudge\SercMarked;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -135,6 +137,8 @@ class DJJudgingController extends Controller
         $from = "";
         $to = "";
 
+        $serc = SERC::find($request->input('serc'));
+
         foreach ($request->all() as $key => $value) {
 
             if (!str_starts_with($key, 'mp-')) continue;
@@ -163,6 +167,8 @@ class DJJudgingController extends Controller
         }
 
 
+
+        (new SercMarked($serc, $team, DigitalJudge::getClientName()))->sendTo();
 
 
         if (DigitalJudge::isClientHeadJudge() && $teamAlreadyJudged) return redirect()->route('dj.judging.home')->with('success', 'Team ' . $team->getFullname() . ' has been re-marked!');

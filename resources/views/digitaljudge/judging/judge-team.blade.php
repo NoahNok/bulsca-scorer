@@ -192,6 +192,7 @@
                 </div>
                 <br>
                 @csrf
+                <input type="hidden" name="serc" value="{{ $serc->id }}">
                 <button type="submit" onclick="submissionCheck()" class="btn w-full">Submit</button>
             </form>
 

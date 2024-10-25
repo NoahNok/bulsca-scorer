@@ -6,6 +6,8 @@ use App\Helpers\ScoringHelper;
 use App\Models\Competition;
 use App\Models\CompetitionTeam;
 use App\Models\Heat;
+use App\Notifications\General\SercOrderGenerated;
+use App\Notifications\General\SercOrderRegenerated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -118,6 +120,8 @@ class HeatController extends Controller
     public function regenSERCOrder(Competition $comp)
     {
         $ret = $this->createDefaultSERCorderForComp($comp);
+
+        (new SercOrderRegenerated($comp))->sendTo(sendToAdmin: true);
 
         if ($ret instanceof View) {
             return $ret;
