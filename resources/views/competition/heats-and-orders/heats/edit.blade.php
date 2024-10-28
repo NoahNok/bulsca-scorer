@@ -64,7 +64,14 @@
 
                     @foreach ($heatEntries->sortBy(['heat', 'lane'])->groupBy('heat') as $key => $heat)
                         <div data-heat="{{ $key }}">
-                            <h5 data-hn class="peer/title cursor-pointer ">Heat {{ $key }}</h5>
+                            <div class="flex items-center justify-between">
+                                <h5 data-hn class="peer/title cursor-pointer ">Heat {{ $key }}</h5>
+                                <svg data-delete-heat xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="w-6 h-6 cross"
+                                    serc-builder-marking-point-delete="">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </div>
                             <ol class=" list-item space-y-2 peer-hover/title:*:bg-bulsca peer-hover/title:*:text-white">
                                 @for ($l = 1; $l <= $comp->max_lanes; $l++)
                                     @php
@@ -172,7 +179,28 @@
                 let heat = element.getAttribute('data-heat')
 
 
+
+
                 if (title == null) return
+
+                element.querySelector('[data-delete-heat]').onclick = () => {
+                    let fd = new FormData()
+                    fd.append('heat', heat)
+                    fd.append('_token', '{{ csrf_token() }}')
+                    @if (request()->has('event'))
+                        fd.append('event', '{{ request('event') }}')
+                    @endif
+
+
+                    fetch('{{ route('comps.view.heats.delete-heat', $comp) }}', {
+                        method: 'POST',
+                        body: fd
+                    }).then(res => res.json()).then(data => {
+                        if (data.result === "ok") {
+                            window.location.reload()
+                        }
+                    })
+                }
 
                 title.onclick = (event) => {
                     if (!hasClickedHeat) {
@@ -194,7 +222,7 @@
                         return
                     }
 
-                    console.log("first heat", firstHeat, "second heat", heat)
+
 
                     let fd = new FormData()
                     fd.append('first', firstHeat)

@@ -235,4 +235,27 @@ class HeatController extends Controller
 
         return response()->json(['result' => 'ok']);
     }
+
+    public function remHeat(Competition $comp, Request $request)
+    {
+        $heatNo = $request->input('heat', null);
+        $eventId = $request->input('event', null);
+
+        if ($comp->scoring_type == 'rlss-nationals') {
+            Heat::where('competition', $comp->id)->where('heat', $heatNo)->where('event', $eventId)->delete();
+
+            if ($heatNo % 2 == 0) {
+                Heat::where('competition', $comp->id)->where('heat', '>', $heatNo)->whereRaw('MOD(heat, 2) = 0')->where('event', $eventId)->decrement('heat', 2);
+            } else {
+                Heat::where('competition', $comp->id)->where('heat', '>', $heatNo)->whereRaw('MOD(heat, 2) = 1')->where('event', $eventId)->decrement('heat', 2);
+            }
+        } else {
+            // BULSCA
+            Heat::where('competition', $comp->id)->where('heat', $heatNo)->where('event', $eventId)->delete();
+
+            Heat::where('competition', $comp->id)->where('heat', '>', $heatNo)->where('event', $eventId)->decrement('heat');
+        }
+
+        return response()->json(['result' => 'ok']);
+    }
 }
