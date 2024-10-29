@@ -19,7 +19,7 @@ class BrandBasePushNotification extends Notification implements ShouldQueue
 
     protected string $title, $body;
     protected array $actions;
-    private Competition $competition;
+    protected Competition $competition;
 
 
     public function __construct(Competition $competition, string $title, string $body, array $actions = [])
@@ -30,37 +30,18 @@ class BrandBasePushNotification extends Notification implements ShouldQueue
         $this->actions = $actions;
     }
 
+    public function getCompetition(): Competition
+    {
+        return $this->competition;
+    }
+
     /**
      * Sends the notification to the users, internally calls Notification::send(...)
      * @param Competition $competition the competition to grab related users from
      * @param string|array $targetRoles the brand roles that should be notified, defaults to admins only
      * @param bool $sendToAdmin if scorer admins (not brand) get the notification
      */
-    public function sendTo(string|array $targetRoles = ['admin'], bool $sendToAdmin = true)
-    {
-        if (!is_array($targetRoles)) {
-            $targetRoles = [$targetRoles];
-        }
 
-        $brand = $this->competition->getBrand;
-        if ($brand == null) {
-            FacadesNotification::send(User::where('admin', true)->get(), $this);
-            return;
-        }
-
-
-        $targetBrandUsers = $this->competition->getBrand->getUsers()->whereIn('role', ['admin', 'welfare'])->get();
-
-        if ($sendToAdmin) {
-            $targetBrandUsers = $targetBrandUsers->merge(User::where('admin', true)->get());
-            $targetBrandUsers = $targetBrandUsers->unique();
-        }
-
-        // Also send it to the comp organiser
-        $targetBrandUsers = $targetBrandUsers->push($this->competition->getUser);
-
-        FacadesNotification::send($targetBrandUsers, $this);
-    }
 
     /**
      * Get the notification's delivery channels.

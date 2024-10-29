@@ -11,7 +11,7 @@ use Illuminate\Notifications\Notification;
 
 class SercOrderRegenerated extends BrandBasePushNotification
 {
-    use Queueable;
+
 
     /**
      * Create a new notification instance.

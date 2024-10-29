@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Push;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\WebPush;
 use App\Models\Competition;
 use App\Notifications\BrandBasePushNotification;
 use App\Notifications\GenericPush;
@@ -34,8 +35,8 @@ class PushController extends Controller
     {
 
 
-        $n = new BrandBasePushNotification("BrandBase", "hello world");
+        $n = new BrandBasePushNotification(Competition::find(53), "BrandBase", "hello world");
 
-        $n->sendTo(Competition::find(53), sendToAdmin: true);
+        WebPush::dispatch($n, ['admin'], true);
     }
 }

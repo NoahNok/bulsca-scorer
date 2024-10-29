@@ -4,6 +4,7 @@ namespace App\Http\Controllers\DigitalJudge;
 
 use App\DigitalJudge\DigitalJudge;
 use App\Http\Controllers\Controller;
+use App\Jobs\WebPush;
 use App\Models\Competition;
 use App\Models\CompetitionTeam;
 use App\Models\DigitalJudge\JudgeNote;
@@ -167,8 +168,9 @@ class DJJudgingController extends Controller
         }
 
 
+        WebPush::dispatch(new SercMarked($serc, $team, DigitalJudge::getClientName()));
 
-        (new SercMarked($serc, $team, DigitalJudge::getClientName()))->sendTo();
+
 
 
         if (DigitalJudge::isClientHeadJudge() && $teamAlreadyJudged) return redirect()->route('dj.judging.home')->with('success', 'Team ' . $team->getFullname() . ' has been re-marked!');

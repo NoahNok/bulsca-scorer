@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ScoringHelper;
+use App\Jobs\WebPush;
 use App\Models\Competition;
 use App\Models\CompetitionTeam;
 use App\Models\Heat;
@@ -121,7 +122,10 @@ class HeatController extends Controller
     {
         $ret = $this->createDefaultSERCorderForComp($comp);
 
-        (new SercOrderRegenerated($comp))->sendTo(sendToAdmin: true);
+
+        $s = new SercOrderRegenerated($comp);
+        WebPush::dispatch($s);
+
 
         if ($ret instanceof View) {
             return $ret;
