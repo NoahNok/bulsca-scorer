@@ -30,9 +30,9 @@
 
 
         <div class="grid-3">
-            @foreach (\App\Models\Competition::orderBy('when', 'desc')->limit(6)->get() as $comp)
+            @foreach (\App\Models\Competition::where('when', '<=', now())->orderBy('when', 'desc')->limit(6)->get() as $comp)
                 <a href="{{ route('live', ['comp' => $comp]) }}" class="card card-hover items-center">
-                    <img src="@if (isset($brand)) {{ $brand->getLogo() }}@else https://www.bulsca.co.uk/storage/logo/blogo.png @endif"
+                    <img src="@if ($comp->brand) {{ $comp->getBrand->getLogo() }}@else https://www.bulsca.co.uk/storage/logo/blogo.png @endif"
                         class=" w-20 h-20 mb-3" alt="">
                     <h5> {{ $comp->name }}</h5>
                 </a>
