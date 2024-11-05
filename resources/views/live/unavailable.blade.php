@@ -31,11 +31,16 @@
 
         <div class="grid-3">
             @foreach (\App\Models\Competition::where('when', '<=', now())->orderBy('when', 'desc')->limit(6)->get() as $comp)
-                <a href="{{ route('live', ['comp' => $comp]) }}" class="card card-hover items-center">
+                <div class="card card-hover items-center">
                     <img src="@if ($comp->brand) {{ $comp->getBrand->getLogo() }}@else https://www.bulsca.co.uk/storage/logo/blogo.png @endif"
                         class=" w-20 h-20 mb-3" alt="">
                     <h5> {{ $comp->name }}</h5>
-                </a>
+                    <div class="flex space-x-3 itmes-center justify-center">
+                        <a href="{{ route('live', ['comp' => $comp]) }}" class="btn btn-primary">Live</a>
+                        <a href="{{ \App\Helpers\RouteHelpers::externalRoute('results', 'public.results.comp', [$comp->resultsSlug()]) }}"
+                            class="btn btn-primary">Results</a>
+                    </div>
+                </div>
             @endforeach
         </div>
 
