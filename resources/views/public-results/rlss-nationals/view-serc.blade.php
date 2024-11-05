@@ -181,6 +181,7 @@
                                 @endphp
                                 @foreach ($mpIds as $mpId => $markingPoint)
                                     @php
+
                                         $localTotal += ($team['results'][$mpId] ?? 0) * $markingPoint['weight'];
                                     @endphp
                                     <td class="py-3 px-6 text-center">

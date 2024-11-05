@@ -28,14 +28,12 @@ class SERC extends IEvent implements IPenalisable
     public function getTeams()
     {
 
-      
+
 
         return match ($this->getCompetition->scoring_type) {
             'bulsca' => CompetitionTeam::where('competition', $this->competition)->orderBy('serc_order')->get(),
             'rlss-nationals' => Competitor::where('competition', $this->competition)->orderBy('serc_order')->get()->unique('club'),
         };
-
-       
     }
 
     public function getName(): string
@@ -63,7 +61,7 @@ class SERC extends IEvent implements IPenalisable
 
     public function getMaxMark()
     {
-        $result = DB::select(" SELECT SUM(weight*10) AS total FROM serc_marking_points WHERE serc=?;", [$this->id]);
+        $result = DB::select(" SELECT SUM(weight*10) AS total FROM serc_marking_points WHERE serc=? AND weight>0;", [$this->id]);
         return $result[0]->total;
     }
 
