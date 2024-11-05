@@ -69,7 +69,7 @@
         </div>
 
         <div class="w-full max-w-full flex  px-2">
-            <a href="#tanks" class="btn !bg-rlss-blue mx-2 grow  ">Initiative Orders</a>
+            <a href="#tanks" class="btn !bg-rlss-blue mx-2 grow  ">Click for Initiative Orders</a>
         </div>
 
 
