@@ -32,10 +32,10 @@ class SpeedJudgingController extends Controller
             return redirect()->route('dj.speeds.times.index', $speed)->with('alert-error', 'Heat ' . $heat . ' does not exist');
         }
 
-
         $heatTeams = $comp
             ->getHeatEntries()
             ->where('heat', $heat)
+            ->where('event', $comp->scoring_type == 'rlss-nationals' ? $speed->id : null)
             ->get();
 
         $missingResult = false;
@@ -179,6 +179,7 @@ class SpeedJudgingController extends Controller
         $heatlanes = $comp
             ->getHeatEntries()
             ->where('heat', $heat)
+            ->where('event', $comp->scoring_type == 'rlss-nationals' ? $speed->id : null)
             ->get();
 
         $missingResult = false;

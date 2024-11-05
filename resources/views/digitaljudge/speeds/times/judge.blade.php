@@ -30,7 +30,12 @@
 
 
         @php
-            $existingLanes = $comp->getHeatEntries()->where('heat', $heat)->orderBy('lane')->get();
+            $existingLanes = $comp
+                ->getHeatEntries()
+                ->where('heat', $heat)
+                ->where('event', $comp->scoring_type == 'rlss-nationals' ? $speed->id : null)
+                ->orderBy('lane')
+                ->get();
         @endphp
 
         <form action=""

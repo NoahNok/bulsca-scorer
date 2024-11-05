@@ -41,7 +41,7 @@
             </div>
 
             <div class="!ml-auto   ">
-                <img src="{{ $comp->getBrand->getLogo() }}" class=" w-20 h-20" alt="">
+                <img src="{{ $comp->getBrand->getLogo() }}" class=" w-20 h-20 min-w-20" alt="">
             </div>
         </div>
 
@@ -56,6 +56,11 @@
     <div class="container mx-auto py-6 overflow-x-hidden" x-data="{
         activeEvent: {{ $comp->getSpeedEvents->first()->id }}
     }">
+
+        <div class="w-full" style="text-align: center;margin-bottom: 1.5rem;">
+            <a href="{{ \App\Helpers\RouteHelpers::externalRoute('results', 'public.results.comp', [$comp->resultsSlug()]) }}"
+                target="_blank" class="link text-center" style="text-align: center;width: 100%;">Click for Results</a>
+        </div>
 
         <div class="form-input search">
             <input type="text" id="competitor_search" placeholder="Competitior name..." x-model="search">
@@ -330,6 +335,17 @@
         </div>
 
 
+    </div>
+    <br>
+
+    <div class="  text-center" style="padding-bottom: 2rem;">
+        <small>
+            ©
+            Noah Hollowell, <a href="https://bulsca.co.uk" target="_blank" class="link">BULSCA</a>
+            2022-2024
+            <br>Other logos, styles and assets are the property of their respective owners
+            (RLSSUK)
+        </small>
     </div>
     <br>
 
