@@ -69,7 +69,7 @@
         </div>
 
         <div class="w-full max-w-full flex  px-2">
-            <a href="#tanks" class="btn !bg-rlss-blue mx-2 grow  ">Jump to tanks</a>
+            <a href="#tanks" class="btn !bg-rlss-blue mx-2 grow  ">Initiative Orders</a>
         </div>
 
 
@@ -85,6 +85,9 @@
                     x-bind:style="activeEvent == {{ $event->id }} ? 'color:white !important; ' : ''"
                     @click="activeEvent = {{ $event->id }}">{{ $event->getName() }}</button>
             @endforeach
+
+
+
         </div>
         <br>
 
