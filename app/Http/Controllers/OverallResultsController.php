@@ -120,6 +120,7 @@ class OverallResultsController extends Controller
 
         foreach ($json as $event) {
             if ($event->id == "name" || $event->id == "league") continue;
+            if ($event->values->weight == 0) continue;
             $rse = new ResultSchemaEvent();
             $rse->schema = $rs->id;
             $rse->event_id = $event->id;
