@@ -55,6 +55,29 @@
         <h2 class="font-astoria text-rlss-blue font-extrabold">{{ $event->getName() }} Results</h2>
         <p>You may need to scroll/drag on the table to see more results.</p>
         <br>
+        <div class="mt-2 flex flex-col md:flex-row space-y-4 md:space-y-0 items-center justify-between">
+            <div class="flex flex-col ">
+                <div class="form-input" style="margin-bottom: 0px !important;"><input placeholder="Search"
+                        id="team-filter" style="margin-bottom: 0 !important" type="text"></div>
+
+            </div>
+
+            <form action="" x-data x-ref="bracket_form">
+                <div class="form-input " style="margin-bottom: 0 !important">
+
+                    <select name="bracket" id="event-bracket"
+                        style="margin-bottom: 0 !important; padding-top: 0.6721rem !important; padding-bottom: 0.6721rem !important"
+                        class="input" @change="$refs.bracket_form.submit()">
+                        <option value="">All brackets</option>
+                        @foreach (\App\Models\League::where('scoring_type', 'rlss-nationals')->get() as $bracket)
+                            <option value="{{ $bracket->id }}" @if (request()->get('bracket') == $bracket->id) selected @endif>
+                                {{ $bracket->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </form>
+        </div>
+        <br>
         <div class="  relative overflow-x-auto w-full lg:w-auto  ">
             <table id="table" class="table-highlight text-sm w-full shadow-md rounded-lg  text-left text-gray-500 ">
                 <thead class="text-xs text-gray-700 text-right uppercase bg-gray-50  ">
@@ -153,23 +176,9 @@
             </table>
 
         </div>
-        <div class="mt-2 flex flex-col md:flex-row space-y-4 md:space-y-0 items-center justify-between">
-            <div class="flex flex-col ">
-                <div class="form-input" style="margin-bottom: 0px !important;"><input placeholder="Search"
-                        id="team-filter" style="margin-bottom: 0 !important" type="text"></div>
 
-            </div>
-            @if (!$comp->areResultsProvisional())
-                <div class="md:ml-auto flex flex-col items-center md:items-end">
-                    <div>
-                        <a href="{{ route('whatif') }}" class="link ">Edit in WhatIf</a>
-                        or
-                        <a href="{{ Request::url() }}?dlCSV" class="link ">Download as CSV</a>
-                    </div>
-                    <small>WhatIf lets you explore how changes would effect overall results!</small>
-                </div>
-            @endif
-        </div>
+
+    </div>
 
 
 

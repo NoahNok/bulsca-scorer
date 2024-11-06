@@ -71,8 +71,44 @@
         <h2 class="font-astoria text-rlss-blue font-extrabold">{{ $event->getName() }} Results</h2>
         <p>You may need to scroll/drag on the table to see more results.</p>
         <br>
+        <div class="mt-2 flex flex-col md:flex-row space-y-4 md:space-y-0 items-center ">
+            <div class="flex flex-col w-full md:w-auto ">
+                <div class="form-input" style="margin-bottom: 0px !important;"><input placeholder="Search"
+                        id="team-filter" style="margin-bottom: 0 !important" type="text"></div>
+
+            </div>
+
+            <div class="md:ml-8 w-full md:w-auto">
+                <form action="" x-data x-ref="bracket_form">
+                    <div class="form-input " style="margin-bottom: 0 !important">
+
+                        <select name="bracket" id="event-bracket"
+                            style="margin-bottom: 0 !important; padding-top: 0.6721rem !important; padding-bottom: 0.6721rem !important"
+                            class="input" @change="$refs.bracket_form.submit()">
+                            <option value="">All brackets</option>
+                            @foreach (\App\Models\League::where('scoring_type', 'rlss-nationals')->get() as $bracket)
+                                <option value="{{ $bracket->id }}" @if (request()->get('bracket') == $bracket->id) selected @endif>
+                                    {{ $bracket->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </form>
+            </div>
+
+            <div class="flex items-center justify-center space-x-2 md:ml-8">
+                <label for="anal">Analysis</label>
+                <input type="checkbox" name="" id="anal">
+            </div>
+
+            <div class="md:ml-auto">
+                <p class="link" id="fs">Fullscreen</p>
+            </div>
+
+
+        </div>
+        <br>
         <div id="table-wrapper"
-            class="  relative overflow-x-auto w-full  lg:max-w-[80vw] h-[90vh] lg:h-[80vh] resize-y bg-white ">
+            class="  relative overflow-x-auto w-full  lg:max-w-[80vw] max-h-[90vh] lg:max-h-[80vh] resize-y bg-white ">
             <p class="link hidden text-center" id="cfs">Close Fullscreen</p>
             <table id="table"
                 class="table-highlight text-sm w-full shadow-md rounded-lg top-0 text-left text-gray-500 border-collapse  relative "
@@ -234,33 +270,7 @@
 
 
 
-        <div class="mt-2 flex flex-col md:flex-row space-y-4 md:space-y-0 items-center ">
-            <div class="flex flex-col ">
-                <div class="form-input" style="margin-bottom: 0px !important;"><input placeholder="Search"
-                        id="team-filter" style="margin-bottom: 0 !important" type="text"></div>
 
-            </div>
-
-            <div class="flex items-center justify-center space-x-2 ml-8">
-                <label for="anal">Analysis</label>
-                <input type="checkbox" name="" id="anal">
-            </div>
-
-            <div class="md:ml-auto">
-                <p class="link" id="fs">Fullscreen</p>
-            </div>
-
-            @if (!$comp->areResultsProvisional())
-                <div class="md:ml-auto flex flex-col items-center md:items-end">
-                    <div>
-                        <a href="{{ route('whatif') }}" class="link ">Edit in WhatIf</a>
-                        or
-                        <a href="{{ Request::url() }}?dlCSV" class="link ">Download as CSV</a>
-                    </div>
-                    <small>WhatIf lets you explore how changes would effect overall results!</small>
-                </div>
-            @endif
-        </div>
 
 
 

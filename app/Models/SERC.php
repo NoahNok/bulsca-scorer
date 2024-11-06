@@ -236,6 +236,7 @@ class SERC extends IEvent implements IPenalisable
 
         $placeResults = $this->getResults();
 
+
         foreach ($placeResults as $placeResult) {
             $results[$placeResult->tid]['place'] = $placeResult->place;
             $results[$placeResult->tid]['points'] = $placeResult->points;
@@ -245,6 +246,13 @@ class SERC extends IEvent implements IPenalisable
             $results[$placeResult->tid]['tid'] = $placeResult->tid;
             $results[$placeResult->tid]['disqualification'] = $placeResult->disqualification;
         }
+
+
+        // Remove any results that don't have a place key
+        // Usually occurs when filtering by bracket
+        $results = array_filter($results, function ($item) {
+            return array_key_exists('place', $item);
+        });
 
         usort($results, function ($item1, $item2) {
             return $item1['place'] > $item2['place'];
