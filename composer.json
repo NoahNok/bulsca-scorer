@@ -17,6 +17,7 @@
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.7",
         "phpoffice/phpspreadsheet": "^1.29",
+        "predis/predis": "^2.2",
         "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-data": "^4.7"
     },

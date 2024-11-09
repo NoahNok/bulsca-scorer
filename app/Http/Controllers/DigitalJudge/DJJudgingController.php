@@ -15,6 +15,7 @@ use App\Notifications\General\DigitalJudge\SercMarked;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Session;
 
 class DJJudgingController extends Controller
@@ -168,7 +169,9 @@ class DJJudgingController extends Controller
         }
 
 
-        WebPush::dispatch(new SercMarked($serc, $team, DigitalJudge::getClientName()));
+
+        $this->dispatchTeamMarkedNotification($serc, $team);
+
 
 
 
@@ -251,5 +254,21 @@ class DJJudgingController extends Controller
     public function tutorialPost()
     {
         return redirect()->route('dj.judging.home')->with('success', 'Tutorial completed!');
+    }
+
+    private function dispatchTeamMarkedNotification(SERC $serc, CompetitionTeam $team)
+    {
+
+        $key = "webpush_notif_{$serc->id}_{$team->id}";
+
+        if (Redis::exists($key)) return;
+
+        $wasSet = Redis::setnx($key, true);
+
+        if (!$wasSet) return;
+
+        Redis::expire($key, 86400);
+
+        WebPush::dispatch(new SercMarked($serc, $team));
     }
 }

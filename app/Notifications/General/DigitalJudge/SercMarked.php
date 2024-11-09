@@ -18,7 +18,7 @@ class SercMarked extends BrandBasePushNotification
     /**
      * Create a new notification instance.
      */
-    public function __construct(SERC $serc, CompetitionTeam $team, string $by = "HOST")
+    public function __construct(SERC $serc, CompetitionTeam $team)
     {
 
         $sercName = $serc->getName();
@@ -30,6 +30,6 @@ class SercMarked extends BrandBasePushNotification
 
 
 
-        parent::__construct($competition, "$sercName SERC Marked", "$teamName ($currentTeamPosition/$totalTeams) has been marked by $by");
+        parent::__construct($competition, "$sercName SERC Marked", "$teamName ($currentTeamPosition/$totalTeams) has been marked.");
     }
 }
