@@ -4,6 +4,7 @@ namespace App\Http\Controllers\DigitalJudge;
 
 use App\DigitalJudge\DigitalJudge;
 use App\Http\Controllers\Controller;
+use App\Jobs\WebPush;
 use App\Models\CompetitionSpeedEvent;
 
 use App\Models\EventOOF;
@@ -11,6 +12,7 @@ use App\Models\Heat;
 use App\Models\Penalty;
 use App\Models\SpeedEvent;
 use App\Models\SpeedResult;
+use App\Notifications\General\DigitalJudge\SpeedMarked;
 use Illuminate\Http\Request;
 use PhpParser\Node\Stmt\Continue_;
 
@@ -145,7 +147,7 @@ class SpeedJudgingController extends Controller
         }
 
 
-
+        WebPush::dispatch(new SpeedMarked($speed, $heat));
 
 
         if ($heat + 1 > DigitalJudge::getClientCompetition()->getMaxHeats()) {
