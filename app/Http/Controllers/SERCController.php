@@ -230,7 +230,7 @@ class SERCController extends Controller
         return redirect()->route('comps.view.events.sercs.editResults', [$comp, $serc, $nextTeamId]);
     }
 
-    public function hide($comp, SERC $serc)
+    public function hide(Competition $comp, SERC $serc)
     {
         $serc->hide();
         return redirect()->back();

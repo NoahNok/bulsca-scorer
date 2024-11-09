@@ -222,7 +222,7 @@ class SpeedsEventController extends Controller
         return redirect()->route('comps.view.events', $comp);
     }
 
-    public function hide($comp, CompetitionSpeedEvent $event)
+    public function hide(Competition $comp, CompetitionSpeedEvent $event)
     {
         $event->hide();
         return redirect()->back();
