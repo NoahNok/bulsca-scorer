@@ -268,6 +268,10 @@ h5 {
     }
  }
 
+ [x-cloak] {
+  display: none;
+ }
+
  .card {
   @apply px-5 py-3 border shadow-md bg-white rounded-md flex flex-col transition-all;
   &.card-hover {

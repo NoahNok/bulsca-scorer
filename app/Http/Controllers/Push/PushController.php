@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Notification;
 
 class PushController extends Controller
 {
-    public function store(Request $request)
+    public function store(Competition $comp, Request $request)
     {
         $this->validate($request, [
             'endpoint'    => 'required',
@@ -38,5 +38,10 @@ class PushController extends Controller
         $n = new BrandBasePushNotification(Competition::find(53), "BrandBase", "hello world");
 
         WebPush::dispatch($n, ['admin'], true);
+    }
+
+    public function userSettingsPage(Competition $comp)
+    {
+        return view('competition.user-notifications', compact('comp'));
     }
 }
