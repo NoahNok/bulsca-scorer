@@ -10,6 +10,7 @@ use App\Models\ResultSchemas\NationalsResultSchema;
 use App\Models\Scoring\Bulsca\BulscaHeatGenerator;
 use App\Models\Scoring\Bulsca\BulscaSercScoring;
 use App\Models\Scoring\Bulsca\BulscaSpeedScoring;
+use App\Models\Scoring\ClubSerc\ClubSercSercScoring;
 use App\Models\Scoring\Nationals\NationalsHeatGenerator;
 use App\Models\Scoring\Nationals\NationalsSercScoring;
 use App\Models\Scoring\Nationals\NationalsSpeedScoring;
@@ -38,7 +39,7 @@ class ScoringHelper
             },
             'rlss-cs' => match ($eventType) {
                 'speed' => new BulscaSpeedScoring(),
-                'serc' => new BulscaSercScoring(),
+                'serc' => new ClubSercSercScoring(),
                 'heat' => new BulscaHeatGenerator(),
             }
         };

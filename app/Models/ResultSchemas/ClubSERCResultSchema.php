@@ -18,6 +18,10 @@ class ClubSERCResultSchema extends  ResultSchema
 
         $serc = $this->getEvents->first()->getActualEvent;
 
+        $l = League::where('name', $this->league)->first();
+
+        request()->merge(['league' => $l->id]);
+
         $results = $serc->getResults();
 
         return ["results" => $results, "eventOrder" => [$serc->getName()], 'maxMark' => $serc->getMaxMark()];
