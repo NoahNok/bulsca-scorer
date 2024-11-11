@@ -31,7 +31,7 @@ class SERC extends IEvent implements IPenalisable
 
 
         return match ($this->getCompetition->scoring_type) {
-            'bulsca' => CompetitionTeam::where('competition', $this->competition)->orderBy('serc_order')->get(),
+            'bulsca', 'rlss-cs' => CompetitionTeam::where('competition', $this->competition)->orderBy('serc_order')->get(),
             'rlss-nationals' => Competitor::where('competition', $this->competition)->orderBy('serc_order')->get()->unique('club'),
         };
     }

@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Helpers\ClassHelpers;
+use App\Models\ResultSchemas\ClubSERCResultSchema;
+use App\Models\ResultSchemas\HighestSumResultSchema;
 use App\Models\ResultSchemas\NationalsResultSchema;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -165,6 +167,8 @@ class ResultSchema extends Model
 
         if ($this->getCompetition->scoring_type == "rlss-nationals") {
             return ClassHelpers::castToClass($this, NationalsResultSchema::class);
+        } else if ($this->getCompetition->scoring_type == "rlss-cs") {
+            return ClassHelpers::castToClass($this, ClubSERCResultSchema::class);
         }
 
         return $this;

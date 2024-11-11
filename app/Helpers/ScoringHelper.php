@@ -19,7 +19,7 @@ class ScoringHelper
 {
 
 
-    static $availableTypes = ['bulsca' => ['name' => 'BULSCA', 'use_competitors' => false], 'rlss-nationals' => ['name' => 'RLSS Nationals', 'use_competitors' => true]];
+    static $availableTypes = ['bulsca' => ['name' => 'BULSCA', 'use_competitors' => false], 'rlss-nationals' => ['name' => 'RLSS Nationals', 'use_competitors' => true], 'rlss-cs' => ['name' => 'RLSS Club SERC', 'use_competitors' => false]];
 
 
     static function resolve($scoringType, $eventType)
@@ -36,6 +36,11 @@ class ScoringHelper
                 'serc' => new NationalsSercScoring(),
                 'heat' => new NationalsHeatGenerator(),
             },
+            'rlss-cs' => match ($eventType) {
+                'speed' => new BulscaSpeedScoring(),
+                'serc' => new BulscaSercScoring(),
+                'heat' => new BulscaHeatGenerator(),
+            }
         };
     }
 

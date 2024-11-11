@@ -190,7 +190,7 @@
                 </table>
             </div>
         </div>
-    @else
+    @elseif ($comp->scoring_type == 'rlss-nationals')
         <div class=" overflow-hidden " id="raw_data">
             <h2>Raw Data</h2>
             <div class=" relative overflow-x-auto max-w-[85vw]  ">
@@ -239,7 +239,6 @@
                         @endforeach
                     </tbody>
                 </table>
-
 
     @endif
 
