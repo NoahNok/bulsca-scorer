@@ -241,7 +241,7 @@ class PublicResultsController extends Controller
     public function viewDqPen(Competition $comp_slug, CompetitionTeam $team, string $code)
     {
 
-        $judgeSubmission = collect(DB::select("SELECT id FROM judge_dq_submissions jds INNER JOIN heats h ON h.id=jds.heat_lane WHERE jds.competition=? AND h.team=? AND code=?", [$comp_slug->id, $team->id, $code]))->first();
+        $judgeSubmission = collect(DB::select("SELECT jds.id FROM judge_dq_submissions jds INNER JOIN heats h ON h.id=jds.heat_lane WHERE jds.competition=? AND h.team=? AND code=?", [$comp_slug->id, $team->id, $code]))->first();
 
         // $judgeSubmission = JudgeDQSubmission::with('getHeat')->where('competition', $comp->id)->whereHas('getHeat', function ($query) use ($team) {
         //     $query->where('team', $team->id)
