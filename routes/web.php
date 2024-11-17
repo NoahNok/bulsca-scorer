@@ -334,7 +334,12 @@ Route::bind('comp_slug', function ($value) {
 
     $parts = explode(".", $value);
 
-    if (count($parts) < 2) abort(404);
+
+    if (count($parts) < 2) {
+        $c = Competition::findOrFail($parts[0]);
+
+        return $c;
+    }
 
     $id = $parts[1];
 
