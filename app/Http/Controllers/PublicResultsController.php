@@ -13,6 +13,7 @@ use App\Models\ResultSchema;
 use App\Models\SERC;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PublicResultsController extends Controller
 {
@@ -240,9 +241,12 @@ class PublicResultsController extends Controller
     public function viewDqPen(Competition $comp, CompetitionTeam $team, string $code)
     {
 
-        $judgeSubmission = JudgeDQSubmission::with('getHeat')->where('competition', $comp->id)->whereHas('getHeat', function ($query) use ($team) {
-            $query->where('team', $team->id)->where('event', null);
-        })->where('code', $code)->first();
+
+        $judgeSubmission = collect(DB::select("SELECT * FROM judge_dq_submissions jds INNER JOIN heats h ON h.id=jds.heat_lane WHERE jds.competition=? AND h.team=? AND code=?", [$comp->id, $team->id, $code]))->first();
+
+        // $judgeSubmission = JudgeDQSubmission::with('getHeat')->where('competition', $comp->id)->whereHas('getHeat', function ($query) use ($team) {
+        //     $query->where('team', $team->id)
+        // })->where('code', $code)->first();
 
         if (!$judgeSubmission) {
             $code = strtoupper($code);
