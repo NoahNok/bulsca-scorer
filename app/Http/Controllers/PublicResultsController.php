@@ -241,7 +241,7 @@ class PublicResultsController extends Controller
     {
 
         $judgeSubmission = JudgeDQSubmission::with('getHeat')->where('competition', $comp->id)->whereHas('getHeat', function ($query) use ($team) {
-            $query->where('team', $team->id);
+            $query->where('team', $team->id)->where('event', null);
         })->where('code', $code)->first();
 
         if (!$judgeSubmission) {
