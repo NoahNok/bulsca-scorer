@@ -261,6 +261,6 @@ class PublicResultsController extends Controller
             }
         }
 
-        return view('public-results.view-dqpen', ['dq' => JudgeDQSubmission::find($judgeSubmission->id)]);
+        return view('public-results.view-dqpen', ['dq' => JudgeDQSubmission::with('getHeat')->find($judgeSubmission->id)]);
     }
 }
