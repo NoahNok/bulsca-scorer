@@ -161,6 +161,8 @@
                         device.</span></p>
                 <br>
 
+                <button class="btn" @click="subscribeUser()">Send test notification</button>
+
                 {{-- <button class="btn btn-danger" @click="unsubscribe">Disable
                     Notifications</button> --}}
 
