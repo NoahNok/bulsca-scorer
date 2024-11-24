@@ -209,18 +209,18 @@ class Competition extends Model
 
     public function getTotalPens()
     {
-        $speedPens = DB::select("SELECT code FROM penalties p INNER JOIN speed_results sr ON sr.id=p.speed_result INNER JOIN competition_speed_events cse ON cse.id=sr.event WHERE cse.competition=?", [$this->id]);
-        $sercPens = DB::select("SELECT code FROM serc_penalties sp INNER JOIN sercs s ON s.id=sp.serc WHERE s.competition=?", [$this->id]);
+        $speedPens = DB::select("SELECT code FROM speed_result_penalties p INNER JOIN speed_results sr ON sr.id=p.speed_result INNER JOIN competition_speed_events cse ON cse.id=sr.event WHERE cse.competition=?", [$this->id]);
+        $sercPens = DB::select("SELECT codes FROM serc_penalties sp INNER JOIN sercs s ON s.id=sp.serc WHERE s.competition=?", [$this->id]);
 
 
         $speedTotal = 0;
         foreach ($speedPens as $pen) {
-            $speedTotal += count(explode(',', $pen));
+            $speedTotal += count(explode(',', $pen->code));
         }
 
         $sercTotal = 0;
         foreach ($sercPens as $pen) {
-            $sercTotal += count(explode(',', $pen));
+            $sercTotal += count(explode(',', $pen->codes));
         }
 
 
