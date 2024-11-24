@@ -194,4 +194,38 @@ class Competition extends Model
 
         return collect(DB::select('SELECT h.id, h.heat, h.lane, ct.team, l.name AS league, c.name AS club, c.region FROM heats h INNER JOIN competition_teams ct ON ct.id=h.team INNER JOIN leagues l ON l.id=ct.league INNER JOIN clubs c ON c.id=ct.club WHERE h.competition = ? AND h.event = ? ORDER BY heat, lane;', [$this->id, $eventId]));
     }
+
+    public function getTotalDQs()
+    {
+        $speedDQs = DB::select("SELECT COUNT('disqualification') AS total FROM speed_results sr INNER JOIN competition_speed_events cse ON cse.id=sr.event WHERE sr.disqualification IS NOT NULL AND cse.competition=?", [$this->id])[0]->total;
+        $sercDQs = DB::select("SELECT COUNT('code') AS total FROM serc_disqualifications sd INNER JOIN sercs s ON s.id=sd.serc WHERE s.competition=?", [$this->id])[0]->total;
+
+
+
+        return ["speed" => $speedDQs, "serc" => $sercDQs, "total" => $speedDQs + $sercDQs];
+    }
+
+
+
+    public function getTotalPens()
+    {
+        $speedPens = DB::select("SELECT code FROM penalties p INNER JOIN speed_results sr ON sr.id=p.speed_result INNER JOIN competition_speed_events cse ON cse.id=sr.event WHERE cse.competition=?", [$this->id]);
+        $sercPens = DB::select("SELECT code FROM serc_penalties sp INNER JOIN sercs s ON s.id=sp.serc WHERE s.competition=?", [$this->id]);
+
+
+        $speedTotal = 0;
+        foreach ($speedPens as $pen) {
+            $speedTotal += count(explode(',', $pen));
+        }
+
+        $sercTotal = 0;
+        foreach ($sercPens as $pen) {
+            $sercTotal += count(explode(',', $pen));
+        }
+
+
+
+
+        return ["speed" => $speedTotal, "serc" => $sercTotal, "total" => $speedTotal + $sercTotal];
+    }
 }

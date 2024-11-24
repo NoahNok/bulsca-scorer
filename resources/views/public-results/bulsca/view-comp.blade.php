@@ -66,7 +66,30 @@
             <br>
         @endif
 
+
+
         <div class="flex flex-col space-y-4 w-[80%] lg:w-[65%] xl:w-[50%]">
+
+            <div>
+
+                <div class=" grid grid-cols-3 xl:grid-cols-6  gap-4">
+                    @foreach ($comp->getTotalDQs() as $key => $value)
+                        <div>
+                            <h4 class="hmb-0">{{ $value }}</h4>
+                            <small class=" capitalize font-semibold">{{ $key }} DQs</small>
+
+                        </div>
+                    @endforeach
+
+                    @foreach ($comp->getTotalDQs() as $key => $value)
+                        <div>
+                            <h4 class="hmb-0">{{ $value }}</h4>
+                            <small class=" capitalize font-semibold">{{ $key }} Pens</small>
+
+                        </div>
+                    @endforeach
+                </div>
+            </div>
 
             <div class="">
 
