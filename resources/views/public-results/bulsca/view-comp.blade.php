@@ -81,7 +81,7 @@
                         </div>
                     @endforeach
 
-                    @foreach ($comp->getTotalDQs() as $key => $value)
+                    @foreach ($comp->getTotalPens() as $key => $value)
                         <div>
                             <h4 class="hmb-0">{{ $value }}</h4>
                             <small class=" capitalize font-semibold">{{ $key }} Pens</small>
