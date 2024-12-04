@@ -18,6 +18,7 @@
         if (empty($valid)) {
             $valid = [0];
         }
+
     @endphp
 
     <div class="flex flex-col  " x-data="{ total: {{ json_encode($valid) }} }">
@@ -279,7 +280,9 @@
                                 <optgroup label="Heat {{ $heat[0]->heat }}">
                                     @foreach ($heat->sortBy('lane') as $lane)
                                         <option value="{{ $lane->id }}">
-                                            {{ $lane->lane }}: {{ $lane->getTeam->getFullname() }}</option>
+                                            {{ $lane->heat }}-{{ $lane->lane }}:
+                                            {{ $lane->getTeam->getFullname() }}
+                                        </option>
                                     @endforeach
                                 </optgroup>
                             @endforeach

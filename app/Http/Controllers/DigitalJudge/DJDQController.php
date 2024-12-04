@@ -33,25 +33,22 @@ class DJDQController extends Controller
 
         $event = $dQRequest->input('event');
 
-    
+
 
         if (str_starts_with($event, 'sp')) {
             // SPEED EVENT
             $eventId = substr($event, 3);
 
- 
+
 
 
             if ($dQRequest->input('type') == 'dq') {
                 // DQ
 
                 $sr = SpeedResult::where('competition_team', $dQRequest->input('team'))->where('event', $eventId)->first();
-             
+
                 $sr->disqualification = $dQRequest->input('code');
                 $sr->save();
-
-
-           
             } else {
                 // Penalty
                 $penaltiesSplit = explode(",", $dQRequest->input('code'));
@@ -67,7 +64,7 @@ class DJDQController extends Controller
                 }
 
                 $sr = SpeedResult::where('competition_team', $dQRequest->input('team'))->where('event', $eventId)->first();
-        
+
                 Penalty::where('speed_result', $sr->id)->delete();
 
                 foreach ($valid as $penalty) {
@@ -81,10 +78,10 @@ class DJDQController extends Controller
             $eventId = substr($event, 3);
             // SERC EVENT
 
-     
+
 
             if ($dQRequest->input('type') == 'dq') {
-            
+
                 if ($dQRequest->input('code') == null) {
                     SERCDisqualification::where(['team' => $dQRequest->input('team'), 'serc' => $eventId])->delete();
                 } else {
@@ -92,8 +89,6 @@ class DJDQController extends Controller
                     $sd->code = $dQRequest->input('code');
                     $sd->save();
                 }
-
-   
             } else {
 
                 $sd = SERCPenalty::firstOrNew(['team' => $dQRequest->input('team'), 'serc' => $eventId]);
@@ -155,7 +150,7 @@ class DJDQController extends Controller
         if (str_starts_with($code, 'p')) {
             $code = substr($code, 1);
 
-            return response()->json(['description' => PenaltyCode::find($code)->description ?? "Penalty code not found"]);
+            return response()->json(['description' => PenaltyCode::find($code)->description ?? "Penalty code not found", 'type' => 'penalty']);
         } else {
             $code = substr($code, 2);
 
@@ -253,5 +248,36 @@ class DJDQController extends Controller
         }
 
         return response()->json(['success' => true, 'result' => $submissions]);
+    }
+
+
+    public function getAccepted()
+    {
+        $accepted = JudgeDQSubmission::where('competition',  DigitalJudge::getClientCompetition()->id)->where('resolved', true)->orderBy('updated_at', 'DESC')->get();
+
+
+
+        foreach ($accepted as $submission) {
+            $submission->eventName = $submission->getEvent->getName();
+            $submission->teamName = $submission->getHeat?->getTeam->getFullname() ?? null;
+            $submission->heat = $submission->getHeat->heat ?? null;
+            $submission->lane = $submission->getHeat->lane ?? null;
+            $submission->code_desc = $this->internalResolveCode(($submission->code));
+        }
+
+        return $accepted->groupBy('eventName');
+    }
+
+    private function internalResolveCode($code)
+    {
+        if (str_starts_with($code, 'p')) {
+            $code = substr($code, 1);
+
+            return PenaltyCode::find($code)->description ?? "Penalty code not found";
+        } else {
+            $code = substr($code, 2);
+
+            return DQCode::find($code)->description ?? "DQ code not found";
+        }
     }
 }
