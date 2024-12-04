@@ -74,7 +74,7 @@
 
                 <div class=" grid grid-cols-3 xl:grid-cols-6  gap-4">
                     @foreach ($comp->getTotalDQs() as $key => $value)
-                        <div>
+                        <div class="">
                             <h4 class="hmb-0">{{ $value }}</h4>
                             <small class=" capitalize font-semibold">{{ $key }} DQs</small>
 

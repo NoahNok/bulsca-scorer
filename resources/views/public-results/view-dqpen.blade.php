@@ -29,8 +29,8 @@
 
 
             <div class="flex justify-between">
-                <p><strong>Heat</strong>: {{ $dq->getHeat()->heat ?? '-' }}
-                    <strong>Lane</strong>: {{ $dq->getHeat()->lane ?? '-' }} </span>
+                <p><strong>Heat</strong>: {{ $dq->getHeat?->heat ?? '-' }}
+                    <strong>Lane</strong>: {{ $dq->getHeat?->lane ?? '-' }} </span>
                 </p>
             </div>
 
