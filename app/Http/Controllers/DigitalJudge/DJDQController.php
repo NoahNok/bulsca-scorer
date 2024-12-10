@@ -285,15 +285,40 @@ class DJDQController extends Controller
     public function removeSubmission(JudgeDQSubmission $submission)
     {
 
-        // try {
-        $this->removeCode($submission);
 
-        $submission->delete();
+        if ($submission->appealed) {
+            return response()->json(['success' => true]);
+        }
 
-        return response()->json(['success' => true]);
-        // } catch (\Throwable $th) {
-        //     return response()->json(['success' => false]);
-        // }
+        try {
+            $this->removeCode($submission);
+
+            $submission->delete();
+
+            return response()->json(['success' => true]);
+        } catch (\Throwable $th) {
+            return response()->json(['success' => false]);
+        }
+    }
+
+    public function appealSubmission(JudgeDQSubmission $submission)
+    {
+
+        if ($submission->appealed) {
+            return response()->json(['success' => true]);
+        }
+
+        try {
+            $this->removeCode($submission);
+
+            $submission->appealed = true;
+
+            $submission->save();
+
+            return response()->json(['success' => true]);
+        } catch (\Throwable $th) {
+            return response()->json(['success' => false]);
+        }
     }
 
 

@@ -15,10 +15,17 @@
             <div class="mb-5 relative card" x-data="{ collapsed: true }">
 
                 <div @click="collapsed = !collapsed" class="flex justify-between items-center">
-                    <h3>{{ $dq->getHeat?->getTeam?->getFullname() ?? '-' }}</h3>
+                    <div class="flex space-x-5">
+                        <h3>{{ $dq->getHeat?->getTeam?->getFullname() ?? '-' }}
+                        </h3>
+                        @if ($dq->appealed)
+                            <div class=" flex items-center justify-center ">
+                                <dib class="btn btn-thin btn-info">Appealed</dib>
+                            </div>
+                        @endif
+                    </div>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        :class="!collapsed ? '' : 'rotate-180'" stroke="currentColor"
-                        class="w-6 h-6 transition-transform">
+                        :class="!collapsed ? '' : 'rotate-180'" stroke="currentColor" class="w-6 h-6 transition-transform">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                     </svg>
 
@@ -99,5 +106,5 @@
 
 
 
-</body>
-@endsection
+        </body>
+    @endsection
