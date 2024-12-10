@@ -345,6 +345,48 @@
                                 <p class="" x-text="submission.details"></p>
 
 
+                                <div class="grid grid-cols-2 gap-3 mt-2" x-data="{
+                                
+                                    handleRemove() {
+                                            if (!confirm(`Are you sure you wan't to remove ${submission.code} for ${submission.teamName} in ${submission.eventName}. This cannot be undone!`)) {
+                                                return
+                                            }
+                                            let fd = new FormData();
+                                
+                                            fd.append('_token', '{{ csrf_token() }}');
+                                
+                                            fetch('{{ route('dj.dq.remove', 'X') }}'.replace('X', submission.id), {
+                                                method: 'POST',
+                                                body: fd
+                                            }).then(resp => resp.json()).then(data => {
+                                                if (data.success) {
+                                                    alert('Submission removed');
+                                                } else {
+                                                    alert('Failed to remove submission')
+                                                }
+                                            })
+                                
+                                        },
+                                
+                                        handleAppeal() {
+                                            if (!confirm(`Are you sure you want to Accept to Appeal ${submission.code} for ${submission.teamName} in ${submission.eventName}. This will remove the DQ/Pen and cannot be undone!`)) {
+                                                return
+                                            }
+                                        },
+                                
+                                }">
+                                    {{-- <button class="btn btn-info grow">
+                                        Edit
+                                    </button> --}}
+                                    <button class="btn grow" @click="handleAppeal">
+                                        Accept Appeal
+                                    </button>
+                                    <button class="btn btn-danger grow" @click="handleRemove">
+                                        Remove
+                                    </button>
+                                </div>
+
+
 
 
 

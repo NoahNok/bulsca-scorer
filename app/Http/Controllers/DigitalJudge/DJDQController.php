@@ -280,4 +280,79 @@ class DJDQController extends Controller
             return DQCode::find($code)->description ?? "DQ code not found";
         }
     }
+
+
+    public function removeSubmission(JudgeDQSubmission $submission)
+    {
+
+        // try {
+        $this->removeCode($submission);
+
+        $submission->delete();
+
+        return response()->json(['success' => true]);
+        // } catch (\Throwable $th) {
+        //     return response()->json(['success' => false]);
+        // }
+    }
+
+
+
+    private function removeCode(JudgeDQSubmission $submission)
+    {
+
+
+        $event = $submission->getEvent;
+        $team = $submission->getHeat->getTeam;
+
+        if ($event instanceof SERC) {
+            $this->removeSercCode($submission->code, $event->id, $team->id);
+        } else {
+            $this->removeSpeedCode($submission->code, $event->id, $team->id);
+        }
+    }
+
+    private function removeSpeedCode($code, $eventId, $teamId)
+    {
+
+        $code = Str::upper($code);
+
+        $result = SpeedResult::where('event', $eventId)->where('competition_team', $teamId)->first();
+
+        if (str_starts_with($code, 'P')) {
+            $p = Penalty::where('speed_result', $result->id)->where('code', $code)->first();
+            $p->delete();
+        } else {
+
+            if (Str::upper($result->disqualification) == $code) {
+                $result->disqualification = null;
+                $result->save();
+            }
+        }
+    }
+
+    private function removeSercCode($code, $eventID, $teamId)
+    {
+        $code = Str::upper($code);
+
+        if (str_starts_with($code, 'P')) {
+            $sp = SERCPenalty::where('team', $teamId)->where('serc', $eventID)->first();
+
+
+            $codes = explode(",", $sp->codes);
+
+            $codes = array_filter($codes, function ($c) use ($code) {
+                return $c != $code;
+            });
+
+            if (count($codes) == 0) {
+                $sp->delete();
+            } else {
+                $sp->codes = $codes;
+                $sp->save();
+            }
+        } else {
+            SERCDisqualification::where('team', $teamId)->where('serc', $eventID)->where('code', $code)->delete();
+        }
+    }
 }

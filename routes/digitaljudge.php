@@ -98,6 +98,7 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
             Route::Get('/resolve/list', [DJDQController::class, 'getNeedingResolving'])->name('dj.dq.resolve.list');
             Route::post('/resolve/{submission}', [DJDQController::class, 'resolveSubmission'])->name('dj.dq.submission.resolve');
             Route::get('/accepted', [DJDQController::class, 'getAccepted'])->name('dj.dq.accepted');
+            Route::post('/remove/{submission}', [DJDQController::class, 'removeSubmission'])->name('dj.dq.remove');
         });
 
         Route::prefix('confirm')->group(function () {
