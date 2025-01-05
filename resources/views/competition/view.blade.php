@@ -182,159 +182,163 @@
             @endif
 
 
-            <div class="card">
-                <div class="flex items-center justify-between">
-                    <h3>Additional Accounts</h3>
-                </div>
+            <div>
+                <div class="card !grow-0">
+                    <div class="flex items-center justify-between">
+                        <h3>Additional Accounts</h3>
+                    </div>
 
 
-                <div class="  relative w-full  ">
-                    <table class=" text-sm w-full shadow-md rounded-lg overflow-hidden text-left text-gray-500 ">
-                        <thead class="text-xs text-gray-700 text-right uppercase bg-gray-50 ">
-                            <tr>
-                                <th scope="col" class="py-3 px-6 text-left">
-                                    Name
-                                </th>
-                                <th scope="col" class="py-3 px-6">
-                                    Email
-                                </th>
-                                <th scope="col" class="py-3 px-6">
-                                    Actions
-                                </th>
+                    <div class="  relative w-full  ">
+                        <table class=" text-sm w-full shadow-md rounded-lg overflow-hidden text-left text-gray-500 ">
+                            <thead class="text-xs text-gray-700 text-right uppercase bg-gray-50 ">
+                                <tr>
+                                    <th scope="col" class="py-3 px-6 text-left">
+                                        Name
+                                    </th>
+                                    <th scope="col" class="py-3 px-6">
+                                        Email
+                                    </th>
+                                    <th scope="col" class="py-3 px-6">
+                                        Actions
+                                    </th>
 
-                            </tr>
-                        </thead>
-                        <tbody>
-
-
-                            <tr class="bg-white border-b text-right " x-data="{
-                                openModal: false,
-                                data: null,
-                            
-                            
-                                createAccount() {
-                            
-                                    fetch('{{ route('comps.accounts.serc-writer.create', $comp) }}', {
-                                        method: 'POST',
-                                        headers: {
-                                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                        }
-                                    }).then(resp => resp.json()).then(data => {
-                                        if (data?.error) {
-                                            alert(data.error)
-                                            return
-                                        }
-                            
-                                        this.data = data
-                                        this.openModal = true
-                                    })
-                            
-                            
-                                },
-                            
-                                resetAccountPassword() {
-                                    fetch('{{ route('comps.accounts.serc-writer.new-password', $comp) }}', {
-                                        method: 'POST',
-                                        headers: {
-                                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                        }
-                                    }).then(resp => resp.json()).then(data => {
-                                        if (data?.error) {
-                                            alert(data.error)
-                                            return
-                                        }
-                            
-                                        this.data = data
-                                        this.openModal = true
-                                    })
-                                }
-                            }">
-                                <th scope="row" class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap ">
-                                    SERC Writer
-                                </th>
-
-                                @php
-                                    $swa = $comp->getSercWriterAccount();
-                                @endphp
-
-                                <td class="py-4 px-6 ">
-                                    <p>{{ $swa?->email ?? '-' }}</p>
-                                </td>
+                                </tr>
+                            </thead>
+                            <tbody>
 
 
-                                <td class="py-4 px-6 ">
-                                    <div class="flex items-end justify-end space-x-3 relative">
+                                <tr class="bg-white border-b text-right " x-data="{
+                                    openModal: false,
+                                    data: null,
+                                
+                                
+                                    createAccount() {
+                                
+                                        fetch('{{ route('comps.accounts.serc-writer.create', $comp) }}', {
+                                            method: 'POST',
+                                            headers: {
+                                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                            }
+                                        }).then(resp => resp.json()).then(data => {
+                                            if (data?.error) {
+                                                alert(data.error)
+                                                return
+                                            }
+                                
+                                            this.data = data
+                                            this.openModal = true
+                                        })
+                                
+                                
+                                    },
+                                
+                                    resetAccountPassword() {
+                                        fetch('{{ route('comps.accounts.serc-writer.new-password', $comp) }}', {
+                                            method: 'POST',
+                                            headers: {
+                                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                            }
+                                        }).then(resp => resp.json()).then(data => {
+                                            if (data?.error) {
+                                                alert(data.error)
+                                                return
+                                            }
+                                
+                                            this.data = data
+                                            this.openModal = true
+                                        })
+                                    }
+                                }">
+                                    <th scope="row"
+                                        class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap ">
+                                        SERC Writer
+                                    </th>
+
+                                    @php
+                                        $swa = $comp->getSercWriterAccount();
+                                    @endphp
+
+                                    <td class="py-4 px-6 ">
+                                        <p>{{ $swa?->email ?? '-' }}</p>
+                                    </td>
+
+
+                                    <td class="py-4 px-6 ">
+                                        <div class="flex items-end justify-end space-x-3 relative">
 
 
 
 
-                                        @if ($swa)
-                                            <div title="Reset Password" @click="resetAccountPassword">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                    stroke-width="1.5" stroke="currentColor"
-                                                    class="size-6 hover:text-black cursor-pointer">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" />
-                                                </svg>
-                                            </div>
-                                        @else
-                                            <div title="Create Account" @click="createAccount">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                    stroke-width="1.5" stroke="currentColor"
-                                                    class="size-6 hover:text-black cursor-pointer">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M12 4.5v15m7.5-7.5h-15" />
-                                                </svg>
+                                            @if ($swa)
+                                                <div title="Reset Password" @click="resetAccountPassword">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                        class="size-6 hover:text-black cursor-pointer">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" />
+                                                    </svg>
+                                                </div>
+                                            @else
+                                                <div title="Create Account" @click="createAccount">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                        class="size-6 hover:text-black cursor-pointer">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="M12 4.5v15m7.5-7.5h-15" />
+                                                    </svg>
 
-                                            </div>
-                                        @endif
+                                                </div>
+                                            @endif
 
 
-                                        <div class="relative">
-                                            <div class="modal" x-cloak x-show="openModal">
-                                                <div class="modal-content">
-                                                    <div class="flex flex-col text-left text-black">
-                                                        <h4>SERC Writer Account</h4>
-                                                        <p>Please give the following details to your SERC Writer(s) so that they
-                                                            can login and setup their SERCs.</p>
-                                                        <br>
-
-                                                        <p>
-                                                            <strong>Email</strong>
+                                            <div class="relative">
+                                                <div class="modal" x-cloak x-show="openModal">
+                                                    <div class="modal-content">
+                                                        <div class="flex flex-col text-left text-black">
+                                                            <h4>SERC Writer Account</h4>
+                                                            <p>Please give the following details to your SERC Writer(s) so that
+                                                                they
+                                                                can login and setup their SERCs.</p>
                                                             <br>
-                                                            <span x-text="data?.email"></span>
+
+                                                            <p>
+                                                                <strong>Email</strong>
+                                                                <br>
+                                                                <span x-text="data?.email"></span>
+                                                                <br>
+                                                                <strong>Password</strong>
+                                                                <br>
+                                                                <span x-text="data?.password"></span>
+                                                            </p>
                                                             <br>
-                                                            <strong>Password</strong>
-                                                            <br>
-                                                            <span x-text="data?.password"></span>
-                                                        </p>
-                                                        <br>
-                                                        <button class="btn btn-danger"
-                                                            @click="() => { window.location.reload() }">Close</button>
+                                                            <button class="btn btn-danger"
+                                                                @click="() => { window.location.reload() }">Close</button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
+
+
+
+
                                         </div>
 
 
 
 
-                                    </div>
+                                    </td>
+
+                                </tr>
 
 
 
 
-                                </td>
+                            </tbody>
+                        </table>
+                    </div>
 
-                            </tr>
-
-
-
-
-                        </tbody>
-                    </table>
                 </div>
-
             </div>
 
 
