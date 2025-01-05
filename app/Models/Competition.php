@@ -283,6 +283,6 @@ class Competition extends Model
     public function getSercWriterAccount(): ?User
     {
 
-        return $this->getBrand->getUsers->where('pivot.role', 'serc')->where('competition', $this->id)->first();
+        return $this->getBrand?->getUsers->where('pivot.role', 'serc')->where('competition', $this->id)->first();
     }
 }
