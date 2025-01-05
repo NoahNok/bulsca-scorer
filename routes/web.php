@@ -114,6 +114,9 @@ Route::middleware('auth')->group(function () {
 
                 Route::get('/settings', [CompetitionController::class, 'settings'])->name('comps.settings');
                 Route::post('/settings', [CompetitionController::class, 'updateCompetitionSettings'])->name('comps.settings.post');
+
+                Route::post('/accounts/serc-writer/create', [CompetitionController::class, 'createSercWriterAccount'])->name('comps.accounts.serc-writer.create');
+                Route::post('/account/serc-writer/new-password', [CompetitionController::class, 'resetSercWriterAccountPassword'])->name('comps.accounts.serc-writer.new-password');
             });
 
 

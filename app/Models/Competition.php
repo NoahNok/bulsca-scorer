@@ -9,6 +9,7 @@ use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class Competition extends Model
@@ -227,5 +228,61 @@ class Competition extends Model
 
 
         return ["speed" => $speedTotal, "serc" => $sercTotal, "total" => $speedTotal + $sercTotal];
+    }
+
+    public function createSercWriterAccount()
+    {
+
+
+        if ($this->getSercWriterAccount()) {
+            return response()->json([
+                'error' => 'SERC writer account already exists'
+            ]);
+        }
+
+
+        $sercWriter = new User();
+        $sercWriter->name = $this->name . " SERC Writer";
+        $sercWriter->email = "sercwriter-" . $this->id . "@" . ($this->getBrand?->website ?? 'scoring.events');
+
+        $passwordRaw = Str::random(16);
+        $sercWriter->password = Hash::make($passwordRaw);
+
+        $sercWriter->competition = $this->id;
+
+        $sercWriter->save();
+
+        $this->getBrand->attachUser($sercWriter, 'serc');
+
+        return response()->json([
+            'email' => $sercWriter->email,
+            'password' => $passwordRaw
+        ]);
+    }
+
+    public function resetSercWriterAccountPassword()
+    {
+        $sercWriter = $this->getSercWriterAccount();
+
+        if ($sercWriter) {
+            $passwordRaw = Str::random(16);
+            $sercWriter->password = Hash::make($passwordRaw);
+            $sercWriter->save();
+
+            return response()->json([
+                'email' => $sercWriter->email,
+                'password' => $passwordRaw
+            ]);
+        }
+
+        return response()->json([
+            'error' => 'No SERC writer account found'
+        ]);
+    }
+
+    public function getSercWriterAccount(): ?User
+    {
+
+        return $this->getBrand->getUsers->where('pivot.role', 'serc')->where('competition', $this->id)->first();
     }
 }

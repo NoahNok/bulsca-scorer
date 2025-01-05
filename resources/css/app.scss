@@ -268,9 +268,7 @@ h5 {
     }
  }
 
- [x-cloak] {
-  display: none;
- }
+ 
 
  .card {
   @apply px-5 py-3 border shadow-md bg-white rounded-md flex flex-col transition-all;
@@ -656,6 +654,10 @@ aside {
   .modal-content {
     @apply bg-white rounded-md p-4 w-[90%]  md:w-[60%] lg:w-[45%] xl:w-[30%] 4xl:w-[20%] ;
   }
+}
+
+[x-cloak] {
+  display: none !important;
 }
 
 .hide-number-arrows {

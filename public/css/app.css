@@ -3278,10 +3278,6 @@ div.form-input.checkbox > input {
   background-color: rgb(29 78 216 / var(--tw-bg-opacity));
 }
 
-[x-cloak] {
-  display: none;
-}
-
 .card {
   display: flex;
   flex-direction: column;
@@ -3935,6 +3931,10 @@ aside.open {
   .modal .modal-content {
     width: 20%;
   }
+}
+
+[x-cloak] {
+  display: none !important;
 }
 
 .hide-number-arrows::-webkit-inner-spin-button, .hide-number-arrows::-webkit-outer-spin-button {
