@@ -17,7 +17,9 @@ class BrandEditCompetitionRequest extends FormRequest
 
         $comp = $this->route('comp');
 
-        return $comp->getBrand()->first()->isBrandRole($user, 'admin');
+        $brand = $comp->getBrand()->first();
+
+        return $brand && $brand->isBrandRole($user, 'admin');
     }
 
     /**

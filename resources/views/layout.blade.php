@@ -236,7 +236,7 @@
                         </a>
                     @endcan
 
-                    @can('access', Session::get('ac'))
+                    @can('access', [Session::get('ac'), 'admin|serc'])
                         <a href="{{ route('comps.view.events', Session::get('ac')) }}" class="">
                             <div>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"

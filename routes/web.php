@@ -119,12 +119,12 @@ Route::middleware('auth')->group(function () {
 
 
             // EVENTS
-            Route::prefix('/events')->middleware('can:access,comp')->group(function () {
+            Route::prefix('/events')->middleware('can:access,comp,"admin|serc"')->group(function () {
 
                 Route::get('', [CompetitionController::class, 'events'])->name('comps.view.events');
 
                 // SPEEDS
-                Route::prefix('/speeds')->group(function () {
+                Route::prefix('/speeds')->middleware('can:access,comp')->group(function () {
                     Route::get('/add', [SpeedsEventController::class, 'add'])->name('comps.view.events.speeds.add');
                     Route::post('/add', [SpeedsEventController::class, 'addPost'])->name('comps.view.events.speeds.addPost');
                     Route::delete('/{event}/delete', [SpeedsEventController::class, 'delete'])->name('comps.view.events.speeds.delete');
@@ -145,23 +145,25 @@ Route::middleware('auth')->group(function () {
                 Route::prefix('/sercs/{serc}')->group(function () {
 
 
-
                     Route::get('', [SERCController::class, 'view'])->name('comps.view.events.sercs.view');
-
                     Route::get('/edit', [SERCController::class, 'edit'])->name('comps.view.events.sercs.edit');
                     Route::post('/edit', [SERCController::class, 'editPost'])->name('comps.view.events.sercs.editPost');
-                    Route::delete('', [SERCController::class, 'delete'])->name('comps.view.events.sercs.delete');
 
-                    Route::get('results/{team}/next', [SERCController::class, 'next'])->name('comps.view.events.sercs.next');
 
-                    Route::get('/results/{team}/edit', [SERCController::class, 'editResultsView'])->name('comps.view.events.sercs.editResults');
-                    Route::post('/results/{team}/edit', [SERCController::class, 'updateTeamResults'])->name('comps.view.events.sercs.editResultsPost');
+                    Route::middleware('can:access,comp')->group(function () {
+                        Route::delete('', [SERCController::class, 'delete'])->name('comps.view.events.sercs.delete');
 
-                    Route::get('/digital-judge-toggle', [DigitalJudgeController::class, 'sercToggle'])->name('dj.sercToggle');
-                    Route::get('/hide', [SERCController::class, 'hide'])->name('comps.view.sercs.hide');
+                        Route::get('results/{team}/next', [SERCController::class, 'next'])->name('comps.view.events.sercs.next');
 
-                    Route::post('/image', [SERCController::class, 'addSercImage'])->name('comps.view.sercs.image');
-                    Route::get('/image/remove', [SERCController::class, 'removeSercImage'])->name('comps.view.sercs.image.remove');
+                        Route::get('/results/{team}/edit', [SERCController::class, 'editResultsView'])->name('comps.view.events.sercs.editResults');
+                        Route::post('/results/{team}/edit', [SERCController::class, 'updateTeamResults'])->name('comps.view.events.sercs.editResultsPost');
+
+                        Route::get('/digital-judge-toggle', [DigitalJudgeController::class, 'sercToggle'])->name('dj.sercToggle');
+                        Route::get('/hide', [SERCController::class, 'hide'])->name('comps.view.sercs.hide');
+
+                        Route::post('/image', [SERCController::class, 'addSercImage'])->name('comps.view.sercs.image');
+                        Route::get('/image/remove', [SERCController::class, 'removeSercImage'])->name('comps.view.sercs.image.remove');
+                    });
                 });
             });
 

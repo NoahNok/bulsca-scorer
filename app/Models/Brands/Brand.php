@@ -44,7 +44,7 @@ class Brand extends Model
     {
 
 
-        if ($role == '*') {
+        if ($role == '*' || $role == ['*']) {
             $role = ['admin', 'welfare'];
         }
 
