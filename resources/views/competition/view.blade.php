@@ -188,6 +188,11 @@
                         <h3>Additional Accounts</h3>
                     </div>
 
+                    <p>For assistance please see the <strong>"SERC Writer Login"</strong> section of the <a class="link"
+                            target="_blank" rel="noopener noreferrer"
+                            href="https://docs.google.com/document/d/1P1XMiKYkcwFP9gp-GMf7Uj7DJhRER65IVTUDG-sJu5o/edit?usp=sharing#heading=h.3dqfvnjctnuo">Scorer
+                            Manual</a></p>
+                    <br>
 
                     <div class="  relative w-full  ">
                         <table class=" text-sm w-full shadow-md rounded-lg overflow-hidden text-left text-gray-500 ">
