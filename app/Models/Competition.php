@@ -235,7 +235,7 @@ class Competition extends Model
 
         if ($this->getBrand == null) {
             return response()->json([
-                'error' => 'No brand associated with this competition'
+                'error' => 'Unable to create a SERC user as this requires this competition to be part of a brand.'
             ]);
         }
 
