@@ -233,6 +233,11 @@ class Competition extends Model
     public function createSercWriterAccount()
     {
 
+        if ($this->getBrand() == null) {
+            return response()->json([
+                'error' => 'No brand associated with this competition'
+            ]);
+        }
 
         if ($this->getSercWriterAccount()) {
             return response()->json([
