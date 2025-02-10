@@ -45,7 +45,7 @@
     @endif
 
 
-    <div class="{{ $nopad ?? false ? '' : 'p-6' }} md:max-w-[30%] md:mx-auto">
+    <div class="{{ $nopad ?? false ? '' : 'p-6' }} sm:max-w-[70%]  xl:max-w-[50%] 2xl:max-w-[40%] sm:mx-auto">
         @if ($backlink ?? false)
             <div class="{{ $nopad ?? false ? 'mx-4 mt-6' : '' }}"> <a href="{{ $backlink ?? route('dj.home') }}">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -67,7 +67,7 @@
                     stroke="white" class="w-12 h-12 p-3 bg-bulsca rounded-full">
                     {!! $icon ??
                         '<path stroke-linecap="round" stroke-linejoin="round"
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />" ?>' !!}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />" ?>' !!}
                 </svg>
 
 

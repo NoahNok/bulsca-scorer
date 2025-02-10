@@ -4374,6 +4374,22 @@ aside.open {
     max-width: 36rem;
   }
 
+  .sm\:max-w-\[30\%\] {
+    max-width: 30%;
+  }
+
+  .sm\:max-w-\[80\%\] {
+    max-width: 80%;
+  }
+
+  .sm\:max-w-\[70\%\] {
+    max-width: 70%;
+  }
+
+  .sm\:max-w-\[700\%\] {
+    max-width: 700%;
+  }
+
   .sm\:flex-1 {
     flex: 1 1 0%;
   }
@@ -4559,6 +4575,18 @@ aside.open {
     max-width: 30vw;
   }
 
+  .md\:max-w-\[50\%\] {
+    max-width: 50%;
+  }
+
+  .md\:max-w-\[70\%\] {
+    max-width: 70%;
+  }
+
+  .md\:max-w-\[40\%\] {
+    max-width: 40%;
+  }
+
   .md\:grid-flow-col {
     grid-auto-flow: column;
   }
@@ -4712,6 +4740,18 @@ aside.open {
     max-width: 80vw;
   }
 
+  .lg\:max-w-\[50\%\] {
+    max-width: 50%;
+  }
+
+  .lg\:max-w-\[40\%\] {
+    max-width: 40%;
+  }
+
+  .lg\:max-w-\[60\%\] {
+    max-width: 60%;
+  }
+
   .lg\:grid-cols-3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -4750,6 +4790,10 @@ aside.open {
     width: 50%;
   }
 
+  .xl\:max-w-\[50\%\] {
+    max-width: 50%;
+  }
+
   .xl\:grid-cols-4 {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
@@ -4763,6 +4807,10 @@ aside.open {
 
   .\32xl\:min-w-\[23\%\] {
     min-width: 23%;
+  }
+
+  .\32xl\:max-w-\[40\%\] {
+    max-width: 40%;
   }
 
   .\32xl\:grid-rows-6 {
