@@ -48,9 +48,8 @@ class LiveController extends Controller
 
     public function liveData(Competition $comp)
     {
-
         $serc = Cache::remember('live.' . $comp->id . '.drySerc', 60 * 60, function () use ($comp) {
-            return SERC::where('competition', $comp->id)->where('name', 'LIKE', '%Dry%')->first();
+            return SERC::where('competition', $comp->id)->where('type', 'DRY')->orWhere('name', 'LIKE', '%Dry%')->first();
         });
 
 
