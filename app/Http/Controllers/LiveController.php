@@ -11,6 +11,7 @@ use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class LiveController extends Controller
 {
@@ -48,9 +49,21 @@ class LiveController extends Controller
 
     public function liveData(Competition $comp)
     {
-        $serc = Cache::remember('live.' . $comp->id . '.drySerc', 60 * 60, function () use ($comp) {
-            return SERC::where('competition', $comp->id)->where('type', 'DRY')->orWhere('name', 'LIKE', '%Dry%')->first();
+        $serc = Cache::remember('live.' . $comp->id . '.drySerc', 0 * 60, function () use ($comp) {
+            $serc = SERC::where('competition', $comp->id)->where(function ($query) {
+                $query->where('type', 'DRY')->orWhere('name', 'LIKE', '%Dry%');
+            })->first();
+
+            if (!$serc) {
+                return SERC::where('competition', $comp->id)->first();
+            }
+
+            return $serc;
         });
+
+
+
+
 
 
         $sercsFinished = Cache::remember('live.' . $comp->id . '.howManySercsHasEachTeamFinished', 10, function () use ($comp) {
