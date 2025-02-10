@@ -270,6 +270,9 @@ class DJDQController extends Controller
 
     private function internalResolveCode($code)
     {
+
+        $code = Str::lower($code);
+
         if (str_starts_with($code, 'p')) {
             $code = substr($code, 1);
 
