@@ -1,4 +1,3 @@
-
 @extends('live.layout')
 
 @section('content')
@@ -16,7 +15,8 @@
                 <small id="live-status">Waiting...</small>
             </div>
 
-            <div class="mt-1 mb-2"><a href="{{ route('live.dqs', request()->all()) }}" class="link">DQs & Penalties</a></div>
+            <div class="mt-1 mb-2"><a href="{{ route('live.dqs', request()->all()) }}" class="link">DQs & Penalties</a>
+            </div>
         </div>
 
 
@@ -129,7 +129,7 @@
             @endif
 
         </div>
-        <small>Times are an estimate only.</small>
+        <small>Start times are an estimate only.</small>
         <br>
         <br>
 
@@ -348,4 +348,4 @@
                 interv = setInterval(() => run(), 5000)
             }
         </script>
-@endsection
+    @endsection
