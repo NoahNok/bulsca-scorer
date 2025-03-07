@@ -288,11 +288,23 @@ class DJJudgingController extends Controller
         foreach ($request->all() as $key => $value) {
             if (!str_starts_with($key, 'judge-overall-')) continue;
 
-            if ($value == "") continue;
+
 
             $judgeId = substr($key, 14);
 
             $overallJudgeNote = OverallJudgeNote::firstOrNew(['judge' => $judgeId]);
+
+
+            if ($value == "") {
+
+                if ($overallJudgeNote->id) {
+                    $overallJudgeNote->delete();
+                }
+
+                continue;
+            }
+
+
             $overallJudgeNote->judge = $judgeId;
             $overallJudgeNote->note = $value;
 
