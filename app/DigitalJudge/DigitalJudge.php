@@ -111,6 +111,17 @@ class DigitalJudge
         return $count > 0;
     }
 
+    public static function hasTeamBeenJudgedAlreadyForJudge(CompetitionTeam $team, SERCJudge $judge)
+    {
+        // SELECT COUNT(*) FROM serc_results WHERE team=? AND marking_point IN (SELECT id FROM serc_marking_points WHERE judge=?)
+
+        $result = DB::select('SELECT COUNT(*) AS c FROM serc_results WHERE team=? AND marking_point IN (SELECT id FROM serc_marking_points WHERE judge=?);', [$team->id, $judge->id]);
+
+        $count = $result[0]->c;
+
+        return $count > 0;
+    }
+
     public static function isDigitalJudgeEnabledForCompetition(Competition $comp): bool
     {
         return $comp->digitalJudgeEnabled;

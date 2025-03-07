@@ -157,16 +157,19 @@ class DJJudgingController extends Controller
             Cache::forget('mp.' . $markingPointId . '.team.' . $team->id);
         }
 
+        foreach ($request->all() as $key => $value) {
+            if (!str_starts_with($key, 'team-notes-')) continue;
 
-        if ($request->input('team-notes', "") != "" && !DigitalJudge::isClientHeadJudge()) {
+
             $judgeNote = new JudgeNote();
             $judgeNote->team = $team->id;
-            $judgeNote->judge = DigitalJudge::getClientJudges()[0]->id;
+            $judgeNote->judge = substr($key, 11);
 
-            $judgeNote->note = $request->input('team-notes');
+            $judgeNote->note = $value;
 
             $judgeNote->save();
         }
+
 
 
 

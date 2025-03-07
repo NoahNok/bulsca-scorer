@@ -160,27 +160,30 @@
                                 </div>
                             </div>
                         @endforeach
+
+
+                        <div>
+                            <h5>Notes for {{ $mJudge->name }}</h5>
+                            @php
+                                $n = '';
+                            @endphp
+                            @if ($head)
+                                @php
+                                    $n = App\Models\DigitalJudge\JudgeNote::where('team', $team->id)
+                                        ->where('judge', $mJudge->id)
+                                        ->first();
+                                @endphp
+                            @endif
+                            <textarea @if ($head && DigitalJudge::hasTeamBeenJudgedAlreadyForJudge($team, $mJudge)) disabled @endif name="team-notes-{{ $mJudge->id }}" rows="5"
+                                placeholder="Type your notes for this team here..."
+                                class="w-full border hover:border-gray-400 p-3 h-max focus:border-gray-400 outline-none rounded-md" id="">{{ $n ? $n->note : '' }}</textarea>
+                        </div>
+                        <br>
                     @endforeach
                 </div>
                 <br>
 
-                <div>
-                    <h4>Notes</h4>
-                    @php
-                        $n = '';
-                    @endphp
-                    @if ($head)
-                        @php
-                            $n = App\Models\DigitalJudge\JudgeNote::where('team', $team->id)
-                                ->where('judge', $judges[0]->id)
-                                ->first();
-                        @endphp
-                    @endif
-                    <textarea @if ($head && DigitalJudge::hasTeamBeenJudgedAlready($team)) disabled @endif name="team-notes" rows="5"
-                        placeholder="Type your notes for this team here..."
-                        class="w-full border hover:border-gray-400 p-3 h-max focus:border-gray-400 outline-none rounded-md" id="">{{ $n ? $n->note : '' }}</textarea>
-                </div>
-                <br>
+
                 <div class="flex flex-row space-x-2 md:space-x-4 items-center">
 
                     <label for="confirm">I acknowledge that the above results are correct and cannot be changed, and

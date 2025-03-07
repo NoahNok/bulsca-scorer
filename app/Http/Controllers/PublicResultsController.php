@@ -225,6 +225,25 @@ class PublicResultsController extends Controller
 
     public function viewTeamSercNotes(Competition $comp_slug, SERC $event, CompetitionTeam $team)
     {
+
+        if ($comp_slug->scoring_type == 'bulsca' || $comp_slug->scoring_type == 'rlss-cs') {
+
+            $notes = [];
+
+            foreach ($event->getNotesForTeam($team) as $note) {
+                $notes[] = [
+                    'judge' => $note->getJudge->name,
+                    'note' => $note->note
+                ];
+            }
+
+
+            return [
+                'name' => $team->getFullname(),
+                'notes' => $notes
+            ];
+        }
+
         return view("public-results.$comp_slug->scoring_type.view-team-serc-notes", ['comp' => $comp_slug, 'serc' => $event, 'team' => $team]);
     }
 

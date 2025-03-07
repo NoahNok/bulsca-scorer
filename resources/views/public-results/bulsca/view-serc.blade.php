@@ -40,9 +40,13 @@
 
 <body class="overflow-x-hidden" x-data="{
     showModal: false,
+    showNotesModal: false,
 
     modalUrl: '',
     modalBaseUrl: '{{ route('public.results.dq-pen', [$comp->id, 'T', 'C']) }}',
+    notesModalBaseUrl: '{{ route('public.results.serc.team-notes', [$comp->id, $event->id, 'T']) }}',
+
+    notesData: null,
 
     showDqPen(code, teamId) {
         this.showModal = true;
@@ -53,7 +57,18 @@
     hideDqPen() {
         this.showModal = false;
 
-    }
+    },
+    loadTeamNotes(teamId) {
+        this.showNotesModal = true;
+        this.notesData = null;
+
+        fetch(this.notesModalBaseUrl.replace('T', teamId))
+            .then(response => response.json())
+            .then(data => {
+                this.notesData = data;
+            })
+
+    },
 }">
     @isset($brand)
         <style>
@@ -186,8 +201,8 @@
                                     {{ $team['team'] }}
                                 </th>
                                 <td class="py-4 px-6 ">
-                                    <a href="{{ route('public.results.serc.team-notes', [$comp->resultsSlug(), $event, $team['tid']]) }}"
-                                        class="link">Notes</a>
+                                    <a href="#notes" class="link"
+                                        @click="loadTeamNotes({{ $team['tid'] }})">Notes</a>
                                 </td>
 
                                 @foreach ($fsd['judges'] as $judge => $mpIds)
@@ -309,6 +324,33 @@
                 onload="this.height=this.contentWindow.document.body.scrollHeight;"></iframe>
         </div>
     </div>
+
+    <div class="modal" x-show="showNotesModal" x-transition style="display: none">
+        <div class="modal-content " @click.outside="showNotesModal=false">
+            <div class="flex flex-col ">
+                <h4 class="font-bold">Notes for <span x-text="notesData?.name"></span></h4>
+                <div class="flex flex-col space-y-3">
+
+                    <template x-for="note in notesData.notes">
+                        <div class="flex flex-col ">
+                            <strong x-text="note.judge"></strong>
+                            <p class="ml-6 " x-text="note.note"></p>
+                        </div>
+                    </template>
+
+                    <div x-show="!notesData.notes.length">
+                        <p>No notes were given for this team</p>
+                    </div>
+
+                    <template x-if="!notesData">
+                        <p>Loading...</p>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ asset('js/analysis.js') }}"></script>
     <script>
