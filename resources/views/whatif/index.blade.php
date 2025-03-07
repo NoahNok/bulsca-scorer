@@ -56,9 +56,9 @@
                     <select name="competition" id="competition" class="input"
                         style="padding-top: 0.65em; padding-bottom: 0.65em; margin-bottom: 0px !important">
                         <option value="null">Please select a competition</option>
-                        @foreach (\App\Models\Season::all() as $season)
+                        @foreach (\App\Models\Season::orderBy('created_at', 'desc')all() as $season)
                             <optgroup label="{{ $season->name }}">
-                                @foreach ($season->getCompetitions()->where('public_results', true)->get() as $competition)
+                                @foreach ($season->getCompetitions()->where('public_results', true)->orderBy('when', 'desc')->get() as $competition)
                                     <option value="{{ $competition->id }}">{{ $competition->name }}</option>
                                 @endforeach
                             </optgroup>
