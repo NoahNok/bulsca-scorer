@@ -8,6 +8,7 @@ use App\Jobs\WebPush;
 use App\Models\Competition;
 use App\Models\CompetitionTeam;
 use App\Models\DigitalJudge\JudgeNote;
+use App\Models\DigitalJudge\OverallJudgeNote;
 use App\Models\SERC;
 use App\Models\SERCJudge;
 use App\Models\SERCResult;
@@ -105,7 +106,7 @@ class DJJudgingController extends Controller
 
         $nextTeamId = $nextTeamIdRow ? $nextTeamIdRow[0]->id : null;
 
-        if ($nextTeamId == null) return redirect()->route('dj.judging.home', [$judge])->with('alert-error', 'No more teams left to judge!');
+        if ($nextTeamId == null) return redirect()->route('dj.judging.overall-comments', [$judge])->with('alert-error', 'No more teams left to judge!');
 
         $nextTeam = CompetitionTeam::find($nextTeamId);
 
@@ -160,6 +161,7 @@ class DJJudgingController extends Controller
         foreach ($request->all() as $key => $value) {
             if (!str_starts_with($key, 'team-notes-')) continue;
 
+            if ($value == "") continue;
 
             $judgeNote = new JudgeNote();
             $judgeNote->team = $team->id;
@@ -273,5 +275,31 @@ class DJJudgingController extends Controller
         Redis::expire($key, 86400);
 
         WebPush::dispatch(new SercMarked($serc, $team));
+    }
+
+    public function overallComments()
+    {
+        return view('digitaljudge.judging.overall-comments', array_merge(DigitalJudge::getBladeProps()));
+    }
+
+    public function overallCommentsPost(Request $request)
+    {
+
+        foreach ($request->all() as $key => $value) {
+            if (!str_starts_with($key, 'judge-overall-')) continue;
+
+            if ($value == "") continue;
+
+            $judgeId = substr($key, 14);
+
+            $overallJudgeNote = OverallJudgeNote::firstOrNew(['judge' => $judgeId]);
+            $overallJudgeNote->judge = $judgeId;
+            $overallJudgeNote->note = $value;
+
+            $overallJudgeNote->save();
+        }
+
+
+        return redirect()->route('dj.judging.home')->with('success', 'Overall feedback submitted.');
     }
 }

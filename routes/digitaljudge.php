@@ -49,6 +49,9 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
 
 
             Route::get('previous-marks', [DJJudgingController::class, 'previousMarks'])->name('dj.judging.previous-marks');
+
+            Route::get('overall-comments', [DJJudgingController::class, 'overallComments'])->name('dj.judging.overall-comments');
+            Route::post('overall-comments', [DJJudgingController::class, 'overallCommentsPost'])->name('dj.judging.overall-comments.post');
         });
         Route::get('change-judge', [DJJudgingController::class, 'changeJudge'])->name('dj.changeJudge');
 

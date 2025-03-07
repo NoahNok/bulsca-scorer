@@ -49,8 +49,10 @@ class PublicResultsController extends Controller
 
         $fasterSercData = $event->getSERCData();
 
+        $overallJudgeNotes = $event->getOverallJudgeNotes();
 
-        return view("public-results.$comp_slug->scoring_type.view-serc", ['comp' => $comp_slug, 'event' => $event, 'fsd' => $fasterSercData]);
+
+        return view("public-results.$comp_slug->scoring_type.view-serc", ['comp' => $comp_slug, 'event' => $event, 'fsd' => $fasterSercData, 'overallJudgeNotes' => $overallJudgeNotes]);
     }
 
     public function viewResults(Competition $comp_slug, ResultSchema $schema)

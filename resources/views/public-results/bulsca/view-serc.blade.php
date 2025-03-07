@@ -96,6 +96,43 @@
                         considered accurate or final!</p>
                 </div>
             @endif
+
+
+
+            @if (count($overallJudgeNotes) > 0)
+                <div x-data="{
+                    open: true,
+                }">
+                    <div class="flex justify-between items-center mx-3 lg:mx-0 cursor-pointer" @click="open = !open">
+
+                        <h3>Overall feedback</h3>
+
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-6 transition-transform"
+                            :class="{ 'transform rotate-180': open }">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                        </svg>
+
+
+                    </div>
+
+                    <div class="mx-3 grid sm:grid-cols-2 xl:grid-cols-3 3xl:grid-cols-4  gap-2 " x-cloak x-show="open">
+                        @foreach ($overallJudgeNotes as $note)
+                            <div class="flex flex-col ">
+                                <strong>{{ $note->judge }}</strong>
+                                <p class="ml-6">{{ $note->note }}</p>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+
+                <br>
+                <hr>
+                <br>
+            @endif
+
+
+
             <div class="flex justify-between items-center mx-3 lg:mx-0">
 
                 <h3>Results</h3>
@@ -327,7 +364,7 @@
 
     <div class="modal" x-show="showNotesModal" x-transition style="display: none">
         <div class="modal-content " @click.outside="showNotesModal=false">
-            <div class="flex flex-col ">
+            <div class="flex flex-col max-h-[70vh] overflow-y-auto ">
                 <h4 class="font-bold">Notes for <span x-text="notesData?.name"></span></h4>
                 <div class="flex flex-col space-y-3">
 

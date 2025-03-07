@@ -262,4 +262,12 @@ class SERC extends IEvent implements IPenalisable
 
         return compact('judges', 'results');
     }
+
+
+    public function getOverallJudgeNotes()
+    {
+        $notes = DB::select('SELECT ojn.note AS note, j.name AS judge FROM overall_judge_notes ojn INNER JOIN serc_judges j ON j.id=ojn.judge WHERE j.serc=?;', [$this->id]);
+
+        return $notes;
+    }
 }
