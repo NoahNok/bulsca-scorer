@@ -535,9 +535,9 @@
                                 Config::set('database.default', 'mysql');
                             @endphp
                             <option value="null">Please select a competition</option>
-                            @foreach (\App\Models\Season::all() as $season)
+                            @foreach (\App\Models\Season::orderBy('id', 'desc')->get() as $season)
                                 <optgroup label="{{ $season->name }}">
-                                    @foreach ($season->getCompetitions()->where('public_results', true)->get() as $competition)
+                                    @foreach ($season->getCompetitions()->where('public_results', true)->orderBy('when', 'desc')->get() as $competition)
                                         <option value="{{ $competition->id }}">{{ $competition->name }}</option>
                                     @endforeach
                                 </optgroup>
