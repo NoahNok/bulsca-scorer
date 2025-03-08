@@ -83,6 +83,8 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
         Route::post('submission', [DJDQController::class, 'submission'])->name('dj.dq.submission');
         Route::get('submission/{submission}/info', [DJDQController::class, 'getSubmission'])->name('dj.dq.submission.info');
         Route::get('submission/{submission}/status', [DJDQController::class, 'submissionStatus'])->name('dj.dq.submission.status');
+
+        Route::get('event-codes/{event}', [DJDQController::class, 'getEventRelatedCodes'])->name('dj.dq.event-codes');
     });
 
     Route::middleware('isHeadJudge')->group(function () {

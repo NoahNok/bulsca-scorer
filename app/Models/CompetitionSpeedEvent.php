@@ -34,7 +34,7 @@ class CompetitionSpeedEvent extends IEvent implements IPenalisable
         return $this->getCompetition->getCompetitionTeams();
     }
 
-    
+
 
     public function getSimpleResults()
     {
@@ -46,7 +46,7 @@ class CompetitionSpeedEvent extends IEvent implements IPenalisable
         return $this->hasOne(SpeedEvent::class, 'id', 'event')->first()->has_penalties;
     }
 
- 
+
     public function getType(): string
     {
         return 'speed';
@@ -79,5 +79,10 @@ class CompetitionSpeedEvent extends IEvent implements IPenalisable
         $result = SpeedResult::where('event', $this->id)->where('competition_team', $teamId)->first();
         $result->disqualification = $code;
         $result->save();
+    }
+
+    public function getBaseEvent()
+    {
+        return $this->hasOne(SpeedEvent::class, 'id', 'event')->first();
     }
 }

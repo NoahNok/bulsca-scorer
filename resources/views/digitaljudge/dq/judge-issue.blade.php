@@ -15,13 +15,9 @@
             ->pluck('id')
             ->toArray();
 
-        if (empty($valid)) {
-            $valid = [0];
-        }
-
     @endphp
 
-    <div class="flex flex-col  " x-data="{ total: {{ json_encode($valid) }} }">
+    <div class="flex flex-col relative  " x-data="{ total: {{ json_encode($valid) }} }">
 
         <template x-for="(frm,ind) in total">
 
@@ -411,6 +407,306 @@
         <button class="btn" @click="total.push(0)">
             Submit Another
         </button>
+
+
+        <div class="absolute top-0 left-0 w-full h-auto bg-white" x-data="{
+            activeStep: 1,
+        
+            events: {{ json_encode($comp->getEventsInDQFormat()) }},
+        
+            presetEvent: '',
+        
+            event: '',
+        
+            lane: null,
+        
+            codes: [],
+        
+            codeSearch: '',
+        
+            loadCodes() {
+        
+                fetch('{{ route('dj.dq.event-codes', 'X') }}'.replace('X', this.event))
+                    .then(response => response.json())
+                    .then(data => {
+                        this.codes = data;
+                    })
+        
+            },
+        
+        
+        
+            get eventName() {
+                if (this.event == '') return '';
+                return this.events[this.event]
+            },
+            teamName: '',
+        
+            codeName: '',
+            codeDescription: '',
+        
+        
+        
+        
+        
+        
+            setEvent(event) {
+                this.event = event;
+                console.log(event)
+                this.activeStep = 2;
+            },
+        
+            setTeam(lane, name) {
+                this.lane = lane;
+                this.teamName = name;
+                this.activeStep = 3;
+                this.loadCodes();
+            },
+        
+            setCode(code, description) {
+                this.codeName = code;
+                this.codeDescription = description;
+                this.activeStep = 4;
+            },
+        
+            startAgain() {
+        
+        
+                if (this.presetEvent != '') {
+                    this.event = this.presetEvent;
+                    this.activeStep = 2;
+                    return;
+                }
+        
+        
+                this.activeStep = 1;
+            },
+        
+            shouldDisplaySelf(code, codePad) {
+        
+        
+                let search = this.codeSearch.toLowerCase().trim()
+        
+                if (search == '') return true;
+        
+                return code.startsWith(search) || codePad.startsWith(search);
+        
+        
+            },
+        
+            shouldDisplayGroup(type, codes) {
+        
+                for (let code of codes) {
+                    if (this.shouldDisplaySelf(type + code.id, type + code.id.toString().padStart(3, '0'))) {
+                        return true;
+                    }
+                }
+        
+                return false
+        
+            },
+        
+            shouldDisplaySection(type) {
+                let search = this.codeSearch.toLowerCase().trim()
+        
+                if (search == '') return true;
+        
+                return type.startsWith(search)
+            }
+        
+        
+        }" x-init="() => {
+            let url = new URLSearchParams(window.location.search);
+            if (url.has('event')) {
+                presetEvent = url.get('event');
+                startAgain();
+        
+            }
+        }">
+
+
+            <div x-show="activeStep == 1">
+                <h2 class="text-2xl font-semibold">Select an Event</h2>
+
+
+                <div class="flex flex-col space-y-3">
+                    <h5>Speeds</h5>
+                    @foreach ($comp->getSpeedEvents as $speed)
+                        <button class="btn btn-primary" @click="setEvent('sp:{{ $speed->id }}')">
+                            {{ $speed->getName() }}</button>
+                    @endforeach
+
+                    <h5>SERCs</h5>
+                    @foreach ($comp->getSercs as $serc)
+                        <button class="btn btn-primary" @click="setEvent('se:{{ $serc->id }}')">
+                            {{ $serc->getName() }}</button>
+                    @endforeach
+                </div>
+            </div>
+
+
+            <div x-show="activeStep == 2">
+
+                <p>Event: <span x-text="eventName" class=" cursor-pointer" @click="activeStep = 1"></span></p>
+
+                <h2 class="text-2xl font-semibold">Select a
+                    team</h2>
+
+
+                <div class="flex flex-col space-y-3">
+                    @foreach ($comp->getHeatEntries->sortBy('heat')->groupBy('heat') as $heat)
+                        <h4>Heat {{ $heat[0]->heat }}</h4>
+
+                        @foreach ($heat->sortBy('lane') as $lane)
+                            <button class="btn btn-primary" style="text-align: left"
+                                @click="setTeam({{ $lane->id }}, 'Heat {{ $lane->heat }}, Lane {{ $lane->lane }}, {{ $lane->getTeam->getFullname() }}')">
+                                Lane {{ $lane->lane }}:
+                                {{ $lane->getTeam->getFullname() }}
+                            </button>
+                        @endforeach
+                    @endforeach
+                </div>
+
+                <br>
+                <br>
+                <br>
+            </div>
+
+            <div x-show="activeStep == 3">
+
+                <p>Event: <span x-text="eventName" class=" cursor-pointer" @click="activeStep = 1"></span></p>
+                <p>Team: <span x-text="teamName" class=" cursor-pointer" @click="activeStep = 2"></span></p>
+
+                <h2 class="text-2xl font-semibold">Select a DQ/Penalty</h2>
+
+                <div class="form-input" style="margin-bottom: 0 !important">
+                    <input type="text" placeholder="Search..." style="margin-bottom: 0 !important"
+                        x-model="codeSearch">
+                </div>
+
+
+                <div class="flex flex-col space-y-3" x-data="{
+                    dqOpen: true,
+                    penOpen: true
+                }">
+                    <div class="flex justify-between cursor-pointer" @click="dqOpen = !dqOpen"
+                        x-show="shouldDisplaySection('dq')">
+                        <h4 class="hmb-0">DQs</h4>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-6 transition-transform ease-in-out"
+                            :class="!dqOpen ? 'rotate-180' : ''">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                        </svg>
+
+                    </div>
+                    <div x-collapse x-show="dqOpen">
+                        <template x-for="(dqs, groupName) in codes?.related?.dq">
+                            <div class="mb-5 last:mb-0" x-show="shouldDisplayGroup('dq', dqs)">
+                                <h5 x-text="groupName"></h5>
+
+                                <div class="flex flex-col space-y-2">
+                                    <template x-for="dq in dqs">
+                                        <div class="card"
+                                            @click="setCode(`DQ${dq.id.toString().padStart(3, '0')}`, dq.description)"
+                                            x-show="shouldDisplaySelf(`dq${dq.id}`, `dq${dq.id.toString().padStart(3, '0')}`)">
+                                            <strong>DQ<span x-text="dq.id.toString().padStart(3, '0')"></span></strong>
+                                            <p x-text="dq.description"></p>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+
+                        </template>
+
+                        <template x-for="(dqs, groupName) in codes?.other?.dq">
+                            <div class="mb-5 last:mb-0" x-show="shouldDisplayGroup('dq', dqs)">
+                                <h5 x-text="groupName"></h5>
+
+                                <div class="flex flex-col space-y-2">
+                                    <template x-for="dq in dqs">
+                                        <div class="card"
+                                            x-show="shouldDisplaySelf(`dq${dq.id}`, `dq${dq.id.toString().padStart(3, '0')}`)">
+                                            <strong>DQ<span x-text="dq.id.toString().padStart(3, '0')"></span></strong>
+                                            <p x-text="dq.description"></p>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+
+                        </template>
+
+                        <br x-show="shouldDisplaySection('dq')">
+                    </div>
+
+
+
+                    <div class="flex justify-between cursor-pointer" @click="penOpen = !penOpen"
+                        x-show="shouldDisplaySection('p')">
+                        <h4 class="hmb-0">Penalties</h4>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-6 transition-transform ease-in-out"
+                            :class="!penOpen ? 'rotate-180' : ''">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                        </svg>
+
+                    </div>
+                    <div x-collapse x-show="penOpen">
+                        <template x-for="(pens, groupName) in codes?.related?.pen">
+                            <div class="mb-5 last:mb-0" x-show="shouldDisplayGroup('p', pens)">
+                                <h5 x-text="groupName"></h5>
+
+                                <div class="flex flex-col space-y-2">
+                                    <template x-for="pen in pens">
+                                        <div class="card"
+                                            x-show="shouldDisplaySelf(`p${pen.id}`, `p${pen.id.toString().padStart(3, '0')}`)">
+                                            <strong>P<span x-text="pen.id.toString().padStart(3, '0')"></span></strong>
+                                            <p x-text="pen.description"></p>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+
+                        </template>
+
+
+                        <template x-for="(pens, groupName) in codes?.other?.pen">
+                            <div class="mb-5 last:mb-0" x-show="shouldDisplayGroup('p', pens)">
+                                <h5 x-text="groupName"></h5>
+
+                                <div class="flex flex-col space-y-2">
+                                    <template x-for="pen in pens">
+                                        <div class="card"
+                                            x-show="shouldDisplaySelf(`p${pen.id}`, `p${pen.id.toString().padStart(3, '0')}`)">
+                                            <strong>P<span x-text="pen.id.toString().padStart(3, '0')"></span></strong>
+                                            <p x-text="pen.description"></p>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+
+                        </template>
+                    </div>
+
+                    <br>
+                    <br>
+                    <br>
+
+                </div>
+            </div>
+
+
+            <div x-show="activeStep == 4">
+                <p>Event: <span x-text="eventName" class=" cursor-pointer" @click="activeStep = 1"></span></p>
+                <p>Team: <span x-text="teamName" class=" cursor-pointer" @click="activeStep = 2"></span></p>
+                <h3 x-text="codeName" class="mt-2"></h3>
+                <p x-text="codeDescription"></p>
+            </div>
+
+
+
+        </div>
+
+
 
 
 

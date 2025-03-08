@@ -290,4 +290,21 @@ class Competition extends Model
 
         return $this->getBrand?->getUsers->where('pivot.role', 'serc')->where('competition', $this->id)->first();
     }
+
+    public function getEventsInDQFormat()
+    {
+
+
+        $events = [];
+
+        $this->getSpeedEvents()->each(function ($event) use (&$events) {
+            $events['sp:' . $event->id] = $event->getName();
+        });
+
+        $this->getSERCs()->each(function ($event) use (&$events) {
+            $events['se:' . $event->id] = $event->name;
+        });
+
+        return $events;
+    }
 }
