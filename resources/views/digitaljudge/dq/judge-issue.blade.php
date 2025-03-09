@@ -206,6 +206,13 @@
                 
                                         d.seconder = { name: d.seconder_name, position: d.seconder_position };
                 
+                                        if (d.turn == null) {
+                                            d.turn = '';
+                                        }
+                                        if (d.length == null) {
+                                            d.length = '';
+                                        }
+                
                                         this.submission = d;
                 
                                         this.$refs.form.querySelectorAll('input, select, textarea ').forEach((el) => {
@@ -513,7 +520,7 @@
                     if (this.presetEvent != '') {
                         this.submission.event = this.presetEvent;
                         this.activeStep = 2;
-                        return;
+            
                     } else {
                         this.activeStep = 1;
                     }
@@ -605,8 +612,6 @@
                 let url = new URLSearchParams(window.location.search);
                 if (url.has('event')) {
                     presetEvent = url.get('event');
-            
-            
                 }
             
             
