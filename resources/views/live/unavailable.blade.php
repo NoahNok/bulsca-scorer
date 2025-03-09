@@ -32,7 +32,12 @@
         <div class="grid-3">
 
             @php
-                $comps = \App\Models\Competition::where('when', '<=', now())->orderBy('when', 'desc')->paginate(9);
+                $comps = \App\Models\Competition::where('when', '<=', now())
+                    ->where(function ($query) {
+                        $query->where('public_results', true)->orWhere('can_be_live', true);
+                    })
+                    ->orderBy('when', 'desc')
+                    ->paginate(9);
             @endphp
 
             @foreach ($comps as $comp)
