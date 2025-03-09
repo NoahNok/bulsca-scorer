@@ -16,7 +16,7 @@
 
                 <div @click="collapsed = !collapsed" class="flex justify-between items-center">
                     <div class="flex space-x-5">
-                        <h3>{{ $dq->getHeat?->getTeam?->getFullname() ?? '-' }} {{ $dq->id }}
+                        <h3>{{ $dq->getHeat?->getTeam?->getFullname() ?? '-' }}
                         </h3>
                         @if ($dq->appealed)
                             <div class=" flex items-center justify-center ">

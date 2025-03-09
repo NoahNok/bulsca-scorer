@@ -1607,9 +1607,6 @@ video {
 .h-\[90vh\] {
   height: 90vh;
 }
-.h-auto {
-  height: auto;
-}
 .h-full {
   height: 100%;
 }
