@@ -140,7 +140,7 @@ class DJDQController extends Controller
     ######################### JUDGE DQ REQUESTS #########################
     public function issue()
     {
-        return view('digitaljudge.dq.judge-issue', ['comp' => DigitalJudge::getClientCompetition()]);
+        return view('digitaljudge.dq.judge-issue', ['comp' => DigitalJudge::getClientCompetition(), 'judge_name' => DigitalJudge::getClientName()]);
     }
 
     public function resolveCode(string $code)

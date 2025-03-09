@@ -3394,7 +3394,7 @@ div.form-input.checkbox > input {
   padding-bottom: 1.25rem;
 }
 
-a.link, p.link {
+a.link, p.link, span.link {
   cursor: pointer;
   font-size: 1rem;
   line-height: 1.5rem;
@@ -3403,7 +3403,7 @@ a.link, p.link {
   color: rgb(29 78 216 / var(--tw-text-opacity));
 }
 
-a.link:hover, p.link:hover {
+a.link:hover, p.link:hover, span.link:hover {
   text-decoration-line: underline;
 }
 

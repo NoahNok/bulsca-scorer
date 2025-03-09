@@ -17,7 +17,14 @@
 
     @endphp
 
-    <div class="flex flex-col relative  " x-data="{ total: {{ json_encode($valid) }} }">
+    <div class="flex flex-col relative  " x-data="{ total: {{ json_encode($valid) }}, quickSubmitOpen: false }">
+
+
+        <button class="btn" @click="() => $dispatch('startagain')">
+            Submit new DQ/Penalty
+        </button>
+
+        <br>
 
         <template x-for="(frm,ind) in total">
 
@@ -206,6 +213,8 @@
                 
                                         })
                 
+                                        this.resolveCode(d.code);
+                
                                     }
                 
                 
@@ -344,7 +353,8 @@
                         </div>
                         <div class="form-input -mt-4" style="margin-bottom: 0px !important">
                             <label for="">Seconder Name</label>
-                            <input type="text" name="seconderName" x-model="submission.seconder.name" placeholder="Name">
+                            <input type="text" name="seconderName" x-model="submission.seconder.name"
+                                placeholder="Name">
 
                         </div>
                         <div class="form-input -mt-4 " style="margin-bottom: 0px !important">
@@ -404,126 +414,206 @@
             </form>
         </template>
 
-        <button class="btn" @click="total.push(0)">
-            Submit Another
-        </button>
 
 
-        <div class="absolute top-0 left-0 w-full h-auto bg-white" x-data="{
-            activeStep: 1,
-        
-            events: {{ json_encode($comp->getEventsInDQFormat()) }},
-        
-            presetEvent: '',
-        
-            event: '',
-        
-            lane: null,
-        
-            codes: [],
-        
-            codeSearch: '',
-        
-            loadCodes() {
-        
-                fetch('{{ route('dj.dq.event-codes', 'X') }}'.replace('X', this.event))
-                    .then(response => response.json())
-                    .then(data => {
-                        this.codes = data;
-                    })
-        
-            },
-        
-        
-        
-            get eventName() {
-                if (this.event == '') return '';
-                return this.events[this.event]
-            },
-            teamName: '',
-        
-            codeName: '',
-            codeDescription: '',
-        
-        
-        
-        
-        
-        
-            setEvent(event) {
-                this.event = event;
-                console.log(event)
-                this.activeStep = 2;
-            },
-        
-            setTeam(lane, name) {
-                this.lane = lane;
-                this.teamName = name;
-                this.activeStep = 3;
-                this.loadCodes();
-            },
-        
-            setCode(code, description) {
-                this.codeName = code;
-                this.codeDescription = description;
-                this.activeStep = 4;
-            },
-        
-            startAgain() {
-        
-        
-                if (this.presetEvent != '') {
-                    this.event = this.presetEvent;
+
+        <div class="absolute top-0 left-0 w-full h-full bg-white" x-show="quickSubmitOpen" x-cloak
+            x-data="{
+                activeStep: 1,
+            
+                events: {{ json_encode($comp->getEventsInDQFormat()) }},
+            
+                presetEvent: '',
+            
+            
+            
+                codes: [],
+                loadingCodes: false,
+            
+                codeSearch: '',
+            
+                loadCodes() {
+                    this.loadingCodes = true;
+                    fetch('{{ route('dj.dq.event-codes', 'X') }}'.replace('X', this.event))
+                        .then(response => response.json())
+                        .then(data => {
+                            this.codes = data;
+                            this.loadingCodes = false
+                        })
+            
+                },
+            
+            
+            
+                get eventName() {
+                    if (this.submission.event == '') return '';
+                    return this.events[this.submission.event]
+                },
+                teamName: '',
+            
+            
+                codeDescription: '',
+            
+                submission: {
+                    event: '',
+                    heat_lane: '',
+                    turn: '',
+                    length: '',
+                    code: '',
+                    details: '',
+                    name: '',
+                    position: '',
+                    seconder: { name: '', position: '' }
+                },
+            
+            
+            
+            
+            
+                setEvent(event) {
+                    this.submission.event = event;
+            
                     this.activeStep = 2;
-                    return;
-                }
-        
-        
-                this.activeStep = 1;
-            },
-        
-            shouldDisplaySelf(code, codePad) {
-        
-        
-                let search = this.codeSearch.toLowerCase().trim()
-        
-                if (search == '') return true;
-        
-                return code.startsWith(search) || codePad.startsWith(search);
-        
-        
-            },
-        
-            shouldDisplayGroup(type, codes) {
-        
-                for (let code of codes) {
-                    if (this.shouldDisplaySelf(type + code.id, type + code.id.toString().padStart(3, '0'))) {
-                        return true;
+                },
+            
+                setTeam(lane, name) {
+                    this.submission.heat_lane = lane;
+                    this.teamName = name;
+                    this.activeStep = 3;
+                    this.loadCodes();
+                },
+            
+                setCode(code, description) {
+                    this.submission.code = code;
+                    this.codeDescription = description;
+                    this.activeStep = 4;
+                },
+            
+                startAgain() {
+            
+            
+                    this.submission = {
+                        event: '',
+                        heat_lane: '',
+                        turn: '',
+                        length: '',
+                        code: '',
+                        details: '',
+                        name: '',
+                        position: '',
+                        seconder: { name: '', position: '' }
                     }
+            
+            
+                    this.submission.name = '{{ $judge_name }}';
+            
+            
+            
+            
+                    if (this.presetEvent != '') {
+                        this.submission.event = this.presetEvent;
+                        this.activeStep = 2;
+                        return;
+                    } else {
+                        this.activeStep = 1;
+                    }
+            
+                    this.quickSubmitOpen = true;
+            
+            
+            
+            
+            
+                },
+            
+                shouldDisplaySelf(code, codePad, description) {
+            
+            
+                    let search = this.codeSearch.toLowerCase().trim()
+            
+                    if (search == '') return true;
+            
+                    return code.startsWith(search) || codePad.startsWith(search) || description.toLowerCase().includes(search);
+            
+            
+                },
+            
+                shouldDisplayGroup(type, codes) {
+            
+                    for (let code of codes) {
+                        if (this.shouldDisplaySelf(type + code.id, type + code.id.toString().padStart(3, '0'), code.description)) {
+                            return true;
+                        }
+                    }
+            
+                    return false
+            
+                },
+            
+                shouldDisplaySection(type) {
+                    let search = this.codeSearch.toLowerCase().trim()
+            
+                    if (search == '') return true;
+            
+                    return type.startsWith(search)
+                },
+            
+                handleFormSubmit(event) {
+                    event.preventDefault();
+            
+            
+            
+            
+                    let fd = new FormData();
+            
+                    for (var key in this.submission) {
+            
+                        if (key == 'seconder') {
+                            for (var subkey in this.submission.seconder) {
+                                fd.append('seconder_' + subkey, this.submission.seconder[subkey]);
+                            }
+                            continue;
+                        }
+            
+                        fd.append(key, this.submission[key]);
+            
+                    }
+            
+                    fetch('{{ route('dj.dq.submission') }}', {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: fd,
+            
+                        }).then(response => response.json())
+                        .then(data => {
+                            this.total.push(data.result);
+                            this.quickSubmitOpen = false;
+            
+            
+                        }).catch((error) => {
+                            showAlert('Something went wrong. Please try again.')
+            
+                        });
+            
+                    //this.status = Math.random() > 0.5 ? 'APPROVED' : 'REJECTED';
+                },
+            
+            
+            }" x-init="() => {
+                let url = new URLSearchParams(window.location.search);
+                if (url.has('event')) {
+                    presetEvent = url.get('event');
+            
+            
                 }
-        
-                return false
-        
-            },
-        
-            shouldDisplaySection(type) {
-                let search = this.codeSearch.toLowerCase().trim()
-        
-                if (search == '') return true;
-        
-                return type.startsWith(search)
-            }
-        
-        
-        }" x-init="() => {
-            let url = new URLSearchParams(window.location.search);
-            if (url.has('event')) {
-                presetEvent = url.get('event');
-                startAgain();
-        
-            }
-        }">
+            
+            
+            }" @startagain.window="() => startAgain()">
 
+
+            <span class="link" @click="quickSubmitOpen = false">Cancel Submission</span>
 
             <div x-show="activeStep == 1">
                 <h2 class="text-2xl font-semibold">Select an Event</h2>
@@ -547,9 +637,9 @@
 
             <div x-show="activeStep == 2">
 
-                <p>Event: <span x-text="eventName" class=" cursor-pointer" @click="activeStep = 1"></span></p>
+                <p>Event: <span x-text="eventName" class="link cursor-pointer" @click="activeStep = 1"></span></p>
 
-                <h2 class="text-2xl font-semibold">Select a
+                <h2 class="text-2xl font-semibold mt-2">Select a
                     team</h2>
 
 
@@ -574,18 +664,23 @@
 
             <div x-show="activeStep == 3">
 
-                <p>Event: <span x-text="eventName" class=" cursor-pointer" @click="activeStep = 1"></span></p>
-                <p>Team: <span x-text="teamName" class=" cursor-pointer" @click="activeStep = 2"></span></p>
+                <p>Event: <span x-text="eventName" class="link cursor-pointer" @click="activeStep = 1"></span></p>
+                <p>Team: <span x-text="teamName" class="link cursor-pointer" @click="activeStep = 2"></span></p>
 
-                <h2 class="text-2xl font-semibold">Select a DQ/Penalty</h2>
+                <h2 class="text-2xl font-semibold mt-2">Select a DQ/Penalty</h2>
 
                 <div class="form-input" style="margin-bottom: 0 !important">
                     <input type="text" placeholder="Search..." style="margin-bottom: 0 !important"
                         x-model="codeSearch">
                 </div>
 
+                <div class="flex flex-col items-center justify-center mt-2" x-show="loadingCodes">
+                    <x-loader />
+                    <small>Loading codes...</small>
+                </div>
 
-                <div class="flex flex-col space-y-3" x-data="{
+
+                <div class="flex flex-col space-y-3 mt-2" x-show="!loadingCodes" x-data="{
                     dqOpen: true,
                     penOpen: true
                 }">
@@ -606,9 +701,9 @@
 
                                 <div class="flex flex-col space-y-2">
                                     <template x-for="dq in dqs">
-                                        <div class="card"
+                                        <div class="card cursor-pointer"
                                             @click="setCode(`DQ${dq.id.toString().padStart(3, '0')}`, dq.description)"
-                                            x-show="shouldDisplaySelf(`dq${dq.id}`, `dq${dq.id.toString().padStart(3, '0')}`)">
+                                            x-show="shouldDisplaySelf(`dq${dq.id}`, `dq${dq.id.toString().padStart(3, '0')}`, dq.description)">
                                             <strong>DQ<span x-text="dq.id.toString().padStart(3, '0')"></span></strong>
                                             <p x-text="dq.description"></p>
                                         </div>
@@ -624,8 +719,9 @@
 
                                 <div class="flex flex-col space-y-2">
                                     <template x-for="dq in dqs">
-                                        <div class="card"
-                                            x-show="shouldDisplaySelf(`dq${dq.id}`, `dq${dq.id.toString().padStart(3, '0')}`)">
+                                        <div class="card cursor-pointer"
+                                            @click="setCode(`DQ${dq.id.toString().padStart(3, '0')}`, dq.description)"
+                                            x-show="shouldDisplaySelf(`dq${dq.id}`, `dq${dq.id.toString().padStart(3, '0')}`, dq.description)">
                                             <strong>DQ<span x-text="dq.id.toString().padStart(3, '0')"></span></strong>
                                             <p x-text="dq.description"></p>
                                         </div>
@@ -657,8 +753,9 @@
 
                                 <div class="flex flex-col space-y-2">
                                     <template x-for="pen in pens">
-                                        <div class="card"
-                                            x-show="shouldDisplaySelf(`p${pen.id}`, `p${pen.id.toString().padStart(3, '0')}`)">
+                                        <div class="card cursor-pointer"
+                                            @click="setCode(`P${pen.id.toString().padStart(3, '0')}`, pen.description)"
+                                            x-show="shouldDisplaySelf(`p${pen.id}`, `p${pen.id.toString().padStart(3, '0')}`, pen.description)">
                                             <strong>P<span x-text="pen.id.toString().padStart(3, '0')"></span></strong>
                                             <p x-text="pen.description"></p>
                                         </div>
@@ -675,8 +772,9 @@
 
                                 <div class="flex flex-col space-y-2">
                                     <template x-for="pen in pens">
-                                        <div class="card"
-                                            x-show="shouldDisplaySelf(`p${pen.id}`, `p${pen.id.toString().padStart(3, '0')}`)">
+                                        <div class="card cursor-pointer"
+                                            @click="setCode(`P${pen.id.toString().padStart(3, '0')}`, pen.description)"
+                                            x-show="shouldDisplaySelf(`p${pen.id}`, `p${pen.id.toString().padStart(3, '0')}`, pen.description)">
                                             <strong>P<span x-text="pen.id.toString().padStart(3, '0')"></span></strong>
                                             <p x-text="pen.description"></p>
                                         </div>
@@ -695,12 +793,67 @@
             </div>
 
 
-            <div x-show="activeStep == 4">
-                <p>Event: <span x-text="eventName" class=" cursor-pointer" @click="activeStep = 1"></span></p>
-                <p>Team: <span x-text="teamName" class=" cursor-pointer" @click="activeStep = 2"></span></p>
-                <h3 x-text="codeName" class="mt-2"></h3>
+            <form @submit="handleFormSubmit" x-show="activeStep == 4">
+                <p>Event: <span x-text="eventName" class="link cursor-pointer" @click="activeStep = 1"></span></p>
+                <p>Team: <span x-text="teamName" class="link cursor-pointer" @click="activeStep = 2"></span></p>
+
+                <div class="flex items-center space-x-3">
+                    <h3 x-text="submission.code" class="mt-2"></h3>
+                    <span class="link cursor-pointer" @click="activeStep = 3">Change</span>
+                </div>
+
                 <p x-text="codeDescription"></p>
-            </div>
+                <br>
+
+                <div class="grid-2" x-show="submission.event.startsWith('sp')">
+                    <div class="form-input ">
+                        <label for="" class="">Turn #</label>
+                        <input type="number" name="turn" x-model="submission.turn">
+
+                    </div>
+                    <div class="form-input ">
+                        <label for="" class="">Length #</label>
+                        <input type="number" name="length" x-model="submission.length">
+
+                    </div>
+
+                </div>
+
+                <label for="">Aditional Details</label>
+                <textarea name="" id=""
+                    class="w-full border hover:border-gray-400 p-3 h-max focus:border-gray-400 outline-none rounded-md"
+                    placeholder="..." x-model="submission.details"></textarea>
+
+
+                <div class="grid-2 mt-2">
+                    <div class="form-input " style="margin-bottom: 0px !important">
+                        <label for="">Your Name <span class="ml-auto text-bulsca_red">*</span></label>
+                        <input type="text" name="name" required x-model="submission.name" placeholder="Name">
+
+                    </div>
+                    <div class="form-input " style="margin-bottom: 0px !important">
+                        <label for="">Your Position<span class="ml-auto text-bulsca_red">*</span></label>
+                        <input type="text" name="position" required x-model="submission.position"
+                            placeholder="Position">
+
+                    </div>
+                    <div class="form-input -mt-4" style="margin-bottom: 0px !important">
+                        <label for="">Seconder Name</label>
+                        <input type="text" name="seconderName" x-model="submission.seconder.name" placeholder="Name">
+
+                    </div>
+                    <div class="form-input -mt-4 " style="margin-bottom: 0px !important">
+                        <label for="">Seconder Position</label>
+                        <input type="text" name="seconderPosition" x-model="submission.seconder.position"
+                            placeholder="Position">
+
+                    </div>
+                </div>
+                <br>
+                <button class="btn w-full">Submit</button>
+
+
+            </form>
 
 
 
