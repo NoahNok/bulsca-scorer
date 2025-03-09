@@ -434,7 +434,7 @@
             
                 loadCodes() {
                     this.loadingCodes = true;
-                    fetch('{{ route('dj.dq.event-codes', 'X') }}'.replace('X', this.event))
+                    fetch('{{ route('dj.dq.event-codes', 'X') }}'.replace('X', this.submission.event))
                         .then(response => response.json())
                         .then(data => {
                             this.codes = data;
@@ -697,7 +697,7 @@
                     <div x-collapse x-show="dqOpen">
                         <template x-for="(dqs, groupName) in codes?.related?.dq">
                             <div class="mb-5 last:mb-0" x-show="shouldDisplayGroup('dq', dqs)">
-                                <h5 x-text="groupName"></h5>
+                                <h5 x-text="groupName.toLowerCase()" class=" capitalize"></h5>
 
                                 <div class="flex flex-col space-y-2">
                                     <template x-for="dq in dqs">
@@ -715,7 +715,7 @@
 
                         <template x-for="(dqs, groupName) in codes?.other?.dq">
                             <div class="mb-5 last:mb-0" x-show="shouldDisplayGroup('dq', dqs)">
-                                <h5 x-text="groupName"></h5>
+                                <h5 x-text="groupName.toLowerCase()" class=" capitalize"></h5>
 
                                 <div class="flex flex-col space-y-2">
                                     <template x-for="dq in dqs">
@@ -749,7 +749,7 @@
                     <div x-collapse x-show="penOpen">
                         <template x-for="(pens, groupName) in codes?.related?.pen">
                             <div class="mb-5 last:mb-0" x-show="shouldDisplayGroup('p', pens)">
-                                <h5 x-text="groupName"></h5>
+                                <h5 x-text="groupName.toLowerCase()" class=" capitalize"></h5>
 
                                 <div class="flex flex-col space-y-2">
                                     <template x-for="pen in pens">
@@ -768,7 +768,7 @@
 
                         <template x-for="(pens, groupName) in codes?.other?.pen">
                             <div class="mb-5 last:mb-0" x-show="shouldDisplayGroup('p', pens)">
-                                <h5 x-text="groupName"></h5>
+                                <h5 x-text="groupName.toLowerCase()" class=" capitalize"></h5>
 
                                 <div class="flex flex-col space-y-2">
                                     <template x-for="pen in pens">

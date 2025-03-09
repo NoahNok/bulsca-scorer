@@ -44,9 +44,17 @@ class SpeedEvent extends Model
             $pen->type = $codes->where('pendq_id', $pen->id)->first()->type;
         }
 
+        $dqCodesFinal = $dqCodes->groupBy('type')->sortBy(function ($group, $type) {
+            return $type === 'GENERIC' ? 1 : 0;
+        });
+        $penCodesFinal = $penCodes->groupBy('type')->sortBy(function ($group, $type) {
+            return $type === 'GENERIC' ? 1 : 0;
+        });
+
+
         return [
-            'dq' => $dqCodes->groupBy('type'),
-            'pen' => $penCodes->groupBy('type')
+            'dq' => $dqCodesFinal,
+            'pen' => $penCodesFinal
         ];
     }
 
