@@ -30,7 +30,12 @@
 
 
         <div class="grid-3">
-            @foreach (\App\Models\Competition::where('when', '<=', now())->orderBy('when', 'desc')->limit(6)->get() as $comp)
+
+            @php
+                $comps = \App\Models\Competition::where('when', '<=', now())->orderBy('when', 'desc')->paginate(9);
+            @endphp
+
+            @foreach ($comps as $comp)
                 <div class="card card-hover items-center">
                     <img src="@if ($comp->brand) {{ $comp->getBrand->getLogo() }}@else https://www.bulsca.co.uk/storage/logo/blogo.png @endif"
                         class=" w-20 h-20 mb-3" alt="">
@@ -42,7 +47,11 @@
                     </div>
                 </div>
             @endforeach
+
+
         </div>
+        <br>
+        {{ $comps->links() }}
 
 
     </div>
