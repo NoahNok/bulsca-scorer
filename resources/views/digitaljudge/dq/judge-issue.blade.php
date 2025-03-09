@@ -15,13 +15,16 @@
             ->pluck('id')
             ->toArray();
 
-        if (empty($valid)) {
-            $valid = [0];
-        }
-
     @endphp
 
-    <div class="flex flex-col  " x-data="{ total: {{ json_encode($valid) }} }">
+    <div class="flex flex-col relative  " x-data="{ total: {{ json_encode($valid) }}, quickSubmitOpen: false }">
+
+
+        <button class="btn" @click="() => $dispatch('startagain')">
+            Submit new DQ/Penalty
+        </button>
+
+        <br>
 
         <template x-for="(frm,ind) in total">
 
@@ -203,12 +206,21 @@
                 
                                         d.seconder = { name: d.seconder_name, position: d.seconder_position };
                 
+                                        if (d.turn == null) {
+                                            d.turn = '';
+                                        }
+                                        if (d.length == null) {
+                                            d.length = '';
+                                        }
+                
                                         this.submission = d;
                 
                                         this.$refs.form.querySelectorAll('input, select, textarea ').forEach((el) => {
                                             el.disabled = true;
                 
                                         })
+                
+                                        this.resolveCode(d.code);
                 
                                     }
                 
@@ -348,7 +360,8 @@
                         </div>
                         <div class="form-input -mt-4" style="margin-bottom: 0px !important">
                             <label for="">Seconder Name</label>
-                            <input type="text" name="seconderName" x-model="submission.seconder.name" placeholder="Name">
+                            <input type="text" name="seconderName" x-model="submission.seconder.name"
+                                placeholder="Name">
 
                         </div>
                         <div class="form-input -mt-4 " style="margin-bottom: 0px !important">
@@ -408,9 +421,450 @@
             </form>
         </template>
 
-        <button class="btn" @click="total.push(0)">
-            Submit Another
-        </button>
+
+
+
+        <div class="absolute top-0 left-0 w-full h-full bg-white" x-show="quickSubmitOpen" x-cloak
+            x-data="{
+                activeStep: 1,
+            
+                events: {{ json_encode($comp->getEventsInDQFormat()) }},
+            
+                presetEvent: '',
+            
+            
+            
+                codes: [],
+                loadingCodes: false,
+            
+                codeSearch: '',
+            
+                loadCodes() {
+                    this.loadingCodes = true;
+                    fetch('{{ route('dj.dq.event-codes', 'X') }}'.replace('X', this.submission.event))
+                        .then(response => response.json())
+                        .then(data => {
+                            this.codes = data;
+                            this.loadingCodes = false
+                        })
+            
+                },
+            
+            
+            
+                get eventName() {
+                    if (this.submission.event == '') return '';
+                    return this.events[this.submission.event]
+                },
+                teamName: '',
+            
+            
+                codeDescription: '',
+            
+                submission: {
+                    event: '',
+                    heat_lane: '',
+                    turn: '',
+                    length: '',
+                    code: '',
+                    details: '',
+                    name: '',
+                    position: '',
+                    seconder: { name: '', position: '' }
+                },
+            
+            
+            
+            
+            
+                setEvent(event) {
+                    this.submission.event = event;
+            
+                    this.activeStep = 2;
+                },
+            
+                setTeam(lane, name) {
+                    this.submission.heat_lane = lane;
+                    this.teamName = name;
+                    this.activeStep = 3;
+                    this.loadCodes();
+                },
+            
+                setCode(code, description) {
+                    this.submission.code = code;
+                    this.codeDescription = description;
+                    this.activeStep = 4;
+                },
+            
+                startAgain() {
+            
+            
+                    this.submission = {
+                        event: '',
+                        heat_lane: '',
+                        turn: '',
+                        length: '',
+                        code: '',
+                        details: '',
+                        name: '',
+                        position: '',
+                        seconder: { name: '', position: '' }
+                    }
+            
+            
+                    this.submission.name = '{{ $judge_name }}';
+            
+            
+            
+            
+                    if (this.presetEvent != '') {
+                        this.submission.event = this.presetEvent;
+                        this.activeStep = 2;
+            
+                    } else {
+                        this.activeStep = 1;
+                    }
+            
+                    this.quickSubmitOpen = true;
+            
+            
+            
+            
+            
+                },
+            
+                shouldDisplaySelf(code, codePad, description) {
+            
+            
+                    let search = this.codeSearch.toLowerCase().trim()
+            
+                    if (search == '') return true;
+            
+                    return code.includes(search) || codePad.includes(search) || description.toLowerCase().includes(search);
+            
+            
+                },
+            
+                shouldDisplayGroup(type, codes) {
+            
+                    for (let code of codes) {
+                        if (this.shouldDisplaySelf(type + code.id, type + code.id.toString().padStart(3, '0'), code.description)) {
+                            return true;
+                        }
+                    }
+            
+                    return false
+            
+                },
+            
+                shouldDisplaySection(type) {
+                    let search = this.codeSearch.toLowerCase().trim()
+            
+                    if (search == '') return true;
+            
+                    return type.startsWith(search)
+                },
+            
+                handleFormSubmit(event) {
+                    event.preventDefault();
+            
+            
+            
+            
+                    let fd = new FormData();
+            
+                    for (var key in this.submission) {
+            
+                        if (key == 'seconder') {
+                            for (var subkey in this.submission.seconder) {
+                                fd.append('seconder_' + subkey, this.submission.seconder[subkey]);
+                            }
+                            continue;
+                        }
+            
+                        fd.append(key, this.submission[key]);
+            
+                    }
+            
+                    fetch('{{ route('dj.dq.submission') }}', {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: fd,
+            
+                        }).then(response => response.json())
+                        .then(data => {
+                            this.total.push(data.result);
+                            this.quickSubmitOpen = false;
+            
+            
+                        }).catch((error) => {
+                            showAlert('Something went wrong. Please try again.')
+            
+                        });
+            
+                    //this.status = Math.random() > 0.5 ? 'APPROVED' : 'REJECTED';
+                },
+            
+            
+            }" x-init="() => {
+                let url = new URLSearchParams(window.location.search);
+                if (url.has('event')) {
+                    presetEvent = url.get('event');
+                }
+            
+            
+            }" @startagain.window="() => startAgain()">
+
+
+            <span class="link" @click="quickSubmitOpen = false">Cancel Submission</span>
+
+            <div x-show="activeStep == 1">
+                <h2 class="text-2xl font-semibold">Select an Event</h2>
+
+
+                <div class="flex flex-col space-y-3">
+                    <h5>Speeds</h5>
+                    @foreach ($comp->getSpeedEvents as $speed)
+                        <button class="btn btn-primary" @click="setEvent('sp:{{ $speed->id }}')">
+                            {{ $speed->getName() }}</button>
+                    @endforeach
+
+                    <h5>SERCs</h5>
+                    @foreach ($comp->getSercs as $serc)
+                        <button class="btn btn-primary" @click="setEvent('se:{{ $serc->id }}')">
+                            {{ $serc->getName() }}</button>
+                    @endforeach
+                </div>
+            </div>
+
+
+            <div x-show="activeStep == 2">
+
+                <p>Event: <span x-text="eventName" class="link cursor-pointer" @click="activeStep = 1"></span></p>
+
+                <h2 class="text-2xl font-semibold mt-2">Select a
+                    team</h2>
+
+
+                <div class="flex flex-col space-y-3">
+                    @foreach ($comp->getHeatEntries->sortBy('heat')->groupBy('heat') as $heat)
+                        <h4>Heat {{ $heat[0]->heat }}</h4>
+
+                        @foreach ($heat->sortBy('lane') as $lane)
+                            <button class="btn btn-primary" style="text-align: left"
+                                @click="setTeam({{ $lane->id }}, 'Heat {{ $lane->heat }}, Lane {{ $lane->lane }}, {{ $lane->getTeam->getFullname() }}')">
+                                Lane {{ $lane->lane }}:
+                                {{ $lane->getTeam->getFullname() }}
+                            </button>
+                        @endforeach
+                    @endforeach
+                </div>
+
+                <br>
+                <br>
+                <br>
+            </div>
+
+            <div x-show="activeStep == 3">
+
+                <p>Event: <span x-text="eventName" class="link cursor-pointer" @click="activeStep = 1"></span></p>
+                <p>Team: <span x-text="teamName" class="link cursor-pointer" @click="activeStep = 2"></span></p>
+
+                <h2 class="text-2xl font-semibold mt-2">Select a DQ/Penalty</h2>
+
+                <div class="form-input" style="margin-bottom: 0 !important">
+                    <input type="text" placeholder="Search..." style="margin-bottom: 0 !important"
+                        x-model="codeSearch">
+                </div>
+
+                <div class="flex flex-col items-center justify-center mt-2" x-show="loadingCodes">
+                    <x-loader />
+                    <small>Loading codes...</small>
+                </div>
+
+
+                <div class="flex flex-col space-y-3 mt-2" x-show="!loadingCodes" x-data="{
+                    dqOpen: true,
+                    penOpen: true
+                }">
+                    <div class="flex justify-between cursor-pointer" @click="dqOpen = !dqOpen"
+                        x-show="shouldDisplaySection('dq')">
+                        <h4 class="hmb-0">DQs</h4>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-6 transition-transform ease-in-out"
+                            :class="!dqOpen ? 'rotate-180' : ''">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                        </svg>
+
+                    </div>
+                    <div x-collapse x-show="dqOpen">
+                        <template x-for="(dqs, groupName) in codes?.related?.dq">
+                            <div class="mb-5 last:mb-0" x-show="shouldDisplayGroup('dq', dqs)">
+                                <h5 x-text="groupName.toLowerCase()" class=" capitalize"></h5>
+
+                                <div class="flex flex-col space-y-2">
+                                    <template x-for="dq in dqs">
+                                        <div class="card cursor-pointer"
+                                            @click="setCode(`DQ${dq.id.toString().padStart(3, '0')}`, dq.description)"
+                                            x-show="shouldDisplaySelf(`dq${dq.id}`, `dq${dq.id.toString().padStart(3, '0')}`, dq.description)">
+                                            <strong>DQ<span x-text="dq.id.toString().padStart(3, '0')"></span></strong>
+                                            <p x-text="dq.description"></p>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+
+                        </template>
+
+                        <template x-for="(dqs, groupName) in codes?.other?.dq">
+                            <div class="mb-5 last:mb-0" x-show="shouldDisplayGroup('dq', dqs)">
+                                <h5 x-text="groupName.toLowerCase()" class=" capitalize"></h5>
+
+                                <div class="flex flex-col space-y-2">
+                                    <template x-for="dq in dqs">
+                                        <div class="card cursor-pointer"
+                                            @click="setCode(`DQ${dq.id.toString().padStart(3, '0')}`, dq.description)"
+                                            x-show="shouldDisplaySelf(`dq${dq.id}`, `dq${dq.id.toString().padStart(3, '0')}`, dq.description)">
+                                            <strong>DQ<span x-text="dq.id.toString().padStart(3, '0')"></span></strong>
+                                            <p x-text="dq.description"></p>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+
+                        </template>
+
+                        <br x-show="shouldDisplaySection('dq')">
+                    </div>
+
+
+
+                    <div class="flex justify-between cursor-pointer" @click="penOpen = !penOpen"
+                        x-show="shouldDisplaySection('p')">
+                        <h4 class="hmb-0">Penalties</h4>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-6 transition-transform ease-in-out"
+                            :class="!penOpen ? 'rotate-180' : ''">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                        </svg>
+
+                    </div>
+                    <div x-collapse x-show="penOpen">
+                        <template x-for="(pens, groupName) in codes?.related?.pen">
+                            <div class="mb-5 last:mb-0" x-show="shouldDisplayGroup('p', pens)">
+                                <h5 x-text="groupName.toLowerCase()" class=" capitalize"></h5>
+
+                                <div class="flex flex-col space-y-2">
+                                    <template x-for="pen in pens">
+                                        <div class="card cursor-pointer"
+                                            @click="setCode(`P${pen.id.toString().padStart(3, '0')}`, pen.description)"
+                                            x-show="shouldDisplaySelf(`p${pen.id}`, `p${pen.id.toString().padStart(3, '0')}`, pen.description)">
+                                            <strong>P<span x-text="pen.id.toString().padStart(3, '0')"></span></strong>
+                                            <p x-text="pen.description"></p>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+
+                        </template>
+
+
+                        <template x-for="(pens, groupName) in codes?.other?.pen">
+                            <div class="mb-5 last:mb-0" x-show="shouldDisplayGroup('p', pens)">
+                                <h5 x-text="groupName.toLowerCase()" class=" capitalize"></h5>
+
+                                <div class="flex flex-col space-y-2">
+                                    <template x-for="pen in pens">
+                                        <div class="card cursor-pointer"
+                                            @click="setCode(`P${pen.id.toString().padStart(3, '0')}`, pen.description)"
+                                            x-show="shouldDisplaySelf(`p${pen.id}`, `p${pen.id.toString().padStart(3, '0')}`, pen.description)">
+                                            <strong>P<span x-text="pen.id.toString().padStart(3, '0')"></span></strong>
+                                            <p x-text="pen.description"></p>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+
+                        </template>
+                    </div>
+
+                    <br>
+                    <br>
+                    <br>
+
+                </div>
+            </div>
+
+
+            <form @submit="handleFormSubmit" x-show="activeStep == 4">
+                <p>Event: <span x-text="eventName" class="link cursor-pointer" @click="activeStep = 1"></span></p>
+                <p>Team: <span x-text="teamName" class="link cursor-pointer" @click="activeStep = 2"></span></p>
+
+                <div class="flex items-center space-x-3">
+                    <h3 x-text="submission.code" class="mt-2"></h3>
+                    <span class="link cursor-pointer" @click="activeStep = 3">Change</span>
+                </div>
+
+                <p x-text="codeDescription"></p>
+                <br>
+
+                <div class="grid-2" x-show="submission.event.startsWith('sp')">
+                    <div class="form-input ">
+                        <label for="" class="">Turn #</label>
+                        <input type="number" name="turn" x-model="submission.turn">
+
+                    </div>
+                    <div class="form-input ">
+                        <label for="" class="">Length #</label>
+                        <input type="number" name="length" x-model="submission.length">
+
+                    </div>
+
+                </div>
+
+                <label for="">Aditional Details</label>
+                <textarea name="" id=""
+                    class="w-full border hover:border-gray-400 p-3 h-max focus:border-gray-400 outline-none rounded-md"
+                    placeholder="..." x-model="submission.details"></textarea>
+
+
+                <div class="grid-2 mt-2">
+                    <div class="form-input " style="margin-bottom: 0px !important">
+                        <label for="">Your Name <span class="ml-auto text-bulsca_red">*</span></label>
+                        <input type="text" name="name" required x-model="submission.name" placeholder="Name">
+
+                    </div>
+                    <div class="form-input " style="margin-bottom: 0px !important">
+                        <label for="">Your Position<span class="ml-auto text-bulsca_red">*</span></label>
+                        <input type="text" name="position" required x-model="submission.position"
+                            placeholder="Position">
+
+                    </div>
+                    <div class="form-input -mt-4" style="margin-bottom: 0px !important">
+                        <label for="">Seconder Name</label>
+                        <input type="text" name="seconderName" x-model="submission.seconder.name" placeholder="Name">
+
+                    </div>
+                    <div class="form-input -mt-4 " style="margin-bottom: 0px !important">
+                        <label for="">Seconder Position</label>
+                        <input type="text" name="seconderPosition" x-model="submission.seconder.position"
+                            placeholder="Position">
+
+                    </div>
+                </div>
+                <br>
+                <button class="btn w-full">Submit</button>
+
+
+            </form>
+
+
+
+        </div>
+
+
 
 
 

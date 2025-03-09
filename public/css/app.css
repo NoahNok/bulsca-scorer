@@ -1607,6 +1607,9 @@ video {
 .h-\[90vh\] {
   height: 90vh;
 }
+.h-auto {
+  height: auto;
+}
 .h-full {
   height: 100%;
 }
@@ -1626,14 +1629,14 @@ video {
 .max-h-\[20px\] {
   max-height: 20px;
 }
+.max-h-\[70vh\] {
+  max-height: 70vh;
+}
 .max-h-\[85vh\] {
   max-height: 85vh;
 }
 .max-h-\[90vh\] {
   max-height: 90vh;
-}
-.max-h-\[70vh\] {
-  max-height: 70vh;
 }
 .min-h-\[20px\] {
   min-height: 20px;
@@ -2353,10 +2356,6 @@ video {
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
-}
-.bg-red-200 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(254 202 202 / var(--tw-bg-opacity));
 }
 .bg-opacity-40 {
   --tw-bg-opacity: 0.4;
@@ -3395,7 +3394,7 @@ div.form-input.checkbox > input {
   padding-bottom: 1.25rem;
 }
 
-a.link, p.link {
+a.link, p.link, span.link {
   cursor: pointer;
   font-size: 1rem;
   line-height: 1.5rem;
@@ -3404,7 +3403,7 @@ a.link, p.link {
   color: rgb(29 78 216 / var(--tw-text-opacity));
 }
 
-a.link:hover, p.link:hover {
+a.link:hover, p.link:hover, span.link:hover {
   text-decoration-line: underline;
 }
 
@@ -3950,6 +3949,10 @@ aside.open {
 .hide-number-arrows::-webkit-inner-spin-button, .hide-number-arrows::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+.last\:mb-0:last-child {
+  margin-bottom: 0px;
 }
 
 .first-of-type\:ml-1:first-of-type {
@@ -4756,16 +4759,16 @@ aside.open {
     max-width: 50%;
   }
 
+  .xl\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .xl\:grid-cols-4 {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .xl\:grid-cols-6 {
     grid-template-columns: repeat(6, minmax(0, 1fr));
-  }
-
-  .xl\:grid-cols-3 {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -4777,14 +4780,6 @@ aside.open {
 
   .\32xl\:max-w-\[40\%\] {
     max-width: 40%;
-  }
-
-  .\32xl\:grid-cols-5 {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-  }
-
-  .\32xl\:grid-cols-4 {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .\32xl\:grid-rows-6 {
@@ -4802,12 +4797,12 @@ aside.open {
     grid-column: span 2 / span 2;
   }
 
-  .\33xl\:grid-cols-5 {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-  }
-
   .\33xl\:grid-cols-4 {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .\33xl\:grid-cols-5 {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 }
 
@@ -4823,14 +4818,6 @@ aside.open {
 
   .\34xl\:grid-cols-9 {
     grid-template-columns: repeat(9, minmax(0, 1fr));
-  }
-
-  .\34xl\:grid-cols-4 {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
-  .\34xl\:grid-cols-5 {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 }
 

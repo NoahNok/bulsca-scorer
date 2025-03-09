@@ -15,6 +15,7 @@ use App\Models\PenaltyCode;
 use App\Models\SERC;
 use App\Models\SERCDisqualification;
 use App\Models\SERCPenalty;
+use App\Models\SpeedEvent;
 use App\Models\SpeedResult;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -139,7 +140,7 @@ class DJDQController extends Controller
     ######################### JUDGE DQ REQUESTS #########################
     public function issue()
     {
-        return view('digitaljudge.dq.judge-issue', ['comp' => DigitalJudge::getClientCompetition()]);
+        return view('digitaljudge.dq.judge-issue', ['comp' => DigitalJudge::getClientCompetition(), 'judge_name' => DigitalJudge::getClientName()]);
     }
 
     public function resolveCode(string $code)
@@ -382,5 +383,26 @@ class DJDQController extends Controller
         } else {
             SERCDisqualification::where('team', $teamId)->where('serc', $eventID)->where('code', $code)->delete();
         }
+    }
+
+    public function getEventRelatedCodes(string $eventName)
+    {
+
+        $event = null;
+
+        if (str_starts_with($eventName, 'sp')) {
+
+            $event = CompetitionSpeedEvent::find(substr($eventName, 3));
+
+            $event = $event->getBaseEvent();
+        } else {
+            $event = new SpeedEvent();
+            $event->name = 'SERC';
+        }
+
+
+
+
+        return response()->json(['related' => $event->getEventCodes(), 'other' => $event->getMissingEventCodes()]);
     }
 }
