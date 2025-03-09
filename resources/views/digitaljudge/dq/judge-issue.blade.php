@@ -204,7 +204,7 @@
                                             d.event = `sp:${d.event_id}`;
                                         }
                 
-                                        d.seconder = { name: d.seconder_name, position: d.seconder_position };
+                
                 
                                         if (d.turn == null) {
                                             d.turn = '';
@@ -215,6 +215,24 @@
                                         if (d.details == null) {
                                             d.details = '';
                                         }
+                                        if (d.name == null) {
+                                            d.name = '';
+                                        }
+                                        if (d.position == null) {
+                                            d.position = '';
+                                        }
+                                        if (d.seconder_name == null) {
+                                            d.seconder_name = '';
+                                        }
+                                        if (d.seconder_position == null) {
+                                            d.seconder_position = '';
+                                        }
+                
+                
+                
+                
+                                        d.seconder = { name: d.seconder_name, position: d.seconder_position };
+                
                 
                                         this.submission = d;
                 
