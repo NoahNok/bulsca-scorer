@@ -533,7 +533,7 @@
             
                     if (search == '') return true;
             
-                    return code.startsWith(search) || codePad.startsWith(search) || description.toLowerCase().includes(search);
+                    return code.includes(search) || codePad.includes(search) || description.toLowerCase().includes(search);
             
             
                 },
