@@ -212,6 +212,9 @@
                                         if (d.length == null) {
                                             d.length = '';
                                         }
+                                        if (d.details == null) {
+                                            d.details = '';
+                                        }
                 
                                         this.submission = d;
                 
