@@ -1,12 +1,6 @@
 @import 'tailwindcss';
 
 
-@plugin '@tailwindcss/typography';
-
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-
-
 
 /*
   The default border color has changed to `currentcolor` in Tailwind CSS v4,
@@ -51,10 +45,6 @@
   }
 }
 
-
-
-
-
 @theme {
   --font-sans:
   Nunito, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
@@ -77,6 +67,29 @@
   --width-3xl: 1920px;
   --width-4xl: 2560px;
 
+  --font-archivo: Archivo, sans-serif;
+  
+
+}
+
+
+.tabbed-bar {
+  @apply flex border-b border-black/20 space-x-2;
+
+  div {
+    @apply py-2 pr-6  pl-0 border-b-2 border-transparent cursor-pointer transition-all;
+
+
+    &.active {
+      @apply border-black text-black font-semibold;
+    }
+
+    &:hover {
+      @apply border-black 
+    }
+
+    
+  }
 }
 
 :root {
@@ -168,35 +181,9 @@ aside.collapsed {
      }
 }
 
-h1, h2, h3, h4, h5 {
 
-    @apply text-bulsca font-semibold mb-2;
 
-    &.hmb-0 {
-      @apply mb-0;
-    }
 
-}
-
-h1 {
-@apply text-5xl;
-}
-
-h2 {
-@apply text-4xl;
-}
-
-h3 {
-@apply text-3xl;
-}
-
-h4 {
-@apply text-2xl;
-}
-
-h5 {
-@apply text-xl;
-}
 
  div.form-input {
 
