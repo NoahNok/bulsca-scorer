@@ -179,23 +179,26 @@
         </div>
     </header>
 
-    <div class="flex w-screen justify-center my-8 md:my-16">
-        <div class="w-[75%] px-6 md:px-8 flex flex-col overflow-hidden">
-            <h2 class="text-4xl font-archivo font-semibold uppercase">Warwick 2025-26</h2>
+
+    @if (Session::get('ac'))
+        <div class="flex w-screen justify-center my-8 md:my-16">
+            <div class="w-[75%] px-6 md:px-8 flex flex-col overflow-hidden">
+                <h2 class="text-4xl font-archivo font-semibold uppercase">{{ Session::get('ac')->name }}</h2>
 
 
-            <div class="  tabbed-bar mt-2 ">
+                <div class="  tabbed-bar mt-2 ">
 
-                <div class="@if (Str::startsWith(Route::currentRouteName(), 'comps.view')) active @endif">Overview</div>
-                <div>Teams</div>
-                <div>Heats & Orders</div>
-                <div>Printables</div>
-                <div>Events</div>
-                <div>Results</div>
+                    <div class="@if (Str::startsWith(Route::currentRouteName(), 'comps.view')) active @endif">Overview</div>
+                    <div>Teams</div>
+                    <div>Heats & Orders</div>
+                    <div>Printables</div>
+                    <div>Events</div>
+                    <div>Results</div>
+                </div>
+
             </div>
-
         </div>
-    </div>
+    @endif
 
 
 
