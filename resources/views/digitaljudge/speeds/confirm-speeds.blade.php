@@ -35,7 +35,7 @@
                         <span>L</span>
                         <span>OOF</span>
                         <span class="px-4 pr-16">Result</span>
-                        <div class="grid grid-cols-3 flex-grow md:px-4">
+                        <div class="grid grid-cols-3 grow md:px-4">
                             <span>Team</span>
                             <span>DQ</span>
                             <span>Penalties</span>
@@ -64,7 +64,7 @@
                                 <div class="card justify-center">
                                     {{ $sr->getResultAsString() ?? '-' }}
                                 </div>
-                                <div class="card flex-grow ">
+                                <div class="card grow ">
                                     <div class="grid-3">
                                         <div>{{ $lane->getTeam->getFullname() }}</div>
                                         <div>{{ $sr->disqualification }}</div>
@@ -72,7 +72,7 @@
                                     </div>
                                 </div>
                             @else
-                                <div class="card flex-grow " style="background-color: rgba(0,0,0,0.1)"></div>
+                                <div class="card grow " style="background-color: rgba(0,0,0,0.1)"></div>
                             @endif
 
 

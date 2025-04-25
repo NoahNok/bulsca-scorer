@@ -72,7 +72,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
                                 </svg>
                             </div>
-                            <ol class=" list-item space-y-2 peer-hover/title:*:bg-bulsca peer-hover/title:*:text-white">
+                            <ol class=" list-item space-y-2 *:peer-hover/title:bg-bulsca *:peer-hover/title:text-white">
                                 @for ($l = 1; $l <= $comp->max_lanes; $l++)
                                     @php
                                         $lane = $heat->where('lane', $l)->first();

@@ -129,7 +129,7 @@
         <div class=" grid grid-cols-8 gap-3">
             <template x-for="bracket in brackets">
                 <div class="card card-extrathin card-row items-center justify-between hover:bg-gray-300 cursor-pointer"
-                    x-key="bracket.league" :class="selectedIds.includes(bracket.league) ? '!bg-bulsca text-white' : ''"
+                    x-key="bracket.league" :class="selectedIds.includes(bracket.league) ? 'bg-bulsca! text-white' : ''"
                     @click="selectBracket(bracket)" x-show="getTankedBrackets.includes(bracket.league) == false">
                     <p x-text="bracket.name"></p>
                     <p x-text="bracket.count"></p>
@@ -162,7 +162,7 @@
                         <template x-for="bracket in tank">
                             <div class="card card-extrathin card-row items-center justify-between hover:bg-gray-300 cursor-pointer"
                                 x-key="bracket.league"
-                                :class="selectedIds.includes(bracket.league) ? '!bg-bulsca text-white' : ''"
+                                :class="selectedIds.includes(bracket.league) ? 'bg-bulsca! text-white' : ''"
                                 @click.stop="selectBracket(bracket)">
                                 <p x-text="bracket.name"></p>
                                 <p x-text="bracket.count"></p>

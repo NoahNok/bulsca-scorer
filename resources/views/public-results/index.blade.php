@@ -26,7 +26,7 @@
                     <div class="flex flex-wrap row  w-full justify-center justify-items-center">
                         @forelse ($season->getCompetitions->where('public_results', true)->where('isLeague', true) as $comp)
                             <a href="{{ route('public.results.comp', $comp->resultsSlug()) }}"
-                                class="card card-hover flex-grow 2xl:min-w-[23%]  mt-4 mx-2 ">
+                                class="card card-hover grow 2xl:min-w-[23%]  mt-4 mx-2 ">
                                 <h4 class="mb-0 text-center">{{ $comp->name }}</h4>
                             </a>
                         @empty

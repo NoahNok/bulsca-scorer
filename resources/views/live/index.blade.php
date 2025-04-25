@@ -170,7 +170,7 @@
 
                                 <div class="flex flex-row md:block ">
                                     <p class="px-5 py-3 border border-transparent md:hidden">{{ $l }}</p>
-                                    <li class="card whitespace-nowrap flex-grow  " data-heat="{{ $key }}">
+                                    <li class="card whitespace-nowrap grow  " data-heat="{{ $key }}">
                                         @if ($lane)
                                             {{ $lane->getTeam->getFullname() }}
                                         @else

@@ -126,7 +126,7 @@
                     }">
                         <div class="flex items-center">
                             <input
-                                class="mb-0 text-3xl text-bulsca font-semibold hover:border-b focus:border-b focus:outline-none"
+                                class="mb-0 text-3xl text-bulsca font-semibold hover:border-b focus:border-b focus:outline-hidden"
                                 x-model.lazy="club.name">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor" class="w-6 h-6 ml-auto hover:text-red-600 cursor-pointer"

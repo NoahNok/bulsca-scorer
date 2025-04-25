@@ -15,7 +15,7 @@
 
         <div class="text-center">
             <img src="https://www.bulsca.co.uk/storage/logo/blogo.png" class=" w-52 pb-2" alt="">
-            <h1 class="font-bold text-6xl text-transparent bg-clip-text bg-gradient-to-r from-bulsca to-bulsca_red">
+            <h1 class="font-bold text-6xl text-transparent bg-clip-text bg-linear-to-r from-bulsca to-bulsca_red">
                 Scorer</h1>
         </div>
 
@@ -47,19 +47,19 @@
             </a>
 
             <a href="{{ route('public.results.stats.clubs') }}"
-                class="card  card-pad-y-sm  bg-gradient-to-bl from-purple-700 to-bulsca hover:to-bulsca_red  items-center justify-center  "
+                class="card  card-pad-y-sm  bg-linear-to-bl from-purple-700 to-bulsca hover:to-bulsca_red  items-center justify-center  "
                 style="">
 
 
-                <h4 style="margin-bottom: 0 !important" class="text-white">Stats</h4>
+                <h4 style="margin-bottom: 0 !important" class="text-white!">Stats</h4>
             </a>
 
             <a href="{{ route('dj.index') }}"
-                class="card  card-pad-y-sm  bg-gradient-to-bl to-purple-700 from-bulsca hover:from-bulsca_red hover:to-purple-700  items-center justify-center  "
+                class="card  card-pad-y-sm  bg-linear-to-bl to-purple-700 from-bulsca hover:from-bulsca_red hover:to-purple-700  items-center justify-center  "
                 style="">
 
 
-                <h4 style="margin-bottom: 0 !important" class="text-white">Judge</h4>
+                <h4 style="margin-bottom: 0 !important" class="text-white!">Judge</h4>
             </a>
 
         </div>
