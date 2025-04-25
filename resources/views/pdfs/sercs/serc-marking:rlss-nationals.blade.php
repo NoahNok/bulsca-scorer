@@ -116,7 +116,7 @@
                                     <td class="py-1 bg-gray-200 " colspan="2">{{ $judge->name }}
                                         <br>
                                         <article
-                                            class="block prose prose-sm prose-neutral prose-p:mb-0 prose-ul:my-0 prose-ol:my-0 prose-li:my-0 !leading-5">
+                                            class="block prose prose-sm prose-neutral prose-p:mb-0 prose-ul:my-0 prose-ol:my-0 prose-li:my-0 leading-5!">
                                             {!! $judge->description !!}
                                         </article>
                                     </td>

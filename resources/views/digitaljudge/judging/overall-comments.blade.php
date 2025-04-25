@@ -40,7 +40,7 @@
                 @endphp
 
                 <textarea name="judge-overall-{{ $judge->id }}" rows="5" placeholder="Type overall feedback here."
-                    class="w-full border hover:border-gray-400 p-3 h-max focus:border-gray-400 outline-none rounded-md" id="">{{ $note }}</textarea>
+                    class="w-full border hover:border-gray-400 p-3 h-max focus:border-gray-400 outline-hidden rounded-md" id="">{{ $note }}</textarea>
             @endforeach
 
             <br>

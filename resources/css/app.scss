@@ -1,8 +1,30 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
+
+@plugin '@tailwindcss/typography';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
 @layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+
   @font-face {
     font-family: 'Astoria';
     font-style: normal;
@@ -27,6 +49,34 @@
     font-weight: 400;
     src: url('/Greycliff-CF-Regular.otf');
   }
+}
+
+
+
+
+
+@theme {
+  --font-sans:
+  Nunito, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+  'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+--font-astoria: Astoria;
+--font-ariel: Ariel, Helvetica, sans-serif;
+--font-greycliff: greycliff;
+
+--color-bulsca: var(--brand-primary);
+--color-bulsca_red: var(--brand-secondary);
+--color-rlss-blue: #163072;
+--color-rlss-red: #e42313;
+--color-rlss-yellow: #ffd300;
+
+--breakpoint-3xl: 1600px;
+--breakpoint-4xl: 1920px;
+
+--transition-property-width: width;
+
+  --width-3xl: 1920px;
+  --width-4xl: 2560px;
+
 }
 
 :root {
@@ -159,7 +209,7 @@ h5 {
    
 
    input, select {
-    @apply border-2 rounded-md py-2 px-4 shadow-sm focus:outline-none hover:border-bulsca focus:border-bulsca mb-4;
+    @apply border-2 rounded-md py-2 px-4 shadow-sm focus:outline-none hover:border-bulsca focus:border-bulsca mb-4 bg-white;
 
     &.file {
       @apply file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold  file:text-black hover:file:bg-gray-200 file:cursor-pointer cursor-pointer;
@@ -224,7 +274,7 @@ h5 {
  }
 
  .btn {
-    @apply py-2 px-6 text-center bg-green-500 hover:bg-green-600 transition-colors shadow-md text-white font-semibold rounded-md;
+    @apply py-2 px-6 text-center bg-green-500 hover:bg-green-600 transition-colors shadow-md text-white font-semibold rounded-md flex items-center justify-center ;
 
     &.btn-danger {
       @apply bg-red-500 hover:bg-red-600;
@@ -648,7 +698,7 @@ aside {
 
 
 .modal {
-  @apply w-full h-full fixed top-0 left-0 flex items-center justify-center z-50 bg-gray-300 bg-opacity-50 ;
+  @apply w-full h-full fixed top-0 left-0 flex items-center justify-center z-50 bg-gray-300/50 ;
 
 
   .modal-content {

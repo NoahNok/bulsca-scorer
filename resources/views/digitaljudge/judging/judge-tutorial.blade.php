@@ -65,7 +65,7 @@
                                 <input type="radio" required class="w-0 h-0 peer" value="0" name="mp-1"
                                     id="mp-1-0">
                                 <label for="mp-1-0"
-                                    class="  flex items-center justify-center px-4 py-0.5 font-semibold  rounded-sm bg-gray-200 text-xs peer-checked:bg-bulsca_red peer-checked:text-white ">
+                                    class="  flex items-center justify-center px-4 py-0.5 font-semibold  rounded-xs bg-gray-200 text-xs peer-checked:bg-bulsca_red peer-checked:text-white ">
                                     ZERO
                                 </label>
                             </div>
@@ -99,7 +99,7 @@
                                 <input type="radio" required class="w-0 h-0 peer" value="0" name="mp-2"
                                     id="mp-2-0">
                                 <label for="mp-2-0"
-                                    class="  flex items-center justify-center px-4 py-0.5 font-semibold  rounded-sm bg-gray-200 text-xs peer-checked:bg-bulsca_red peer-checked:text-white ">
+                                    class="  flex items-center justify-center px-4 py-0.5 font-semibold  rounded-xs bg-gray-200 text-xs peer-checked:bg-bulsca_red peer-checked:text-white ">
                                     ZERO
                                 </label>
                             </div>
@@ -134,7 +134,7 @@
 
 
                     <textarea name="team-notes" rows="5" placeholder="Type your notes for this team here..."
-                        class="w-full border hover:border-gray-400 p-3 h-max focus:border-gray-400 outline-none rounded-md" id=""></textarea>
+                        class="w-full border hover:border-gray-400 p-3 h-max focus:border-gray-400 outline-hidden rounded-md" id=""></textarea>
                 </div>
                 <br>
                 <div class="flex flex-row space-x-2 md:space-x-4 items-center"

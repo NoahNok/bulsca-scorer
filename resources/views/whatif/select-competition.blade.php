@@ -87,7 +87,7 @@
 
         </div>
 
-        <div class="w-full h-full bg-gray-300 bg-opacity-50 flex items-center justify-center z-50 fixed top-0 left-0"
+        <div class="w-full h-full bg-gray-300/50 flex items-center justify-center z-50 fixed top-0 left-0"
             x-show="loader.show" x-transition style="display: none">
             <div class="card items-center">
                 <x-loader size=12 />

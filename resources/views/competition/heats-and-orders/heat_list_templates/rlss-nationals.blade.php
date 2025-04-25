@@ -12,7 +12,7 @@
             </a>
         @endforeach
 
-        <a x-bind:href="'{{ route('comps.view.heats.edit', $comp) }}?event=' + selectedHeat" class="btn !ml-auto">Edit
+        <a x-bind:href="'{{ route('comps.view.heats.edit', $comp) }}?event=' + selectedHeat" class="btn ml-auto!">Edit
             Event Heats</a>
     </div>
 
@@ -43,7 +43,7 @@
                                     <li class="card relative ">
                                         @if ($lane)
                                             <span
-                                                class="whitespace-nowrap overflow-ellipsis overflow-hidden">{{ $lane->team }}
+                                                class="whitespace-nowrap text-ellipsis overflow-hidden">{{ $lane->team }}
                                                 -
                                                 {{ $lane->club }} ({{ $lane->region }}) - {{ $lane->league }}</span>
                                         @else

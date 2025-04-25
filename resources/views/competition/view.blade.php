@@ -183,7 +183,7 @@
 
 
             <div>
-                <div class="card !grow-0">
+                <div class="card grow-0!">
                     <div class="flex items-center justify-between">
                         <h3>Additional Accounts</h3>
                     </div>

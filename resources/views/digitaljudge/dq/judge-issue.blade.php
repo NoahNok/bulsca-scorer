@@ -362,7 +362,7 @@
 
                         <label for="">Aditional Details</label>
                         <textarea name="" id=""
-                            class="w-full border hover:border-gray-400 p-3 h-max focus:border-gray-400 outline-none rounded-md"
+                            class="w-full border hover:border-gray-400 p-3 h-max focus:border-gray-400 outline-hidden rounded-md"
                             placeholder="..." x-model="submission.details"></textarea>
 
                     </div>
@@ -847,7 +847,7 @@
 
                 <label for="">Aditional Details</label>
                 <textarea name="" id=""
-                    class="w-full border hover:border-gray-400 p-3 h-max focus:border-gray-400 outline-none rounded-md"
+                    class="w-full border hover:border-gray-400 p-3 h-max focus:border-gray-400 outline-hidden rounded-md"
                     placeholder="..." x-model="submission.details"></textarea>
 
 

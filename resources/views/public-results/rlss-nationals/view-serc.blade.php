@@ -57,7 +57,7 @@
                 <p class=" font-ariel text-rlss-yellow font-semibold">{{ $comp->where }}</p>
             </div>
 
-            <div class="!ml-auto   ">
+            <div class="ml-auto!   ">
                 <img src="{{ $brand->getLogo() }}" class=" w-20 h-20" alt="">
             </div>
         </div>

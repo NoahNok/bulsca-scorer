@@ -1,6 +1,10 @@
 const mix = require("laravel-mix");
 require("laravel-mix-serve");
 
+mix.webpackConfig({
+    watchOptions: { ignored: /node_modules|dist|mix-manifest.json/ },
+});
+
 //require('laravel-mix-blade-reload');
 
 /*
@@ -17,22 +21,17 @@ require("laravel-mix-serve");
 mix.js("resources/js/*", "public/js")
     .sass("resources/css/app.scss", "public/css")
     .options({
-        postCss: [require("tailwindcss")],
+        postCss: [require("@tailwindcss/postcss")],
     }); //.bladeReload();
-
-
 
 mix.browserSync({
     proxy: {
         target: "localhost", // route to the nginx instance running
         proxyReq: [
             function (proxyReq, req, res) {
-
                 proxyReq.setHeader("Host", req.headers.host); // Allows us to access the hot reload at something like subdomain.bulsca.local:3000 or without the port for non-hot realod
             },
         ],
-        
     },
     host: "0.0.0.0",
 });
-

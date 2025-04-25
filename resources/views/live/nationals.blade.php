@@ -40,7 +40,7 @@
                 <p class=" font-ariel text-rlss-yellow font-semibold">{{ $comp->where }}</p>
             </div>
 
-            <div class="!ml-auto   ">
+            <div class="ml-auto!   ">
                 <img src="{{ $comp->getBrand->getLogo() }}" class=" w-20 h-20 min-w-20" alt="">
             </div>
         </div>
@@ -69,7 +69,7 @@
         </div>
 
         <div class="w-full max-w-full flex  px-2">
-            <a href="#tanks" class="btn !bg-rlss-blue mx-2 grow  ">Click for Initiative Orders</a>
+            <a href="#tanks" class="btn bg-rlss-blue! mx-2 grow  ">Click for Initiative Orders</a>
         </div>
 
 
@@ -81,7 +81,7 @@
             <h2 class="font-astoria text-rlss-blue font-extrabold hidden md:block hmb-0 ">Heats for:</h2>
             @foreach ($comp->getSpeedEvents as $event)
                 <button class="btn  mx-2  btn-white"
-                    x-bind:class="activeEvent == {{ $event->id }} ? '!bg-rlss-blue ' : ''"
+                    x-bind:class="activeEvent == {{ $event->id }} ? 'bg-rlss-blue! ' : ''"
                     x-bind:style="activeEvent == {{ $event->id }} ? 'color:white !important; ' : ''"
                     @click="activeEvent = {{ $event->id }}">{{ $event->getName() }}</button>
             @endforeach

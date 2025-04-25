@@ -28,7 +28,7 @@
             }
         }">
             <h3 class="-mb-6">BULSCA</h3>
-            <h1 class=" text-[7rem] text-transparent bg-clip-text bg-gradient-to-r from-bulsca via-purple-500 to-bulsca_red"
+            <h1 class=" text-[7rem] text-transparent bg-clip-text bg-linear-to-r from-bulsca via-purple-500 to-bulsca_red"
                 style="margin-bottom: -0.5rem !important ">
                 WhatIf</h1>
             <small class="">WhatIf my team did...?</small>
@@ -81,7 +81,7 @@
 
         </div>
 
-        <div class="w-full h-full bg-gray-300 bg-opacity-50 flex items-center justify-center z-50 fixed top-0 left-0"
+        <div class="w-full h-full bg-gray-300/50 flex items-center justify-center z-50 fixed top-0 left-0"
             x-show="loader.show" x-transition style="display: none">
             <div class="card items-center">
                 <x-loader size=12 />
@@ -95,7 +95,7 @@
     <div class="bg-white z-50 lg:hidden fixed w-screen h-screen top-0 left-0 flex flex-col items-center justify-center">
         <div>
             <h3 class="-mb-6">BULSCA</h3>
-            <h1 class=" text-[7rem] text-transparent bg-clip-text bg-gradient-to-r from-bulsca via-purple-500 to-bulsca_red"
+            <h1 class=" text-[7rem] text-transparent bg-clip-text bg-linear-to-r from-bulsca via-purple-500 to-bulsca_red"
                 style="margin-bottom: 0 !important">
                 WhatIf</h1>
             <p class="text-center">WhatIf is not available on mobile devices!</p>

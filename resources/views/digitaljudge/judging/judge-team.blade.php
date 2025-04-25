@@ -105,7 +105,7 @@
 
                                 </div>
                                 <article
-                                    class="block prose prose-neutral prose-p:mb-0 prose-ul:my-0 prose-ol:my-0 prose-li:my-0 !leading-5"
+                                    class="block prose prose-neutral prose-p:mb-0 prose-ul:my-0 prose-ol:my-0 prose-li:my-0 leading-5!"
                                     x-show="open" x-collapse>
                                     {!! $mJudge->description !!}
                                 </article>
@@ -113,7 +113,7 @@
                         @endif
 
 
-                        <button class="btn btn-purple btn-thin w-full @if ($hasDescription) !mt-3 @endif"
+                        <button class="btn btn-purple btn-thin w-full @if ($hasDescription) mt-3! @endif"
                             style="margin-bottom: -0.75rem" type="button" onclick="zeroAll({{ $mJudge->id }})">ZERO
                             all</button>
 
@@ -132,7 +132,7 @@
                                             x-judge="{{ $mJudge->id }}" name="mp-{{ $mp->id }}"
                                             @if ($mpValue == 0) checked @endif id="mp-{{ $mp->id }}-0">
                                         <label for="mp-{{ $mp->id }}-0"
-                                            class="  flex items-center justify-center px-4 py-0.5 font-semibold  rounded-sm bg-gray-200 text-xs peer-checked:bg-bulsca_red peer-checked:text-white ">
+                                            class="  flex items-center justify-center px-4 py-0.5 font-semibold  rounded-xs bg-gray-200 text-xs peer-checked:bg-bulsca_red peer-checked:text-white ">
                                             ZERO
                                         </label>
                                     </div>
@@ -176,7 +176,7 @@
                             @endif
                             <textarea @if ($head && DigitalJudge::hasTeamBeenJudgedAlreadyForJudge($team, $mJudge)) disabled @endif name="team-notes-{{ $mJudge->id }}" rows="5"
                                 placeholder="Type your notes for this team here..."
-                                class="w-full border hover:border-gray-400 p-3 h-max focus:border-gray-400 outline-none rounded-md" id="">{{ $n ? $n->note : '' }}</textarea>
+                                class="w-full border hover:border-gray-400 p-3 h-max focus:border-gray-400 outline-hidden rounded-md" id="">{{ $n ? $n->note : '' }}</textarea>
                         </div>
                         <br>
                     @endforeach
