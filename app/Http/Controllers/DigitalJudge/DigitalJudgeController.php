@@ -31,14 +31,14 @@ class DigitalJudgeController extends Controller
         $pin = $validated['pin'];
         $clientName = strip_tags($validated['judgeName']);
 
-        $comp = Competition::where('digitalJudgePin', $pin)->where('digitalJudgeEnabled', true)->where(function($query) {
+        $comp = Competition::where('digitalJudgePin', $pin)->where('digitalJudgeEnabled', true)->where(function ($query) {
             $query->where('anytimepin', true)->orWhere('when', DB::raw('CURDATE()'));
         })->first();
-   
+
 
         if ($comp) $this->startJudging($comp, false, $clientName);
 
-        $headComp = Competition::where('digitalJudgeHeadPin', $pin)->where('digitalJudgeEnabled', true)->where(function($query) {
+        $headComp = Competition::where('digitalJudgeHeadPin', $pin)->where('digitalJudgeEnabled', true)->where(function ($query) {
             $query->where('anytimepin', true)->orWhere('when', DB::raw('CURDATE()'));
         })->first();
 
@@ -83,10 +83,10 @@ class DigitalJudgeController extends Controller
         $comp->save();
 
         if ($wasState == false) {
-            return redirect()->route('dj.settings', $comp)->with('success', 'Digital Judge Enabled');
+            return redirect()->back()->with('success', 'Digital Judge Enabled!')->with('modal', 'djSettings');
         }
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Digital Judge Disabled!');
     }
 
     function sercToggle(Competition $comp, SERC $serc)
@@ -249,7 +249,7 @@ class DigitalJudgeController extends Controller
             $speed->save();
         }
 
-     
+
         $comp->show_teams_to_judges = $request->has('show_teams_to_judges');
 
         $comp->save();
@@ -257,8 +257,8 @@ class DigitalJudgeController extends Controller
         return redirect()->route('comps.view', ['comp' => $comp])->with('success', 'DigitalJudge settings saved');
     }
 
-    public function qrs(Competition $comp) {
+    public function qrs(Competition $comp)
+    {
         return view('digitaljudge.qrs', compact('comp'));
-
     }
 }
