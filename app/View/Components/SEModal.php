@@ -13,15 +13,19 @@ class SEModal extends Component
 
     private bool $open = false;
 
+    private $footer = null;
+
     /**
      * Create a new component instance.
      */
-    public function __construct($id, $title, $open = false)
+    public function __construct($id, $title, $open = false, $footer = null)
     {
         $this->id = $id;
         $this->title = $title;
         $this->open = $open;
+        $this->footer = $footer;
     }
+
 
     /**
      * Get the view / contents that represent the component.
@@ -32,6 +36,7 @@ class SEModal extends Component
             'id' => $this->id,
             'title' => $this->title,
             'open' => $this->open,
+            'footer' => $this->footer,
         ]);
     }
 }

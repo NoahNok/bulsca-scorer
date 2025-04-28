@@ -141,7 +141,7 @@
 
 
                 <div @click="modals.djSettings = true"
-                    class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
+                    class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1 mb-2">
                     <p class="font-archivo">Settings</p>
 
 
@@ -155,10 +155,10 @@
 
                 </div>
 
-                <a href="{{ route('dj.toggle', $comp) }}" class="btn btn-danger w-full my-1">Disable</a>
+                <a href="{{ route('dj.toggle', $comp) }}" class="se-btn se-btn-danger block ">Disable</a>
             @else
-                <p>DigitalJudge allows officials to enter SERC marks on their own devices.</p>
-                <a href="{{ route('dj.toggle', $comp) }}" class="btn w-full my-1">Enable</a>
+                <p class="mb-2">DigitalJudge allows officials to enter SERC marks on their own devices.</p>
+                <a href="{{ route('dj.toggle', $comp) }}" class="se-btn se-btn-success block">Enable</a>
             @endif
 
 
@@ -171,7 +171,7 @@
 
         <div>
             <h3>Competition</h3>
-            <a href="{{ route('comps.settings', $comp) }}"
+            <div @click="modals.compSettings = true"
                 class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
                 <p class="font-archivo">Settings</p>
 
@@ -183,7 +183,7 @@
                 </svg>
 
 
-            </a>
+            </div>
 
             <div class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
                 <p class="font-archivo">Additional Accounts</p>
@@ -222,15 +222,35 @@
         </div>
     </x-s-e-modal>
 
-    <x-s-e-modal id="djSettings" title="DigitalJudge Settings" open>
+    <x-s-e-modal id="djSettings" title="DigitalJudge Settings">
 
-        <form id="djSettingsForm" x-on:submit="(e) => {
+        <form id="djSettingsForm"
+            x-on:submit="(e) => {
             e.preventDefault()
-            alert('hi')
+            loading = true
+            
+
+
+            fetch('{{ route('dj.settings', $comp) }}', {
+                method: 'POST',
+                body: new FormData($event.target),
+            }).then(resp => {
+               loading = false
+                if (!resp.ok) {
+                    showAlert('Something went wrong, you changes have been reversed.')
+                    $event.target.reset()
+                    return
+                }
+     
+
+                loading = false
+                modals.djSettings = false
+                showSuccess('DigitalJudge settings saved')
+            })
         }">
 
 
-
+            @csrf
             <h4>Enabled Events</h4>
             <p>Please check all the events below that you want to enable DigitalJudge for:</p>
             <div class="ml-3 mt-1 mb-6">
@@ -272,294 +292,305 @@
                 </label>
             </div>
         </form>
+        @slot('footer')
+            <button type="submit" form="djSettingsForm" class="se-btn se-btn-success ml-auto">Save</button>
+        @endslot
+    </x-s-e-modal>
 
-    @section('modal-footer')
-        <button type="submit" form="djSettingsForm" class="btn ml-auto">Save</button>
-    @endsection
-</x-s-e-modal>
+    <x-s-e-modal id="compSettings" title="Competition Settings">
 
-
-
-
-
-<br>
-<br>
-<br>
-
+        <form id="compSettingsForm"
+            x-on:submit="(e) => {
+            e.preventDefault()
+            loading = true
+            
 
 
+            fetch('{{ route('comps.settings', $comp) }}', {
+                method: 'POST',
+                body: new FormData($event.target),
+            }).then(resp => {
+               loading = false
+                if (!resp.ok) {
+                    showAlert('Something went wrong, you changes have been reversed.')
+                    $event.target.reset()
+                    return
+                }
+     
 
-<div class="flex items-center justify-between">
+                loading = false
+                modals.compSettings = false
+                showSuccess('Competition settings saved')
+            })
+        }">
 
 
+            @csrf
+
+            <h4>Heats</h4>
+            <x-form-input id="lanes" title="Lanes" type="number" defaultValue="{{ $comp->max_lanes }}" />
+
+
+
+
+            <h4>Other</h4>
+            @php
+                $sercStart = $comp->serc_start_time;
+                $sercStart?->setTimezone('BST');
+            @endphp
+            <x-form-input id="serc_start_time" title="SERC Start Time" required="false" type="datetime-local"
+                defaultValue="{{ $sercStart }}"></x-form-input>
+
+            <div class="flex space-x-2 -mt-5!">
+                <input type="checkbox" class="ml-3" name="can_be_live" @if ($comp->can_be_live) checked @endif
+                    id="can_be_live">
+                <label for="can_be_live">Viewable Live</label>
+            </div>
+
+
+        </form>
+
+        <x-slot name="footer">
+            <button type="submit" form="compSettingsForm" class="se-btn se-btn-success ml-auto">Save</button>
+        </x-slot>
+    </x-s-e-modal>
+
+
+
+
+
+    <br>
+    <br>
+    <br>
+
+
+
+
+    <div class="flex items-center justify-between">
+
+
+
+        @can('access', $comp)
+            <div class="flex items-center justify-center">
+                <a href="{{ route('comps.notifications.user-settings', $comp) }}"
+                    class=" transition-color cursor-pointer text-gray-600 hover:text-white hover:bg-bulsca rounded-full p-[0.375rem]">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-7 h-7">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+                    </svg>
+                </a>
+
+
+            </div>
+        @endcan
+
+
+
+    </div>
+
+
+
+    <div>
+        <h3>Scorer Manual</h3>
+        <p>You can find the scorer manual <a class="link" target="_blank" rel="noopener noreferrer"
+                href="https://docs.google.com/document/d/1P1XMiKYkcwFP9gp-GMf7Uj7DJhRER65IVTUDG-sJu5o/edit?usp=sharing">here
+                (Google Drive)</a>
+            or <a class="link" target="_blank" rel="noopener noreferrer"
+                href="https://www.bulsca.co.uk/resources/view/7851d57a-e23a-4e83-bdfd-58df662748a5">here (PDF)</a>
+        </p>
+    </div>
+    <br>
+    <hr>
+    <br>
 
     @can('access', $comp)
-        <div class="flex items-center justify-center">
-            <a href="{{ route('comps.notifications.user-settings', $comp) }}"
-                class=" transition-color cursor-pointer text-gray-600 hover:text-white hover:bg-bulsca rounded-full p-[0.375rem]">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="w-7 h-7">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
-                </svg>
-            </a>
-
-            <x-settings-cog href="{{ route('comps.settings', $comp) }}" />
-        </div>
-    @endcan
+        <div class="grid-3">
 
 
-
-</div>
-
-
-
-<div>
-    <h3>Scorer Manual</h3>
-    <p>You can find the scorer manual <a class="link" target="_blank" rel="noopener noreferrer"
-            href="https://docs.google.com/document/d/1P1XMiKYkcwFP9gp-GMf7Uj7DJhRER65IVTUDG-sJu5o/edit?usp=sharing">here
-            (Google Drive)</a>
-        or <a class="link" target="_blank" rel="noopener noreferrer"
-            href="https://www.bulsca.co.uk/resources/view/7851d57a-e23a-4e83-bdfd-58df662748a5">here (PDF)</a>
-    </p>
-</div>
-<br>
-<hr>
-<br>
-
-@can('access', $comp)
-    <div class="grid-3">
-        <div class="card">
-            <div class="flex items-center justify-between">
-                <h3>Digital Judging</h3>
-                @if ($comp->digitalJudgeEnabled)
-                    <x-settings-cog href="{{ route('dj.settings', $comp) }}" />
-                @endif
-            </div>
-
-
-            <p>Digital judging allows Judges to enter SERC marks on their own device. It is enabled per comp.</p>
-            <strong>If you need to DQ a SERC team, please talk with the competitions Scorer or Organiser!</strong>
-            <p><a href="https://docs.google.com/document/d/1HKTR9HUzgTKadyE7vyVqDWXeaheK4XFmzlw9Hrn1Q1s/edit?usp=sharing"
-                    target="_blank" rel="noopener noreferrer" class="link">DigitalJudge Manual</a></p>
-            <br>
-            @if ($comp->digitalJudgeEnabled)
-                <h5>Judges</h5>
-                <a href="{{ route('dj.qrs', $comp) }}" target="_blank" class="btn btn-thin btn-primary ">Print QR</a>
-                <p class="text-center font-semibold text-bulsca_red">OR</p>
-                <p>Please instruct Judges to go to here: <a
-                        href="{{ \App\Helpers\RouteHelpers::externalRoute('judge', 'dj.index') . ($comp->brand ? '?b=' . $comp->brand : '') }}"
-                        class="link">{{ \App\Helpers\RouteHelpers::externalRoute('judge', 'dj.index') . ($comp->brand ? '?b=' . $comp->brand : '') }}
-                    </a> and enter the following pin:</p>
-
-                <p class="text-xl"><strong>{{ $comp->digitalJudgePin }}</strong></p>
-
-                <br>
-                <h5>Head Judge/SERC Setter</h5>
-                <p>Please instruct your Head Judge and SERC Setters to follw the same above link, but use the following pin
-                    instead:</p>
-                <p class="text-xl"><strong>{{ $comp->digitalJudgeHeadPin }}</strong></p>
-                <br>
-                <p>This pin grants the ability for your Head Judge and SERC Setters to override Judge scores incase they
-                    accidently make a mistake</p>
-                <br>
-
-                <h5>Judging Log</h5>
-                <p><a class="link" href="{{ $comp->resolveJudgeLogVersionUrl() }}">Click here</a> to view an activity
-                    log of all
-                    judge activity.</p>
-
-                <br>
-
-                <a href="{{ route('dj.toggle', $comp) }}" class="btn btn-danger">Disable Digital Judging</a>
-            @else
-                <a href="{{ route('dj.toggle', $comp) }}" class="btn">Enable Digital Judging</a>
+            @if ($comp->digitalJudgeEnabled && $comp->getMaxHeats() == -1)
+                <div>
+                    <div class="alert-box">
+                        <p class="font-semibold">No Heats Set</p>
+                        <p class="text-sm">You have not generated heats any yet. You will not be able to digitally judge any
+                            speeds
+                            events until you do so!</p>
+                    </div>
+                </div>
             @endif
-        </div>
 
-        @if ($comp->digitalJudgeEnabled && $comp->getMaxHeats() == -1)
+
             <div>
-                <div class="alert-box">
-                    <p class="font-semibold">No Heats Set</p>
-                    <p class="text-sm">You have not generated heats any yet. You will not be able to digitally judge any
-                        speeds
-                        events until you do so!</p>
-                </div>
-            </div>
-        @endif
+                <div class="card grow-0!">
+                    <div class="flex items-center justify-between">
+                        <h3>Additional Accounts</h3>
+                    </div>
+
+                    <p>For assistance please see the <strong>"SERC Writer Login"</strong> section of the <a class="link"
+                            target="_blank" rel="noopener noreferrer"
+                            href="https://docs.google.com/document/d/1P1XMiKYkcwFP9gp-GMf7Uj7DJhRER65IVTUDG-sJu5o/edit?usp=sharing#heading=h.3dqfvnjctnuo">Scorer
+                            Manual</a></p>
+                    <br>
+
+                    <div class="  relative w-full  ">
+                        <table class=" text-sm w-full shadow-md rounded-lg overflow-hidden text-left text-gray-500 ">
+                            <thead class="text-xs text-gray-700 text-right uppercase bg-gray-50 ">
+                                <tr>
+                                    <th scope="col" class="py-3 px-6 text-left">
+                                        Name
+                                    </th>
+                                    <th scope="col" class="py-3 px-6">
+                                        Email
+                                    </th>
+                                    <th scope="col" class="py-3 px-6">
+                                        Actions
+                                    </th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
 
 
-        <div>
-            <div class="card grow-0!">
-                <div class="flex items-center justify-between">
-                    <h3>Additional Accounts</h3>
-                </div>
+                                <tr class="bg-white border-b text-right " x-data="{
+                                    openModal: false,
+                                    data: null,
+                                
+                                
+                                    createAccount() {
+                                
+                                        fetch('{{ route('comps.accounts.serc-writer.create', $comp) }}', {
+                                            method: 'POST',
+                                            headers: {
+                                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                            }
+                                        }).then(resp => resp.json()).then(data => {
+                                            if (data?.error) {
+                                                alert(data.error)
+                                                return
+                                            }
+                                
+                                            this.data = data
+                                            this.openModal = true
+                                        })
+                                
+                                
+                                    },
+                                
+                                    resetAccountPassword() {
+                                        fetch('{{ route('comps.accounts.serc-writer.new-password', $comp) }}', {
+                                            method: 'POST',
+                                            headers: {
+                                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                            }
+                                        }).then(resp => resp.json()).then(data => {
+                                            if (data?.error) {
+                                                alert(data.error)
+                                                return
+                                            }
+                                
+                                            this.data = data
+                                            this.openModal = true
+                                        })
+                                    }
+                                }">
+                                    <th scope="row"
+                                        class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap ">
+                                        SERC Writer
+                                    </th>
 
-                <p>For assistance please see the <strong>"SERC Writer Login"</strong> section of the <a class="link"
-                        target="_blank" rel="noopener noreferrer"
-                        href="https://docs.google.com/document/d/1P1XMiKYkcwFP9gp-GMf7Uj7DJhRER65IVTUDG-sJu5o/edit?usp=sharing#heading=h.3dqfvnjctnuo">Scorer
-                        Manual</a></p>
-                <br>
+                                    @php
+                                        $swa = $comp->getSercWriterAccount();
+                                    @endphp
 
-                <div class="  relative w-full  ">
-                    <table class=" text-sm w-full shadow-md rounded-lg overflow-hidden text-left text-gray-500 ">
-                        <thead class="text-xs text-gray-700 text-right uppercase bg-gray-50 ">
-                            <tr>
-                                <th scope="col" class="py-3 px-6 text-left">
-                                    Name
-                                </th>
-                                <th scope="col" class="py-3 px-6">
-                                    Email
-                                </th>
-                                <th scope="col" class="py-3 px-6">
-                                    Actions
-                                </th>
-
-                            </tr>
-                        </thead>
-                        <tbody>
-
-
-                            <tr class="bg-white border-b text-right " x-data="{
-                                openModal: false,
-                                data: null,
-                            
-                            
-                                createAccount() {
-                            
-                                    fetch('{{ route('comps.accounts.serc-writer.create', $comp) }}', {
-                                        method: 'POST',
-                                        headers: {
-                                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                        }
-                                    }).then(resp => resp.json()).then(data => {
-                                        if (data?.error) {
-                                            alert(data.error)
-                                            return
-                                        }
-                            
-                                        this.data = data
-                                        this.openModal = true
-                                    })
-                            
-                            
-                                },
-                            
-                                resetAccountPassword() {
-                                    fetch('{{ route('comps.accounts.serc-writer.new-password', $comp) }}', {
-                                        method: 'POST',
-                                        headers: {
-                                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                        }
-                                    }).then(resp => resp.json()).then(data => {
-                                        if (data?.error) {
-                                            alert(data.error)
-                                            return
-                                        }
-                            
-                                        this.data = data
-                                        this.openModal = true
-                                    })
-                                }
-                            }">
-                                <th scope="row"
-                                    class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap ">
-                                    SERC Writer
-                                </th>
-
-                                @php
-                                    $swa = $comp->getSercWriterAccount();
-                                @endphp
-
-                                <td class="py-4 px-6 ">
-                                    <p>{{ $swa?->email ?? '-' }}</p>
-                                </td>
+                                    <td class="py-4 px-6 ">
+                                        <p>{{ $swa?->email ?? '-' }}</p>
+                                    </td>
 
 
-                                <td class="py-4 px-6 ">
-                                    <div class="flex items-end justify-end space-x-3 relative">
+                                    <td class="py-4 px-6 ">
+                                        <div class="flex items-end justify-end space-x-3 relative">
 
 
 
 
-                                        @if ($swa)
-                                            <div title="Reset Password" @click="resetAccountPassword">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                    class="size-6 hover:text-black cursor-pointer">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" />
-                                                </svg>
-                                            </div>
-                                        @else
-                                            <div title="Create Account" @click="createAccount">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                    class="size-6 hover:text-black cursor-pointer">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M12 4.5v15m7.5-7.5h-15" />
-                                                </svg>
+                                            @if ($swa)
+                                                <div title="Reset Password" @click="resetAccountPassword">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                        class="size-6 hover:text-black cursor-pointer">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" />
+                                                    </svg>
+                                                </div>
+                                            @else
+                                                <div title="Create Account" @click="createAccount">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                        class="size-6 hover:text-black cursor-pointer">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="M12 4.5v15m7.5-7.5h-15" />
+                                                    </svg>
 
-                                            </div>
-                                        @endif
+                                                </div>
+                                            @endif
 
 
-                                        <div class="relative">
-                                            <div class="modal" x-cloak x-show="openModal">
-                                                <div class="modal-content">
-                                                    <div class="flex flex-col text-left text-black">
-                                                        <h4>SERC Writer Account</h4>
-                                                        <p>Please give the following details to your SERC Writer(s) so that
-                                                            they
-                                                            can login and setup their SERCs.</p>
-                                                        <br>
-
-                                                        <p>
-                                                            <strong>Email</strong>
+                                            <div class="relative">
+                                                <div class="modal" x-cloak x-show="openModal">
+                                                    <div class="modal-content">
+                                                        <div class="flex flex-col text-left text-black">
+                                                            <h4>SERC Writer Account</h4>
+                                                            <p>Please give the following details to your SERC Writer(s) so that
+                                                                they
+                                                                can login and setup their SERCs.</p>
                                                             <br>
-                                                            <span x-text="data?.email"></span>
+
+                                                            <p>
+                                                                <strong>Email</strong>
+                                                                <br>
+                                                                <span x-text="data?.email"></span>
+                                                                <br>
+                                                                <strong>Password</strong>
+                                                                <br>
+                                                                <span x-text="data?.password"></span>
+                                                            </p>
                                                             <br>
-                                                            <strong>Password</strong>
-                                                            <br>
-                                                            <span x-text="data?.password"></span>
-                                                        </p>
-                                                        <br>
-                                                        <button class="btn btn-danger"
-                                                            @click="() => { window.location.reload() }">Close</button>
+                                                            <button class="btn btn-danger"
+                                                                @click="() => { window.location.reload() }">Close</button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
+
+
+
+
                                         </div>
 
 
 
 
-                                    </div>
+                                    </td>
+
+                                </tr>
 
 
 
 
-                                </td>
+                            </tbody>
+                        </table>
+                    </div>
 
-                            </tr>
-
-
-
-
-                        </tbody>
-                    </table>
                 </div>
-
             </div>
+
+
+
         </div>
-
-
-
-    </div>
-    <br>
-    <hr>
-    <br>
-@endcan
+        <br>
+        <hr>
+        <br>
+    @endcan
 
 
 
