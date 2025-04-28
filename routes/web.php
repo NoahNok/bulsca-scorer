@@ -104,16 +104,16 @@ Route::middleware('auth')->group(function () {
 
             Route::middleware('can:access,comp')->group(function () {
                 Route::get('/digital-judge-toggle', [DigitalJudgeController::class, 'toggle'])->name('dj.toggle');
-                Route::get('/digital-judge-settings', [DigitalJudgeController::class, 'settings'])->name('dj.settings');
-                Route::post('/digital-judge-settings', [DigitalJudgeController::class, 'settingsPost'])->name('dj.settings.post');
+
+                Route::post('/digital-judge-settings', [DigitalJudgeController::class, 'settingsPost'])->name('dj.settings');
                 Route::get('/digital-judge-qrs', [DigitalJudgeController::class, 'qrs'])->name('dj.qrs');
                 Route::get('/judge-log/v1', [DigitalJudgeController::class, 'judgeLog'])->name('dj.judgeLog');
                 Route::get('/judge-log/v2', [DigitalJudgeController::class, 'betterJudgeLog'])->name('dj.betterJudgeLog');
 
                 Route::get('/create-stats', [CompetitionController::class, 'createCompetitionStats'])->name('comps.createStats');
 
-                Route::get('/settings', [CompetitionController::class, 'settings'])->name('comps.settings');
-                Route::post('/settings', [CompetitionController::class, 'updateCompetitionSettings'])->name('comps.settings.post');
+
+                Route::post('/settings', [CompetitionController::class, 'updateCompetitionSettings'])->name('comps.settings');
 
                 Route::post('/accounts/serc-writer/create', [CompetitionController::class, 'createSercWriterAccount'])->name('comps.accounts.serc-writer.create');
                 Route::post('/account/serc-writer/new-password', [CompetitionController::class, 'resetSercWriterAccountPassword'])->name('comps.accounts.serc-writer.new-password');

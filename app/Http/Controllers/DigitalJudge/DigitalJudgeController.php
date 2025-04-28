@@ -232,13 +232,10 @@ class DigitalJudgeController extends Controller
         return view('digitaljudge.help', ['comp' => DigitalJudge::getClientCompetition()]);
     }
 
-    public function settings(Competition $comp)
-    {
-        return view('digitaljudge.settings', ['comp' => $comp]);
-    }
 
     public function settingsPost(Competition $comp, Request $request)
     {
+
         foreach ($comp->getSERCs as $serc) {
             $serc->digitalJudgeEnabled = $request->input('se:' . $serc->id) == 'on';
             $serc->save();
@@ -254,7 +251,7 @@ class DigitalJudgeController extends Controller
 
         $comp->save();
 
-        return redirect()->route('comps.view', ['comp' => $comp])->with('success', 'DigitalJudge settings saved');
+        return;
     }
 
     public function qrs(Competition $comp)

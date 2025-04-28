@@ -58,10 +58,7 @@ class CompetitionController extends Controller
         return back()->with('success', 'Stats created');
     }
 
-    public function settings(Competition $comp)
-    {
-        return view('competition.settings', ['comp' => $comp]);
-    }
+
 
     public function updateCompetitionSettings(Competition $comp, Request $request)
     {
@@ -75,7 +72,7 @@ class CompetitionController extends Controller
 
         $comp->save();
 
-        return redirect()->route('comps.view', $comp)->with('success', 'Settings updated');
+        return;
     }
 
 
