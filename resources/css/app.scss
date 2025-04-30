@@ -81,7 +81,7 @@
 .tabbed-bar {
   @apply flex border-b border-black/20 space-x-2;
 
-  div {
+  a, div {
     @apply py-2 pr-6  pl-0 border-b-2 border-transparent cursor-pointer transition-all;
 
 
@@ -319,6 +319,10 @@ aside.collapsed {
  .se-btn {
     @apply py-1 px-6 text-center border border-gray-300 hover:border-gray-500 hover:bg-gray-100 transition-colors rounded-md cursor-pointer!;
 
+    &.se-btn-primary {
+      @apply bg-se border-se text-white hover:bg-se-accent hover:border-se-accent;
+    }
+    
     &.se-btn-success {
       @apply bg-green-500 border-green-500 text-white hover:bg-green-600 hover:border-green-600;
     }

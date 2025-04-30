@@ -1,44 +1,15 @@
-@extends('layout')
+@extends('layouts.competition')
 
 @section('title')
     Edit Teams | {{ $comp->name }}
 @endsection
 
-@section('breadcrumbs')
-    <div>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="w-3 h-3">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-        </svg>
-        <a href="{{ route('comps') }}">Competitions</a>
-    </div>
-    <div>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="w-3 h-3">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-        </svg>
-        <a href="{{ route('comps.view', $comp) }}">{{ $comp->name }}</a>
-    </div>
-    <div>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="w-3 h-3">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-        </svg>
-        <a href="{{ route('comps.view.teams', $comp) }}">Teams</a>
-    </div>
-    <div>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="w-3 h-3">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-        </svg>
-        <a href="{{ route('comps.view.teams.edit', $comp) }}">Edit Teams</a>
-    </div>
-@endsection
+
 
 
 
 @section('content')
-    <div class="grid-2" x-data="{
+    <div class="" x-data="{
         clubs: {{ $currentTeams }},
         name: '',
         csrf: '{{ csrf_token() }}',
@@ -54,7 +25,7 @@
             }).then(res => {
                 if (res.ok) {
                     showSuccess('Saved teams')
-                    setTimeout(() => location.href = `{{ route('comps.view.teams', $comp) }}`, 500)
+                    setTimeout(() => location.href = `{{ route('comps.teams', $comp) }}`, 500)
                 } else {
                     showAlert(`Failed to save teams. Check your inputs and try again!`)
                 }
@@ -83,14 +54,34 @@
             this.name = ''
         }
     }" @change="hasChanges = true">
-        <div class="flex flex-col space-y-4">
 
-            <div class="flex justify-between">
-                <h2 class="mb-0">Edit Teams</h2>
-                <button @click="save()" class="btn">Save</button>
+        <div class="grid-2 ">
+            <div class="alert-box alert-warning" :class="hasChanges ? '' : 'col-span-2'">
+                <h1>Heat & SERC Order</h1>
+                <p>You will need to <strong>regenerate</strong> the Heat and SERC Order after adding any
+                    <strong>new</strong> teams.
+                    <br>
+                    <strong>Tip:</strong> Only generate the heats and SERC Order after adding all your teams!
+                </p>
             </div>
-            <p>Editable cells are white!
-            </p>
+
+            <div class="alert-box" x-show="hasChanges" style="display: none">
+                <h1>Unsaved Changes</h1>
+                <p>You have <strong>unsaved</strong> changes. You need to click the save button to keep your current
+                    changes!
+                </p>
+            </div>
+        </div>
+
+        <br>
+
+        <div class="flex justify-between mb-2">
+            <h2 class="mb-0">Edit Teams</h2>
+            <button @click="save()" class="se-btn se-btn-success">Save</button>
+        </div>
+
+        <div class="flex flex-col space-y-4 col-span-2 w-1/2">
+
 
 
             <div class="space-y-4">
@@ -221,22 +212,6 @@
 
 
         </div>
-        <div class=" row-start-1 md:row-start-auto">
-            <div class="alert-box alert-warning">
-                <h1>Heat & SERC Order</h1>
-                <p>You will need to <strong>regenerate</strong> the Heat and SERC Order after adding any
-                    <strong>new</strong> teams.
-                    <br>
-                    <strong>Tip:</strong> Only generate the heats and SERC Order after adding all your teams!
-                </p>
-            </div>
-            <br>
-            <div class="alert-box" x-show="hasChanges" style="display: none">
-                <h1>Unsaved Changes</h1>
-                <p>You have <strong>unsaved</strong> changes. You need to click the save button to keep your current
-                    changes!
-                </p>
-            </div>
-        </div>
+
     </div>
 @endsection
