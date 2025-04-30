@@ -20,8 +20,8 @@
 
     <div class="  tabbed-bar mt-2 mb-4 ">
 
-        <div class="@if (Str::startsWith(Route::currentRouteName(), 'comps.view')) active @endif">Overview</div>
-        <div>Teams</div>
+        <a href="{{ route('comps.view', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.view')) active @endif">Overview</a>
+        <a href="{{ route('comps.teams', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.team')) active @endif">Teams</a>
         <div>Heats & Orders</div>
         <div>Printables</div>
         <div>Events</div>

@@ -173,8 +173,8 @@ Route::middleware('auth')->group(function () {
 
             // TEAMS
             Route::prefix('/teams')->middleware('can:access,comp')->group(function () {
-                Route::get('', [CompetitionController::class, 'teams'])->name('comps.view.teams');
-                Route::get('/edit', [TeamsController::class, 'edit'])->name('comps.view.teams.edit');
+                Route::get('', [CompetitionController::class, 'teams'])->name('comps.teams');
+                Route::get('/edit', [TeamsController::class, 'edit'])->name('comps.teams.edit');
                 Route::post('/edit', [TeamsController::class, 'editPost'])->name('comps.view.teams.editPost');
                 Route::delete('/delete', [TeamsController::class, 'delete'])->name('comps.view.teams.delete');
             });
