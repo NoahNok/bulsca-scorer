@@ -18,6 +18,7 @@ use App\Models\SERCPenalty;
 use App\Models\SpeedEvent;
 use App\Models\SpeedResult;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 
@@ -209,8 +210,15 @@ class DJDQController extends Controller
         return view('digitaljudge.dq.head-resolve', ['comp' => DigitalJudge::getClientCompetition()]);
     }
 
-    public function resolveSubmission(JudgeDQSubmission $submission, Request $request)
+    public function resolveSubmission(int $submission, Request $request)
     {
+
+        // Prevent race resulting in double application of penalties       
+        $submission = JudgeDQSubmission::lockForUpdate()->find($submission);
+        if ($submission->resolved != null) {
+            return response()->json(['success' => false, 'message' => 'Submission already resolved']);
+        }
+    
 
         $result = $request->input('resolved') == "true" ? true : false;
         $submission->resolved = $result;
