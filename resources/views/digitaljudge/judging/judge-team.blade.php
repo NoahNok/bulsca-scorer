@@ -197,6 +197,12 @@
                 @csrf
                 <input type="hidden" name="serc" value="{{ $serc->id }}">
                 <button type="submit" onclick="submissionCheck()" class="btn w-full">Submit</button>
+
+                @if ($head)
+                
+                    <button type="submit" onclick="submissionCheck()" formaction="?a=back"
+                        class="btn btn-purple btn-thin w-full mt-3">Submit and Back</button>
+                @endif
             </form>
 
         </div>

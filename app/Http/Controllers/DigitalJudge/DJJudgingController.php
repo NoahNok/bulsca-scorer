@@ -178,10 +178,12 @@ class DJJudgingController extends Controller
         $this->dispatchTeamMarkedNotification($serc, $team);
 
 
+        if ($request->input('a', 'next') == 'back') {
+            return redirect()->route('dj.judging.home')->with('success', 'Team ' . $team->getFullname() . ' has been re-marked!');
+        }
 
 
-
-        if (DigitalJudge::isClientHeadJudge() && $teamAlreadyJudged) return redirect()->route('dj.judging.home')->with('success', 'Team ' . $team->getFullname() . ' has been re-marked!');
+        // if (DigitalJudge::isClientHeadJudge() && $teamAlreadyJudged) return redirect()->route('dj.judging.home')->with('success', 'Team ' . $team->getFullname() . ' has been re-marked!');
 
         return redirect()->route('dj.judging.next-team')->with('success', 'Team ' . $team->getFullname() . ' has been marked!');
     }
