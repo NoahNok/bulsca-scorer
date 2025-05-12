@@ -84,10 +84,10 @@
 
 
 
-            <div class="space-y-4">
+            <div class="space-y-8">
 
                 <template x-for="club in clubs" :key="club.name">
-                    <div class="card space-y-3" x-data="{
+                    <div class="flex flex-col space-y-4" x-data="{
                         addTeam() {
                     
                             if (club.teams.length == 0) {
@@ -115,10 +115,11 @@
                     
                         }
                     }">
-                        <div class="flex items-center">
-                            <input
-                                class="mb-0 text-3xl text-bulsca font-semibold hover:border-b focus:border-b focus:outline-hidden"
-                                x-model.lazy="club.name">
+                        <div class="flex items-center space-x-8">
+
+                            <h2 class="w-full"><input
+                                    class="border-b-2 border-b-gray-300 focus:outline-none hover:border-gray-400 focus:border-bulsca font-archivo w-full"
+                                    x-model.lazy="club.name"></h2>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor" class="w-6 h-6 ml-auto hover:text-red-600 cursor-pointer"
                                 x-on:click="if (!confirm(`Are you sure you want to remove this club?`)) {return}; clubs = clubs.filter((c) => c.name != club.name); hasChanges = true">
@@ -128,8 +129,8 @@
 
                         </div>
 
-                        <div>
-                            <div class="grid-4">
+                        <div class="">
+                            <div class="grid-4 font-archivo">
                                 <label for="" class="">Team</label>
                                 <label for="" class="">Time</label>
                                 <label for="" class="">League</label>
@@ -139,37 +140,39 @@
 
 
 
-                                <div class="grid grid-cols-4 gap-4 mb-1">
+                                <div class="flex items-center space-x-8">
+                                    <div class="grid grid-cols-3 gap-4 mb-1 font-archivo w-full">
 
-                                    <div class="form-input" style="margin-bottom: 0 !important">
+                                        <div class="se-form-input" style="margin-bottom: 0 !important">
 
-                                        <input class="input" x-model="team.team" style="margin-bottom: 0 !important">
+                                            <input class="input" x-model="team.team" style="margin-bottom: 0 !important">
+                                        </div>
+
+                                        <div class="se-form-input" style="margin-bottom: 0 !important">
+
+
+                                            <input class="input" x-model="team.time" type="time"
+                                                style="margin-bottom: 0 !important">
+                                        </div>
+
+                                        <div class="se-form-input" style="margin-bottom: 0 !important">
+
+
+                                            <select style="margin-bottom: 0 !important" x-model="team.league">
+                                                <option value="null">Please select an option...</option>
+                                                @foreach (App\Models\League::where('scoring_type', 'bulsca')->get() as $option)
+                                                    <option value="{{ $option->id }}">
+                                                        {{ $option->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+
+
+
                                     </div>
 
-                                    <div class="form-input" style="margin-bottom: 0 !important">
-
-
-                                        <input class="input" x-model="team.time" type="time"
-                                            style="margin-bottom: 0 !important">
-                                    </div>
-
-                                    <div class="form-input" style="margin-bottom: 0 !important">
-
-
-                                        <select
-                                            style="padding-top: 0.65em; padding-bottom: 0.65em; margin-bottom: 0 !important"
-                                            x-model="team.league">
-                                            <option value="null">Please select an option...</option>
-                                            @foreach (App\Models\League::where('scoring_type', 'bulsca')->get() as $option)
-                                                <option value="{{ $option->id }}">
-                                                    {{ $option->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-
-
-                                    <div class="flex items-center justify-end"
-                                        x-show="index == club.teams.length-1 && index != 0">
+                                    <div class="flex items-center justify-end max-w-10">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor"
                                             class="w-6 h-6 hover:text-red-600 cursor-pointer"
@@ -178,14 +181,14 @@
                                                 d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                                         </svg>
                                     </div>
-
                                 </div>
 
 
                             </template>
                         </div>
 
-                        <button class="btn flex items-center justify-center" x-on:click="addTeam()">
+                        <button class="se-btn se-btn-outline-success flex items-center justify-center"
+                            x-on:click="addTeam()">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                 stroke="currentColor" class="w-5 h-5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -193,19 +196,23 @@
 
                         </button>
 
+                        <br>
+
+                        <hr class="spacer">
+
                     </div>
                 </template>
 
-                <div class="card space-y-3">
+                <div class="flex flex-col space-y-3 font-archivo">
 
                     <h3 class="mb-0">Add Club</h3>
 
-                    <div class="form-input">
-                        <label for="" class="">Name</label>
-                        <input class="input" x-model="name" @keyup.enter="addClub()">
+                    <div class="se-form-input ">
+
+                        <input class="input" placeholder="Club name" x-model="name" @keyup.enter="addClub()">
                     </div>
 
-                    <button class="btn" x-on:click="addClub()">Add</button>
+                    <button class="se-btn se-btn-outline-success -mt-3" x-on:click="addClub()">Add</button>
 
                 </div>
             </div>
