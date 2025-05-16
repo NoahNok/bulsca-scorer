@@ -332,7 +332,7 @@
                                     </div>
                                 </a>
                             @else
-                                <a href="{{ route('comps.view.teams', Session::get('ac')) }}" class="">
+                                <a href="{{ route('comps.teams', Session::get('ac')) }}" class="">
                                     <div>
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="2" stroke="currentColor" class="w-7 h-7">
@@ -351,7 +351,7 @@
                         @endcan
 
                         @can('access', [Session::get('ac'), '*'])
-                            <a href="{{ route('comps.view.heats', Session::get('ac')) }}" class="">
+                            <a href="{{ route('comps.heats', Session::get('ac')) }}" class="">
                                 <div>
 
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"

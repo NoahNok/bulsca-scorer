@@ -124,16 +124,16 @@ Route::middleware('auth')->group(function () {
             // EVENTS
             Route::prefix('/events')->middleware('can:access,comp,"admin|serc"')->group(function () {
 
-                Route::get('', [CompetitionController::class, 'events'])->name('comps.view.events');
+                Route::get('', [CompetitionController::class, 'events'])->name('comps.events');
 
                 // SPEEDS
                 Route::prefix('/speeds')->middleware('can:access,comp')->group(function () {
-                    Route::get('/add', [SpeedsEventController::class, 'add'])->name('comps.view.events.speeds.add');
+                    Route::get('/add', [SpeedsEventController::class, 'add'])->name('comps.events.speeds.add');
                     Route::post('/add', [SpeedsEventController::class, 'addPost'])->name('comps.view.events.speeds.addPost');
                     Route::delete('/{event}/delete', [SpeedsEventController::class, 'delete'])->name('comps.view.events.speeds.delete');
 
-                    Route::get('/{event}', [SpeedsEventController::class, 'view'])->name('comps.view.events.speeds.view');
-                    Route::get('/{event}/edit', [SpeedsEventController::class, 'edit'])->name('comps.view.events.speeds.edit');
+                    Route::get('/{event}', [SpeedsEventController::class, 'view'])->name('comps.events.speeds.view');
+                    Route::get('/{event}/edit', [SpeedsEventController::class, 'edit'])->name('comps.events.speeds.edit');
                     Route::post('/{event}/edit', [SpeedsEventController::class, 'updateResults'])->name('comps.view.events.speeds.editPost');
 
 
@@ -143,13 +143,13 @@ Route::middleware('auth')->group(function () {
                 });
 
                 // SERCS
-                Route::get('/sercs/add', [SERCController::class, 'add'])->name('comps.view.events.sercs.add');
-                Route::post('/sercs/add', [SERCController::class, 'addPost'])->name('comps.view.events.sercs.addPost');
+                Route::get('/sercs/add', [SERCController::class, 'add'])->name('comps.events.sercs.add');
+                Route::post('/sercs/add', [SERCController::class, 'addPost'])->name('comps.events.sercs.addPost');
                 Route::prefix('/sercs/{serc}')->group(function () {
 
 
-                    Route::get('', [SERCController::class, 'view'])->name('comps.view.events.sercs.view');
-                    Route::get('/edit', [SERCController::class, 'edit'])->name('comps.view.events.sercs.edit');
+                    Route::get('', [SERCController::class, 'view'])->name('comps.events.sercs.view');
+                    Route::get('/edit', [SERCController::class, 'edit'])->name('comps.events.sercs.edit');
                     Route::post('/edit', [SERCController::class, 'editPost'])->name('comps.view.events.sercs.editPost');
 
 
@@ -158,7 +158,7 @@ Route::middleware('auth')->group(function () {
 
                         Route::get('results/{team}/next', [SERCController::class, 'next'])->name('comps.view.events.sercs.next');
 
-                        Route::get('/results/{team}/edit', [SERCController::class, 'editResultsView'])->name('comps.view.events.sercs.editResults');
+                        Route::get('/results/{team}/edit', [SERCController::class, 'editResultsView'])->name('comps.events.sercs.editResults');
                         Route::post('/results/{team}/edit', [SERCController::class, 'updateTeamResults'])->name('comps.view.events.sercs.editResultsPost');
 
                         Route::get('/digital-judge-toggle', [DigitalJudgeController::class, 'sercToggle'])->name('dj.sercToggle');
@@ -204,17 +204,17 @@ Route::middleware('auth')->group(function () {
             Route::prefix('/heats-and-orders')->middleware('can:access,comp,"*"')->group(function () {
 
 
-                Route::get('', [HeatController::class, 'index'])->name('comps.view.heats');
+                Route::get('', [HeatController::class, 'index'])->name('comps.heats');
 
                 Route::prefix('/heats')->group(function () {
-                    Route::get('/edit', [HeatController::class, 'edit'])->name('comps.view.heats.edit');
+                    Route::get('/edit', [HeatController::class, 'edit'])->name('comps.heats.edit');
                     Route::post('/edit', [HeatController::class, 'editPost'])->name('comps.view.heats.editPost');
-                    Route::get('/gen', [HeatController::class, 'createDefaultHeatsForComp'])->name('comps.view.heats.gen');
+                    Route::get('/gen', [HeatController::class, 'createDefaultHeatsForComp'])->name('comps.heats.gen');
                     Route::post('/delete-heat', [HeatController::class, 'remHeat'])->name('comps.view.heats.delete-heat');
                     Route::post('/swap-heats', [HeatController::class, 'swapHeats'])->name('comps.view.heats.swap');
                 });
                 Route::prefix('/serc-order')->group(function () {
-                    Route::get('/edit', [HeatController::class, 'editSERCOrder'])->name('comps.view.serc-order.edit');
+                    Route::get('/edit', [HeatController::class, 'editSERCOrder'])->name('comps.heats.serc-order.edit');
                     Route::post('/edit', [HeatController::class, 'editSERCOrderPost'])->name('comps.view.serc-order.editPost');
                     Route::post('/edit-tanks', [HeatController::class, 'editTanksPost'])->name('comps.view.serc-order.editTanksPost');
                     Route::get('/regen', [HeatController::class, 'regenSERCOrder'])->name('comps.view.serc-order.regen');
@@ -224,13 +224,13 @@ Route::middleware('auth')->group(function () {
             // PRINTABLES
             Route::prefix('printables')->middleware('can:access,comp')->group(function () {
 
-                Route::get('', [PrintableController::class, 'index'])->name('comps.view.printables');
+                Route::get('', [PrintableController::class, 'index'])->name('comps.printables');
 
-                Route::get('serc-sheets/{serc}', [PrintableController::class, 'sercSheets'])->name('comps.view.printables.serc-sheets');
+                Route::get('serc-sheets/{serc}', [PrintableController::class, 'sercSheets'])->name('comps.printables.serc-sheets');
 
-                Route::get('serc-marking-pack', [PrintableController::class, 'printSMS'])->name('comps.view.printables.serc-marking-pack');
-                Route::get('chief-timekeeper-pack', [PrintableController::class, 'printCTP'])->name('comps.view.printables.chief-timekeeper-pack');
-                Route::get('marshalling', [PrintableController::class, 'printMarshalling'])->name('comps.view.printables.marshalling');
+                Route::get('serc-marking-pack', [PrintableController::class, 'printSMS'])->name('comps.printables.serc-marking-pack');
+                Route::get('chief-timekeeper-pack', [PrintableController::class, 'printCTP'])->name('comps.printables.chief-timekeeper-pack');
+                Route::get('marshalling', [PrintableController::class, 'printMarshalling'])->name('comps.printables.marshalling');
             });
 
             // NOTIFICATIONS

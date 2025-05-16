@@ -79,10 +79,10 @@
 
 
 .tabbed-bar {
-  @apply flex border-b border-black/20 space-x-2;
+  @apply flex flex-wrap md:border-b border-black/20 md:space-x-2 md:flex-nowrap;
 
   a, div {
-    @apply py-2 pr-6  pl-0 border-b-2 border-transparent cursor-pointer transition-all;
+    @apply py-1 pr-6  pl-0 border-black/20 border-b-2 md:border-transparent cursor-pointer transition-all md:py-2;
 
 
     &.active {
@@ -94,6 +94,48 @@
     }
 
     
+  }
+}
+
+div.se-table {
+
+  @apply relative w-full overflow-x-auto;
+
+  table {
+    @apply text-sm w-full shadow-md text-left text-gray-500;
+
+    > thead {
+      @apply text-xs bg-black text-white text-right uppercase  font-archivo;
+
+      tr th {
+        @apply py-3 px-6 first-of-type:text-left;
+      }
+    }
+
+    tbody tr {
+      @apply bg-white border-b text-right hover:bg-gray-200;
+
+      th {
+        @apply py-3 text-left px-6 font-medium text-gray-900 whitespace-nowrap font-archivo;
+      }
+
+      td {
+        @apply py-3 px-6;
+
+        &.selected {
+          @apply bg-black/60 text-white;
+        }
+      }
+
+      &.empty {
+        @apply bg-white border-b text-right;
+
+        th {
+          @apply py-4 text-left px-6 text-center font-medium text-gray-900 whitespace-nowrap;
+        }
+      }
+      
+    }
   }
 }
 
@@ -389,6 +431,10 @@ aside.collapsed {
  .se-btn {
     @apply py-1 px-6 text-center border border-gray-300 hover:border-gray-500 hover:bg-gray-100 transition-colors rounded-md cursor-pointer!;
 
+    &.se-btn-selected {
+      @apply border-gray-500 bg-gray-100 ;
+    }
+
     &.se-btn-primary {
       @apply bg-se border-se text-white hover:bg-se-accent hover:border-se-accent;
     }
@@ -403,6 +449,10 @@ aside.collapsed {
 
     &.se-btn-outline-success {
       @apply bg-white border-green-500 text-green-500 hover:bg-green-500 hover:text-white;
+    }
+
+    &.se-btn-no-hover {
+      @apply pointer-events-none;
     }
  }
 

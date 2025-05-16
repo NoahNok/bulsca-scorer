@@ -22,9 +22,18 @@
 
         <a href="{{ route('comps.view', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.view')) active @endif">Overview</a>
         <a href="{{ route('comps.teams', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.team')) active @endif">Teams</a>
-        <div>Heats & Orders</div>
-        <div>Printables</div>
-        <div>Events</div>
+        <a href="{{ route('comps.heats', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.heats')) active @endif">Heats &
+            Draws</a>
+
+        <a href="{{ route('comps.printables', $comp) }}"
+            class="@if (Str::startsWith(Route::currentRouteName(), 'comps.printables')) active @endif">Printables</a>
+
+
+        <a href="{{ route('comps.events', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.events')) active @endif">Events</a>
+
+
+
+
         <div>Results</div>
     </div>
 

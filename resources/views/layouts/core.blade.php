@@ -95,7 +95,7 @@
 
 </head>
 
-<body class="flex flex-col  overflow-x-hidden" x-data="{ asideCollapsed: false, modals: {} }">
+<body class="flex flex-col " x-data="{ asideCollapsed: false, modals: {} }">
 
 
     @isset($brand)
@@ -182,7 +182,7 @@
 
 
     <main class="flex w-screen justify-center my-8 md:my-16">
-        <div class="w-[75%] px-6 md:px-8 flex flex-col overflow-hidden">
+        <div class="w-screen sm:w-[90%] md:w-[75%] px-6 md:px-8 flex flex-col ">
             @yield('core-content')
         </div>
     </main>

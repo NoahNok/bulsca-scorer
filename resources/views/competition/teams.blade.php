@@ -27,20 +27,20 @@
 
 
 
-    <div class="  relative w-1/2  ">
-        <table class=" text-sm w-full shadow-md text-left text-gray-500 ">
-            <thead class="text-xs bg-black text-white text-right uppercase  font-archivo ">
+    <div class=" se-table  md:w-2/3! ">
+        <table>
+            <thead>
                 <tr>
-                    <th scope="col" class="py-3 px-6 text-left">
+                    <th scope="col">
                         Club
                     </th>
-                    <th scope="col" class="py-3 px-6">
+                    <th scope="col">
                         Team
                     </th>
-                    <th scope="col" class="py-3 px-6">
+                    <th scope="col">
                         League
                     </th>
-                    <th scope="col" class="py-3 px-6">
+                    <th scope="col">
                         Swim and Tow
                     </th>
 
@@ -49,30 +49,28 @@
             <tbody>
 
                 @forelse ($comp->getCompetitionTeams as $team)
-                    <tr class="bg-white border-b text-right hover:bg-gray-200 ">
-                        <th scope="row"
-                            class="py-3 text-left px-6 font-medium text-gray-900 whitespace-nowrap font-archivo ">
+                    <tr>
+                        <th scope="row">
                             {{ $team->getClubName() }}
                         </th>
-                        <td class="py-3 px-6">
+                        <td>
                             {{ $team->team }}
                         </td>
-                        <td class="py-3 px-6">
+                        <td>
                             {{ $team->getLeague->name }}
                         </td>
-                        <td class="py-3 px-6">
+                        <td>
                             {{ $team->getSwimTowTime() }}
                         </td>
 
                     </tr>
                 @empty
-                    <tr class="bg-white border-b text-right ">
-                        <th colspan="100" scope="row"
-                            class="py-4 text-left px-6 text-center font-medium text-gray-900 whitespace-nowrap ">
-                            None
-                        </th>
-                    </tr>
-                @endforelse
+                    <tr class="empty ">
+                        <th colspan="100" scope="row" ">
+                                None
+                            </th>
+                        </tr>
+     @endforelse
 
 
 

@@ -34,7 +34,7 @@ class HeatController extends Controller
         ScoringHelper::resolve($comp->scoring_type, 'heat')->generate($comp);
 
 
-        return redirect()->route('comps.view.heats', $comp);
+        return redirect()->route('comps.heats', $comp);
     }
 
 
@@ -71,9 +71,9 @@ class HeatController extends Controller
 
 
             if ($eventId) {
-                return redirect()->route('comps.view.heats.edit', ['comp' => $comp, 'event' => $eventId]);
+                return redirect()->route('comps.heats.edit', ['comp' => $comp, 'event' => $eventId]);
             } else {
-                return redirect()->route('comps.view.heats.edit', $comp);
+                return redirect()->route('comps.heats.edit', $comp);
             }
         }
 
@@ -94,9 +94,9 @@ class HeatController extends Controller
 
 
         if ($eventId) {
-            return redirect()->route('comps.view.heats.edit', ['comp' => $comp, 'event' => $eventId]);
+            return redirect()->route('comps.heats.edit', ['comp' => $comp, 'event' => $eventId]);
         } else {
-            return redirect()->route('comps.view.heats.edit', $comp);
+            return redirect()->route('comps.heats.edit', $comp);
         }
     }
 
@@ -131,7 +131,7 @@ class HeatController extends Controller
             return $ret;
         }
 
-        return redirect()->route('comps.view.heats', $comp);
+        return redirect()->route('comps.heats', $comp);
     }
 
     public function editSERCOrder(Competition $comp)
@@ -161,7 +161,7 @@ class HeatController extends Controller
         $teamFrom->save();
         $teamTo->save();
 
-        return redirect()->route('comps.view.serc-order.edit', $comp);
+        return redirect()->route('comps.heats.serc-order.edit', $comp);
     }
 
     public function editTanksPost(Competition $comp, Request $request)

@@ -1,39 +1,10 @@
-@extends('layout')
+@extends('layouts.competition')
 
 @section('title')
     Heats and Orders | {{ $comp->name }}
 @endsection
 
-@section('breadcrumbs')
-    <div>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="w-3 h-3">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-        </svg>
-        <a href="{{ route('comps') }}">Competitions</a>
-    </div>
-    <div>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="w-3 h-3">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-        </svg>
-        <a href="{{ route('comps.view', $comp) }}">{{ $comp->name }}</a>
-    </div>
-    <div>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="w-3 h-3">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-        </svg>
-        <a href="{{ route('comps.view.heats', $comp) }}">Heats and Orders</a>
-    </div>
-    <div>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="w-3 h-3">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-        </svg>
-        <a href="#">Edit SERC Order</a>
-    </div>
-@endsection
+
 
 @section('content')
     <div class="">
@@ -41,7 +12,7 @@
 
             <div class="flex justify-between">
                 <h2 class="mb-0">SERC Order</h2>
-                <a href="{{ route('comps.view.heats', $comp) }}" class="btn">Back</a>
+                <a href="{{ route('comps.heats', $comp) }}" class="se-btn">Back</a>
             </div>
 
             <p>To swap teams, click the first team, it will turn blue. Then click the team you want to swap it with. The
@@ -51,7 +22,7 @@
 
             <div class="grid grid-rows-6 gap-3 md:grid-flow-col" id="all-teams">
                 @foreach ($comp->getCompetitionTeams as $team)
-                    <div class="card cursor-pointer hover:bg-bulsca hover:text-white " data-team="{{ $team->id ?? -1 }}">
+                    <div class="se-btn  " style="text-align: left" data-team="{{ $team->id ?? -1 }}">
                         {{ $loop->index + 1 }}. {{ $team->getFullname() }}
                     </div>
                 @endforeach
@@ -73,7 +44,7 @@
         <br>
         <form action="{{ route('comps.view.serc-order.regen', $comp) }}" method="get"
             onsubmit="return confirm('Are you sure you want to reset the heats?')">
-            <button class="btn btn-danger">Regen</button>
+            <button class="se-btn se-btn-danger">Regen</button>
         </form>
     </div>
 
@@ -93,13 +64,13 @@
                     if (!hasClicked) {
 
                         teamFromInput.value = element.getAttribute('data-team');
-                        element.classList.toggle('selected')
+                        element.classList.toggle('se-btn-selected')
                         hasClicked = !hasClicked;
                         return;
                     }
 
                     if (element.getAttribute('data-team') === teamFromInput.value) {
-                        element.classList.toggle('selected')
+                        element.classList.toggle('se-btn-selected')
                         hasClicked = !hasClicked
                         teamFromInput.value = ""
                         return

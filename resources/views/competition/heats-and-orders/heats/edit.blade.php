@@ -1,39 +1,10 @@
-@extends('layout')
+@extends('layouts.competition')
 
 @section('title')
     Heats and Orders | {{ $comp->name }}
 @endsection
 
-@section('breadcrumbs')
-    <div>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="w-3 h-3">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-        </svg>
-        <a href="{{ route('comps') }}">Competitions</a>
-    </div>
-    <div>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="w-3 h-3">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-        </svg>
-        <a href="{{ route('comps.view', $comp) }}">{{ $comp->name }}</a>
-    </div>
-    <div>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="w-3 h-3">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-        </svg>
-        <a href="{{ route('comps.view.heats', $comp) }}">Heats and Orders</a>
-    </div>
-    <div>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="w-3 h-3">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-        </svg>
-        <a href="#">Edit Heats</a>
-    </div>
-@endsection
+
 
 @section('content')
     <div class="">
@@ -41,63 +12,76 @@
 
             <div class="flex justify-between">
                 <h2 class="mb-0">Heats</h2>
-                <a href="{{ route('comps.view.heats', $comp) }}" class="btn">Back</a>
+                <a href="{{ route('comps.heats', $comp) }}" class="se-btn">Back</a>
             </div>
 
-            <p>To swap teams, click the first team, it will turn blue. Then click the team you want to swap it with
-                (including blank spaces). The page will automatically update and save.</p>
-            <p>To swap heats, click the title of the first heat, the whole heat will turn blue. Then select the heat title
-                to swap with. The page will automatically update and save.</p>
+            <p>To swap <strong>teams</strong>, click the first team, it will turn blue. Then click the team you want to swap
+                it with
+                (including blank spaces). The page will automatically update and save.
+                <br>
+                To swap <strong>heats</strong>, click the title of the first heat, the whole heat will turn blue. Then
+                select the heat title
+                to swap with. The page will automatically update and save.
+            </p>
 
-            <div class="flex space-x-2  ">
-                <div class=" hidden md:block  ">
-                    <h5>Lane</h5>
-                    <ol class="space-y-2">
+
+            <div class="se-table" id="all-teams">
+                <table>
+                    <thead>
+                        <tr>
+                            <th scope="col">
+                                Lane
+                            </th>
+
+                            @foreach ($heatEntries->sortBy(['heat', 'lane'])->groupBy('heat') as $key => $heat)
+                                <th scope="col" data-hn="{{ $key }}">
+                                    <div class="flex items-center justify-end">
+                                        Heat {{ $key }}
+                                        <svg data-delete-heat data-heat="{{ $key }}"
+                                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class=" size-4 cross"
+                                            serc-builder-marking-point-delete="">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                </th>
+                            @endforeach
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @php
+                            $tableEntries = $heatEntries->sortBy(['heat', 'lane'])->groupBy('heat');
+                        @endphp
                         @for ($l = 1; $l <= $comp->max_lanes; $l++)
-                            <li class="px-5 py-3 border border-transparent">{{ $l }}</li>
-                        @endfor
-                    </ol>
-                </div>
+                            <tr>
+                                <th scope="row">
+                                    {{ $l }}
+                                </th>
 
-                <div class=" w-full grid grid-cols-1 md:grid-cols-8 gap-3 " id="all-teams">
-
-
-                    @foreach ($heatEntries->sortBy(['heat', 'lane'])->groupBy('heat') as $key => $heat)
-                        <div data-heat="{{ $key }}">
-                            <div class="flex items-center justify-between">
-                                <h5 data-hn class="peer/title cursor-pointer ">Heat {{ $key }}</h5>
-                                <svg data-delete-heat xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="w-6 h-6 cross"
-                                    serc-builder-marking-point-delete="">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                            </div>
-                            <ol class=" list-item space-y-2 *:peer-hover/title:bg-bulsca *:peer-hover/title:text-white">
-                                @for ($l = 1; $l <= $comp->max_lanes; $l++)
+                                @foreach ($tableEntries as $key => $heat)
                                     @php
                                         $lane = $heat->where('lane', $l)->first();
                                     @endphp
 
-                                    <li class="card cursor-pointer hover:bg-bulsca hover:text-white  "
-                                        data-team="{{ $lane->getTeam->id ?? -1 }}" data-heat="{{ $key }}"
-                                        data-lane="{{ $l }}">
+                                    <td data-team="{{ $lane->getTeam->id ?? -1 }}" data-heat="{{ $key }}"
+                                        data-lane="{{ $l }}"
+                                        class="hover:bg-black/60 hover:text-white cursor-pointer">
                                         @if ($lane)
                                             {{ $lane->getTeam->getFullname() }}
                                             ({{ $lane->getTeam->getSwimTowTimeForDefault() }})
                                         @else
                                             &nbsp;
                                         @endif
-                                    </li>
-                                @endfor
-                            </ol>
-                        </div>
-                    @endforeach
-
-                </div>
+                                    </td>
+                                @endforeach
+                            </tr>
+                        @endfor
+                    </tbody>
+                </table>
             </div>
-
-            <br>
-
             <form action="" method="post" id="team-switch" class="hidden">
                 @csrf
                 <input type="text" name="team" id="team">
@@ -112,13 +96,16 @@
 
 
         </div>
+
+
+
         <h4>Reset Heats</h4>
         <p>Resetting heats will restore them to their original layout. <strong>You will loose</strong> any alterations you
             have made!</p>
         <br>
-        <form action="{{ route('comps.view.heats.gen', $comp) }}" method="get"
+        <form action="{{ route('comps.heats.gen', $comp) }}" method="get"
             onsubmit="return confirm('Are you sure you want to reset the heats?')">
-            <button class="btn btn-danger">Reset</button>
+            <button class="se-btn se-btn-danger">Reset</button>
         </form>
     </div>
 
@@ -171,20 +158,16 @@
             let hasClickedHeat = false
             let firstHeat = "-1"
 
-            document.getElementById('all-teams').querySelectorAll('[data-heat]').forEach(element => {
+            document.getElementById('all-teams').querySelectorAll('[data-delete-heat]').forEach(element => {
 
-                let lanes = element.querySelectorAll('[data-lane]')
-                let title = element.querySelector('[data-hn]')
-
-                let heat = element.getAttribute('data-heat')
-
+                element.onclick = (event) => {
+                    event.stopPropagation()
+                    if (!confirm('Are you sure you want to delete this heat?')) return
 
 
 
-                if (title == null) return
-
-                element.querySelector('[data-delete-heat]').onclick = () => {
                     let fd = new FormData()
+                    let heat = element.getAttribute('data-heat')
                     fd.append('heat', heat)
                     fd.append('_token', '{{ csrf_token() }}')
                     @if (request()->has('event'))
@@ -201,6 +184,15 @@
                         }
                     })
                 }
+
+            })
+
+            document.getElementById('all-teams').querySelectorAll('[data-hn]').forEach(element => {
+                let heat = element.getAttribute('data-hn')
+                let lanes = document.getElementById('all-teams').querySelectorAll('[data-heat="' + heat + '"]')
+                let title = element
+
+                if (title == null) return
 
                 title.onclick = (event) => {
                     if (!hasClickedHeat) {
