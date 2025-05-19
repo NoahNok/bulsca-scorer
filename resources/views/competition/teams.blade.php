@@ -66,11 +66,11 @@
                     </tr>
                 @empty
                     <tr class="empty ">
-                        <th colspan="100" scope="row" ">
-                                None
-                            </th>
-                        </tr>
-     @endforelse
+                        <th colspan="100" scope="row">
+                            None
+                        </th>
+                    </tr>
+                @endforelse
 
 
 

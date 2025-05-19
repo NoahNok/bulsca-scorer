@@ -1,55 +1,19 @@
-@extends('layout')
+@extends('layouts.competition')
 
 @section('title')
     (Edit) {{ $event->getName() }} | {{ $comp->name }}
 @endsection
 
 @section('breadcrumbs')
-    <div>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="w-3 h-3">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-        </svg>
-        <a href="{{ route('comps') }}">Competitions</a>
-    </div>
-    <div>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="w-3 h-3">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-        </svg>
-        <a href="{{ route('comps.view', $comp) }}">{{ $comp->name }}</a>
-    </div>
-    <div>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="w-3 h-3">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-        </svg>
-        <a href="{{ route('comps.view.events', $comp) }}">Events</a>
-    </div>
-    <div>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="w-3 h-3">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-        </svg>
-        <a href="{{ route('comps.view.events.speeds.view', [$comp, $event]) }}">{{ $event->getName() }}</a>
-    </div>
-    <div>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="w-3 h-3">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-        </svg>
-        <a href="{{ route('comps.view.events.speeds.edit', [$comp, $event]) }}">Edit</a>
-    </div>
-@endsection
 
 @section('content')
 
-    <div class="grid-2">
-        <div class="flex flex-col space-y-4">
+    <div class="grid-3">
+        <div class="flex flex-col space-y-4 col-span-2">
 
             <div class="flex justify-between">
                 <h2 class="mb-0">Edit - {{ $event->getName() }}</h2>
-                <button table-submit="scores" class="btn">Save</button>
+                <button table-submit="scores" class="se-btn se-btn-success">Save</button>
             </div>
             <p>Be aware of milliseconds! If your stopwatch only displays a two digit milliseconds then make sure to multiply
                 the value by 10 before entering!
@@ -66,72 +30,83 @@
 
 
             <div class="  relative w-full  ">
-                <div class="form-input imb-0 ">
+                <div class="se-form-input imb-0 ">
                     <input type="text" table-search placeholder="Search teams">
                 </div>
 
                 <br>
 
-                <table editable-table="scores" table-submit-csrf="{{ csrf_token() }}"
-                    table-after-url="{{ route('comps.view.events.speeds.view', [$comp, $event]) }}"
-                    table-submit-url="{{ route('comps.view.events.speeds.editPost', [$comp, $event]) }}"
-                    class=" editable-table text-sm w-full shadow-md rounded-lg overflow-hidden text-left text-gray-500 ">
-                    <thead class="text-xs text-gray-700 text-right uppercase bg-gray-50 ">
-                        <tr>
-                            <th scope="col" class="py-3 px-6 text-left">
-                                Team
-                            </th>
-                            <th scope="col" class="py-3 px-6">
-                                @if ($event->getName() == 'Rope Throw')
-                                    Ropes/Time
-                                @else
-                                    Time
-                                @endif
-                            </th>
-                            <th scope="col" class="py-3 px-6">
-                                DQ
-                            </th>
-
-                            @if ($event->hasPenalties())
-                                <th scope="col" class="py-3 px-6">
-                                    Penalties
+                <div class="se-table ">
+                    <table editable-table="scores" table-submit-csrf="{{ csrf_token() }}"
+                        table-after-url="{{ route('comps.events.speeds.view', [$comp, $event]) }}"
+                        table-submit-url="{{ route('comps.view.events.speeds.editPost', [$comp, $event]) }}" class="  ">
+                        <thead>
+                            <tr>
+                                <th scope="col">
+                                    Team
                                 </th>
-                            @endif
-
-
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                        @forelse ($event->getSimpleResults as $result)
-                            <tr table-row table-row-owner="{{ $result->id }}" class="bg-white border-b text-right ">
-                                <th scope="row" class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap ">
-                                    {{ $result->getTeam->getFullname() }}
-                                </th>
-                                <td class="">
-
-                                    @if (in_array($result->disqualification, ['DQ015', 'DQ004', 'DQ1001']))
-                                        @php
-
-                                            $code = match ($result->disqualification) {
-                                                'DQ015' => 'DNF',
-                                                'DQ004' => 'DNS',
-                                                'DQ1001' => 'OOT',
-                                            };
-
-                                        @endphp
-
-                                        <input class="table-input" table-cell table-cell-name="result"
-                                            placeholder="00:00.00" type="text" x-data
-                                            x-mask:dynamic="$input.toUpperCase().startsWith('D') ? 'DNa' : ($input.startsWith('O') ? 'OOT' : '99:99.99')"
-                                            value="{{ $code }}">
+                                <th scope="col">
+                                    @if ($event->getName() == 'Rope Throw')
+                                        Ropes/Time
                                     @else
-                                        @if ($event->getName() == 'Rope Throw')
-                                            @if ($result->result < 4)
-                                                <input class="table-input" table-cell table-cell-name="result"
-                                                    placeholder="Ropes In OR 00:00.00" type="text" x-data
-                                                    x-mask:dynamic="$input.startsWith('D') ? 'DNa' : ($input.startsWith('O') ? 'OOT' : '99:99.99')"
-                                                    value="{{ $result->result }}">
+                                        Time
+                                    @endif
+                                </th>
+                                <th scope="col">
+                                    DQ
+                                </th>
+
+                                @if ($event->hasPenalties())
+                                    <th scope="col">
+                                        Penalties
+                                    </th>
+                                @endif
+
+
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @forelse ($event->getSimpleResults as $result)
+                                <tr table-row table-row-owner="{{ $result->id }}">
+                                    <th scope="row">
+                                        {{ $result->getTeam->getFullname() }}
+                                    </th>
+                                    <td class="table-input">
+
+                                        @if (in_array($result->disqualification, ['DQ015', 'DQ004', 'DQ1001']))
+                                            @php
+
+                                                $code = match ($result->disqualification) {
+                                                    'DQ015' => 'DNF',
+                                                    'DQ004' => 'DNS',
+                                                    'DQ1001' => 'OOT',
+                                                };
+
+                                            @endphp
+
+                                            <input class="table-input" table-cell table-cell-name="result"
+                                                placeholder="00:00.00" type="text" x-data
+                                                x-mask:dynamic="$input.toUpperCase().startsWith('D') ? 'DNa' : ($input.startsWith('O') ? 'OOT' : '99:99.99')"
+                                                value="{{ $code }}">
+                                        @else
+                                            @if ($event->getName() == 'Rope Throw')
+                                                @if ($result->result < 4)
+                                                    <input class="table-input" table-cell table-cell-name="result"
+                                                        placeholder="Ropes In OR 00:00.00" type="text" x-data
+                                                        x-mask:dynamic="$input.startsWith('D') ? 'DNa' : ($input.startsWith('O') ? 'OOT' : '99:99.99')"
+                                                        value="{{ $result->result }}">
+                                                @else
+                                                    @php
+                                                        $mins = floor($result->result / 60000);
+                                                        $secs = ($result->result - $mins * 60000) / 1000;
+                                                    @endphp
+
+                                                    <input class="table-input" table-cell table-cell-name="result"
+                                                        placeholder="00:00.00" type="text" x-data
+                                                        x-mask:dynamic="$input.startsWith('D') ? 'DNa' : ($input.startsWith('O') ? 'OOT' : '99:99.99')"
+                                                        value="{{ $result->result != null ? sprintf('%02d', $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT) : '' }}">
+                                                @endif
                                             @else
                                                 @php
                                                     $mins = floor($result->result / 60000);
@@ -143,55 +118,47 @@
                                                     x-mask:dynamic="$input.startsWith('D') ? 'DNa' : ($input.startsWith('O') ? 'OOT' : '99:99.99')"
                                                     value="{{ $result->result != null ? sprintf('%02d', $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT) : '' }}">
                                             @endif
-                                        @else
-                                            @php
-                                                $mins = floor($result->result / 60000);
-                                                $secs = ($result->result - $mins * 60000) / 1000;
-                                            @endphp
-
-                                            <input class="table-input" table-cell table-cell-name="result"
-                                                placeholder="00:00.00" type="text" x-data
-                                                x-mask:dynamic="$input.startsWith('D') ? 'DNa' : ($input.startsWith('O') ? 'OOT' : '99:99.99')"
-                                                value="{{ $result->result != null ? sprintf('%02d', $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT) : '' }}">
                                         @endif
+
+
+
+
+                                    </td>
+                                    <td class="table-input">
+
+                                        <input class="table-input" ts table-cell table-cell-name="disqualification"
+                                            table-cell-optional placeholder="DQ###" type="text" x-data
+                                            x-mask:dynamic="$input.startsWith('DQ100') ? 'DQ9999' : 'DQ999'"
+                                            value="{{ $result->disqualification }}">
+
+                                    </td>
+
+                                    @if ($event->hasPenalties())
+                                        <td class="table-input">
+                                            <input class="table-input" ts-p table-cell table-cell-name="penalties"
+                                                table-cell-optional placeholder="P###, P###, etc..." type="text"
+                                                value="{{ $result->getPenaltiesAsString() }}">
+                                        </td>
                                     @endif
 
 
-
-
-                                </td>
-                                <td class="">
-
-                                    <input class="table-input" ts table-cell table-cell-name="disqualification"
-                                        table-cell-optional placeholder="DQ###" type="text" x-data
-                                        x-mask:dynamic="$input.startsWith('DQ100') ? 'DQ9999' : 'DQ999'"
-                                        value="{{ $result->disqualification }}">
-
-                                </td>
-
-                                @if ($event->hasPenalties())
-                                    <td>
-                                        <input class="table-input" ts-p table-cell table-cell-name="penalties"
-                                            table-cell-optional placeholder="P###, P###, etc..." type="text"
-                                            value="{{ $result->getPenaltiesAsString() }}">
-                                    </td>
-                                @endif
-
-
-                            </tr>
-                        @empty
-                            <tr class="bg-white border-b text-right ">
-                                <th colspan="100" scope="row"
-                                    class="py-4 text-left px-6 text-center font-medium text-gray-900 whitespace-nowrap ">
-                                    None
-                                </th>
-                            </tr>
-                        @endforelse
+                                </tr>
+                            @empty
+                                <tr class="bg-white border-b text-right ">
+                                    <th colspan="100" scope="row"
+                                        class="py-4 text-left px-6 text-center font-medium text-gray-900 whitespace-nowrap ">
+                                        None
+                                    </th>
+                                </tr>
+                            @endforelse
 
 
 
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
+
+
             </div>
         </div>
     </div>

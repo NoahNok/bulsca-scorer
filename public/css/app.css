@@ -1740,9 +1740,6 @@
   .text-right {
     text-align: right;
   }
-  .indent-1 {
-    text-indent: calc(var(--spacing) * 1);
-  }
   .indent-3 {
     text-indent: calc(var(--spacing) * 3);
   }
@@ -3315,6 +3312,21 @@ div.se-table table tbody tr.empty th {
   font-weight: var(--font-weight-medium);
   white-space: nowrap;
   color: var(--color-gray-900);
+}
+div.se-table table tbody tr td.table-input {
+  border-inline-style: var(--tw-border-style);
+  border-inline-width: 1px;
+  border-color: var(--color-black);
+  background-color: var(--color-white);
+  padding-inline: calc(var(--spacing) * 0);
+  padding-block: calc(var(--spacing) * 0);
+}
+div.se-table table tbody tr td.table-input > input {
+  width: 100%;
+  padding-inline: calc(var(--spacing) * 6);
+  padding-block: calc(var(--spacing) * 3);
+  text-align: right;
+  color: var(--color-black);
 }
 .badge {
   border-radius: var(--radius-md);

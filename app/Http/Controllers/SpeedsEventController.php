@@ -54,7 +54,7 @@ class SpeedsEventController extends Controller
 
 
 
-        return redirect()->route('comps.view.events', $comp);
+        return redirect()->route('comps.events', $comp);
     }
 
     public function view(Competition $comp, CompetitionSpeedEvent $event)
@@ -219,7 +219,7 @@ class SpeedsEventController extends Controller
 
         $event->delete();
 
-        return redirect()->route('comps.view.events', $comp);
+        return redirect()->route('comps.events', $comp);
     }
 
     public function hide(Competition $comp, CompetitionSpeedEvent $event)

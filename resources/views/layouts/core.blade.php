@@ -95,7 +95,7 @@
 
 </head>
 
-<body class="flex flex-col " x-data="{ asideCollapsed: false, modals: {} }">
+<body class="flex flex-col overflow-x-hidden " x-data="{ asideCollapsed: false, modals: {} }">
 
 
     @isset($brand)

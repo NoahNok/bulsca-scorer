@@ -134,6 +134,14 @@ div.se-table {
           @apply py-4 text-left px-6 text-center font-medium text-gray-900 whitespace-nowrap;
         }
       }
+
+      td.table-input {
+        @apply py-0 px-0 border-x border-black bg-white;
+
+        > input {
+          @apply py-3 px-6 text-black w-full text-right;
+        }
+      }
       
     }
   }

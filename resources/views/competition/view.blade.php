@@ -27,7 +27,7 @@
             <h3>Events</h3>
 
             @foreach ($comp->getSpeedEvents as $event)
-                <a href="{{ route('comps.view.events.speeds.view', [$comp, $event]) }}"
+                <a href="{{ route('comps.events.speeds.view', [$comp, $event]) }}"
                     class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
                     <p class="font-archivo">{{ $event->getName() }}</p>
 
@@ -44,7 +44,7 @@
             @endforeach
 
             @foreach ($comp->getSERCs as $event)
-                <a href="{{ route('comps.view.events.sercs.view', [$comp, $event]) }}"
+                <a href="{{ route('comps.events.sercs.view', [$comp, $event]) }}"
                     class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
                     <p class="font-archivo flex items-center">{{ $event->getName() }}
                         <span class="ml-2 badge badge-info badge-sm">SERC</span>
