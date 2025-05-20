@@ -207,6 +207,7 @@ class SpeedsEventController extends Controller
         if (!empty($errors)) {
             return response()->json($errors, 500);
         }
+        session()->flash('success', 'Results saved');
     }
 
     public function delete(Competition $comp, CompetitionSpeedEvent $event, Request $request)

@@ -1,7 +1,7 @@
 @extends('layouts.competition')
 
 @section('title')
-    Add Speeds Event | {{ $comp->name }}
+    Add Speeds Event
 @endsection
 
 

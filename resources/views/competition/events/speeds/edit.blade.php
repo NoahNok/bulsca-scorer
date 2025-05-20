@@ -1,7 +1,7 @@
 @extends('layouts.competition')
 
 @section('title')
-    (Edit) {{ $event->getName() }} | {{ $comp->name }}
+    (Edit) {{ $event->getName() }}
 @endsection
 
 @section('breadcrumbs')
@@ -13,7 +13,7 @@
 
             <div class="flex justify-between">
                 <h2 class="mb-0">Edit - {{ $event->getName() }}</h2>
-                <button table-submit="scores" class="se-btn se-btn-success">Save</button>
+
             </div>
             <p>Be aware of milliseconds! If your stopwatch only displays a two digit milliseconds then make sure to multiply
                 the value by 10 before entering!
@@ -159,6 +159,13 @@
                 </div>
 
 
+            </div>
+        </div>
+
+        <div class="relative">
+            <div class="sticky top-4 flex space-x-2 ">
+                <a href="{{ route('comps.events.speeds.view', [$comp, $event]) }}" class="se-btn ml-auto">Back</a>
+                <button table-submit="scores" class="se-btn se-btn-success">Save</button>
             </div>
         </div>
     </div>

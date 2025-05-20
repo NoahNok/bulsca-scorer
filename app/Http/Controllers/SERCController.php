@@ -210,7 +210,9 @@ class SERCController extends Controller
 
         $nextTeamId = $teamIds[$index + 1];
 
-        return response()->json(['url' => Route('comps.view.events.sercs.editResults', [$comp, $serc, $nextTeamId])]);
+        session()->flash('success', "Results updated for " . $team->getFullname());
+
+        return response()->json(['url' => Route('comps.events.sercs.editResults', [$comp, $serc, $nextTeamId])]);
     }
 
     public function next(Competition $comp, SERC $serc, CompetitionTeam $team)
@@ -222,12 +224,12 @@ class SERCController extends Controller
 
         if ($index + 2 > count($teamIds)) {
 
-            return redirect()->route('comps.view.events.sercs.view', compact('comp', 'serc'));
+            return redirect()->route('comps.events.sercs.view', compact('comp', 'serc'));
         }
 
         $nextTeamId = $teamIds[$index + 1];
 
-        return redirect()->route('comps.view.events.sercs.editResults', [$comp, $serc, $nextTeamId]);
+        return redirect()->route('comps.events.sercs.editResults', [$comp, $serc, $nextTeamId]);
     }
 
     public function hide(Competition $comp, SERC $serc)
