@@ -189,15 +189,15 @@ Route::middleware('auth')->group(function () {
 
             // RESULTS
             Route::prefix('/results')->middleware('can:access,comp')->group(function () {
-                Route::get('', [OverallResultsController::class, 'view'])->name('comps.view.results');
-                Route::get('/add', [OverallResultsController::class, 'add'])->name('comps.view.results.add');
-                Route::get('/qg', [OverallResultsController::class, 'quickGen'])->name('comps.view.results.quickGen');
-                Route::get('/pt', [OverallResultsController::class, 'publishToggle'])->name('comps.view.results.publishToggle');
-                Route::get('/prt', [OverallResultsController::class, 'provToggle'])->name('comps.view.results.provToggle');
-                Route::post('', [OverallResultsController::class, 'addPost'])->name('comps.view.results.addPost');
-                Route::delete('/{schema}', [OverallResultsController::class, 'delete'])->name('comps.view.results.delete');
-                Route::get('/{schema}/hide', [OverallResultsController::class, 'hide'])->name('comps.view.results.hide');
-                Route::get('/print-all', [OverallResultsController::class, 'printAll'])->name('comps,.view.results.print-all');
+                Route::get('', [OverallResultsController::class, 'view'])->name('comps.results');
+                Route::get('/add', [OverallResultsController::class, 'add'])->name('comps.results.add');
+                Route::get('/qg', [OverallResultsController::class, 'quickGen'])->name('comps.results.quickGen');
+                Route::get('/pt', [OverallResultsController::class, 'publishToggle'])->name('comps.results.publishToggle');
+                Route::get('/prt', [OverallResultsController::class, 'provToggle'])->name('comps.results.provToggle');
+                Route::post('', [OverallResultsController::class, 'addPost'])->name('comps.results.addPost');
+                Route::delete('/{schema}', [OverallResultsController::class, 'delete'])->name('comps.results.delete');
+                Route::get('/{schema}/hide', [OverallResultsController::class, 'hide'])->name('comps.results.hide');
+                Route::get('/print-all', [OverallResultsController::class, 'printAll'])->name('comps.results.print-all');
             });
 
             // HEATS AND SERC ORDER

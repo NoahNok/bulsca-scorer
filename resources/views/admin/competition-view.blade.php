@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('layouts.admin')
 
 @section('title')
     {{ $comp->name }} | Competitions | Admin

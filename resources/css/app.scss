@@ -466,6 +466,10 @@ aside.collapsed {
     &.se-btn-no-hover {
       @apply pointer-events-none;
     }
+
+    &.se-btn-disabled {
+      @apply opacity-50 cursor-not-allowed! pointer-events-none;
+    }
  }
 
  .btn {
