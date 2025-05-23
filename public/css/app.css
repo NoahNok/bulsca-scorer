@@ -519,9 +519,6 @@
   .mt-2 {
     margin-top: calc(var(--spacing) * 2);
   }
-  .mt-2\! {
-    margin-top: calc(var(--spacing) * 2) !important;
-  }
   .mt-3 {
     margin-top: calc(var(--spacing) * 3);
   }
@@ -1889,6 +1886,9 @@
   .whitespace-nowrap {
     white-space: nowrap;
   }
+  .whitespace-nowrap\! {
+    white-space: nowrap !important;
+  }
   .text-black {
     color: var(--color-black);
   }
@@ -2261,13 +2261,6 @@
     &:hover {
       @media (hover: hover) {
         background-color: var(--color-gray-300);
-      }
-    }
-  }
-  .hover\:bg-gray-400 {
-    &:hover {
-      @media (hover: hover) {
-        background-color: var(--color-gray-400);
       }
     }
   }
@@ -3092,15 +3085,6 @@
       justify-content: flex-end;
     }
   }
-  .lg\:space-x-2 {
-    @media (width >= 64rem) {
-      :where(& > :not(:last-child)) {
-        --tw-space-x-reverse: 0;
-        margin-inline-start: calc(calc(var(--spacing) * 2) * var(--tw-space-x-reverse));
-        margin-inline-end: calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-x-reverse)));
-      }
-    }
-  }
   .lg\:px-8 {
     @media (width >= 64rem) {
       padding-inline: calc(var(--spacing) * 8);
@@ -3352,7 +3336,7 @@ div.se-table table tbody tr td.table-input {
   padding-inline: calc(var(--spacing) * 0);
   padding-block: calc(var(--spacing) * 0);
 }
-div.se-table table tbody tr td.table-input > input {
+div.se-table table tbody tr td.table-input > input, div.se-table table tbody tr td.table-input > select {
   width: 100%;
   padding-inline: calc(var(--spacing) * 6);
   padding-block: calc(var(--spacing) * 3);

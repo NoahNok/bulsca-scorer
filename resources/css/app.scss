@@ -138,7 +138,7 @@ div.se-table {
       td.table-input {
         @apply py-0 px-0 border-x border-black bg-white;
 
-        > input {
+        > input, > select {
           @apply py-3 px-6 text-black w-full text-right;
         }
       }

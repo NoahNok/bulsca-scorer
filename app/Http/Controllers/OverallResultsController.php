@@ -136,7 +136,7 @@ class OverallResultsController extends Controller
     {
         ScoringHelper::generateDefaultResultSheets($comp);
 
-        return redirect()->route('comps.view.results', $comp);
+        return redirect()->route('comps.results', $comp);
     }
 
     public function publishToggle(Competition $comp)
@@ -163,7 +163,7 @@ class OverallResultsController extends Controller
     public function delete(Competition $comp, ResultSchema $schema)
     {
         $schema->delete();
-        return redirect()->route('comps.view.results', $comp);
+        return redirect()->route('comps.results', $comp);
     }
 
     public function hide(Competition $comp, ResultSchema $schema)
