@@ -181,9 +181,9 @@ Route::middleware('auth')->group(function () {
 
             // COMPETITORS - Only shows if socring type is set to use it instead of teams
             Route::prefix('/competitors')->middleware('can:access,comp')->group(function () {
-                Route::get('', [CompetitionController::class, 'competitors'])->name('comps.view.competitors');
-                Route::get('/edit', [CompetitorController::class, 'edit'])->name('comps.view.competitors.edit');
-                Route::post('/edit', [CompetitorController::class, 'save'])->name('comps.view.competitors.save');
+                Route::get('', [CompetitionController::class, 'competitors'])->name('comps.competitors');
+                Route::get('/edit', [CompetitorController::class, 'edit'])->name('comps.competitors.edit');
+                Route::post('/edit', [CompetitorController::class, 'save'])->name('comps.competitors.save');
                 // Route::delete('/delete', [TeamsController::class, 'delete'])->name('comps.view.competitors.delete');
             });
 

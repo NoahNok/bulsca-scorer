@@ -23,7 +23,12 @@
     <div class="  tabbed-bar mt-2 mb-4 ">
 
         <a href="{{ route('comps.view', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.view')) active @endif">Overview</a>
-        <a href="{{ route('comps.teams', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.team')) active @endif">Teams</a>
+        @if (\App\Helpers\ScoringHelper::getCompetitionScoringDetails($comp)['use_competitors'])
+            <a href="{{ route('comps.competitors', $comp) }}"
+                class="@if (Str::startsWith(Route::currentRouteName(), 'comps.competitor')) active @endif">Competitors</a>
+        @else
+            <a href="{{ route('comps.teams', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.team')) active @endif">Teams</a>
+        @endif
         <a href="{{ route('comps.heats', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.heats')) active @endif">Heats &
             Draws</a>
 
