@@ -139,8 +139,9 @@
 
             @auth
                 @if (Auth::user()->isAdmin())
-                    <div class="hidden lg:flex lg:flex-1 lg:justify-end">
+                    <div class="hidden lg:flex lg:flex-1 lg:justify-end space-x-3">
                         <a href="{{ route('admin.index') }}" class="text-sm/6 font-semibold text-gray-900">Admin</a>
+                        <a href="{{ route('logout') }}" class="text-sm/6 font-semibold text-gray-900">Logout</a>
                     </div>
                 @endif
             @else
