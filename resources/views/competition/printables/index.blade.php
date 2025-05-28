@@ -1,7 +1,7 @@
 @extends('layouts.competition')
 
 @section('title')
-    Printables | {{ $comp->name }}
+    Printables
 @endsection
 
 

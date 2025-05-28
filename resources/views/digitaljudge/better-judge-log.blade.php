@@ -1,32 +1,10 @@
-@extends('layout')
+@extends('layouts.competition')
 
 @section('title')
-    Log | {{ $comp->name }}
+    Log
 @endsection
 
-@section('breadcrumbs')
-    <div>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="w-3 h-3">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-        </svg>
-        <a href="{{ route('comps') }}">Competitions</a>
-    </div>
-    <div>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="w-3 h-3">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-        </svg>
-        <a href="{{ route('comps.view', $comp) }}">{{ $comp->name }}</a>
-    </div>
-    <div>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="w-3 h-3">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-        </svg>
-        <a href="">Log</a>
-    </div>
-@endsection
+
 
 @section('content')
     <h2 class="mb-0">Log</h2>
@@ -37,11 +15,11 @@
 
         <div class="flex justify-between items-center">
             <h5>Filters</h5>
-            <button class="btn">Apply Filters</button>
+            <button class="se-btn se-btn-success">Apply Filters</button>
         </div>
 
         <div class="flex flex-col md:flex-row md:space-x-6">
-            <div class="form-input w-max max-w-full">
+            <div class="se-form-input w-max max-w-full">
                 <label for="event-filter">Type</label>
                 <select name="filterType" id="event-filter">
                     <option value="">All</option>
@@ -74,7 +52,7 @@
                 </select>
             </div>
 
-            <div class="form-input w-max">
+            <div class="se-form-input w-max">
                 <label for="judge-filter">Judge Name</label>
                 <select name="filterJudge" id="judge-filter">
                     <option value="">All</option>
@@ -85,7 +63,7 @@
                 </select>
             </div>
 
-            <div class="form-input w-max">
+            <div class="se-form-input w-max">
                 <label for="team-filter">Team</label>
                 <select name="filterTeam" id="team-filter">
                     <option value="">All</option>
@@ -100,7 +78,9 @@
 
     </form>
 
-    {{ $log->links() }}
+    <div class="w-full flex justify-between items-center mt-4">
+        {{ $log->links() }}
+    </div>
     <div class="flex flex-col space-y-2 mt-2">
         @forelse ($log as $l)
             <x-loggable-item :loggable="$l"></x-loggable-item>

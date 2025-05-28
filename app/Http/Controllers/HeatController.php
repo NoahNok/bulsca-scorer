@@ -188,7 +188,7 @@ class HeatController extends Controller
 
 
 
-                    echo ($competitor);
+
                     $tankTotal++;
 
                     $competitor->serc_tank = $ind + 1;

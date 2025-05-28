@@ -1,38 +1,7 @@
-@extends('layout')
+@extends('layouts.competition')
 
 @section('title')
-    SERC Tanks | Heats and Orders | {{ $comp->name }}
-@endsection
-
-@section('breadcrumbs')
-    <div>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="w-3 h-3">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-        </svg>
-        <a href="{{ route('comps') }}">Competitions</a>
-    </div>
-    <div>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="w-3 h-3">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-        </svg>
-        <a href="{{ route('comps.view', $comp) }}">{{ $comp->name }}</a>
-    </div>
-    <div>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="w-3 h-3">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-        </svg>
-        <a href="{{ route('comps.view.heats', $comp) }}">Heats and Orders</a>
-    </div>
-    <div>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="w-3 h-3">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-        </svg>
-        <a href="#">Edit SERC Tanks</a>
-    </div>
+    Edit SERC Tanks | Heats and Draws
 @endsection
 
 @section('content')
@@ -113,13 +82,15 @@
                 },
                 body: JSON.stringify(this.tanks)
             }).then(resp => resp.json()).then(
-                window.location.href = '{{ route('comps.view.heats', $comp) }}')
+                data => {
+                    window.location.href = '{{ route('comps.heats', $comp) }}'
+                })
         }
     }">
 
         <div class="flex items-center justify-between">
             <h1>Tanks</h1>
-            <button class="btn btn-save" @click="save">Save</button>
+            <button class="se-btn se-btn-success" @click="save">Save</button>
         </div>
         <p>Select one or more brackets and then select a tank to add them to it. Click 'Add Tank' to add aditional tanks!
         </p>
@@ -128,11 +99,18 @@
 
         <div class=" grid grid-cols-8 gap-3">
             <template x-for="bracket in brackets">
-                <div class="card card-extrathin card-row items-center justify-between hover:bg-gray-300 cursor-pointer"
-                    x-key="bracket.league" :class="selectedIds.includes(bracket.league) ? 'bg-bulsca! text-white' : ''"
-                    @click="selectBracket(bracket)" x-show="getTankedBrackets.includes(bracket.league) == false">
-                    <p x-text="bracket.name"></p>
-                    <p x-text="bracket.count"></p>
+                <div class=" se-btn flex items-center justify-between" x-key="bracket.league"
+                    :class="selectedIds.includes(bracket.league) ? 'se-btn-primary' : ''" @click="selectBracket(bracket)"
+                    x-show="getTankedBrackets.includes(bracket.league) == false">
+                    <span x-text="bracket.name"></span>
+                    <div class="flex items-center "><span x-text="bracket.count"></span><svg
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-[0.875rem]">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                        </svg>
+
+                    </div>
                 </div>
             </template>
 
@@ -149,30 +127,36 @@
                     <div class="flex  justify-between">
                         <div class="flex flex-col">
                             <h4 class="hmb-0">Tank <span x-text="ind+1"></span></h4>
-                            <p class="text-gray-500 text-xs">Total #: <span
+                            <p class="text-gray-500 text-xs mb-1">Total #: <span
                                     x-text="tank.reduce((a1, b) => a1 + b.count, 0)"></span></p>
                         </div>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="w-8 h-8 cross" @click="removeTank(ind)">
+                            stroke="currentColor" class="w-6 h-6 cross" @click="removeTank(ind)">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                         </svg>
                     </div>
 
                     <div class="flex flex-col space-y-3">
                         <template x-for="bracket in tank">
-                            <div class="card card-extrathin card-row items-center justify-between hover:bg-gray-300 cursor-pointer"
-                                x-key="bracket.league"
-                                :class="selectedIds.includes(bracket.league) ? 'bg-bulsca! text-white' : ''"
+                            <div class="se-btn flex items-center justify-between" x-key="bracket.league"
+                                :class="selectedIds.includes(bracket.league) ? 'se-btn-primary' : ''"
                                 @click.stop="selectBracket(bracket)">
                                 <p x-text="bracket.name"></p>
-                                <p x-text="bracket.count"></p>
+                                <div class="flex items-center "><span x-text="bracket.count"></span><svg
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="size-[0.875rem]">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                                    </svg>
+
+                                </div>
                             </div>
                         </template>
                     </div>
                 </div>
             </template>
 
-            <div class="card items-center justify-center shadow-xl hover:bg-gray-300 cursor-pointer hover:text-white group transition-colors ease-in-out"
+            <div class="se-btn border-green-500! text-green-500 hover:bg-green-500 flex  items-center justify-center"
                 @click="addTank()">
 
                 <p class="text-2xl font-semibold">Add Tank</p>

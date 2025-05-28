@@ -1,7 +1,7 @@
 @extends('layouts.competition')
 
 @section('title')
-    {{ $serc->name }}
+    {{ $team->getFullname() }} | {{ $serc->name }}
 @endsection
 
 

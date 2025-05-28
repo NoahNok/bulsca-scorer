@@ -1,7 +1,7 @@
 @extends('layouts/competition')
 
 @section('title')
-    Heats and Orders | {{ $comp->name }}
+    Heats and Draws
 @endsection
 
 @section('breadcrumbs')
@@ -62,7 +62,7 @@
 
             </div>
 
-            <div class="grid grid-rows-6 gap-3 md:grid-flow-col">
+            <div class="grid @if ($comp->scoring_type == 'bulsca') grid-rows-6 @endif gap-3 md:grid-flow-col">
                 @if ($comp->needsToRegenerateSERCDraw())
                     <div>
                         <a href="{{ route('comps.view.serc-order.regen', $comp) }}" class="se-btn ">Generate SERC Order</a>
@@ -86,5 +86,4 @@
 
         </div>
     </div>
-    <br>
 @endsection

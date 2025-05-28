@@ -1,7 +1,7 @@
 @extends('layouts.competition')
 
 @section('title')
-    Heats and Orders | {{ $comp->name }}
+    Edit SERC Draw | Heats and Draws | {{ $comp->name }}
 @endsection
 
 

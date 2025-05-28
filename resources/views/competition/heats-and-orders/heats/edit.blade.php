@@ -1,7 +1,7 @@
 @extends('layouts.competition')
 
 @section('title')
-    Heats and Orders | {{ $comp->name }}
+    Edit Heats | Heats and Draws
 @endsection
 
 
@@ -35,7 +35,7 @@
 
                             @foreach ($heatEntries->sortBy(['heat', 'lane'])->groupBy('heat') as $key => $heat)
                                 <th scope="col" data-hn="{{ $key }}">
-                                    <div class="flex items-center justify-end">
+                                    <div class="flex items-center justify-end whitespace-nowrap">
                                         Heat {{ $key }}
                                         <svg data-delete-heat data-heat="{{ $key }}"
                                             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -68,7 +68,7 @@
 
                                     <td data-team="{{ $lane->getTeam->id ?? -1 }}" data-heat="{{ $key }}"
                                         data-lane="{{ $l }}"
-                                        class="hover:bg-black/60 hover:text-white cursor-pointer">
+                                        class="hover:bg-black/60 hover:text-white cursor-pointer min-w-[30ch]">
                                         @if ($lane)
                                             {{ $lane->getTeam->getFullname() }}
                                             ({{ $lane->getTeam->getSwimTowTimeForDefault() }})

@@ -115,7 +115,9 @@
                     <span class="sr-only">Your Company</span>
                     <img class="h-8 w-auto" src="se-cc.svg" class=" " alt="">
                 </a> -->
-                <h3 class="ml-3 text-xl font-archivo font-semibold">Scoring.<span class="text-se">Events</span></h3>
+                <a href="/">
+                    <h3 class="ml-3 text-xl font-archivo font-semibold">Scoring.<span class="text-se">Events</span></h3>
+                </a>
             </div>
             <div class="flex lg:hidden">
                 <button type="button"

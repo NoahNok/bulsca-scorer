@@ -1,7 +1,7 @@
 @extends('layouts.competition')
 
 @section('title')
-    Teams | {{ $comp->name }}
+    Teams
 @endsection
 
 

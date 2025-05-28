@@ -1,7 +1,7 @@
 @extends('layouts.competition')
 
 @section('title')
-    {{ $comp->name }}
+    Overview
 @endsection
 
 @section('breadcrumbs')

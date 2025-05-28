@@ -1,7 +1,7 @@
 @extends('layouts.competition')
 
 @section('title')
-    Edit Teams | {{ $comp->name }}
+    Edit Teams
 @endsection
 
 

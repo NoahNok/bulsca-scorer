@@ -1,7 +1,7 @@
 @extends('layouts.competition')
 
 @section('title')
-    Results | {{ $comp->name }}
+    Results
 @endsection
 
 @section('content')
