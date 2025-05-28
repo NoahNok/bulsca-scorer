@@ -118,6 +118,8 @@
                 <a href="/">
                     <h3 class="ml-3 text-xl font-archivo font-semibold">Scoring.<span class="text-se">Events</span></h3>
                 </a>
+
+
             </div>
             <div class="flex lg:hidden">
                 <button type="button"
@@ -132,10 +134,23 @@
                 </button>
             </div>
 
-            <div class="hidden lg:flex lg:flex-1 lg:justify-end">
-                <a href="#" class="text-sm/6 font-semibold text-gray-900">Log in <span
-                        aria-hidden="true">&rarr;</span></a>
-            </div>
+
+
+
+            @auth
+                @if (Auth::user()->isAdmin())
+                    <div class="hidden lg:flex lg:flex-1 lg:justify-end">
+                        <a href="{{ route('admin.index') }}" class="text-sm/6 font-semibold text-gray-900">Admin</a>
+                    </div>
+                @endif
+            @else
+                <div class="hidden lg:flex lg:flex-1 lg:justify-end">
+                    <a href="#" class="text-sm/6 font-semibold text-gray-900">Log in <span
+                            aria-hidden="true">&rarr;</span></a>
+                </div>
+            @endauth
+
+
         </nav>
         <!-- Mobile menu, show/hide based on menu open state. -->
         <div class="lg:hidden" x-show="navOpen" role="dialog" aria-modal="true">
