@@ -1,30 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 
-@php
-    if (
-        !request()->is('admin*') &&
-        (auth()->user()->getCompetition?->brand != null || Session::get('ac')?->brand != null)
-    ) {
-        $brand = auth()->user()->getCompetition->getBrand ?? Session::get('ac')->getBrand;
-    }
-@endphp
+
 
 <head>
     <meta charset="UTF-8">
 
-    @if (isset($brand))
-        <link rel="icon" type="image/png" href="{{ $brand->getLogo() }}" />
-    @else
-        <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
-    @endif
+
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link rel="manifest" href="/manifest.json">
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('core-title') | Scoring.Events</title>
+    <title>
+        @hasSection('core-title')
+            @yield('core-title') |
+        @endif Scoring.Events
+    </title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -108,7 +101,7 @@
     @endisset
 
 
-    <header class="bg-white shadow-sm" x-data="{ navOpen: false }">
+    <header class="bg-white z-10 shadow-sm" x-data="{ navOpen: false }">
         <nav class="mx-auto flex  items-center justify-between p-4 lg:px-8" aria-label="Global">
             <div class="flex lg:flex-1 items-center">
                 <!-- <a href="#" class="-m-1.5 p-1.5 text-red-500">
@@ -146,7 +139,7 @@
                 @endif
             @else
                 <div class="hidden lg:flex lg:flex-1 lg:justify-end">
-                    <a href="#" class="text-sm/6 font-semibold text-gray-900">Log in <span
+                    <a href="#" class="text-sm/6 font-semibold text-gray-900 hover:text-se">Log in <span
                             aria-hidden="true">&rarr;</span></a>
                 </div>
             @endauth

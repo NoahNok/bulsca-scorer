@@ -72,6 +72,36 @@
   --width-3xl: 1920px;
   --width-4xl: 2560px;
 
+  --animate-ml: ml-animate 5s ease-in-out infinite;
+  --animate-mr: mr-animate 5s ease-in-out infinite;
+  --animate-float: float 3s ease-in-out infinite;
+
+  @keyframes ml-animate {
+    0%, 100% {
+      margin-left: 0;
+    }
+    50% {
+      margin-left: -8rem;
+    }
+  }
+
+  @keyframes mr-animate {
+    0%, 100% {
+      margin-right: 0;
+    }
+    50% {
+      margin-right: -8rem;
+    }
+  }
+
+  @keyframes float {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(5px, -5px); }
+  50% { transform: translate(-5px, 5px); }
+  75% { transform: translate(5px, 5px); }
+  100% { transform: translate(0, 0); }
+}
+
 
   
 
@@ -469,6 +499,10 @@ aside.collapsed {
 
     &.se-btn-disabled {
       @apply opacity-50 cursor-not-allowed! pointer-events-none;
+    }
+
+    &.se-btn-cta {
+      @apply text-xl font-archivo uppercase py-3 px-10;
     }
  }
 
@@ -939,3 +973,43 @@ aside {
 }
 
 
+.shape {
+
+  @apply bg-se border-se ;
+
+  &.shape-square {
+    @apply min-w-8 min-h-8 rounded-lg;
+  }
+
+  &.shape-circle {
+    @apply min-w-8 min-h-8 rounded-full;
+  }
+
+  &.shape-triangle {
+    --r: 40px; /* the radius */
+  
+  width: 300px;
+  aspect-ratio: 1/cos(30deg);
+  mask:
+    conic-gradient(from -30deg at 50% calc(200% - 3*var(--r)/2),#000 60deg,#0000 0)
+     0 100%/100% calc(100% - 3*var(--r)/2) no-repeat,
+    radial-gradient(var(--r) at 50% calc(2*var(--r)),#000 98%,#0000 101%),
+    radial-gradient(var(--r),#000 98%,#0000 101%) space no-repeat
+     0 100%/calc(2*tan(60deg)*var(--r)) calc(2*var(--r));
+  clip-path: polygon(50% 0,100% 100%,0 100%);
+  }
+
+
+}
+
+.animate-6s {
+  animation-duration: 6s !important;
+}
+
+.animate-8s {
+  animation-duration: 8s !important;
+}
+
+.animate-2s {
+  animation-duration: 2s !important;
+}
