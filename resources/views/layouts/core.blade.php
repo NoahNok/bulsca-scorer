@@ -139,7 +139,7 @@
                 @endif
             @else
                 <div class="hidden lg:flex lg:flex-1 lg:justify-end">
-                    <a href="#" class="text-sm/6 font-semibold text-gray-900 hover:text-se">Log in <span
+                    <a href="{{ route('login') }}" class="text-sm/6 font-semibold text-gray-900 hover:text-se">Log in <span
                             aria-hidden="true">&rarr;</span></a>
                 </div>
             @endauth

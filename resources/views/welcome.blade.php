@@ -13,6 +13,9 @@
         <h1 class="font-archivo font-semibold text-7xl!  z-20">Scoring.</h1>
         <h1 class="font-archivo font-semibold text-se text-7xl! z-20 ">Events</h1>
 
+        <a href="#" class="se-btn se-btn-outline-primary se-btn-cta mt-10">Get Started <span
+                aria-hidden="true">&rarr;</span></a>
+
         <div class="shape shape-square blur-sm absolute top-2/8 left-[55%] rotate-12 size-40 animate-pulse animate-6s">
         </div>
 
@@ -20,7 +23,11 @@
             class="shape shape-square bg-black! blur-lg absolute top-3/4 left-1/3 rotate-[67deg] size-28 animate-pulse animate-8s">
         </div>
 
-        <div class="shape shape-circle absolute blur-3xl size-150 -top-75 left-[100%]"></div>
+        <div class="shape shape-circle absolute blur-3xl size-75 top-55 left-[90%] z-10"></div>
+
+        <div class="  absolute blur-md size-40 top-25 left-[105%] rotate-93">
+            <div class="shape shape-triangle  bg-black!"></div>
+        </div>
 
         <div class="shape shape-circle bg-black! blur-md absolute size-40 top-10 left-24  "></div>
 
