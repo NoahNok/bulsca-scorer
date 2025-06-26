@@ -10,7 +10,7 @@
 
 
 
-        <h1 class="font-archivo font-semibold text-7xl!  z-20">Scoring.</h1>
+        <h1 class="font-archivo font-semibold text-7xl!  z-20  ">Scoring.</h1>
         <h1 class="font-archivo font-semibold text-se text-7xl! z-20 ">Events</h1>
 
         <a href="#" class="se-btn se-btn-outline-primary se-btn-cta mt-10">Get Started <span

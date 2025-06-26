@@ -22,9 +22,10 @@ mix.js("resources/js/*", "public/js")
     .sass("resources/css/app.scss", "public/css")
     .options({
         postCss: [require("@tailwindcss/postcss")],
+        processCssUrls: false,
     }); //.bladeReload();
 
-mix.browserSync({
+mix.serve({
     proxy: {
         target: "localhost", // route to the nginx instance running
         proxyReq: [

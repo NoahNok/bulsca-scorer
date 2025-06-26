@@ -26,7 +26,9 @@
         rel="stylesheet">
 
 
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
+    @vite('resources/js/app.js')
+    @vite('resources/css/app.css')
+    {{-- <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}"> --}}
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/mask@3.13.3/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
 
@@ -85,6 +87,8 @@
             });
         });
     </script>
+
+
 
 </head>
 
