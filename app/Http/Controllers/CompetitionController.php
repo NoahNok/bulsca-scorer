@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Competition\CreateCompetitionAccount;
+use App\Http\Requests\Competition\EditCompetitionAccount;
 use App\Models\Competition;
+use App\Models\User;
+use App\Models\UserCompetitionAccess;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -75,14 +79,94 @@ class CompetitionController extends Controller
         return;
     }
 
-
-    public function createSercWriterAccount(Competition $comp)
+    public function createCompetitionAccount(Competition $comp, CreateCompetitionAccount $request)
     {
-        return $comp->createSercWriterAccount();
+
+        $request->validated();
+
+        $response = $comp->createCompetitionAccount($request->input('name'), $request->input('email'), $request->input('access'));
+
+        if (is_string($response)) {
+            return response()->json(['error' => $response]);
+        }
+
+        return response()->json([]);
     }
 
-    public function resetSercWriterAccountPassword(Competition $comp)
+    public function getCompetitionAccounts(Competition $comp)
     {
-        return $comp->resetSercWriterAccountPassword();
+
+        // Get all users that have access to this competition via access table
+
+        $accounts = [];
+
+        foreach (
+            UserCompetitionAccess::where('competition', $comp->id)
+                ->get()->groupBy('user') as $user_id => $access
+        ) {
+
+            $user = User::find($user_id);
+
+            $accounts[] = [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'access' => $access->pluck('access_to')->toArray(),
+            ];
+        }
+
+        return response()->json($accounts);
+    }
+
+    public function getCompetitionAccount(Competition $comp, User $account)
+    {
+        // Get all access for this user in this competition
+
+        $access = UserCompetitionAccess::where('competition', $comp->id)
+            ->where('user', $account->id)
+            ->get();
+
+        if ($access->isEmpty()) {
+            return response()->json(['error' => 'No access found for this user in this competition']);
+        }
+
+        return response()->json([
+            'id' => $account->id,
+            'name' => $account->name,
+            'email' => $account->email,
+            'access' => $access->pluck('access_to')->toArray(),
+        ]);
+    }
+
+    public function editCompetitionAccount(Competition $comp, User $account, EditCompetitionAccount $request)
+    {
+        $request->validated();
+
+        $response = $comp->editCompetitionAccount($account, $request->input('access'));
+
+        if (is_string($response)) {
+            return response()->json(['error' => $response]);
+        }
+
+        return response()->json([]);
+    }
+
+    public function deleteCompetitionAccount(Competition $comp, User $account)
+    {
+
+        $user = auth()->user();
+
+        if (!$user->isAdmin() &&  $user->competition != $comp->id) {
+            // if the user is not an admin or does not have access to this competition, return error
+            return response()->json(['error' => 'You do not have permission to delete this account'], 403);
+        }
+
+
+
+
+
+        $comp->deleteCompetitionAccount($account);
+
+        return response()->json([]);
     }
 }

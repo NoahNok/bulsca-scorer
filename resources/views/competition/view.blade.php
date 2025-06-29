@@ -182,7 +182,8 @@
 
             </div>
 
-            <div class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
+            <div @click="modals.compAccounts = true"
+                class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
                 <p class="font-archivo">Additional Accounts</p>
 
 
@@ -224,7 +225,13 @@
         <form id="djSettingsForm"
             x-on:submit="(e) => {
             e.preventDefault()
-            loading = true
+         
+
+          if (this.loading) {
+                return
+            }
+
+               this.loading = trues
             
 
 
@@ -232,7 +239,7 @@
                 method: 'POST',
                 body: new FormData($event.target),
             }).then(resp => {
-               loading = false
+               this.loading = false
                 if (!resp.ok) {
                     showAlert('Something went wrong, you changes have been reversed.')
                     $event.target.reset()
@@ -299,7 +306,12 @@
         <form id="compSettingsForm"
             x-on:submit="(e) => {
             e.preventDefault()
-            loading = true
+         
+
+              if (this.loading) {
+                return
+            }
+               this.loading = true
             
 
 
@@ -307,7 +319,7 @@
                 method: 'POST',
                 body: new FormData($event.target),
             }).then(resp => {
-               loading = false
+               this.loading = false
                 if (!resp.ok) {
                     showAlert('Something went wrong, you changes have been reversed.')
                     $event.target.reset()
@@ -349,6 +361,313 @@
 
         <x-slot name="footer">
             <button type="submit" form="compSettingsForm" class="se-btn se-btn-success ml-auto">Save</button>
+        </x-slot>
+    </x-s-e-modal>
+
+
+    <x-s-e-modal id="compAccounts" title="Additional Accounts">
+
+        <div class="se-table" x-data="{
+            accounts: [],
+        
+            getAccounts() {
+                fetch('{{ route('comps.accounts', $comp) }}')
+                    .then(resp => resp.json())
+                    .then(data => {
+                        this.accounts = data;
+        
+                    })
+                    .catch(err => {
+                        console.error('Failed to fetch accounts:', err);
+                        showAlert('Failed to load accounts');
+                    });
+            },
+        }" x-init="$watch('modals.compAccounts', value => value ? getAccounts() : null)">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Access</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template x-for="account in accounts">
+                        <tr
+                            @click="() => {modals.data.compEditAccount.id = account.id; modals.compEditAccount = true; modals.compAccounts = false}">
+                            <th><span x-text="account.name"></span></th>
+                            <td x-text="account.access.join(', ')"></td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+
+        <br>
+
+        <button class="se-btn se-btn-success"
+            @click="() => {modals.compAddAccount = true; modals.compAccounts = false}">Add
+            Account</button>
+
+
+    </x-s-e-modal>
+
+
+    <x-s-e-modal id="compAddAccount" title="Add Account">
+
+        <form id="compAddAccountForm"
+            x-on:submit="(e) => {
+            e.preventDefault()
+           
+            
+            if (this.loading) {
+                return
+            }
+
+            this.loading = true
+
+
+            fetch('{{ route('comps.accounts.create', $comp) }}', {
+                method: 'POST',
+                body: new FormData($event.target),
+                headers: {
+                    'Accept': 'application/json',
+                    
+                }
+            }).then(resp => {
+                this.loading = false
+                if (!resp.ok && resp.status != 422) {
+                    showAlert('Something went wrong, account was not created.')
+             
+                    return
+                }
+
+              
+                return resp.json()
+
+               
+            }).then(data => {
+
+                
+                if (data.errors) {
+                    showAlert(Object.entries(data.errors)[0][1])
+                    return
+                }
+
+                if (data.error) {
+                    showAlert(data.error)
+                    return
+                }
+
+                loading = false
+                modals.compAddAccount = false
+                modals.compAccounts = true
+                $event.target.reset()
+                showSuccess('Competition settings saved')
+            })
+        }"
+            x-init="() => {
+                onClose = () => {
+                    modals.compAccounts = true
+                }
+            }">
+
+
+            @csrf
+
+
+            <div class="se-form-input">
+                <input type="text" name="name" id="name" required placeholder="Name">
+            </div>
+
+            <div class="se-form-input">
+                <input type="text" name="email" id="email" required placeholder="Email Address">
+            </div>
+
+
+            <div class="flex space-x-2">
+                <input type="checkbox" name="access[]" value="view" id="access-view">
+                <label for="access-view" class="font-archivo flex items-center">
+                    Overview
+                </label>
+            </div>
+
+            <div class="flex space-x-2">
+                <input type="checkbox" name="access[]" value="serc" id="access-serc-writer">
+                <label for="access-serc-writer" class="font-archivo flex items-center">
+                    SERC Writer
+                </label>
+            </div>
+
+
+        </form>
+
+        <x-slot name="footer">
+            <button type="submit" form="compAddAccountForm" class="se-btn se-btn-success ml-auto">Add</button>
+        </x-slot>
+    </x-s-e-modal>
+
+
+    <x-s-e-modal id="compEditAccount" title="Edit Account">
+
+        <form id="compEditAccountForm"
+            x-on:submit="(e) => {
+            e.preventDefault()
+           
+            
+            if (this.loading) {
+                return
+            }
+
+            this.loading = true
+
+
+            fetch('{{ route('comps.accounts.edit', [$comp, 'account' => '__id']) }}'.replace('__id', modals.data.compEditAccount?.id), {
+                method: 'POST',
+                body: new FormData($event.target),
+                headers: {
+                    'Accept': 'application/json',
+                    
+                }
+            }).then(resp => {
+                this.loading = false
+                if (!resp.ok && resp.status != 422) {
+                    showAlert('Something went wrong, unable to save changes')
+                  
+                    return null
+                }
+
+              
+                return resp.json()
+
+               
+            }).then(data => {
+
+                
+
+                if (data.errors) {
+                    showAlert(Object.entries(data.errors)[0][1])
+                    return
+                }
+
+                closeModal()
+                
+                showSuccess('Account updated')
+            })
+        }"
+            x-data="{
+                data: {
+                    name: '',
+            
+                    access: [],
+                },
+            
+                fetchAccount(id) {
+                    this.loading = true
+                    fetch('{{ route('comps.accounts.view', [$comp, 'account' => '__id']) }}'.replace('__id', id))
+                        .then(resp => resp.json())
+                        .then(rdata => {
+            
+                            if (rdata.error) {
+                                showAlert(rdata.error);
+                                return;
+                            }
+            
+                            this.data.name = rdata.name;
+            
+                            rdata.access.forEach(access => {
+                                $el.querySelector(`#edit-access-${access}`).checked = true;
+                            })
+            
+            
+                        })
+                        .catch(err => {
+                            console.error('Failed to fetch account:', err);
+                            showAlert('Failed to load account details');
+                        }).finally(() => {
+                            this.loading = false;
+                        });
+                },
+            
+                deleteAccount() {
+            
+                    if (this.loading) {
+                        return;
+                    }
+            
+            
+            
+                    if (!confirm('Are you sure you want to delete this account? This cannot be undone.')) {
+                        return;
+                    }
+            
+                    this.loading = true
+            
+                    fetch('{{ route('comps.accounts.delete', [$comp, 'account' => '__id']) }}'.replace('__id', modals.data.compEditAccount?.id), {
+                        method: 'DELETE',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                    }).then(resp => {
+                        if (!resp.ok) {
+                            showAlert('Something went wrong, unable to delete account')
+                            return;
+                        }
+            
+                        showSuccess('Account deleted')
+                        modals.compAccounts = true
+                        modals.compEditAccount = false
+                    }).finally(() => {
+                        this.loading = false;
+                    });
+                }
+            
+            }" x-init="() => {
+            
+                onClose = () => {
+                    modals.compAccounts = true
+                }
+            
+                $watch('modals.data.compEditAccount?.id', value => {
+                    if (value == undefined) {
+                        return;
+                    }
+            
+                    fetchAccount(value)
+            
+                })
+            
+                window.addEventListener('delete-account', () => deleteAccount())
+            }">
+
+
+            @csrf
+
+            <h3 x-text="data.name"></h3>
+
+            <div class="flex space-x-2">
+                <input type="checkbox" name="access[]" value="view" id="edit-access-view">
+                <label for="edit-access-view" class="font-archivo flex items-center">
+                    Overview
+                </label>
+            </div>
+
+            <div class="flex space-x-2">
+                <input type="checkbox" name="access[]" value="serc" id="edit-access-serc">
+                <label for="edit-access-serc" class="font-archivo flex items-center">
+                    SERC Writer
+                </label>
+            </div>
+
+
+        </form>
+
+        <x-slot name="footer">
+            <button type="button" class="se-btn se-btn-danger"
+                @click.stop="window.dispatchEvent(new CustomEvent('delete-account'))">Delete</button>
+            <button type="submit" form="compEditAccountForm" class="se-btn se-btn-success ml-auto">Save</button>
+
+
         </x-slot>
     </x-s-e-modal>
 @endsection

@@ -115,7 +115,12 @@ Route::middleware('auth')->group(function () {
 
                 Route::post('/settings', [CompetitionController::class, 'updateCompetitionSettings'])->name('comps.settings');
 
-                Route::post('/accounts/serc-writer/create', [CompetitionController::class, 'createSercWriterAccount'])->name('comps.accounts.serc-writer.create');
+
+                Route::get('/accounts', [CompetitionController::class, 'getCompetitionAccounts'])->name('comps.accounts');
+                Route::get('/account/{account}', [CompetitionController::class, 'getCompetitionAccount'])->name('comps.accounts.view');
+                Route::post('/account/{account}', [CompetitionController::class, 'editCompetitionAccount'])->name('comps.accounts.edit');
+                Route::delete('/account/{account}', [CompetitionController::class, 'deleteCompetitionAccount'])->name('comps.accounts.delete');
+                Route::post('/accounts/create', [CompetitionController::class, 'createCompetitionAccount'])->name('comps.accounts.create');
                 Route::post('/account/serc-writer/new-password', [CompetitionController::class, 'resetSercWriterAccountPassword'])->name('comps.accounts.serc-writer.new-password');
             });
 

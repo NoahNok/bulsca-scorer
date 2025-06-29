@@ -4,8 +4,19 @@
     x-transition:leave-end="opacity-0 "
     @if (Session::get('modal', '') == $id || $open) x-init="modals.{{ $id }} = true" @endif x-data="{
         loading: false,
+        onClose: null,
+        closeModal() {
+    
+            if (this.onClose) {
+                this.onClose();
+            }
+    
+            this.modals.{{ $id }} = false;
+        },
     }">
-    <div @click.outside="modals.{{ $id }} = false" class="relative overflow-hidden">
+    <div @click.outside="closeModal" class="relative overflow-hidden" x-init="() => {
+        modals.data.{{ $id }} = {}
+    }">
         <h2>{{ $title }}</h2>
 
         <div>
@@ -18,7 +29,7 @@
         </div>
 
         <footer>
-            <button class="se-btn" @click="modals.{{ $id }} = false">Close</button>
+            <button class="se-btn" @click="closeModal">Close</button>
 
             {{ $footer }}
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Mail\CompetitionAccountCreated;
 use App\Models\Brands\Brand;
 use App\Models\DigitalJudge\JudgeLog;
 use App\Stats\StatsManager;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class Competition extends Model
@@ -230,67 +232,6 @@ class Competition extends Model
         return ["speed" => $speedTotal, "serc" => $sercTotal, "total" => $speedTotal + $sercTotal];
     }
 
-    public function createSercWriterAccount()
-    {
-
-        if ($this->getBrand == null) {
-            return response()->json([
-                'error' => 'Unable to create a SERC user as this requires this competition to be part of a brand.'
-            ]);
-        }
-
-        if ($this->getSercWriterAccount()) {
-            return response()->json([
-                'error' => 'SERC writer account already exists'
-            ]);
-        }
-
-
-        $sercWriter = new User();
-        $sercWriter->name = $this->name . " SERC Writer";
-        $sercWriter->email = "sercwriter-" . $this->id . "@" . ($this->getBrand?->website ?? 'scoring.events');
-
-        $passwordRaw = Str::random(16);
-        $sercWriter->password = Hash::make($passwordRaw);
-
-        $sercWriter->competition = $this->id;
-
-        $sercWriter->save();
-
-        $this->getBrand->attachUser($sercWriter, 'serc');
-
-        return response()->json([
-            'email' => $sercWriter->email,
-            'password' => $passwordRaw
-        ]);
-    }
-
-    public function resetSercWriterAccountPassword()
-    {
-        $sercWriter = $this->getSercWriterAccount();
-
-        if ($sercWriter) {
-            $passwordRaw = Str::random(16);
-            $sercWriter->password = Hash::make($passwordRaw);
-            $sercWriter->save();
-
-            return response()->json([
-                'email' => $sercWriter->email,
-                'password' => $passwordRaw
-            ]);
-        }
-
-        return response()->json([
-            'error' => 'No SERC writer account found'
-        ]);
-    }
-
-    public function getSercWriterAccount(): ?User
-    {
-
-        return $this->getBrand?->getUsers->where('pivot.role', 'serc')->where('competition', $this->id)->first();
-    }
-
     public function getEventsInDQFormat()
     {
 
@@ -306,5 +247,123 @@ class Competition extends Model
         });
 
         return $events;
+    }
+
+
+    public function canUser(User $user, array|string $access_to): bool
+    {
+        // If the user is the owner of the competition or an admin, they have access
+        if ($user->competition == $this->id || $user->isAdmin()) {
+            echo "User {$user->id} is the owner or admin of competition {$this->id}. Access granted.\n";
+            return true;
+        }
+
+        if (is_string($access_to)) {
+            $access_to = [$access_to];
+        }
+
+        // If access_to is an array, check if the user has any of the specified access types
+        $access = UserCompetitionAccess::where('user', $user->id)
+            ->where('competition', $this->id)
+            ->whereIn('access_to', $access_to)
+            ->first();
+
+        return $access !== null;
+    }
+
+    public function userBelongsToCompetition(User $user): bool
+    {
+        $access = UserCompetitionAccess::where('user', $user->id)
+            ->where('competition', $this->id)
+            ->first();
+
+        return $access !== null;
+    }
+
+    public function createCompetitionAccount($account_name, $account_email, string|array $access_to = 'view')
+    {
+
+        if (is_string($access_to)) {
+            $access_to = [$access_to];
+        }
+
+
+        // find accout with given email or make new one
+
+        $account = null;
+
+
+        $account = User::where('email', $account_email)->first();
+
+        if (!$account) {
+            // If an account with the given email already exists, use it
+            $account = new User();
+            $account->name = $account_name;
+            $account->email = $account_email;
+            $passwordRaw = Str::random(16);
+            $account->password = Hash::make($passwordRaw);
+
+            $account->competition = null;
+
+            $account->save();
+
+            Mail::to($account)->send(new CompetitionAccountCreated($account->email, $passwordRaw, $this->id));
+        }
+
+        if ($this->userBelongsToCompetition($account)) {
+            // If the account already belongs to this competition, return it
+
+            return "Account already exists for this competition.";
+        }
+
+        // Create an access record for each access type
+        foreach ($access_to as $accessType) {
+            $access = new UserCompetitionAccess();
+            $access->user = $account->id;
+            $access->competition = $this->id;
+            $access->access_to = $accessType;
+            $access->save();
+        }
+
+        // Send email
+
+    }
+
+    public function editCompetitionAccount(User $account, array $access_to)
+    {
+        if (!$this->userBelongsToCompetition($account)) {
+            return "Account does not belong to this competition.";
+        }
+
+        // Remove all existing access for this user in this competition
+        UserCompetitionAccess::where('user', $account->id)
+            ->where('competition', $this->id)
+            ->delete();
+
+        // Add new access
+        foreach ($access_to as $accessType) {
+            $access = new UserCompetitionAccess();
+            $access->user = $account->id;
+            $access->competition = $this->id;
+            $access->access_to = $accessType;
+            $access->save();
+        }
+    }
+
+    public function deleteCompetitionAccount(User $account)
+    {
+        if (!$this->userBelongsToCompetition($account)) {
+            return "Account does not belong to this competition.";
+        }
+
+        // Remove all access for this user in this competition
+        UserCompetitionAccess::where('user', $account->id)
+            ->where('competition', $this->id)
+            ->delete();
+
+        // If the user has no other competitions, delete the user
+        if (UserCompetitionAccess::where('user', $account->id)->count() == 0) {
+            $account->delete();
+        }
     }
 }
