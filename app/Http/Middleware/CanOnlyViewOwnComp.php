@@ -38,7 +38,7 @@ class CanOnlyViewOwnComp
 
         // Check if user can view the competition because they are a brand account
         $targetCompetition = Competition::find($targetId);
-        if ($targetCompetition->brand && $targetCompetition->getBrand->isBrandRole($user, ['admin', 'welfare'])) return $next($request);
+        if ($targetCompetition->userBelongsToCompetition($user)) return $next($request);
 
         return redirect('/');
     }

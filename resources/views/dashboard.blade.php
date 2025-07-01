@@ -1,17 +1,21 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
+@extends('layouts.guest')
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-xs sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    {{ __("You're logged in!") }}
-                </div>
-            </div>
-        </div>
+@section('title', 'Dashboard')
+
+@section('content')
+    <div class="se-table se-table-thin">
+        <table>
+
+            <tbody>
+                @foreach ($comps as $comp)
+                    <tr class="">
+                        <td class="text-left font-semibold text-black relative">{{ $comp->name }} <a
+                                href="{{ route('comps.view', $comp) }}" class="absolute top-0 left-0 w-full h-full"></a>
+                        </td>
+
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
-</x-app-layout>
+@endsection

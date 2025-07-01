@@ -111,7 +111,9 @@ class CompetitionController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'access' => $access->pluck('access_to')->toArray(),
+                'access' => $access->pluck('access_to')->map(function ($item) {
+                    return Competition::$accessTypes[$item] ?? $item;
+                })->toArray(),
             ];
         }
 

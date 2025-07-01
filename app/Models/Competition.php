@@ -18,6 +18,18 @@ class Competition extends Model
 {
     use HasFactory, Cloneable;
 
+    public static $accessTypes = [
+        'admin' => 'Admin',
+        'view' => 'Overview',
+        'teams' => 'Teams/Competitors',
+        'heats_and_draws' => 'Heats and Draws',
+        'printables' => 'Printables',
+        'serc' => 'SERCs',
+        'speed' => 'Speeds',
+        'results' => 'Results',
+        'serc_writer' => 'SERC Writer',
+    ];
+
     protected $casts = [
         'when' => 'datetime',
         'serc_start_time' => 'datetime',
@@ -254,7 +266,7 @@ class Competition extends Model
     {
         // If the user is the owner of the competition or an admin, they have access
         if ($user->competition == $this->id || $user->isAdmin()) {
-            echo "User {$user->id} is the owner or admin of competition {$this->id}. Access granted.\n";
+
             return true;
         }
 
@@ -265,10 +277,26 @@ class Competition extends Model
         // If access_to is an array, check if the user has any of the specified access types
         $access = UserCompetitionAccess::where('user', $user->id)
             ->where('competition', $this->id)
-            ->whereIn('access_to', $access_to)
-            ->first();
+            ->get();
 
-        return $access !== null;
+        // Check if user has admin access
+        if ($access->contains('access_to', 'admin')) {
+
+            return true;
+        }
+
+        // Check if user has any of the specified access types
+        foreach ($access as $a) {
+            if (in_array($a->access_to, $access_to)) {
+
+                return true;
+            }
+        }
+
+
+        // If no access found, return false
+
+        return false;
     }
 
     public function userBelongsToCompetition(User $user): bool
@@ -285,6 +313,11 @@ class Competition extends Model
 
         if (is_string($access_to)) {
             $access_to = [$access_to];
+        }
+
+        if (in_array('admin', $access_to)) {
+            # If given admin it will auto apply all others
+            $access_to = ['admin'];
         }
 
 
@@ -333,6 +366,11 @@ class Competition extends Model
     {
         if (!$this->userBelongsToCompetition($account)) {
             return "Account does not belong to this competition.";
+        }
+
+        if (in_array('admin', $access_to)) {
+            # If given admin it will auto apply all others
+            $access_to = ['admin'];
         }
 
         // Remove all existing access for this user in this competition

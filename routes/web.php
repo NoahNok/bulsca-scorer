@@ -81,6 +81,10 @@ Route::get('/', function () {
     if (!$user->competition && $user->hasBrand()) {
         return redirect()->route('brand.index');
     }
+
+
+    // Show default user compeitions lsit page based on competition access
+    return view('dashboard', ['comps' => $user->getCompetitionsWithAccess]);
 })->name('home');
 
 
@@ -102,7 +106,7 @@ Route::middleware('auth')->group(function () {
         Route::prefix('/comps/{comp}')->group(function () {
             Route::get('', [CompetitionController::class, 'view'])->name('comps.view');
 
-            Route::middleware('can:access,comp')->group(function () {
+            Route::middleware('can:access,comp,"admin"')->group(function () {
                 Route::get('/digital-judge-toggle', [DigitalJudgeController::class, 'toggle'])->name('dj.toggle');
 
                 Route::post('/digital-judge-settings', [DigitalJudgeController::class, 'settingsPost'])->name('dj.settings');
@@ -127,12 +131,12 @@ Route::middleware('auth')->group(function () {
 
 
             // EVENTS
-            Route::prefix('/events')->middleware('can:access,comp,"admin|serc"')->group(function () {
+            Route::prefix('/events')->middleware('can:access,comp,"speed|serc|serc_writer"')->group(function () {
 
                 Route::get('', [CompetitionController::class, 'events'])->name('comps.events');
 
                 // SPEEDS
-                Route::prefix('/speeds')->middleware('can:access,comp')->group(function () {
+                Route::prefix('/speeds')->middleware('can:access,comp,"speed"')->group(function () {
                     Route::get('/add', [SpeedsEventController::class, 'add'])->name('comps.events.speeds.add');
                     Route::post('/add', [SpeedsEventController::class, 'addPost'])->name('comps.view.events.speeds.addPost');
                     Route::delete('/{event}/delete', [SpeedsEventController::class, 'delete'])->name('comps.view.events.speeds.delete');
@@ -148,36 +152,39 @@ Route::middleware('auth')->group(function () {
                 });
 
                 // SERCS
-                Route::get('/sercs/add', [SERCController::class, 'add'])->name('comps.events.sercs.add');
-                Route::post('/sercs/add', [SERCController::class, 'addPost'])->name('comps.events.sercs.addPost');
-                Route::prefix('/sercs/{serc}')->group(function () {
+
+                Route::prefix('/sercs')->middleware('can:access,comp,"serc|serc_writer"')->group(function () {
+                    Route::get('/add', [SERCController::class, 'add'])->name('comps.events.sercs.add');
+                    Route::post('/add', [SERCController::class, 'addPost'])->name('comps.events.sercs.addPost');
+                    Route::prefix('/{serc}')->group(function () {
 
 
-                    Route::get('', [SERCController::class, 'view'])->name('comps.events.sercs.view');
-                    Route::get('/edit', [SERCController::class, 'edit'])->name('comps.events.sercs.edit');
-                    Route::post('/edit', [SERCController::class, 'editPost'])->name('comps.view.events.sercs.editPost');
+                        Route::get('', [SERCController::class, 'view'])->name('comps.events.sercs.view');
+                        Route::get('/edit', [SERCController::class, 'edit'])->name('comps.events.sercs.edit');
+                        Route::post('/edit', [SERCController::class, 'editPost'])->name('comps.view.events.sercs.editPost');
 
 
-                    Route::middleware('can:access,comp')->group(function () {
-                        Route::delete('', [SERCController::class, 'delete'])->name('comps.view.events.sercs.delete');
+                        Route::middleware('can:access,comp,"serc"')->group(function () {
+                            Route::delete('', [SERCController::class, 'delete'])->name('comps.view.events.sercs.delete');
 
-                        Route::get('results/{team}/next', [SERCController::class, 'next'])->name('comps.view.events.sercs.next');
+                            Route::get('results/{team}/next', [SERCController::class, 'next'])->name('comps.view.events.sercs.next');
 
-                        Route::get('/results/{team}/edit', [SERCController::class, 'editResultsView'])->name('comps.events.sercs.editResults');
-                        Route::post('/results/{team}/edit', [SERCController::class, 'updateTeamResults'])->name('comps.view.events.sercs.editResultsPost');
+                            Route::get('/results/{team}/edit', [SERCController::class, 'editResultsView'])->name('comps.events.sercs.editResults');
+                            Route::post('/results/{team}/edit', [SERCController::class, 'updateTeamResults'])->name('comps.view.events.sercs.editResultsPost');
 
-                        Route::get('/digital-judge-toggle', [DigitalJudgeController::class, 'sercToggle'])->name('dj.sercToggle');
-                        Route::get('/hide', [SERCController::class, 'hide'])->name('comps.view.sercs.hide');
+                            Route::get('/digital-judge-toggle', [DigitalJudgeController::class, 'sercToggle'])->name('dj.sercToggle');
+                            Route::get('/hide', [SERCController::class, 'hide'])->name('comps.view.sercs.hide');
 
-                        Route::post('/image', [SERCController::class, 'addSercImage'])->name('comps.view.sercs.image');
-                        Route::get('/image/remove', [SERCController::class, 'removeSercImage'])->name('comps.view.sercs.image.remove');
+                            Route::post('/image', [SERCController::class, 'addSercImage'])->name('comps.view.sercs.image');
+                            Route::get('/image/remove', [SERCController::class, 'removeSercImage'])->name('comps.view.sercs.image.remove');
+                        });
                     });
                 });
             });
 
 
             // TEAMS
-            Route::prefix('/teams')->middleware('can:access,comp')->group(function () {
+            Route::prefix('/teams')->middleware('can:access,comp,"teams"')->group(function () {
                 Route::get('', [CompetitionController::class, 'teams'])->name('comps.teams');
                 Route::get('/edit', [TeamsController::class, 'edit'])->name('comps.teams.edit');
                 Route::post('/edit', [TeamsController::class, 'editPost'])->name('comps.view.teams.editPost');
@@ -185,7 +192,7 @@ Route::middleware('auth')->group(function () {
             });
 
             // COMPETITORS - Only shows if socring type is set to use it instead of teams
-            Route::prefix('/competitors')->middleware('can:access,comp')->group(function () {
+            Route::prefix('/competitors')->middleware('can:access,comp,"teams"')->group(function () {
                 Route::get('', [CompetitionController::class, 'competitors'])->name('comps.competitors');
                 Route::get('/edit', [CompetitorController::class, 'edit'])->name('comps.competitors.edit');
                 Route::post('/edit', [CompetitorController::class, 'save'])->name('comps.competitors.save');
@@ -193,7 +200,7 @@ Route::middleware('auth')->group(function () {
             });
 
             // RESULTS
-            Route::prefix('/results')->middleware('can:access,comp')->group(function () {
+            Route::prefix('/results')->middleware('can:access,comp,"results"')->group(function () {
                 Route::get('', [OverallResultsController::class, 'view'])->name('comps.results');
                 Route::get('/add', [OverallResultsController::class, 'add'])->name('comps.results.add');
                 Route::get('/qg', [OverallResultsController::class, 'quickGen'])->name('comps.results.quickGen');
@@ -206,7 +213,7 @@ Route::middleware('auth')->group(function () {
             });
 
             // HEATS AND SERC ORDER
-            Route::prefix('/heats-and-orders')->middleware('can:access,comp,"*"')->group(function () {
+            Route::prefix('/heats-and-draws')->middleware('can:access,comp,"heats_and_draws"')->group(function () {
 
 
                 Route::get('', [HeatController::class, 'index'])->name('comps.heats');
@@ -227,7 +234,7 @@ Route::middleware('auth')->group(function () {
             });
 
             // PRINTABLES
-            Route::prefix('printables')->middleware('can:access,comp')->group(function () {
+            Route::prefix('printables')->middleware('can:access,comp,"printables"')->group(function () {
 
                 Route::get('', [PrintableController::class, 'index'])->name('comps.printables');
 
@@ -335,6 +342,10 @@ Route::get('dashboard', function () {
 
     if (!$user->competition && $user->hasBrand()) {
         return redirect()->route('brand.index');
+    }
+
+    if (!$user->getCompetition) {
+        return redirect()->route('home');
     }
 
     return redirect()->route('comps.view', $user->getCompetition);

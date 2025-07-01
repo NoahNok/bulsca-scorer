@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Competition;
 
+use App\Models\Competition;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -38,6 +39,7 @@ class CreateCompetitionAccount extends FormRequest
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'access' => 'required|array',
+            'access.*' => 'in:' . implode(',', array_keys(Competition::$accessTypes)),
         ];
     }
 

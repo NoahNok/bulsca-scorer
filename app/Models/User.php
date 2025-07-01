@@ -74,4 +74,16 @@ class User extends Authenticatable
     {
         return $this->getBrands()->where('brand_users.role', 'admin')->exists();
     }
+
+    public function getCompetitionsWithAccess()
+    {
+        return $this->hasManyThrough(
+            Competition::class,
+            UserCompetitionAccess::class,
+            'user',
+            'id',
+            'id',
+            'competition'
+        )->where('access_to', '!=', 'none')->distinct('competitions.id');
+    }
 }

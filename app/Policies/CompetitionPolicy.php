@@ -19,7 +19,11 @@ class CompetitionPolicy
     {
         if ($user->admin) return true; // Allow global admins
 
-        echo "Checking access for user {$user->id} to competition {$comp->id} with access type(s): " . implode(', ', (array) $access_to) . "\n";
+        if (is_string($access_to)) {
+            $access_to = explode('|', $access_to);
+        }
+
+
 
         return $comp->canUser($user, $access_to);
     }
