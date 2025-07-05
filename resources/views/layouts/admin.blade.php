@@ -1,7 +1,7 @@
 @extends('layouts.core')
 
 @section('core-title')
-    @yield('title') | {{ $comp->name }}
+    @yield('title')
 @endsection
 
 @section('core-content')

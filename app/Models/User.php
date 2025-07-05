@@ -50,11 +50,6 @@ class User extends Authenticatable
         return $this->admin;
     }
 
-    public function getCompetition()
-    {
-        return $this->belongsTo(Competition::class, 'competition', 'id');
-    }
-
     public function getWhatIfEditors()
     {
         return $this->hasMany(Competition::class, 'wi_user', 'id');

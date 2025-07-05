@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
@@ -39,35 +40,17 @@ class AdminController extends Controller
         $comp->anytimepin = $validated['anytimepin'];
         $comp->scoring_Version = "1.1.0"; // Must forcibly set the updated version 1.1.0 programatically - UPDATE THIS WITH EACH NEW SCORING UPDATE
 
-        if ($validated['brand'] !== 'null') {
-            $comp->brand = $validated['brand'] == 'none' ? null : $validated['brand'];
-        }
+
 
         $comp->scoring_type = $validated['scoring_type'];
-
-
-
         $comp->save();
 
+        // Add the user that created thee competition as an admin
+        $comp->addAccount(Auth::user(), ['admin']);
 
 
 
-        $compUserEmail = Str::replace([" ", "@", "_"], "-", Str::lower($comp->name)) . "." . $comp->id . "@bulsca.co.uk";
-        $compUserPasswordRaw =  Str::random(16);
-        $compUserPassword = Hash::make($compUserPasswordRaw);
-
-        $compUser = new User();
-        $compUser->name = $comp->name;
-        $compUser->email = $compUserEmail;
-        $compUser->password = $compUserPassword;
-        $compUser->competition = $comp->id;
-        $compUser->save();
-
-        if ($comp->brand) {
-            $compUser->getBrands()->attach($comp->brand);
-        }
-
-        return view('admin.competiton-created', ['email' => $compUserEmail, 'password' => $compUserPasswordRaw, "comp" => $comp]);
+        return redirect()->route('comps.view', ['comp' => $comp])->with('success', "Competition created!");
     }
 
     public function updateCompPost(Competition $comp, AdminCreateCompRequest $request)

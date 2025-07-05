@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\UserCompetitionAccess;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CompetitionController extends Controller
 {
@@ -109,7 +110,7 @@ class CompetitionController extends Controller
 
             $accounts[] = [
                 'id' => $user->id,
-                'name' => $user->name,
+                'name' => $user->name . (Auth::user() == $user ? ' (You)' : ''),
                 'email' => $user->email,
                 'access' => $access->pluck('access_to')->map(function ($item) {
                     return Competition::$accessTypes[$item] ?? $item;

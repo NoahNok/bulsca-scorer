@@ -582,6 +582,7 @@
                                 }
                 
                                 this.data.name = rdata.name;
+                                this.data.email = rdata.email;
                 
                                 rdata.access.forEach(access => {
                                     $el.querySelector(`#edit-access-${access}`).checked = true;
@@ -653,6 +654,8 @@
                 @csrf
 
                 <h3 x-text="data.name"></h3>
+                <p class="text-sm text-gray-400 mb-4" x-text="data.email"></p>
+
 
 
                 <div class="grid-4 gap-1!">

@@ -34,20 +34,6 @@ class AppServiceProvider extends ServiceProvider
             if (!Auth::check()) {
                 return;
             }
-
-            $user = Auth::user();
-
-            // Try and get brand from connected competition
-            if ($user->competition && $user->getCompetition->brand) {
-                $view->with('brand', $user->getCompetition->getBrand);
-                return;
-            }
-
-            // Try and get brand if user is a brand account
-            if ($user->getBrands()->exists()) {
-                $view->with('brand', $user->getBrands->first());
-                return;
-            }
         });
     }
 }

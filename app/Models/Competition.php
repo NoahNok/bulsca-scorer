@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Mail\CompetitionAccountCreated;
+use App\Mail\CompetitionAccountInvite;
 use App\Models\Brands\Brand;
 use App\Models\DigitalJudge\JudgeLog;
 use App\Stats\StatsManager;
@@ -328,7 +329,21 @@ class Competition extends Model
 
         $account = User::where('email', $account_email)->first();
 
-        if (!$account) {
+
+
+        if ($account) {
+            if ($this->userBelongsToCompetition($account)) {
+                // If the account already belongs to this competition, return it
+
+                return "Account already exists for this competition.";
+            }
+
+            $accessDisplay = collect($access_to)->map(function ($type) {
+                return self::$accessTypes[$type] ?? $type;
+            })->toArray();
+
+            Mail::to($account)->send(new CompetitionAccountInvite($this, $accessDisplay));
+        } else {
             // If an account with the given email already exists, use it
             $account = new User();
             $account->name = $account_name;
@@ -343,11 +358,7 @@ class Competition extends Model
             Mail::to($account)->send(new CompetitionAccountCreated($account->email, $passwordRaw, $this->id));
         }
 
-        if ($this->userBelongsToCompetition($account)) {
-            // If the account already belongs to this competition, return it
 
-            return "Account already exists for this competition.";
-        }
 
         // Create an access record for each access type
         foreach ($access_to as $accessType) {
@@ -360,6 +371,40 @@ class Competition extends Model
 
         // Send email
 
+    }
+
+    public function addAccount(User $account, string|array $access_to = 'view')
+    {
+
+        if (is_string($access_to)) {
+            $access_to = [$access_to];
+        }
+
+        if (in_array('admin', $access_to)) {
+            # If given admin it will auto apply all others
+            $access_to = ['admin'];
+        }
+
+        // Remove any existing access for this user in this competition
+        UserCompetitionAccess::where('user', $account->id)
+            ->where('competition', $this->id)
+            ->delete();
+
+        // Create an access record for each access type
+        foreach ($access_to as $accessType) {
+            $access = new UserCompetitionAccess();
+            $access->user = $account->id;
+            $access->competition = $this->id;
+            $access->access_to = $accessType;
+            $access->save();
+        }
+
+        // Send email
+        $accessDisplay = collect($access_to)->map(function ($type) {
+            return self::$accessTypes[$type] ?? $type;
+        })->toArray();
+
+        Mail::to($account)->send(new CompetitionAccountInvite($this, $accessDisplay));
     }
 
     public function editCompetitionAccount(User $account, array $access_to)
