@@ -100,14 +100,6 @@
 }">
 
 
-    @isset($brand)
-        <style>
-            :root {
-                --brand-primary: {{ $brand->primary_color }};
-                --brand-secondary: {{ $brand->secondary_color }};
-            }
-        </style>
-    @endisset
 
 
     <header class="bg-white z-10 shadow-sm" x-data="{ navOpen: false }">

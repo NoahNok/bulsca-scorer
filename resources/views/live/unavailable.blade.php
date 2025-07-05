@@ -42,8 +42,7 @@
 
             @foreach ($comps as $comp)
                 <div class="card card-hover items-center">
-                    <img src="@if ($comp->brand) {{ $comp->getBrand->getLogo() }}@else https://www.bulsca.co.uk/storage/logo/blogo.png @endif"
-                        class=" w-20 h-20 mb-3" alt="">
+                    <img src="https://www.bulsca.co.uk/storage/logo/blogo.png" class=" w-20 h-20 mb-3" alt="">
                     <h5> {{ $comp->name }}</h5>
                     <div class="flex space-x-3 itmes-center justify-center">
                         <a href="{{ route('live', ['comp' => $comp]) }}" class="btn btn-primary">Live</a>

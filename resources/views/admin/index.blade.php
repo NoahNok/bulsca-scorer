@@ -61,7 +61,7 @@
     <br>
 
     <br><a href="{{ route('admin.records') }}" class="link">Edit Speed Event Record Times</a>
-    <br><a href="{{ route('admin.brands') }}" class="link">Edit Brands</a>
+
     <br>
     <button class="btn" onclick="initSW()">Enable Notifications</button>
 @endsection

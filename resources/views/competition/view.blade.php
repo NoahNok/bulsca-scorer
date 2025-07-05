@@ -206,8 +206,8 @@
     @can('access', [$comp, 'admin'])
         <x-s-e-modal id="djPin" title="Pins">
             <p class="mb-4">Officials should navigate to <a
-                    href="{{ \App\Helpers\RouteHelpers::externalRoute('judge', 'dj.index') . ($comp->brand ? '?b=' . $comp->brand : '') }}"
-                    class="link">{{ \App\Helpers\RouteHelpers::externalRoute('judge', 'dj.index') . ($comp->brand ? '?b=' . $comp->brand : '') }}
+                    href="{{ \App\Helpers\RouteHelpers::externalRoute('judge', 'dj.index') }}"
+                    class="link">{{ \App\Helpers\RouteHelpers::externalRoute('judge', 'dj.index') }}
                 </a> and enter one of the following:</p>
 
 

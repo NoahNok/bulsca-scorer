@@ -1,16 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-@php
-    if ($comp->getBrand != null) {
-        $brand = $comp->getBrand;
-    }
-@endphp
+
 
 <head>
     <meta charset="UTF-8">
 
 
-    <link rel="icon" type="image/png" href="{{ $brand->getLogo() }}" />
+
     <title>{{ $schema->name }} | {{ $comp->name }} | Results | RLSS</title>
 
 
@@ -20,12 +16,7 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
-    <style>
-        :root {
-            --brand-primary: {{ $brand->primary_color }};
-            --brand-secondary: {{ $brand->secondary_color }};
-        }
-    </style>
+
 </head>
 
 <body class="overflow-x-hidden  w-screen h-screen">
@@ -41,7 +32,7 @@
             </div>
 
             <div class="ml-auto!   ">
-                <img src="{{ $brand->getLogo() }}" class=" w-20 h-20" alt="">
+                <img src="{{ asset('blogo.png') }}" class=" w-20 h-20" alt="">
             </div>
         </div>
 
@@ -108,9 +99,7 @@
                                 class="py-3 px-6 text-black text-sm whitespace-nowrap bg-white max-w-[40vw] overflow-x-auto">
 
                                 @php
-                                    $nameGroup = collect($result->events)
-                                        ->where('type', 'speed')
-                                        ->first();
+                                    $nameGroup = collect($result->events)->where('type', 'speed')->first();
 
                                 @endphp
 

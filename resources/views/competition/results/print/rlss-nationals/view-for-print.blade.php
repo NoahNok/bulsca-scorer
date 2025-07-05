@@ -34,7 +34,7 @@
             </div>
 
             <div class="ml-auto!   ">
-                <img src="{{ $comp->getBrand->getLogo() }}" class=" w-20 h-20" alt="">
+                <img src="{{ asset('blogo.png') }}" class=" w-20 h-20" alt="">
             </div>
 
 

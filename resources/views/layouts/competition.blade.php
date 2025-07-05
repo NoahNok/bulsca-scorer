@@ -13,9 +13,6 @@
 
 
 
-        @if ($comp->brand)
-            <img src="{{ $comp->getBrand->getLogo() }}" alt="{{ $comp->getBrand->name }}" class="w-[50px] h-[50px] ">
-        @endif
 
     </div>
 

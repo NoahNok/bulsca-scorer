@@ -1,8 +1,6 @@
 <?php
 
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\Brands\BrandController;
-use App\Http\Controllers\Brands\BrandHomeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -78,9 +76,7 @@ Route::get('/', function () {
         return redirect()->route('admin.index');
     }
 
-    if (!$user->competition && $user->hasBrand()) {
-        return redirect()->route('brand.index');
-    }
+
 
 
     // Show default user compeitions lsit page based on competition access
@@ -254,18 +250,7 @@ Route::middleware('auth')->group(function () {
         });
     });
 
-    Route::prefix('brand')->group(function () {
-        Route::get('dashboard', [BrandHomeController::class, 'index'])->name('brand.index');
 
-        Route::prefix('competition')->middleware('brandAdmin')->group(function () {
-            Route::get('create', [BrandHomeController::class, 'createCompetition'])->name('brand.comp.create');
-            Route::post('create', [BrandHomeController::class, 'storeCompetition'])->name('brand.comp.store');
-
-            Route::get('{comp}', [BrandHomeController::class, 'editCompetition'])->name('brand.comp.edit');
-            Route::post('{comp}', [BrandHomeController::class, 'updateCompetition'])->name('brand.comp.update');
-            Route::delete('{comp}/delete', [BrandHomeController::class, 'deleteCompetition'])->name('brand.comp.delete');
-        });
-    });
 
     Route::get('/comp/results/view-schema/{schema}', [OverallResultsController::class, 'computeResults'])->name("comps.results.view-schema");
     Route::get('/comp/results/view-schema/{schema}/print', [OverallResultsController::class, 'viewForPrint'])->name("comps.results.view-schema-print");
@@ -290,39 +275,11 @@ Route::prefix('/admin')->middleware('isAdmin')->group(function () {
     Route::post('season/edit/{season}', [AdminController::class, 'seasonEditPost'])->name('admin.seasons.edit.post');
 
     Route::delete('/competition/{comp}/delete', [AdminController::class, 'deleteCompPost'])->name('admin.comp.delete');
-
-    Route::prefix('/brands')->group(function () {
-        Route::get('', [BrandController::class, 'index'])->name('admin.brands');
-        Route::get('create', [BrandController::class, 'create'])->name('admin.brands.create');
-        Route::post('create', [BrandController::class, 'store'])->name('admin.brands.store');
-
-
-
-        Route::delete('{brand}', [BrandController::class, 'destroy'])->name('admin.brands.delete');
-        Route::get('{brand}', [BrandController::class, 'show'])->name('admin.brands.show');
-        Route::get('{brand}/user/{user}/reset-password', [BrandController::class, 'userResetPassword'])->name('admin.brands.users.reset-password');
-        Route::post('{brand}/user/create', [BrandController::class, 'createBrandUser'])->name('admin.brands.users.create');
-        Route::post('{brand}/user/{user}', [BrandController::class, 'deleteBrandUser'])->name('admin.brands.users.delete');
-    });
 });
 
-Route::prefix('/admin/brands')->middleware('editBrand')->group(function () {
-    Route::post('edit/{brand}', [BrandController::class, 'update'])->name('admin.brands.update');
 
-    Route::get('{brand}', [BrandController::class, 'show'])->name('admin.brands.show');
-    Route::get('{brand}/user/{user}/reset-password', [BrandController::class, 'userResetPassword'])->name('admin.brands.users.reset-password');
-    Route::post('{brand}/user/create', [BrandController::class, 'createBrandUser'])->name('admin.brands.users.create');
-    Route::post('{brand}/user/{user}', [BrandController::class, 'deleteBrandUser'])->name('admin.brands.users.delete');
-});
 
-Route::prefix('/admin/brands')->middleware('editBrand')->group(function () {
-    Route::post('edit/{brand}', [BrandController::class, 'update'])->name('admin.brands.update');
 
-    Route::get('{brand}', [BrandController::class, 'show'])->name('admin.brands.show');
-    Route::get('{brand}/user/{user}/reset-password', [BrandController::class, 'userResetPassword'])->name('admin.brands.users.reset-password');
-    Route::post('{brand}/user/create', [BrandController::class, 'createBrandUser'])->name('admin.brands.users.create');
-    Route::post('{brand}/user/{user}', [BrandController::class, 'deleteBrandUser'])->name('admin.brands.users.delete');
-});
 
 
 Route::middleware('auth')->group(function () {
@@ -340,9 +297,7 @@ Route::get('dashboard', function () {
         return redirect()->route('admin.index');
     }
 
-    if (!$user->competition && $user->hasBrand()) {
-        return redirect()->route('brand.index');
-    }
+
 
     if (!$user->getCompetition) {
         return redirect()->route('home');

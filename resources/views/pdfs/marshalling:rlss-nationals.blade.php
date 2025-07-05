@@ -25,14 +25,7 @@
         }
     </style>
 
-    @if ($brand)
-        <style>
-            :root {
-                --brand-primary: {{ $brand->primary_color }};
-                --brand-secondary: {{ $brand->secondary_color }};
-            }
-        </style>
-    @endif
+
 </head>
 
 

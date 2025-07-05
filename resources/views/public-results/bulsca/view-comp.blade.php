@@ -1,11 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 
-@php
-    if ($comp->getBrand != null) {
-        $brand = $comp->getBrand;
-    }
-@endphp
 
 <head>
     <meta charset="UTF-8">
@@ -15,22 +10,15 @@
 
 
 
-    @if (isset($brand))
-        <link rel="icon" type="image/png" href="{{ $brand->getLogo() }}" />
-        <title>
-            @if ($comp->areResultsProvisional())
-                (PROVISIONAL)
-            @endif{{ $comp->name }} | Results | {{ $brand->name }}
-        </title>
-    @else
-        <title>
-            @if ($comp->areResultsProvisional())
-                (PROVISIONAL)
-            @endif
-            {{ $comp->name }} | Results | BULSCA
-        </title>
-        <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
-    @endif
+
+    <title>
+        @if ($comp->areResultsProvisional())
+            (PROVISIONAL)
+        @endif
+        {{ $comp->name }} | Results | BULSCA
+    </title>
+    <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
+
 
 
 
@@ -39,17 +27,9 @@
 </head>
 
 <body class="overflow-x-hidden">
-    @isset($brand)
-        <style>
-            :root {
-                --brand-primary: {{ $brand->primary_color }};
-                --brand-secondary: {{ $brand->secondary_color }};
-            }
-        </style>
-    @endisset
+
     <div class="w-screen  min-h-screen flex flex-col items-center lg:justify-center space-y-2 my-8  ">
-        <img src="@if (isset($brand)) {{ $brand->getLogo() }}@else https://www.bulsca.co.uk/storage/logo/blogo.png @endif"
-            class=" w-60 h-60" alt="">
+        <img src="https://www.bulsca.co.uk/storage/logo/blogo.png" class=" w-60 h-60" alt="">
         <h1 class="font-bold">{{ $comp->name }}</h1>
         <a class="link  text-center" href="{{ route('public.results') }}"><small>Back</small></a>
 

@@ -36,7 +36,7 @@ class CanOnlyViewOwnComp
 
         if ($user->isAdmin() || ($user->competition && $user->getCompetition->id == $targetId)) return $next($request);
 
-        // Check if user can view the competition because they are a brand account
+        // Check if user can view the competition because they have access to it
         $targetCompetition = Competition::find($targetId);
         if ($targetCompetition->userBelongsToCompetition($user)) return $next($request);
 

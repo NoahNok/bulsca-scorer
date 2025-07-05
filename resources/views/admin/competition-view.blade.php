@@ -84,9 +84,7 @@
                 defaultValue="{{ $comp->season }}"></x-form-select>
 
 
-            <x-form-select id="brand" title="Brand" :options="\App\Models\Brands\Brand::all()" defaultValue="{{ $comp->brand }}">
-                <option value="none">No brand</option>
-            </x-form-select>
+
 
             <div class="form-input ">
                 <label for="scoring_type" class="">Scoring Type</label>

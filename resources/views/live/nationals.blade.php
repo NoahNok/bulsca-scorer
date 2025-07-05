@@ -6,14 +6,15 @@
     <meta charset="UTF-8">
 
 
-    <link rel="icon" type="image/png" href="{{ $comp->getBrand->getLogo() }}" />
+
     <title>{{ $comp->name }} | Live | RLSS</title>
 
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
+    @vite('resources/js/app.js')
+    @vite('resources/css/app.css')
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
     <style>
@@ -41,7 +42,7 @@
             </div>
 
             <div class="ml-auto!   ">
-                <img src="{{ $comp->getBrand->getLogo() }}" class=" w-20 h-20 min-w-20" alt="">
+                <img src="{{ asset('blogo.png') }}" class=" w-20 h-20 min-w-20" alt="">
             </div>
         </div>
 

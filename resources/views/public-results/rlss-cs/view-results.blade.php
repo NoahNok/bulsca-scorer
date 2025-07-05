@@ -1,10 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-@php
-    if ($comp->getBrand != null) {
-        $brand = $comp->getBrand;
-    }
-@endphp
 
 <head>
     <meta charset="UTF-8">
@@ -14,21 +9,14 @@
 
 
 
-    @if (isset($brand))
-        <link rel="icon" type="image/png" href="{{ $brand->getLogo() }}" />
-        <title>
-            @if ($comp->areResultsProvisional())
-                (PROVISIONAL)
-            @endif{{ $schema->name }} | {{ $comp->name }} | Results | {{ $brand->name }}
-        </title>
-    @else
-        <title>
-            @if ($comp->areResultsProvisional())
-                (PROVISIONAL)
-            @endif{{ $schema->name }} | {{ $comp->name }} | Results | BULSCA
-        </title>
-        <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
-    @endif
+
+    <title>
+        @if ($comp->areResultsProvisional())
+            (PROVISIONAL)
+        @endif{{ $schema->name }} | {{ $comp->name }} | Results | BULSCA
+    </title>
+    <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
+
 
 
 
@@ -37,20 +25,11 @@
 </head>
 
 <body class="overflow-x-hidden">
-    @isset($brand)
-        <style>
-            :root {
-                --brand-primary: {{ $brand->primary_color }};
-                --brand-secondary: {{ $brand->secondary_color }};
-            }
-        </style>
-    @endisset
 
 
     <div class="flex flex-col items-center w-screen h-screen p-8 space-y-6 ">
         <div class="flex flex-row space-x-6 items-center">
-            <img src="@if (isset($brand)) {{ $brand->getLogo() }}@else https://www.bulsca.co.uk/storage/logo/blogo.png @endif"
-                class="w-32 h-32" alt="">
+            <img src="https://www.bulsca.co.uk/storage/logo/blogo.png" class="w-32 h-32" alt="">
             <div class="flex flex-col">
                 <h2 class="font-bold mb-0">{{ $schema->name }}</h2>
                 <h4>{{ $comp->name }}</h4>
@@ -150,10 +129,7 @@
                 &copy;
                 Noah Hollowell, BULSCA
                 2022-{{ date('Y') }}
-                @if (isset($brand))
-                    <br>Other logos, styles and assets are the property of their respective owners
-                    ({{ $brand->name }})
-                @endif
+
             </small>
         </div>
 

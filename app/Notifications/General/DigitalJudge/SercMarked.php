@@ -5,13 +5,14 @@ namespace App\Notifications\General\DigitalJudge;
 use App\Models\Competition;
 use App\Models\CompetitionTeam;
 use App\Models\SERC;
-use App\Notifications\BrandBasePushNotification;
+
+use App\Notifications\GenericPush;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class SercMarked extends BrandBasePushNotification
+class SercMarked extends GenericPush
 {
     use Queueable;
 
@@ -30,6 +31,6 @@ class SercMarked extends BrandBasePushNotification
 
 
 
-        parent::__construct($competition, "$sercName SERC Marked", "$teamName ($currentTeamPosition/$totalTeams) has been marked.");
+        parent::__construct("$sercName SERC Marked", "$teamName ($currentTeamPosition/$totalTeams) has been marked.");
     }
 }

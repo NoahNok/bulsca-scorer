@@ -1,11 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-@php
-    if ($comp->getBrand != null) {
-        $brand = $comp->getBrand;
-    }
-@endphp
+
 
 <head>
     <meta charset="UTF-8">
@@ -16,28 +12,17 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
 
 
-    @if (isset($brand))
-        <link rel="icon" type="image/png" href="{{ $brand->getLogo() }}" />
-        <title>Unavailable | Results | {{ $brand->name }}</title>
-    @else
-        <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
-        <title>Unavailable | Results | BULSCA</title>
-    @endif
+    <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
+    <title>Unavailable | Results | Scoring.Events</title>
 
-    @isset($brand)
-        <style>
-            :root {
-                --brand-primary: {{ $brand->primary_color }};
-                --brand-secondary: {{ $brand->secondary_color }};
-            }
-        </style>
-    @endisset
+
+
 </head>
 
 <body class="overflow-x-hidden flex justify-center w-screen h-screen">
 
     <div class="w-[90vw] md:w-[70vw] my-12 ">
-        <img src="{{ isset($brand) ? $brand?->getLogo() : asset('blogo.png') }}" class=" w-60 h-60 " alt="">
+        <img src="{{ asset('blogo.png') }}" class=" w-60 h-60 " alt="">
         <br>
 
         <h3>Results unavailable</h3>

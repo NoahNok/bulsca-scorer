@@ -69,15 +69,6 @@ class AdminController extends Controller
             $comp->season = $validated['season'];
         }
 
-        if ($validated['brand'] !== 'null') {
-            $oldBrand = $comp->brand;
-            $comp->brand = $validated['brand'] == 'none' ? null : $validated['brand'];
-
-            $compUser = User::where('competition', $comp->id)->first();
-            $compUser->getBrands()->detach($oldBrand);
-            $compUser->getBrands()->attach($comp->brand);
-        }
-
         $comp->scoring_type = $validated['scoring_type'];
 
         $comp->save();

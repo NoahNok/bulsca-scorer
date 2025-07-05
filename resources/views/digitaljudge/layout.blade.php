@@ -6,7 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DigitalJudge</title>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
+    @vite('resources/js/app.js')
+    @vite('resources/css/app.css')
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/mask@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @yield('extra-head')

@@ -2,7 +2,6 @@
 
 namespace App\Pdf;
 
-use App\Models\Brands\Brand;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\CompetitionTeam;
@@ -15,7 +14,7 @@ class CompetitionPdfCreator
 {
 
     private Competition $comp;
-    private ?Brand $brand = null;
+
     private string $scoringType;
 
     public function __construct(Competition $comp)
@@ -23,9 +22,7 @@ class CompetitionPdfCreator
         $this->comp = $comp;
 
 
-        if ($comp->getBrand != null) {
-            $this->brand = $comp->getBrand;
-        }
+
 
         $this->scoringType = $comp->scoring_type;
     }
@@ -54,7 +51,7 @@ class CompetitionPdfCreator
         }
 
 
-        return view("pdfs.heats.chief-timekeeper:$this->scoringType", ['brand' => $this->brand, 'location' => $this->comp->where, 'poolNames' => $poolNames, 'eventNames' => $eventNames, 'heats' => $heats, 'comp' => $this->comp]);
+        return view("pdfs.heats.chief-timekeeper:$this->scoringType", ['location' => $this->comp->where, 'poolNames' => $poolNames, 'eventNames' => $eventNames, 'heats' => $heats, 'comp' => $this->comp]);
     }
 
     public function sercMarking()
@@ -62,7 +59,7 @@ class CompetitionPdfCreator
 
         $events = $this->comp->getSERCs;
         $tanks = $this->comp->getSercTanks();
-        return view("pdfs.sercs.serc-marking:$this->scoringType", ['brand' => $this->brand, 'location' => $this->comp->where, 'events' => $events, 'tanks' => $tanks, 'comp' => $this->comp]);
+        return view("pdfs.sercs.serc-marking:$this->scoringType", ['location' => $this->comp->where, 'events' => $events, 'tanks' => $tanks, 'comp' => $this->comp]);
     }
 
     public function marshalling(string $type)
@@ -116,6 +113,6 @@ class CompetitionPdfCreator
         }
 
         $poolNames = ['Main Pool - Diving Pit End', 'Main Pool - Scoreboard End'];
-        return view("pdfs.marshalling:$this->scoringType", ['brand' => $this->brand, 'location' => $this->comp->where, 'data' => $data, 'poolNames' => $poolNames, 'comp' => $this->comp, 'type' => $type]);
+        return view("pdfs.marshalling:$this->scoringType", ['location' => $this->comp->where, 'data' => $data, 'poolNames' => $poolNames, 'comp' => $this->comp, 'type' => $type]);
     }
 }

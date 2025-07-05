@@ -57,7 +57,7 @@
                     class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
                     <div class="font-archivo">
                         <p class="-mb-1">Print Places</p>
-                        <small class=" ml-5 text-gray-500">Prints final palces and points only</small>
+                        <small class=" ml-5 text-gray-500">Prints final places and points only</small>
                     </div>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor"
@@ -69,7 +69,7 @@
                 <a href="{{ route('comps.results.view-schema-print', $schema) }}" target="_blank"
                     class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
                     <div class="font-archivo">
-                        <p class="-mb-1">Print Places</p>
+                        <p class="-mb-1">Print Detailed</p>
                         <small class=" ml-5 text-gray-500">Prints all event places and points along with final totals and
                             places</small>
                     </div>
