@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Competition\CreateCompetitionAccount;
+use App\Http\Requests\Competition\CreateCompetitionRequest;
 use App\Http\Requests\Competition\EditCompetitionAccount;
 use App\Models\Competition;
 use App\Models\User;
@@ -10,6 +11,7 @@ use App\Models\UserCompetitionAccess;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Nette\NotImplementedException;
 
 class CompetitionController extends Controller
 {
@@ -171,5 +173,42 @@ class CompetitionController extends Controller
         $comp->deleteCompetitionAccount($account);
 
         return response()->json([]);
+    }
+
+    public function create()
+    {
+        return view('competition.create');
+    }
+
+    public function createPost(CreateCompetitionRequest $request)
+    {
+        $validated = $request->validated();
+
+
+        if ($validated['org'] != 'null') {
+            throw new NotImplementedException();
+        }
+
+
+        $comp = new Competition();
+        $comp->name = $validated['name'];
+        $comp->when = $validated['when'];
+        $comp->where = $validated['where'];
+        $comp->isLeague = true;
+        $comp->max_lanes = $validated['lanes'];
+        $comp->anytimepin = $validated['anytimepin'];
+        $comp->scoring_Version = "1.1.0"; // Must forcibly set the updated version 1.1.0 programatically - UPDATE THIS WITH EACH NEW SCORING UPDATE
+
+
+
+        $comp->scoring_type = $validated['scoring_type'];
+        $comp->save();
+
+        // Add the user that created thee competition as an owner
+        $comp->addAccount(Auth::user(), ['owner']);
+
+
+
+        return response()->json(['url' => route('comps.view', ['comp' => $comp])]);
     }
 }

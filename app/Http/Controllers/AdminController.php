@@ -45,8 +45,8 @@ class AdminController extends Controller
         $comp->scoring_type = $validated['scoring_type'];
         $comp->save();
 
-        // Add the user that created thee competition as an admin
-        $comp->addAccount(Auth::user(), ['admin']);
+        // Add the user that created thee competition as an owner
+        $comp->addAccount(Auth::user(), ['owner']);
 
 
 

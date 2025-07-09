@@ -68,19 +68,14 @@ Route::get('/', function () {
     /** @var User $user */
     $user = Auth::user();
 
-    if (!$user->isAdmin() && $user->getCompetition) {
-        return redirect()->route('comps.view', $user->getCompetition);
-    }
-
-    if ($user->isAdmin()) {
-        return redirect()->route('admin.index');
-    }
 
 
-
+    $comps = [];
+    $comps['owner'] = $user->getCompetitionsByAccess('owner');
+    $comps['invited'] = $user->getCompetitionsWithAccess;
 
     // Show default user compeitions lsit page based on competition access
-    return view('dashboard', ['comps' => $user->getCompetitionsWithAccess]);
+    return view('dashboard', ['comps' => $comps]);
 })->name('home');
 
 
@@ -95,6 +90,9 @@ Route::middleware('auth')->group(function () {
     //Route::get('push-test', [PushController::class, 'push'])->name('push.test');
 
     Route::redirect('/comps', '/')->name('comps');
+
+    Route::get('/create', [CompetitionController::class, 'create'])->name('comps.create');
+    Route::post('/create', [CompetitionController::class, 'createPost'])->name('comps.create.post');
 
 
     Route::middleware('onlyViewOwnComp')->group(function () {
@@ -290,20 +288,9 @@ Route::middleware('auth')->group(function () {
 
 Route::get('dashboard', function () {
 
-    /** @var User $user */
-    $user = Auth::user();
-
-    if ($user->isAdmin()) {
-        return redirect()->route('admin.index');
-    }
 
 
-
-    if (!$user->getCompetition) {
-        return redirect()->route('home');
-    }
-
-    return redirect()->route('comps.view', $user->getCompetition);
+    return redirect()->route('home');
 });
 
 Route::bind('comp_slug', function ($value) {

@@ -132,12 +132,13 @@
 
 
             @auth
-                @if (Auth::user()->isAdmin())
-                    <div class="hidden lg:flex lg:flex-1 lg:justify-end space-x-3">
+
+                <div class="hidden lg:flex lg:flex-1 lg:justify-end space-x-3">
+                    @if (Auth::user()->isAdmin())
                         <a href="{{ route('admin.index') }}" class="text-sm/6 font-semibold text-gray-900">Admin</a>
-                        <a href="{{ route('logout') }}" class="text-sm/6 font-semibold text-gray-900">Logout</a>
-                    </div>
-                @endif
+                    @endif
+                    <a href="{{ route('logout') }}" class="text-sm/6 font-semibold text-gray-900">Logout</a>
+                </div>
             @else
                 <div class="hidden lg:flex lg:flex-1 lg:justify-end">
                     <a href="{{ route('login') }}" class="text-sm/6 font-semibold text-gray-900 hover:text-se">Log in <span
@@ -223,9 +224,7 @@
                 new EditableTable(et)
             })
 
-            document.getElementById("mobile-nav-opener").onclick = (e) => {
-                document.getElementById('nav').classList.toggle('open');
-            }
+
 
         }
     </script>

@@ -274,7 +274,7 @@ class Competition extends Model
             ->get();
 
         // Check if user has admin access
-        if ($access->contains('access_to', 'admin')) {
+        if ($access->contains('access_to', 'admin') || $access->contains('access_to', 'owner')) {
 
             return true;
         }

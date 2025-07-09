@@ -42,7 +42,7 @@ class MigrateCompetitionAccounts extends Command
 
             $this->info("Migrating user: {$user->name} ({$user->email}) for competition: {$competition->name}");
 
-            $competition->addAccount($user, 'admin');
+            $competition->addAccount($user, 'owner');
 
             $user->competition = null;
             $user->save();

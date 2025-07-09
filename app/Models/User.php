@@ -55,6 +55,17 @@ class User extends Authenticatable
         return $this->hasMany(Competition::class, 'wi_user', 'id');
     }
 
+    public function getCompetitionsByAccess($access)
+    {
+        return $this->hasManyThrough(
+            Competition::class,
+            UserCompetitionAccess::class,
+            'user',
+            'id',
+            'id',
+            'competition'
+        )->where('access_to', $access)->distinct('competitions.id')->orderBy('when', 'desc');
+    }
 
     public function getCompetitionsWithAccess()
     {
@@ -65,6 +76,6 @@ class User extends Authenticatable
             'id',
             'id',
             'competition'
-        )->where('access_to', '!=', 'none')->distinct('competitions.id');
+        )->where('access_to', '!=', 'none')->distinct('competitions.id')->orderBy('when', 'desc');
     }
 }
