@@ -66,6 +66,8 @@
                 @endforeach
             @endcan
 
+            <x-add-card link="{{ route('comps.events', $comp) }}" />
+
 
 
 
@@ -568,6 +570,7 @@
                         name: '',
                 
                         access: [],
+                        owner: false,
                     },
                 
                     fetchAccount(id) {
@@ -585,8 +588,15 @@
                                 this.data.email = rdata.email;
                 
                                 rdata.access.forEach(access => {
-                                    $el.querySelector(`#edit-access-${access}`).checked = true;
+                                    let target = $el.querySelector(`#edit-access-${access}`)
+                                    if (target) {
+                                        target.checked = true
+                                    }
+                
+                
                                 })
+                
+                                this.data.owner = rdata.access.includes('owner')
                 
                 
                             })
@@ -604,9 +614,12 @@
                             return;
                         }
                 
+                        if (this.data.owner) {
+                            alert('You cannot remove yourself');
+                            return
+                        }
                 
-                
-                        if (!confirm('Are you sure you want to delete this account? This cannot be undone.')) {
+                        if (!confirm('Are you sure you want to remove this account? This cannot be undone.')) {
                             return;
                         }
                 
@@ -658,7 +671,7 @@
 
 
 
-                <div class="grid-4 gap-1!">
+                <div class="grid-4 gap-1!" x-show="!data.owner">
                     @foreach (App\Models\Competition::$accessTypes as $type => $name)
                         <div class="flex space-x-2">
                             <input type="checkbox" name="access[]" value="{{ $type }}"
@@ -670,12 +683,16 @@
                     @endforeach
                 </div>
 
+                <p x-show="data.owner">
+                    You own this competition
+                </p>
+
 
             </form>
 
             <x-slot name="footer">
                 <button type="button" class="se-btn se-btn-danger"
-                    @click.stop="window.dispatchEvent(new CustomEvent('delete-account'))">Delete</button>
+                    @click.stop="window.dispatchEvent(new CustomEvent('delete-account'))">Remove</button>
                 <button type="submit" form="compEditAccountForm" class="se-btn se-btn-success ml-auto">Save</button>
 
 

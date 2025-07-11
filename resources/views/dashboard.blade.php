@@ -55,7 +55,9 @@
         </table>
     </div>
 
-    <hr class="spacer ">
+    <x-add-card text="Competition" link="{{ route('comps.create') }}?type=acc"></x-add-card>
+
+    <hr class="spacer mt-4!">
 
 
     <h3 class="mt-2">Invited</h3>

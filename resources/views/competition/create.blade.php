@@ -6,8 +6,8 @@
 
     <div x-data="{
     
-        step: 2,
-        type: 'account',
+        step: 1,
+        type: null,
     
         form: {
             org: null,
@@ -103,9 +103,23 @@
                     window.location.href = data.url
                 }
             })
+        },
+    
+        onInit() {
+            const params = new URLSearchParams(window.location.search);
+            const type = params.get('type');
+    
+    
+            if (type === null) {
+                return
+            } else if (type === 'acc') {
+                this.selectAcc()
+            } else if (type === 'org') {
+                this.selectOrga()
+            }
         }
     
-    }">
+    }" x-init="onInit">
         <h1>Competition Creator</h1>
         <br>
 
@@ -149,7 +163,7 @@
 
         <br>
 
-        <div x-show="type === 'organisation'">
+        <div x-show="type === 'organisation'" x-cloak>
 
             <div class="flex items-center justify-between">
                 <h3>Select an Organisation</h3>
@@ -174,7 +188,7 @@
 
 
 
-        <div x-show="step >= 2">
+        <div x-show="step >= 2" x-cloak>
             <h3>Details</h3>
             <div x-cloak x-show="type != null">
 

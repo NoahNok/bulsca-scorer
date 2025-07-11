@@ -397,6 +397,10 @@ class Competition extends Model
             return self::$accessTypes[$type] ?? $type;
         })->toArray();
 
+        if (in_array('owner', $access_to)) {
+            return;
+        }
+
         Mail::to($account)->send(new CompetitionAccountInvite($this, $accessDisplay));
     }
 

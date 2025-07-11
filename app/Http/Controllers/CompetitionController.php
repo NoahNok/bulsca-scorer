@@ -185,6 +185,7 @@ class CompetitionController extends Controller
         $validated = $request->validated();
 
 
+
         if ($validated['org'] != 'null') {
             throw new NotImplementedException();
         }
@@ -208,6 +209,8 @@ class CompetitionController extends Controller
         $comp->addAccount(Auth::user(), ['owner']);
 
 
+
+        $request->session()->flash('success', 'Competition created!');
 
         return response()->json(['url' => route('comps.view', ['comp' => $comp])]);
     }
