@@ -19,6 +19,7 @@ use App\Http\Controllers\CompetitionController;
 use App\Http\Controllers\CompetitorController;
 use App\Http\Controllers\DigitalJudge\DigitalJudgeController;
 use App\Http\Controllers\HeatController;
+use App\Http\Controllers\Organisation\OrganisationController;
 use App\Http\Controllers\OverallResultsController;
 use App\Http\Controllers\Pdf\PdfController;
 use App\Http\Controllers\PrintableController;
@@ -248,6 +249,10 @@ Route::middleware('auth')->group(function () {
         });
     });
 
+    Route::prefix('organisation')->group(function () {
+        Route::resource('', OrganisationController::class);
+        Route::post('nameSubdomainTaken', [OrganisationController::class, 'areNameSubdomainTaken'])->name('orgs.name-sub-taken');
+    });
 
 
     Route::get('/comp/results/view-schema/{schema}', [OverallResultsController::class, 'computeResults'])->name("comps.results.view-schema");
