@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('organisations', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->string('subdomain')->unique();
             $table->string('logo')->nullable();
             $table->timestamps();
         });
@@ -24,6 +23,7 @@ return new class extends Migration
             $table->foreignId('user')->references('id')->on('users')->onUpdate('CASCADE')->onDelete('CASCADE');
             $table->string('access_to'); // e.g., 'view', 'teams', 'heats_and_draws', etc...
             $table->unique(['organisation', 'user', 'access_to'], 'organisation_user_accesses_unique');
+            $table->timestamps();
         });
 
         Schema::table('competitions', function (Blueprint $table) {

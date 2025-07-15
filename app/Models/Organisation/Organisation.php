@@ -2,6 +2,7 @@
 
 namespace App\Models\Organisation;
 
+use App\Models\Competition;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -32,7 +33,7 @@ class Organisation extends Model
         foreach ($access_to as $accessType) {
             $access = new OrganisationUserAccess();
             $access->user = $account->id;
-            $access->competition = $this->id;
+            $access->organisation = $this->id;
             $access->access_to = $accessType;
             $access->save();
         }
@@ -48,5 +49,18 @@ class Organisation extends Model
 
         // uPDATE TO NEW ORG INVITE
         //Mail::to($account)->send(new CompetitionAccountInvite($this, $accessDisplay));
+    }
+
+    public function getLogo(): string
+    {
+        if (!$this->logo) {
+            return "";
+        }
+        return asset('storage/' . $this->logo);
+    }
+
+    public function getCompetitions()
+    {
+        return $this->hasMany(Competition::class, 'organisation');
     }
 }

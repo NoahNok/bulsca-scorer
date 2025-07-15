@@ -483,7 +483,7 @@ aside.collapsed {
  }
 
  > small {
-  @apply text-red-500 pl-2 -mt-3;
+  @apply text-red-500 mt-1;
 
   &.info {
     @apply text-gray-500;

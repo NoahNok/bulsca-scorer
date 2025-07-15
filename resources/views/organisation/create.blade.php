@@ -10,48 +10,19 @@
     
         form: {
             name: null,
-            subdomain: null,
-            logo: null,
+    
+            errors: {
+    
+            }
         },
     
-        taken: {
-            name: false,
-            subdomain: false,
-        },
+    
     
         logoPreview: null,
     
-        checkNameAndSubdomain() {
     
     
     
-            if (!this.form.name || this.form.name.trim() == '') {
-                return
-            }
-    
-            let fd = new FormData()
-            fd.append('name', this.form.name)
-            fd.append('subdomain', this.form.subdomain)
-    
-            fetch('{{ route('orgs.name-sub-taken') }}', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: fd
-            }).then(resp => resp.json()).then(data => {
-                this.taken.name = data.name
-                this.taken.subdomain = data.subdomain
-            })
-        },
-    
-        subdomainFormatted() {
-            if (this.form.name == null) {
-                return
-            }
-            this.form.subdomain = this.form.name.toLowerCase().trim().replaceAll(/\s+/g, ' ').replaceAll(' ', '-')
-        },
     
         async getLogoPreview(file) {
     
@@ -63,9 +34,11 @@
             if (!file.type.startsWith('image/')) return;
     
     
+    
             this.logoPreview = this.readFileAsDataURL(file)
     
         },
+    
         readFileAsDataURL(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -73,27 +46,68 @@
                 reader.onerror = err => reject(err);
                 reader.readAsDataURL(file);
             });
+        },
+    
+        create() {
+    
+            if (this.loading) {
+                return
+            }
+    
+            if (this.form.name == null || this.form.name?.trim() == '') {
+                this.form.errors.name = 'Please enter a name'
+                return
+            }
+    
+            this.form.errors.name = null
+    
+            let fd = new FormData()
+            fd.append('name', this.form.name)
+    
+            if (this.$refs.logo.files.length == 1) {
+                fd.append('logo', this.$refs.logo.files[0])
+            }
+    
+            fetch('{{ route('orgs.store') }}', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: fd
+            }).then(resp => resp.json()).then(data => {
+                if (data.errors) {
+    
+                    this.form.errors = data.errors
+                    return
+                }
+    
+                if (data.url) {
+                    window.location.href = data.url
+                }
+            })
+    
         }
     
     
     
     
     }">
-        <h1>Organisation Creator</h1>
-        <br>
 
 
 
 
 
-        <div class="flex flex-row items-center space-x-3">
 
 
+        <div class="flex flex-col items-center justify-center space-y-3">
+            <h1>New Organisation</h1>
+            <br>
             <div>
 
 
                 <div @click="$refs.logo.click()"
-                    class="size-32 rounded-full flex items-center justify-center relative   cursor-pointer hover:text-se overflow-hidden">
+                    class="size-48 rounded-full flex items-center justify-center relative   cursor-pointer hover:text-se overflow-hidden">
                     <img :src="logoPreview" alt="">
                     <div class="absolute w-full h-full flex items-center justify-center p-2 "
                         :class="logoPreview ? 'bg-gray-200/30 hover:bg-gray-700/80' : 'bg-gray-200'">
@@ -110,15 +124,10 @@
                     style="display: none" x-ref="logo" @change="getLogoPreview($event.target.files[0])" required>
             </div>
 
-            <div class="se-form-input imb-0 col-span-2 w-1/4">
+            <div class="se-form-input imb-0 w-80">
 
-                <input type="text" name="name" id="name" placeholder="Name" x-model="form.name" required
-                    @keyup="subdomainFormatted" @keyup.debounce="checkNameAndSubdomain">
-            </div>
-
-            <div class="se-form-input" x-show="false">
-                <label for="when">Subdomain</label>
-                <input type="text" placeholder="my-org" x-model="form.subdomain" required>
+                <input type="text" name="name" id="name" placeholder="Name" x-model="form.name" required>
+                <small x-show="form.errors?.name" x-text="form.errors?.name">Please enter a name.</small>
             </div>
 
 
@@ -126,23 +135,30 @@
 
 
 
+            <br>
 
 
-            <div class="se-card flex-row! items-center justify-between xl:w-1/3 ml-auto">
+            <div class="se-card flex-row! items-center justify-between w-80 ">
                 <div>
-                    <h3 x-text="form.name || 'My Org'">Org Name</h3>
-                    <small><span x-text="form.subdomain || 'my-org'"></span>.scoring.local</small>
+                    <h3 x-text="form.name || 'Scoring.Events'">Org Name</h3>
+
                 </div>
 
                 <div class="size-10 rounded-full flex items-center justify-center relative">
-                    <img src="" alt="">
-                    <div class="absolute w-full h-full flex items-center justify-center">
+
+                    <div x-show="logoPreview == null" class="absolute w-full h-full flex items-center justify-center z-5">
                         <h2 class="mb-0! text-xl font-archivo font-semibold">S.<span class="text-se">E</span></h2>
                     </div>
+                    <img :src="logoPreview" class="z-10" alt="">
 
                 </div>
             </div>
 
+            <div class="flex w-80 mt-2" @click="create">
+                <x-loading-button class="se-btn-success w-full justify-center! ">Create Organisation</x-loading-button>
+
+
+            </div>
         </div>
 
 
@@ -151,11 +167,7 @@
 
 
 
-        <div class="flex" @click="createCompetition">
-            <x-loading-button class="se-btn-success ml-auto">Create</x-loading-button>
 
-
-        </div>
 
 
     </div>

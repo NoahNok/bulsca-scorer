@@ -249,10 +249,8 @@ Route::middleware('auth')->group(function () {
         });
     });
 
-    Route::prefix('organisation')->group(function () {
-        Route::resource('', OrganisationController::class);
-        Route::post('nameSubdomainTaken', [OrganisationController::class, 'areNameSubdomainTaken'])->name('orgs.name-sub-taken');
-    });
+    Route::resource('organisation', OrganisationController::class)->names('orgs');
+
 
 
     Route::get('/comp/results/view-schema/{schema}', [OverallResultsController::class, 'computeResults'])->name("comps.results.view-schema");

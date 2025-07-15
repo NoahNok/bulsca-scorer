@@ -36,7 +36,6 @@ class OrganisationController extends Controller
 
         $org = new Organisation();
         $org->name = $validated['name'];
-        $org->subdomain = $validated['subdomain'];
 
         if ($request->hasFile('logo')) {
             $org->logo = $request->file('logo')->store('orgs', 'public');
@@ -45,14 +44,20 @@ class OrganisationController extends Controller
         $org->save();
 
         $org->addAccount(Auth::user(), ['owner']);
+
+        return response()->json([
+            'url' => route('orgs.show', $org->name)
+        ]);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Organisation $organisation)
+    public function show(string $organisation)
     {
-        //
+        $organisation = Organisation::where('name', $organisation)->firstOrFail();
+
+        return view('organisation.show', ['org' => $organisation]);
     }
 
     /**
@@ -77,18 +82,5 @@ class OrganisationController extends Controller
     public function destroy(Organisation $organisation)
     {
         //
-    }
-
-    public function areNameSubdomainTaken(NameSubdomainTakenRequest $request)
-    {
-        $validated = $request->validated();
-
-        $name = $validated['name'];
-        $subdomain = $validated['subdomain'];
-
-        return response()->json([
-            'name' => Organisation::where('name', $name)->exists(),
-            'subdomain' => Organisation::where('subdomain', $subdomain)->exists(),
-        ]);
     }
 }

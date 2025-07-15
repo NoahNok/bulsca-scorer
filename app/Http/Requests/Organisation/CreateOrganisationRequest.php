@@ -22,9 +22,15 @@ class CreateOrganisationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|unique:organisations',
-            'subdomain' =>  'required|string|unique:organisations',
-            'logo' => 'nullable|image'
+            'name' => 'required|string|min:1|unique:organisations',
+            'logo' => 'sometimes|image'
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'name.unique' => 'An organisation with this name already exists.'
         ];
     }
 }
