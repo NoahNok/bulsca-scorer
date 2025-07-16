@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Mail\CompetitionAccountCreated;
 use App\Mail\CompetitionAccountInvite;
 use App\Models\DigitalJudge\JudgeLog;
+use App\Models\Organisation\Organisation;
 use App\Stats\StatsManager;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -445,5 +446,10 @@ class Competition extends Model
         if (UserCompetitionAccess::where('user', $account->id)->count() == 0) {
             $account->delete();
         }
+    }
+
+    public function getOrganisation()
+    {
+        return $this->belongsTo(Organisation::class, 'organisation');
     }
 }

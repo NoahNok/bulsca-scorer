@@ -16,13 +16,7 @@
             }
         },
     
-    
-    
         logoPreview: null,
-    
-    
-    
-    
     
         async getLogoPreview(file) {
     
@@ -88,9 +82,6 @@
             })
     
         }
-    
-    
-    
     
     }">
 

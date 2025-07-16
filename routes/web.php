@@ -30,6 +30,7 @@ use App\Http\Controllers\TeamsController;
 use App\Http\Controllers\SERCController;
 use App\Models\Competition;
 use App\Models\DQCode;
+use App\Models\Organisation\Organisation;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -250,6 +251,10 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::resource('organisation', OrganisationController::class)->names('orgs');
+    Route::prefix('organisation/{organisation}')->group(function () {
+        Route::get('/accounts', [OrganisationController::class, 'accounts'])->name('orgs.accounts');
+        Route::post('/accounts', [OrganisationController::class, 'accountsPost'])->name('orgs.accounts.post');
+    });
 
 
 

@@ -6,10 +6,24 @@ use App\Models\Competition;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Organisation extends Model
 {
     use HasFactory;
+
+    public static $accessTypes = [
+        'owner' => 'Owner',
+        'admin' => 'Admin',
+        'view' => 'Overview',
+        'teams' => 'Teams/Competitors',
+        'heats_and_draws' => 'Heats and Draws',
+        'printables' => 'Printables',
+        'serc' => 'SERCs',
+        'speed' => 'Speeds',
+        'results' => 'Results',
+        'serc_writer' => 'SERC Writer',
+    ];
 
 
     public function addAccount(User $account, string|array $access_to = 'view')
@@ -62,5 +76,76 @@ class Organisation extends Model
     public function getCompetitions()
     {
         return $this->hasMany(Competition::class, 'organisation');
+    }
+
+    public function canUser(User $user, array|string $access_to): bool
+    {
+        // If the user is an admin, they have access
+        if ($user->isAdmin()) {
+            return true;
+        }
+
+        if (is_string($access_to)) {
+            $access_to = [$access_to];
+        }
+
+        // If access_to is an array, check if the user has any of the specified access types
+        $access = OrganisationUserAccess::where('user', $user->id)
+            ->where('organisation', $this->id)
+            ->get();
+
+        // Check if user has admin access
+        if ($access->contains('access_to', 'admin') || $access->contains('access_to', 'owner')) {
+
+            return true;
+        }
+
+        // Check if user has any of the specified access types
+        foreach ($access as $a) {
+            if (in_array($a->access_to, $access_to)) {
+                return true;
+            }
+        }
+
+
+        // If no access found, return false
+
+        return false;
+    }
+
+    public function userBelongsToOrganisation(User $user): bool
+    {
+        $access = OrganisationUserAccess::where('user', $user->id)
+            ->where('organisation', $this->id)
+            ->first();
+
+        return $access !== null;
+    }
+
+    public function getAccounts()
+    {
+
+        // Get all users that have access to this competition via access table
+
+        $accounts = [];
+
+        foreach (
+            OrganisationUserAccess::where('organisation', $this->id)
+                ->get()->groupBy('user') as $user_id => $access
+        ) {
+
+            $user = User::find($user_id);
+
+            $accounts[] = [
+                'id' => $user->id,
+                'name' => $user->name . (Auth::user() == $user ? ' (You)' : ''),
+                'email' => $user->email,
+                'access' => $access->pluck('access_to')->map(function ($item) {
+                    return self::$accessTypes[$item] ?? $item;
+                })->toArray(),
+            ];
+        }
+
+        return $accounts;
     }
 }

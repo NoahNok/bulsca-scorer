@@ -26,7 +26,11 @@
 
     <div class="  tabbed-bar mt-2 mb-4 ">
 
-        <a href="#" class="@if (Str::startsWith(Route::currentRouteName(), 'orgs.show')) active @endif">Competitions</a>
+        <a href="{{ route('orgs.show', $org->name) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'orgs.show')) active @endif">Overview</a>
+        <a href="{{ route('orgs.accounts', $org->name) }}"
+            class="@if (Str::startsWith(Route::currentRouteName(), 'orgs.accounts')) active @endif">Accounts</a>
+
+        <a href="{{ route('orgs.edit', $org->name) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'orgs.edit')) active @endif">Settings</a>
 
 
 
