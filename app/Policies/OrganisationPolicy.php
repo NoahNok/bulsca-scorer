@@ -17,11 +17,16 @@ class OrganisationPolicy
 
     public function access(User $user, Organisation $organisation, $access_to = [])
     {
+
+
+
         if ($user->admin) return true; // Allow global admins
 
         if (is_string($access_to)) {
             $access_to = explode('|', $access_to);
         }
+
+
 
         return $organisation->canUser($user, $access_to);
     }

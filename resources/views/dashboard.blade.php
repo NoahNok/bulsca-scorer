@@ -5,6 +5,29 @@
 @section('content')
 
 
+    @if (count($orgs) > 0)
+        <h3>Organisations</h3>
+        <div class="mt-1">
+            @forelse ($orgs as $org)
+                <a href="{{ route('orgs.show', $org->name) }} " class="se-card flex-row! items-center justify-between w-80 ">
+                    <div>
+                        <h3>{{ $org->name }}</h3>
+
+                    </div>
+
+                    <div class="size-10 rounded-full flex items-center justify-center relative">
+
+                        <div class="absolute w-full h-full flex items-center justify-center z-5">
+                            <h2 class="mb-0! text-xl font-archivo font-semibold">S.<span class="text-se">E</span></h2>
+                        </div>
+                        <img src="{{ $org->getLogo() }}" class="z-10 bg-white" alt="">
+
+                    </div>
+                </a>
+            @endforeach
+        </div>
+        <br>
+    @endif
 
     <h3>My Competitions</h3>
     <div class="se-table se-table-thin mb-2">

@@ -136,7 +136,7 @@ class SERCController extends Controller
 
         $serc->delete();
 
-        return redirect()->route('comps.view.events', $comp)->with('success', 'SERC deleted!');
+        return redirect()->route('comps.events', $comp)->with('success', 'SERC deleted!');
     }
 
     public function editResultsView(Competition $comp, SERC $serc, CompetitionTeam $team)

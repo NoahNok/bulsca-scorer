@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Organisation;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Organisation\CreateOrganisationRequest;
+use App\Http\Requests\Organisation\EditAccoutOrganisationAccess;
 use App\Http\Requests\Organisation\EditOrganisationRequest;
 use App\Http\Requests\Organisation\InviteAccountToOrganisationRequest;
 use App\Http\Requests\Organisation\NameSubdomainTakenRequest;
 use App\Models\Organisation\Organisation;
+use App\Models\Organisation\OrganisationUserAccess;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -60,6 +62,8 @@ class OrganisationController extends Controller
     {
         $organisation = Organisation::where('name', $organisation)->firstOrFail();
 
+        $this->authorize('access', [$organisation, 'view']);
+
         return view('organisation.show', ['org' => $organisation]);
     }
 
@@ -70,6 +74,8 @@ class OrganisationController extends Controller
     {
         $organisation = Organisation::where('name', $organisation)->firstOrFail();
 
+        $this->authorize('access', [$organisation, 'admin']);
+
         return view('organisation.edit', ['org' => $organisation]);
     }
 
@@ -78,6 +84,8 @@ class OrganisationController extends Controller
      */
     public function update(EditOrganisationRequest $request, Organisation $organisation)
     {
+        $this->authorize('access', [$organisation, 'admin']);
+
         $validated = $request->validated();
 
         $organisation->name = $validated['name'];
@@ -103,18 +111,25 @@ class OrganisationController extends Controller
      */
     public function destroy(Organisation $organisation)
     {
+        $this->authorize('access', [$organisation, 'admin']);
         //
     }
 
     public function accounts(string $organisation)
     {
+
+
         $organisation = Organisation::where('name', $organisation)->firstOrFail();
+
+        $this->authorize('access', [$organisation, 'admin']);
 
         return view('organisation.accounts', ['org' => $organisation]);
     }
 
     public function accountsPost(InviteAccountToOrganisationRequest $request, Organisation $organisation)
     {
+        $this->authorize('access', [$organisation, 'admin']);
+
         $validated = $request->validated();
 
         $user = User::where('email', $validated['email'])->first();
@@ -132,6 +147,45 @@ class OrganisationController extends Controller
         }
 
         $organisation->addAccount($user, $request->input('access'));
+
+        session()->flash('success', "Account invited.");
+
+        return response()->json([]);
+    }
+
+    public function account(Organisation $organisation, User $account)
+    {
+        $this->authorize('access', [$organisation, 'admin']);
+
+        $access = OrganisationUserAccess::where('organisation', $organisation->id)
+            ->where('user', $account->id)
+            ->get();
+
+        if ($access->isEmpty()) {
+            return response()->json(['error' => 'No access found for this user in this competition']);
+        }
+
+        return response()->json([
+            'id' => $account->id,
+            'name' => $account->name,
+            'email' => $account->email,
+            'access' => $access->pluck('access_to')->toArray(),
+        ]);
+    }
+
+    public function accountEditPost(Organisation $organisation, User $account, EditAccoutOrganisationAccess $request)
+    {
+        $this->authorize('access', [$organisation, 'admin']);
+
+        $request->validated();
+
+        $response = $organisation->editAccount($account, $request->input('access'));
+
+        if (is_string($response)) {
+            return response()->json(['error' => $response]);
+        }
+
+        session()->flash('success', "Account updated.");
 
         return response()->json([]);
     }

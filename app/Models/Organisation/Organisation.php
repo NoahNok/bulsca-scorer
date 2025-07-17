@@ -13,7 +13,6 @@ class Organisation extends Model
     use HasFactory;
 
     public static $accessTypes = [
-        'owner' => 'Owner',
         'admin' => 'Admin',
         'view' => 'Overview',
         'teams' => 'Teams/Competitors',
@@ -147,5 +146,31 @@ class Organisation extends Model
         }
 
         return $accounts;
+    }
+
+    public function editAccount(User $account, array $access_to)
+    {
+        if (!$this->userBelongsToOrganisation($account)) {
+            return "Account does not belong to this organisation.";
+        }
+
+        if (in_array('admin', $access_to)) {
+            # If given admin it will auto apply all others
+            $access_to = ['admin'];
+        }
+
+        // Remove all existing access for this user in this competition
+        OrganisationUserAccess::where('user', $account->id)
+            ->where('organisation', $this->id)
+            ->delete();
+
+        // Add new access
+        foreach ($access_to as $accessType) {
+            $access = new OrganisationUserAccess();
+            $access->user = $account->id;
+            $access->organisation = $this->id;
+            $access->access_to = $accessType;
+            $access->save();
+        }
     }
 }
