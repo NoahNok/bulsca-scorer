@@ -4,12 +4,19 @@
 
 @section('content')
     <h2 class="mb-0">Accounts</h2>
+    <p>Click an invite to cancel it.</p>
     <br>
     <div>
 
 
         <div class="se-table se-table-thin">
-            <table>
+            <table x-data="{
+                cancelInvite(id) {
+                    if (!confirm('Are you sure you want to cancel this invite?')) { return }
+                    window.location.href = '{{ route('orgs.invite.cancel', [$org, '__id']) }}'.replace('__id', id)
+                }
+            
+            }">
 
 
                 <tbody>
@@ -27,6 +34,15 @@
                                 @else
                                     {{ implode(', ', $account['access']) }}
                                 @endif
+                            </td>
+                        </tr>
+                    @endforeach
+
+                    @foreach ($org->getInvites as $invite)
+                        <tr @click="cancelInvite('{{ $invite->id }}')">
+                            <th>{{ $invite->email }}</th>
+                            <td>
+                                Invited
                             </td>
                         </tr>
                     @endforeach
@@ -89,21 +105,59 @@
 
                 window.location.reload()
             })
-        }">
+        }"
+            x-data="{
+                accounts: [],
+                email: '',
+            
+                searchEmail() {
+                    email = this.email.trim()
+                    if (email.length < 3) {
+                        return
+                    }
+            
+                    fetch('{{ route('accounts.search', '__id') }}'.replace('__id', email)).then(resp => resp.json()).then(data => {
+                        this.accounts = data
+                    })
+                }
+            }">
 
 
             @csrf
 
 
+            <p class="text-sm">Invite someone to this organisaiton. If they have an account it wil lappear as you type their
+                email,
+                otherwise they will be invited to create an account.</p>
+            <br>
+            <div class="se-form-input relative">
+                <input type="text" name="email" id="email" required placeholder="Email Address" x-model="email"
+                    @keyup.debounce.200ms="searchEmail">
 
-            <div class="se-form-input">
-                <input type="text" name="email" id="email" required placeholder="Email Address">
+
+
+                <div class="absolute w-full top-2/3 left-0  bg-white border" x-show="accounts.length > 0" x-cloak>
+                    <template x-for="account in accounts">
+                        <div class="se-card se-card-hover p-2! text-sm! flex-row! items-center justify-between"
+                            @click="() => {email = account.email; accounts = []}">
+                            <span x-text="account.name"></span>
+                            <small x-text="account.email"></small>
+                        </div>
+                    </template>
+                </div>
             </div>
 
-            <div class="grid-4 gap-1!">
-                @foreach (App\Models\Competition::$accessTypes as $type => $name)
+            <strong>Access</strong>
+            <p class="text-sm">Please select the access the user should have. It is recommended that they atleast have
+                'view' access.</p>
+
+            <br>
+
+            <div class="grid-3 gap-1!">
+                @foreach (App\Models\Organisation\Organisation::$accessTypes as $type => $name)
                     <div class="flex space-x-2">
-                        <input type="checkbox" name="access[]" value="{{ $type }}" id="access-{{ $type }}">
+                        <input type="checkbox" name="access[]" value="{{ $type }}"
+                            @if ($type == 'view') checked @endif id="access-{{ $type }}">
                         <label for="access-{{ $type }}" class="font-archivo flex items-center">
                             {{ $name }}
                         </label>
@@ -228,6 +282,7 @@
                     fetchAccount(value)
             
                 })
+            
             }">
 
 

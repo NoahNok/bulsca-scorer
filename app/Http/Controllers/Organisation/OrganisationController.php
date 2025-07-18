@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Organisation;
 
+use App\Http\Controllers\AccountInviteController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Organisation\CreateOrganisationRequest;
 use App\Http\Requests\Organisation\EditAccoutOrganisationAccess;
@@ -134,19 +135,26 @@ class OrganisationController extends Controller
 
         $user = User::where('email', $validated['email'])->first();
 
-        if (!$user) {
-            return response()->json([
-                'error' => 'No account found with that email.'
-            ]);
-        }
+        // if (!$user) {
+        //     return response()->json([
+        //         'error' => 'No account found with that email.'
+        //     ]);
+        // }
 
-        if ($organisation->userBelongsToOrganisation($user)) {
+        if ($user && $organisation->userBelongsToOrganisation($user)) {
             return response()->json([
                 'error' => 'Account already part of this organisation.'
             ]);
         }
 
-        $organisation->addAccount($user, $request->input('access'));
+        if ($organisation->getInvites()->where('email', $validated['email'])->exists()) {
+            return response()->json([
+                'error' => 'Email has already been invited'
+            ]);
+        }
+
+        AccountInviteController::invite($validated['email'], $organisation, ['access' => $validated['access']]);
+        // $organisation->addAccount($user, $request->input('access'));
 
         session()->flash('success', "Account invited.");
 
@@ -188,5 +196,17 @@ class OrganisationController extends Controller
         session()->flash('success', "Account updated.");
 
         return response()->json([]);
+    }
+
+    public function cancelInvite(Organisation $organisation, string $inviteId)
+    {
+
+        $invite = $organisation->getInvites()->where('id', $inviteId)->first();
+
+        if (!$invite) return;
+
+        $invite->delete();
+
+        return redirect()->back()->with('success', 'Invite removed');
     }
 }

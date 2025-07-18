@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AccountController;
+use App\Http\Controllers\AccountInviteController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -257,6 +259,12 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/accounts/{account}', [OrganisationController::class, 'account'])->name('orgs.accounts.view');
         Route::post('/accounts/{account}', [OrganisationController::class, 'accountEditPost'])->name('orgs.accounts.edit');
+
+        Route::get('/invite/{inviteId}/cancel', [OrganisationController::class, 'cancelInvite'])->name('orgs.invite.cancel');
+    });
+
+    Route::prefix('accounts')->group(function () {
+        Route::get('search/{email}', [AccountController::class, 'search'])->name('accounts.search');
     });
 
 
@@ -332,6 +340,12 @@ Route::get('dq', function () {
         array_push($ret, ['value' => $d, 'text' => $d]);
     }
     return response()->json($ret);
+});
+
+Route::prefix('invite/{invite}')->group(function () {
+    Route::get('', [AccountInviteController::class, 'show'])->name('invite.show');
+    Route::get('resolve/{resolution}', [AccountInviteController::class, 'resolve'])->name('invite.resolve');
+    Route::post('resolve/{resolution}/new-acc', [AccountInviteController::class, 'resolveNewAccount'])->name('invite.resolve.new-account');
 });
 
 

@@ -2,13 +2,16 @@
 
 namespace App\Models\Organisation;
 
+use App\Models\AccountInvite;
 use App\Models\Competition;
+use App\Models\Interfaces\IInvitable;
 use App\Models\User;
+use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
-class Organisation extends Model
+class Organisation extends Model implements IInvitable
 {
     use HasFactory;
 
@@ -50,18 +53,6 @@ class Organisation extends Model
             $access->access_to = $accessType;
             $access->save();
         }
-
-        // Send email - update to new org invite
-        // $accessDisplay = collect($access_to)->map(function ($type) {
-        //     return self::$accessTypes[$type] ?? $type;
-        // })->toArray();
-
-        // if (in_array('owner', $access_to)) {
-        //     return;
-        // }
-
-        // uPDATE TO NEW ORG INVITE
-        //Mail::to($account)->send(new CompetitionAccountInvite($this, $accessDisplay));
     }
 
     public function getLogo(): string
@@ -172,5 +163,30 @@ class Organisation extends Model
             $access->access_to = $accessType;
             $access->save();
         }
+    }
+
+    public function getInvites()
+    {
+        return $this->morphMany(AccountInvite::class, 'to');
+    }
+
+    public function applyInvite(AccountInvite $invite)
+    {
+
+        $user = $invite->getUser();
+
+        if (!$user) {
+            throw new Exception("Expected loggedin user during applyInvite");
+        }
+
+        $details = $invite->details;
+
+        if (!array_key_exists('access', $details)) {
+            throw new Exception("Organisation invite missing 'access' details");
+        }
+
+        $this->addAccount($user, $details['access']);
+
+        return redirect()->route('orgs.show', $this->name);
     }
 }
