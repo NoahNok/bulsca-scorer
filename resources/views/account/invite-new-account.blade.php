@@ -18,8 +18,8 @@
                 your new
                 account <strong>{{ $invite->email }}</strong></p>
 
-            <form method="POST" action="{{ route('invite.resolve.new-account', [$invite, 'accept']) }}" id="new-acc"
-                class="w-2/3">
+            <form method="POST" action="{{ route('invite.resolve.new-account', [$invite, $invite->email, 'accept']) }}"
+                id="new-acc" class="w-2/3">
 
                 @csrf
 
@@ -50,7 +50,8 @@
 
             <div class="grid-2 mt-4">
                 <button form="new-acc" class="se-btn se-btn-outline-primary">Accept</button>
-                <form method="POST" action="{{ route('invite.resolve.new-account', [$invite, 'decline']) }}">
+                <form method="POST"
+                    action="{{ route('invite.resolve.new-account', [$invite, $invite->email, 'decline']) }}">
                     @csrf
                     <input type="text" name="name" placeholder="Mr Scoring" value="DELCINE_INVITE" class="hidden"
                         required>

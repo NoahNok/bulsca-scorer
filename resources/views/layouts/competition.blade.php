@@ -11,6 +11,13 @@
             <small class="text-gray-500">Scoring v{{ $comp->scoring_version }}</small>
         </div>
 
+        @if ($comp->getOrganisation)
+            <div>
+                <img src="{{ $comp->getOrganisation->getLogo() }}" alt="{{ $comp->getOrganisation->name }}'s logo"
+                    class="size-14 rounded-full">
+            </div>
+        @endif
+
 
 
 
@@ -19,24 +26,36 @@
 
     <div class="  tabbed-bar mt-2 mb-4 ">
 
-        <a href="{{ route('comps.view', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.view')) active @endif">Overview</a>
-        @if (\App\Helpers\ScoringHelper::getCompetitionScoringDetails($comp)['use_competitors'])
-            <a href="{{ route('comps.competitors', $comp) }}"
-                class="@if (Str::startsWith(Route::currentRouteName(), 'comps.competitor')) active @endif">Competitors</a>
-        @else
-            <a href="{{ route('comps.teams', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.team')) active @endif">Teams</a>
-        @endif
-        <a href="{{ route('comps.heats', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.heats')) active @endif">Heats &
-            Draws</a>
+        @can('access', [$comp, 'view'])
+            <a href="{{ route('comps.view', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.view')) active @endif">Overview</a>
+        @endcan
 
-        <a href="{{ route('comps.printables', $comp) }}"
-            class="@if (Str::startsWith(Route::currentRouteName(), 'comps.printables')) active @endif">Printables</a>
+        @can('access', [$comp, 'teams'])
+            @if (\App\Helpers\ScoringHelper::getCompetitionScoringDetails($comp)['use_competitors'])
+                <a href="{{ route('comps.competitors', $comp) }}"
+                    class="@if (Str::startsWith(Route::currentRouteName(), 'comps.competitor')) active @endif">Competitors</a>
+            @else
+                <a href="{{ route('comps.teams', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.team')) active @endif">Teams</a>
+            @endif
+        @endcan
 
+        @can('access', [$comp, 'heats_and_draws'])
+            <a href="{{ route('comps.heats', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.heats')) active @endif">Heats &
+                Draws</a>
+        @endcan
 
-        <a href="{{ route('comps.events', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.events')) active @endif">Events</a>
+        @can('access', [$comp, 'printables'])
+            <a href="{{ route('comps.printables', $comp) }}"
+                class="@if (Str::startsWith(Route::currentRouteName(), 'comps.printables')) active @endif">Printables</a>
+        @endcan
 
-        <a href="{{ route('comps.results', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.results')) active @endif">Results</a>
+        @can('access', [$comp, ['serc', 'speed', 'serc_writer']])
+            <a href="{{ route('comps.events', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.events')) active @endif">Events</a>
+        @endcan
 
+        @can('access', [$comp, 'results'])
+            <a href="{{ route('comps.results', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.results')) active @endif">Results</a>
+        @endcan
 
     </div>
 

@@ -16,7 +16,8 @@ class Organisation extends Model implements IInvitable
     use HasFactory;
 
     public static $accessTypes = [
-        'admin' => 'Admin',
+
+        'admin' => 'Competition Admin',
         'view' => 'Overview',
         'teams' => 'Teams/Competitors',
         'heats_and_draws' => 'Heats and Draws',
@@ -188,5 +189,12 @@ class Organisation extends Model implements IInvitable
         $this->addAccount($user, $details['access']);
 
         return redirect()->route('orgs.show', $this->name);
+    }
+
+    public function removeAccount(User $account)
+    {
+        OrganisationUserAccess::where('user', $account->id)
+            ->where('organisation', $this->id)
+            ->delete();
     }
 }

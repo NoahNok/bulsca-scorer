@@ -9,6 +9,7 @@ use App\Http\Requests\Organisation\EditAccoutOrganisationAccess;
 use App\Http\Requests\Organisation\EditOrganisationRequest;
 use App\Http\Requests\Organisation\InviteAccountToOrganisationRequest;
 use App\Http\Requests\Organisation\NameSubdomainTakenRequest;
+use App\Http\Requests\Organisation\RemoveOrganisationAccountRequest;
 use App\Models\Organisation\Organisation;
 use App\Models\Organisation\OrganisationUserAccess;
 use App\Models\User;
@@ -129,7 +130,7 @@ class OrganisationController extends Controller
 
     public function accountsPost(InviteAccountToOrganisationRequest $request, Organisation $organisation)
     {
-        $this->authorize('access', [$organisation, 'admin']);
+
 
         $validated = $request->validated();
 
@@ -183,7 +184,7 @@ class OrganisationController extends Controller
 
     public function accountEditPost(Organisation $organisation, User $account, EditAccoutOrganisationAccess $request)
     {
-        $this->authorize('access', [$organisation, 'admin']);
+
 
         $request->validated();
 
@@ -198,8 +199,23 @@ class OrganisationController extends Controller
         return response()->json([]);
     }
 
+    public function accountRemove(Organisation $organisation, RemoveOrganisationAccountRequest $request)
+    {
+
+
+        $validated = $request->validated();
+
+        $user = User::findOrFail($validated['id']);
+
+        $organisation->removeAccount($user);
+
+        return redirect()->back()->with('success', 'Account removed.');
+    }
+
     public function cancelInvite(Organisation $organisation, string $inviteId)
     {
+
+        $this->authorize('access', [$organisation, 'admin']);
 
         $invite = $organisation->getInvites()->where('id', $inviteId)->first();
 

@@ -35,6 +35,7 @@ class CompetitionPolicy
             return false; // No organisation - so no access
         }
 
+
         return $organisation->canUser($user, $access_to);
     }
 }

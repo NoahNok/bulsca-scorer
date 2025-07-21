@@ -261,6 +261,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/accounts/{account}', [OrganisationController::class, 'accountEditPost'])->name('orgs.accounts.edit');
 
         Route::get('/invite/{inviteId}/cancel', [OrganisationController::class, 'cancelInvite'])->name('orgs.invite.cancel');
+
+        Route::delete('/accounts/remove', [OrganisationController::class, 'accountRemove'])->name('orgs.account.remove');
     });
 
     Route::prefix('accounts')->group(function () {
@@ -342,7 +344,7 @@ Route::get('dq', function () {
     return response()->json($ret);
 });
 
-Route::prefix('invite/{invite}')->group(function () {
+Route::prefix('invite/{invite}/{email}')->group(function () {
     Route::get('', [AccountInviteController::class, 'show'])->name('invite.show');
     Route::get('resolve/{resolution}', [AccountInviteController::class, 'resolve'])->name('invite.resolve');
     Route::post('resolve/{resolution}/new-acc', [AccountInviteController::class, 'resolveNewAccount'])->name('invite.resolve.new-account');

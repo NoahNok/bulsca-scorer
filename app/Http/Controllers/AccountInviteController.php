@@ -18,8 +18,12 @@ class AccountInviteController extends Controller
 {
 
 
-    public function show(AccountInvite $invite)
+    public function show(AccountInvite $invite, string $email)
     {
+
+        if ($invite->email != $email) {
+            return redirect('/')->with('alert-error', 'Invalid invite');
+        }
 
         $user = $invite->getUser();
 
@@ -45,8 +49,25 @@ class AccountInviteController extends Controller
         return view('account.invite-new-account', compact('invite'));
     }
 
-    public function resolve(AccountInvite $invite, string $resolution)
+    public function resolve(AccountInvite $invite, string $email, string $resolution)
     {
+
+        if ($invite->email != $email) {
+            return redirect('/')->with('alert-error', 'Invalid invite');
+        }
+
+        if (!Auth::check()) {
+            return redirect()->guest(route('login'));
+        }
+
+        $user = $invite->getUser();
+
+        if (Auth::user()->id != $user->id) {
+            session()->flash('alert-error', 'You cannot use that invite!');
+            return redirect('/');
+        }
+
+
         if (!in_array($resolution, ['accept', 'decline'])) {
             return redirect('/');
         }
@@ -68,8 +89,19 @@ class AccountInviteController extends Controller
         return $redirect;
     }
 
-    public function resolveNewAccount(AccountInviteNewAccountRequest $request, AccountInvite $invite, string $resolution)
+    public function resolveNewAccount(AccountInviteNewAccountRequest $request, AccountInvite $invite, string $email, string $resolution)
     {
+
+        if ($invite->email != $email) {
+            return redirect('/')->with('alert-error', 'Invalid invite');
+        }
+
+        if (Auth::check()) {
+            session()->flash('alert-error', 'You cannot use that invite!');
+            return redirect('/');
+        }
+
+
         if (!in_array($resolution, ['accept', 'decline'])) {
             return redirect('/');
         }
@@ -117,6 +149,6 @@ class AccountInviteController extends Controller
         $ac->details = $details;
         $ac->save();
 
-        Mail::to($email)->send(new AccountInviteMail($to, route('invite.show', $ac->id)));
+        Mail::to($email)->send(new AccountInviteMail($to, route('invite.show', [$ac->id, $email])));
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Exceptions;
 
+use App\Models\Organisation\Organisation;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
@@ -46,5 +48,32 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    public function render($request, Throwable $exception)
+    {
+
+
+
+        if ($exception instanceof AuthorizationException) {
+
+
+            if ($request->is('comps/*')) {
+                return response()->view('competition.403', ['comp' => $request->route('comp')], 403);
+            }
+
+            if ($request->is('organisation/*')) {
+
+                $org = $request->route('organisation');
+
+                if (is_string($org)) {
+                    $org = Organisation::where('name', $org)->firstOrFail();
+                }
+
+                return response()->view('organisation.403', ['org' => $org], 403);
+            }
+        }
+
+        return parent::render($request, $exception);
     }
 }

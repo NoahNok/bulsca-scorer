@@ -229,12 +229,14 @@
                 data: {
                     name: '',
             
+            
                     access: [],
                     owner: false,
                 },
             
                 fetchAccount(id) {
                     this.loading = true
+            
                     fetch('{{ route('orgs.accounts.view', [$org, 'account' => '__id']) }}'.replace('__id', id))
                         .then(resp => resp.json())
                         .then(rdata => {
@@ -267,7 +269,6 @@
                             this.loading = false;
                         });
                 },
-            
             
             
             }" x-init="() => {
@@ -310,6 +311,23 @@
             </p>
 
 
+        </form>
+        <br>
+        <form x-on:submit.prevent="removeAccount()" method="POST" action="{{ route('orgs.account.remove', $org) }}"
+            x-data="{
+                removeAccount() {
+                    if (!confirm('Are you sure you want to remvoe this account?')) { return false }
+            
+                    $refs.rmid.value = modals.data.orgEditAccount?.id
+            
+                    $el.submit()
+                }
+            }">
+            @method('DELETE')
+            @csrf
+
+            <input x-ref="rmid" type="hidden" name="id">
+            <button class="se-btn se-btn-danger">Remove Account</button>
         </form>
 
         <x-slot name="footer">

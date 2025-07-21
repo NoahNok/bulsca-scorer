@@ -16,8 +16,9 @@
 
 
             <div class="grid-2 mt-4">
-                <a href="{{ route('invite.resolve', [$invite, 'accept']) }}" class="se-btn se-btn-outline-primary">Accept</a>
-                <a href="{{ route('invite.resolve', [$invite, 'decline']) }}" class="se-btn">Decline</a>
+                <a href="{{ route('invite.resolve', [$invite, $invite->email, 'accept']) }}"
+                    class="se-btn se-btn-outline-primary">Accept</a>
+                <a href="{{ route('invite.resolve', [$invite, $invite->email, 'decline']) }}" class="se-btn">Decline</a>
             </div>
 
 
