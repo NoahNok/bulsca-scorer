@@ -64,7 +64,7 @@ class OrganisationController extends Controller
     {
         $organisation = Organisation::where('name', $organisation)->firstOrFail();
 
-        $this->authorize('access', [$organisation, 'view']);
+        $this->authorize('access', [$organisation, '*']);
 
         return view('organisation.show', ['org' => $organisation]);
     }

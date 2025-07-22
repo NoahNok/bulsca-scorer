@@ -26,7 +26,7 @@
 
     <div class="  tabbed-bar mt-2 mb-4 ">
 
-        @can('access', [$org, 'view'])
+        @can('access', [$org, '*'])
             <a href="{{ route('orgs.show', $org->name) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'orgs.show')) active @endif">Overview</a>
         @endcan
 

@@ -16,16 +16,20 @@ class Organisation extends Model implements IInvitable
     use HasFactory;
 
     public static $accessTypes = [
+        'org' => [
+            'admin' => 'Admin'
+        ],
+        'comp' => [
 
-        'admin' => 'Competition Admin',
-        'view' => 'Overview',
-        'teams' => 'Teams/Competitors',
-        'heats_and_draws' => 'Heats and Draws',
-        'printables' => 'Printables',
-        'serc' => 'SERCs',
-        'speed' => 'Speeds',
-        'results' => 'Results',
-        'serc_writer' => 'SERC Writer',
+            'view' => 'Overview',
+            'teams' => 'Teams/Competitors',
+            'heats_and_draws' => 'Heats and Draws',
+            'printables' => 'Printables',
+            'serc' => 'SERCs',
+            'speed' => 'Speeds',
+            'results' => 'Results',
+            'serc_writer' => 'SERC Writer',
+        ]
     ];
 
 
@@ -85,6 +89,17 @@ class Organisation extends Model implements IInvitable
             ->where('organisation', $this->id)
             ->get();
 
+
+        // If 0 the user has no access via the org
+        if (count($access) == 0) {
+            return false;
+        }
+
+        // Check if requested access_to was *, which means any permission is valid
+        if (in_array('*', $access_to)) {
+            return true;
+        }
+
         // Check if user has admin access
         if ($access->contains('access_to', 'admin') || $access->contains('access_to', 'owner')) {
 
@@ -127,12 +142,15 @@ class Organisation extends Model implements IInvitable
 
             $user = User::find($user_id);
 
+            $mapped_titles = collect(self::$accessTypes)->flatMap(fn($group) => collect($group))->all();
+            $mapped_titles['owner'] = 'Owner';
+
             $accounts[] = [
                 'id' => $user->id,
                 'name' => $user->name . (Auth::user() == $user ? ' (You)' : ''),
                 'email' => $user->email,
-                'access' => $access->pluck('access_to')->map(function ($item) {
-                    return self::$accessTypes[$item] ?? $item;
+                'access' => $access->pluck('access_to')->map(function ($item) use ($mapped_titles) {
+                    return $mapped_titles[$item] ?? $item;
                 })->toArray(),
             ];
         }

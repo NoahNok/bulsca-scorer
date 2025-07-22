@@ -40,7 +40,7 @@
         </div>
 
 
-        <x-add-card text="Competition" link="{{ route('admin.comp.create') }}"></x-add-card>
+        <x-add-card text="Competition" link="{{ route('comps.create') }}?type=org&org={{ $org->name }}"></x-add-card>
 
 
     </div>

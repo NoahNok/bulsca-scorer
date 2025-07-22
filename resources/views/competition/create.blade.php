@@ -8,6 +8,13 @@
     
         step: 1,
         type: null,
+        hideType: false,
+        orgs: {{ auth()->user()->getOrganisations->map(function ($org) {
+                return [
+                    'id' => $org->id,
+                    'name' => $org->name,
+                ];
+            }) }},
     
         form: {
             org: null,
@@ -99,6 +106,12 @@
                     return
                 }
     
+                if (data.error) {
+                    showAlert(data.error)
+                    this.loading = false
+                    return
+                }
+    
                 if (data.url) {
                     window.location.href = data.url
                 }
@@ -108,22 +121,36 @@
         onInit() {
             const params = new URLSearchParams(window.location.search);
             const type = params.get('type');
+            const org = params.get('org')
     
     
-            if (type === null) {
-                return
-            } else if (type === 'acc') {
+            if (type === 'acc') {
                 this.selectAcc()
             } else if (type === 'org') {
                 this.selectOrga()
             }
+    
+            if (org != null) {
+                for (existing_org of this.orgs) {
+                    if (existing_org.name === org) {
+                        this.selectOrg(existing_org.id)
+                    }
+                }
+            }
+    
+            if (this.orgs.length == 0) {
+                this.selectAcc()
+                this.hideType = true
+            }
+    
+    
         }
     
     }" x-init="onInit">
         <h1>Competition Creator</h1>
         <br>
 
-        <div class="grid-2">
+        <div class="grid-2" x-show="!hideType" x-cloak>
             <div class="se-card se-card-hover" :class="type === 'account' ? 'se-card-active' : ''" @click="selectAcc()">
                 <div class="flex items-center justify-between h-full">
                     <div>
@@ -173,14 +200,19 @@
                 </div>
             </div>
             <div class="grid-4 mt-2">
-                <div class="se-card se-card-hover" @click="selectOrg(1)" :class="form.org == 1 ? 'se-card-active' : ''"
-                    x-show="orgSearch('BULSCA')">
-                    <h4>BULSCA</h4>
-                </div>
-                <div class="se-card se-card-hover" @click="selectOrg(2)" :class="form.org == 2 ? 'se-card-active' : ''"
-                    x-show="orgSearch('RLSS')">
-                    <h4>RLSS</h4>
-                </div>
+                <template x-for="org in orgs">
+                    <div class="se-card se-card-hover" @click="selectOrg(org.id)"
+                        :class="form.org == org.id ? 'se-card-active' : ''" x-show="orgSearch(org.name)">
+                        <h4 x-text="org.name"></h4>
+                    </div>
+                </template>
+
+                <template x-if="orgs.length == 0">
+                    <small>You don't belong to any organisations</small>
+                </template>
+
+
+
             </div>
             <br>
         </div>

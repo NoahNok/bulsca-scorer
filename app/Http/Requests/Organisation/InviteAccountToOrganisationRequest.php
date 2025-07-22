@@ -29,7 +29,7 @@ class InviteAccountToOrganisationRequest extends FormRequest
         return [
             'email' => 'required|email',
             'access' => 'required|array',
-            'access.*' => 'in:' . implode(',', array_keys(Organisation::$accessTypes)),
+            'access.*' => 'in:' . implode(',', collect(Organisation::$accessTypes)->flatMap(fn($group) => array_keys($group))->all()),
         ];
     }
 

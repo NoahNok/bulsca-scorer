@@ -6,6 +6,7 @@ use App\Http\Requests\Competition\CreateCompetitionAccount;
 use App\Http\Requests\Competition\CreateCompetitionRequest;
 use App\Http\Requests\Competition\EditCompetitionAccount;
 use App\Models\Competition;
+use App\Models\Organisation\Organisation;
 use App\Models\User;
 use App\Models\UserCompetitionAccess;
 use Carbon\Carbon;
@@ -185,12 +186,6 @@ class CompetitionController extends Controller
         $validated = $request->validated();
 
 
-
-        if ($validated['org'] != 'null') {
-            throw new NotImplementedException();
-        }
-
-
         $comp = new Competition();
         $comp->name = $validated['name'];
         $comp->when = $validated['when'];
@@ -205,9 +200,22 @@ class CompetitionController extends Controller
         $comp->scoring_type = $validated['scoring_type'];
         $comp->save();
 
-        // Add the user that created thee competition as an owner
-        $comp->addAccount(Auth::user(), ['owner']);
 
+        if ($validated['org'] != 'null') {
+            $organisation = Organisation::find($validated['org']);
+
+            if ($organisation == null) {
+                return response()->json(['error' => 'No organisation exists with that Id.']);
+            }
+
+            if (!Auth::user()->can('access', [$organisation, 'admin'])) {
+                return response()->json(['error' => "You need to be an admin of {$organisation->name} to add competitions to it."]);
+            }
+
+            $organisation->getCompetitions()->save($comp);
+        } else {
+            $comp->addAccount(Auth::user(), ['owner']);
+        }
 
 
         $request->session()->flash('success', 'Competition created!');

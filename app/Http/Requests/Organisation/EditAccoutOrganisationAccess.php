@@ -28,7 +28,7 @@ class EditAccoutOrganisationAccess extends FormRequest
     {
         return [
             'access' => 'required|array',
-            'access.*' => 'in:' . implode(',', array_keys(Organisation::$accessTypes)),
+            'access.*' => 'in:' . implode(',', collect(Organisation::$accessTypes)->flatMap(fn($group) => array_keys($group))->all()),
         ];
     }
 }

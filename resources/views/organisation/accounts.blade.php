@@ -126,7 +126,7 @@
             @csrf
 
 
-            <p class="text-sm">Invite someone to this organisaiton. If they have an account it wil lappear as you type their
+            <p class="text-sm">Invite someone to this organisaiton. If they have an account it will appear as you type their
                 email,
                 otherwise they will be invited to create an account.</p>
             <br>
@@ -154,14 +154,16 @@
             <br>
 
             <div class="grid-3 gap-1!">
-                @foreach (App\Models\Organisation\Organisation::$accessTypes as $type => $name)
-                    <div class="flex space-x-2">
-                        <input type="checkbox" name="access[]" value="{{ $type }}"
-                            @if ($type == 'view') checked @endif id="access-{{ $type }}">
-                        <label for="access-{{ $type }}" class="font-archivo flex items-center">
-                            {{ $name }}
-                        </label>
-                    </div>
+                @foreach (App\Models\Organisation\Organisation::$accessTypes as $group => $access)
+                    @foreach ($access as $type => $name)
+                        <div class="flex space-x-2">
+                            <input type="checkbox" name="access[]" value="{{ $type }}"
+                                @if ($type == 'view') checked @endif id="access-{{ $type }}">
+                            <label for="access-{{ $type }}" class="font-archivo flex items-center">
+                                {{ $name }}
+                            </label>
+                        </div>
+                    @endforeach
                 @endforeach
             </div>
 
@@ -295,14 +297,16 @@
 
 
             <div class="grid-4 gap-1!" x-show="!data.owner">
-                @foreach (App\Models\Organisation\Organisation::$accessTypes as $type => $name)
-                    <div class="flex space-x-2">
-                        <input type="checkbox" name="access[]" value="{{ $type }}"
-                            id="edit-access-{{ $type }}">
-                        <label for="edit-access-{{ $type }}" class="font-archivo flex items-center">
-                            {{ $name }}
-                        </label>
-                    </div>
+                @foreach (App\Models\Organisation\Organisation::$accessTypes as $group => $access)
+                    @foreach ($access as $type => $name)
+                        <div class="flex space-x-2">
+                            <input type="checkbox" name="access[]" value="{{ $type }}"
+                                id="edit-access-{{ $type }}">
+                            <label for="edit-access-{{ $type }}" class="font-archivo flex items-center">
+                                {{ $name }}
+                            </label>
+                        </div>
+                    @endforeach
                 @endforeach
             </div>
 
