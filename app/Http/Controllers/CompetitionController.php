@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Competition\CreateCompetitionAccount;
 use App\Http\Requests\Competition\CreateCompetitionRequest;
+use App\Http\Requests\Competition\DeleteCompetitionRequest;
 use App\Http\Requests\Competition\EditCompetitionAccount;
 use App\Models\Competition;
 use App\Models\Organisation\Organisation;
@@ -31,14 +32,14 @@ class CompetitionController extends Controller
 
     public function view(Competition $comp, Request $request)
     {
-        $request->session()->put('ac', $comp);
+
 
         return view('competition.view', ['comp' => $comp]);
     }
 
     public function events(Competition $comp, Request $request)
     {
-        $request->session()->put('ac', $comp);
+
 
         return view('competition.events', ['comp' => $comp]);
     }
@@ -46,20 +47,22 @@ class CompetitionController extends Controller
 
     public function teams(Competition $comp, Request $request)
     {
-        $request->session()->put('ac', $comp);
+
 
         return view('competition.teams', ['comp' => $comp]);
     }
 
     public function competitors(Competition $comp, Request $request)
     {
-        $request->session()->put('ac', $comp);
+
 
         return view('competition.competitors', ['comp' => $comp]);
     }
 
     public function createCompetitionStats(Competition $comp)
     {
+
+        $this->authorize('access', [$comp, 'admin']);
 
         $comp->generateStats();
 
@@ -70,6 +73,9 @@ class CompetitionController extends Controller
 
     public function updateCompetitionSettings(Competition $comp, Request $request)
     {
+
+
+
         $comp->max_lanes = $request->input('lanes', $comp->max_lanes);
         $newDateTime = $request->input('serc_start_time', $comp->serc_start_time);
         $utcDate = Carbon::parse($newDateTime, 'BST');
@@ -221,5 +227,20 @@ class CompetitionController extends Controller
         $request->session()->flash('success', 'Competition created!');
 
         return response()->json(['url' => route('comps.view', ['comp' => $comp])]);
+    }
+
+    public function deleteComp(Competition $comp, DeleteCompetitionRequest $request)
+    {
+        $validated = $request->validated();
+
+        if ($validated['name'] != $comp->name) {
+            return response()->json(['error' => "Confirmation name doesn't match!"]);
+        }
+
+        $comp->delete();
+
+        $request->session()->flash('success', 'Competition deleted!');
+
+        return response()->json([]);
     }
 }

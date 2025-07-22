@@ -56,7 +56,11 @@ class Handler extends ExceptionHandler
 
 
         if ($exception instanceof AuthorizationException) {
-
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'error' => "You don't have permission to do that",
+                ], 403);
+            }
 
             if ($request->is('comps/*')) {
                 return response()->view('competition.403', ['comp' => $request->route('comp')], 403);

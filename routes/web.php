@@ -116,6 +116,7 @@ Route::middleware('auth')->group(function () {
 
 
             Route::post('/settings', [CompetitionController::class, 'updateCompetitionSettings'])->name('comps.settings');
+            Route::post('/delete', [CompetitionController::class, 'deleteComp'])->name('comps.delete');
 
 
             Route::get('/accounts', [CompetitionController::class, 'getCompetitionAccounts'])->name('comps.accounts');
