@@ -151,7 +151,8 @@
         <br>
 
         <div class="grid-2" x-show="!hideType" x-cloak>
-            <div class="se-card se-card-hover" :class="type === 'account' ? 'se-card-active' : ''" @click="selectAcc()">
+            <div class="se-card se-card-hover se-card-body" :class="type === 'account' ? 'se-card-active' : ''"
+                @click="selectAcc()">
                 <div class="flex items-center justify-between h-full">
                     <div>
                         <h4>My Account</h3>
@@ -167,7 +168,7 @@
 
                 </div>
             </div>
-            <div class="se-card se-card-hover" :class="type === 'organisation' ? 'se-card-active' : ''"
+            <div class="se-card se-card-hover se-card-body" :class="type === 'organisation' ? 'se-card-active' : ''"
                 @click="selectOrga()">
 
                 <div class="flex items-center justify-between space-x-6">
@@ -201,7 +202,7 @@
             </div>
             <div class="grid-4 mt-2">
                 <template x-for="org in orgs">
-                    <div class="se-card se-card-hover" @click="selectOrg(org.id)"
+                    <div class="se-card se-card-hover se-card-body" @click="selectOrg(org.id)"
                         :class="form.org == org.id ? 'se-card-active' : ''" x-show="orgSearch(org.name)">
                         <h4 x-text="org.name"></h4>
                     </div>
@@ -237,7 +238,7 @@
 
                         <div class="se-form-input">
                             <label for="when">Date</label>
-                            <input type="datetime-local" name="when" id="when" placeholder="When"
+                            <input type="date" name="when" id="when" placeholder="When"
                                 value="{{ old('when') }}" required>
                         </div>
 
@@ -252,7 +253,7 @@
                         <div class="se-form-input">
                             <label for="lanes">Lanes</label>
                             <input type="number" name="lanes" id="lanes" placeholder="Lanes"
-                                value="{{ old('lanes') }}" required>
+                                value="{{ old('lanes', 8) }}" required>
                         </div>
 
 

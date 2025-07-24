@@ -36,6 +36,23 @@ class Competition extends Model
         'serc_start_time' => 'datetime',
     ];
 
+
+    public function getSlug()
+    {
+        return str_replace(' ', '-', $this->name) . "." . $this->id;
+    }
+
+    public function resolveRouteBinding($value, $field = null)
+    {
+
+        if (!is_numeric($value)) {
+            $arr = explode('.', $value);
+            $value = end($arr);
+        }
+
+        return parent::resolveRouteBinding($value, $field);
+    }
+
     public function getSpeedEvents()
     {
         return $this->hasMany(CompetitionSpeedEvent::class, 'competition', 'id');

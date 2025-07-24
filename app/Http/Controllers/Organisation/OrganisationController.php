@@ -60,10 +60,8 @@ class OrganisationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $organisation)
+    public function show(Organisation $organisation)
     {
-        $organisation = Organisation::where('name', $organisation)->firstOrFail();
-
         $this->authorize('access', [$organisation, '*']);
 
         return view('organisation.show', ['org' => $organisation]);
@@ -72,10 +70,8 @@ class OrganisationController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $organisation)
+    public function edit(Organisation $organisation)
     {
-        $organisation = Organisation::where('name', $organisation)->firstOrFail();
-
         $this->authorize('access', [$organisation, 'admin']);
 
         return view('organisation.edit', ['org' => $organisation]);
@@ -117,12 +113,8 @@ class OrganisationController extends Controller
         //
     }
 
-    public function accounts(string $organisation)
+    public function accounts(Organisation $organisation)
     {
-
-
-        $organisation = Organisation::where('name', $organisation)->firstOrFail();
-
         $this->authorize('access', [$organisation, 'admin']);
 
         return view('organisation.accounts', ['org' => $organisation]);

@@ -21,6 +21,7 @@ use App\Http\Controllers\CompetitionController;
 use App\Http\Controllers\CompetitorController;
 use App\Http\Controllers\DigitalJudge\DigitalJudgeController;
 use App\Http\Controllers\HeatController;
+use App\Http\Controllers\Landing\LandingController;
 use App\Http\Controllers\Organisation\OrganisationController;
 use App\Http\Controllers\OverallResultsController;
 use App\Http\Controllers\Pdf\PdfController;
@@ -302,16 +303,8 @@ Route::prefix('/admin')->middleware('isAdmin')->group(function () {
 
 
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
 
 Route::get('dashboard', function () {
-
-
-
     return redirect()->route('home');
 });
 
@@ -351,5 +344,12 @@ Route::prefix('invite/{invite}/{email}')->group(function () {
     Route::post('resolve/{resolution}/new-acc', [AccountInviteController::class, 'resolveNewAccount'])->name('invite.resolve.new-account');
 });
 
+Route::prefix('competition/{comp}')->group(function () {
+    Route::get('', [LandingController::class, 'showCompetition'])->name('landing.competition');
+    Route::get('heats-and-draws', [LandingController::class, 'showHeatsAndDraws'])->name('landing.competition.heats-draws');
+    Route::get('results', [LandingController::class, 'showResults'])->name('landing.competition.results');
+});
 
 require __DIR__ . '/auth.php';
+
+Route::get('/{organisation}', [LandingController::class, 'showOrganisation'])->name('landing.organisation');

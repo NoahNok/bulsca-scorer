@@ -59,6 +59,36 @@ class ResultSchema extends Model
         }
     }
 
+    public function getLeagueName(): string
+    {
+        switch (Str::lower($this->league)) {
+            case "o":
+                return "Overall League";
+
+            case "a":
+                return "A-League";
+
+            case "b":
+                return "B-League";
+
+            case "f":
+                return "Freshers League";
+
+            case "nc":
+                return "Non-counting League";
+
+            case "ns":
+                return "Non-student League"; // Will probably never get used
+
+            case "ob":
+                return "Old-boys League"; // Will probably never get used
+
+            default:
+                return $this->league;
+        }
+    }
+
+
     /**
      * I'm aware that this looks like alot of sphagetti
      * but it works well and it quite fast, and it the best way I could think of doing it

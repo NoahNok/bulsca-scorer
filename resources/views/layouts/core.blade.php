@@ -107,14 +107,20 @@
 
     <header class="bg-white z-10 shadow-sm" x-data="{ navOpen: false }">
         <nav class="mx-auto flex  items-center justify-between p-4 lg:px-8" aria-label="Global">
-            <div class="flex lg:flex-1 items-center">
+            <div class="flex lg:flex-1 items-center space-x-10">
                 <!-- <a href="#" class="-m-1.5 p-1.5 text-red-500">
                     <span class="sr-only">Your Company</span>
                     <img class="h-8 w-auto" src="se-cc.svg" class=" " alt="">
                 </a> -->
                 <a href="/">
-                    <h3 class="ml-3 text-xl font-archivo font-semibold">Scoring.<span class="text-se">Events</span></h3>
+                    <h3 class="ml-3 text-xl font-archivo font-semibold group hover:text-se! transition-colors">
+                        Scoring.<span class="text-se group-hover:text-black! transition-colors">Events</span></h3>
                 </a>
+
+                <div>
+                    <a href="{{ route('home') }}"
+                        class="text-sm/6 font-semibold text-gray-900 hover:text-se transition-colors">Explore</a>
+                </div>
 
 
             </div>
@@ -134,17 +140,23 @@
 
 
 
+
             @auth
 
-                <div class="hidden lg:flex lg:flex-1 lg:justify-end space-x-3">
+                <div class="hidden lg:flex lg:flex-1 lg:justify-end space-x-3 ">
+                    <a href="{{ route('home') }}"
+                        class="text-sm/6 font-semibold text-gray-900 hover:text-se transition-colors">Dashboard</a>
                     @if (Auth::user()->isAdmin())
-                        <a href="{{ route('admin.index') }}" class="text-sm/6 font-semibold text-gray-900">Admin</a>
+                        <a href="{{ route('admin.index') }}"
+                            class="text-sm/6 font-semibold text-gray-900 hover:text-se transition-colors">Admin</a>
                     @endif
-                    <a href="{{ route('logout') }}" class="text-sm/6 font-semibold text-gray-900">Logout</a>
+                    <a href="{{ route('logout') }}"
+                        class="text-sm/6 font-semibold text-gray-900 hover:text-se transition-colors">Logout</a>
                 </div>
             @else
                 <div class="hidden lg:flex lg:flex-1 lg:justify-end">
-                    <a href="{{ route('login') }}" class="text-sm/6 font-semibold text-gray-900 hover:text-se">Log in <span
+                    <a href="{{ route('login') }}"
+                        class="text-sm/6 font-semibold text-gray-900 hover:text-se transition-colors">Log in <span
                             aria-hidden="true">&rarr;</span></a>
                 </div>
             @endauth

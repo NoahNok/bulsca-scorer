@@ -12,10 +12,10 @@
         </div>
 
         @if ($comp->getOrganisation)
-            <div>
+            <a href="{{ route('orgs.show', $comp->getOrganisation->name) }}">
                 <img src="{{ $comp->getOrganisation->getLogo() }}" alt="{{ $comp->getOrganisation->name }}'s logo"
                     class="size-14 rounded-full">
-            </div>
+            </a>
         @endif
 
 

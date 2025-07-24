@@ -149,12 +149,13 @@
 
             <strong>Access</strong>
             <p class="text-sm">Please select the access the user should have. It is recommended that they atleast have
-                'view' access.</p>
+                'view' access. <br><br>Applying <strong>admin</strong> will also grant all competition access</p>
 
             <br>
 
             <div class="grid-3 gap-1!">
                 @foreach (App\Models\Organisation\Organisation::$accessTypes as $group => $access)
+                    <h4 class=" col-span-3 mt-2 first-of-type:mt-0">{{ $group }}</h4>
                     @foreach ($access as $type => $name)
                         <div class="flex space-x-2">
                             <input type="checkbox" name="access[]" value="{{ $type }}"
@@ -295,9 +296,14 @@
             <p class="text-sm text-gray-400 mb-4" x-text="data.email"></p>
 
 
+            <p class="text-sm" x-show="!data.owner">Applying <strong>admin</strong> will also grant all competition access
+            </p>
 
-            <div class="grid-4 gap-1!" x-show="!data.owner">
+            <br>
+
+            <div class="grid-3 gap-1!" x-show="!data.owner">
                 @foreach (App\Models\Organisation\Organisation::$accessTypes as $group => $access)
+                    <h4 class=" col-span-3 mt-2 first-of-type:mt-0">{{ $group }}</h4>
                     @foreach ($access as $type => $name)
                         <div class="flex space-x-2">
                             <input type="checkbox" name="access[]" value="{{ $type }}"

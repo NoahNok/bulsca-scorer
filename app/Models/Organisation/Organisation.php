@@ -6,6 +6,7 @@ use App\Models\AccountInvite;
 use App\Models\Competition;
 use App\Models\Interfaces\IInvitable;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,10 +17,10 @@ class Organisation extends Model implements IInvitable
     use HasFactory;
 
     public static $accessTypes = [
-        'org' => [
+        'Organisation' => [
             'admin' => 'Admin'
         ],
-        'comp' => [
+        'Competition' => [
 
             'view' => 'Overview',
             'teams' => 'Teams/Competitors',
@@ -31,6 +32,15 @@ class Organisation extends Model implements IInvitable
             'serc_writer' => 'SERC Writer',
         ]
     ];
+
+    public function resolveRouteBinding($value, $field = null)
+    {
+        return $this->where(function ($query) use ($value) {
+
+            $query->where('id', $value)
+                ->orWhere('name', $value);
+        })->first();
+    }
 
 
     public function addAccount(User $account, string|array $access_to = 'view')
@@ -70,7 +80,7 @@ class Organisation extends Model implements IInvitable
 
     public function getCompetitions()
     {
-        return $this->hasMany(Competition::class, 'organisation');
+        return $this->hasMany(Competition::class, 'organisation')->orderBy('when', 'desc');
     }
 
     public function canUser(User $user, array|string $access_to): bool
@@ -214,5 +224,10 @@ class Organisation extends Model implements IInvitable
         OrganisationUserAccess::where('user', $account->id)
             ->where('organisation', $this->id)
             ->delete();
+    }
+
+    public function getOngoingCompetition(): ?Competition
+    {
+        return $this->getCompetitions()->whereDate('when', Carbon::today())->first();
     }
 }
