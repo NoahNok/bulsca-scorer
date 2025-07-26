@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Competition;
 
 use App\Models\Competition;
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -25,7 +26,7 @@ class CreateCompetitionAccount extends FormRequest
         /** @var Competition $competition */
         $competition = $this->route('comp');
 
-        return $user->competition == $competition->id;
+        return $competition->canUser($user, 'admin');
     }
 
     /**

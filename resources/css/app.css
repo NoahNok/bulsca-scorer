@@ -548,6 +548,22 @@ div.se-form-input {
 
 }
 
+div.se-checkbox {
+  
+  div {
+    @apply flex flex-row space-x-2;
+
+
+    label, input {
+      @apply cursor-pointer;
+    }
+  }
+
+  p {
+    @apply text-sm ml-5;
+  }
+}
+
 
 .se-btn {
   @apply py-1 px-6 text-center border border-gray-300 hover:border-gray-500 hover:bg-gray-100 transition-colors rounded-md cursor-pointer! font-archivo;
@@ -1047,8 +1063,32 @@ aside {
   }
 }
 
+.se-pannel {
+  @apply flex flex-row space-x-4;
+
+  ul {
+    @apply min-w-1/6 border-r ;
+
+    li {
+      @apply p-1 cursor-pointer transition-colors;
+
+      &.active, &:hover {
+        @apply border-black border-r-2 font-semibold;
+      }
+    }
+  }
+
+  div {
+    @apply grow flex flex-col;
+  }
+}
+
 .se-modal {
   @apply w-full h-full fixed top-0 left-0 flex items-center justify-center z-50 bg-black/30;
+
+  &.se-modal-wide > div{
+    @apply w-[35%];
+  }
 
   >div {
     @apply bg-white rounded-md w-[25%];

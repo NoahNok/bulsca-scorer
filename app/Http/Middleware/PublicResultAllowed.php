@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Competition;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +18,9 @@ class PublicResultAllowed
     {
 
 
-        $comp = $request->route('comp_slug');
+
+        $comp = $request->route('comp');
+
 
         if (!$comp->areResultsPublic()) {
             return redirect()->route('public.results.unavailable', ['comp' => $comp])->with('message', "$comp->name results are not currently available");

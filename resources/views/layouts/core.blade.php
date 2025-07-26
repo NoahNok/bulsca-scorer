@@ -118,7 +118,7 @@
                 </a>
 
                 <div>
-                    <a href="{{ route('home') }}"
+                    <a href="{{ route('explore') }}"
                         class="text-sm/6 font-semibold text-gray-900 hover:text-se transition-colors">Explore</a>
                 </div>
 
@@ -210,7 +210,9 @@
 
 
     <main class="flex w-screen justify-center my-8 md:my-16">
-        <div class="w-screen sm:w-[90%] md:w-[75%] px-6 md:px-8 flex flex-col ">
+        <div class="w-screen sm:w-[90%] md:w-[75%] px-6 md:px-8 flex flex-col " x-data="{
+            global_state: {}
+        }">
             @yield('core-content')
         </div>
     </main>
@@ -238,6 +240,30 @@
             document.querySelectorAll("[editable-table]").forEach(et => {
                 new EditableTable(et)
             })
+
+            function convertUTCMinutesToLocal() {
+                const inputs = document.querySelectorAll('input[type="datetime-local"]');
+
+                inputs.forEach(input => {
+                    const rawUTC = input.value;
+                    if (!rawUTC) return;
+
+                    // Parse the UTC datetime string
+                    const utcDate = new Date(rawUTC + 'Z'); // Add 'Z' to mark it as UTC
+
+                    // Convert to local time
+                    utcDate.setMinutes(utcDate.getMinutes() - utcDate.getTimezoneOffset());
+
+                    // Format for datetime-local input (YYYY-MM-DDTHH:mm)
+                    const localValue = utcDate.toISOString().slice(0, 16);
+
+                    // Update the input
+                    input.value = localValue;
+                });
+            }
+
+
+            convertUTCMinutesToLocal()
 
 
 

@@ -1,13 +1,9 @@
 @extends('layouts.landing')
 
-@section('title', $org->name)
+@section('title', 'Explore')
 
 @section('content')
 
-    <div class="flex items-center py-8 space-x-4 z-20">
-        <img src="{{ $org->getLogo() }}" alt="" class="size-16 rounded-full">
-        <h1 class="text-5xl! -mb-1 ">{{ $org->name }}</h1>
-    </div>
 
 
 
@@ -35,19 +31,34 @@
 
 
     <h2>Competitions</h2>
-
-
-
     <div class="grid-4 z-20 mt-2">
-        @forelse ($org->getCompetitions as $comp)
+        @foreach ($comps as $comp)
             <x-competition-card url="{{ route('landing.competition', $comp->getSlug()) }}" :comp="$comp"
-                :org="$org"></x-competition-card>
-        @empty
-            <div class="alert-box col-span-full">
-                <h1>No Competitions</h1>
-                <p>{{ $org->name }} doesn't have any competitions.</p>
-            </div>
-        @endforelse
+                :org="$comp->getOrganisation"></x-competition-card>
+        @endforeach
 
     </div>
+
+
+    {{ $comps->appends(['orgs_page' => $orgs->currentPage()])->links() }}
+
+    <br>
+    <hr class="spacer mt-3!">
+    <br>
+
+    <h2>Organisations</h2>
+    <div class="grid-4 z-20 mt-2">
+        @foreach ($orgs as $org)
+            <a href="{{ route('landing.organisation', $org) }}" class="se-card se-card-hover se-card-body ">
+                <div class="flex items-center justify-between">
+                    <h2>{{ $org->name }}</h2>
+                    <img src="{{ $org->getLogo() }}" alt="" class="size-8 rounded-full">
+                </div>
+            </a>
+        @endforeach
+
+    </div>
+    <br>
+
+    {{ $orgs->appends(['page' => $comps->currentPage()])->links() }}
 @endsection

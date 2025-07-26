@@ -327,66 +327,153 @@
             @endslot
         </x-s-e-modal>
 
-        <x-s-e-modal id="compSettings" title="Competition Settings">
-
-            <form id="compSettingsForm"
-                x-on:submit="(e) => {
-            e.preventDefault()
-         
-
-              if (this.loading) {
-                return
-            }
-               this.loading = true
-            
-
-
-            fetch('{{ route('comps.settings', $comp) }}', {
-                method: 'POST',
-                body: new FormData($event.target),
-            }).then(resp => {
-               this.loading = false
-                if (!resp.ok) {
-                    showAlert('Something went wrong, you changes have been reversed.')
-                    $event.target.reset()
-                    return
-                }
-     
-
-                loading = false
-                modals.compSettings = false
-                showSuccess('Competition settings saved')
-            })
-        }">
-
-
-                @csrf
-
-                <h4>Heats</h4>
-                <x-form-input id="lanes" title="Lanes" type="number" defaultValue="{{ $comp->max_lanes }}" />
+        <x-s-e-modal id="compSettings" title="Settings" class="se-modal-wide">
 
 
 
+            <div class="se-pannel" x-data="{
+                active: 'details',
+            }">
+                <ul class="">
+                    <li :class="active == 'details' ? 'active' : ''" @click="active = 'details'">Details</li>
+                    <li :class="active == 'setup' ? 'active' : ''" @click="active = 'setup'">Setup</li>
+                </ul>
 
-                <h4>Other</h4>
-                @php
-                    $sercStart = $comp->serc_start_time;
-                    $sercStart?->setTimezone('BST');
-                @endphp
-                <x-form-input id="serc_start_time" title="SERC Start Time" required="false" type="datetime-local"
-                    defaultValue="{{ $sercStart }}"></x-form-input>
 
-                <div class="flex space-x-2 -mt-5!">
-                    <input type="checkbox" class="ml-3" name="can_be_live" @if ($comp->can_be_live) checked @endif
-                        id="can_be_live">
-                    <label for="can_be_live">Viewable Live</label>
+                <div x-cloak x-show="active == 'details'">
+                    <h3>Details</h3>
+
+                    <form id="compDetailsForm" class="grid-2 w-full"
+                        x-on:submit="(e) => {
+                            e.preventDefault()
+                            loading = true
+
+
+                            fetch('{{ route('comps.settings', $comp) }}', {
+                                method: 'POST',
+                                body: new FormData($event.target),
+                                headers: {
+                                    'Accept': 'application/json',
+                                }
+                            }).then(resp => {
+                            this.loading = false
+                                if (!resp.ok) {
+                                    showAlert('Something went wrong, you changes have been reversed.')
+                                    $event.target.reset()
+                                    return
+                                }
+
+                                global_state.competition_name = $event.target.name.value
+
+                                loading = false
+                                showSuccess('Competition settings saved')
+                            })
+                        }"
+                        x-init="modals.compSettings = true">
+
+                        @csrf
+                        <div class="se-form-input imb-0">
+                            <label for="">Name</label>
+                            <input type="text" name="name" value="{{ $comp->name }}">
+                        </div>
+                        <div class="se-form-input imb-0">
+                            <label for="">Date</label>
+                            <input type="date" name="when" value="{{ $comp->when->format('Y-m-d') }}">
+                        </div>
+                        <div class="se-form-input imb-0">
+                            <label for="">Location</label>
+                            <input type="text" name="where" value="{{ $comp->where }}">
+                        </div>
+
+
+
+
+
+
+                    </form>
+                    <button class="se-btn se-btn-success ml-auto" form="compDetailsForm">Save</button>
+                </div>
+                <div x-cloak x-show="active == 'setup'">
+                    <h3>Setup</h3>
+
+                    <form id="compSettingsForm" class="grid-2 w-full"
+                        x-on:submit="(e) => {
+                            e.preventDefault()
+                        
+
+                        
+                            loading = true
+
+
+                            fetch('{{ route('comps.settings', $comp) }}', {
+                                method: 'POST',
+                                body: new FormData($event.target),
+                                headers: {
+                                    'Accept': 'application/json',
+                                }
+                            }).then(resp => {
+                            this.loading = false
+                                if (!resp.ok) {
+                                    showAlert('Something went wrong, you changes have been reversed.')
+                                    $event.target.reset()
+                                    return
+                                }
+                    
+
+                                loading = false
+                             
+                                showSuccess('Competition settings saved')
+                            })
+                        }"
+                        x-init="modals.compSettings = true">
+
+
+                        @csrf
+
+                        <div class="se-form-input imb-0">
+                            <label for="">Lanes</label>
+                            <input type="text" name="max_lanes" value="{{ $comp->max_lanes }}">
+                        </div>
+
+                        @php
+                            $sercStart = $comp->serc_start_time;
+
+                            $sercStart->setSeconds(0);
+                        @endphp
+
+                        <div class="se-form-input imb-0">
+                            <label for="">SERC Start Time</label>
+                            <input type="datetime-local" name="serc_start_time" value="{{ $sercStart }}">
+                            <input type="hidden" name="timezone" x-init="$el.value = Intl.DateTimeFormat().resolvedOptions().timeZone;">
+                        </div>
+
+
+
+                        <div class="se-checkbox">
+                            <div>
+                                <input type="checkbox" name="can_be_live" @if ($comp->can_be_live) checked @endif
+                                    id="can_be_live">
+                                <input type="hidden" name="can_be_live" value="0">
+                                <label for="can_be_live">Viewable Live</label>
+                            </div>
+                            <p>If this competition can be viewed live</p>
+                        </div>
+
+
+
+                    </form>
+                    <button class="se-btn se-btn-success ml-auto" form="compSettingsForm">Save</button>
                 </div>
 
 
-            </form>
+            </div>
+
+
+
+
 
             <x-slot name="footer">
-                <button type="submit" form="compSettingsForm" class="se-btn se-btn-success ml-auto">Save</button>
+
             </x-slot>
         </x-s-e-modal>
 

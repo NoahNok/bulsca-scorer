@@ -1,7 +1,16 @@
 @if ($heatEntries->count() == 0)
-    <div class="empty">
-        <a href="{{ route('comps.heats.gen', $comp) }}" class="se-btn">Generate Heats</a>
-    </div>
+
+
+    @if (Str::startsWith(Route::currentRouteName(), 'comps.heats'))
+        <div class="empty">
+            <a href="{{ route('comps.heats.gen', $comp) }}" class="se-btn">Generate Heats</a>
+        </div>
+    @else
+        <div class="alert-box">
+            <h2>Unavailable</h2>
+            <p>Heats are not current available.</p>
+        </div>
+    @endif
 @else
     <div class="se-table">
         <table>

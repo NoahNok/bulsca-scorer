@@ -338,16 +338,23 @@ Route::get('dq', function () {
     return response()->json($ret);
 });
 
+
 Route::prefix('invite/{invite}/{email}')->group(function () {
     Route::get('', [AccountInviteController::class, 'show'])->name('invite.show');
     Route::get('resolve/{resolution}', [AccountInviteController::class, 'resolve'])->name('invite.resolve');
     Route::post('resolve/{resolution}/new-acc', [AccountInviteController::class, 'resolveNewAccount'])->name('invite.resolve.new-account');
 });
 
+Route::get('explore', [LandingController::class, 'explore'])->name('explore');
+
 Route::prefix('competition/{comp}')->group(function () {
     Route::get('', [LandingController::class, 'showCompetition'])->name('landing.competition');
     Route::get('heats-and-draws', [LandingController::class, 'showHeatsAndDraws'])->name('landing.competition.heats-draws');
-    Route::get('results', [LandingController::class, 'showResults'])->name('landing.competition.results');
+
+
+    Route::prefix('results')->middleware('allowPublicResults')->group(function () {
+        Route::get('', [LandingController::class, 'showResults'])->name('landing.competition.results');
+    });
 });
 
 require __DIR__ . '/auth.php';

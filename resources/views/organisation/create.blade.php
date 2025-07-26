@@ -129,7 +129,7 @@
             <br>
 
 
-            <div class="se-card flex-row! items-center justify-between w-80 ">
+            <div class="se-card se-card-body flex-row! items-center justify-between w-80 ">
                 <div>
                     <h3 x-text="form.name || 'Scoring.Events'">Org Name</h3>
 

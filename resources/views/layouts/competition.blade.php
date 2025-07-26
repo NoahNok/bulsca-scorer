@@ -7,7 +7,7 @@
 @section('core-content')
     <div class="flex  items-center justify-between">
         <div>
-            <h1 class="-mb-2">{{ $comp->name }}</h1>
+            <h1 class="-mb-2" x-text="global_state.competition_name ?? '{{ $comp->name }}'">{{ $comp->name }}</h1>
             <small class="text-gray-500">Scoring v{{ $comp->scoring_version }}</small>
         </div>
 

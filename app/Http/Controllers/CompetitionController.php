@@ -6,6 +6,7 @@ use App\Http\Requests\Competition\CreateCompetitionAccount;
 use App\Http\Requests\Competition\CreateCompetitionRequest;
 use App\Http\Requests\Competition\DeleteCompetitionRequest;
 use App\Http\Requests\Competition\EditCompetitionAccount;
+use App\Http\Requests\Competition\UpdateCompetitionRequest;
 use App\Models\Competition;
 use App\Models\Organisation\Organisation;
 use App\Models\User;
@@ -71,22 +72,34 @@ class CompetitionController extends Controller
 
 
 
-    public function updateCompetitionSettings(Competition $comp, Request $request)
+    public function updateCompetitionSettings(Competition $comp, UpdateCompetitionRequest $request)
     {
 
+        $validated = $request->validated();
 
+        foreach ($validated as $key => $value) {
 
-        $comp->max_lanes = $request->input('lanes', $comp->max_lanes);
-        $newDateTime = $request->input('serc_start_time', $comp->serc_start_time);
-        $utcDate = Carbon::parse($newDateTime, 'BST');
-        $utcDate->setTimezone('UTC');
+            if ($key == "timezone") {
+                continue;
+            }
 
-        $comp->serc_start_time = $utcDate;
-        $comp->can_be_live = $request->has('can_be_live');
+            if (is_string($value) && strtotime($value)) {
+
+                if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
+                    $value = Carbon::parse($value);
+                } else {
+                    $value = Carbon::parse($value, $validated['timezone']);
+                    $value->setTimezone('UTC');
+                }
+            }
+
+            $comp->$key = $value;
+        }
+
 
         $comp->save();
 
-        return;
+        return response()->json([]);
     }
 
     public function createCompetitionAccount(Competition $comp, CreateCompetitionAccount $request)
