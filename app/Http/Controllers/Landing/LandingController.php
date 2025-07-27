@@ -41,4 +41,50 @@ class LandingController extends Controller
     {
         return view('landing.competition.results', ['comp' => $comp]);
     }
+
+    public function search(string $search)
+    {
+        $dbComps = Competition::selectRaw("*,
+            CASE
+                WHEN name = ? THEN 3
+                WHEN name LIKE ? THEN 2
+                WHEN name LIKE ? THEN 1
+                ELSE 0
+            END as relevance
+            ", [$search, "$search%", "%$search%"])
+            ->where('name', 'LIKE', "%$search%")
+            ->orderByDesc('relevance')->limit(6)->get();
+
+        $comps = [];
+        foreach ($dbComps as $comp) {
+
+            $comps[] = [
+                'id' => $comp->id,
+                'name' => $comp->name,
+                'when' => $comp->when->format('M jS Y'),
+                'where' => $comp->where,
+                'url' => route('landing.competition', $comp->getSlug())
+            ];
+        }
+
+        $orgs = Organisation::selectRaw("id, name, logo,
+            CASE
+                WHEN name = ? THEN 3
+                WHEN name LIKE ? THEN 2
+                WHEN name LIKE ? THEN 1
+                ELSE 0
+            END as relevance
+            ", [$search, "$search%", "%$search%"])
+            ->where('name', 'LIKE', "%$search%")
+            ->orderByDesc('relevance')->limit(8)->get();
+
+        foreach ($orgs as $org) {
+            $org->logo = $org->getLogo();
+            $org['url'] = route('landing.organisation', $org->name);
+        }
+
+
+
+        return response()->json(compact('comps', 'orgs'));
+    }
 }

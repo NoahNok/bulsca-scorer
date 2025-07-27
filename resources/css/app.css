@@ -20,6 +20,8 @@
     border-color: var(--color-gray-200, currentcolor);
   }
 
+  
+
   @font-face {
     font-family: 'Astoria';
     font-style: normal;
@@ -50,6 +52,7 @@
 }
 
 @theme {
+
   --font-sans:
     Nunito, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -79,6 +82,15 @@
   --animate-ml: ml-animate 5s ease-in-out infinite;
   --animate-mr: mr-animate 5s ease-in-out infinite;
   --animate-float: float 3s ease-in-out infinite;
+  --animate-sts: side-to-side-animate 3s ease-in-out infinite;
+
+  @keyframes side-to-side-animate {
+     0%   { transform: translateX(0); }
+    25%  { transform: translateX(-5px); }
+    50%  { transform: translateX(5px); }
+    75%  { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
+  }
 
   @keyframes ml-animate {
 
@@ -1170,4 +1182,12 @@ aside {
 
 .animate-2s {
   animation-duration: 2s !important;
+}
+
+.list-arrow {
+ 
+
+  li {
+    @apply relative pl-8 before:absolute before:left-1  before:top-1/2 before:-translate-y-[7px] before:size-4 before:text-se before:bg-[url('/resources/arrow.svg')] before:bg-no-repeat before:bg-contain before:flex before:items-center before:justify-center;
+  }
 }

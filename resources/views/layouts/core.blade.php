@@ -95,7 +95,7 @@
 
 </head>
 
-<body class="flex flex-col overflow-x-hidden " x-data="{
+<body class="flex flex-col overflow-x-hidden selection:bg-se selection:text-white " x-data="{
     asideCollapsed: false,
     modals: {
         data: {}

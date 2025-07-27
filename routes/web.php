@@ -34,6 +34,7 @@ use App\Http\Controllers\SERCController;
 use App\Models\Competition;
 use App\Models\DQCode;
 use App\Models\Organisation\Organisation;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -67,7 +68,9 @@ require __DIR__ . '/stats.php';
 Route::get('/', function () {
 
     if (Auth::guest()) {
-        return view('welcome');
+        $ongoing = Competition::where('when', Carbon::today())->first();
+        $upcoming = Competition::where('when', '>=', Carbon::today())->orderBy('when')->limit(10)->get();
+        return view('welcome', compact('ongoing', 'upcoming'));
     }
 
     /** @var User $user */
@@ -346,13 +349,14 @@ Route::prefix('invite/{invite}/{email}')->group(function () {
 });
 
 Route::get('explore', [LandingController::class, 'explore'])->name('explore');
+Route::get('search/{search}', [LandingController::class, 'search'])->name('search');
 
 Route::prefix('competition/{comp}')->group(function () {
     Route::get('', [LandingController::class, 'showCompetition'])->name('landing.competition');
     Route::get('heats-and-draws', [LandingController::class, 'showHeatsAndDraws'])->name('landing.competition.heats-draws');
 
 
-    Route::prefix('results')->middleware('allowPublicResults')->group(function () {
+    Route::prefix('results')->group(function () {
         Route::get('', [LandingController::class, 'showResults'])->name('landing.competition.results');
     });
 });

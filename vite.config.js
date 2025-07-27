@@ -4,7 +4,10 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
     server: {
-        cors: true
+        cors: true,
+        proxy: {
+            '/storage': 'http://localhost'
+        }
     },
     plugins: [
         laravel({

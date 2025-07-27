@@ -368,8 +368,7 @@
                                 loading = false
                                 showSuccess('Competition settings saved')
                             })
-                        }"
-                        x-init="modals.compSettings = true">
+                        }">
 
                         @csrf
                         <div class="se-form-input imb-0">
@@ -424,8 +423,7 @@
                              
                                 showSuccess('Competition settings saved')
                             })
-                        }"
-                        x-init="modals.compSettings = true">
+                        }">
 
 
                         @csrf
@@ -438,7 +436,7 @@
                         @php
                             $sercStart = $comp->serc_start_time;
 
-                            $sercStart->setSeconds(0);
+                            $sercStart?->setSeconds(0);
                         @endphp
 
                         <div class="se-form-input imb-0">

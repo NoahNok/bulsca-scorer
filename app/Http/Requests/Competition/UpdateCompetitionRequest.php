@@ -26,7 +26,7 @@ class UpdateCompetitionRequest extends FormRequest
             'when' => 'sometimes|date|date_format:Y-m-d',
             'where' => 'sometimes|string|min:3|max:255',
             'max_lanes' => 'sometimes|numeric|min:1',
-            'serc_start_time' => 'sometimes|date',
+            'serc_start_time' => 'sometimes|nullable|date',
             'can_be_live' => 'sometimes|boolean',
             'timezone' => 'sometimes|timezone'
 

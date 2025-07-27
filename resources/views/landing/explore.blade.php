@@ -29,12 +29,16 @@
         </div>
     @endisset
 
+    <div>
+        <x-search-all />
+    </div>
+
 
     <h2>Competitions</h2>
     <div class="grid-4 z-20 mt-2">
         @foreach ($comps as $comp)
             <x-competition-card url="{{ route('landing.competition', $comp->getSlug()) }}" :comp="$comp"
-                :org="$comp->getOrganisation"></x-competition-card>
+                class=" "></x-competition-card>
         @endforeach
 
     </div>

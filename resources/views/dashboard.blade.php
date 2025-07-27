@@ -7,10 +7,10 @@
 
     @if (count($orgs) > 0)
         <h3>Organisations</h3>
-        <div class="mt-1">
+        <div class="mt-1 grid-4">
             @forelse ($orgs as $org)
                 <a href="{{ route('orgs.show', $org->name) }} "
-                    class="se-card  se-card-hover se-card-body flex-row! items-center justify-between w-80 transition-all ">
+                    class="se-card  se-card-hover se-card-body flex-row! items-center justify-between  transition-all ">
                     <div>
                         <h3>{{ $org->name }}</h3>
 

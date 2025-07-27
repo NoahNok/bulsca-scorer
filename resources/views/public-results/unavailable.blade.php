@@ -28,8 +28,7 @@
         <h3>Results unavailable</h3>
         <p>{{ $message }}</p>
 
-        <small>Please check back later, <a
-                href="{{ route('public.results.comp', ['comp_slug' => $comp->resultsSlug()]) }}"
+        <small>Please check back later, <a href="{{ route('public.results.comp', ['comp' => $comp->resultsSlug()]) }}"
                 class="link"><small>or
                     click
                     here</small></a>.</small>

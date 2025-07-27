@@ -6,9 +6,9 @@
 
     <h2>Register</h2>
     <div class="grid-3 mt-2">
-        <a href="" class="se-btn">Competitiors</a>
-        <a href="" class="se-btn">Officials</a>
-        <a href="" class="se-btn">Helpers</a>
+        <a href="" class="se-btn se-btn-disabled">Competitors</a>
+        <a href="" class="se-btn se-btn-disabled">Officials</a>
+        <a href="" class="se-btn se-btn-disabled">Helpers</a>
     </div>
     <br>
     <hr class="spacer mt-2!">
