@@ -113,8 +113,8 @@
                         @endif
 
 
-                        <button class="btn btn-purple btn-thin w-full @if ($hasDescription) mt-3! @endif"
-                            style="margin-bottom: -0.75rem" type="button" onclick="zeroAll({{ $mJudge->id }})">ZERO
+                        <button class="se-btn se-btn-purple  @if ($hasDescription) mt-3! @endif mb-3"
+                            type="button" onclick="zeroAll({{ $mJudge->id }})">ZERO
                             all</button>
 
 
@@ -176,7 +176,8 @@
                             @endif
                             <textarea @if ($head && DigitalJudge::hasTeamBeenJudgedAlreadyForJudge($team, $mJudge)) disabled @endif name="team-notes-{{ $mJudge->id }}" rows="5"
                                 placeholder="Type your notes for this team here..."
-                                class="w-full border hover:border-gray-400 p-3 h-max focus:border-gray-400 outline-hidden rounded-md" id="">{{ $n ? $n->note : '' }}</textarea>
+                                class="w-full border hover:border-gray-400 p-3 h-max focus:border-gray-400 outline-hidden rounded-md"
+                                id="">{{ $n ? $n->note : '' }}</textarea>
                         </div>
                         <br>
                     @endforeach
@@ -196,12 +197,11 @@
                 <br>
                 @csrf
                 <input type="hidden" name="serc" value="{{ $serc->id }}">
-                <button type="submit" onclick="submissionCheck()" class="btn w-full">Submit</button>
+                <button type="submit" onclick="submissionCheck()" class="se-btn se-btn-success w-full">Submit</button>
 
                 @if ($head)
-                
                     <button type="submit" onclick="submissionCheck()" formaction="?a=back"
-                        class="btn btn-purple btn-thin w-full mt-3">Submit and Back</button>
+                        class="se-btn se-btn-purple btn-thin w-full mt-3">Submit and Back</button>
                 @endif
             </form>
 

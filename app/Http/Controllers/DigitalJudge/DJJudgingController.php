@@ -41,7 +41,7 @@ class DJJudgingController extends Controller
     {
         DigitalJudge::setClientJudge($judge);
 
-        if (DigitalJudge::getClientCompetition()->scoring_type == 'rlss-nationals') {
+        if (DigitalJudge::getClientCompetition()->getScoringSettings->use_tanks) {
             return redirect()->route('dj.judging.tank');
         }
         DigitalJudge::setTank(null);

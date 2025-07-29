@@ -6,7 +6,7 @@
                 @foreach ($tank->sortBy('serc_order') as $competitor)
                     @php
                         $team = App\Models\Competitor::find($competitor->tid);
-                        $name = $team->getFUllname();
+                        $name = $team->formatName();
 
                     @endphp
                     <li class="list-item whitespace-nowrap overflow-ellipsis overflow-hidden hover:whitespace-normal">

@@ -127,7 +127,7 @@
             </div>
             <br>
 
-            <button href="#" class="btn w-full">Save & Next</button>
+            <button href="#" class="se-btn se-btn-success w-full">Save & Next</button>
 
         </form>
 

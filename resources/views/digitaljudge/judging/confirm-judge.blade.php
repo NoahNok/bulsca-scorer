@@ -27,9 +27,9 @@
         <br>
         <form action="{{ route('dj.judging.confirm', $judge) }}" method="post" class="w-full ">
             @csrf
-            <button type="submit" class="btn w-full">Continue</button>
+            <button type="submit" class="se-btn se-btn-success w-full">Continue</button>
         </form>
-        <a href="{{ route('dj.home') }}" class="btn btn-danger w-full ">Back</a>
+        <a href="{{ route('dj.home') }}" class="se-btn se-btn-danger w-full ">Back</a>
 
     </div>
 @endsection

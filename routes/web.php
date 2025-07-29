@@ -120,6 +120,7 @@ Route::middleware('auth')->group(function () {
 
 
             Route::post('/settings', [CompetitionController::class, 'updateCompetitionSettings'])->name('comps.settings');
+            Route::post('/settings/scoring', [CompetitionController::class, 'updateCompetitionScoringSettings'])->name('comps.settings.scoring');
             Route::post('/delete', [CompetitionController::class, 'deleteComp'])->name('comps.delete');
 
 
@@ -127,7 +128,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/account/{account}', [CompetitionController::class, 'getCompetitionAccount'])->name('comps.accounts.view');
             Route::post('/account/{account}', [CompetitionController::class, 'editCompetitionAccount'])->name('comps.accounts.edit');
             Route::delete('/account/{account}', [CompetitionController::class, 'deleteCompetitionAccount'])->name('comps.accounts.delete');
-            Route::post('/accounts/create', [CompetitionController::class, 'createCompetitionAccount'])->name('comps.accounts.create');
+            Route::post('/accounts/invitee', [CompetitionController::class, 'inviteCompetitionAccount'])->name('comps.accounts.invite');
             Route::post('/account/serc-writer/new-password', [CompetitionController::class, 'resetSercWriterAccountPassword'])->name('comps.accounts.serc-writer.new-password');
         });
 

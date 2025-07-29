@@ -21,12 +21,12 @@
 
         <div class="flex flex-col space-y-3 w-full">
             @foreach ($tanks as $tank)
-                <a href="{{ route('dj.judging.tank.set', $tank->serc_tank) }}" class="btn w-full">Tank
+                <a href="{{ route('dj.judging.tank.set', $tank->serc_tank) }}" class="se-btn se-btn-success w-full">Tank
                     {{ $tank->serc_tank }}</a>
             @endforeach
         </div>
 
-        <a href="{{ route('dj.home') }}" class="btn btn-danger w-full ">Back</a>
+        <a href="{{ route('dj.home') }}" class="se-btn se-btn-danger w-full ">Back</a>
 
     </div>
 @endsection

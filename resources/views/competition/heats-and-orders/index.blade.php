@@ -78,7 +78,7 @@
                         </div>
                     </div>
                 @else
-                    @include('competition.heats-and-orders.serc_list_templates.' . $comp->scoring_type)
+                    @include($comp->drawTemplate())
                 @endif
 
             </div>

@@ -134,7 +134,8 @@
 
 
                     <textarea name="team-notes" rows="5" placeholder="Type your notes for this team here..."
-                        class="w-full border hover:border-gray-400 p-3 h-max focus:border-gray-400 outline-hidden rounded-md" id=""></textarea>
+                        class="w-full border hover:border-gray-400 p-3 h-max focus:border-gray-400 outline-hidden rounded-md"
+                        id=""></textarea>
                 </div>
                 <br>
                 <div class="flex flex-row space-x-2 md:space-x-4 items-center"
@@ -149,7 +150,7 @@
                 </div>
                 <br>
                 @csrf
-                <button type="submit" onclick="submissionCheck()" class="btn w-full"
+                <button type="submit" onclick="submissionCheck()" class="se-btn se-btn-success w-full"
                     data-intro="To complete the tutorial, mark this fake team and submit their marks using the button below or click the back arrow in the top left.
                     <br><br> You'll need to close this dialogue first. You can restart the tutorial by refreshing the page or by clicking the purple tutorial button on the previous page!">Submit</button>
             </form>

@@ -604,6 +604,10 @@ div.se-checkbox {
     @apply bg-white border-se text-se hover:bg-se hover:text-white;
   }
 
+  &.se-btn-purple {
+    @apply bg-purple-700 border-purple-700 text-white hover:bg-purple-800 hover:border-purple-800;
+  }
+
   &.se-btn-no-hover {
     @apply pointer-events-none;
   }

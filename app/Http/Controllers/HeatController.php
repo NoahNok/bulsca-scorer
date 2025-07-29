@@ -104,7 +104,7 @@ class HeatController extends Controller
     private function createDefaultSERCorderForComp(Competition $comp)
     {
 
-        if ($comp->scoring_type == 'rlss-nationals') {
+        if ($comp->getScoringSettings->use_tanks) {
             return view('competition.heats-and-orders.serc-order.tank-based', ['comp' => $comp]);
         }
 
@@ -137,7 +137,7 @@ class HeatController extends Controller
     public function editSERCOrder(Competition $comp)
     {
 
-        if ($comp->scoring_type == 'rlss-nationals') {
+        if ($comp->getScoringSettings->use_tanks) {
             return view('competition.heats-and-orders.serc-order.tank-based', ['comp' => $comp]);
         }
 
@@ -171,30 +171,31 @@ class HeatController extends Controller
         $comp->getCompetitionTeams()->update(['serc_order' => 0, 'serc_tank' => 0]);
 
 
-
         foreach ($data as $ind => $tank) {
             $tankTotal = 0;
             foreach ($tank as $bracket) {
                 // Get all teams/competitors for this bracket and assign them this tank and random order
                 $bracketId = $bracket['league'];
 
-                $competitors = $comp->getCompetitionTeams()->where('league', $bracketId)->get()->unique('club');
+                $competitors = [];
 
-                $competitors->shuffle();
+                if ($comp->scoring_type == 'bulsca') {
+                    $competitors = $comp->getCompetitionTeams()->where('league', $bracketId)->get();
+                } else {
+                    $competitors = $comp->getCompetitionTeams()->where('league', $bracketId)->unique('club');
+                }
+
+
+
+                $competitors = $competitors->shuffle();
 
 
 
                 foreach ($competitors as $competitor) {
-
-
-
-
                     $tankTotal++;
 
                     $competitor->serc_tank = $ind + 1;
                     $competitor->serc_order = $tankTotal;
-
-
 
                     $competitor->save();
                 }

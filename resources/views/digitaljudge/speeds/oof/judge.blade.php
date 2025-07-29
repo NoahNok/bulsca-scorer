@@ -148,11 +148,11 @@
             <template x-for="lane in lanes">
 
                 <div class="flex space-x-2">
-                    <div class="btn btn-white" @click="clickOrder(lane)">
+                    <div class="se-btn " @click="clickOrder(lane)">
                         <span x-text="lane.place == null ? '-' : lane.place"></span>
                     </div>
-                    <button class="btn w-full" @click="clickOrder(lane)"
-                        :class="lane.id ? (lane.place ? 'btn-success' : 'btn-primary') : 'btn-white'">
+                    <button class="se-btn w-full" @click="clickOrder(lane)"
+                        :class="lane.id ? (lane.place ? 'se-btn-success' : 'se-btn') : 'btn-white'">
                         Lane <span x-text="lane.number"></span>: <span x-text="lane.name"></span>
                     </button>
                 </div>
@@ -161,7 +161,7 @@
             </template>
 
 
-            <button class="btn btn-danger" x-show="canReassign" @click="startReassign()">Re-assign</button>
+            <button class="se-btn se-btn-danger" x-show="canReassign" @click="startReassign()">Re-assign</button>
 
             <br>
 
@@ -176,7 +176,7 @@
                     id="confirm">
             </div>
 
-            <button @click="save()" class="btn w-full btn-success ">Save &
+            <button @click="save()" class="se-btn se-btn-success w-full btn-success ">Save &
                 Next</button>
 
         </div>

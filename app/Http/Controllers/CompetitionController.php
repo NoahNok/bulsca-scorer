@@ -7,6 +7,7 @@ use App\Http\Requests\Competition\CreateCompetitionRequest;
 use App\Http\Requests\Competition\DeleteCompetitionRequest;
 use App\Http\Requests\Competition\EditCompetitionAccount;
 use App\Http\Requests\Competition\UpdateCompetitionRequest;
+use App\Http\Requests\Competition\UpdateCompetitionScoringSettingsRequest;
 use App\Models\Competition;
 use App\Models\Organisation\Organisation;
 use App\Models\User;
@@ -102,16 +103,55 @@ class CompetitionController extends Controller
         return response()->json([]);
     }
 
-    public function createCompetitionAccount(Competition $comp, CreateCompetitionAccount $request)
+    public function updateCompetitionScoringSettings(Competition $comp, UpdateCompetitionScoringSettingsRequest $request)
     {
 
-        $request->validated();
+        $validated = $request->validated();
 
-        $response = $comp->createCompetitionAccount($request->input('name'), $request->input('email'), $request->input('access'));
+        $settings = $comp->getScoringSettings;
 
-        if (is_string($response)) {
-            return response()->json(['error' => $response]);
+        foreach ($validated as $key => $value) {
+
+
+
+            $settings->$key = $value;
         }
+
+
+        $settings->save();
+
+        return response()->json([]);
+    }
+
+    public function inviteCompetitionAccount(Competition $comp, CreateCompetitionAccount $request)
+    {
+
+        $validated = $request->validated();
+
+        $user = User::where('email', $validated['email'])->first();
+
+        // if (!$user) {
+        //     return response()->json([
+        //         'error' => 'No account found with that email.'
+        //     ]);
+        // }
+
+        if ($user && $comp->userBelongsToCompetition($user)) {
+            return response()->json([
+                'error' => 'Account already part of this organisation.'
+            ]);
+        }
+
+        if ($comp->getInvites()->where('email', $validated['email'])->exists()) {
+            return response()->json([
+                'error' => 'Email has already been invited'
+            ]);
+        }
+
+        AccountInviteController::invite($validated['email'], $comp, ['access' => $validated['access']]);
+        // $organisation->addAccount($user, $request->input('access'));
+
+        session()->flash('success', "Account invited.");
 
         return response()->json([]);
     }

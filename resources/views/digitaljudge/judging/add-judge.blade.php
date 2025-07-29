@@ -23,12 +23,12 @@
             <form action="" method="post">
                 @csrf
                 <input type="hidden" name="addJudgeId" value="{{ $judge->id }}">
-                <button class="btn">{{ $judge->name }}</button>
+                <button class="se-btn">{{ $judge->name }}</button>
             </form>
         @endforeach
 
         <br>
-        <a href="{{ route('dj.judging.home', $judge) }}" class="btn btn-danger">Back</a>
+        <a href="{{ route('dj.judging.home', $judge) }}" class="se-btn se-btn-danger">Back</a>
 
 
     </div>

@@ -4,10 +4,13 @@ namespace App\Models;
 
 use App\Mail\CompetitionAccountCreated;
 use App\Mail\CompetitionAccountInvite;
+use App\Models\Competition\CompetitionScoringSettings;
 use App\Models\DigitalJudge\JudgeLog;
+use App\Models\Interfaces\IInvitable;
 use App\Models\Organisation\Organisation;
 use App\Stats\StatsManager;
 use App\Traits\Cloneable;
+use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +18,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
-class Competition extends Model
+class Competition extends Model implements IInvitable
 {
     use HasFactory, Cloneable;
 
@@ -320,69 +323,7 @@ class Competition extends Model
         return $access !== null;
     }
 
-    public function createCompetitionAccount($account_name, $account_email, string|array $access_to = 'view')
-    {
 
-        if (is_string($access_to)) {
-            $access_to = [$access_to];
-        }
-
-        if (in_array('admin', $access_to)) {
-            # If given admin it will auto apply all others
-            $access_to = ['admin'];
-        }
-
-
-        // find accout with given email or make new one
-
-        $account = null;
-
-
-        $account = User::where('email', $account_email)->first();
-
-
-
-        if ($account) {
-            if ($this->userBelongsToCompetition($account)) {
-                // If the account already belongs to this competition, return it
-
-                return "Account already exists for this competition.";
-            }
-
-            $accessDisplay = collect($access_to)->map(function ($type) {
-                return self::$accessTypes[$type] ?? $type;
-            })->toArray();
-
-            Mail::to($account)->send(new CompetitionAccountInvite($this, $accessDisplay));
-        } else {
-            // If an account with the given email already exists, use it
-            $account = new User();
-            $account->name = $account_name;
-            $account->email = $account_email;
-            $passwordRaw = Str::random(16);
-            $account->password = Hash::make($passwordRaw);
-
-            $account->competition = null;
-
-            $account->save();
-
-            Mail::to($account)->send(new CompetitionAccountCreated($account->email, $passwordRaw, $this->id));
-        }
-
-
-
-        // Create an access record for each access type
-        foreach ($access_to as $accessType) {
-            $access = new UserCompetitionAccess();
-            $access->user = $account->id;
-            $access->competition = $this->id;
-            $access->access_to = $accessType;
-            $access->save();
-        }
-
-        // Send email
-
-    }
 
     public function addAccount(User $account, string|array $access_to = 'view')
     {
@@ -418,8 +359,6 @@ class Competition extends Model
         if (in_array('owner', $access_to)) {
             return;
         }
-
-        Mail::to($account)->send(new CompetitionAccountInvite($this, $accessDisplay));
     }
 
     public function editCompetitionAccount(User $account, array $access_to)
@@ -468,5 +407,40 @@ class Competition extends Model
     public function getOrganisation()
     {
         return $this->belongsTo(Organisation::class, 'organisation');
+    }
+
+    public function getScoringSettings()
+    {
+        return $this->hasOne(CompetitionScoringSettings::class, 'competition');
+    }
+
+    public function drawTemplate()
+    {
+        return $this->getScoringSettings->use_tanks ? 'competition.heats-and-orders.serc_list_templates.tanks' : 'competition.heats-and-orders.serc_list_templates.single';
+    }
+
+    public function getInvites()
+    {
+        return $this->morphMany(AccountInvite::class, 'to');
+    }
+
+    public function applyInvite(AccountInvite $invite)
+    {
+
+        $user = $invite->getUser();
+
+        if (!$user) {
+            throw new Exception("Expected loggedin user during applyInvite");
+        }
+
+        $details = $invite->details;
+
+        if (!array_key_exists('access', $details)) {
+            throw new Exception("Organisation invite missing 'access' details");
+        }
+
+        $this->addAccount($user, $details['access']);
+
+        return redirect()->route('comps.view', $this->id);
     }
 }

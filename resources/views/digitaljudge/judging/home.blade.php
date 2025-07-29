@@ -46,8 +46,10 @@
 
 
 
-        <a href="{{ route('dj.judging.next-team') }}" class="btn w-full">Start Judging</a>
-        <a href="{{ route('dj.judging.tutorial') }}" class="btn btn-thin btn-purple w-full">Tutorial</a>
+        <a href="{{ route('dj.judging.next-team') }}" class="se-btn se-btn-success w-full">Start Judging</a>
+        <a href="{{ route('dj.judging.tutorial') }}" class="se-btn se-btn-thin se-btn-purple w-full">Tutorial</a>
+
+        <hr class="spacer mb-3!">
 
 
 

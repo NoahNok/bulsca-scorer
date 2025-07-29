@@ -337,6 +337,8 @@
                 <ul class="">
                     <li :class="active == 'details' ? 'active' : ''" @click="active = 'details'">Details</li>
                     <li :class="active == 'setup' ? 'active' : ''" @click="active = 'setup'">Setup</li>
+                    <li :class="active == 'hd' ? 'active' : ''" @click="active = 'hd'">Heats & Draws</li>
+
                 </ul>
 
 
@@ -463,6 +465,58 @@
                     <button class="se-btn se-btn-success ml-auto" form="compSettingsForm">Save</button>
                 </div>
 
+                <div x-cloak x-show="active == 'hd'">
+                    <h3>Heats & Draws</h3>
+
+                    <form id="compScoringSettingsForm" class="grid-2 w-full"
+                        x-on:submit="(e) => {
+                            e.preventDefault()
+                        
+
+                        
+                            loading = true
+
+
+                            fetch('{{ route('comps.settings.scoring', $comp) }}', {
+                                method: 'POST',
+                                body: new FormData($event.target),
+                                headers: {
+                                    'Accept': 'application/json',
+                                }
+                            }).then(resp => {
+                            this.loading = false
+                                if (!resp.ok) {
+                                    showAlert('Something went wrong, you changes have been reversed.')
+                                    $event.target.reset()
+                                    return
+                                }
+                    
+
+                                loading = false
+                             
+                                showSuccess('Competition scoring settings saved')
+                            })
+                        }">
+
+
+                        @csrf
+
+                        <div class="se-form-input imb-0">
+                            <label for="">Tanks</label>
+                            <select name="use_tanks" id="">
+                                <option value="1" @if ($comp->getScoringSettings->use_tanks) selected @endif>Yes</option>
+                                <option value="0" @if (!$comp->getScoringSettings->use_tanks) selected @endif>No</option>
+                            </select>
+                        </div>
+
+
+
+
+
+                    </form>
+                    <button class="se-btn se-btn-success ml-auto" form="compScoringSettingsForm">Save</button>
+                </div>
+
 
             </div>
 
@@ -527,7 +581,21 @@
 
         <x-s-e-modal id="compAddAccount" title="Add Account">
 
-            <form id="compAddAccountForm"
+            <form id="compAddAccountForm" x-data="{
+                accounts: [],
+                email: '',
+            
+                searchEmail() {
+                    email = this.email.trim()
+                    if (email.length < 3) {
+                        return
+                    }
+            
+                    fetch('{{ route('accounts.search', '__id') }}'.replace('__id', email)).then(resp => resp.json()).then(data => {
+                        this.accounts = data
+                    })
+                }
+            }"
                 x-on:submit="(e) => {
             e.preventDefault()
            
@@ -539,7 +607,7 @@
             this.loading = true
 
 
-            fetch('{{ route('comps.accounts.create', $comp) }}', {
+            fetch('{{ route('comps.accounts.invite', $comp) }}', {
                 method: 'POST',
                 body: new FormData($event.target),
                 headers: {
@@ -549,7 +617,7 @@
             }).then(resp => {
                 this.loading = false
                 if (!resp.ok && resp.status != 422) {
-                    showAlert('Something went wrong, account was not created.')
+                    showAlert('Something went wrong, account not invited.')
              
                     return
                 }
@@ -575,7 +643,7 @@
                 modals.compAddAccount = false
                 modals.compAccounts = true
                 $event.target.reset()
-                showSuccess('Competition settings saved')
+                showSuccess('Account invited')
             })
         }"
                 x-init="() => {
@@ -588,12 +656,26 @@
                 @csrf
 
 
-                <div class="se-form-input">
-                    <input type="text" name="name" id="name" required placeholder="Name">
-                </div>
+                <p class="text-sm">Invite someone to this organisaiton. If they have an account it will appear as you type
+                    their email,
+                    otherwise they will be invited to create an account.</p>
+                <br>
 
-                <div class="se-form-input">
-                    <input type="text" name="email" id="email" required placeholder="Email Address">
+                <div class="se-form-input relative">
+                    <input type="text" name="email" id="email" required placeholder="Email Address"
+                        x-model="email" @keyup.debounce.200ms="searchEmail">
+
+
+
+                    <div class="absolute w-full top-2/3 left-0  bg-white border" x-show="accounts.length > 0" x-cloak>
+                        <template x-for="account in accounts">
+                            <div class="se-card se-card-hover p-2! text-sm! flex-row! rounded-none! items-center justify-between"
+                                @click="() => {email = account.email; accounts = []}">
+                                <span x-text="account.name"></span>
+                                <small x-text="account.email"></small>
+                            </div>
+                        </template>
+                    </div>
                 </div>
 
                 <div class="grid-4 gap-1!">

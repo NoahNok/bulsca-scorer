@@ -138,7 +138,7 @@
 
                 <div class="absolute w-full top-2/3 left-0  bg-white border" x-show="accounts.length > 0" x-cloak>
                     <template x-for="account in accounts">
-                        <div class="se-card se-card-hover p-2! text-sm! flex-row! items-center justify-between"
+                        <div class="se-card se-card-hover p-2! text-sm! flex-row! rounded-none! items-center justify-between"
                             @click="() => {email = account.email; accounts = []}">
                             <span x-text="account.name"></span>
                             <small x-text="account.email"></small>

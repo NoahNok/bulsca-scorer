@@ -51,6 +51,8 @@ class CompetitionTeam extends Model
 
         if ($this->getCompetition->scoring_type == 'rlss-nationals' && $format == ':C :N (:S)') {
             $format = ":N - :C (:R) - :L";
+        } else if ($this->getCompetition->scoring_type == 'bulsca') {
+            $format = ":C :N";
         }
 
         return str_replace([":C", ":L", ":N", ":S", ":R"], [$this->getClub->name, $this->getLeague->name, $this->team, $this->getSwimTowTimeForDefault(), $this->getClub->region], $format);

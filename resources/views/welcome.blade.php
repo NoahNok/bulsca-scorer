@@ -6,7 +6,8 @@
 @section('content')
     <div class="flex items-center justify-center  h-[50vh]  mt-16  relative ">
 
-        <div class="absolute -top-35  w-screen  h-110 blur-xs  bg-cover bg-[url('/storage/pool.jpg')]">
+        <div class="absolute -top-35  w-screen  h-110 blur-xs"
+            style="background: url({{ asset('pool.jpg') }}); background-size:cover;">
         </div>
 
 
@@ -26,7 +27,7 @@
 
 
             <br>
-            <div class="flex gap-4 overflow-x-hidden relative">
+            <div class="flex gap-4 overflow-x-hidden relative overflow-y-hidden">
                 @foreach ($upcoming->chunk(2) as $chunk)
                     <div class="flex flex-col gap-4 ">
                         @foreach ($chunk as $comp)
@@ -36,7 +37,7 @@
                 @endforeach
 
                 <div
-                    class="absolute top-0 right-0 h-full w-20 bg-gradient-to-r from-transparent to-white pointer-events-none">
+                    class="absolute top-19 right-0 h-full w-20 bg-gradient-to-r from-transparent to-white pointer-events-none">
 
                 </div>
 
