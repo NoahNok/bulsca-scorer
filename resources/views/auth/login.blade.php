@@ -19,6 +19,9 @@
 
                     <input id="email" type="email" name="email" value="{{ old('email') }}" placeholder="Email"
                         required autofocus />
+                    @error('email')
+                        <small>{{ $message }}</small>
+                    @enderror
 
                 </div>
 
@@ -26,7 +29,9 @@
                 <div class=" se-form-input -mt-2">
                     <input id="password" type="password" name="password" placeholder="Password" required
                         autocomplete="current-password" />
-
+                    @error('password')
+                        <small>{{ $message }}</small>
+                    @enderror
 
                 </div>
 

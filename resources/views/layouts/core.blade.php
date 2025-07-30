@@ -144,6 +144,44 @@
             @auth
 
                 <div class="hidden lg:flex lg:flex-1 lg:justify-end space-x-3 ">
+
+                    @php
+                        $orgs = Auth::user()->getOrganisations;
+                    @endphp
+
+                    @if (count($orgs) > 0)
+                        <button
+                            class="text-sm/6 font-semibold text-gray-900  hover:bg-gray-300 px-2 pr-1  rounded-md transition-colors flex items-center space-x-2 relative cursor-pointer group">
+
+
+                            @isset($org)
+                                {{ $org->name }}
+                            @else
+                                Organisation
+                            @endisset
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="size-4 mx-1 cursor-pointer">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+                            </svg>
+
+
+
+                            <div
+                                class="absolute top-6 -left-[25%] w-[150%]  bg-white border-2 rounded-md hidden group-hover:block group-focus:block group-focus-within:block">
+                                @foreach ($orgs as $org)
+                                    <a href="{{ route('orgs.show', $org) }}"
+                                        class="hover:bg-gray-200 px-2 py-1 text-sm/6 flex items-center justify-between">
+                                        {{ $org->name }}
+
+                                        <img src="{{ $org->getLogo() }}" class="size-5" alt="">
+                                    </a>
+                                @endforeach
+                            </div>
+                        </button>
+                    @endif
+
+
                     <a href="{{ route('home') }}"
                         class="text-sm/6 font-semibold text-gray-900 hover:text-se transition-colors">Dashboard</a>
                     @if (Auth::user()->isAdmin())
@@ -210,7 +248,7 @@
 
 
     <main class="flex w-screen justify-center my-8 md:my-16">
-        <div class="w-screen sm:w-[90%] md:w-[75%] px-6 md:px-8 flex flex-col " x-data="{
+        <div class=" w-[90%] lg:w-[85%] 3xl:w-[65%] sm:px-6 md:px-8 flex flex-col " x-data="{
             global_state: {}
         }">
             @yield('core-content')

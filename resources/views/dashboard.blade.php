@@ -8,7 +8,7 @@
     @if (count($orgs) > 0)
         <h3>Organisations</h3>
         <div class="mt-1 grid-4">
-            @forelse ($orgs as $org)
+            @foreach ($orgs as $org)
                 <a href="{{ route('orgs.show', $org->name) }} "
                     class="se-card  se-card-hover se-card-body flex-row! items-center justify-between  transition-all ">
                     <div>
@@ -125,12 +125,32 @@
                 @empty
                     <tr class="empty ">
                         <th colspan="100" scope="row">
-                            You havent been invited to any competitions
+                            You haven't been invited to any competitions
                         </th>
                     </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
+    <br>
+    <hr class="spacer mb-3!">
+    <br>
+    @if (count($orgs) == 0)
+        <div>
+            <h2>Create an organisation?</h2>
+            <p>Organisation benefit from:</p>
+            <ul class="list list-arrow mb-3">
+                <li><span class="text-se font-semibold">Brandeed</span> result, live and information pages,</li>
+                <li>Cross competition accounts with <span class="text-se font-semibold">finegrained</span> permissions,</li>
+                <li>Group competitions under one name,</li>
+                <li><span class="text-se font-semibold">Dedicated</span> website section at /MyOrganisation,</li>
+                <li>Access to <span class="text-se font-semibold">custom</span> events, leagues and <span
+                        class="text-se font-semibold">advanced</span> scoring capabilities,</li>
+                <li><span class="text-se font-semibold">And more!</span></li>
+            </ul>
+
+            <a href="{{ route('orgs.create') }}" class="se-btn se-btn-outline-primary ">Get Started</a>
+        </div>
+    @endif
 
 @endsection
