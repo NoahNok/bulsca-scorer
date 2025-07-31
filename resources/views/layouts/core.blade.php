@@ -161,6 +161,7 @@
                                 {{ $org->name }}
                             @elseif (
                                 (Str::startsWith(Route::currentRouteName(), 'comps') || Str::startsWith(Route::currentRouteName(), 'landing.')) &&
+                                    isset($comp) &&
                                     $comp->getOrganisation)
                                 {{ $comp->getOrganisation?->name }}
                             @else
@@ -254,6 +255,7 @@
                                         {{ $org->name }}
                                     @elseif (
                                         (Str::startsWith(Route::currentRouteName(), 'comps') || Str::startsWith(Route::currentRouteName(), 'landing.')) &&
+                                            isset($comp) &&
                                             $comp->getOrganisation)
                                         {{ $comp->getOrganisation?->name }}
                                     @else
