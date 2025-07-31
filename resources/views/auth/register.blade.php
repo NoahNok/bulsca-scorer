@@ -7,7 +7,7 @@
     <div class="h-[80vh] flex items-center justify-center relative">
 
 
-        <div class="w-[25%]">
+        <div class="w-[90%] md:w-[25%]">
             <x-auth-session-status class="mb-4" :status="session('status')" />
             <h1 class="mb-4  text-center">Sign-up</h1>
 
@@ -88,7 +88,7 @@
         <div class="shape shape-circle bg-black! blur-md absolute size-40 top-165 -left-16  "></div>
 
 
-        <div class=" absolute blur-md top-32 left-36 z-11 rotate-104 animate-pulse">
+        <div class=" absolute blur-md -top-10 left-36 z-11 rotate-104 animate-pulse">
             <div class="shape shape-triangle   "></div>
         </div>
     </div>

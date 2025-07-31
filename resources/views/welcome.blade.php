@@ -6,14 +6,14 @@
 @section('content')
     <div class="flex justify-center  min-h-[50vh]  mt-16  relative  ">
 
-        <div class="absolute -top-35  w-screen  h-110 blur-xs"
+        <div class="absolute -top-35  w-screen  h-110 blur-xs  -z-1"
             style="background: url({{ asset('pool.jpg') }}); background-size:cover;">
         </div>
 
 
 
 
-        <div class="z-20
+        <div class="
             w-full 2xl:w-[75%]  ">
             <h1 class="text-4xl! md:text-6xl! tracking-tight font-extrabold! text-white  ">Score the
                 Action.<br><span class="text-se-accent text-5xl! md:text-7xl! ">Own the

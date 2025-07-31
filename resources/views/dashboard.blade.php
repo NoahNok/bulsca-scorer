@@ -23,6 +23,7 @@
                     </div>
                 </a>
             @endforeach
+            <x-add-card :link="route('orgs.create')" />
         </div>
         <br>
     @endif

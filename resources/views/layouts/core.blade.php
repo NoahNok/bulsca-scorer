@@ -156,7 +156,7 @@
 
 
 
-                            @if (Str::startsWith(Route::currentRouteName(), 'orgs'))
+                            @if (Str::startsWith(Route::currentRouteName(), 'orgs') && isset($org))
 
                                 {{ $org->name }}
                             @elseif (
@@ -200,7 +200,12 @@
                         aria-hidden="true">&rarr;</span></a>
             </div>
         @else
-            <div class="hidden lg:flex lg:flex-1 lg:justify-end">
+            <div class="hidden lg:flex lg:flex-1 lg:justify-end space-x-4">
+
+                <a href="{{ route('register') }}"
+                    class="text-sm/6 font-semibold text-se hover:text-se-accent transition-colors">Sign up <span
+                        aria-hidden="true">&uarr;</span></a>
+
                 <a href="{{ route('login') }}"
                     class="text-sm/6 font-semibold text-gray-900 hover:text-se transition-colors">Sign in <span
                         aria-hidden="true">&rarr;</span></a>
@@ -222,8 +227,8 @@
                 </a>
                 <button type="button" class="-m-2.5 rounded-md p-2.5 text-gray-700" @click="navOpen = false">
                     <span class="sr-only">Close menu</span>
-                    <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                        aria-hidden="true" data-slot="icon">
+                    <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" aria-hidden="true" data-slot="icon">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                     </svg>
                 </button>
@@ -244,7 +249,7 @@
 
 
 
-                                    @if (Str::startsWith(Route::currentRouteName(), 'orgs'))
+                                    @if (Str::startsWith(Route::currentRouteName(), 'orgs') && isset($org))
 
                                         {{ $org->name }}
                                     @elseif (
@@ -302,6 +307,9 @@
                             out <span aria-hidden="true">&rarr;</span></a>
                     @else
                         <hr class="spacer my-4!">
+                        <a href="{{ route('register') }}"
+                            class="-mx-3 block rounded-lg px-3 text-base/7 font-semibold text-se hover:bg-gray-50">Sign
+                            up <span aria-hidden="true">&uarr;</span></a>
                         <a href="{{ route('login') }}"
                             class="-mx-3 block rounded-lg px-3 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Sign
                             in <span aria-hidden="true">&rarr;</span></a>

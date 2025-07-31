@@ -5,7 +5,7 @@
     <div class="h-[80vh] flex items-center justify-center relative">
 
 
-        <div class="w-[25%]">
+        <div class="w-[90%] md:w-[25%]">
             <h1 class="mb-4  text-center">Reset password</h1>
             <form method="POST" action="{{ route('password.store') }}">
                 @csrf
