@@ -69,6 +69,10 @@ class AdminController extends Controller
             $comp->season = $validated['season'];
         }
 
+        if ($validated['organisation'] !== 'null') {
+            $comp->organisation = $validated['organisation'] == 'none' ? null : $validated['organisation'];
+        }
+
         $comp->scoring_type = $validated['scoring_type'];
 
         $comp->save();

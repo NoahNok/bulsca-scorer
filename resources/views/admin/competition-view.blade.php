@@ -26,19 +26,10 @@
     <small>
         <a href="{{ route('comps.view', $comp) }}" class="link">View</a>
     </small>
-    <p>
-        <strong>User email:</strong> {{ $comp->getUser?->email ?: 'N/A' }}
-    </p>
 
-    <br>
 
-    @if ($comp->getUser)
-        <form action="{{ route('admin.comp.update.userPassword', $comp) }}" method="post"
-            onsubmit="return confirm('Are you sure you want to reset this accounts password?')">
-            @csrf
-            <button class="btn btn-danger">Reset account password</button>
-        </form>
-    @endif
+
+
 
 
     <br></br>
@@ -82,6 +73,12 @@
 
             <x-form-select id="season" title="Season" :options="\App\Models\Season::all()"
                 defaultValue="{{ $comp->season }}"></x-form-select>
+
+            <x-form-select id="organisation" title="Organisation" :options="\App\Models\Organisation\Organisation::all()"
+                defaultValue="{{ $comp->organisation }}">
+                <option value="none">No organisation</option>
+            </x-form-select>
+
 
 
 

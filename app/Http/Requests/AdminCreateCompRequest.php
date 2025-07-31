@@ -32,6 +32,7 @@ class AdminCreateCompRequest extends FormRequest
             'season' => '',
             'anytimepin' => 'required|boolean',
             'scoring_type' => 'required',
+            'organisation' => ''
         ];
     }
 }
