@@ -4,9 +4,10 @@
 
 @section('content')
 
-    <div class="flex items-center py-8 space-x-4 z-20">
-        <img src="{{ $org->getLogo() }}" alt="" class="size-16 rounded-full">
+    <div class="flex flex-col-reverse md:flex-row md:items-center justify-between gap-2 md:gap-0 py-8 ">
         <h1 class="text-5xl! -mb-1 ">{{ $org->name }}</h1>
+        <img src="{{ $org->getLogo() }}" alt="" class="size-16 rounded-full">
+
     </div>
 
 
@@ -38,7 +39,7 @@
 
 
 
-    <div class="grid-4 z-20 mt-2">
+    <div class="grid-4  mt-2">
         @forelse ($org->getCompetitions as $comp)
             <x-competition-card url="{{ route('landing.competition', $comp->getSlug()) }}" :comp="$comp"
                 :org="$org"></x-competition-card>

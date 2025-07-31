@@ -10,7 +10,7 @@
 
 
 @section('core-content')
-    <div class="flex flex-col-reverse md:flex-row md:items-center justify-between pt-8  z-20">
+    <div class="flex flex-col-reverse md:flex-row md:items-center justify-between gap-2 md:gap-0 pt-8  ">
 
         <div>
             <h1 class="xl:text-5xl!  ">{{ $comp->name }}</h1>

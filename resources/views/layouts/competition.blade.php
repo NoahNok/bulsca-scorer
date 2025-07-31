@@ -5,7 +5,7 @@
 @endsection
 
 @section('core-content')
-    <div class="flex  items-center justify-between">
+    <div class="flex flex-col-reverse md:flex-row md:items-center justify-between gap-2 md:gap-0">
         <div>
             <h1 class="-mb-2" x-text="global_state.competition_name ?? '{{ $comp->name }}'">{{ $comp->name }}</h1>
             <small class="text-gray-500">Scoring v{{ $comp->scoring_version }}</small>
@@ -14,7 +14,7 @@
         @if ($comp->getOrganisation)
             <a href="{{ route('orgs.show', $comp->getOrganisation->name) }}">
                 <img src="{{ $comp->getOrganisation->getLogo() }}" alt="{{ $comp->getOrganisation->name }}'s logo"
-                    class="size-14 rounded-full">
+                    class="size-14 min-w-14 rounded-full">
             </a>
         @endif
 

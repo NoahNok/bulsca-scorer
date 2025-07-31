@@ -6,7 +6,7 @@
 
 @section('content')
     <div class="grid-3">
-        <div class="flex flex-col space-y-4 col-span-2">
+        <div class="flex flex-col space-y-4 md:col-span-2">
 
             <div class="flex justify-between">
                 <h2 class="mb-0">{{ $schema->name }}</h2>
@@ -148,7 +148,7 @@
             @if ($comp->scoring_type == 'bulsca')
                 <div class=" overflow-hidden " id="raw_data">
                     <h2>Raw Data</h2>
-                    <div class=" se-table  ">
+                    <div class=" se-table w-full  ">
                         <table>
                             <thead>
                                 <tr>

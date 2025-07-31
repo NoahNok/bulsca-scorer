@@ -1,10 +1,10 @@
 {
-    "name": "BULSCA Scorer",
-    "short_name": "Scorer",
+    "name": "Scoring.Events",
+    "short_name": "S.E",
     "start_url": "/",
     "display": "standalone",
-    "background_color": "#070660",
-    "theme_color": "#070660",
+    "background_color": "#00d5be",
+    "theme_color": "#00d5be",
     "icons": [
         {
             "src": "/blogo-512.png",
@@ -43,5 +43,5 @@
             "label": "Results Page"
         }
     ],
-    "description": "BULSCA Scorer allows you to effectively organise, manager and score your lifesaving competitions."
+    "description": "Scoring.Events allows you to effectively organise, manage and score your lifesaving competitions."
 }

@@ -23,7 +23,7 @@
 
     <div x-show="search.trim() != '' && !hide" x-cloak
         class="absolute top-full z-40 scale-102 left-0 w-full bg-white rounded-md border-2 border-gray-300 p-4 hover:border-gray-400">
-        <div x-show="results?.comps.length > 0">
+        <div x-show="results?.comps?.length > 0">
             <h3>Competitions</h3>
             <div class="grid md:grid-cols-2 gap-2">
                 <template x-for="comp in results?.comps">
@@ -49,12 +49,12 @@
                 </template>
             </div>
         </div>
-        <div x-show="results?.comps.length > 0 && results?.orgs.length > 0">
+        <div x-show="results?.comps?.length > 0 && results?.orgs?.length > 0">
             <br>
             <hr class="spacer">
             <br>
         </div>
-        <div x-show="results?.orgs.length > 0">
+        <div x-show="results?.orgs?.length > 0">
             <h3>Organisations</h3>
             <div class="grid md:grid-cols-4 gap-2">
                 <template x-for="org in results?.orgs">
@@ -66,7 +66,7 @@
                 </template>
             </div>
         </div>
-        <div x-show="results?.comps.length + results?.orgs.length == 0">
+        <div x-show="results?.comps?.length + results?.orgs?.length == 0">
             <p>You've reached the end of Scoring.Events. Venturing further could be risky!</p>
         </div>
     </div>

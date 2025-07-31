@@ -18,10 +18,7 @@
 
                     <div class="size-10 rounded-full flex items-center justify-center relative">
 
-                        <div class="absolute w-full h-full flex items-center justify-center z-5">
-                            <h2 class="mb-0! text-xl font-archivo font-semibold">S.<span class="text-se">E</span></h2>
-                        </div>
-                        <img src="{{ $org->getLogo() }}" class="z-10 bg-white" alt="">
+                        <img src="{{ $org->getLogo() }}" class=" bg-white" alt="">
 
                     </div>
                 </a>

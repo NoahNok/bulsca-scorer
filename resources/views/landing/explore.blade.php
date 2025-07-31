@@ -35,7 +35,7 @@
 
 
     <h2>Competitions</h2>
-    <div class="grid-4 z-20 mt-2">
+    <div class="grid-4  mt-2">
         @foreach ($comps as $comp)
             <x-competition-card url="{{ route('landing.competition', $comp->getSlug()) }}" :comp="$comp"
                 class=" "></x-competition-card>
@@ -51,7 +51,7 @@
     <br>
 
     <h2>Organisations</h2>
-    <div class="grid-4 z-20 mt-2">
+    <div class="grid-4  mt-2">
         @foreach ($orgs as $org)
             <a href="{{ route('landing.organisation', $org) }}" class="se-card se-card-hover se-card-body ">
                 <div class="flex items-center justify-between">

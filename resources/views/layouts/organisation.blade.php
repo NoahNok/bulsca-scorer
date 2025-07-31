@@ -13,7 +13,7 @@
 
 @section('core-content')
     <div class="flex  items-center justify-between">
-        <div class="flex items-center justify-between w-full -mb-2">
+        <div class="flex flex-col-reverse md:flex-row md:items-center justify-between gap-2 md:gap-0 w-full -mb-2">
             <h1 class="">{{ $org->name }}</h1>
             <img src="{{ $org->getLogo() }}" alt="" class="size-14 rounded-full">
         </div>
