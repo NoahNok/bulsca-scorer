@@ -37,7 +37,7 @@
             <div class="grid @if ($comp->scoring_type == 'bulsca') grid-rows-6 @endif gap-3 md:grid-flow-col mt-2">
 
 
-                @include('competition.heats-and-orders.serc_list_templates.' . $comp->scoring_type)
+                @include($comp->drawTemplate())
 
 
             </div>
