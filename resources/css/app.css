@@ -1100,14 +1100,14 @@ aside {
 }
 
 .se-modal {
-  @apply w-full h-full fixed top-0 left-0 flex items-center justify-center z-50 bg-black/30;
+  @apply w-full h-full fixed top-0 left-0 flex items-center justify-center z-50 bg-black/30 ;
 
   &.se-modal-wide > div{
-    @apply w-[35%];
+    @apply w-[95%] md:w-[35%];
   }
 
   >div {
-    @apply bg-white rounded-md w-[25%];
+    @apply bg-white rounded-md w-[95%] md:w-[25%] max-h-[90vh] overflow-y-auto;
 
     >h2 {
       @apply px-6 py-4 text-3xl border-b;
