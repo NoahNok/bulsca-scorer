@@ -7,7 +7,7 @@
     <div class="h-[80vh] flex items-center justify-center relative">
 
 
-        <div class="w-[25%] flex items-center flex-col">
+        <div class="w-[90%] md:w-[25%] flex items-center flex-col">
 
             <p>Invite to join</p>
             <h1 class="text-7xl! mb-2  text-center">{{ $invite->getName() }}</h1>
