@@ -117,9 +117,11 @@
                         Scoring.<span class="text-se group-hover:text-black! transition-colors">Events</span></h3>
                 </a>
 
-                <div class="hidden lg:block">
+                <div class="hidden lg:flex space-x-10 items-center">
                     <a href="{{ route('explore') }}"
                         class="text-sm/6 font-semibold text-gray-900 hover:text-se transition-colors">Explore</a>
+                        <a href="{{ route('dj.home') }}"
+                        class="text-sm/6 font-semibold text-se hover:text-se-accent transition-colors">Officials</a>
                 </div>
 
 
@@ -271,7 +273,7 @@
 
 
                                     <div
-                                        class="absolute top-9 w-[104%] -left-[2%] bg-white border-2 rounded-md hidden group-hover:block group-focus:block group-focus-within:block">
+                                        class="absolute top-9 w-[104%] -left-[2%] bg-white border-2 rounded-md hidden group-hover:block group-focus:block group-focus-within:block group-active:block">
                                         @foreach ($orgs as $orgg)
                                             <a href="{{ route('orgs.show', $orgg->name) }}"
                                                 class="hover:bg-gray-200 px-3 py-2 text-sm/6 flex items-center justify-between">
@@ -288,6 +290,8 @@
                     <a href="{{ route('explore') }}"
                         class="-mx-3 block rounded-lg px-3 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Explore</a>
 
+                    <a href="{{ route('dj.home') }}"
+                        class="-mx-3 block rounded-lg px-3 text-se font-semibold text-gray-900 hover:bg-gray-50">Officials Login</a>
 
 
 

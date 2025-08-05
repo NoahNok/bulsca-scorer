@@ -678,7 +678,7 @@
                     </div>
                 </div>
 
-                <div class="grid-4 gap-1!">
+                <div class="grid-3 gap-1!">
                     @foreach (App\Models\Competition::$accessTypes as $type => $name)
                         <div class="flex space-x-2">
                             <input type="checkbox" name="access[]" value="{{ $type }}"
