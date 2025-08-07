@@ -4,16 +4,22 @@ namespace App\Models;
 
 use App\Data\TeamAdditionalDetailsData;
 use App\Helpers\ClassHelpers;
+use App\Models\AbstractClasses\Entity;
 use App\Traits\Cloneable;
 use Carbon\CarbonInterval;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CompetitionTeam extends Model
+class CompetitionTeam extends Entity
 {
     use HasFactory, Cloneable;
 
     protected $fillable = ['club', 'team'];
+
+    public function getName(): string
+    {
+        return $this->formatName();
+    }
 
     public function getClubName()
     {
@@ -46,16 +52,16 @@ class CompetitionTeam extends Model
         return $this->getClubName() . " " . $this->team;
     }
 
-    public function formatName($format = ':C :N (:S)')
+    public function formatName($format = ':C :N')
     {
 
-        if ($this->getCompetition->scoring_type == 'rlss-nationals' && $format == ':C :N (:S)') {
-            $format = ":N - :C (:R) - :L";
-        } else if ($this->getCompetition->scoring_type == 'bulsca') {
-            $format = ":C :N";
-        }
+        // if ($this->getCompetition->scoring_type == 'rlss-nationals' && $format == ':C :N (:S)') {
+        //     $format = ":N - :C (:R) - :L";
+        // } else if ($this->getCompetition->scoring_type == 'bulsca') {
+        //     $format = ":C :N";
+        // }
 
-        return str_replace([":C", ":L", ":N", ":S", ":R"], [$this->getClub->name, $this->getLeague->name, $this->team, $this->getSwimTowTimeForDefault(), $this->getClub->region], $format);
+        return str_replace([":C", ":L", ":N", ":S", ":R"], [$this->getClub->name, $this->getLeague?->name ?? '-', $this->team, $this->getSwimTowTimeForDefault(), $this->getClub->region], $format);
     }
 
     public function getCompetition()

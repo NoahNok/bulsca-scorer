@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use App\DTO\ResolvedResult;
+use App\DTO\SERCResult as DTOSERCResult;
+use App\Models\SERCResult;
+use App\Models\AbstractClasses\Event;
 use App\Models\DigitalJudge\JudgeNote;
 use App\Models\Interfaces\IEvent;
 use App\Models\Interfaces\IPenalisable;
@@ -11,14 +15,60 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class SERC extends IEvent implements IPenalisable
+class SERC extends Event implements IPenalisable
 {
     use HasFactory, Cloneable;
 
     protected $table = 'sercs';
 
+    public function getResolvedResults(): array
+    {
+        /**
+         * @param ResolvedResult[] $resolvedResults
+         */
+        $resolvedResults = [];
+        $results = collect($this->getRawResults());
 
+        foreach ($results->groupBy(fn($result) => $result->entity->id) as $id => $entityResults) {
 
+            $resultTotal = $entityResults->reduce(fn($acc, $result) => $acc += $result->result * $result->markingPoint->weight, 0);
+
+            $resultData = $entityResults->first();
+
+            // In SERC case fetch these now
+            $disqualification = null;
+            $penalties = [];
+
+            // Apply any impacts of DQ/Pen APPLY DQ last as it overrides
+            if ($disqualification) {
+                $resultTotal = 0;
+            }
+
+            $resolvedResults[] = new ResolvedResult(
+                $resultData->id,
+                $resultTotal,
+                $resultData->result,
+                $resultData->entity,
+                $resultData->event,
+                $disqualification,
+                $penalties
+            );
+        }
+
+        return $resolvedResults;
+    }
+
+    public function getRawResults(): array
+    {
+        return $this->results->map(function ($result) {
+            return $result->transformToResult();
+        })->toArray();
+    }
+
+    public function results()
+    {
+        return $this->hasManyThrough(SERCResult::class, SERCMarkingPoint::class, 'serc', 'marking_point', 'id', 'id');
+    }
 
     public function getJudges()
     {

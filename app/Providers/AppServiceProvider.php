@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\CompetitionTeam;
+use App\Models\Competitor;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
@@ -29,6 +32,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Relation::morphMap([
+            'team' => CompetitionTeam::class,
+            'competitior' => Competitor::class
+        ]);
+
         View::composer('*', function ($view) {
 
             if (!Auth::check()) {

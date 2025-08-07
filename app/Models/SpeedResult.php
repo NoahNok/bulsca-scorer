@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use App\DTO\DQ;
+use App\DTO\Pen;
+use App\DTO\Result;
+use App\Models\AbstractClasses\Eventable;
 use App\Models\AbstractClasses\Loggable;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,12 +15,39 @@ class SpeedResult extends Loggable
 {
     use HasFactory, Cloneable;
 
-    public function getTeam()
+    public function getDisqualification(): ?DQ
     {
-        return $this->belongsTo(CompetitionTeam::class, 'competition_team', 'id');
+        if ($this->disqualification) {
+            return new DQ($this->disqualification, null);
+        }
+        return null;
     }
 
-    public function getPenalties()
+    public function getPenalties(): array
+    {
+        return $this->penalties->map(function ($pen) {
+            return new Pen($pen->code, $pen);
+        })->toArray();
+    }
+
+    public function transformToResult(): Result
+    {
+        return new Result(
+            $this->id,
+            $this->result,
+            $this->entity,
+            $this->getEvent,
+            $this->getDisqualification(),
+            $this->getPenalties()
+        );
+    }
+
+    public function entity()
+    {
+        return $this->morphTo();
+    }
+
+    public function penalties()
     {
         return $this->hasMany(Penalty::class, 'speed_result', 'id');
     }

@@ -2,27 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\AbstractClasses\Entity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Competitor extends CompetitionTeam
+class Competitor extends Entity
 {
-    protected $table = 'competition_teams';
-
-
-    public function getFullname()
-    {
-
-        $names = $this->team;
-
-        $swimmers = Competitor::where('club', $this->club)->get();
-
-        if (count($swimmers) > 1) {
-            $pair = $swimmers->where('id', "!=", $this->id)->first(); // get the other swimmer by finding the other swimmer with not the current id
-            $names .= " & " . $pair->team;
-        }
-
-
-        return $names . " - " . $this->getClub->name . " (" . $this->getClub->region . ")" . " - " . $this->getLeague->name;
-    }
+    use HasFactory;
 }

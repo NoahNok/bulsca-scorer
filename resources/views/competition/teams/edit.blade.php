@@ -157,7 +157,7 @@
 
                                                     <select style="margin-bottom: 0 !important" x-model="team.league">
                                                         <option value="null">Please select an option...</option>
-                                                        @foreach (App\Models\League::where('scoring_type', 'bulsca')->get() as $option)
+                                                        @foreach ($comp->getLeagues as $option)
                                                             <option value="{{ $option->id }}">
                                                                 {{ $option->name }}</option>
                                                         @endforeach

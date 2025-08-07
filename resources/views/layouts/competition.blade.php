@@ -35,7 +35,7 @@
                 <a href="{{ route('comps.competitors', $comp) }}"
                     class="@if (Str::startsWith(Route::currentRouteName(), 'comps.competitor')) active @endif">Competitors</a>
             @else
-                <a href="{{ route('comps.teams', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.team')) active @endif">Teams</a>
+                <a href="{{ route('comps.teams', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.team')) active @endif">Teams & Leagues</a>
             @endif
         @endcan
 

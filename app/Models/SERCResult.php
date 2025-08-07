@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
-use App\Models\AbstractClasses\Loggable;
+use App\DTO\DQ;
+use App\DTO\Result;
+use App\DTO\SERCResult as DTOSERCResult;
+use App\Models\AbstractClasses\Resultable;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use App\Models\SERC;
 
-class SERCResult extends Loggable
+class SERCResult extends Resultable
 {
     use HasFactory, Cloneable;
 
@@ -18,6 +20,34 @@ class SERCResult extends Loggable
         'marking_point',
         'team'
     ];
+
+    public function getDisqualification(): ?DQ
+    {
+        return null;
+    }
+
+    public function getPenalties(): array
+    {
+        return [];
+    }
+
+    public function transformToResult(): Result
+    {
+        return new DTOSERCResult(
+            $this->id,
+            $this->result,
+            $this->getMarkingPoint,
+            $this->entity,
+            $this->getSerc(),
+            $this->getDisqualification(),
+            $this->getPenalties()
+        );
+    }
+
+    public function entity()
+    {
+        return $this->morphTo();
+    }
 
     public function getMarkingPointName()
     {

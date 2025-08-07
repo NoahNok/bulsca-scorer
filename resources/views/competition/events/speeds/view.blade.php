@@ -24,7 +24,118 @@
                 </div>
 
                 <br>
-                @include('competition.events.speeds.table_templates.' . $comp->scoring_type)
+                <div class="se-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th scope="col">
+                                    Team
+                                </th>
+                                @if ($event->digitalJudgeEnabled)
+                                    <th scope="col">
+                                        OOF
+                                    </th>
+                                @endif
+                                <th scope="col">
+                                    @if ($event->getName() == 'Rope Throw')
+                                        Ropes/Time
+                                    @else
+                                        Time
+                                    @endif
+                                </th>
+
+                                <th scope="col">
+                                    DQ
+                                </th>
+
+                                @if ($event->hasPenalties())
+                                    <th scope="col">
+                                        Penalties
+                                    </th>
+                                @endif
+                                <th scope="col">
+                                    Points
+                                </th>
+                                <th scope="col">
+                                    Position
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @forelse ($event->getResolvedResults() as $result)
+                                <tr x-data="{ name: `{{ $result->entity->getName() }}` }" x-show="name.toLowerCase().includes(search.toLowerCase())">
+                                    <th scope="row">
+                                        {{ $result->entity->getName() }}
+                                    </th>
+                                    @if ($event->digitalJudgeEnabled)
+                                        <td scope="col">
+                                            @php
+                                                $h = App\Models\Heat::where('competition', $comp->id)
+                                                    ->where('team', $result->tid)
+                                                    ->first();
+                                            @endphp
+                                            @if ($h)
+                                                H{{ $h->heat }}L{{ $h->lane }}:
+                                                {{ $h->getOOF($event->id)?->oof ?: '-' }}
+                                            @else
+                                                -
+                                            @endif
+                                        </td>
+                                    @endif
+                                    <td>
+
+
+
+                                        {{ App\Models\SpeedResult::prettyTime($result->resolvedResult) }}
+
+                                        @if ($result->resolvedResult != $result->result)
+                                            <br>
+                                            <small>
+                                                Was {{ App\Models\SpeedResult::prettyTime($result->result) }}
+                                            </small>
+                                        @endif
+
+
+                                    </td>
+
+
+                                    <td>
+                                        {{ App\Models\SpeedResult::remapDq($result->disqualification) ?: '-' }}
+                                    </td>
+
+                                    @if ($event->hasPenalties())
+                                        <td>
+                                            @if (count($result->penalties) > 0)
+                                                {{ implode($result->penalties, ', ') }}
+                                            @else
+                                                -
+                                            @endif
+                                        </td>
+                                    @endif
+                                    <td>
+                                        POINTS NOT IMPL
+                                    </td>
+                                    <td>
+                                        PLACE NOT IMPL
+                                    </td>
+
+                                </tr>
+                            @empty
+                                <tr class="empty ">
+                                    <th colspan="100" scope="row">
+                                        None
+                                    </th>
+                                </tr>
+                            @endforelse
+
+
+
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
 
         </div>

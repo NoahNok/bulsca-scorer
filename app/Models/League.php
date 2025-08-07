@@ -9,4 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 class League extends Model
 {
     use HasFactory, Cloneable;
+
+    protected $fillable = ['name'];
 }

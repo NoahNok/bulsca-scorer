@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\DTO\ResolvedResult;
+use App\DTO\Result;
+use App\Models\AbstractClasses\Event;
 use App\Models\Interfaces\IEvent;
 use App\Models\Interfaces\IPenalisable;
 use App\Models\Scoring\Bulsca\BulscaSpeedScoring;
@@ -12,11 +15,51 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
-class CompetitionSpeedEvent extends IEvent implements IPenalisable
+class CompetitionSpeedEvent extends Event implements IPenalisable
 {
     use HasFactory, Cloneable;
 
+    public function getResolvedResults(): array
+    {
+        /**
+         * @param ResolvedResult[] $resolvedResults
+         */
+        $resolvedResults = [];
+        $results = collect($this->getRawResults());
 
+        foreach ($results as $result) {
+            $resolvedResult = $result->result;
+
+            // Apply DQ/Pen. Apply DQ last as it overrides
+            if ($result->disqualification) {
+                $resolvedResult = 0;
+            }
+
+            $resolvedResults[] = new ResolvedResult(
+                $result->id,
+                $resolvedResult,
+                $result->result,
+                $result->entity,
+                $result->event,
+                $result->disqualification,
+                $result->penalties
+            );
+        }
+
+        return $resolvedResults;
+    }
+
+    public function getRawResults(): array
+    {
+        return $this->results->map(function ($result) {
+            return $result->transformToResult();
+        })->toArray();
+    }
+
+    public function results()
+    {
+        return $this->hasMany(SpeedResult::class, 'event');
+    }
 
 
     public function getName(): string
@@ -35,12 +78,7 @@ class CompetitionSpeedEvent extends IEvent implements IPenalisable
     }
 
 
-
-    public function getSimpleResults()
-    {
-        return $this->hasMany(SpeedResult::class, 'event', 'id');
-    }
-
+    // CHANGE TO BE A EVENT BASED TOGGLE
     public function hasPenalties()
     {
         return $this->hasOne(SpeedEvent::class, 'id', 'event')->first()->has_penalties;

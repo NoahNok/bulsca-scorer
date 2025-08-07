@@ -22,6 +22,7 @@ use App\Http\Controllers\CompetitorController;
 use App\Http\Controllers\DigitalJudge\DigitalJudgeController;
 use App\Http\Controllers\HeatController;
 use App\Http\Controllers\Landing\LandingController;
+use App\Http\Controllers\LeagueController;
 use App\Http\Controllers\Organisation\OrganisationController;
 use App\Http\Controllers\OverallResultsController;
 use App\Http\Controllers\Pdf\PdfController;
@@ -132,6 +133,14 @@ Route::middleware('auth')->group(function () {
             Route::post('/account/serc-writer/new-password', [CompetitionController::class, 'resetSercWriterAccountPassword'])->name('comps.accounts.serc-writer.new-password');
         });
 
+        Route::prefix('/leagues')->group(function () {
+            Route::get('create', [LeagueController::class, 'create'])->name('comps.leagues.create');
+            Route::post('create', [LeagueController::class, 'store'])->name('comps.leagues.store');
+
+            Route::get('{league}', [LeagueController::class, 'view'])->name('comps.leagues.view');
+            Route::post('{league}', [LeagueController::class, 'update'])->name('comps.leagues.update');
+            Route::delete('{league}', [LeagueController::class, 'delete'])->name('comps.leagues.delete');
+        });
 
 
         // EVENTS

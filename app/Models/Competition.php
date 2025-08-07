@@ -68,6 +68,11 @@ class Competition extends Model implements IInvitable
         //return $this->hasMany(CompetitionSpeedEvent::class, 'event', 'id');
     }
 
+    public function getLeagues()
+    {
+        return $this->hasMany(League::class, 'competition', 'id');
+    }
+
     public function getCompetitionTeams()
     {
         return $this->hasMany(CompetitionTeam::class, 'competition', 'id')->orderBy('serc_order');

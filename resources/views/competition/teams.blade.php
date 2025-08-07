@@ -1,7 +1,7 @@
 @extends('layouts.competition')
 
 @section('title')
-    Teams
+    Teams & Leagues
 @endsection
 
 
@@ -19,6 +19,38 @@
 
     <br>
 
+    <h2>Leagues</h2>
+      <div class="grid-3">
+         
+
+           
+                @foreach ($comp->getLeagues as $league)
+                    <a href="{{ route('comps.leagues.view', [$comp, $league]) }}"
+                        class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
+                        <p class="font-archivo flex items-center">{{ $league->name }}
+                        </p>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor"
+                            class="ml-auto size-4 group-hover:text-se transition-all group-hover:stroke-3">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                        </svg>
+
+
+                    </a>
+                @endforeach
+          
+
+            <x-add-card link="{{ route('comps.leagues.create', $comp) }}" />
+
+
+
+
+        </div>
+
+        <br>
 
     <div class="flex justify-between mb-2">
         <h2 class="mb-0">Teams ({{ $comp->getCompetitionTeams->count() }})</h2>
@@ -57,7 +89,7 @@
                             {{ $team->team }}
                         </td>
                         <td>
-                            {{ $team->getLeague->name }}
+                            {{ $team->getLeague?->name ?? '-' }}
                         </td>
                         <td>
                             {{ $team->getSwimTowTime() }}
