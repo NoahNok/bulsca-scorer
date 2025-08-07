@@ -2,11 +2,12 @@
 
 namespace App\Models\AbstractClasses;
 
-use App\DTO\DQ;
-use App\DTO\Pen;
+
 use App\DTO\Result;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Event\Penalty;
+use App\Models\Event\Disqualification;
 
 abstract class Resultable extends Loggable
 {
@@ -18,10 +19,8 @@ abstract class Resultable extends Loggable
     }
 
 
-    public abstract function getDisqualification(): ?DQ;
-    /**
-     * @return Pen[]
-     */
-    public abstract function getPenalties(): array;
     public abstract function transformToResult(): Result;
+
+    public abstract function penalties();
+    public abstract function disqualifications();
 }

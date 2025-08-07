@@ -13,7 +13,7 @@ use App\Models\Event\Disqualification;
  * 
  * Stores the same data as Result but with an additional resolvedResult value
  */
-class ResolvedResult extends Result
+class RankedResult extends Result
 {
 
     /**
@@ -26,9 +26,26 @@ class ResolvedResult extends Result
         public string|int $result,
         public Entity $entity,
         public Event $event,
+        public int $position,
+        public float $points = 0.0,
         public array $disqualifications = [],
         public array $penalties = [],
     ) {
         parent::__construct($id, $result, $entity, $event, $disqualifications, $penalties);
+    }
+
+    public static function fromResolved(ResolvedResult $resolved, int $position, float $points = 0.0): RankedResult
+    {
+        return new RankedResult(
+            $resolved->id,
+            $resolved->resolvedResult,
+            $resolved->result,
+            $resolved->entity,
+            $resolved->event,
+            $position,
+            $points,
+            $resolved->disqualifications,
+            $resolved->penalties
+        );
     }
 }

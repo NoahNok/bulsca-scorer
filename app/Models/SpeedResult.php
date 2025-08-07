@@ -7,28 +7,16 @@ use App\DTO\Pen;
 use App\DTO\Result;
 use App\Models\AbstractClasses\Eventable;
 use App\Models\AbstractClasses\Loggable;
+use App\Models\AbstractClasses\Resultable;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SpeedResult extends Loggable
+class SpeedResult extends Resultable
 {
     use HasFactory, Cloneable;
 
-    public function getDisqualification(): ?DQ
-    {
-        if ($this->disqualification) {
-            return new DQ($this->disqualification, null);
-        }
-        return null;
-    }
 
-    public function getPenalties(): array
-    {
-        return $this->penalties->map(function ($pen) {
-            return new Pen($pen->code, $pen);
-        })->toArray();
-    }
 
     public function transformToResult(): Result
     {
@@ -37,8 +25,8 @@ class SpeedResult extends Loggable
             $this->result,
             $this->entity,
             $this->getEvent,
-            $this->getDisqualification(),
-            $this->getPenalties()
+            $this->disqualifications->toArray(),
+            $this->penalties->toArray()
         );
     }
 
@@ -49,13 +37,14 @@ class SpeedResult extends Loggable
 
     public function penalties()
     {
-        return $this->hasMany(Penalty::class, 'speed_result', 'id');
+        return $this->getEvent->penalties()->whereMorphedTo('entity', $this->entity);
     }
 
-    public function getPenaltiesAsString()
+    public function disqualifications()
     {
-        return $this->getPenalties()->get('code')->implode('code', ', ');
+        return $this->getEvent->disqualifications()->whereMorphedTo('entity', $this->entity);
     }
+
 
 
     public function getEvent()
@@ -137,10 +126,10 @@ class SpeedResult extends Loggable
     public static function remapDq($dq)
     {
         return match ($dq) {
-            'DQ015' => 'DNF',
-            'DQ004' => 'DNS',
-            'DQ1001' => 'OOT',
-            default => $dq,
+            15 => 'DNF',
+            4 => 'DNS',
+            1001 => 'OOT',
+            default => "DQ$dq",
         };
     }
 }

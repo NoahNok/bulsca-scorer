@@ -2,22 +2,36 @@
 
 namespace App\Models;
 
+use App\DTO\RankedResult;
 use App\DTO\ResolvedResult;
 use App\DTO\Result;
+use App\Models\AbstractClasses\Entity;
 use App\Models\AbstractClasses\Event;
-use App\Models\Interfaces\IEvent;
-use App\Models\Interfaces\IPenalisable;
-use App\Models\Scoring\Bulsca\BulscaSpeedScoring;
-use App\Models\Scoring\IScoring;
+use App\Models\Event\Disqualification;
+use App\Models\Event\Penalty;
+
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\DB;
 
-class CompetitionSpeedEvent extends Event implements IPenalisable
+class CompetitionSpeedEvent extends Event
 {
     use HasFactory, Cloneable;
+
+    public function getRankedResults(): array
+    {
+        $resolvedResults = collect($this->getResolvedResults());
+
+        $rankedResults = $resolvedResults->sortBy(function ($result) {
+            return [
+                count($result->disqualifications) > 0 ? 1 : 0,
+                $result->resolvedResult
+            ];
+        })->values()->map(function ($result, $index) {
+            return RankedResult::fromResolved($result, $index + 1);
+        });
+
+        return $rankedResults->toArray();
+    }
 
     public function getResolvedResults(): array
     {
@@ -31,7 +45,7 @@ class CompetitionSpeedEvent extends Event implements IPenalisable
             $resolvedResult = $result->result;
 
             // Apply DQ/Pen. Apply DQ last as it overrides
-            if ($result->disqualification) {
+            if (count($result->disqualifications) > 0) {
                 $resolvedResult = 0;
             }
 
@@ -41,7 +55,7 @@ class CompetitionSpeedEvent extends Event implements IPenalisable
                 $result->result,
                 $result->entity,
                 $result->event,
-                $result->disqualification,
+                $result->disqualifications,
                 $result->penalties
             );
         }
@@ -103,20 +117,44 @@ class CompetitionSpeedEvent extends Event implements IPenalisable
         return $data;
     }
 
-    public function addTeamPenalty($teamId, $code)
+    public function penalties()
     {
-        $result = SpeedResult::where('event', $this->id)->where('competition_team', $teamId)->first();
-        $penalty = new Penalty();
-        $penalty->speed_result = $result->id;
-        $penalty->code = $code;
-        $penalty->save();
+        return $this->morphMany(Penalty::class, 'event');
     }
 
-    public function addTeamDQ($teamId, $code)
+    public function disqualifications()
     {
-        $result = SpeedResult::where('event', $this->id)->where('competition_team', $teamId)->first();
-        $result->disqualification = $code;
-        $result->save();
+        return $this->morphMany(Disqualification::class, 'event');
+    }
+
+    public function addEntityPenalty(Entity $entity, int $code)
+    {
+        $this->penalties()->create([
+            'entity' => $entity,
+            'code' => $code
+        ]);
+    }
+
+    public function addEntityDisqualification(Entity $entity, int $code)
+    {
+
+        $disqualification = $this->disqualifications()->make([
+            'code' => $code
+        ]);
+
+        $disqualification->entity()->associate($entity);
+
+        $disqualification->save();
+    }
+
+    public function clearEntityPenalties(Entity $entity)
+    {
+        $this->penalties()->whereMorphedTo('entity', $entity)->delete();
+    }
+
+    public function clearEntityDisqualifications(Entity $entity)
+    {
+        $this->disqualifications()->whereMorphedTo('entity', $entity)->delete();
     }
 
     public function getBaseEvent()

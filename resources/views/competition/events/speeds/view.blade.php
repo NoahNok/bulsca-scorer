@@ -64,7 +64,7 @@
                         </thead>
                         <tbody>
 
-                            @forelse ($event->getResolvedResults() as $result)
+                            @forelse ($event->getRankedResults() as $result)
                                 <tr x-data="{ name: `{{ $result->entity->getName() }}` }" x-show="name.toLowerCase().includes(search.toLowerCase())">
                                     <th scope="row">
                                         {{ $result->entity->getName() }}
@@ -102,13 +102,13 @@
 
 
                                     <td>
-                                        {{ App\Models\SpeedResult::remapDq($result->disqualification) ?: '-' }}
+                                        {{ $result->getDisqualificationsString() }}
                                     </td>
 
                                     @if ($event->hasPenalties())
                                         <td>
                                             @if (count($result->penalties) > 0)
-                                                {{ implode($result->penalties, ', ') }}
+                                                {{ $result->getPenaltiesString() }}
                                             @else
                                                 -
                                             @endif
@@ -118,7 +118,7 @@
                                         POINTS NOT IMPL
                                     </td>
                                     <td>
-                                        PLACE NOT IMPL
+                                        {{ $result->position }}
                                     </td>
 
                                 </tr>

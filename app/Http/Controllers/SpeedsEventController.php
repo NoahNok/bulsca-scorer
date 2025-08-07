@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AddSpeedEventRequest;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\Competition;
-use App\Models\Penalty;
 use App\Models\SpeedEvent;
 use App\Models\SpeedResult;
 use Illuminate\Http\Request;
@@ -84,10 +83,12 @@ class SpeedsEventController extends Controller
                     array_push($errors, ["id" => $id, "option" => "disqualification"]);
                     continue;
                 } else {
-                    $sr->disqualification = $row->values->disqualification;
+                    $code = (int) str_replace('dq', '', strtolower($row->values->disqualification));
+
+                    $event->addEntityDisqualification($sr->entity, $code);
                 }
             } else {
-                $sr->disqualification = null;
+                $event->clearEntityDisqualifications($sr->entity);
             }
 
             if (property_exists($row->values, "penalties")) {
@@ -111,22 +112,16 @@ class SpeedsEventController extends Controller
                         continue;
                     }
 
-                    Penalty::where('speed_result', $sr->id)->delete();
+                    $event->clearEntityPenalties($sr->entity);
 
                     foreach ($valid as $penalty) {
-                        $p = new Penalty();
-                        $p->speed_result = $sr->id;
-                        $p->code = $penalty;
-                        $p->save();
+                        $code = (int) str_replace('p', '', strtolower($penalty));
+                        $event->addEntityPenalty($event->entity, $code);
                     }
                 } else {
-                    Penalty::where('speed_result', $sr->id)->delete();
+                    $event->clearEntityPenalties($sr->entity);
                 }
             }
-
-
-
-
 
 
             if ($row->values->result == "") {
@@ -138,16 +133,13 @@ class SpeedsEventController extends Controller
 
 
             if (str_starts_with($row->values->result, 'DN')) {
-                $sr->result = 0;
-                $sr->disqualification = str_starts_with($row->values->result, 'DNS') ? 'DQ004' : 'DQ015';
-                $sr->save();
+                $code = str_starts_with($row->values->result, 'DNS') ? 004 : 015;
+                $event->addEntityDisqualification($sr->entity, $code);
                 continue;
             }
 
             if (str_starts_with($row->values->result, 'OOT')) {
-                $sr->result = 0;
-                $sr->disqualification = 'DQ1001';
-                $sr->save();
+                $event->addEntityDisqualification($sr->entity, 1001);
                 continue;
             }
 

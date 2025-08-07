@@ -67,10 +67,10 @@
                         </thead>
                         <tbody>
 
-                            @forelse ($event->getSimpleResults as $result)
+                            @forelse ($event->getRawResults() as $result)
                                 <tr table-row table-row-owner="{{ $result->id }}">
                                     <th scope="row">
-                                        {{ $result->getTeam->getFullname() }}
+                                        {{ $result->entity->getName() }}
                                     </th>
                                     <td class="table-input">
 
@@ -137,7 +137,7 @@
                                         <td class="table-input">
                                             <input class="table-input" ts-p table-cell table-cell-name="penalties"
                                                 table-cell-optional placeholder="P###, P###, etc..." type="text"
-                                                value="{{ $result->getPenaltiesAsString() }}">
+                                                value="{{ $result->getPenaltiesString() }}">
                                         </td>
                                     @endif
 

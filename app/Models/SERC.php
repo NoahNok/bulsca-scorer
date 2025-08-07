@@ -21,6 +21,11 @@ class SERC extends Event implements IPenalisable
 
     protected $table = 'sercs';
 
+    public function getRankedResults(): array
+    {
+        return [];
+    }
+
     public function getResolvedResults(): array
     {
         /**
