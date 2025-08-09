@@ -2,11 +2,15 @@
 
 namespace App\Models;
 
+use App\DTO\RankedResult;
 use App\DTO\ResolvedResult;
 use App\DTO\SERCResult as DTOSERCResult;
+use App\Models\AbstractClasses\Entity;
 use App\Models\SERCResult;
 use App\Models\AbstractClasses\Event;
 use App\Models\DigitalJudge\JudgeNote;
+use App\Models\Event\Disqualification;
+use App\Models\Event\Penalty;
 use App\Models\Interfaces\IEvent;
 use App\Models\Interfaces\IPenalisable;
 use App\Models\Scoring\Bulsca\BulscaSercScoring;
@@ -15,7 +19,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class SERC extends Event implements IPenalisable
+class SERC extends Event
 {
     use HasFactory, Cloneable;
 
@@ -23,7 +27,18 @@ class SERC extends Event implements IPenalisable
 
     public function getRankedResults(): array
     {
-        return [];
+        $resolvedResults = collect($this->getResolvedResults());
+
+        $rankedResults = $resolvedResults->sortBy(function ($result) {
+            return [
+                count($result->disqualifications) > 0 ? 1 : 0,
+                -$result->resolvedResult
+            ];
+        })->values()->map(function ($result, $index) {
+            return RankedResult::fromResolved($result, $index + 1);
+        });
+
+        return $rankedResults->toArray();
     }
 
     public function getResolvedResults(): array
@@ -40,23 +55,19 @@ class SERC extends Event implements IPenalisable
 
             $resultData = $entityResults->first();
 
-            // In SERC case fetch these now
-            $disqualification = null;
-            $penalties = [];
+            // In SERC case fetch dq and pen now
 
             // Apply any impacts of DQ/Pen APPLY DQ last as it overrides
-            if ($disqualification) {
-                $resultTotal = 0;
-            }
+            // if ($disqualification) {
+            //     $resultTotal = 0;
+            // }
 
             $resolvedResults[] = new ResolvedResult(
                 $resultData->id,
                 $resultTotal,
                 $resultData->result,
                 $resultData->entity,
-                $resultData->event,
-                $disqualification,
-                $penalties
+                $resultData->event
             );
         }
 
@@ -82,9 +93,6 @@ class SERC extends Event implements IPenalisable
 
     public function getTeams()
     {
-
-
-
         return match ($this->getCompetition->scoring_type) {
             'bulsca', 'rlss-cs' => CompetitionTeam::where('competition', $this->competition)->orderBy('serc_order')->get(),
             'rlss-nationals' => Competitor::where('competition', $this->competition)->orderBy('serc_order')->get()->unique('club'),
@@ -97,16 +105,6 @@ class SERC extends Event implements IPenalisable
     }
 
 
-
-    public function getTeamDQ(CompetitionTeam $team)
-    {
-        return SERCDisqualification::where(['team' => $team->id, 'serc' => $this->id])->first();
-    }
-
-    public function getTeamPenalties(CompetitionTeam $team)
-    {
-        return SERCPenalty::where(['team' => $team->id, 'serc' => $this->id])->first();
-    }
 
 
     public function getType(): string
@@ -247,25 +245,6 @@ class SERC extends Event implements IPenalisable
 
 
         return ['judges' => $judges, 'teams' => $teams, 'data' => $data];
-    }
-
-
-    public function addTeamPenalty($teamId, $code)
-    {
-        $penalty = SERCPenalty::firstOrNew(['team' => $teamId, 'serc' => $this->id]);
-
-        $codes = explode(",", $penalty->codes);
-        $codes[] = $code;
-        $penalty->codes = implode(",", $codes);
-
-        $penalty->save();
-    }
-
-    public function addTeamDQ($teamId, $code)
-    {
-        $dq = SERCDisqualification::firstOrNew(['team' => $teamId, 'serc' => $this->id]);
-        $dq->code = $code;
-        $dq->save();
     }
 
     public function getSERCData()

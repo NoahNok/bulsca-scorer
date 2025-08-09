@@ -6,13 +6,14 @@ use App\Data\TeamAdditionalDetailsData;
 use App\Helpers\ClassHelpers;
 use App\Models\AbstractClasses\Entity;
 use App\Traits\Cloneable;
+use App\Traits\MorphableModel;
 use Carbon\CarbonInterval;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class CompetitionTeam extends Entity
 {
-    use HasFactory, Cloneable;
+    use HasFactory, Cloneable, MorphableModel;
 
     protected $fillable = ['club', 'team'];
 

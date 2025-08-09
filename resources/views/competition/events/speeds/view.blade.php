@@ -102,20 +102,18 @@
 
 
                                     <td>
-                                        {{ $result->getDisqualificationsString() }}
+                                        {{ $result->getDisqualificationsString() ?: '-' }}
                                     </td>
 
                                     @if ($event->hasPenalties())
                                         <td>
-                                            @if (count($result->penalties) > 0)
-                                                {{ $result->getPenaltiesString() }}
-                                            @else
-                                                -
-                                            @endif
+
+                                            {{ $result->getPenaltiesString() ?: '-' }}
+
                                         </td>
                                     @endif
                                     <td>
-                                        POINTS NOT IMPL
+                                        {{ $result->points ?: '-' }}
                                     </td>
                                     <td>
                                         {{ $result->position }}

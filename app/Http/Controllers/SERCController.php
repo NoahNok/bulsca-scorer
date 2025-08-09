@@ -153,24 +153,22 @@ class SERCController extends Controller
     {
         $json = json_decode($request->input('data'));
 
-        $disSet = false;
-        $penSet = false;
 
         foreach ($json as $mp) {
 
             if ($mp->id == "disqualification") {
-                $sd = SERCDisqualification::firstOrNew(['team' => $team->id, 'serc' => $serc->id]);
-                $sd->code = $mp->values->disqualification;
-                $sd->save();
-                $disSet = true;
+                $serc->clearEntityDisqualifications($team);
+                $dq = str_replace('p', '', strtolower(trim($mp->values->disqualification)));
+                $serc->addEntityDisqualification($team, $dq);
                 continue;
             }
 
             if ($mp->id == "penalties") {
-                $sd = SERCPenalty::firstOrNew(['team' => $team->id, 'serc' => $serc->id]);
-                $sd->codes = $mp->values->penalties;
-                $sd->save();
-                $penSet = true;
+                $serc->clearEntityPenalties();
+                foreach (explode(',', $mp->values->penalties) as $pen) {
+                    $pen = str_replace('p', '', strtolower(trim($pen)));
+                    $serc->addEntityPenalty($team, $pen);
+                }
                 continue;
             }
 
@@ -181,21 +179,22 @@ class SERCController extends Controller
             if ($score > 10) $score = 10;
             if ($score < 0) $score = 0;
 
-            $result = SERCResult::firstOrNew(['marking_point' => $id, 'team' => $team->id]);
+            $result = SERCResult::where('marking_point', $id)->whereMorphedTo($team, 'entity')->first();
+
+            if (!$result) {
+                $result = new SERCResult();
+                $result->marking_point = $id;
+            }
 
             $result->result = $score;
+            $result->entity()->associate($team);
 
             $result->save();
 
             Cache::forget('mp.' . $id . '.team.' . $team->id);
         }
 
-        if (!$disSet) {
-            SERCDisqualification::where(['team' => $team->id, 'serc' => $serc->id])->delete();
-        }
-        if (!$penSet) {
-            SERCPenalty::where(['team' => $team->id, 'serc' => $serc->id])->delete();
-        }
+
 
 
         $teamIds = $serc->getTeams()->pluck('id')->toArray();

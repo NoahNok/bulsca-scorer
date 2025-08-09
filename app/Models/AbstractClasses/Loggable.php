@@ -72,15 +72,15 @@ abstract class Loggable extends Model
         }
 
 
-        $log = new BetterJudgeLog();
-        $log->loggable_type = get_class($this);
-        $log->loggable_data = json_encode($this->getAttributes());
-        $log->associated_with()->associate($this->resolveJudgeLogAssociation());
-        $log->team = $this->resolveJudgeLogTeam()->id;
-        $log->action = $action;
+        // $log = new BetterJudgeLog();
+        // $log->loggable_type = get_class($this);
+        // $log->loggable_data = json_encode($this->getAttributes());
+        // $log->associated_with()->associate($this->resolveJudgeLogAssociation());
+        // $log->team = $this->resolveJudgeLogTeam()->id;
+        // $log->action = $action;
 
-        $log->competition = DigitalJudge::getClientCompetition() ? DigitalJudge::getClientCompetition()->id : Route::input('comp')->id;
-        $log->judge_name = $judgeName;
-        $log->save();
+        // $log->competition = DigitalJudge::getClientCompetition() ? DigitalJudge::getClientCompetition()->id : Route::input('comp')->id;
+        // $log->judge_name = $judgeName;
+        // $log->save();
     }
 }

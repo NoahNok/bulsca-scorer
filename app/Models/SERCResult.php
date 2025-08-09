@@ -21,14 +21,14 @@ class SERCResult extends Resultable
         'team'
     ];
 
-    public function getDisqualification(): ?DQ
+    public function penalties()
     {
         return null;
     }
 
-    public function getPenalties(): array
+    public function disqualifications()
     {
-        return [];
+        return null;
     }
 
     public function transformToResult(): Result
@@ -39,8 +39,6 @@ class SERCResult extends Resultable
             $this->getMarkingPoint,
             $this->entity,
             $this->getSerc(),
-            $this->getDisqualification(),
-            $this->getPenalties()
         );
     }
 

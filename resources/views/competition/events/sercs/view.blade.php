@@ -24,7 +24,72 @@
                 </div>
 
                 <br>
-                @include('competition.events.sercs.table_templates.' . $comp->scoring_type)
+                <div class="se-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th scope="col">
+                                    Team
+                                </th>
+                                <th scope="col">
+                                    DQ
+                                </th>
+                                <th scope="col">
+                                    Raw Mark
+                                </th>
+                                <th scope="col">
+                                    Points
+                                </th>
+                                <th scope="col">
+                                    Position
+                                </th>
+                                <th scope="col">
+                                    Results
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @forelse ($serc->getRankedResults() as $result)
+                                <tr x-data="{ name: `{{ $result->entity->getName() }}` }" x-show="name.toLowerCase().includes(search.toLowerCase())">
+                                    <th scope="row">
+                                        {{ $result->entity->getName() }}
+                                    </th>
+                                    <td>
+                                        {{ $result->getDisqualificationsString() ?: '-' }}
+                                    </td>
+                                    <td>
+                                        {{ round($result->result, 1) }}
+                                    </td>
+                                    <td>
+                                        {{ round($result->points) }}
+                                    </td>
+                                    <td>
+                                        {{ $result->position }}
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('comps.events.sercs.editResults', [$comp, $serc, $result->entity->id]) }}"
+                                            class="se-btn text-black">
+                                            Edit
+                                        </a>
+                                    </td>
+
+                                </tr>
+                            @empty
+                                <tr class="empty ">
+                                    <th colspan="100" scope="row">
+                                        None
+                                    </th>
+                                </tr>
+                            @endforelse
+
+
+
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
 
             <h4>All teams</h4>

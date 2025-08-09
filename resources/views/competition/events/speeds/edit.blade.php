@@ -74,7 +74,7 @@
                                     </th>
                                     <td class="table-input">
 
-                                        @if (in_array($result->disqualification, ['DQ015', 'DQ004', 'DQ1001']))
+                                        @if (in_array($result->getDisqualificationsString(), ['DQ015', 'DQ004', 'DQ1001']))
                                             @php
 
                                                 $code = match ($result->disqualification) {
@@ -129,7 +129,7 @@
                                         <input class="table-input" ts table-cell table-cell-name="disqualification"
                                             table-cell-optional placeholder="DQ###" type="text" x-data
                                             x-mask:dynamic="$input.startsWith('DQ100') ? 'DQ9999' : 'DQ999'"
-                                            value="{{ $result->disqualification }}">
+                                            value="{{ $result->getDisqualificationsString() }}">
 
                                     </td>
 

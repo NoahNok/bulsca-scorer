@@ -25,8 +25,8 @@ class SpeedResult extends Resultable
             $this->result,
             $this->entity,
             $this->getEvent,
-            $this->disqualifications->toArray(),
-            $this->penalties->toArray()
+            $this->disqualifications,
+            $this->penalties
         );
     }
 

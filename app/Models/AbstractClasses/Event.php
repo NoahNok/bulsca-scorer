@@ -9,6 +9,8 @@ use App\DTO\RankedResult;
 use App\Models\Competition;
 use App\Models\CompetitionTeam;
 use App\Models\DigitalJudge\BetterJudgeLog;
+use App\Models\Event\Disqualification;
+use App\Models\Event\Penalty;
 use App\Models\SERCResult;
 use App\Models\SpeedResult;
 use Illuminate\Database\Eloquent\Collection;
@@ -35,10 +37,58 @@ abstract class Event extends Model
     public abstract function results();
     public abstract function getCompetition();
 
-    public abstract function penalties();
-    public abstract function disqualifications();
-    public abstract function addEntityPenalty(Entity $entity, int $code);
-    public abstract function addEntityDisqualification(Entity $entity, int $code);
-    public abstract function clearEntityPenalties(Entity $entity);
-    public abstract function clearEntityDisqualifications(Entity $entity);
+    public function penalties()
+    {
+        return $this->morphMany(Penalty::class, 'event');
+    }
+
+    public function disqualifications()
+    {
+        return $this->morphMany(Disqualification::class, 'event');
+    }
+
+
+
+    public function addEntityPenalty(Entity $entity, int $code)
+    {
+        $penalty = $this->penalties()->make([
+            'code' => $code
+        ]);
+
+        $penalty->entity()->associate($entity);
+
+        $penalty->save();
+    }
+
+    public function addEntityDisqualification(Entity $entity, int $code)
+    {
+
+        $disqualification = $this->disqualifications()->make([
+            'code' => $code
+        ]);
+
+        $disqualification->entity()->associate($entity);
+
+        $disqualification->save();
+    }
+
+    public function clearEntityPenalties(Entity $entity)
+    {
+        $this->penalties()->whereMorphedTo('entity', $entity)->delete();
+    }
+
+    public function clearEntityDisqualifications(Entity $entity)
+    {
+        $this->disqualifications()->whereMorphedTo('entity', $entity)->delete();
+    }
+
+    public function getEntityPenalties(Entity $entity)
+    {
+        return $this->penalties()->whereMorphedTo('entity', $entity);
+    }
+
+    public function getEntityDisqualifications(Entity $entity)
+    {
+        return $this->disqualifications()->whereMorphedTo('entity', $entity);
+    }
 }

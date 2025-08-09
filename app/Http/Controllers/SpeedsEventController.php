@@ -83,6 +83,7 @@ class SpeedsEventController extends Controller
                     array_push($errors, ["id" => $id, "option" => "disqualification"]);
                     continue;
                 } else {
+                    $event->clearEntityDisqualifications($sr->entity);
                     $code = (int) str_replace('dq', '', strtolower($row->values->disqualification));
 
                     $event->addEntityDisqualification($sr->entity, $code);
@@ -116,7 +117,7 @@ class SpeedsEventController extends Controller
 
                     foreach ($valid as $penalty) {
                         $code = (int) str_replace('p', '', strtolower($penalty));
-                        $event->addEntityPenalty($event->entity, $code);
+                        $event->addEntityPenalty($sr->entity, $code);
                     }
                 } else {
                     $event->clearEntityPenalties($sr->entity);

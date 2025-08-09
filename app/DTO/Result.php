@@ -7,37 +7,48 @@ use App\Models\AbstractClasses\Event;
 use App\Models\Event\Penalty;
 use App\Models\Event\Disqualification;
 use App\Models\SpeedResult;
+use Illuminate\Database\Eloquent\Collection;
 
 class Result
 {
 
     /**
-     * @param Penalty[] $penalties
-     * @param Disqualification[] $disqualifications
+     * @param Collection<int, Disqualification> $disqualifications
+     * @param Collection<int, Penalty> $penalties
      */
     public function __construct(
         public int $id,
         public string|int $result,
         public Entity $entity,
         public Event $event,
-        public array $disqualifications = [],
-        public array $penalties = [],
-    ) {}
-
-
-    public function getPenaltiesString(): string
-    {
-        return "pens";
+        public ?Collection $disqualifications = null,
+        public ?Collection $penalties = null,
+    ) {
+        $this->disqualifications ??= new Collection();
+        $this->penalties ??= new Collection();
     }
 
-    public function getDisqualificationsString(): string
+
+    public function getPenaltiesString(): ?string
+    {
+        $pens = $this->penalties;
+
+
+        if (count($pens) == 0) {
+            return null;
+        }
+
+        return $pens->map(fn($pen) => "$pen")->implode(', ');
+    }
+
+    public function getDisqualificationsString(): ?string
     {
 
         $dqs = $this->disqualifications;
         if (count($dqs) == 0) {
-            return "-";
+            return null;
         }
 
-        return SpeedResult::remapDq($dqs[0]['code']);
+        return SpeedResult::remapDq($dqs->first()->code);
     }
 }

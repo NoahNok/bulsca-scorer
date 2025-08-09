@@ -55,7 +55,7 @@
                                 <td class="table-input">
                                     <input class="table-input" table-cell table-cell-name="disqualification"
                                         placeholder="DQ###" x-data x-mask="DQ999" type="text"
-                                        value="{{ $serc->getTeamDQ($team)?->code }}">
+                                        value="{{ $serc->getEntityDisqualifications($team)->first()?->code }}">
                                 </td>
                             </tr>
                             <tr table-row table-row-owner="penalties" class="bg-white border-b text-right ">
@@ -64,7 +64,8 @@
                                 </th>
                                 <td class="table-input">
                                     <input class="table-input" table-cell table-cell-name="penalties" placeholder="P###"
-                                        type="text" value="{{ $serc->getTeamPenalties($team)?->codes }}">
+                                        type="text"
+                                        value="{{ $serc->getEntityPenalties($team)->get()->map(fn($pen) => "$pen")->implode(', ') }}">
                                 </td>
                             </tr>
 
@@ -86,7 +87,7 @@
 
                                             <input class="table-input" table-cell table-cell-name="score" min="0"
                                                 max="10" step=1 placeholder="0-10" type="number"
-                                                value="{{ $mp->getScoreForTeam($team->id) ?: '' }}">
+                                                value="{{ $mp->getScoreForTeam($team) ?: '' }}">
 
                                         </td>
 

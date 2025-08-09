@@ -6,6 +6,7 @@ use App\Models\AbstractClasses\Entity;
 use App\Models\AbstractClasses\Event;
 use App\Models\Event\Penalty;
 use App\Models\Event\Disqualification;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Represents a result that has been transformed into its final value based on any applied
@@ -17,8 +18,8 @@ class RankedResult extends Result
 {
 
     /**
-     * @param Penalty[] $penalties
-     * @param Disqualification[] $disqualifications
+     * @param Collection<int, Disqualification> $disqualifications
+     * @param Collection<int, Penalty> $penalties
      */
     public function __construct(
         public int $id,
@@ -27,14 +28,16 @@ class RankedResult extends Result
         public Entity $entity,
         public Event $event,
         public int $position,
-        public float $points = 0.0,
-        public array $disqualifications = [],
-        public array $penalties = [],
+        public ?float $points,
+        public ?Collection $disqualifications = null,
+        public ?Collection $penalties = null,
     ) {
+        $this->disqualifications ??= new Collection();
+        $this->penalties ??= new Collection();
         parent::__construct($id, $result, $entity, $event, $disqualifications, $penalties);
     }
 
-    public static function fromResolved(ResolvedResult $resolved, int $position, float $points = 0.0): RankedResult
+    public static function fromResolved(ResolvedResult $resolved, int $position, float $points = null): RankedResult
     {
         return new RankedResult(
             $resolved->id,

@@ -117,45 +117,7 @@ class CompetitionSpeedEvent extends Event
         return $data;
     }
 
-    public function penalties()
-    {
-        return $this->morphMany(Penalty::class, 'event');
-    }
 
-    public function disqualifications()
-    {
-        return $this->morphMany(Disqualification::class, 'event');
-    }
-
-    public function addEntityPenalty(Entity $entity, int $code)
-    {
-        $this->penalties()->create([
-            'entity' => $entity,
-            'code' => $code
-        ]);
-    }
-
-    public function addEntityDisqualification(Entity $entity, int $code)
-    {
-
-        $disqualification = $this->disqualifications()->make([
-            'code' => $code
-        ]);
-
-        $disqualification->entity()->associate($entity);
-
-        $disqualification->save();
-    }
-
-    public function clearEntityPenalties(Entity $entity)
-    {
-        $this->penalties()->whereMorphedTo('entity', $entity)->delete();
-    }
-
-    public function clearEntityDisqualifications(Entity $entity)
-    {
-        $this->disqualifications()->whereMorphedTo('entity', $entity)->delete();
-    }
 
     public function getBaseEvent()
     {
