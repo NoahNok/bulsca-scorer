@@ -24,7 +24,7 @@ class RankedResult extends Result
     public function __construct(
         public int $id,
         public int $resolvedResult,
-        public string|int $result,
+        public string|int|null $result,
         public Entity $entity,
         public Event $event,
         public int $position,

@@ -12,9 +12,9 @@ use App\Models\Event\Disqualification;
 abstract class Resultable extends Loggable
 {
 
-    public function scopeForEntity(Builder $query, Model $entity): Builder
+    public function scopeForEntity(Builder $query, Entity $entity): Builder
     {
-        return $query->where('entity_type', get_class($entity))
+        return $query->where('entity_type', $entity->getMorphClass())
             ->where('entity_id', $entity->getKey());
     }
 

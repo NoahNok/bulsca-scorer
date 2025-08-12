@@ -152,19 +152,22 @@ class SERCController extends Controller
     public function updateTeamResults(Competition $comp, SERC $serc, CompetitionTeam $team, Request $request)
     {
         $json = json_decode($request->input('data'));
-
+        $sawDQ = false;
+        $sawPen = false;
 
         foreach ($json as $mp) {
 
             if ($mp->id == "disqualification") {
+                $sawDQ = true;
                 $serc->clearEntityDisqualifications($team);
-                $dq = str_replace('p', '', strtolower(trim($mp->values->disqualification)));
+                $dq = str_replace('dq', '', strtolower(trim($mp->values->disqualification)));
                 $serc->addEntityDisqualification($team, $dq);
                 continue;
             }
 
             if ($mp->id == "penalties") {
-                $serc->clearEntityPenalties();
+                $sawPen = true;
+                $serc->clearEntityPenalties($team);
                 foreach (explode(',', $mp->values->penalties) as $pen) {
                     $pen = str_replace('p', '', strtolower(trim($pen)));
                     $serc->addEntityPenalty($team, $pen);
@@ -179,7 +182,7 @@ class SERCController extends Controller
             if ($score > 10) $score = 10;
             if ($score < 0) $score = 0;
 
-            $result = SERCResult::where('marking_point', $id)->whereMorphedTo($team, 'entity')->first();
+            $result = SERCResult::where('marking_point', $id)->forEntity($team)->first();
 
             if (!$result) {
                 $result = new SERCResult();
@@ -194,7 +197,13 @@ class SERCController extends Controller
             Cache::forget('mp.' . $id . '.team.' . $team->id);
         }
 
+        if (!$sawDQ) {
+            $serc->clearEntityDisqualifications($team);
+        }
 
+        if (!$sawPen) {
+            $serc->clearEntityPenalties($team);
+        }
 
 
         $teamIds = $serc->getTeams()->pluck('id')->toArray();

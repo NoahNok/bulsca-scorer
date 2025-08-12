@@ -62,19 +62,24 @@ class SERC extends Event
             //     $resultTotal = 0;
             // }
 
+            $disqualifications = $this->getEntityDisqualifications($resultData->entity)->get();
+            $penalties = $this->getEntityPenalties($resultData->entity)->get();
+
             $resolvedResults[] = new ResolvedResult(
                 $resultData->id,
                 $resultTotal,
                 $resultData->result,
                 $resultData->entity,
-                $resultData->event
+                $resultData->event,
+                $disqualifications,
+                $penalties
             );
         }
 
         return $resolvedResults;
     }
 
-    public function getRawResults(): array
+    public function getRawResults(bool $withEmpty = false): array
     {
         return $this->results->map(function ($result) {
             return $result->transformToResult();

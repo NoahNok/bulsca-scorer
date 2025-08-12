@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('leagues', function(Blueprint $table) {
+        Schema::table('leagues', function (Blueprint $table) {
             $table->dropColumn('scoring_type');
-            $table->foreignId('competition')->references('id')->on('competitions')->onUpdate('CASCADE')->onDelete('CASCADE');
+            $table->foreignId('competition')->nullable()->references('id')->on('competitions')->onUpdate('CASCADE')->onDelete('CASCADE');
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('leagues', function(Blueprint $table) {
+        Schema::table('leagues', function (Blueprint $table) {
             $table->dropConstrainedForeignId('competition');
         });
     }

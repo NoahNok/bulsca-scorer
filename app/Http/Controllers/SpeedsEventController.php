@@ -45,7 +45,7 @@ class SpeedsEventController extends Controller
         $allTeams = $comp->getCompetitionTeams;
         foreach ($allTeams as $team) {
             $sr = new SpeedResult();
-            $sr->competition_team = $team->id;
+            $sr->entity()->associate($team);
             $sr->event = $cse->id;
             $sr->save();
         }

@@ -25,7 +25,7 @@ abstract class Event extends Model
     /**
      * @return Result[]
      */
-    public abstract function getRawResults(): array;
+    public abstract function getRawResults(bool $withEmpty = false): array;
     /**
      * @return ResolvedResult[]
      */

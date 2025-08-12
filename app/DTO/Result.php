@@ -18,7 +18,7 @@ class Result
      */
     public function __construct(
         public int $id,
-        public string|int $result,
+        public null|string|int $result,
         public Entity $entity,
         public Event $event,
         public ?Collection $disqualifications = null,
@@ -49,6 +49,12 @@ class Result
             return null;
         }
 
-        return SpeedResult::remapDq($dqs->first()->code);
+        $dq = $dqs->first();
+
+        if ($this->event->getType() == 'speed') {
+            return SpeedResult::remapDq($dq->code);
+        }
+
+        return $dq;
     }
 }

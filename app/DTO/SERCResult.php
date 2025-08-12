@@ -18,7 +18,7 @@ class SERCResult extends Result
      */
     public function __construct(
         public int $id,
-        public string|int $result,
+        public string|int|null $result,
         public SERCMarkingPoint $markingPoint,
         public Entity $entity,
         public Event $event,

@@ -63,9 +63,17 @@ class CompetitionSpeedEvent extends Event
         return $resolvedResults;
     }
 
-    public function getRawResults(): array
+    public function getRawResults(bool $withEmpty = false): array
     {
-        return $this->results->map(function ($result) {
+
+        $query = $this->results;
+
+        if (!$withEmpty) {
+
+            $query = $query->whereNotNull('result');
+        }
+
+        return $query->map(function ($result) {
             return $result->transformToResult();
         })->toArray();
     }
