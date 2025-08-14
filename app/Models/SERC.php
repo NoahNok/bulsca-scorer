@@ -29,14 +29,32 @@ class SERC extends Event
     {
         $resolvedResults = collect($this->getResolvedResults());
 
-        $rankedResults = $resolvedResults->sortBy(function ($result) {
+        $sortedResults = $resolvedResults->sortBy(function ($result) {
             return [
                 count($result->disqualifications) > 0 ? 1 : 0,
                 -$result->resolvedResult
             ];
-        })->values()->map(function ($result, $index) {
-            return RankedResult::fromResolved($result, $index + 1);
-        });
+        })->values();
+
+        $rankedResults = collect();
+        $previousScore = null;
+        $previousRank = 0;
+        $position = 1;
+
+        foreach ($sortedResults as $result) {
+            $currentScore = count($result->disqualifications) > 0 ? 'DQ' : $result->resolvedResult;
+
+            if ($currentScore === $previousScore) {
+                $rank = $previousRank;
+            } else {
+                $rank = $position;
+                $previousScore = $currentScore;
+                $previousRank = $rank;
+            }
+
+            $rankedResults->push(RankedResult::fromResolved($result, $rank));
+            $position++;
+        }
 
         return $rankedResults->toArray();
     }
