@@ -113,7 +113,7 @@
                                         </td>
                                     @endif
                                     <td>
-                                        {{ $result->points ?: '-' }}
+                                        {{ $result->isDisqualified() ? 'DQ' : (round($result->points) ?: '-') }}
                                     </td>
                                     <td>
                                         {{ $result->position }}

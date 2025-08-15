@@ -29,6 +29,7 @@ class ResolvedResult extends Result
         public Event $event,
         public ?Collection $disqualifications = null,
         public ?Collection $penalties = null,
+        public ?float $points = null
     ) {
         $this->disqualifications ??= new Collection();
         $this->penalties ??= new Collection();

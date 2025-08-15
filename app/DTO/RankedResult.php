@@ -37,7 +37,7 @@ class RankedResult extends Result
         parent::__construct($id, $result, $entity, $event, $disqualifications, $penalties);
     }
 
-    public static function fromResolved(ResolvedResult $resolved, int $position, float $points = null): RankedResult
+    public static function fromResolved(ResolvedResult $resolved, int $position): RankedResult
     {
         return new RankedResult(
             $resolved->id,
@@ -46,7 +46,7 @@ class RankedResult extends Result
             $resolved->entity,
             $resolved->event,
             $position,
-            $points,
+            $resolved->points,
             $resolved->disqualifications,
             $resolved->penalties
         );

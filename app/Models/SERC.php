@@ -11,6 +11,7 @@ use App\Models\AbstractClasses\Event;
 use App\Models\DigitalJudge\JudgeNote;
 use App\Models\Event\Disqualification;
 use App\Models\Event\Penalty;
+use App\Models\Event\ScoringSchema;
 use App\Models\Interfaces\IEvent;
 use App\Models\Interfaces\IPenalisable;
 use App\Models\Scoring\Bulsca\BulscaSercScoring;
@@ -29,10 +30,13 @@ class SERC extends Event
     {
         $resolvedResults = collect($this->getResolvedResults());
 
-        $sortedResults = $resolvedResults->sortBy(function ($result) {
+
+        $scoringSchema = ScoringSchema::where('name', 'SERC Top Mark')->first();
+
+        $sortedResults = $scoringSchema->applyToResults($resolvedResults)->sortBy(function ($result) {
             return [
                 count($result->disqualifications) > 0 ? 1 : 0,
-                -$result->resolvedResult
+                -$result->points
             ];
         })->values();
 
@@ -42,7 +46,7 @@ class SERC extends Event
         $position = 1;
 
         foreach ($sortedResults as $result) {
-            $currentScore = count($result->disqualifications) > 0 ? 'DQ' : $result->resolvedResult;
+            $currentScore = count($result->disqualifications) > 0 ? 'DQ' : $result->points;
 
             if ($currentScore === $previousScore) {
                 $rank = $previousRank;
@@ -55,6 +59,7 @@ class SERC extends Event
             $rankedResults->push(RankedResult::fromResolved($result, $rank));
             $position++;
         }
+
 
         return $rankedResults->toArray();
     }

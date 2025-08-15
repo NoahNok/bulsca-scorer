@@ -57,4 +57,9 @@ class Result
 
         return $dq;
     }
+
+    public function isDisqualified(): bool
+    {
+        return $this->disqualifications->count() > 0;
+    }
 }

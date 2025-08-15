@@ -9,7 +9,7 @@ use App\Models\AbstractClasses\Entity;
 use App\Models\AbstractClasses\Event;
 use App\Models\Event\Disqualification;
 use App\Models\Event\Penalty;
-
+use App\Models\Event\ScoringSchema;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -21,10 +21,13 @@ class CompetitionSpeedEvent extends Event
     {
         $resolvedResults = collect($this->getResolvedResults());
 
-        $sortedResults = $resolvedResults->sortBy(function ($result) {
+
+        $scoringSchema = ScoringSchema::where('name', 'BULSCA Speed Event')->first();
+
+        $sortedResults = $scoringSchema->applyToResults($resolvedResults)->sortBy(function ($result) {
             return [
                 count($result->disqualifications) > 0 ? 1 : 0,
-                $result->resolvedResult
+                -$result->points
             ];
         })->values();
 
@@ -34,7 +37,7 @@ class CompetitionSpeedEvent extends Event
         $position = 1;
 
         foreach ($sortedResults as $result) {
-            $currentScore = count($result->disqualifications) > 0 ? 'DQ' : $result->resolvedResult;
+            $currentScore = count($result->disqualifications) > 0 ? 'DQ' : $result->points;
 
             if ($currentScore === $previousScore) {
                 $rank = $previousRank;
@@ -47,6 +50,7 @@ class CompetitionSpeedEvent extends Event
             $rankedResults->push(RankedResult::fromResolved($result, $rank));
             $position++;
         }
+
 
         return $rankedResults->toArray();
     }
