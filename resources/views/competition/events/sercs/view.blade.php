@@ -60,10 +60,15 @@
                                         {{ $result->getDisqualificationsString() ?: '-' }}
                                     </td>
                                     <td>
-                                        {{ round($result->result, 1) }}
+
+                                        {{ round($result->resolvedResult, 1) }}
                                     </td>
                                     <td>
-                                        {{ round($result->points) }}
+                                        @php
+                                            $res = round($result->points);
+                                        @endphp
+                                        {!! $result->isDisqualified() ? "<s>{$res}</s> DQ" : $res !!}
+
                                     </td>
                                     <td>
                                         {{ $result->position }}

@@ -162,6 +162,10 @@ Route::middleware('auth')->group(function () {
                 Route::get('/{event}/digital-judge-toggle', [DigitalJudgeController::class, 'speedToggle'])->name('dj.speedToggle');
 
                 Route::get('/{event}/hide', [SpeedsEventController::class, 'hide'])->name('comps.view.speeds.hide');
+
+
+                Route::get('/{event}/scoring-settings', [SpeedsEventController::class, 'scoringSettings'])->name('comps.events.speeds.scoring-settings');
+                Route::post('/{event}/scoring-settings', [SpeedsEventController::class, 'saveScoringSettings'])->name('comps.events.speeds.scoring-settings.save');
             });
 
             // SERCS

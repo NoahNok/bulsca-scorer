@@ -62,4 +62,9 @@ class Result
     {
         return $this->disqualifications->count() > 0;
     }
+
+    public function hasPenalties(): bool
+    {
+        return $this->penalties->count() > 0;
+    }
 }

@@ -80,7 +80,7 @@ class TeamsController extends Controller
                     // If they are a new team, add them to all the current events
                     foreach ($comp->getSpeedEvents as $event) {
                         $sr = new SpeedResult();
-                        $sr->competition_team = $team->id;
+                        $sr->entity()->associate($team);
                         $sr->event = $event->id;
                         $sr->save();
                     }

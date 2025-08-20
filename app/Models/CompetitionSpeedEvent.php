@@ -22,7 +22,8 @@ class CompetitionSpeedEvent extends Event
         $resolvedResults = collect($this->getResolvedResults());
 
 
-        $scoringSchema = ScoringSchema::where('name', 'BULSCA Speed Event')->first();
+        $scoringSchema = $this->scoringSchema;
+        // $scoringSchema = ScoringSchema::where('name', 'BULSCA Rope Throw')->first();
 
         $sortedResults = $scoringSchema->applyToResults($resolvedResults)->sortBy(function ($result) {
             return [
@@ -152,5 +153,10 @@ class CompetitionSpeedEvent extends Event
     public function getBaseEvent()
     {
         return $this->hasOne(SpeedEvent::class, 'id', 'event')->first();
+    }
+
+    public function scoringSchema()
+    {
+        return $this->belongsTo(ScoringSchema::class, 'scoring_schema');
     }
 }

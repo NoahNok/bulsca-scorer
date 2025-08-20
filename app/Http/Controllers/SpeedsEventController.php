@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AddSpeedEventRequest;
+use App\Http\Requests\Event\UpdateScoringSettings;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\Competition;
 use App\Models\SpeedEvent;
@@ -220,5 +221,36 @@ class SpeedsEventController extends Controller
     {
         $event->hide();
         return redirect()->back();
+    }
+
+
+    public function scoringSettings(Competition $comp, CompetitionSpeedEvent $event)
+    {
+        return view('competition.events.event-settings', compact('comp', 'event'));
+    }
+
+    public function saveScoringSettings(Competition $comp, CompetitionSpeedEvent $event, UpdateScoringSettings $request)
+    {
+        $validated = $request->validated();
+
+        $schema = $event->scoringSchema;
+
+        $ss = ['equation' => $validated['equation'], 'global_variables' => $validated['global_variables']];
+
+        if (array_key_exists('local_variables', $validated)) {
+            $ss['local_variables'] = $validated['local_variables'];
+        }
+
+        if (array_key_exists('penalty_func', $validated)) {
+            $ss['penalty_func'] = $validated['penalty_func'];
+        }
+
+        $schema->schema = $ss;
+
+
+
+        $schema->Save();
+
+        return response()->json([]);
     }
 }
