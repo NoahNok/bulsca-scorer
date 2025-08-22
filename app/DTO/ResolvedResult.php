@@ -23,8 +23,8 @@ class ResolvedResult extends Result
      */
     public function __construct(
         public int $id,
-        public int $resolvedResult,
-        public string|int|null $result,
+        public float $resolvedResult,
+        public string|float|null $result,
         public Entity $entity,
         public Event $event,
         public ?Collection $disqualifications = null,

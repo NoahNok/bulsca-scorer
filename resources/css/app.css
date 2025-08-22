@@ -278,6 +278,10 @@ div.se-table {
     @apply bg-blue-500 text-white;
   }
 
+  &.badge-gray {
+    @apply bg-gray-400 text-white;
+  }
+
   &.badge-sm {
     @apply text-xs px-1 py-0.5;
   }

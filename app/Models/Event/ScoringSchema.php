@@ -12,6 +12,7 @@ use InvalidArgumentException;
 use MathParser\Interpreting\Evaluator;
 use MathParser\StdMathParser;
 use RuntimeException;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 class ScoringSchema extends Model
@@ -27,6 +28,16 @@ class ScoringSchema extends Model
     public function __construct()
     {
         $this->engine = new ScoringEngine();
+    }
+
+    public function applyViolations(Collection $results): Collection
+    {
+        $schema = $this->schema;
+
+        $schema['auto_disqualifications'] = collect($schema['auto_disqualifications'] ?? []);
+        $schema['auto_penalties'] = collect($schema['auto_penalties'] ?? []);
+
+        return $this->engine->applyViolations($schema, $results);
     }
 
     /**
@@ -57,8 +68,10 @@ class ScoringSchema extends Model
 
         $schema = $this->schema;
 
-        $schema['global_variables'] = collect($schema['global_variables'])->sortBy('order')->toArray();
+
+        $schema['global_variables'] = collect($schema['global_variables'] ?? [])->sortBy('order')->toArray();
         $schema['local_variables'] = collect($schema['local_variables'] ?? [])->sortBy('order')->toArray();
+
 
         return $this->engine->process($this->schema, $results);
     }
@@ -82,13 +95,89 @@ class ScoringEngine
      */
     private bool $exposeResult;
 
-    public function __construct(array $bindings = [], bool $exposeResult = false, ?ExpressionLanguage $el = null)
+    public function __construct(array $bindings = [])
     {
-        $this->el = $el ?? new ExpressionLanguage();
+        $this->el = new ExpressionLanguage();
         $this->bindings = $bindings;
-        $this->exposeResult = $exposeResult;
 
         $this->registerBuiltins();
+    }
+
+    public function applyViolations(array $payload, Collection $results): Collection
+    {
+        $autoPens = $payload['auto_penalties'] ?? [];
+        $autoDqs = $payload['auto_disqualifications'] ?? [];
+
+        // Apply pens
+        foreach ($autoPens as $autoPen) {
+            $applyCode = $autoPen['code'];
+
+            $applyIf = $this->el->parse($autoPen['condition'], ['item']);
+            $applyAmount = $this->el->parse($autoPen['amount'], ['item']);
+
+            foreach ($results as $result) {
+
+                if (!((bool) $this->el->evaluate($applyIf, ['item' => $result]))) {
+                    continue;
+                }
+
+                $amount = $this->el->evaluate($applyAmount, ['item' => $result]);
+
+                for ($i = 0; $i < $amount; $i++) {
+                    $pen = new Penalty();
+                    $pen->code = $applyCode;
+                    $result->penalties->push($pen);
+                }
+            }
+        }
+
+        // Apply auto dq
+        foreach ($autoDqs as $autoDq) {
+            $applyCode = $autoPen['code'];
+
+            $applyIf = $this->el->parse($autoDq['condition'], ['item']);
+            $applyAmount = $this->el->parse($autoDq['amount'], ['item']);
+
+            foreach ($results as $result) {
+
+                if (!((bool) $this->el->evaluate($applyIf, ['item' => $result]))) {
+                    continue;
+                }
+
+                $amount = $this->el->evaluate($applyAmount, ['item' => $result]);
+
+                for ($i = 0; $i < $amount; $i++) {
+                    $pen = new Disqualification();
+                    $pen->code = $applyCode;
+                    $result->disqualifications->push($pen);
+                }
+            }
+        }
+
+        $penalty_func = array_key_exists('penalty_func', $payload) ? $this->el->parse($payload['penalty_func'], ['item']) : null;
+
+        // Apply penalty function 
+        $resolvedResults = collect([]);
+        foreach ($results as $result) {
+            $resolvedResult = $result->result;
+
+            // Do penalty func
+            if ($penalty_func && $result->penalties->count() > 0) {
+                $resolvedResult = $this->el->evaluate($penalty_func, ['item' => $result]);
+            }
+
+            $resolvedResults[] = new ResolvedResult(
+                $result->id,
+                $resolvedResult,
+                $result->result,
+                $result->entity,
+                $result->event,
+                $result->disqualifications,
+                $result->penalties
+            );
+        }
+
+        return $resolvedResults;
     }
 
     /**
@@ -105,45 +194,17 @@ class ScoringEngine
     public function process(array $payload, Collection $results): Collection
     {
         $equation = $payload['equation'] ?? null;
-        $penaltyFunction = $payload['penalty_func'] ?? null;
+
         $globalVars = $payload['global_variables'] ?? [];
         $localVars  = $payload['local_variables'] ?? [];
 
+        // Filter out any local/global vars that aren't correct
+
+        $localVars = array_filter($localVars, fn($item) => $item['expression'] != null);
+
+
         if (!is_string($equation) || $equation === '') {
             throw new InvalidArgumentException("Missing or invalid 'equation'.");
-        }
-
-
-
-        // Global context is computed once for penaties so that we can recalcuate resolvedResult
-        $penaltyGlobalContext = [
-            'results' => $results,
-        ];
-
-        // Apply penalty function
-        foreach ($results as $result) {
-            $perResultContext = $this->buildPerResultContext($result, $penaltyGlobalContext);
-
-
-
-            // Local variables in order (each can depend on prior locals + globals)
-            foreach ($localVars as $def) {
-                $name = $def['name'] ?? null;
-                $expr = $def['expression'] ?? null;
-                if (!$name || !$expr) {
-                    throw new InvalidArgumentException("Each local variable must have 'name' and 'expression'.");
-                }
-
-                $perResultContext[$name] = $this->safeEval($expr, $perResultContext, "local variable '{$name}'");
-            }
-
-            if ($penaltyFunction) {
-                dump($perResultContext);
-                dump($result->resolvedResult);
-                $result->resolvedResult = $this->safeEval($penaltyFunction, $perResultContext, "penaltyFunction");
-                dump($result->resolvedResult);
-                $perResultContext['result'] = $result->resolvedResult;
-            }
         }
 
 
@@ -167,6 +228,15 @@ class ScoringEngine
 
 
 
+        // Lets precopile each local variable's expression
+        $allLocalVariableNames = array_map(fn($item) => $item['name'], $localVars);
+        array_push($allLocalVariableNames, 'item');
+        foreach ($localVars as $index => $var) {
+
+            $localVars[$index]['expression'] = $this->el->parse($var['expression'], $allLocalVariableNames);
+        }
+
+        $equation = $this->el->parse($equation, array_merge($allLocalVariableNames, array_keys($globalContext)));
 
         // Evaluate per result
         foreach ($results as $result) {
@@ -176,6 +246,7 @@ class ScoringEngine
             foreach ($localVars as $def) {
                 $name = $def['name'] ?? null;
                 $expr = $def['expression'] ?? null;
+
                 if (!$name || !$expr) {
                     throw new InvalidArgumentException("Each local variable must have 'name' and 'expression'.");
                 }
@@ -199,15 +270,6 @@ class ScoringEngine
     private function buildPerResultContext($result, array $globalContext): array
     {
         $ctx = $globalContext;
-
-
-
-        // Expose only whitelisted bindings
-        // foreach ($this->bindings as $key => $fn) {
-        //     $ctx[$key] = $fn($result);
-        // }
-
-        // Optionally expose raw result (not recommended unless needed)
 
         $ctx['item'] = $result;
 
@@ -304,12 +366,23 @@ class ScoringEngine
                 return ceil($numb);
             }
         );
+
+        $this->el->register(
+            'FLOOR',
+            function ($array, $attribute) {
+                return sprintf('FLOOR(%s)', $array, $attribute);
+            },
+            function ($arguments, $numb) {
+
+                return floor($numb);
+            }
+        );
     }
 
     /**
      * Wrapper to provide clearer error messages.
      */
-    private function safeEval(string $expr, array $context, string $label)
+    private function safeEval(Expression|string $expr, array $context, string $label)
     {
         try {
 

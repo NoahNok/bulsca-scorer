@@ -64,26 +64,7 @@ class CompetitionSpeedEvent extends Event
         $resolvedResults = [];
         $results = collect($this->getRawResults());
 
-        foreach ($results as $result) {
-            $resolvedResult = $result->result;
-
-            // Apply DQ/Pen. Apply DQ last as it overrides
-            if (count($result->disqualifications) > 0) {
-                $resolvedResult = 0;
-            }
-
-            $resolvedResults[] = new ResolvedResult(
-                $result->id,
-                $resolvedResult,
-                $result->result,
-                $result->entity,
-                $result->event,
-                $result->disqualifications,
-                $result->penalties
-            );
-        }
-
-        return $resolvedResults;
+        return $this->scoringSchema->applyViolations($results)->toArray();
     }
 
     public function getRawResults(bool $withEmpty = false): array
@@ -153,10 +134,5 @@ class CompetitionSpeedEvent extends Event
     public function getBaseEvent()
     {
         return $this->hasOne(SpeedEvent::class, 'id', 'event')->first();
-    }
-
-    public function scoringSchema()
-    {
-        return $this->belongsTo(ScoringSchema::class, 'scoring_schema');
     }
 }

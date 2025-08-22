@@ -36,13 +36,6 @@
             },
         
             addLocal() {
-        
-                if (!this.data['local_variables']) {
-        
-                    this.data['local_variables'] = []
-                }
-        
-        
                 this.data.local_variables.push({
                     order: Math.max(...this.data.local_variables.map(v => v.order)),
                     name: '',
@@ -50,9 +43,34 @@
                 })
             },
         
+            addAutoPen() {
+                this.data.auto_penalties.push({
+                    code: '',
+                    condition: '',
+                    amount: ''
+                })
+            },
+        
+            addAutoDq() {
+                this.data.auto_disqualifications.push({
+                    code: '',
+                    condition: '',
+                    amount: ''
+                })
+            },
+        
+        
+        
             save() {
         
-                fetch('{{ route('comps.events.speeds.scoring-settings', [$comp, $event]) }}', {
+                this.data.local_variables = this.data.local_variables.filter(v => v.name.trim() != '' && v.expression.trim() != '')
+                this.data.global_variables = this.data.global_variables.filter(v => v.name.trim() != '' && v.expression.trim() != '')
+        
+                this.data.auto_penalties = this.data.auto_penalties.filter(v => v.code.trim() != '' && v.condition.trim() != '' && v.amount.trim() != '')
+                this.data.auto_disqualifications = this.data.auto_disqualifications.filter(v => v.code.trim() != '' && v.condition.trim() != '' && v.amount.trim() != '')
+        
+        
+                fetch('{{ $route }}', {
                     method: 'POST',
                     headers: {
                         Accept: 'application/json',
@@ -68,6 +86,29 @@
             init() {
                 this.data = {{ json_encode($event->scoringSchema?->schema ?? []) }}
         
+                if (!this.data['auto_disqualifications']) {
+        
+                    this.data['auto_disqualifications'] = []
+                }
+        
+                if (!this.data['auto_penalties']) {
+        
+                    this.data['auto_penalties'] = []
+                }
+        
+                if (!this.data['local_variables']) {
+        
+                    this.data['local_variables'] = []
+                }
+        
+                if (!this.data['global_variables']) {
+        
+                    this.data['global_variables'] = []
+                }
+        
+        
+        
+        
             },
         
         
@@ -77,39 +118,82 @@
 
             </div>
 
+            <h3>Auto Penalty</h3>
+
+            <div class="flex flex-col space-y-2">
+                <template x-for="apen in data.auto_penalties">
+                    <div class="flex flex-row items-center flex-wrap gap-1 ">
+
+
+                        <input x-init="dynamicInput($el)" class="badge badge-orange   focus:outline-0" x-model="apen.code"
+                            placeholder="code"></input>
+
+                        <div>
+                            <span class="badge">x</span>
+
+                            <input x-model="apen.amount" x-init="dynamicInput($el)" class="badge badge-info"
+                                placeholder="amount">
+
+                        </div>
+                        <div>
+                            <span class="badge">if</span>
+
+                            <input x-model="apen.condition" x-init="dynamicInput($el)" class="badge badge-info"
+                                placeholder="condition">
+                        </div>
+                    </div>
+                </template>
+
+                <button class="se-btn" @click="addAutoPen">Add</button>
+            </div>
+
+            <br>
+
+            <h3>Auto Disqualify</h3>
+
+            <div class="flex flex-col space-y-2">
+                <template x-for="adq in data.auto_disqualifications">
+                    <div class="flex flex-row items-center flex-wrap gap-1 ">
+
+
+                        <input x-init="dynamicInput($el)" class="badge badge-danger   focus:outline-0" x-model="adq.code"
+                            placeholder="code"></input>
+
+                        <div>
+                            <span class="badge">x</span>
+
+                            <input x-model="adq.amount" x-init="dynamicInput($el)" class="badge badge-info"
+                                placeholder="amount">
+
+                        </div>
+                        <div>
+                            <span class="badge">if</span>
+
+                            <input x-model="adq.condition" x-init="dynamicInput($el)" class="badge badge-info"
+                                placeholder="condition">
+                        </div>
+                    </div>
+                </template>
+
+                <button class="se-btn" @click="addAutoDq">Add</button>
+            </div>
+
+            <br>
+
 
             <h3>Global Variables</h3>
 
             <div class="flex flex-col space-y-2">
                 <template x-for="gvar in data.global_variables">
-                    <div class="flex flex-row items-center space-x-2 " x-data="{
-                        width: 100,
-                        updateWidth() {
-                            const mirror = this.$refs.mirror;
-                            const input = this.$refs.input;
-                    
-                    
-                    
-                            mirror.textContent = gvar.name || input.placeholder;
-                            mirror.style.font = getComputedStyle(input).font;
-                            mirror.style.padding = getComputedStyle(input).padding;
-                    
-                            this.width = mirror.offsetWidth + 3; // Add buffer
-                        },
-                        init() {
-                            this.$watch('gvar.name', () => this.updateWidth());
-                            this.updateWidth(); // Initial sizing
-                        }
-                    }">
+                    <div class="flex flex-row items-center gap-1 ">
 
-                        <input rows="1" cols="2" x-ref="input"
-                            class="bg-gray-300 rounded-md p-1   focus:outline-0" :style="{ width: width + 'px' }"
+                        <input rows="1" cols="2" x-init="dynamicInput($el)" class="badge badge-gray"
                             x-model="gvar.name" placeholder="var"></input>
 
-                        <span>=</span>
+                        <span class="badge">=</span>
 
-                        <div x-ref="mirror" class="absolute top-[-9999px] left-[-9999px] whitespace-pre invisible"></div>
-                        <input x-model="gvar.expression" placeholder="score * 2">
+                        <input class="badge badge-info" x-init="dynamicInput($el)" x-model="gvar.expression"
+                            placeholder="score * 2">
                     </div>
                 </template>
 
@@ -121,35 +205,16 @@
             <h3>Local Variables</h3>
 
             <div class="flex flex-col space-y-2">
-                <template x-for="gvar in data.local_variables">
-                    <div class="flex flex-row items-center space-x-2 " x-data="{
-                        width: 100,
-                        updateWidth() {
-                            const mirror = this.$refs.mirror;
-                            const input = this.$refs.input;
-                    
-                    
-                    
-                            mirror.textContent = gvar.name || input.placeholder;
-                            mirror.style.font = getComputedStyle(input).font;
-                            mirror.style.padding = getComputedStyle(input).padding;
-                    
-                            this.width = mirror.offsetWidth + 3; // Add buffer
-                        },
-                        init() {
-                            this.$watch('gvar.name', () => this.updateWidth());
-                            this.updateWidth(); // Initial sizing
-                        }
-                    }">
+                <template x-for="lvar in data.local_variables">
+                    <div class="flex flex-row items-center gap-1 ">
 
-                        <input rows="1" cols="2" x-ref="input"
-                            class="bg-gray-300 rounded-md p-1   focus:outline-0" :style="{ width: width + 'px' }"
-                            x-model="gvar.name" placeholder="var"></input>
+                        <input rows="1" cols="2" x-init="dynamicInput($el)" class="badge badge-gray"
+                            x-model="lvar.name" placeholder="var"></input>
 
-                        <span>=</span>
+                        <span class="badge">=</span>
 
-                        <div x-ref="mirror" class="absolute top-[-9999px] left-[-9999px] whitespace-pre invisible"></div>
-                        <input x-model="gvar.expression" placeholder="score * 2">
+                        <input class="badge badge-info" x-init="dynamicInput($el)" x-model="lvar.expression"
+                            placeholder="score * 2">
                     </div>
                 </template>
 
@@ -188,7 +253,7 @@
 
 
 
-                <a href="{{ route('comps.events.speeds.view', [$comp, $event]) }}"
+                <a href="{{ $returnRoute }}"
                     class="flex items-center
                     cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
                     <p class="font-archivo">Back to event</p>
@@ -214,4 +279,7 @@
 
 
     </div>
+
+
+
 @endsection

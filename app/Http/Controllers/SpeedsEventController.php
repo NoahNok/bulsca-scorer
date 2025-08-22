@@ -226,7 +226,9 @@ class SpeedsEventController extends Controller
 
     public function scoringSettings(Competition $comp, CompetitionSpeedEvent $event)
     {
-        return view('competition.events.event-settings', compact('comp', 'event'));
+        $route = route('comps.events.speeds.scoring-settings.save', [$comp, $event]);
+        $returnRoute = route('comps.events.speeds.view', [$comp, $event]);
+        return view('competition.events.event-settings', compact('comp', 'event', 'route', 'returnRoute'));
     }
 
     public function saveScoringSettings(Competition $comp, CompetitionSpeedEvent $event, UpdateScoringSettings $request)
@@ -243,6 +245,14 @@ class SpeedsEventController extends Controller
 
         if (array_key_exists('penalty_func', $validated)) {
             $ss['penalty_func'] = $validated['penalty_func'];
+        }
+
+        if (array_key_exists('auto_penalties', $validated)) {
+            $ss['auto_penalties'] = $validated['auto_penalties'];
+        }
+
+        if (array_key_exists('auto_disqualifications', $validated)) {
+            $ss['auto_disqualifications'] = $validated['auto_disqualifications'];
         }
 
         $schema->schema = $ss;

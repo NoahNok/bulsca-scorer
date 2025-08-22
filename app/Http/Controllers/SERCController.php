@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ClassHelpers;
+use App\Http\Requests\Event\UpdateScoringSettings;
 use App\Models\Competition;
 use App\Models\CompetitionTeam;
 use App\Models\Competitor;
@@ -278,5 +279,47 @@ class SERCController extends Controller
         $serc->image = null;
         $serc->save();
         return redirect()->back();
+    }
+
+
+    public function scoringSettings(Competition $comp, SERC $serc)
+    {
+        $event = $serc;
+        $route = route('comps.events.sercs.scoring-settings.save', [$comp, $event]);
+        $returnRoute = route('comps.events.sercs.view', [$comp, $event]);
+        return view('competition.events.event-settings', compact('comp', 'event', 'route', 'returnRoute'));
+    }
+
+    public function saveScoringSettings(Competition $comp, SERC $serc, UpdateScoringSettings $request)
+    {
+        $validated = $request->validated();
+
+        $schema = $serc->scoringSchema;
+
+        $ss = ['equation' => $validated['equation'], 'global_variables' => $validated['global_variables']];
+
+        if (array_key_exists('local_variables', $validated)) {
+            $ss['local_variables'] = $validated['local_variables'];
+        }
+
+        if (array_key_exists('penalty_func', $validated)) {
+            $ss['penalty_func'] = $validated['penalty_func'];
+        }
+
+        if (array_key_exists('auto_penalties', $validated)) {
+            $ss['auto_penalties'] = $validated['auto_penalties'];
+        }
+
+        if (array_key_exists('auto_disqualifications', $validated)) {
+            $ss['auto_disqualifications'] = $validated['auto_disqualifications'];
+        }
+
+        $schema->schema = $ss;
+
+
+
+        $schema->Save();
+
+        return response()->json([]);
     }
 }

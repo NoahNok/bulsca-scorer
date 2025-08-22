@@ -11,6 +11,7 @@ use App\Models\CompetitionTeam;
 use App\Models\DigitalJudge\BetterJudgeLog;
 use App\Models\Event\Disqualification;
 use App\Models\Event\Penalty;
+use App\Models\Event\ScoringSchema;
 use App\Models\SERCResult;
 use App\Models\SpeedResult;
 use Illuminate\Database\Eloquent\Collection;
@@ -90,5 +91,10 @@ abstract class Event extends Model
     public function getEntityDisqualifications(Entity $entity)
     {
         return $this->disqualifications()->whereMorphedTo('entity', $entity);
+    }
+
+    public function scoringSchema()
+    {
+        return $this->belongsTo(ScoringSchema::class, 'scoring_schema');
     }
 }

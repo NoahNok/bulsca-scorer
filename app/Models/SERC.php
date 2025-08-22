@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\DTO\RankedResult;
 use App\DTO\ResolvedResult;
+use App\DTO\Result;
 use App\DTO\SERCResult as DTOSERCResult;
 use App\Models\AbstractClasses\Entity;
 use App\Models\SERCResult;
@@ -18,6 +19,7 @@ use App\Models\Scoring\Bulsca\BulscaSercScoring;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class SERC extends Event
@@ -28,10 +30,13 @@ class SERC extends Event
 
     public function getRankedResults(): array
     {
+
+
+
         $resolvedResults = collect($this->getResolvedResults());
 
 
-        $scoringSchema = ScoringSchema::where('name', 'SERC Top Mark')->first();
+        $scoringSchema = $this->scoringSchema;
 
         $sortedResults = $scoringSchema->applyToResults($resolvedResults)->sortBy(function ($result) {
             return [
@@ -69,7 +74,7 @@ class SERC extends Event
         /**
          * @param ResolvedResult[] $resolvedResults
          */
-        $resolvedResults = [];
+        $resolvedResults = collect([]);
         $results = collect($this->getRawResults());
 
         foreach ($results->groupBy(fn($result) => $result->entity->id) as $id => $entityResults) {
@@ -88,10 +93,9 @@ class SERC extends Event
             $disqualifications = $this->getEntityDisqualifications($resultData->entity)->get();
             $penalties = $this->getEntityPenalties($resultData->entity)->get();
 
-            $resolvedResults[] = new ResolvedResult(
+            $resolvedResults[] = new Result(
                 $resultData->id,
                 $resultTotal,
-                $resultData->result,
                 $resultData->entity,
                 $resultData->event,
                 $disqualifications,
@@ -99,7 +103,7 @@ class SERC extends Event
             );
         }
 
-        return $resolvedResults;
+        return $this->scoringSchema->applyViolations($resolvedResults)->toArray();
     }
 
     public function getRawResults(bool $withEmpty = false): array

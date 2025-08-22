@@ -18,7 +18,7 @@ class Result
      */
     public function __construct(
         public int $id,
-        public null|string|int $result,
+        public null|string|float $result,
         public Entity $entity,
         public Event $event,
         public ?Collection $disqualifications = null,

@@ -194,6 +194,9 @@ Route::middleware('auth')->group(function () {
 
                         Route::post('/image', [SERCController::class, 'addSercImage'])->name('comps.view.sercs.image');
                         Route::get('/image/remove', [SERCController::class, 'removeSercImage'])->name('comps.view.sercs.image.remove');
+
+                        Route::get('/scoring-settings', [SERCController::class, 'scoringSettings'])->name('comps.events.sercs.scoring-settings');
+                        Route::post('/scoring-settings', [SERCController::class, 'saveScoringSettings'])->name('comps.events.sercs.scoring-settings.save');
                     });
                 });
             });
