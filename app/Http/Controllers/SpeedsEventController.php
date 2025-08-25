@@ -6,6 +6,7 @@ use App\Http\Requests\AddSpeedEventRequest;
 use App\Http\Requests\Event\UpdateScoringSettings;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\Competition;
+use App\Models\Event\ScoringSchema;
 use App\Models\SpeedEvent;
 use App\Models\SpeedResult;
 use Illuminate\Http\Request;
@@ -236,6 +237,15 @@ class SpeedsEventController extends Controller
         $validated = $request->validated();
 
         $schema = $event->scoringSchema;
+
+        if (!$schema) {
+            $schema = new ScoringSchema();
+            $schema->name = "Scoring Schema for {$event->getType()}:{$event->id}";
+            $schema->schema = [];
+            $schema->save();
+            $event->scoring_schema = $schema->id;
+            $event->save();
+        }
 
         $ss = ['equation' => $validated['equation'], 'global_variables' => $validated['global_variables']];
 

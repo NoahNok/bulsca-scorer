@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('competition_speed_events', function (Blueprint $table) {
-            $table->foreignId('scoring_schema')->nullable()->references('id')->on('scoring_schemas')->onUpdate('CASCADE')->onDelete('CASCADE');
+            $table->foreignId('scoring_schema')->nullable()->references('id')->on('scoring_schemas')->onUpdate('CASCADE')->onDelete('SET NULL');
         });
         Schema::table('sercs', function (Blueprint $table) {
-            $table->foreignId('scoring_schema')->nullable()->references('id')->on('scoring_schemas')->onUpdate('CASCADE')->onDelete('CASCADE');
+            $table->foreignId('scoring_schema')->nullable()->references('id')->on('scoring_schemas')->onUpdate('CASCADE')->onDelete('SET NULL');
         });
     }
 

@@ -285,6 +285,19 @@ Route::middleware('auth')->group(function () {
         Route::get('/invite/{inviteId}/cancel', [OrganisationController::class, 'cancelInvite'])->name('orgs.invite.cancel');
 
         Route::delete('/accounts/remove', [OrganisationController::class, 'accountRemove'])->name('orgs.account.remove');
+
+
+        Route::prefix('scoring')->group(function () {
+            Route::get('', [OrganisationController::class, 'scoringSettings'])->name('orgs.scoring');
+            Route::post('/create', [OrganisationController::class, 'createScoringSchemaPost'])->name('orgs.scoring.create.post');
+            Route::get('/create', [OrganisationController::class, 'createScoringSchema'])->name('orgs.scoring.create');
+
+            Route::prefix('{schema}')->group(function () {
+                Route::get('/edit', [OrganisationController::class, 'editScoringSchema'])->name('orgs.scoring.edit');
+                Route::post('/edit', [OrganisationController::class, 'editScoringSchemaPost'])->name('orgs.scoring.edit.post');
+                Route::delete('', [OrganisationController::class, 'deleteScoringSchema'])->name('orgs.scoring.delete');
+            });
+        });
     });
 
     Route::prefix('accounts')->group(function () {

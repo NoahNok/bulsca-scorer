@@ -30,6 +30,40 @@ class ScoringSchema extends Model
         $this->engine = new ScoringEngine();
     }
 
+    public function editFromRequest($request)
+    {
+        $validated = $request->validated();
+
+
+        if (array_key_exists('name', $validated) && $validated['name']) {
+            $this->name = $validated['name'];
+        }
+
+        $ss = ['equation' => $validated['equation'], 'global_variables' => $validated['global_variables']];
+
+        if (array_key_exists('local_variables', $validated)) {
+            $ss['local_variables'] = $validated['local_variables'];
+        }
+
+        if (array_key_exists('penalty_func', $validated)) {
+            $ss['penalty_func'] = $validated['penalty_func'];
+        }
+
+        if (array_key_exists('auto_penalties', $validated)) {
+            $ss['auto_penalties'] = $validated['auto_penalties'];
+        }
+
+        if (array_key_exists('auto_disqualifications', $validated)) {
+            $ss['auto_disqualifications'] = $validated['auto_disqualifications'];
+        }
+
+        $this->schema = $ss;
+
+
+
+        $this->save();
+    }
+
     public function applyViolations(Collection $results): Collection
     {
         $schema = $this->schema;
@@ -154,7 +188,7 @@ class ScoringEngine
             }
         }
 
-        $penalty_func = array_key_exists('penalty_func', $payload) ? $this->el->parse($payload['penalty_func'], ['item']) : null;
+        $penalty_func = array_key_exists('penalty_func', $payload) && $payload['penalty_func'] ? $this->el->parse($payload['penalty_func'], ['item']) : null;
 
         // Apply penalty function 
         $resolvedResults = collect([]);

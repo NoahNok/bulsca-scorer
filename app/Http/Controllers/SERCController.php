@@ -7,6 +7,7 @@ use App\Http\Requests\Event\UpdateScoringSettings;
 use App\Models\Competition;
 use App\Models\CompetitionTeam;
 use App\Models\Competitor;
+use App\Models\Event\ScoringSchema;
 use App\Models\SERC;
 use App\Models\SERCDisqualification;
 use App\Models\SERCJudge;
@@ -295,6 +296,15 @@ class SERCController extends Controller
         $validated = $request->validated();
 
         $schema = $serc->scoringSchema;
+
+        if (!$schema) {
+            $schema = new ScoringSchema();
+            $schema->name = "Scoring Schema for {$serc->getType()}:{$serc->id}";
+            $schema->schema = [];
+            $schema->save();
+            $serc->scoring_schema = $schema->id;
+            $serc->save();
+        }
 
         $ss = ['equation' => $validated['equation'], 'global_variables' => $validated['global_variables']];
 

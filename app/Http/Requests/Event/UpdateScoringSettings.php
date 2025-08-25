@@ -22,12 +22,13 @@ class UpdateScoringSettings extends FormRequest
     public function rules(): array
     {
         return [
+            'name' => 'required|string',
             'auto_penalties' => 'array',
             'auto_disqualifications' => 'array',
             'global_variables' => 'array',
             'local_variables' => 'array',
-            'equation' => 'string|required',
-            'penalty_func' => 'string'
+            'equation' => 'required|string',
+            'penalty_func' => 'string|sometimes|nullable',
         ];
     }
 }

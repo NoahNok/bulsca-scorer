@@ -18,121 +18,134 @@
             </div>
 
 
+
             <div class="  relative  overflow-x-hidden max-w-full  ">
-                <div class="se-form-input imb-0 ">
-                    <input type="text" table-search placeholder="Search teams" x-model="search">
-                </div>
+                @if ($event->scoring_schema)
+                    <div class="se-form-input imb-0 ">
+                        <input type="text" table-search placeholder="Search teams" x-model="search">
+                    </div>
 
-                <br>
-                <div class="se-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th scope="col">
-                                    Team
-                                </th>
-                                @if ($event->digitalJudgeEnabled)
+                    <br>
+
+                    <div class="se-table">
+                        <table>
+                            <thead>
+                                <tr>
                                     <th scope="col">
-                                        OOF
-                                    </th>
-                                @endif
-                                <th scope="col">
-                                    @if ($event->getName() == 'Rope Throw')
-                                        Ropes/Time
-                                    @else
-                                        Time
-                                    @endif
-                                </th>
-
-                                <th scope="col">
-                                    DQ
-                                </th>
-
-                                @if ($event->hasPenalties())
-                                    <th scope="col">
-                                        Penalties
-                                    </th>
-                                @endif
-                                <th scope="col">
-                                    Points
-                                </th>
-                                <th scope="col">
-                                    Position
-                                </th>
-
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                            @forelse ($event->getRankedResults() as $result)
-                                <tr x-data="{ name: `{{ $result->entity->getName() }}` }" x-show="name.toLowerCase().includes(search.toLowerCase())">
-                                    <th scope="row">
-                                        {{ $result->entity->getName() }}
+                                        Team
                                     </th>
                                     @if ($event->digitalJudgeEnabled)
-                                        <td scope="col">
-                                            @php
-                                                $h = App\Models\Heat::where('competition', $comp->id)
-                                                    ->where('team', $result->tid)
-                                                    ->first();
-                                            @endphp
-                                            @if ($h)
-                                                H{{ $h->heat }}L{{ $h->lane }}:
-                                                {{ $h->getOOF($event->id)?->oof ?: '-' }}
-                                            @else
-                                                -
-                                            @endif
-                                        </td>
+                                        <th scope="col">
+                                            OOF
+                                        </th>
                                     @endif
-                                    <td>
-
-
-
-                                        {{ App\Models\SpeedResult::prettyTime($result->resolvedResult) }}
-
-                                        @if ($result->resolvedResult != $result->result)
-                                            <br>
-                                            <small>
-                                                Was {{ App\Models\SpeedResult::prettyTime($result->result) }}
-                                            </small>
+                                    <th scope="col">
+                                        @if ($event->getName() == 'Rope Throw')
+                                            Ropes/Time
+                                        @else
+                                            Time
                                         @endif
+                                    </th>
 
-
-                                    </td>
-
-
-                                    <td>
-                                        {{ $result->getDisqualificationsString() ?: '-' }}
-                                    </td>
+                                    <th scope="col">
+                                        DQ
+                                    </th>
 
                                     @if ($event->hasPenalties())
+                                        <th scope="col">
+                                            Penalties
+                                        </th>
+                                    @endif
+                                    <th scope="col">
+                                        Points
+                                    </th>
+                                    <th scope="col">
+                                        Position
+                                    </th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @forelse ($event->getRankedResults() as $result)
+                                    <tr x-data="{ name: `{{ $result->entity->getName() }}` }" x-show="name.toLowerCase().includes(search.toLowerCase())">
+                                        <th scope="row">
+                                            {{ $result->entity->getName() }}
+                                        </th>
+                                        @if ($event->digitalJudgeEnabled)
+                                            <td scope="col">
+                                                @php
+                                                    $h = App\Models\Heat::where('competition', $comp->id)
+                                                        ->where('team', $result->tid)
+                                                        ->first();
+                                                @endphp
+                                                @if ($h)
+                                                    H{{ $h->heat }}L{{ $h->lane }}:
+                                                    {{ $h->getOOF($event->id)?->oof ?: '-' }}
+                                                @else
+                                                    -
+                                                @endif
+                                            </td>
+                                        @endif
                                         <td>
 
-                                            {{ $result->getPenaltiesString() ?: '-' }}
+
+
+                                            {{ App\Models\SpeedResult::prettyTime($result->resolvedResult) }}
+
+                                            @if ($result->resolvedResult != $result->result)
+                                                <br>
+                                                <small>
+                                                    Was {{ App\Models\SpeedResult::prettyTime($result->result) }}
+                                                </small>
+                                            @endif
+
 
                                         </td>
-                                    @endif
-                                    <td>
-                                        {{ $result->isDisqualified() ? 'DQ' : (round($result->points) ?: '-') }}
-                                    </td>
-                                    <td>
-                                        {{ $result->position }}
-                                    </td>
-
-                                </tr>
-                            @empty
-                                <tr class="empty ">
-                                    <th colspan="100" scope="row">
-                                        None
-                                    </th>
-                                </tr>
-                            @endforelse
 
 
+                                        <td>
+                                            {{ $result->getDisqualificationsString() ?: '-' }}
+                                        </td>
 
-                        </tbody>
-                    </table>
-                </div>
+                                        @if ($event->hasPenalties())
+                                            <td>
+
+                                                {{ $result->getPenaltiesString() ?: '-' }}
+
+                                            </td>
+                                        @endif
+                                        <td>
+                                            {{ $result->isDisqualified() ? 'DQ' : (round($result->points) ?: '-') }}
+                                        </td>
+                                        <td>
+                                            {{ $result->position }}
+                                        </td>
+
+                                    </tr>
+                                @empty
+                                    <tr class="empty ">
+                                        <th colspan="100" scope="row">
+                                            None
+                                        </th>
+                                    </tr>
+                                @endforelse
+
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <div class="alert-box ">
+                        <h1>No Scoring Setup</h1>
+                        <p>You have not setup any scoring rules for this SERC, thus no results could be generated.
+                            <br>
+                            Please go to the <a href="{{ route('comps.events.speeds.scoring-settings', [$comp, $event]) }}"
+                                class="link">scoring settings</a> page to set up scoring for this SERC.
+                        </p>
+                    </div>
+                @endif
 
             </div>
 

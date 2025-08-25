@@ -4,6 +4,7 @@ namespace App\Models\Organisation;
 
 use App\Models\AccountInvite;
 use App\Models\Competition;
+use App\Models\Event\ScoringSchema;
 use App\Models\Interfaces\IInvitable;
 use App\Models\User;
 use Carbon\Carbon;
@@ -229,5 +230,10 @@ class Organisation extends Model implements IInvitable
     public function getOngoingCompetition(): ?Competition
     {
         return $this->getCompetitions()->whereDate('when', Carbon::today())->first();
+    }
+
+    public function scoringSchemas()
+    {
+        return $this->hasMany(ScoringSchema::class, 'organisation')->orderBy('name', 'asc');
     }
 }

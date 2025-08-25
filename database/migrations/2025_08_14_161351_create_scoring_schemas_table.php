@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->text('name');
             $table->json('schema');
-            $table->foreignId('organisation')->nullable()->references('id')->on('organisations')->onUpdate('CASCADE')->onDelete('CASCADE');
+            $table->foreignId('organisation')->nullable()->references('id')->on('organisations')->onUpdate('CASCADE')->onDelete('SET NULL');
             $table->boolean('default')->default(false);
             $table->timestamps();
         });

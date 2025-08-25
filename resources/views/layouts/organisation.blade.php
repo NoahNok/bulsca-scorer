@@ -34,6 +34,9 @@
             <a href="{{ route('orgs.accounts', $org->name) }}"
                 class="@if (Str::startsWith(Route::currentRouteName(), 'orgs.accounts')) active @endif">Accounts</a>
 
+            <a href="{{ route('orgs.scoring', $org->name) }}"
+                class="@if (Str::startsWith(Route::currentRouteName(), 'orgs.scoring')) active @endif">Scoring</a>
+
             <a href="{{ route('orgs.edit', $org->name) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'orgs.edit')) active @endif">Settings</a>
         @endcan
 

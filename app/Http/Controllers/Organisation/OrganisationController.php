@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Organisation;
 
 use App\Http\Controllers\AccountInviteController;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Event\UpdateScoringSettings;
 use App\Http\Requests\Organisation\CreateOrganisationRequest;
 use App\Http\Requests\Organisation\EditAccoutOrganisationAccess;
 use App\Http\Requests\Organisation\EditOrganisationRequest;
 use App\Http\Requests\Organisation\InviteAccountToOrganisationRequest;
 use App\Http\Requests\Organisation\NameSubdomainTakenRequest;
 use App\Http\Requests\Organisation\RemoveOrganisationAccountRequest;
+use App\Models\Event\ScoringSchema;
 use App\Models\Organisation\Organisation;
 use App\Models\Organisation\OrganisationUserAccess;
 use App\Models\User;
@@ -216,5 +218,55 @@ class OrganisationController extends Controller
         $invite->delete();
 
         return redirect()->back()->with('success', 'Invite removed');
+    }
+
+    public function scoringSettings(Organisation $organisation)
+    {
+
+
+        return view('organisation.scoring', ['org' => $organisation]);
+    }
+
+    public function createScoringSchema(Organisation $organisation)
+    {
+        return view('organisation.scoring.create', ['org' => $organisation]);
+    }
+
+    public function createScoringSchemaPost(Organisation $organisation, UpdateScoringSettings $request)
+    {
+        $schema = new ScoringSchema();
+
+        $schema->editFromRequest($request);
+
+        $schema->organisation = $organisation->id;
+        $schema->save();
+
+        return response()->json(['url' => route('orgs.scoring.edit', ['organisation' => $organisation->name, 'schema' => $schema->id])]);
+    }
+
+    public function editScoringSchema(Organisation $organisation, ScoringSchema $schema)
+    {
+
+
+        if ($schema->organisation != $organisation->id) {
+            abort(404);
+        }
+
+
+
+        return view('organisation.scoring.edit', ['org' => $organisation, 'schema' => $schema]);
+    }
+
+    public function editScoringSchemaPost(Organisation $organisation, ScoringSchema $schema, UpdateScoringSettings $request)
+    {
+        if ($schema->organisation != $organisation->id) {
+            abort(404);
+        }
+
+        $schema->editFromRequest($request);
+
+        $schema->save();
+
+        return response()->json([]);
     }
 }

@@ -31,7 +31,9 @@ class SERC extends Event
     public function getRankedResults(): array
     {
 
-
+        if (!$this->scoringSchema) {
+            return [];
+        }
 
         $resolvedResults = collect($this->getResolvedResults());
 
@@ -71,6 +73,11 @@ class SERC extends Event
 
     public function getResolvedResults(): array
     {
+
+        if (!$this->scoringSchema) {
+            return [];
+        }
+
         /**
          * @param ResolvedResult[] $resolvedResults
          */

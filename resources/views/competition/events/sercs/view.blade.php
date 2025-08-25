@@ -19,82 +19,92 @@
 
             <h4>Marked Teams</h4>
             <div class="  relative w-full overflow-x-auto  ">
-                <div class="se-form-input imb-0 ">
-                    <input type="text" table-search placeholder="Search teams" x-model="search">
-                </div>
+                @if ($serc->scoring_schema)
+                    <div class="se-form-input imb-0 ">
+                        <input type="text" table-search placeholder="Search teams" x-model="search">
+                    </div>
 
-                <br>
-                <div class="se-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th scope="col">
-                                    Team
-                                </th>
-                                <th scope="col">
-                                    DQ
-                                </th>
-                                <th scope="col">
-                                    Raw Mark
-                                </th>
-                                <th scope="col">
-                                    Points
-                                </th>
-                                <th scope="col">
-                                    Position
-                                </th>
-                                <th scope="col">
-                                    Results
-                                </th>
-
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                            @forelse ($serc->getRankedResults() as $result)
-                                <tr x-data="{ name: `{{ $result->entity->getName() }}` }" x-show="name.toLowerCase().includes(search.toLowerCase())">
-                                    <th scope="row">
-                                        {{ $result->entity->getName() }}
+                    <br>
+                    <div class="se-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th scope="col">
+                                        Team
                                     </th>
-                                    <td>
-                                        {{ $result->getDisqualificationsString() ?: '-' }}
-                                    </td>
-                                    <td>
-
-                                        {{ $result->resolvedResult }}
-                                    </td>
-                                    <td>
-                                        @php
-                                            $res = round($result->points);
-                                        @endphp
-                                        {!! $result->isDisqualified() ? "<s>{$res}</s> DQ" : $res !!}
-
-                                    </td>
-                                    <td>
-                                        {{ $result->position }}
-                                    </td>
-                                    <td>
-                                        <a href="{{ route('comps.events.sercs.editResults', [$comp, $serc, $result->entity->id]) }}"
-                                            class="se-btn text-black">
-                                            Edit
-                                        </a>
-                                    </td>
+                                    <th scope="col">
+                                        DQ
+                                    </th>
+                                    <th scope="col">
+                                        Raw Mark
+                                    </th>
+                                    <th scope="col">
+                                        Points
+                                    </th>
+                                    <th scope="col">
+                                        Position
+                                    </th>
+                                    <th scope="col">
+                                        Results
+                                    </th>
 
                                 </tr>
-                            @empty
-                                <tr class="empty ">
-                                    <th colspan="100" scope="row">
-                                        None
-                                    </th>
-                                </tr>
-                            @endforelse
+                            </thead>
+                            <tbody>
+
+                                @forelse ($serc->getRankedResults() as $result)
+                                    <tr x-data="{ name: `{{ $result->entity->getName() }}` }" x-show="name.toLowerCase().includes(search.toLowerCase())">
+                                        <th scope="row">
+                                            {{ $result->entity->getName() }}
+                                        </th>
+                                        <td>
+                                            {{ $result->getDisqualificationsString() ?: '-' }}
+                                        </td>
+                                        <td>
+
+                                            {{ $result->resolvedResult }}
+                                        </td>
+                                        <td>
+                                            @php
+                                                $res = round($result->points);
+                                            @endphp
+                                            {!! $result->isDisqualified() ? "<s>{$res}</s> DQ" : $res !!}
+
+                                        </td>
+                                        <td>
+                                            {{ $result->position }}
+                                        </td>
+                                        <td>
+                                            <a href="{{ route('comps.events.sercs.editResults', [$comp, $serc, $result->entity->id]) }}"
+                                                class="se-btn text-black">
+                                                Edit
+                                            </a>
+                                        </td>
+
+                                    </tr>
+                                @empty
+                                    <tr class="empty ">
+                                        <th colspan="100" scope="row">
+                                            None
+                                        </th>
+                                    </tr>
+                                @endforelse
 
 
 
-                        </tbody>
-                    </table>
-                </div>
-
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <div class="alert-box ">
+                        <h1>No Scoring Setup</h1>
+                        <p>You have not setup any scoring rules for this SERC, thus no results could be generated.
+                            <br>
+                            Please go to the <a href="{{ route('comps.events.sercs.scoring-settings', [$comp, $serc]) }}"
+                                class="link">scoring settings</a> page to set up scoring for this SERC.
+                        </p>
+                    </div>
+                @endif
             </div>
 
             <h4>All teams</h4>
@@ -234,7 +244,8 @@
                             class="ml-auto size-4 group-hover:text-se transition-all group-hover:stroke-3">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                         </svg>
 
                     </a>
