@@ -38,6 +38,8 @@ class SERC extends Event
         $resolvedResults = collect($this->getResolvedResults());
 
 
+
+
         $scoringSchema = $this->scoringSchema;
 
         $sortedResults = $scoringSchema->applyToResults($resolvedResults)->sortBy(function ($result) {

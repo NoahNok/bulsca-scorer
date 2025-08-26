@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\DTO\ScaledResult;
 use App\Helpers\ClassHelpers;
 use App\Models\ResultSchemas\ClubSERCResultSchema;
 use App\Models\ResultSchemas\HighestSumResultSchema;
@@ -9,6 +10,7 @@ use App\Models\ResultSchemas\NationalsResultSchema;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -16,6 +18,94 @@ class ResultSchema extends Model
 {
     use HasFactory, Cloneable;
 
+    protected $casts = [
+        'schema' => 'array',
+    ];
+
+    public function getResults(): Collection
+    {
+
+        $allResults = collect();
+
+        $global_variables = [];
+
+        foreach ($this->getEvents as $event) {
+            $eventResults = collect($event->getActualEvent->getRankedResults());
+
+            $notDqualified = $eventResults->filter(fn($result) => !$result->isDisqualified());
+            $minPoints = $notDqualified->min('points');
+            $maxPoints = $notDqualified->max('points');
+            $minScore = 100;
+            $spread = 1000 - $minScore;
+
+            $multiplication_factor = $spread / ($maxPoints - $minPoints);
+
+            dump([
+                'event' => $event->getActualEvent->getName(),
+                'minPoints' => $minPoints,
+                'maxPoints' => $maxPoints,
+                'multiplication_factor' => $multiplication_factor
+            ]);
+
+            $eventResults = $eventResults->map(function ($result) use ($minPoints, $multiplication_factor, $minScore, $event) {
+                $adjusted = ($result->points - $minPoints) * $multiplication_factor + $minScore;
+                $adjusted = $adjusted * $event->weight;
+                if ($result->isDisqualified()) {
+                    $adjusted = 0;
+                }
+                return ScaledResult::fromRanked($result, $adjusted);
+            });
+
+
+            $allResults = $allResults->merge($eventResults);
+        }
+
+
+
+        $grouped = $allResults->groupBy(function ($result) {
+            return $result->entity->id;
+        });
+
+        $preRanked = $grouped->map(function ($results, $entityId) {
+            $entity = $results->first()->entity;
+            $totalPoints = 0;
+            foreach ($results as $result) {
+
+                $totalPoints += $result->adjustedPoints;
+            }
+            return new \App\DTO\OverallResult(
+                events: $results,
+                entity: $entity,
+                totalPoints: $totalPoints,
+                position: 0
+            );
+        });
+
+        $preRanked = $preRanked->sortByDesc(fn($result) => $result->totalPoints)->values();
+
+        $rankedResults = collect();
+        $previousScore = null;
+        $previousRank = 0;
+        $position = 1;
+
+        foreach ($preRanked as $result) {
+            $currentScore = $result->totalPoints;
+
+            if ($currentScore === $previousScore) {
+                $rank = $previousRank;
+            } else {
+                $rank = $position;
+                $previousScore = $currentScore;
+                $previousRank = $rank;
+            }
+
+            $result->position = $rank;
+            $rankedResults->push($result);
+            $position++;
+        }
+
+        return $rankedResults;
+    }
 
 
 
@@ -27,180 +117,5 @@ class ResultSchema extends Model
     public function getCompetition()
     {
         return $this->hasOne(Competition::class, 'id', 'competition');
-    }
-
-    public function getTargetLeagueQueryExtra()
-    {
-
-        switch (Str::lower($this->league)) {
-            case "o":
-                return "";
-
-            case "a":
-                return " AND ct.team = 'A' AND (l.name = 'S' OR l.name = 'F') ";
-
-            case "b":
-                return " AND ct.team !='A' AND l.name = 'S' ";
-
-            case "f":
-                return " AND l.name = 'F' ";
-
-            case "nc":
-                return " AND l.name ='NC' ";
-
-            case "ns":
-                return " AND l.name = 'NS' "; // Will probably never get used
-
-            case "ob":
-                return " AND l.name = 'OB' "; // Will probably never get used
-
-            default:
-                return "";
-        }
-    }
-
-    public function getLeagueName(): string
-    {
-        switch (Str::lower($this->league)) {
-            case "o":
-                return "Overall League";
-
-            case "a":
-                return "A-League";
-
-            case "b":
-                return "B-League";
-
-            case "f":
-                return "Freshers League";
-
-            case "nc":
-                return "Non-counting League";
-
-            case "ns":
-                return "Non-student League"; // Will probably never get used
-
-            case "ob":
-                return "Old-boys League"; // Will probably never get used
-
-            default:
-                return $this->league;
-        }
-    }
-
-
-    /**
-     * I'm aware that this looks like alot of sphagetti
-     * but it works well and it quite fast, and it the best way I could think of doing it
-     * 
-     * Doing it with ORM would be absolutely ass
-     */
-    public function getRawQuery(): ?string
-    {
-        $events = $this->getEvents;
-        $targetLeagueQueryExtra = $this->getTargetLeagueQueryExtra();
-
-        $finalQuery = "WITH ";
-
-        $mysqlEventNames = [];
-        $mysqlEventNamesArray = [];
-
-        // Buildup CTE's with each events result query
-        foreach ($events as $event) {
-            $actualEvent = $event->getActualEvent;
-
-            // If you remove an event from a created RS it gets a null, so skip it
-            if (!$actualEvent) continue;
-
-            $query = $actualEvent->getResultQuery();
-            $query = str_replace(":league_conds:", $targetLeagueQueryExtra, $query);
-            $eventName = $actualEvent->getName();
-
-            $eventMysqlName = str_replace("&", "", str_replace(" ", "_", Str::lower($eventName))) . "_" . $actualEvent->id;
-
-            $mysqlEventNames[$event->id] = $eventMysqlName;
-            array_push($mysqlEventNamesArray, $eventMysqlName);
-
-            $finalQuery .= $eventMysqlName . " AS (" . rtrim($query, ";") . "), ";
-        }
-
-
-        if (count($mysqlEventNamesArray) == 0) return null;
-
-
-        $finalQuery = rtrim($finalQuery, ", ");
-        $finalQuery .= " SELECT " . $mysqlEventNamesArray[0] . ".team, " . $mysqlEventNamesArray[0] . ".tid, " . $mysqlEventNamesArray[0] . ".club, ";
-
-        // Buildup linear redistirbution of points
-        foreach ($events as $event) {
-            // If you remove an event from a created RS it gets a null, so skip it
-            if (!array_key_exists($event->id, $mysqlEventNames)) continue;
-            $mysqlTableName = $mysqlEventNames[$event->id];
-            $finalQuery .= $mysqlTableName . ".points AS " . $mysqlTableName . "_points, ";
-            $finalQuery .=  $event->weight . " AS " . $mysqlTableName . "_weight, ";
-            $finalQuery .= "(SELECT MIN(points) FROM " . $mysqlTableName . " WHERE " . $mysqlTableName . ".disqualification IS NULL ) AS " . $mysqlTableName . "_min, ";
-            $finalQuery .= "(SELECT MAX(points) FROM " . $mysqlTableName . ") AS " . $mysqlTableName . "_max, ";
-            $finalQuery .= "900/((SELECT MAX(points) FROM " . $mysqlTableName . ") - (SELECT MIN(points) FROM " . $mysqlTableName . " WHERE " . $mysqlTableName . ".disqualification IS NULL)) AS " . $mysqlTableName . "_mult_factor, ";
-            $finalQuery .=  "IF(" . $mysqlTableName . ".points = 0,IF(" . $mysqlTableName . ".disqualification IS NULL, 100, 0)   ,(" . $mysqlTableName . ".points" . "-" . "(SELECT MIN(points) FROM " . $mysqlTableName . " WHERE " . $mysqlTableName . ".disqualification IS NULL))" . "*" . "(900/((SELECT MAX(points) FROM " . $mysqlTableName . ") - (SELECT MIN(points) FROM " . $mysqlTableName . " WHERE " . $mysqlTableName . ".disqualification IS NULL)))+100) * " . $event->weight . " AS " . $mysqlTableName . "_rsp, ";
-        }
-
-        $finalQuery = rtrim($finalQuery, ", ");
-
-        $finalQuery .= " FROM " . $mysqlEventNamesArray[0];
-
-        $first = true;
-
-        $prev = $mysqlEventNamesArray[0];
-        // Can't remember what this is doing
-        foreach ($mysqlEventNamesArray as $event) {
-            if ($first) {
-                $first = false;
-                continue;
-            }
-
-            $finalQuery .= " INNER JOIN " . $event . " ON " . $event . ".team=" . $prev . ".team ";
-            $prev = $event;
-        }
-
-        $finalQuery = rtrim($finalQuery, " ");
-
-        // Calculate totals
-        $final = "SELECT *, ";
-        foreach ($mysqlEventNamesArray as $event) {
-            $final .= $event . "_rsp + ";
-        }
-
-        $final = rtrim($final, "+ ") . " AS totalPoints, ";
-
-        // Calculate places for each individual event
-        foreach ($mysqlEventNamesArray as $event) {
-            $final .= "RANK() OVER (ORDER BY " . $event . "_rsp DESC) AS " . $event . "_rsp_places, ";
-        }
-
-        $final = rtrim($final, ", ")  . " FROM (" . $finalQuery . ") AS bb";
-
-        // Calculate overall place
-        $final = "SELECT *, RANK() OVER(ORDER BY totalPoints DESC) place FROM (" . $final . ") AS bbb;";
-        return $final;
-    }
-
-    public function getResults()
-    {
-        $query = $this->getRawQuery();
-        if (!$query) return null;
-        return DB::select($query);
-    }
-
-
-    public function autoCast()
-    {
-
-        if ($this->getCompetition->scoring_type == "rlss-nationals") {
-            return ClassHelpers::castToClass($this, NationalsResultSchema::class);
-        } else if ($this->getCompetition->scoring_type == "rlss-cs") {
-            return ClassHelpers::castToClass($this, ClubSERCResultSchema::class);
-        }
-
-        return $this;
     }
 }

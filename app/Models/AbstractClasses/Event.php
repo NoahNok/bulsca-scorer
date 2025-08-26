@@ -38,6 +38,14 @@ abstract class Event extends Model
     public abstract function results();
     public abstract function getCompetition();
 
+    protected static function booted()
+    {
+        static::deleting(function (Event $event) {
+            $event->penalties()->delete();
+            $event->disqualifications()->delete();
+        });
+    }
+
     public function penalties()
     {
         return $this->morphMany(Penalty::class, 'event');

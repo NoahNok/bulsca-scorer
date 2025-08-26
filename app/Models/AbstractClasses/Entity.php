@@ -14,6 +14,14 @@ use Illuminate\Support\Facades\Session;
 abstract class Entity extends Model
 {
 
+    protected static function booted()
+    {
+        static::deleting(function (Entity $entity) {
+            $entity->speedResults()->delete();
+            $entity->sercResults()->delete();
+        });
+    }
+
     public function speedResults()
     {
         return $this->morphMany(SpeedResult::class, 'entity');

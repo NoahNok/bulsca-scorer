@@ -15,10 +15,51 @@
 
 
             <div class="se-table">
-                @include(
-                    'competition.results.table_templates.' .
-                        $comp->scoring_type .
-                        (array_key_exists('overalls', $results) ? '-overalls' : ''))
+                <table>
+                    <thead>
+                        <tr>
+                            <th scope="col">
+                                Name
+                            </th>
+                            <th scope="col">
+                                Points
+                            </th>
+                            <th scope="col">
+                                Position
+                            </th>
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @forelse ($results as $result)
+                            <tr>
+                                <th scope="row">
+                                    {{ $result->entity->getName() }}
+                                </th>
+                                <td>
+                                    {{ round($result->totalPoints) }}
+                                </td>
+
+                                <td>
+                                    {{ $result->position }}
+                                </td>
+
+
+                            </tr>
+                        @empty
+                            <tr class="empty ">
+                                <th colspan="100" scope="row">
+                                    None
+                                </th>
+                            </tr>
+                        @endforelse
+
+
+
+                    </tbody>
+                </table>
             </div>
 
 
@@ -136,115 +177,13 @@
 
 
         </div>
-        <div>
-            <h3>League</h3>
-            <p><strong>Target League</strong>:
-                {{ is_numeric($schema->league) ? \App\Models\League::find($schema->league)->name : $schema->league }}</p>
-            <small>Overall (O), A League (A), B League (B), Freshers League (F), Non-counting (NC), Non-student (NS)</small>
-        </div>
+
 
 
         <div class="col-span-full">
-            @if ($comp->scoring_type == 'bulsca')
-                <div class=" overflow-hidden " id="raw_data">
-                    <h2>Raw Data</h2>
-                    <div class=" se-table w-full  ">
-                        <table>
-                            <thead>
-                                <tr>
-
-
-                                    @if (count($results) != 0)
-                                        @foreach ($results[0] as $key => $value)
-                                            <th scope="col" class="whitespace-nowrap! ">
-                                                {{ str_replace('_', ' ', preg_replace('/_[0-9]/mi', '', $key)) }}
-                                            </th>
-                                        @endforeach
-                                    @endif
 
 
 
 
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                                @forelse ($results as $result)
-                                    <tr>
-                                        @foreach ($result as $key => $value)
-                                            <td class="whitespace-nowrap!">
-                                                {{ $value }}
-                                            </td>
-                                        @endforeach
-
-
-
-                                    </tr>
-                                @empty
-                                    <tr class="empty ">
-                                        <th colspan="100" scope="row">
-                                            None
-                                        </th>
-                                    </tr>
-                                @endforelse
-
-
-
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            @elseif ($comp->scoring_type == 'rlss-nationals')
-                <div class=" overflow-hidden " id="raw_data">
-                    <h2>Raw Data</h2>
-                    <div class=" relative overflow-x-auto max-w-[85vw]  ">
-                        <table class="w-full text-sm shadow-md  rounded-lg text-left text-gray-500 ">
-                            <thead class="text-xs text-gray-700  uppercase bg-gray-50 ">
-                                <tr>
-                                    <th scope="col" class="py-2 px-4 whitespace-nowrap">Name</th>
-
-                                    @foreach ($results['eventOrder'] as $event)
-                                        <th scope="col" class="py-2 px-4 whitespace-nowrap">
-                                            {{ $event }}
-                                        </th>
-                                    @endforeach
-                                    <th scope="col" class="py-2 px-4 whitespace-nowrap">Total</th>
-                                    <th scope="col" class="py-2 px-4 whitespace-nowrap">Position</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($results['results'] as $result)
-                                    <tr class="bg-white border-b text-left ">
-
-                                        <td class="py-2 px-4 text-black text-xs whitespace-nowrap">
-                                            {{ $result->name }}
-                                        </td>
-
-
-                                        @foreach ($result->events as $event)
-                                            <td class="py-2 px-4 text-black text-xs whitespace-nowrap">
-                                                {{ $event?->place ?? 16 }}
-                                            </td>
-                                        @endforeach
-
-                                        <td class="py-2 px-4 text-black text-xs whitespace-nowrap">
-                                            {{ $result->score }}
-                                        </td>
-
-                                        <td class="py-2 px-4 text-black text-xs whitespace-nowrap">
-                                            {{ $result->place }}
-                                        </td>
-
-
-
-
-
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-
-            @endif
         </div>
-
     @endsection

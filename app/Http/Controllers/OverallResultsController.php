@@ -17,7 +17,7 @@ class OverallResultsController extends Controller
     public function computeResults(ResultSchema $schema)
     {
 
-        $schema = $schema->autoCast();
+
 
         $results = $schema->getResults() ?? [];
         // if ($final != null) {
@@ -115,7 +115,8 @@ class OverallResultsController extends Controller
         $rs = new ResultSchema();
         $rs->name = $schema_name;
         $rs->competition = $comp->id;
-        $rs->league = $schema_league;
+        $rs->schema = [];
+
         $rs->save();
 
         foreach ($json as $event) {
