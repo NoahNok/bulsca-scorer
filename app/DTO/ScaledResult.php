@@ -35,7 +35,7 @@ class ScaledResult extends RankedResult
     ) {
         $this->disqualifications ??= new Collection();
         $this->penalties ??= new Collection();
-        parent::__construct($id, $resolvedResult, $result, $entity, $event, $position, $adjustedPoints, $disqualifications, $penalties);
+        parent::__construct($id, $resolvedResult, $result, $entity, $event, $position, $points, $disqualifications, $penalties);
     }
 
     public static function fromRanked(RankedResult $resolved, float $adjustedPoints): RankedResult

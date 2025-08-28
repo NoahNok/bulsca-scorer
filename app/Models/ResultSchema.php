@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\DTO\ScaledResult;
 use App\Helpers\ClassHelpers;
+use App\Models\Event\ScoringEngine;
+use App\Models\Event\ScoringSchema;
 use App\Models\ResultSchemas\ClubSERCResultSchema;
 use App\Models\ResultSchemas\HighestSumResultSchema;
 use App\Models\ResultSchemas\NationalsResultSchema;
@@ -27,34 +29,37 @@ class ResultSchema extends Model
 
         $allResults = collect();
 
-        $global_variables = [];
-
         foreach ($this->getEvents as $event) {
+
+            $scoringEngine = ScoringSchema::engine();
+
+
             $eventResults = collect($event->getActualEvent->getRankedResults());
 
-            $notDqualified = $eventResults->filter(fn($result) => !$result->isDisqualified());
-            $minPoints = $notDqualified->min('points');
-            $maxPoints = $notDqualified->max('points');
-            $minScore = 100;
-            $spread = 1000 - $minScore;
-
-            $multiplication_factor = $spread / ($maxPoints - $minPoints);
-
-            dump([
-                'event' => $event->getActualEvent->getName(),
-                'minPoints' => $minPoints,
-                'maxPoints' => $maxPoints,
-                'multiplication_factor' => $multiplication_factor
-            ]);
-
-            $eventResults = $eventResults->map(function ($result) use ($minPoints, $multiplication_factor, $minScore, $event) {
-                $adjusted = ($result->points - $minPoints) * $multiplication_factor + $minScore;
-                $adjusted = $adjusted * $event->weight;
-                if ($result->isDisqualified()) {
-                    $adjusted = 0;
-                }
-                return ScaledResult::fromRanked($result, $adjusted);
+            $eventResults = $eventResults->map(function ($result) {
+                return ScaledResult::fromRanked($result, -1);
             });
+
+
+
+
+            $eventResults = $scoringEngine->process($this->schema, $eventResults, 'adjustedPoints');
+
+            // mutiply by event weight
+            $eventResults = $eventResults->map(function ($result) use ($event) {
+                $result->adjustedPoints = $result->adjustedPoints * $event->weight;
+
+                if ($result->isDisqualified()) {
+                    $result->adjustedPoints = 0;
+                }
+
+                return $result;
+            });
+
+
+
+
+
 
 
             $allResults = $allResults->merge($eventResults);

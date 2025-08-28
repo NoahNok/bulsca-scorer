@@ -109,6 +109,11 @@ class ScoringSchema extends Model
 
         return $this->engine->process($this->schema, $results);
     }
+
+    public static function engine(): ScoringEngine
+    {
+        return (new ScoringEngine());
+    }
 }
 
 
@@ -225,7 +230,7 @@ class ScoringEngine
      *
      * @return Collection Evaluated outputs, one per result.
      */
-    public function process(array $payload, Collection $results): Collection
+    public function process(array $payload, Collection $results, string $targetField = 'points'): Collection
     {
         $equation = $payload['equation'] ?? null;
 
@@ -262,6 +267,7 @@ class ScoringEngine
 
 
 
+
         // Lets precopile each local variable's expression
         $allLocalVariableNames = array_map(fn($item) => $item['name'], $localVars);
         array_push($allLocalVariableNames, 'item');
@@ -292,7 +298,7 @@ class ScoringEngine
 
 
             // Final equation per result
-            $result->points = $this->safeEval($equation, $perResultContext, "equation");
+            $result->{$targetField} = $this->safeEval($equation, $perResultContext, "equation");
         }
 
         return $results;
