@@ -22,6 +22,7 @@ use App\Http\Controllers\CompetitorController;
 use App\Http\Controllers\DigitalJudge\DigitalJudgeController;
 use App\Http\Controllers\HeatController;
 use App\Http\Controllers\Landing\LandingController;
+use App\Http\Controllers\Landing\ResultsController;
 use App\Http\Controllers\LeagueController;
 use App\Http\Controllers\Organisation\OrganisationController;
 use App\Http\Controllers\OverallResultsController;
@@ -388,6 +389,9 @@ Route::prefix('competition/{comp}')->group(function () {
 
     Route::prefix('results')->group(function () {
         Route::get('', [LandingController::class, 'showResults'])->name('landing.competition.results');
+        Route::get('sheet/{schema}', [ResultsController::class, 'getSheetResults'])->name('landing.competition.results.get.sheet');
+        Route::get('{league}/{event}-{type}', [ResultsController::class, 'getEventResults'])->name('landing.competition.results.get');
+        
     });
 });
 

@@ -28,14 +28,14 @@ class SERC extends Event
 
     protected $table = 'sercs';
 
-    public function getRankedResults(): array
+    public function getRankedResults(?League $league = null): array
     {
 
         if (!$this->scoringSchema) {
             return [];
         }
 
-        $resolvedResults = collect($this->getResolvedResults());
+        $resolvedResults = collect($this->getResolvedResults(league: $league));
 
 
 
@@ -73,7 +73,7 @@ class SERC extends Event
         return $rankedResults->toArray();
     }
 
-    public function getResolvedResults(): array
+    public function getResolvedResults(?League $league = null): array
     {
 
         if (!$this->scoringSchema) {
@@ -84,7 +84,7 @@ class SERC extends Event
          * @param ResolvedResult[] $resolvedResults
          */
         $resolvedResults = collect([]);
-        $results = collect($this->getRawResults());
+        $results = collect($this->getRawResults(league: $league));
 
         foreach ($results->groupBy(fn($result) => $result->entity->id) as $id => $entityResults) {
 
@@ -115,9 +115,17 @@ class SERC extends Event
         return $this->scoringSchema->applyViolations($resolvedResults)->toArray();
     }
 
-    public function getRawResults(bool $withEmpty = false): array
+    public function getRawResults(bool $withEmpty = false, ?League $league = null): array
     {
-        return $this->results->map(function ($result) {
+        $query = $this->results();
+
+        if ($league !== null) {
+            $query = $query->whereHas('entity', function ($q) use ($league) {
+                $q->where('league', $league->id);
+            });
+        }
+
+        return $query->get()->map(function ($result) {
             return $result->transformToResult();
         })->toArray();
     }

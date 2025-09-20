@@ -76,7 +76,7 @@
                     @csrf
                     <button target="_blank"
                         class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1 w-full">
-                        <p class="font-archivo">Delete Event</p>
+                        <p class="font-archivo">Delete sheet</p>
 
 
 

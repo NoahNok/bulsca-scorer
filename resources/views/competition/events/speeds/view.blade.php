@@ -20,12 +20,26 @@
 
 
             <div class="  relative  overflow-x-hidden max-w-full  ">
-                @if ($event->scoring_schema)
+                @if ($eventResults)
                     <div class="se-form-input imb-0 ">
                         <input type="text" table-search placeholder="Search teams" x-model="search">
                     </div>
 
                     <br>
+
+                    <div class="  tabbed-bar mt-2  ">
+
+                        <a href="{{ url()->current() }}" class="@if (!$activeLeague) active @endif">All</a>
+                        @foreach ($comp->getLeagues as $league)
+                            <a href="?league={{ $league->id }}"
+                                class="@if ($activeLeague?->id == $league->id) active @endif">{{ $league->name }}</a>
+                        @endforeach
+
+
+
+
+
+                    </div>
 
                     <div class="se-table">
                         <table>
@@ -67,7 +81,7 @@
                             </thead>
                             <tbody>
 
-                                @forelse ($event->getRankedResults() as $result)
+                                @forelse ($eventResults as $result)
                                     <tr x-data="{ name: `{{ $result->entity->getName() }}` }" x-show="name.toLowerCase().includes(search.toLowerCase())">
                                         <th scope="row">
                                             {{ $result->entity->getName() }}

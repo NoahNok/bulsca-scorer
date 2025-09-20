@@ -7,6 +7,7 @@ use App\Http\Requests\Event\UpdateScoringSettings;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\Competition;
 use App\Models\Event\ScoringSchema;
+use App\Models\League;
 use App\Models\SpeedEvent;
 use App\Models\SpeedResult;
 use Illuminate\Http\Request;
@@ -60,7 +61,17 @@ class SpeedsEventController extends Controller
 
     public function view(Competition $comp, CompetitionSpeedEvent $event)
     {
-        return view('competition.events.speeds.view', ['comp' => $comp, 'event' => $event]);
+
+        $eventResults = null;
+        $league = request()->query('league', null);
+
+        $league = League::find($league);
+
+        if ($event->scoringSchema()) {
+            $eventResults = $event->getRankedResults($league);
+        }
+
+        return view('competition.events.speeds.view', ['comp' => $comp, 'event' => $event, 'eventResults' => $eventResults, 'activeLeague' => $league]);
     }
 
     public function edit(Competition $comp, CompetitionSpeedEvent $event)

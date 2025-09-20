@@ -33,8 +33,17 @@ class ResultSchema extends Model
 
             $scoringEngine = ScoringSchema::engine();
 
+            $eventResults = null;
 
-            $eventResults = collect($event->getActualEvent->getRankedResults());
+            if (array_key_exists('league', $this->schema)) {
+                $league = League::find($this->schema['league']);
+                $eventResults = collect($event->getActualEvent->getRankedResults($league));
+            } else {
+                $eventResults = collect($event->getActualEvent->getRankedResults());
+            }
+
+
+
 
             $eventResults = $eventResults->map(function ($result) {
                 return ScaledResult::fromRanked($result, -1);

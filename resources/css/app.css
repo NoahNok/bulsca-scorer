@@ -202,7 +202,7 @@ div.se-table {
     tbody tr {
       @apply bg-white border-b text-right hover:bg-gray-200;
 
-      th {
+      th, td.table-th {
         @apply py-3 text-left px-6 font-medium text-gray-900 whitespace-nowrap font-archivo;
       }
 
@@ -515,7 +515,7 @@ div.se-form-input {
   &.imb-0 {
     @apply mb-0;
 
-    >input {
+    >input, select {
       @apply mb-0;
     }
   }

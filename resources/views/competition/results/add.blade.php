@@ -103,20 +103,18 @@
                         <tr table-row table-row-owner="league">
                             <th scope="row" class="whitespace-nowrap flex flex-col  ">
                                 League
-                                <small>Overall (O), A League (A), B League (B), Freshers League (F), Non-counting (NC),
-                                    Non-student (NS), Old Boys (OB)</small>
+
                             </th>
                             <td class="table-input">
 
 
                                 <select table-cell table-cell-required table-cell-name="league">
-                                    <option value="O">Overall</option>
-                                    <option value="A">A-League</option>
-                                    <option value="B">B-League</option>
-                                    <option value="F">Freshers</option>
-                                    <option value="NC">Non-counting</option>
-                                    <option value="NS">Non-student</option>
-                                    <option value="OB">Old Boys</option>
+                                    <option value="all">All</option>
+
+                                    @foreach ($comp->getLeagues as $league)
+                                        <option value="{{ $league->id }}">{{ $league->name }}</option>
+                                    @endforeach
+
                                 </select>
 
                                 <!-- <input class="table-input" table-cell table-cell-required table-cell-name="league" placeholder="O, A, B, F, NC, NS" type="text" value=""> -->

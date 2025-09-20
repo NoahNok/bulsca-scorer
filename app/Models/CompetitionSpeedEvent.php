@@ -17,9 +17,9 @@ class CompetitionSpeedEvent extends Event
 {
     use HasFactory, Cloneable;
 
-    public function getRankedResults(): array
+    public function getRankedResults(?League $league = null): array
     {
-        $resolvedResults = collect($this->getResolvedResults());
+        $resolvedResults = collect($this->getResolvedResults(league: $league));
 
 
         $scoringSchema = $this->scoringSchema;
@@ -56,28 +56,34 @@ class CompetitionSpeedEvent extends Event
         return $rankedResults->toArray();
     }
 
-    public function getResolvedResults(): array
+    public function getResolvedResults(?League $league = null): array
     {
         /**
          * @param ResolvedResult[] $resolvedResults
          */
         $resolvedResults = [];
-        $results = collect($this->getRawResults());
+        $results = collect($this->getRawResults(league: $league));
 
         return $this->scoringSchema->applyViolations($results)->toArray();
     }
 
-    public function getRawResults(bool $withEmpty = false): array
+    public function getRawResults(bool $withEmpty = false, ?League $league = null): array
     {
 
-        $query = $this->results;
+        $query = $this->results();
 
         if (!$withEmpty) {
 
             $query = $query->whereNotNull('result');
         }
 
-        return $query->map(function ($result) {
+        if ($league !== null) {
+            $query = $query->whereHas('entity', function ($q) use ($league) {
+                $q->where('league', $league->id);
+            });
+        }
+
+        return $query->get()->map(function ($result) {
             return $result->transformToResult();
         })->toArray();
     }

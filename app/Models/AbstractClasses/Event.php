@@ -12,6 +12,7 @@ use App\Models\DigitalJudge\BetterJudgeLog;
 use App\Models\Event\Disqualification;
 use App\Models\Event\Penalty;
 use App\Models\Event\ScoringSchema;
+use App\Models\League;
 use App\Models\SERCResult;
 use App\Models\SpeedResult;
 use Illuminate\Database\Eloquent\Collection;
@@ -26,15 +27,15 @@ abstract class Event extends Model
     /**
      * @return Result[]
      */
-    public abstract function getRawResults(bool $withEmpty = false): array;
+    public abstract function getRawResults(bool $withEmpty = false, ?League $league = null): array;
     /**
      * @return ResolvedResult[]
      */
-    public abstract function getResolvedResults(): array;
+    public abstract function getResolvedResults(?League $league = null): array;
     /**
      * @return RankedResult[]
      */
-    public abstract function getRankedResults(): array;
+    public abstract function getRankedResults(?League $league = null): array;
     public abstract function results();
     public abstract function getCompetition();
 
@@ -104,5 +105,11 @@ abstract class Event extends Model
     public function scoringSchema()
     {
         return $this->belongsTo(ScoringSchema::class, 'scoring_schema');
+    }
+
+    public function hide()
+    {
+        $this->viewable = !$this->viewable;
+        $this->save();
     }
 }

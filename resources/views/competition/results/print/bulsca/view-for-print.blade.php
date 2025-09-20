@@ -1,29 +1,41 @@
 <head>
     <link rel="stylesheet" href="{{ asset('css/app.css?v=1.0.0') }}">
     <title>
-        @if ($comp->areResultsProvisional()) (PROVISIONAL) @endif{{ $schema->name }} | {{ $comp->name }}
+        @if ($comp->areResultsProvisional())
+            (PROVISIONAL)
+        @endif{{ $schema->name }} | {{ $comp->name }}
     </title>
 </head>
 
 <body class="">
     <div class="  " id="raw_data">
-        <h2>@if ($comp->areResultsProvisional()) (PROVISIONAL) @endif{{ $schema->name }} | {{ $comp->name }}</h2>
+        <h2>
+            @if ($comp->areResultsProvisional())
+                (PROVISIONAL)
+            @endif{{ $schema->name }} | {{ $comp->name }}
+        </h2>
 
         <table class=" text-sm   rounded-lg text-left text-gray-500 ">
             <thead class="text-xs text-gray-700 text-right uppercase bg-gray-50 ">
                 <tr>
 
+                    <th scope="col" class="py-2 px-4 whitespace-nowrap">
+                        Team
+                    </th>
 
-                    @foreach ($results[0] as $key => $value)
-
-                    @if (!str_contains($key, "team") && !str_ends_with($key, "rsp") && !str_ends_with($key, "place") && !str_contains($key, "totalPoints") ) @continue
-
-                    @endif
+                    @foreach ($results[0]->events as $event)
+                        <th scope="col" class="py-2 px-4 whitespace-nowrap">
+                            {{ $event->event->getName() }}
+                        </th>
+                    @endforeach
 
                     <th scope="col" class="py-2 px-4 whitespace-nowrap">
-                        {{ str_replace("_", " ", preg_replace("/_[0-9]/mi", "", $key)) }}
+                        Total
                     </th>
-                    @endforeach
+
+                    <th scope="col" class="py-2 px-4 whitespace-nowrap">
+                        Position
+                    </th>
 
 
                 </tr>
@@ -31,36 +43,40 @@
             <tbody>
 
                 @forelse ($results as $result)
-                <tr class=" border-b text-right ">
-                    @foreach ($result as $key => $value)
-                    @if (!str_contains($key, "team") && !str_ends_with($key, "rsp") && !str_ends_with($key, "place") && !str_contains($key, "totalPoints") ) @continue
+                    <tr class=" border-b text-right ">
 
-                    @endif
-                    <td class="py-2 px-4 text-black text-sm whitespace-nowrap">
-                        @if ($key == "team")
-                        <span class="font-semibold">{{ $value }}</span>
-                        @else
+                        <td class="py-2 px-4 text-black text-sm whitespace-nowrap">
+                            {{ $result->entity->getName() }}
 
-                        @if (str_contains($key, "rsp"))
-                        ({{ $result->{$key . "_places"} }})
+                        </td>
 
-                        @endif
+                        @foreach ($result->events as $event)
+                            <td scope="col" class="py-2 px-4 whitespace-nowrap">
+                                {{ round($event->adjustedPoints) }} ({{ $event->position }})
+                            </td>
+                        @endforeach
 
-                        {{ round((float)$value) }}
-                        @endif
+                        <td class="py-2 px-4 text-black text-sm whitespace-nowrap">
+                            {{ round($result->totalPoints) }}
 
-                    </td>
-                    @endforeach
+                        </td>
+
+                        <td class="py-2 px-4 text-black text-sm whitespace-nowrap">
+                            {{ $result->position }}
+
+                        </td>
 
 
 
-                </tr>
+
+                    </tr>
                 @empty
-                <tr class="bg-white border-b text-right ">
-                    <th colspan="100" scope="row" class="py-4 text-left px-6 text-center font-medium text-gray-900 whitespace-nowrap ">
-                        None
-                    </th>
-                </tr>
+                    <tr class="bg-white border-b text-right ">
+                        <th colspan="100" scope="row"
+                            class="py-4 text-left px-6 text-center font-medium text-gray-900 whitespace-nowrap ">
+                            None
+                        </th>
+                    </tr>
                 @endforelse
 
 
@@ -69,9 +85,10 @@
         </table>
 
     </div>
+    <small>Values have been rounded for presentation</small>
     <script>
         window.onload = function() {
-            window.print()
+            //window.print()
         }
     </script>
 </body>

@@ -30,7 +30,7 @@ class OverallResultsController extends Controller
 
     public function viewForPrintBasic(ResultSchema $schema)
     {
-        $schema = $schema->autoCast();
+
         $results = $schema->getResults() ?? [];
         $comp = $schema->getCompetition;
         return view("competition.results.print.$comp->scoring_type.view-for-print-basic", ['results' => $results, 'schema' => $schema, 'comp' => $comp]);
@@ -38,7 +38,7 @@ class OverallResultsController extends Controller
 
     public function viewForPrint(ResultSchema $schema)
     {
-        $schema = $schema->autoCast();
+
         $results = $schema->getResults() ?? [];
         $comp = $schema->getCompetition;
         return view("competition.results.print.$comp->scoring_type.view-for-print", ['results' => $results, 'schema' => $schema, 'comp' => $comp]);
@@ -48,7 +48,7 @@ class OverallResultsController extends Controller
     {
         $data = [];
         foreach ($comp->getResultSchemas as $schema) {
-            $schema = $schema->autoCast();
+
             $results = $schema->getResults() ?? [];
             array_push($data, ['results' => $results, 'schema' => $schema]);
         }
@@ -98,6 +98,11 @@ class OverallResultsController extends Controller
                     continue;
                 }
                 $schema_league = $event->values->league;
+
+                if ($schema_league == 'all') {
+                    $schema_league = null;
+                }
+
                 continue;
             }
 
@@ -115,7 +120,42 @@ class OverallResultsController extends Controller
         $rs = new ResultSchema();
         $rs->name = $schema_name;
         $rs->competition = $comp->id;
-        $rs->schema = [];
+        $rs->schema = [
+            "equation" => "(item.points - minPoints) * multFac + minScore",
+            "global_variables" => [
+                [
+                    "name" => "valid_teams",
+                    "order" => 1,
+                    "expression" => "FILTER(results, '!item.isDisqualified()')",
+                ],
+                [
+                    "name" => "minPoints",
+                    "order" => 2,
+                    "expression" => "MINIMUM(valid_teams, 'points')",
+                ],
+                [
+                    "name" => "maxPoints",
+                    "order" => 3,
+                    "expression" => "MAXIMUM(valid_teams, 'points')",
+                ],
+                [
+                    "name" => "minScore",
+                    "order" => 4,
+                    "expression" => "100",
+                ],
+                [
+                    "name" => "spread",
+                    "order" => 5,
+                    "expression" => "1000 - minScore",
+                ],
+                [
+                    "name" => "multFac",
+                    "order" => 6,
+                    "expression" => "spread / (maxPoints - minPoints)",
+                ],
+            ],
+            "league" => $schema_league,
+        ];
 
         $rs->save();
 
