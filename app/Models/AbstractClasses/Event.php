@@ -17,6 +17,7 @@ use App\Models\SERCResult;
 use App\Models\SpeedResult;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 
@@ -107,9 +108,19 @@ abstract class Event extends Model
         return $this->belongsTo(ScoringSchema::class, 'scoring_schema');
     }
 
+    public function getScorableEntity(): Entity
+    {
+        return new (Relation::getMorphedModel($this->scorable_entity));
+    }
+
     public function hide()
     {
         $this->viewable = !$this->viewable;
         $this->save();
+    }
+
+    public function getTeams()
+    {
+        return $this->getScorableEntity()::where('competition', $this->competition)->orderBy('serc_order')->get();
     }
 }

@@ -37,6 +37,7 @@ class Competition extends Model implements IInvitable
     protected $casts = [
         'when' => 'datetime',
         'serc_start_time' => 'datetime',
+        'data' => 'array'
     ];
 
 
@@ -75,7 +76,7 @@ class Competition extends Model implements IInvitable
 
     public function getCompetitionTeams()
     {
-        return $this->hasMany(CompetitionTeam::class, 'competition', 'id')->orderBy('serc_order');
+        return $this->hasMany(CompetitionTeam::class, 'competition', 'id');
     }
 
     public function getResultSchemas()
@@ -116,17 +117,6 @@ class Competition extends Model implements IInvitable
     {
 
         return Str::lower(str_replace(" ", "-", $this->name)) . "." . $this->id;
-    }
-
-    public function needsToRegenerateSERCDraw(): bool
-    {
-
-        if ($this->scoring_type == 'rlss-nationals') {
-            $tanks = $this->getCompetitionTeams->unique('serc_tank')->pluck('serc_tank')->toArray();
-            return count($tanks) == 1 && $tanks[0] == '0';
-        }
-
-        return $this->getCompetitionTeams()->where('serc_order', 0)->exists();
     }
 
     public function getMaxHeats(): int

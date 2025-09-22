@@ -35,12 +35,14 @@
                 <a href="{{ route('comps.competitors', $comp) }}"
                     class="@if (Str::startsWith(Route::currentRouteName(), 'comps.competitor')) active @endif">Competitors</a>
             @else
-                <a href="{{ route('comps.teams', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.team')) active @endif">Teams & Leagues</a>
+                <a href="{{ route('comps.teams', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.team')) active @endif">Teams &
+                    Leagues</a>
             @endif
         @endcan
 
         @can('access', [$comp, 'heats_and_draws'])
-            <a href="{{ route('comps.heats', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.heats')) active @endif">Heats &
+            <a href="{{ route('comps.heats_and_draws', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.heats_and_draws')) active @endif">Heats
+                &
                 Draws</a>
         @endcan
 

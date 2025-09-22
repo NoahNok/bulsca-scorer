@@ -20,10 +20,12 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CompetitionController;
 use App\Http\Controllers\CompetitorController;
 use App\Http\Controllers\DigitalJudge\DigitalJudgeController;
-use App\Http\Controllers\HeatController;
+
+use App\Http\Controllers\Orders\HeatController;
 use App\Http\Controllers\Landing\LandingController;
 use App\Http\Controllers\Landing\ResultsController;
 use App\Http\Controllers\LeagueController;
+use App\Http\Controllers\Orders\DrawController;
 use App\Http\Controllers\Organisation\OrganisationController;
 use App\Http\Controllers\OverallResultsController;
 use App\Http\Controllers\Pdf\PdfController;
@@ -185,10 +187,10 @@ Route::middleware('auth')->group(function () {
                     Route::middleware('can:access,comp,"serc"')->group(function () {
                         Route::delete('', [SERCController::class, 'delete'])->name('comps.view.events.sercs.delete');
 
-                        Route::get('results/{team}/next', [SERCController::class, 'next'])->name('comps.view.events.sercs.next');
+                        Route::get('results/{entity_id}/next', [SERCController::class, 'next'])->name('comps.view.events.sercs.next');
 
-                        Route::get('/results/{team}/edit', [SERCController::class, 'editResultsView'])->name('comps.events.sercs.editResults');
-                        Route::post('/results/{team}/edit', [SERCController::class, 'updateTeamResults'])->name('comps.view.events.sercs.editResultsPost');
+                        Route::get('/results/{entity_id}/edit', [SERCController::class, 'editResultsView'])->name('comps.events.sercs.editResults');
+                        Route::post('/results/{entity_id}/edit', [SERCController::class, 'updateTeamResults'])->name('comps.view.events.sercs.editResultsPost');
 
                         Route::get('/digital-judge-toggle', [DigitalJudgeController::class, 'sercToggle'])->name('dj.sercToggle');
                         Route::get('/hide', [SERCController::class, 'hide'])->name('comps.view.sercs.hide');
@@ -237,20 +239,16 @@ Route::middleware('auth')->group(function () {
         Route::prefix('/heats-and-draws')->middleware('can:access,comp,"heats_and_draws"')->group(function () {
 
 
-            Route::get('', [HeatController::class, 'index'])->name('comps.heats');
+            Route::get('', [HeatController::class, 'index'])->name('comps.heats_and_draws');
 
-            Route::prefix('/heats')->group(function () {
-                Route::get('/edit', [HeatController::class, 'edit'])->name('comps.heats.edit');
-                Route::post('/edit', [HeatController::class, 'editPost'])->name('comps.view.heats.editPost');
-                Route::get('/gen', [HeatController::class, 'createDefaultHeatsForComp'])->name('comps.heats.gen');
-                Route::post('/delete-heat', [HeatController::class, 'remHeat'])->name('comps.view.heats.delete-heat');
-                Route::post('/swap-heats', [HeatController::class, 'swapHeats'])->name('comps.view.heats.swap');
+            Route::prefix('heats')->group(function () {
+                Route::get('generate', [HeatController::class, 'generate'])->name('comps.heats_and_draws.heats.generate');
+                Route::get('edit', [HeatController::class, 'edit'])->name('comps.heats_and_draws.heats.edit');
             });
-            Route::prefix('/serc-order')->group(function () {
-                Route::get('/edit', [HeatController::class, 'editSERCOrder'])->name('comps.heats.serc-order.edit');
-                Route::post('/edit', [HeatController::class, 'editSERCOrderPost'])->name('comps.view.serc-order.editPost');
-                Route::post('/edit-tanks', [HeatController::class, 'editTanksPost'])->name('comps.view.serc-order.editTanksPost');
-                Route::get('/regen', [HeatController::class, 'regenSERCOrder'])->name('comps.view.serc-order.regen');
+
+            Route::prefix('draws')->group(function () {
+                Route::get('generate', [DrawController::class, 'generate'])->name('comps.heats_and_draws.draws.generate');
+                Route::get('edit', [DrawController::class, 'edit'])->name('comps.heats_and_draws.draws.edit');
             });
         });
 
@@ -389,9 +387,10 @@ Route::prefix('competition/{comp}')->group(function () {
 
     Route::prefix('results')->group(function () {
         Route::get('', [LandingController::class, 'showResults'])->name('landing.competition.results');
+        Route::get('breakdown/serc/{serc}', [ResultsController::class, 'showSercBreakdown'])->name('landing.competition.results.breakdown.serc');
         Route::get('sheet/{schema}', [ResultsController::class, 'getSheetResults'])->name('landing.competition.results.get.sheet');
+        Route::get('violation/{violation_id}/{violation_type}', [ResultsController::class, 'getViolation'])->name('landing.competition.results.get.violation');
         Route::get('{league}/{event}-{type}', [ResultsController::class, 'getEventResults'])->name('landing.competition.results.get');
-        
     });
 });
 

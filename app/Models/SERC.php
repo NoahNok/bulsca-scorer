@@ -15,10 +15,12 @@ use App\Models\Event\Penalty;
 use App\Models\Event\ScoringSchema;
 use App\Models\Interfaces\IEvent;
 use App\Models\Interfaces\IPenalisable;
+use App\Models\Orders\Draw;
 use App\Models\Scoring\Bulsca\BulscaSercScoring;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
@@ -135,18 +137,16 @@ class SERC extends Event
         return $this->hasManyThrough(SERCResult::class, SERCMarkingPoint::class, 'serc', 'marking_point', 'id', 'id');
     }
 
+    public function draw()
+    {
+        return $this->morphMany(Draw::class, 'entity');
+    }
+
     public function getJudges()
     {
         return $this->hasMany(SERCJudge::class, 'serc', 'id');
     }
 
-    public function getTeams()
-    {
-        return match ($this->getCompetition->scoring_type) {
-            'bulsca', 'rlss-cs' => CompetitionTeam::where('competition', $this->competition)->orderBy('serc_order')->get(),
-            'rlss-nationals' => Competitor::where('competition', $this->competition)->orderBy('serc_order')->get()->unique('club'),
-        };
-    }
 
     public function getName(): string
     {
@@ -299,7 +299,7 @@ class SERC extends Event
     public function getSERCData()
     {
 
-        $dbData = DB::select('SELECT j.name AS judge_name, smp.name AS mp_name, smp.weight AS mp_weight , sr.marking_point AS mp_id, sr.team, result FROM serc_results sr INNER JOIN serc_marking_points smp ON smp.id=sr.marking_point INNER JOIN serc_judges j ON j.id=smp.judge WHERE smp.serc=? ORDER BY j.id,smp.id;', [$this->id]);
+        $dbData = DB::select('SELECT j.name AS judge_name, smp.name AS mp_name, smp.weight AS mp_weight , sr.marking_point AS mp_id, sr.entity_type, sr.entity_id, result FROM serc_results sr INNER JOIN serc_marking_points smp ON smp.id=sr.marking_point INNER JOIN serc_judges j ON j.id=smp.judge WHERE smp.serc=? ORDER BY j.id,smp.id;', [$this->id]);
 
 
         $judges = [];
@@ -314,20 +314,23 @@ class SERC extends Event
                 $judges[$row->judge_name][$row->mp_id]['weight'] = $row->mp_weight;
             }
 
-            $results[$row->team]['results'][$row->mp_id] = $row->result;
+            $results[$row->entity_id]['results'][$row->mp_id] = $row->result;
         }
 
-        $placeResults = $this->getResults();
+        $placeResults = $this->getRankedResults();
 
 
         foreach ($placeResults as $placeResult) {
-            $results[$placeResult->tid]['place'] = $placeResult->place;
-            $results[$placeResult->tid]['points'] = $placeResult->points;
+            $results[$placeResult->entity->id]['place'] = $placeResult->position;
+            $results[$placeResult->entity->id]['points'] = $placeResult->points;
 
-            $results[$placeResult->tid]['team'] = $placeResult->team;
-            $results[$placeResult->tid]['raw'] = $placeResult->score;
-            $results[$placeResult->tid]['tid'] = $placeResult->tid;
-            $results[$placeResult->tid]['disqualification'] = $placeResult->disqualification;
+
+
+
+            $results[$placeResult->entity->id]['team'] = $placeResult->entity->getName();
+            $results[$placeResult->entity->id]['raw'] = $placeResult->resolvedResult;
+            $results[$placeResult->entity->id]['tid'] = $placeResult->entity->id;
+            $results[$placeResult->entity->id]['disqualification'] = "{$placeResult->disqualifications->first()}";
         }
 
 

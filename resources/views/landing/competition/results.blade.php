@@ -14,11 +14,21 @@
             event: null
         },
     
+        violationData: null,
+    
         table: null,
+    
+        getColumns() {
+            return Object.fromEntries(
+                Object.entries(this.table?.columns ?? {}).filter(([key]) => !key.startsWith('_'))
+            );
+        },
     
         error: '',
     
         url: '{{ route('landing.competition.results.get', [$comp->getSlug(), 'league' => '_league', 'event' => '_event', 'type' => '_type']) }}',
+        violationUrl: '{{ route('landing.competition.results.get.violation', [$comp->getSlug(), 'violation_id' => '_id', 'violation_type' => '_type']) }}',
+        breakdownUrl: '{{ route('landing.competition.results.breakdown.serc', [$comp->getSlug(), 'serc' => '_serc_id']) }}',
     
         onLeagueChange(targetLeague) {
     
@@ -60,6 +70,19 @@
     
         },
     
+        async loadViolation(violation_id, violation_type) {
+            let url = this.violationUrl.replace('_id', violation_id).replace('_type', violation_type);
+    
+            let response = await fetch(url)
+    
+            if (response.ok) {
+                let data = await response.json()
+                this.violationData = data
+    
+                this.modals.violation = true
+            }
+        },
+    
     
     
         init() {
@@ -95,7 +118,10 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
                         </svg>
 
-                        <h1 x-text="selected.event?.name"></h1>
+                        <h1 x-text="selected.event?.name"></h1><span class="ml-2  badge badge-info "
+                            x-show="selected.event?.type == 'serc'">SERC</span>
+
+
 
                     </div>
 
@@ -109,6 +135,10 @@
                             </template>
                         </select>
                     </div>
+
+                    <a class="se-btn se-btn-blue" target="_blank"
+                        :href="breakdownUrl.replace('_serc_id', selected.event?.id)"
+                        x-show="selected.event?.type == 'serc' && error == null">Breakdowns</a>
                 </div>
 
 
@@ -139,7 +169,7 @@
                         <thead>
                             <tr>
 
-                                <template x-for="(column_name, column_label) in table?.columns">
+                                <template x-for="(column_name, column_label) in getColumns()">
                                     <th scope="col" x-text="column_label"></th>
                                 </template>
 
@@ -154,33 +184,55 @@
 
                                 <tr>
 
-                                    <template
-                                        x-for="([column_id, column_label], index) in Object.entries(table?.columns ?? [])">
+                                    <template x-for="([column_id, column_label], index) in Object.entries(getColumns())">
                                         <td x-data="{
-                                            text: row[column_id],
-                                            was: null,
+                                            type: 'string',
+                                            data: row.data[column_id],
                                         
                                             init() {
-                                                if (column_id == 'result' && typeof row[column_id] === 'object') {
-                                                    this.text = row[column_id].is;
-                                                    if (row[column_id].is != row[column_id].was) {
-                                                        this.was = row[column_id].was;
-                                                    }
+                                        
+                                                row_type = typeof row.data[column_id]
+                                        
+                                                if (row_type !== 'object') {
+                                                    return
                                                 }
+                                        
+                                                // We have an object, pull its type to decide which to render below
+                                        
+                                                this.type = row.data[column_id]['type']
+                                                this.data = row.data[column_id]['data']
                                         
                                         
                                             }
                                         }" :class="index == 0 ? 'table-th' : ''">
 
 
-                                            <span x-text="text">h</span>
+                                            <template x-if="type === 'string'">
+                                                <span x-text="data"></span>
+                                            </template>
 
-                                            <span x-show="was != null">
-                                                <br>
-                                                <small>
-                                                    Was <span x-text='was'></span>
-                                                </small>
-                                            </span>
+                                            <template x-if="type == 'violation'">
+                                                <div>
+                                                    <template x-for="(violation, indx) in data">
+                                                        <span @click="loadViolation(violation['id'], violation['type'])"
+                                                            x-text="violation['display'] + (indx === data.length - 1 ? '' : ', ')"
+                                                            class="hover:font-semibold cursor-pointer"></span>
+                                                    </template>
+                                                </div>
+                                            </template>
+
+                                            <template x-if="type == 'result'">
+                                                <div>
+                                                    <span x-text="data['is']"></span>
+                                                    <template x-if="data['is'] != data['was']">
+                                                        <small><br>Was <span x-text="data['was']"></span></small>
+                                                    </template>
+                                                </div>
+                                            </template>
+
+
+
+
 
 
 
@@ -201,6 +253,14 @@
             </div>
 
         </div>
+
+        <x-s-e-modal id="violation" title="Violation">
+            <div>
+                <h2 x-text="violationData?.code"></h2>
+                <p x-text="violationData?.for"></p>
+            </div>
+        </x-s-e-modal>
+
         <hr class="spacer my-8! mt-10!">
 
     </div>

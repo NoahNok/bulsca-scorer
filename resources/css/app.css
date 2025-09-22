@@ -608,6 +608,10 @@ div.se-checkbox {
     @apply bg-white border-se text-se hover:bg-se hover:text-white;
   }
 
+  &.se-btn-blue {
+    @apply bg-blue-500 border-blue-500 hover:bg-blue-600 hover:border-blue-600 text-white;
+  }
+
   &.se-btn-purple {
     @apply bg-purple-700 border-purple-700 text-white hover:bg-purple-800 hover:border-purple-800;
   }
@@ -856,12 +860,10 @@ a.link-stats {
 
 
 .table-highlight {
-  tr {
-    @apply hover:bg-gray-200 transition-colors;
-  }
+ 
 
   thead>tr>th {
-    @apply sticky top-0 bg-gray-50;
+    @apply sticky top-0 ;
 
     &:first-child {
       @apply left-0 z-20;
@@ -886,7 +888,7 @@ a.link-stats {
   }
 
   td {
-    @apply hover:font-semibold hover:bg-gray-300 hover:text-black transition-colors;
+    @apply hover:font-semibold hover:bg-gray-300! hover:text-black transition-colors;
   }
 
   tbody:not(.analysis)>tr.place-1 {

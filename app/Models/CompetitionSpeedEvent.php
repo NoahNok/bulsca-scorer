@@ -104,10 +104,7 @@ class CompetitionSpeedEvent extends Event
         return $this->belongsTo(Competition::class, 'competition', 'id');
     }
 
-    public function getTeams()
-    {
-        return $this->getCompetition->getCompetitionTeams();
-    }
+
 
 
     // CHANGE TO BE A EVENT BASED TOGGLE

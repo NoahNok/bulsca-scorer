@@ -3,7 +3,7 @@
 
     @if (Str::startsWith(Route::currentRouteName(), 'comps.heats'))
         <div class="empty">
-            <a href="{{ route('comps.heats.gen', $comp) }}" class="se-btn">Generate Heats</a>
+            <a href="{{ route('comps.heats_and_draws.heats.generate', $comp) }}" class="se-btn">Generate Heats</a>
         </div>
     @else
         <div class="alert-box">

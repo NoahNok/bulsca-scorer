@@ -32,6 +32,7 @@ class ResultsController extends Controller
         if ($type == 'speed') {
             $event = CompetitionSpeedEvent::findOrFail($event);
             $target_columns = [
+
                 'name',
                 'result',
                 'disqualifications',
@@ -42,6 +43,7 @@ class ResultsController extends Controller
         } else {
             $event = SERC::findOrFail($event);
             $target_columns = [
+
                 'name',
                 'disqualifications',
                 'result',
@@ -88,51 +90,133 @@ class ResultsController extends Controller
         ]);
     }
 
+    public function getViolation(Competition $comp, $violation_id, $violation_type)
+    {
+
+        $violation = null;
+
+        if ($violation_type == 'dq') {
+            $violation = Disqualification::findOrFail($violation_id);
+        } else {
+            $violation = Penalty::findOrFail($violation_id);
+        }
+
+        return response()->json([
+            'code' => "{$violation}",
+            'for' => $violation->entity->getName(),
+        ]);
+    }
+
+    public function showSercBreakdown(Competition $comp, SERC $serc)
+    {
+        $fasterSercData = $serc->getSERCData();
+
+        $overallJudgeNotes = $serc->getOverallJudgeNotes();
+
+
+        return view('landing.competition.serc-breakdown', ['comp' => $comp, 'event' => $serc, 'fsd' => $fasterSercData, 'overallJudgeNotes' => $overallJudgeNotes]);
+    }
+
 
     /**
      * @param RankedResult[] $results
      */
     private function tablify(array $results, array $use_columns, string $type)
     {
+        $t = new Tablify($type);
+
+        return $t->from($use_columns, $results, function ($row) {
+            return $row->entity->id;
+        });
+    }
+}
+
+class Tablify
+{
+
+    private $available_columns = [
+        'name' => 'Name',
+        'position' => 'Position',
+        'points' => 'Points',
+        'result' => 'Result',
+        'disqualifications' => 'Disqualifications',
+        'penalties' => 'Penalties',
+    ];
+
+    private $event_type;
+
+    public function __construct($event_type = 'speed')
+    {
+        $this->event_type = $event_type;
+    }
+
+    public function from(array $use_columns, array $results, $row_id_func = null)
+    {
         $table_data = [];
 
-        $table_columns = [
-            'name' => 'Name',
-            'position' => 'Position',
-            'points' => 'Points',
-            'result' => 'Result',
-            'disqualifications' => 'Disqualifications',
-            'penalties' => 'Penalties',
-        ];
+
+        $use_columns[] = '_entity_id';
 
         $table_use_columns = [];
         foreach ($use_columns as $col) {
-            if (array_key_exists($col, $table_columns)) {
-                $table_use_columns[$col] = $table_columns[$col];
+            if (array_key_exists($col, $this->available_columns)) {
+                $table_use_columns[$col] = $this->available_columns[$col];
             }
         }
         $table_columns = $table_use_columns;
 
         foreach ($results as $result) {
-            $row = [];
+            $row_data = [];
             foreach ($table_columns as $column => $label) {
-                $row[$column] = match ($column) {
-                    'name' => $result->entity->getName(),
-                    'position' => $result->position,
-                    'points' => round($result->points),
-                    'result' => ['is' => $type == 'speed' ? SpeedResult::prettyTime($result->resolvedResult) : $result->resolvedResult, 'was' => $type == 'speed' ? SpeedResult::prettyTime($result->result) : $result->result],
-                    'disqualifications' => $result->isDisqualified() ? $result->disqualifications->map(fn(Disqualification $dq) => "{$dq}")->join(', ') : '-',
-                    'penalties' => $result->hasPenalties() ? $result->penalties->map(fn(Penalty $p) => "{$p}")->join(', ') : '-',
-                    default => null,
-                };
+                $row_data[$column] = $this->resolveColumnData($column, $result);
             }
 
-            $table_data[] = $row;
+            $table_data[] = [
+                'data' => $row_data,
+                'id' => $row_id_func ? $row_id_func($result) : null,
+            ];
         }
 
         return [
             'columns' => $table_columns,
             'data' => $table_data,
         ];
+    }
+
+    private function resolveColumnData($column, $result)
+    {
+        return match ($column) {
+            'name' => $result->entity->getName(),
+            'position' => $result->position,
+            'points' => round($result->points),
+            'result' => $this->resolveResult($result),
+            'disqualifications' => $this->resolveDisqualifications($result),
+            'penalties' => $this->resolvePenalties($result),
+            default => null,
+        };
+    }
+
+    private function resolveResult($result)
+    {
+        $type = $this->event_type;
+        $data = ['is' => $type == 'speed' ? SpeedResult::prettyTime($result->resolvedResult) : $result->resolvedResult, 'was' => $type == 'speed' ? SpeedResult::prettyTime($result->result) : $result->result];
+
+        return ['type' => 'result', 'data' => $data];
+    }
+
+    private function resolveDisqualifications($result)
+    {
+        if (!$result->isDisqualified()) {
+            return '-';
+        }
+        return ['type' => 'violation', 'data' => $result->disqualifications->map(fn(Disqualification $dq) => ['display' => "{$dq}", 'id' => $dq->id, 'type' => 'dq'])->toArray()];
+    }
+
+    private function resolvePenalties($result)
+    {
+        if (!$result->hasPenalties()) {
+            return '-';
+        }
+        return ['type' => 'violation', 'data' => $result->penalties->map(fn(Penalty $p) => ['display' => "{$p}", 'id' => $p->id, 'type' => 'pen'])->toArray()];
     }
 }

@@ -141,18 +141,18 @@ class SERCController extends Controller
         return redirect()->route('comps.events', $comp)->with('success', 'SERC deleted!');
     }
 
-    public function editResultsView(Competition $comp, SERC $serc, CompetitionTeam $team)
+    public function editResultsView(Competition $comp, SERC $serc, int $entity_id)
     {
 
-        if ($comp->scoring_type == "rlss-nationals") {
-            $team = ClassHelpers::castToClass($team, Competitor::class);
-        }
+        $team = $serc->getScorableEntity()->findOrFail($entity_id);
 
         return view('competition.events.sercs.edit-team-results', ['comp' => $comp, 'serc' => $serc, 'team' => $team]);
     }
 
-    public function updateTeamResults(Competition $comp, SERC $serc, CompetitionTeam $team, Request $request)
+    public function updateTeamResults(Competition $comp, SERC $serc, int $entity_id, Request $request)
     {
+        $team = $serc->getScorableEntity()->findOrFail($entity_id);
+
         $json = json_decode($request->input('data'));
         $sawDQ = false;
         $sawPen = false;
@@ -225,8 +225,10 @@ class SERCController extends Controller
         return response()->json(['url' => Route('comps.events.sercs.editResults', [$comp, $serc, $nextTeamId])]);
     }
 
-    public function next(Competition $comp, SERC $serc, CompetitionTeam $team)
+    public function next(Competition $comp, SERC $serc, int $entity_id)
     {
+        $team = $serc->getScorableEntity()->findOrFail($entity_id);
+
         $teamIds = $serc->getTeams()->pluck('id')->toArray();
         $index = array_search($team->id, array_values($teamIds));
 

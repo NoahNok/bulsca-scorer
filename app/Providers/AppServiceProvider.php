@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Club;
 use App\Models\CompetitionTeam;
 use App\Models\Competitor;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -33,6 +34,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Relation::morphMap([
+            'club' => Club::class,
             'team' => CompetitionTeam::class,
             'competitior' => Competitor::class
         ]);

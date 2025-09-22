@@ -6,9 +6,11 @@ use App\Models\Club;
 use App\Models\Competition;
 use App\Models\CompetitionTeam;
 use App\Models\League;
+use App\Models\Orders\EntityEventSeed;
 use App\Models\SpeedResult;
 use Illuminate\Http\Request;
 use Mockery\Undefined;
+use Nette\NotImplementedException;
 
 class TeamsController extends Controller
 {
@@ -26,7 +28,9 @@ class TeamsController extends Controller
 
 
 
-            array_push($club_teams, ["team" => $team->team, "time" => $team->getSwimTowTimeForDefault(), "league" => $team->league, "id" => $team->id]);
+
+
+            array_push($club_teams, ["team" => $team->team, "seed" => gmdate('i:s', $team->getSeeds->first()->seed / 1000), "league" => $team->league, "id" => $team->id]);
 
 
             $all_clubs[$club_name] = $club_teams;
@@ -66,13 +70,30 @@ class TeamsController extends Controller
                 $team->competition = $comp->id;
                 $team->league = $json_team->league;
 
-
-
-
-                $timeParts = explode(":", $json_team->time);
-                $seconds = $timeParts[0] * 60 + $timeParts[1];
-                $team->st_time = $seconds;
                 $team->save();
+
+                if ($comp->seed_per_event) {
+                    throw new NotImplementedException("Seeding per event is not implemented");
+                } else {
+                    $event = $comp->getSpeedEvents->first();
+
+                    $timeParts = explode(":", $json_team->seed);
+                    $millis = ($timeParts[0] * 60 + $timeParts[1]) * 1000;
+
+                    $eventSeed = $team->getSeeds->first();
+
+                    $eventSeed = $eventSeed ?? new EntityEventSeed();
+                    $eventSeed->entity()->associate($team);
+                    $eventSeed->event = $event->id;
+                    $eventSeed->seed = $millis;
+                    $eventSeed->save();
+                }
+
+                // $timeParts = explode(":", $json_team->time);
+                // $seconds = $timeParts[0] * 60 + $timeParts[1];
+                // $team->setData('entry_time_all', $seconds);
+                // $team->st_time = $seconds;
+
 
                 array_push($teamIdsToKeep, $team->id);
 

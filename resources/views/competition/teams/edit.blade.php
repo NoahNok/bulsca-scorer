@@ -13,6 +13,10 @@
         clubs: {{ $currentTeams }},
         name: '',
         csrf: '{{ csrf_token() }}',
+    
+        events: {{ $comp->getSpeedEvents->map(function ($event) {return ['id' => $event->id, 'name' => $event->getName()];}) }},
+        seedPerEvent: {{ $comp->seed_per_event ? 'true' : 'false' }},
+    
         hasChanges: false,
     
         save() {
@@ -38,13 +42,13 @@
                 name: this.name,
                 teams: [{
                         team: 'A',
-                        time: '00:00',
+                        seed: '00:00',
                         league: '1',
                         id: null
                     },
                     {
                         team: 'B',
-                        time: '00:00',
+                        seed: '00:00',
                         league: '1',
                         id: null
                     }
@@ -90,7 +94,7 @@
                                             ...club.teams,
                                             {
                                                 team: 'A',
-                                                time: '00:00',
+                                                seed: '00:00',
                                                 league: '1',
                                                 id: null
                                             }
@@ -100,7 +104,7 @@
                                             ...club.teams,
                                             {
                                                 team: String.fromCharCode(club.teams[club.teams.length - 1].team.charCodeAt(0) + 1),
-                                                time: '00:00',
+                                                seed: '00:00',
                                                 league: '1',
                                                 id: null
                                             }
@@ -126,9 +130,9 @@
                                 </div>
 
                                 <div class="">
-                                    <div class="grid-4 font-archivo">
+                                    <div class="grid-3 font-archivo">
                                         <label for="" class="">Team</label>
-                                        <label for="" class="">Time</label>
+                                        <label for="" class="">Seed</label>
                                         <label for="" class="">League</label>
                                     </div>
                                     <template x-for="(team, index) in club.teams" :key="team.team">
@@ -148,7 +152,7 @@
                                                 <div class="se-form-input" style="margin-bottom: 0 !important">
 
 
-                                                    <input class="input" x-model="team.time" type="time"
+                                                    <input class="input" x-model="team.seed" type="time"
                                                         style="margin-bottom: 0 !important">
                                                 </div>
 
