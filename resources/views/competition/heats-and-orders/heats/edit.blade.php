@@ -174,12 +174,10 @@
                     let heat = element.getAttribute('data-heat')
                     fd.append('heat', heat)
                     fd.append('_token', '{{ csrf_token() }}')
-                    @if (request()->has('event'))
-                        fd.append('event', '{{ request('event') }}')
-                    @endif
 
 
-                    fetch('#', {
+
+                    fetch('{{ route('comps.heats_and_draws.heats.deleteHeats', [$comp, $event]) }} ', {
                         method: 'POST',
                         body: fd
                     }).then(res => res.json()).then(data => {

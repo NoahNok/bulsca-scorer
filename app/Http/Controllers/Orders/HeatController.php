@@ -107,4 +107,11 @@ class HeatController extends Controller
 
         return redirect()->back()->with('success', 'Heats Reset');
     }
+
+    public function deleteHeat(Competition $comp, CompetitionSpeedEvent $event, Request $request)
+    {
+        $event->heats()->where('heat', $request->input('heat'))->delete();
+
+        return response()->json(['result' => 'ok']);
+    }
 }

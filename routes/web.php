@@ -247,6 +247,7 @@ Route::middleware('auth')->group(function () {
                 Route::get('{event}/reset', [HeatController::class, 'reset'])->name('comps.heats_and_draws.heats.reset');
                 Route::post('{event}/swap', [HeatController::class, 'swap'])->name('comps.heats_and_draws.heats.swap');
                 Route::post('{event}/swapHeats', [HeatController::class, 'swapHeats'])->name('comps.heats_and_draws.heats.swapHeats');
+                Route::post('{event}/deleteHeat', [HeatController::class, 'deleteHeat'])->name('comps.heats_and_draws.heats.deleteHeats');
             });
 
             Route::prefix('draws')->group(function () {
