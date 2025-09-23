@@ -104,7 +104,8 @@
         <p>Resetting heats will restore them to their original layout. <strong>You will loose</strong> any alterations you
             have made!</p>
         <br>
-        <form action="#" method="get" onsubmit="return confirm('Are you sure you want to reset the heats?')">
+        <form action="{{ route('comps.heats_and_draws.heats.reset', [$comp, $event]) }}" method="get"
+            onsubmit="return confirm('Are you sure you want to reset the heats?')">
             <button class="se-btn se-btn-danger">Reset</button>
         </form>
     </div>

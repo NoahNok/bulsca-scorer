@@ -100,4 +100,11 @@ class HeatController extends Controller
 
         return response()->json(['result' => 'ok']);
     }
+
+    public function reset(Competition $comp, CompetitionSpeedEvent $event, HeatService $heatService)
+    {
+        $heatService->generateHeatsForEvent($event);
+
+        return redirect()->back()->with('success', 'Heats Reset');
+    }
 }
