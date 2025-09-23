@@ -2,6 +2,7 @@
 
 namespace App\Models\Orders;
 
+use App\Models\CompetitionSpeedEvent;
 use App\Models\EventOOF;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,9 +16,9 @@ class Heat extends Model
         return $this->morphTo();
     }
 
-    public function event()
+    public function speedEvent()
     {
-        return $this->morphTo();
+        return $this->belongsTo(CompetitionSpeedEvent::class, 'speed_event');
     }
 
     public function getOOF($speedId)

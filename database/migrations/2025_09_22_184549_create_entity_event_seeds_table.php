@@ -17,10 +17,10 @@ return new class extends Migration
             $table->integer('seed');
             $table->morphs('entity');
 
-            $table->foreignId('event')->references('id')->on('competition_speed_events')->onUpdate('CASCADE')->onDelete('CASCADE');
+            $table->foreignId('speed_event')->references('id')->on('competition_speed_events')->onUpdate('CASCADE')->onDelete('CASCADE');
 
 
-            $table->unique(['entity_id', 'entity_type', 'event']);
+            $table->unique(['entity_id', 'entity_type', 'speed_event']);
 
             $table->timestamps();
         });

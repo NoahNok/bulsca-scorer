@@ -119,8 +119,8 @@ abstract class Event extends Model
         $this->save();
     }
 
-    public function getTeams()
+    public function getScorableEntities()
     {
-        return $this->getScorableEntity()::where('competition', $this->competition)->orderBy('serc_order')->get();
+        return $this->getScorableEntity()::where('competition', $this->competition)->get();
     }
 }

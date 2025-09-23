@@ -12,7 +12,7 @@
 
             <div class="flex justify-between">
                 <h2 class="mb-0">Heats</h2>
-                <a href="{{ route('comps.heats', $comp) }}" class="se-btn">Back</a>
+                <a href="{{ route('comps.heats_and_draws', $comp) }}" class="se-btn">Back</a>
             </div>
 
             <p>To swap <strong>teams</strong>, click the first team, it will turn blue. Then click the team you want to swap
@@ -33,7 +33,7 @@
                                 Lane
                             </th>
 
-                            @foreach ($heatEntries->sortBy(['heat', 'lane'])->groupBy('heat') as $key => $heat)
+                            @foreach ($event->heats->sortBy(['heat', 'lane'])->groupBy('heat') as $key => $heat)
                                 <th scope="col" data-hn="{{ $key }}">
                                     <div class="flex items-center justify-end whitespace-nowrap">
                                         Heat {{ $key }}
@@ -53,7 +53,7 @@
                     </thead>
                     <tbody>
                         @php
-                            $tableEntries = $heatEntries->sortBy(['heat', 'lane'])->groupBy('heat');
+                            $tableEntries = $event->heats->sortBy(['heat', 'lane'])->groupBy('heat');
                         @endphp
                         @for ($l = 1; $l <= $comp->max_lanes; $l++)
                             <tr>
@@ -66,12 +66,12 @@
                                         $lane = $heat->where('lane', $l)->first();
                                     @endphp
 
-                                    <td data-team="{{ $lane->getTeam->id ?? -1 }}" data-heat="{{ $key }}"
+                                    <td data-heat-id="{{ $lane->id ?? -1 }}" data-heat="{{ $key }}"
                                         data-lane="{{ $l }}"
                                         class="hover:bg-black/60 hover:text-white cursor-pointer min-w-[30ch]">
                                         @if ($lane)
-                                            {{ $lane->getTeam->getFullname() }}
-                                            ({{ $lane->getTeam->getSwimTowTimeForDefault() }})
+                                            {{ $lane->entity->getName() }}
+                                            ({{ $lane->entity->getSeeds()->where('speed_event', $event->id)->first()->prettySeed() }})
                                         @else
                                             &nbsp;
                                         @endif
@@ -82,15 +82,16 @@
                     </tbody>
                 </table>
             </div>
-            <form action="" method="post" id="team-switch" class="hidden">
+            <form action="{{ route('comps.heats_and_draws.heats.swap', [$comp, $event]) }}" method="post" id="team-switch"
+                class="hidden">
                 @csrf
                 <input type="text" name="team" id="team">
-                <input type="text" name="target-lane" id="target-lane">
+
                 <input type="text" name="target-heat" id="target-heat">
 
-                @if (request()->has('event'))
-                    <input type="text" name="event" id="target-event" value="{{ request('event') }}">
-                @endif
+                <input type="text" name="target-heatlane" id="target-hl">
+
+
 
             </form>
 
@@ -103,8 +104,7 @@
         <p>Resetting heats will restore them to their original layout. <strong>You will loose</strong> any alterations you
             have made!</p>
         <br>
-        <form action="{{ route('comps.heats.gen', $comp) }}" method="get"
-            onsubmit="return confirm('Are you sure you want to reset the heats?')">
+        <form action="#" method="get" onsubmit="return confirm('Are you sure you want to reset the heats?')">
             <button class="se-btn se-btn-danger">Reset</button>
         </form>
     </div>
@@ -116,26 +116,27 @@
             let teamToMove = null;
 
             let teamInput = document.getElementById("team")
-            let laneInput = document.getElementById("target-lane")
+
             let heatInput = document.getElementById("target-heat")
+            let heatBlankInput = document.getElementById("target-hl")
             let form = document.getElementById("team-switch")
 
 
 
-            document.getElementById('all-teams').querySelectorAll('[data-team]').forEach(element => {
+            document.getElementById('all-teams').querySelectorAll('[data-heat-id]').forEach(element => {
 
                 element.onclick = (event) => {
                     if (!hasClicked) {
 
-                        if (element.getAttribute('data-team') === "-1") return
 
-                        teamInput.value = element.getAttribute('data-team');
+
+                        teamInput.value = element.getAttribute('data-heat-id');
                         element.classList.toggle('selected')
                         hasClicked = !hasClicked;
                         return;
                     }
 
-                    if (element.getAttribute('data-team') === teamInput.value) {
+                    if (element.getAttribute('data-heat-id') === teamInput.value) {
                         element.classList.toggle('selected')
                         hasClicked = !hasClicked
                         teamInput.value = ""
@@ -144,8 +145,10 @@
 
 
 
-                    heatInput.value = element.getAttribute('data-heat');
-                    laneInput.value = element.getAttribute('data-lane');
+                    heatInput.value = element.getAttribute('data-heat-id');
+                    heatBlankInput.value =
+                        `${element.getAttribute('data-heat')}:${element.getAttribute('data-lane')}`
+
 
                     form.submit()
 
@@ -175,7 +178,7 @@
                     @endif
 
 
-                    fetch('{{ route('comps.view.heats.delete-heat', $comp) }}', {
+                    fetch('#', {
                         method: 'POST',
                         body: fd
                     }).then(res => res.json()).then(data => {
@@ -197,7 +200,7 @@
                 title.onclick = (event) => {
                     if (!hasClickedHeat) {
 
-                        if (element.getAttribute('data-team') === "-1") return
+                        if (element.getAttribute('data-heat-id') === "-1") return
 
                         lanes.forEach(l => l.classList.toggle('selected'))
                         firstHeat = heat
@@ -225,7 +228,7 @@
                     @endif
 
 
-                    fetch('{{ route('comps.view.heats.swap', $comp) }}', {
+                    fetch('{{ route('comps.heats_and_draws.heats.swapHeats', [$comp, $event]) }}', {
                         method: 'POST',
                         body: fd
                     }).then(res => res.json()).then(data => {

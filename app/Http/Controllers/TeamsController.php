@@ -30,7 +30,7 @@ class TeamsController extends Controller
 
 
 
-            array_push($club_teams, ["team" => $team->team, "seed" => gmdate('i:s', $team->getSeeds->first()->seed / 1000), "league" => $team->league, "id" => $team->id]);
+            array_push($club_teams, ["team" => $team->team, "seed" => gmdate('i:s', ($team->getSeeds->first()?->seed ?? 12000000) / 1000), "league" => $team->league, "id" => $team->id]);
 
 
             $all_clubs[$club_name] = $club_teams;
@@ -84,7 +84,7 @@ class TeamsController extends Controller
 
                     $eventSeed = $eventSeed ?? new EntityEventSeed();
                     $eventSeed->entity()->associate($team);
-                    $eventSeed->event = $event->id;
+                    $eventSeed->speed_event = $event->id;
                     $eventSeed->seed = $millis;
                     $eventSeed->save();
                 }

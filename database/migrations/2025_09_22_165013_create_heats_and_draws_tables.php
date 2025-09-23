@@ -30,7 +30,7 @@ return new class extends Migration
         Schema::create('heats', function (Blueprint $table) {
             $table->id();
 
-            $table->morphs('event');
+            $table->foreignId('speed_event')->references('id')->on('competition_speed_events')->onUpdate('CASCADE')->onDelete('CASCADE');
             $table->morphs('entity');
 
             $table->integer('heat');
@@ -44,7 +44,7 @@ return new class extends Migration
         Schema::create('draws', function (Blueprint $table) {
             $table->id();
 
-            $table->morphs('event');
+            $table->foreignId('serc')->references('id')->on('sercs')->onUpdate('CASCADE')->onDelete('CASCADE');
             $table->morphs('entity');
 
             $table->integer('tank');

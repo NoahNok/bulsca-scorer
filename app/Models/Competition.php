@@ -7,6 +7,7 @@ use App\Mail\CompetitionAccountInvite;
 use App\Models\Competition\CompetitionScoringSettings;
 use App\Models\DigitalJudge\JudgeLog;
 use App\Models\Interfaces\IInvitable;
+use App\Models\Orders\Heat;
 use App\Models\Organisation\Organisation;
 use App\Stats\StatsManager;
 use App\Traits\Cloneable;
@@ -210,14 +211,27 @@ class Competition extends Model implements IInvitable
         }
     }
 
-    public function getHeats(int|null $eventId = null)
+    /**
+     * Returns heats for all events for the competition that have them
+     * 
+     * Heats and lanes for each event aren't sorted
+     */
+    public function getHeats()
     {
+        $heats = Heat::whereHas('speedEvent', function ($query) {
+            $query->where('competition', $this->id);
+        })->get()->groupBy('speed_event');
 
-        if ($eventId == null) {
-            return collect(DB::select('SELECT h.id, h.heat, h.lane, ct.team, l.name AS league, c.name AS club, c.region FROM heats h INNER JOIN competition_teams ct ON ct.id=h.team INNER JOIN leagues l ON l.id=ct.league INNER JOIN clubs c ON c.id=ct.club WHERE h.competition = ? AND h.event IS NULL ORDER BY heat, lane;', [$this->id]));
-        }
+        return $heats->map(function ($heatsForEvent, $speedEventId) {
+            $speedEvent = $heatsForEvent->first()->speedEvent;
 
-        return collect(DB::select('SELECT h.id, h.heat, h.lane, ct.team, l.name AS league, c.name AS club, c.region FROM heats h INNER JOIN competition_teams ct ON ct.id=h.team INNER JOIN leagues l ON l.id=ct.league INNER JOIN clubs c ON c.id=ct.club WHERE h.competition = ? AND h.event = ? ORDER BY heat, lane;', [$this->id, $eventId]));
+            return [
+                'event' => $speedEvent,
+                'heats' => $heatsForEvent->values()->sortBy('heat')->groupBy('heat')->map(function ($group) {
+                    return $group->sortBy('lane')->values(); // sort each group by lane number
+                }), // optional: reindex
+            ];
+        })->values()->toArray();
     }
 
     public function getTotalDQs()

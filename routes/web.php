@@ -243,7 +243,9 @@ Route::middleware('auth')->group(function () {
 
             Route::prefix('heats')->group(function () {
                 Route::get('generate', [HeatController::class, 'generate'])->name('comps.heats_and_draws.heats.generate');
-                Route::get('edit', [HeatController::class, 'edit'])->name('comps.heats_and_draws.heats.edit');
+                Route::get('{event}/edit', [HeatController::class, 'edit'])->name('comps.heats_and_draws.heats.edit');
+                Route::post('{event}/swap', [HeatController::class, 'swap'])->name('comps.heats_and_draws.heats.swap');
+                Route::post('{event}/swapHeats', [HeatController::class, 'swapHeats'])->name('comps.heats_and_draws.heats.swapHeats');
             });
 
             Route::prefix('draws')->group(function () {

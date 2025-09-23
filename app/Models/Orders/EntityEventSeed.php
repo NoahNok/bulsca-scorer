@@ -19,4 +19,9 @@ class EntityEventSeed extends Model
     {
         return $this->belongsTo(CompetitionSpeedEvent::class, 'id', 'event');
     }
+
+    public function prettySeed()
+    {
+        return gmdate('i:s', $this->seed / 1000);
+    }
 }

@@ -10,6 +10,8 @@ use App\Models\AbstractClasses\Event;
 use App\Models\Event\Disqualification;
 use App\Models\Event\Penalty;
 use App\Models\Event\ScoringSchema;
+use App\Models\Orders\EntityEventSeed;
+use App\Models\Orders\Heat;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -104,7 +106,15 @@ class CompetitionSpeedEvent extends Event
         return $this->belongsTo(Competition::class, 'competition', 'id');
     }
 
+    public function heats()
+    {
+        return $this->hasMany(Heat::class, 'speed_event');
+    }
 
+    public function seeds()
+    {
+        return $this->hasMany(EntityEventSeed::class, 'speed_event');
+    }
 
 
     // CHANGE TO BE A EVENT BASED TOGGLE
