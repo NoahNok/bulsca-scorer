@@ -252,7 +252,9 @@ Route::middleware('auth')->group(function () {
 
             Route::prefix('draws')->group(function () {
                 Route::get('generate', [DrawController::class, 'generate'])->name('comps.heats_and_draws.draws.generate');
-                Route::get('edit', [DrawController::class, 'edit'])->name('comps.heats_and_draws.draws.edit');
+                Route::get('{serc}/edit', [DrawController::class, 'edit'])->name('comps.heats_and_draws.draws.edit');
+                Route::post('{serc}/edit', [DrawController::class, 'swap'])->name('comps.heats_and_draws.draws.swap');
+                Route::get('{serc}/reset', [DrawController::class, 'reset'])->name('comps.heats_and_draws.draws.reset');
             });
         });
 

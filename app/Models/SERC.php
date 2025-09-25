@@ -139,7 +139,41 @@ class SERC extends Event
 
     public function draw()
     {
-        return $this->morphMany(Draw::class, 'entity');
+        // if using seperate draws per SERC, this is where that would be handled
+        return $this->hasMany(Draw::class, 'serc');
+    }
+
+    public function getDraw()
+    {
+        // if using seperate draws per SERC, this is where that would be handled
+
+        // OTHERWISE USE DRAW ROM SERC WITH LOWEST ID
+        return SERC::where('competition', $this->competition)->orderBy('id')->first()->draw()->orderBy('draw');
+    }
+
+    public function getPositionInDraw(Entity $entity)
+    {
+        $draw = $this->getDraw()->whereMorphedTo('entity', $entity)->first();
+
+        if ($draw) {
+            return $draw->draw;
+        }
+
+        return -1;
+    }
+
+
+
+    public function getTankDraw()
+    {
+        return $this->draw()->with('entity')->orderBy('tank')->orderBy('draw')->get()->map(function ($draw) {
+            return [
+                'id' => $draw->id,
+                'tank' => $draw->tank,
+                'draw' => $draw->draw,
+                'entity_name' => $draw->entity->getName(),
+            ];
+        })->groupBy('tank');
     }
 
     public function getJudges()

@@ -7,7 +7,7 @@
 @section('content')
     <div x-data="{
         tanks: {{ json_encode($comp->getTanks()) }},
-        brackets: {{ json_encode($comp->getCompetitorsPerLeague()) }},
+        brackets: {{ json_encode($comp->getCompetitorsPerBracket()) }},
     
         selected: [],
     

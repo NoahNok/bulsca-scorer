@@ -22,17 +22,14 @@
         @endif
 
 
-        @for ($heat = 1; $heat <= $comp->getMaxHeats(); $heat++)
+        @foreach ($speed->getHeats->sortBy('heat')->groupBy('heat') as $heat => $lanes)
             @php
-                $heatTeams = $comp->getHeatEntries()->where('heat', $heat)->get();
 
                 $missingResult = false;
 
                 // Code that checks if each team has a reuslt for the event
-                foreach ($heatTeams as $team) {
-                    $sr = App\Models\SpeedResult::where('competition_team', $team->team)
-                        ->where('event', $speed->id)
-                        ->first();
+                foreach ($lanes as $team) {
+                    $sr = $team->entity->speedResults()->where('event', $speed->id)->first();
 
                     if ($sr->result == null) {
                         $missingResult = true;
@@ -52,7 +49,7 @@
                 <button class="se-btn se-btn-success cursor-not-allowed">Heat
                     {{ $heat }}</button>
             @endif
-        @endfor
+        @endforeach
 
 
 

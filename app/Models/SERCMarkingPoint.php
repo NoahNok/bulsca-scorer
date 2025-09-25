@@ -15,6 +15,10 @@ class SERCMarkingPoint extends Model
     protected $table = "serc_marking_points";
 
 
+    public function serc()
+    {
+        return $this->belongsTo(SERC::class, 'serc', 'id');
+    }
 
 
     public function getScoreForTeam(Entity $entity)

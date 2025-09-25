@@ -57,7 +57,7 @@
                 }
             @endphp
             <p class="text-xl">Team: <strong
-                    class="text-bulsca">{{ $comp->show_teams_to_judges || $head ? $team->getFullname() : $team->getPositionInDraw() }}
+                    class="text-bulsca">{{ $comp->show_teams_to_judges || $head ? $team->getFullname() : $serc->getPositionInDraw($team) }}
                 </strong></p>
 
 
@@ -113,7 +113,7 @@
                         @endif
 
 
-                        <button class="se-btn se-btn-purple  @if ($hasDescription) mt-3! @endif mb-3"
+                        <button class="se-btn se-btn-danger  @if ($hasDescription) mt-3! @endif mb-3"
                             type="button" onclick="zeroAll({{ $mJudge->id }})">ZERO
                             all</button>
 
@@ -121,7 +121,7 @@
 
                         @foreach ($mJudge->getMarkingPoints as $mp)
                             @php
-                                $mpValue = $mp->getScoreForTeam($team->id) ?: -1;
+                                $mpValue = $mp->getScoreForTeam($team) ?: -1;
                                 $mpIds[] = $mp->id;
                             @endphp
                             <div class="flex flex-col space-y-2 border-b pb-4" id="mpcontainer-{{ $mp->id }}">
@@ -166,16 +166,14 @@
                             <h5>Notes for {{ $mJudge->name }}</h5>
                             @php
                                 $n = '';
-                            @endphp
-                            @if ($head)
-                                @php
-                                    $n = App\Models\DigitalJudge\JudgeNote::where('team', $team->id)
+
+                                if ($head) {
+                                    $n = App\Models\DigitalJudge\JudgeNote::whereMorphedTo('entity', $team)
                                         ->where('judge', $mJudge->id)
                                         ->first();
-                                @endphp
-                            @endif
-                            <textarea @if ($head && DigitalJudge::hasTeamBeenJudgedAlreadyForJudge($team, $mJudge)) disabled @endif name="team-notes-{{ $mJudge->id }}" rows="5"
-                                placeholder="Type your notes for this team here..."
+                                }
+                            @endphp
+                            <textarea name="team-notes-{{ $mJudge->id }}" rows="5" placeholder="Type your notes for this team here..."
                                 class="w-full border hover:border-gray-400 p-3 h-max focus:border-gray-400 outline-hidden rounded-md"
                                 id="">{{ $n ? $n->note : '' }}</textarea>
                         </div>
@@ -291,9 +289,9 @@
 
     </div>
 
-    <div class="fixed top-0 right-0 border-b border-l rounded-bl-md p-1 pb-2 px-4 text-md border-gray-300 bg-bulsca text-white font-semibold z-20"
+    <div class="fixed top-0 right-0 border-b border-l rounded-bl-lg p-1 pb-2 px-4 text-md border-se bg-se text-white font-semibold z-20"
         id="notes-open">
-        Notes
+        Previous Notes
     </div>
 
     <div class="hidden judge-notes fixed top-0 left-0 w-full  h-full overflow-scroll bg-white  p-4" id="notes-pane">
@@ -301,11 +299,11 @@
             <h1>Your Notes</h1>
             <p class="link" id="notes-close-1">Close</p>
 
-            <div class="flex flex-col items-start ">
+            <div class="flex flex-col items-start w-full space-y-2 ">
                 @foreach ($judges[0]->getNotes as $note)
-                    <div class="border-b pb-4 mb-3 last-of-type:border-b-0 border-b-gray-300">
-                        <h3> {{ $comp->show_teams_to_judges || $head ? $note->getTeam->getFullname() : $note->getTeam->getPositionInDraw() }}
-                        </h3>
+                    <div class="se-card se-card-body w-full">
+                        <h4> {{ $comp->show_teams_to_judges || $head ? $note->entity->getName() : $serc->getPositionInDraw($note->entity) }}
+                        </h4>
                         <p>{{ $note->note }}</p>
                     </div>
                 @endforeach

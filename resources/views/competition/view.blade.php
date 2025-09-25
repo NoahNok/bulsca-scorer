@@ -76,25 +76,25 @@
         <div>
             <h3>Leages/Brackets</h3>
 
-           
-                @foreach ($comp->getLeagues as $league)
-                    <a href="{{ route('comps.leagues.view', [$comp, $league]) }}"
-                        class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
-                        <p class="font-archivo flex items-center">{{ $league->name }}
-                        </p>
+
+            @foreach ($comp->getLeagues as $league)
+                <a href="{{ route('comps.leagues.view', [$comp, $league]) }}"
+                    class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
+                    <p class="font-archivo flex items-center">{{ $league->name }}
+                    </p>
 
 
 
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor"
-                            class="ml-auto size-4 group-hover:text-se transition-all group-hover:stroke-3">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-                        </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor"
+                        class="ml-auto size-4 group-hover:text-se transition-all group-hover:stroke-3">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                    </svg>
 
 
-                    </a>
-                @endforeach
-          
+                </a>
+            @endforeach
+
 
             <x-add-card link="{{ route('comps.leagues.create', $comp) }}" />
 
@@ -321,7 +321,8 @@
                         <div class="flex space-x-2">
                             <input type="checkbox" name="sp:{{ $event->id }}"
                                 @if ($event->digitalJudgeEnabled) checked @endif id="sp:{{ $event->id }}">
-                            <label for="sp:{{ $event->id }}">{{ $event->getName() }}</label>
+                            <label for="sp:{{ $event->id }}"
+                                class="font-archivo flex items-center">{{ $event->getName() }}</label>
                         </div>
                     @endforeach
 

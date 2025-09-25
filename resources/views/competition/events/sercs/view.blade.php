@@ -19,12 +19,22 @@
 
             <h4>Marked Teams</h4>
             <div class="  relative w-full overflow-x-auto  ">
-                @if ($serc->scoring_schema)
+                @if ($serc->scoringSchema)
                     <div class="se-form-input imb-0 ">
                         <input type="text" table-search placeholder="Search teams" x-model="search">
                     </div>
 
                     <br>
+
+                    <div class="  tabbed-bar mt-2  ">
+
+                        <a href="{{ url()->current() }}" class="@if (!$activeLeague) active @endif">All</a>
+                        @foreach ($comp->getLeagues as $league)
+                            <a href="?league={{ $league->id }}"
+                                class="@if ($activeLeague?->id == $league->id) active @endif">{{ $league->name }}</a>
+                        @endforeach
+
+                    </div>
                     <div class="se-table">
                         <table>
                             <thead>
@@ -52,7 +62,7 @@
                             </thead>
                             <tbody>
 
-                                @forelse ($serc->getRankedResults() as $result)
+                                @forelse ($eventResults as $result)
                                     <tr x-data="{ name: `{{ $result->entity->getName() }}` }" x-show="name.toLowerCase().includes(search.toLowerCase())">
                                         <th scope="row">
                                             {{ $result->entity->getName() }}
@@ -108,18 +118,13 @@
             </div>
 
             <h4>All teams</h4>
-            @if ($comp->needsToRegenerateSERCDraw())
-                <div class="alert-box alert-warning">
-                    <h1>Missing SERC Order</h1>
-                    <p>The teams below are showing in the default entered order, as no SERC order has been generated
-                        <strong>OR</strong> a new SERC order needs to be <a href="{{ route('comps.heats', $comp) }}"
-                            class="link">generated</a>.
-                        <br>
 
-                        If you are using an external order please ignore this message.
-                    </p>
-                </div>
-            @endif
+            <div class="alert-box alert-warning">
+                <h1>NOAH DO THIS</h1>
+                <p>Make team list show in SERC order for the SERC, or use the global one if not serc_per_event
+                </p>
+            </div>
+
             <div class="  relative w-full  ">
                 <div class="se-form-input imb-0 ">
                     <input type="text" table-search placeholder="Search teams" x-model="search">
@@ -143,14 +148,14 @@
                         </thead>
                         <tbody>
 
-                            @forelse ($serc->getTeams() as $team)
-                                <tr x-data="{ name: `{{ $team->getFullname() }}` }" x-show="name.toLowerCase().includes(search.toLowerCase())">
+                            @forelse ($serc->getDraw as $draw)
+                                <tr x-data="{ name: `{{ $draw->entity->getName() }}` }" x-show="name.toLowerCase().includes(search.toLowerCase())">
                                     <th scope="row">
-                                        {{ $loop->index + 1 }}: {{ $team->getFullname() }}
+                                        {{ $draw->draw }}. {{ $draw->entity->getName() }}
                                     </th>
 
                                     <td>
-                                        <a href="{{ route('comps.events.sercs.editResults', [$comp, $serc, $team]) }}"
+                                        <a href="{{ route('comps.events.sercs.editResults', [$comp, $serc, $draw->entity]) }}"
                                             class="se-btn text-black0">
                                             Edit
                                         </a>

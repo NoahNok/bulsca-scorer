@@ -27,7 +27,7 @@ class HeatController extends Controller
         }
 
 
-        $heatService->generateHeatsForEvent($comp->getSpeedEvents->first());
+        $heatService->generateHeatsForEvent($comp->getSpeedEvents()->orderBy('id')->first());
 
         return redirect()->back()->with('success', 'Heats Generated');
     }

@@ -18,7 +18,8 @@ class SERCResult extends Resultable
 
     protected $fillable = [
         'marking_point',
-        'team'
+        'entity_type',
+        'entity_id'
     ];
 
     public function penalties()

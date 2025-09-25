@@ -48,15 +48,15 @@
 
         <div class="flex justify-between items-center {{ $nopad ?? false ? 'px-4' : '' }}">
             <div>
-                <h2 class="-mb-1">@yield('title')</h2>
+                <h2 class="-mb-1 text-se">@yield('title')</h2>
                 <small class="">{{ \App\DigitalJudge\DigitalJudge::getClientCompetition()->name }}</small>
             </div>
             <div>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="white" class="w-12 h-12 p-3 bg-bulsca rounded-full">
+                    stroke="white" class="w-12 h-12 p-3 bg-se rounded-full">
                     {!! $icon ??
                         '<path stroke-linecap="round" stroke-linejoin="round"
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />" ?>' !!}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />" ?>' !!}
                 </svg>
 
 
@@ -94,11 +94,11 @@
 
 
     @env('local')
-    <div class="fixed right-0 bottom-[15%] text-white bg-red-700 px-1 py-3 font-semibold rounded-l-md  "
-        style="writing-mode: vertical-rl">
-        <a href="{{ route('LOCAL.dj.toggle-head-ref') }}">DEVELOPMENT</a>
-    </div>
-    {{-- <div class="fixed  left-0 top-[15%] text-white bg-red-700 px-1 py-3 font-semibold rounded-r-md  "
+        <div class="fixed right-0 bottom-[15%] text-white bg-red-700 px-1 py-3 font-semibold rounded-l-md  "
+            style="writing-mode: vertical-rl">
+            <a href="{{ route('LOCAL.dj.toggle-head-ref') }}">DEVELOPMENT</a>
+        </div>
+        {{-- <div class="fixed  left-0 top-[15%] text-white bg-red-700 px-1 py-3 font-semibold rounded-r-md  "
         style="writing-mode: vertical-rl">
         <a href="{{ route('LOCAL.dj.toggle-head-ref') }}">DEVELOPMENT</a>
     </div> --}}

@@ -8,6 +8,7 @@ use App\Models\Competition;
 use App\Models\CompetitionTeam;
 use App\Models\Competitor;
 use App\Models\Event\ScoringSchema;
+use App\Models\League;
 use App\Models\SERC;
 use App\Models\SERCDisqualification;
 use App\Models\SERCJudge;
@@ -68,7 +69,17 @@ class SERCController extends Controller
 
     public function view(Competition $comp, SERC $serc)
     {
-        return view('competition.events.sercs.view', ['comp' => $comp, 'serc' => $serc]);
+
+        $eventResults = null;
+        $league = request()->query('league', null);
+
+        $league = League::find($league);
+
+        if ($serc->scoringSchema()) {
+            $eventResults = $serc->getRankedResults($league);
+        }
+
+        return view('competition.events.sercs.view', ['comp' => $comp, 'serc' => $serc, 'eventResults' => $eventResults, 'activeLeague' => $league]);
     }
 
 

@@ -11,17 +11,39 @@
 @endphp
 
 @section('content')
-    <div class="flex flex-col space-y-3 items-center ">
+    <div class="flex flex-col space-y-3  ">
 
-        <h2 class="font-bold text-center w-full break-words">
-            @forelse ($judges as $judge)
-                {{ $judge->name }}
-                @if (!$loop->last)
-                    {{ '|' }}
-                @endif
-            @empty
-            @endforelse
-        </h2>
+        <div class="space-y-2 w-full">
+            @foreach ($judges as $judge)
+                <div class="se-card se-card-hover se-card-body">
+                    <div class="flex items-center justify-between h-full">
+                        <div class="text-left">
+                            <h2>{{ $judge->name }}</h3>
+                                <p>{{ $judge->getMarkingPoints->count() }} marking points</p>
+                        </div>
+
+                        @if ($loop->first != $loop->last)
+                            <form action="{{ route('dj.judging.remove-judge.post') }}" method="POST" class="flex">
+                                <input type="hidden" name="removeJudgeId" value="{{ $judge->id }}">
+                                @csrf
+                                <button class="self-center justify-self-center"><svg xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                        class="size-8 self-center justify-self-center text-red-500 cursor-pointer">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                    </svg></button>
+                            </form>
+                        @endif
+
+
+
+
+                    </div>
+                </div>
+            @endforeach
+
+        </div>
+        <a href="{{ route('dj.judging.add-judge') }}" class="se-btn w-full!">Add Casualty/Objective</a>
 
         @if (App\DigitalJudge\DigitalJudge::getTank())
             <p class="font-bold">Marking Tank {{ App\DigitalJudge\DigitalJudge::getTank() }}</p>
@@ -29,25 +51,17 @@
 
 
 
-        <p class="px-4">There are {{ $comp->getCompetitionTeams->count() }} teams. If you need to officiate multiple
-            casualties/objectives then click "Add Casualty/Objective" below. To start judging press "Start Judging"</p>
-        <p class="px-4">You will not be able to edit/see scores after submitting them, however you will be able to see
-            the highest, lowest and average score awarded for each criteria at all times.</p>
-        <p class="px-4">If you need to get back to the judging page, click "Start Judging" again. It will resume at
-            the last team you started to judge!</p>
 
 
 
-        <a href="{{ route('dj.judging.add-judge') }}" class="link">Add Casualty/Objective</a>
-
-        @if (count($judges) > 1)
-            <a href="{{ route('dj.judging.remove-judge') }}" class="link">Remove Casualty/Objective</a>
-        @endif
 
 
 
-        <a href="{{ route('dj.judging.next-team') }}" class="se-btn se-btn-success w-full">Start Judging</a>
-        <a href="{{ route('dj.judging.tutorial') }}" class="se-btn se-btn-thin se-btn-purple w-full">Tutorial</a>
+
+        <hr class="spacer mb-4!">
+
+        <a href="{{ route('dj.judging.next-team') }}" class="se-btn se-btn-outline-success w-full">Start Judging</a>
+        <a href="{{ route('dj.judging.tutorial') }}" class="se-btn se-btn-thin se-btn-primary w-full">Tutorial</a>
 
         <hr class="spacer mb-3!">
 
@@ -60,29 +74,27 @@
         <h4>Team Order</h4>
 
         @if ($comp->show_teams_to_judges || $head)
-            <ul class=" list-decimal ">
-                @foreach ($comp->getCompetitionTeams->where('serc_tank', App\DigitalJudge\DigitalJudge::getTank()) as $team)
-                    @php
-
-                        if ($comp->scoring_type == 'rlss-nationals') {
-                            $team = $team->asCompetitior();
-                        }
-                    @endphp
+            <ul class=" list-none -mt-2  w-full ">
+                @foreach ($serc->getDraw as $draw)
                     @if ($head)
-                        <li class="">
-                            <div class="grid grid-cols-2">
-                                <p>{{ $team->getFullname() }}</p> <a href="{{ route('dj.judging.judge-team', [$team]) }}"
+                        <li class=" ">
+
+                            <div class="flex justify-between">
+
+                                <p>{{ $loop->index + 1 }}. {{ $draw->entity->getName() }}</p> <a
+                                    href="{{ route('dj.judging.judge-team', [$draw->entity]) }}"
                                     class="link col-start-5">Edit</a>
                             </div>
                         </li>
                     @else
-                        <li>{{ $team->getFullname() }}</li>
+                        <li>{{ $loop->index + 1 }}. {{ $draw->entity->getName() }}</li>
                     @endif
                 @endforeach
             </ul>
         @else
             <div>
-                <p class="mb-0">There are <strong>{{ $comp->getCompetitionTeams->count() }}</strong> teams. You
+                <p class="mb-0">There are <strong>{{ $serc->getScorableEntities()->count() }}</strong> SERCs to mark.
+                    You
                     <strong>are not</strong> permitted to view team names.
                 </p>
             </div>

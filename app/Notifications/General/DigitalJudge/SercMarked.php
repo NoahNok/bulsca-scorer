@@ -2,6 +2,7 @@
 
 namespace App\Notifications\General\DigitalJudge;
 
+use App\Models\AbstractClasses\Entity;
 use App\Models\Competition;
 use App\Models\CompetitionTeam;
 use App\Models\SERC;
@@ -19,18 +20,12 @@ class SercMarked extends GenericPush
     /**
      * Create a new notification instance.
      */
-    public function __construct(SERC $serc, CompetitionTeam $team)
+    public function __construct(SERC $serc, Entity $entity)
     {
 
         $sercName = $serc->getName();
-        $teamName = $team->getFullname();
-        $competition = $team->getCompetition;
+        $teamName = $entity->getName();
 
-        $totalTeams = CompetitionTeam::where('competition', $competition->id)->max('serc_order');
-        $currentTeamPosition = $team->serc_order;
-
-
-
-        parent::__construct("$sercName SERC Marked", "$teamName ($currentTeamPosition/$totalTeams) has been marked.");
+        parent::__construct("$sercName SERC Marked", "$teamName has been marked.");
     }
 }

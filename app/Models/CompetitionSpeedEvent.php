@@ -111,6 +111,16 @@ class CompetitionSpeedEvent extends Event
         return $this->hasMany(Heat::class, 'speed_event');
     }
 
+    public function getHeats()
+    {
+        return CompetitionSpeedEvent::where('competition', $this->competition)->orderBy('id')->first()->heats();
+    }
+
+    public function getMaxHeats(): int
+    {
+        return $this->heats()->max('heat') ?? 1;
+    }
+
     public function seeds()
     {
         return $this->hasMany(EntityEventSeed::class, 'speed_event');

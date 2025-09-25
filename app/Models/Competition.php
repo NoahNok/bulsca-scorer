@@ -7,6 +7,7 @@ use App\Mail\CompetitionAccountInvite;
 use App\Models\Competition\CompetitionScoringSettings;
 use App\Models\DigitalJudge\JudgeLog;
 use App\Models\Interfaces\IInvitable;
+use App\Models\Orders\Draw;
 use App\Models\Orders\Heat;
 use App\Models\Organisation\Organisation;
 use App\Stats\StatsManager;
@@ -120,10 +121,7 @@ class Competition extends Model implements IInvitable
         return Str::lower(str_replace(" ", "-", $this->name)) . "." . $this->id;
     }
 
-    public function getMaxHeats(): int
-    {
-        return $this->getHeatEntries->max('heat') ?: -1;
-    }
+
 
     public function getMaxLanes(): int
     {
@@ -214,7 +212,7 @@ class Competition extends Model implements IInvitable
     /**
      * Returns heats for all events for the competition that have them
      * 
-     * Heats and lanes for each event aren't sorted
+     * Heats and lanes pre-sorted
      */
     public function getHeats()
     {
@@ -230,6 +228,19 @@ class Competition extends Model implements IInvitable
                 'heats' => $heatsForEvent->values()->sortBy('heat')->groupBy('heat')->map(function ($group) {
                     return $group->sortBy('lane')->values(); // sort each group by lane number
                 }), // optional: reindex
+            ];
+        })->values()->toArray();
+    }
+
+    public function getDraws()
+    {
+        return $this->hasManyThrough(Draw::class, SERC::class, 'competition', 'serc', 'id', 'id')->get()->groupBy('serc')->map(function ($draws, $sercId) {
+            $serc = SERC::find($sercId);
+            return [
+                'serc' => $serc,
+                'draws' => $draws->sortBy('tank')->groupBy('tank')->map(function ($group) {
+                    return $group->sortBy('draw')->values(); // sort each group by draw number
+                })->values(), // optional: reindex
             ];
         })->values()->toArray();
     }
@@ -421,11 +432,6 @@ class Competition extends Model implements IInvitable
     public function getScoringSettings()
     {
         return $this->hasOne(CompetitionScoringSettings::class, 'competition');
-    }
-
-    public function drawTemplate()
-    {
-        return $this->getScoringSettings->use_tanks ? 'competition.heats-and-orders.serc_list_templates.tanks' : 'competition.heats-and-orders.serc_list_templates.single';
     }
 
     public function getInvites()
