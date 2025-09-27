@@ -6,13 +6,31 @@
 
 @section('content')
 
+    <div class="flex items-center space-x-3 ">
+        <a href="{{ route('landing.competition.results', [$comp->getSlug()]) }}?event=serc-{{ $event->id }}"
+            class="hover:text-se transition-color">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                class="size-6 hover:text-se transition-color cursor-pointer">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+            </svg>
+        </a>
+
+
+        <h2>{{ $event->getName() }} Breakdown</h2>
+
+
+
+    </div>
+
+    <br>
+
     <div class="overflow-x-hidden" x-data="{
         showModal: false,
         showNotesModal: false,
     
         modalUrl: '',
         modalBaseUrl: '{{ route('public.results.dq-pen', [$comp->id, 'T', 'C']) }}',
-        notesModalBaseUrl: '{{ route('public.results.serc.team-notes', [$comp->id, $event->id, 'T']) }}',
+        notesModalBaseUrl: '{{ route('landing.competition.results.notes.serc', [$comp->id, $event->id, 'T']) }}',
     
         notesData: null,
     
@@ -69,7 +87,8 @@
 
                         </div>
 
-                        <div class="mx-3 grid sm:grid-cols-2 xl:grid-cols-3 3xl:grid-cols-4  gap-2 " x-cloak x-show="open">
+                        <div class="mx-3 grid sm:grid-cols-2 xl:grid-cols-3 3xl:grid-cols-4  gap-2  " x-cloak x-show="open"
+                            x-collapse>
                             @foreach ($overallJudgeNotes as $note)
                                 <div class="flex flex-col ">
                                     <strong>{{ $note->judge }}</strong>

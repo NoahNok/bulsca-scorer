@@ -74,13 +74,13 @@
                                     </th>
                                     <td class="table-input">
 
-                                        @if (in_array($result->getDisqualificationsString(), ['DQ015', 'DQ004', 'DQ1001']))
+                                        @if (in_array($result->getDisqualificationsString(), ['DQ99915', 'DQ99904', 'DQ99901']))
                                             @php
 
                                                 $code = match ($result->disqualification) {
-                                                    'DQ015' => 'DNF',
-                                                    'DQ004' => 'DNS',
-                                                    'DQ1001' => 'OOT',
+                                                    'DQ99915' => 'DNF',
+                                                    'DQ99904' => 'DNS',
+                                                    'DQ99901' => 'OOT',
                                                 };
 
                                             @endphp

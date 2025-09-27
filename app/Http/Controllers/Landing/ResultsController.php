@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AbstractClasses\Event;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
+use App\Models\DigitalJudge\JudgeDQSubmission;
 use App\Models\Event\Disqualification;
 use App\Models\Event\Penalty;
 use App\Models\League;
@@ -14,6 +15,7 @@ use App\Models\ResultSchema;
 use App\Models\SERC;
 use App\Models\SpeedResult;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 class ResultsController extends Controller
 {
@@ -52,7 +54,7 @@ class ResultsController extends Controller
             ];
         }
 
-        if (!$event->viewable) {
+        if (!$event->viewable || !$comp->public_results) {
             return response()->json(['error' => 'Results unavailable at this time, please try again later.'], 403);
         }
 
@@ -64,7 +66,7 @@ class ResultsController extends Controller
     public function getSheetResults(Competition $comp, ResultSchema $schema)
     {
 
-        if (!$schema->viewable) {
+        if (!$schema->viewable || !$comp->public_results) {
             return response()->json(['error' => 'Results unavailable at this time, please try again later.'], 403);
         }
 
@@ -101,8 +103,24 @@ class ResultsController extends Controller
             $violation = Penalty::findOrFail($violation_id);
         }
 
+        $submission = $violation->submission;
+
+
+
         return response()->json([
             'code' => "{$violation}",
+            'description' => $violation->getMessage(),
+            'submission' => $submission?->only([
+                'code',
+                'turn',
+                'length',
+                'details',
+                'name',
+                'position',
+                'seconder_name',
+                'seconder_position',
+                'resolved'
+            ]),
             'for' => $violation->entity->getName(),
         ]);
     }
@@ -115,6 +133,27 @@ class ResultsController extends Controller
 
 
         return view('landing.competition.serc-breakdown', ['comp' => $comp, 'event' => $serc, 'fsd' => $fasterSercData, 'overallJudgeNotes' => $overallJudgeNotes]);
+    }
+
+    public function getSercNote(Competition $comp, SERC $serc, int $entity_id)
+    {
+
+        $entity = $serc->getScorableEntity()::find($entity_id);
+
+        $notes = [];
+
+        foreach ($serc->getNotesForEntity($entity) as $note) {
+            $notes[] = [
+                'judge' => $note->getJudge->name,
+                'note' => $note->note
+            ];
+        }
+
+
+        return [
+            'name' => $entity->getName(),
+            'notes' => $notes
+        ];
     }
 
 
@@ -188,7 +227,7 @@ class Tablify
         return match ($column) {
             'name' => $result->entity->getName(),
             'position' => $result->position,
-            'points' => round($result->points),
+            'points' => $result->isDisqualified() ? 'DQ' : round($result->points),
             'result' => $this->resolveResult($result),
             'disqualifications' => $this->resolveDisqualifications($result),
             'penalties' => $this->resolvePenalties($result),
@@ -201,6 +240,8 @@ class Tablify
         $type = $this->event_type;
         $data = ['is' => $type == 'speed' ? SpeedResult::prettyTime($result->resolvedResult) : $result->resolvedResult, 'was' => $type == 'speed' ? SpeedResult::prettyTime($result->result) : $result->result];
 
+
+
         return ['type' => 'result', 'data' => $data];
     }
 
@@ -209,7 +250,8 @@ class Tablify
         if (!$result->isDisqualified()) {
             return '-';
         }
-        return ['type' => 'violation', 'data' => $result->disqualifications->map(fn(Disqualification $dq) => ['display' => "{$dq}", 'id' => $dq->id, 'type' => 'dq'])->toArray()];
+
+        return ['type' => 'violation', 'data' => $result->disqualifications->map(fn(Disqualification $dq) => ['display' => "{$dq}", 'id' => $dq->id, 'type' => 'dq'])->values()->toArray()];
     }
 
     private function resolvePenalties($result)
@@ -217,6 +259,6 @@ class Tablify
         if (!$result->hasPenalties()) {
             return '-';
         }
-        return ['type' => 'violation', 'data' => $result->penalties->map(fn(Penalty $p) => ['display' => "{$p}", 'id' => $p->id, 'type' => 'pen'])->toArray()];
+        return ['type' => 'violation', 'data' => $result->penalties->map(fn(Penalty $p) => ['display' => "{$p}", 'id' => $p->id, 'type' => 'pen'])->values()->toArray()];
     }
 }

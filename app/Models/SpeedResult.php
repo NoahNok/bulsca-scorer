@@ -25,8 +25,7 @@ class SpeedResult extends Resultable
             $this->result,
             $this->entity,
             $this->getEvent,
-            $this->disqualifications,
-            $this->penalties
+
         );
     }
 
@@ -126,9 +125,9 @@ class SpeedResult extends Resultable
     public static function remapDq($dq)
     {
         return match ($dq) {
-            15 => 'DNF',
-            4 => 'DNS',
-            1001 => 'OOT',
+            99915 => 'DNF',
+            99904 => 'DNS',
+            99901 => 'OOT',
             default => "DQ$dq",
         };
     }

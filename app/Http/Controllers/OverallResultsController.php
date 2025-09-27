@@ -193,10 +193,10 @@ class OverallResultsController extends Controller
         $comp->results_provisional = !$comp->results_provisional;
         $comp->save();
 
-        if (!$comp->results_provisional && $comp->isLeague) { // Only generate stats for league comps
-            $comp->generateStats();
-            return redirect()->back()->with("success", "Generated stats");
-        }
+        // if (!$comp->results_provisional && $comp->isLeague) { // Only generate stats for league comps
+        //     $comp->generateStats();
+        //     return redirect()->back()->with("success", "Generated stats");
+        // }
 
         return redirect()->back();
     }

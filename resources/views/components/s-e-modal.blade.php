@@ -5,6 +5,7 @@
     @if (Session::get('modal', '') == $id || $open) x-init="modals.{{ $id }} = true" @endif x-data="{
         loading: false,
         onClose: null,
+        title: '{{ $title }}',
         closeModal() {
     
             if (this.onClose) {
@@ -17,7 +18,7 @@
     <div @click.outside="closeModal" class="relative overflow-hidden" x-init="() => {
         modals.data.{{ $id }} = {}
     }">
-        <h2>{{ $title }}</h2>
+        <h2 x-text="title">{{ $title }}</h2>
 
         <div>
 

@@ -23,12 +23,7 @@
 
 
         @php
-            $existingLanes = $comp
-                ->getHeatEntries()
-                ->where('heat', $heat)
-                ->where('event', $comp->scoring_type == 'rlss-nationals' ? $speed->id : null)
-                ->orderBy('lane')
-                ->get();
+            $existingLanes = $speed->getHeats()->where('heat', $heat)->orderBy('lane')->get();
 
             $lanes = [];
             $maxLanes = 0;
@@ -38,14 +33,15 @@
                 if ($existingLanes->contains('lane', $lane)) {
                     $pLane = $existingLanes->where('lane', $lane)->first();
 
-                    $sr = App\Models\SpeedResult::where('competition_team', $pLane->team)
+                    $sr = App\Models\SpeedResult::whereMorphedTo('entity', $pLane->entity)
                         ->where('event', $speed->id)
                         ->first();
 
-                    $mins = floor($sr->result / 60000);
-                    $secs = ($sr->result - $mins * 60000) / 1000;
-
-                    $lanes[$lane] = ['number' => $lane, 'name' => $pLane->getTeam->getFullname(), 'id' => $pLane->team];
+                    $lanes[$lane] = [
+                        'number' => $lane,
+                        'name' => $pLane->entity->getName(),
+                        'id' => $pLane->entity->id,
+                    ];
 
                     if ($pLane->getOOF($speed->id) != null) {
                         $lanes[$lane]['place'] = $pLane->getOOF($speed->id)->oof;
@@ -59,7 +55,7 @@
             }
 
             $targetUrl = route('dj.speeds.oof.judge', [$speed, $heat + 1]);
-            if ($heat + 1 > DigitalJudge::getClientCompetition()->getMaxHeats()) {
+            if ($heat + 1 > $speed->getMaxHeats()) {
                 $targetUrl = route('dj.speeds.oof.index', $speed);
             }
 

@@ -219,7 +219,7 @@ class SERCController extends Controller
         }
 
 
-        $teamIds = $serc->getTeams()->pluck('id')->toArray();
+        $teamIds = $serc->getScorableEntities()->pluck('id')->toArray();
         $index = array_search($team->id, array_values($teamIds));
 
 
@@ -231,7 +231,7 @@ class SERCController extends Controller
 
         $nextTeamId = $teamIds[$index + 1];
 
-        session()->flash('success', "Results updated for " . $team->getFullname());
+        session()->flash('success', "Results updated for " . $team->getName());
 
         return response()->json(['url' => Route('comps.events.sercs.editResults', [$comp, $serc, $nextTeamId])]);
     }

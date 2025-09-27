@@ -309,12 +309,12 @@
                             style="padding-top: 0.65em; padding-bottom: 0.65em;">
                             <option value="">Please select a heat and lane</option>
 
-                            @foreach ($comp->getHeatEntries->sortBy('heat')->groupBy('heat') as $heat)
-                                <optgroup label="Heat {{ $heat[0]->heat }}">
-                                    @foreach ($heat->sortBy('lane') as $lane)
+                            @foreach ($comp->getHeats()[0]['heats'] as $heat_no => $lanes)
+                                <optgroup label="Heat {{ $heat_no }}">
+                                    @foreach ($lanes->sortBy('lane') as $lane)
                                         <option value="{{ $lane->id }}">
                                             {{ $lane->heat }}-{{ $lane->lane }}:
-                                            {{ $lane->getTeam->getFullname() }}
+                                            {{ $lane->entity->getName() }}
                                         </option>
                                     @endforeach
                                 </optgroup>
@@ -670,14 +670,14 @@
 
 
                 <div class="flex flex-col space-y-3">
-                    @foreach ($comp->getHeatEntries->sortBy('heat')->groupBy('heat') as $heat)
-                        <h4>Heat {{ $heat[0]->heat }}</h4>
+                    @foreach ($comp->getHeats()[0]['heats'] as $heat_no => $lanes)
+                        <h4>Heat {{ $heat_no }}</h4>
 
-                        @foreach ($heat->sortBy('lane') as $lane)
+                        @foreach ($lanes->sortBy('lane') as $lane)
                             <button class="btn btn-primary" style="text-align: left"
-                                @click="setTeam({{ $lane->id }}, 'Heat {{ $lane->heat }}, Lane {{ $lane->lane }}, {{ $lane->getTeam->getFullname() }}')">
+                                @click="setTeam({{ $lane->id }}, 'Heat {{ $lane->heat }}, Lane {{ $lane->lane }}, {{ $lane->entity->getName() }}')">
                                 Lane {{ $lane->lane }}:
-                                {{ $lane->getTeam->getFullname() }}
+                                {{ $lane->entity->getName() }}
                             </button>
                         @endforeach
                     @endforeach

@@ -22,6 +22,8 @@ class SERCResult extends Resultable
         'entity_id'
     ];
 
+    protected $with = ['getSerc'];
+
     public function penalties()
     {
         return null;
@@ -39,7 +41,7 @@ class SERCResult extends Resultable
             $this->result,
             $this->getMarkingPoint,
             $this->entity,
-            $this->getSerc(),
+            $this->getSerc,
         );
     }
 
@@ -59,9 +61,16 @@ class SERCResult extends Resultable
         return $this->belongsTo(SERCMarkingPoint::class, 'marking_point', 'id');
     }
 
-    public function getSerc(): SERC
+    public function getSerc()
     {
-        return SERC::find($this->getMarkingPoint->serc);
+        return $this->hasOneThrough(
+            SERC::class,
+            SERCMarkingPoint::class,
+            'id',           // Foreign key on SERCMarkingPoint
+            'id',           // Foreign key on SERC
+            'marking_point', // Local key on current model
+            'serc'          // Local key on SERCMarkingPoint
+        );
     }
 
     public function getTeam()

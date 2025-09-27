@@ -4,6 +4,7 @@ namespace App\Models\Orders;
 
 use App\Models\CompetitionSpeedEvent;
 use App\Models\EventOOF;
+use App\Models\SpeedResult;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -24,5 +25,10 @@ class Heat extends Model
     public function getOOF($speedId)
     {
         return $this->hasOne(EventOOF::class, 'heat_lane', 'id')->where('event', $speedId)->first();
+    }
+
+    public function getResult(): ?SpeedResult
+    {
+        return $this->speedEvent->results()->whereMorphedTo('entity', $this->entity)->first();
     }
 }

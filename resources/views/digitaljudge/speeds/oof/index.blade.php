@@ -24,13 +24,12 @@
             <p>Heats will turn green once complete (unless no teams finish)</p>
         @endif
 
-        @for ($heat = 1; $heat <= $comp->getMaxHeats(); $heat++)
+        @foreach ($speed->getHeats->sortBy('heat')->groupBy('heat') as $heat => $lanes)
             @php
-                $heatlanes = $comp->getHeatEntries()->where('heat', $heat)->get();
 
                 $hasResult = false;
 
-                foreach ($heatlanes as $lane) {
+                foreach ($lanes as $lane) {
                     if ($lane->getOOF($speed->id)) {
                         $hasResult = true;
                         break;
@@ -52,7 +51,7 @@
                 <button class="se-btn se-btn-success cursor-not-allowed">Heat
                     {{ $heat }}</button>
             @endif
-        @endfor
+        @endforeach
 
 
 

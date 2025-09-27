@@ -9,6 +9,7 @@ use App\DTO\RankedResult;
 use App\Models\Competition;
 use App\Models\CompetitionTeam;
 use App\Models\DigitalJudge\BetterJudgeLog;
+use App\Models\DigitalJudge\JudgeDQSubmission;
 use App\Models\SERCResult;
 use App\Models\SpeedResult;
 use Illuminate\Database\Eloquent\Collection;
@@ -35,4 +36,11 @@ abstract class Violation extends Model
     {
         return "OVERRIDE ME";
     }
+
+    public function submission()
+    {
+        return $this->morphOne(JudgeDQSubmission::class, 'violation');
+    }
+
+    abstract public function getMessage(): string;
 }

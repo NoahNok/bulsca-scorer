@@ -88,6 +88,11 @@ class SERC extends Event
         $resolvedResults = collect([]);
         $results = collect($this->getRawResults(league: $league));
 
+        $penalties = $this->penalties()->get();
+        $disqualifications = $this->disqualifications()->get();
+
+
+
         foreach ($results->groupBy(fn($result) => $result->entity->id) as $id => $entityResults) {
 
             $resultTotal = $entityResults->reduce(fn($acc, $result) => $acc += $result->result * $result->markingPoint->weight, 0);
@@ -101,16 +106,13 @@ class SERC extends Event
             //     $resultTotal = 0;
             // }
 
-            $disqualifications = $this->getEntityDisqualifications($resultData->entity)->get();
-            $penalties = $this->getEntityPenalties($resultData->entity)->get();
-
             $resolvedResults[] = new Result(
                 $resultData->id,
                 $resultTotal,
                 $resultData->entity,
                 $resultData->event,
-                $disqualifications,
-                $penalties
+                $disqualifications->where('entity_id', $id),
+                $penalties->where('entity_id', $resultData->entity->id)
             );
         }
 
@@ -126,6 +128,14 @@ class SERC extends Event
                 $q->where('league', $league->id);
             });
         }
+
+        $query = $query->with(['entity', 'getMarkingPoint', 'getMarkingPoint.getJudge']);
+
+
+
+
+
+
 
         return $query->get()->map(function ($result) {
             return $result->transformToResult();
@@ -148,7 +158,7 @@ class SERC extends Event
         // if using seperate draws per SERC, this is where that would be handled
 
         // OTHERWISE USE DRAW ROM SERC WITH LOWEST ID
-        return SERC::where('competition', $this->competition)->orderBy('id')->first()->draw()->orderBy('draw');
+        return SERC::where('competition', $this->competition)->orderBy('id')->first()->draw()->with(['entity'])->orderBy('draw');
     }
 
     public function getPositionInDraw(Entity $entity)
@@ -249,11 +259,11 @@ class SERC extends Event
         ];
     }
 
-    public function getNotesForTeam(CompetitionTeam $team)
+    public function getNotesForEntity(Entity $entity)
     {
         $allJudgeIds = $this->getJudges()->pluck('id')->toArray();
 
-        return JudgeNote::whereIn('judge', $allJudgeIds)->where('team', $team->id)->get();
+        return JudgeNote::whereIn('judge', $allJudgeIds)->whereMorphedTo('entity', $entity)->get();
     }
 
     public function hasTeamFinished($team)

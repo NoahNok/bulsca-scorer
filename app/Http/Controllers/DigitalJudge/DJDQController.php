@@ -6,6 +6,8 @@ use App\DigitalJudge\DigitalJudge;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DigitalJudge\DQRequest;
 use App\Http\Requests\DigitalJudge\JudgeDQSubmissionRequest;
+use App\Models\AbstractClasses\Entity;
+use App\Models\AbstractClasses\Event;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\CompetitionTeam;
 use App\Models\DigitalJudge\JudgeDQSubmission;
@@ -218,7 +220,7 @@ class DJDQController extends Controller
         if ($submission->resolved != null) {
             return response()->json(['success' => false, 'message' => 'Submission already resolved']);
         }
-    
+
 
         $result = $request->input('resolved') == "true" ? true : false;
         $submission->resolved = $result;
@@ -227,15 +229,22 @@ class DJDQController extends Controller
         // If true actually apply the DQ/Penalty to the team
         if ($result) {
             $event = $submission->getEvent;
-            $teamId = $submission->getHeat->team;
+            $entity = $submission->getHeat->entity;
             $code = Str::upper($submission->code);
 
+            $violation = null;
 
             if (str_starts_with($code, 'P')) {
-                $event->addTeamPenalty($teamId, $code);
+                $code = substr($code, 1);
+                $violation = $event->addEntityPenalty($entity, $code);
             } else {
-                $event->addTeamDQ($teamId, $code);
+                $code = substr($code, 2);
+                $event->clearEntityDisqualifications($entity);
+                $violation = $event->addEntityDisqualification($entity, $code);
             }
+
+            $submission->violation()->associate($violation);
+            $submission->save();
         }
 
         $activeSubmissions = Session::get('activeSubmissions', []);
@@ -251,7 +260,7 @@ class DJDQController extends Controller
 
         foreach ($submissions as $submission) {
             $submission->eventName = $submission->getEvent->getName();
-            $submission->teamName = $submission->getHeat?->getTeam->getFullname() ?? null;
+            $submission->teamName = $submission->getHeat?->entity->getName() ?? null;
             $submission->heat = $submission->getHeat->heat ?? null;
             $submission->lane = $submission->getHeat->lane ?? null;
         }
@@ -267,8 +276,8 @@ class DJDQController extends Controller
 
 
         foreach ($accepted as $submission) {
-            $submission->eventName = $submission->getEvent->getName();
-            $submission->teamName = $submission->getHeat?->getTeam->getFullname() ?? null;
+            $submission->eventName = $submission->getEvent?->getName() ?: "Event not found";
+            $submission->teamName = $submission->getHeat?->entity->getName() ?? null;
             $submission->heat = $submission->getHeat->heat ?? null;
             $submission->lane = $submission->getHeat->lane ?? null;
             $submission->code_desc = $this->internalResolveCode(($submission->code));
@@ -340,58 +349,33 @@ class DJDQController extends Controller
 
 
         $event = $submission->getEvent;
-        $team = $submission->getHeat->getTeam;
+        $entity = $submission->getHeat->entity;
 
-        if ($event instanceof SERC) {
-            $this->removeSercCode($submission->code, $event->id, $team->id);
-        } else {
-            $this->removeSpeedCode($submission->code, $event->id, $team->id);
-        }
-    }
+        $code = Str::upper($submission->code);
 
-    private function removeSpeedCode($code, $eventId, $teamId)
-    {
 
-        $code = Str::upper($code);
-
-        $result = SpeedResult::where('event', $eventId)->where('competition_team', $teamId)->first();
 
         if (str_starts_with($code, 'P')) {
-            $p = Penalty::where('speed_result', $result->id)->where('code', $code)->first();
-            $p->delete();
+
+            $code = substr($code, 1);
+
+            $penalty = $event->getEntityPenalties($entity)->where('code', $code)->first();
+
+            if ($penalty) {
+                $penalty->delete();
+            }
         } else {
 
-            if (Str::upper($result->disqualification) == $code) {
-                $result->disqualification = null;
-                $result->save();
+            $code = substr($code, 2);
+
+            $disqualifications = $event->getEntityDisqualifications($entity)->where('code', $code)->first();
+
+            if ($disqualifications) {
+                $disqualifications->delete();
             }
         }
     }
 
-    private function removeSercCode($code, $eventID, $teamId)
-    {
-        $code = Str::upper($code);
-
-        if (str_starts_with($code, 'P')) {
-            $sp = SERCPenalty::where('team', $teamId)->where('serc', $eventID)->first();
-
-
-            $codes = explode(",", $sp->codes);
-
-            $codes = array_filter($codes, function ($c) use ($code) {
-                return $c != $code;
-            });
-
-            if (count($codes) == 0) {
-                $sp->delete();
-            } else {
-                $sp->codes = $codes;
-                $sp->save();
-            }
-        } else {
-            SERCDisqualification::where('team', $teamId)->where('serc', $eventID)->where('code', $code)->delete();
-        }
-    }
 
     public function getEventRelatedCodes(string $eventName)
     {

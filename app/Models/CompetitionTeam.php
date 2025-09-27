@@ -17,6 +17,8 @@ class CompetitionTeam extends Entity
 
     protected $fillable = ['club', 'team'];
 
+    protected $with = ['getClub', 'getLeague'];
+
     public function getName(): string
     {
         return $this->formatName();

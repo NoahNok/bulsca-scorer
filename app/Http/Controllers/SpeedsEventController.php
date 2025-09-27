@@ -67,7 +67,7 @@ class SpeedsEventController extends Controller
 
         $league = League::find($league);
 
-        if ($event->scoringSchema()) {
+        if ($event->scoring_schema) {
             $eventResults = $event->getRankedResults($league);
         }
 
@@ -147,13 +147,13 @@ class SpeedsEventController extends Controller
 
 
             if (str_starts_with($row->values->result, 'DN')) {
-                $code = str_starts_with($row->values->result, 'DNS') ? 004 : 015;
+                $code = str_starts_with($row->values->result, 'DNS') ? 99904 : 99915;
                 $event->addEntityDisqualification($sr->entity, $code);
                 continue;
             }
 
             if (str_starts_with($row->values->result, 'OOT')) {
-                $event->addEntityDisqualification($sr->entity, 1001);
+                $event->addEntityDisqualification($sr->entity, 99901);
                 continue;
             }
 

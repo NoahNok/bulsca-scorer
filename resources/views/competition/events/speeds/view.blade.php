@@ -81,6 +81,10 @@
                             </thead>
                             <tbody>
 
+                                @php
+                                    $eventHeats = $event->getHeats;
+                                @endphp
+
                                 @forelse ($eventResults as $result)
                                     <tr x-data="{ name: `{{ $result->entity->getName() }}` }" x-show="name.toLowerCase().includes(search.toLowerCase())">
                                         <th scope="row">
@@ -89,8 +93,9 @@
                                         @if ($event->digitalJudgeEnabled)
                                             <td scope="col">
                                                 @php
-                                                    $h = App\Models\Heat::where('competition', $comp->id)
-                                                        ->where('team', $result->tid)
+                                                    $h = $eventHeats
+                                                        ->where('entity_id', $result->entity->id)
+                                                        ->where('entity_type', $result->entity->getMorphClass())
                                                         ->first();
                                                 @endphp
                                                 @if ($h)

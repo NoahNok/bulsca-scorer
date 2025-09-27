@@ -60,7 +60,7 @@ abstract class Event extends Model
 
 
 
-    public function addEntityPenalty(Entity $entity, int $code)
+    public function addEntityPenalty(Entity $entity, int $code): Penalty
     {
         $penalty = $this->penalties()->make([
             'code' => $code
@@ -69,9 +69,11 @@ abstract class Event extends Model
         $penalty->entity()->associate($entity);
 
         $penalty->save();
+
+        return $penalty;
     }
 
-    public function addEntityDisqualification(Entity $entity, int $code)
+    public function addEntityDisqualification(Entity $entity, int $code): Disqualification
     {
 
         $disqualification = $this->disqualifications()->make([
@@ -81,6 +83,7 @@ abstract class Event extends Model
         $disqualification->entity()->associate($entity);
 
         $disqualification->save();
+        return $disqualification;
     }
 
     public function clearEntityPenalties(Entity $entity)

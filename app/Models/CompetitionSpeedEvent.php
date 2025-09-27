@@ -85,8 +85,20 @@ class CompetitionSpeedEvent extends Event
             });
         }
 
-        return $query->get()->map(function ($result) {
-            return $result->transformToResult();
+        $query = $query->with(['entity', 'getEvent']);
+
+
+        $penalties = $this->penalties()->get();
+        $disqualifications = $this->disqualifications()->get();
+
+
+        return $query->get()->map(function ($result) use ($penalties, $disqualifications) {
+            $r = $result->transformToResult();
+
+            $r->penalties = $penalties->where('entity_id', $result->entity->id);
+            $r->disqualifications = $disqualifications->where('entity_id', $result->entity->id);
+
+            return $r;
         })->toArray();
     }
 
@@ -118,7 +130,7 @@ class CompetitionSpeedEvent extends Event
 
     public function getMaxHeats(): int
     {
-        return $this->heats()->max('heat') ?? 1;
+        return $this->getHeats()->max('heat') ?? 1;
     }
 
     public function seeds()
@@ -130,7 +142,7 @@ class CompetitionSpeedEvent extends Event
     // CHANGE TO BE A EVENT BASED TOGGLE
     public function hasPenalties()
     {
-        return $this->hasOne(SpeedEvent::class, 'id', 'event')->first()->has_penalties;
+        return $this->has_penalties;
     }
 
 

@@ -6,11 +6,12 @@
 
     <div x-data="{
         leagues: {{ $comp->getLeagues }},
-        events: {{ $comp->getAllEvents()->map(fn($event) => ['id' => $event->id, 'name' => $event->getName(), 'type' => $event->getType()])->toJson() }},
+        events: {{ $comp->public_results ? $comp->getAllEvents()->map(fn($event) => ['id' => $event->id, 'name' => $event->getName(), 'type' => $event->getType()])->toJson() : '[]' }},
     
     
         selected: {
             league: null,
+            league_id: null,
             event: null
         },
     
@@ -89,8 +90,70 @@
             let all = { id: 'all', name: 'All Leagues' }
             this.leagues.unshift(all);
             this.selected.league = all;
+    
+            $watch('selected.league', (newVal, oldVal) => {
+                // set league query param
+                const url = new URL(window.location);
+                if (newVal && newVal.id !== 'all') {
+                    url.searchParams.set('league', newVal.id);
+                } else {
+                    url.searchParams.delete('league');
+                }
+                window.history.replaceState({}, '', url);
+            });
+    
+            $watch('selected.event', (newVal, oldVal) => {
+                // set event query param
+                const url = new URL(window.location);
+                if (newVal) {
+                    url.searchParams.set('event', `${newVal.type}-${newVal.id}`);
+                } else {
+                    url.searchParams.delete('event');
+                }
+                window.history.replaceState({}, '', url);
+            });
+    
+    
+    
+            // On load, check for league and event query params
+            const params = new URLSearchParams(window.location.search);
+            const leagueParam = params.get('league');
+            const eventParam = params.get('event');
+    
+            if (leagueParam) {
+                const league = this.leagues.find(l => l.id == leagueParam);
+                if (league) {
+                    this.selected.league = league;
+    
+                    setTimeout(() => {
+                        this.selected.league_id = league.id;
+                    }, 100);
+    
+                }
+            }
+    
+            if (eventParam) {
+                const [type, id] = eventParam.split('-');
+                const event = this.events.find(e => e.id == id && e.type == type);
+                if (event) {
+                    this.selected.event = event;
+                }
+            }
+    
+            if (this.selected.league && this.selected.event) {
+                this.loadResults();
+            }
         }
     }">
+
+        @if ($comp->results_provisional)
+            <div class="alert-box alert-warning">
+                <h1>Provisional Results</h1>
+                <p>The results displayed here are provisional and may be subject to change.</p>
+            </div>
+            <br>
+        @endif
+
         <div class="grid mt-2 ">
 
 
@@ -104,10 +167,18 @@
 
                     </a>
                 </template>
+
+                <template x-if="events.length == 0">
+                    <div class="alert-box alert-info col-span-full">
+                        <h1>Results Unavailable</h1>
+                        <p>Results are not available at this time. Please check back later.</p>
+                    </div>
+                </template>
             </div>
 
 
-            <div x-show="selected.event != null" x-transition class="space-y-4 row-start-1 col-start-1  overflow-x-hidden">
+            <div x-show="selected.event != null" x-transition class="space-y-4 row-start-1 col-start-1  overflow-x-hidden"
+                x-cloak>
 
 
                 <div class="flex flex-col md:flex-row md:items-center  md:space-x-3">
@@ -127,7 +198,7 @@
 
 
                     <div class="se-form-input text-sm!  w-auto! imb-0">
-                        <select name="" id="" class="py-0! h-6! px-1!"
+                        <select name="" id="" class="py-0! h-6! px-1!" x-model="selected.league_id"
                             @change="onLeagueChange(leagues.find(l => l.id == $event.target.value))">
 
                             <template x-for="league in leagues" :key="league.id">
@@ -137,13 +208,13 @@
                     </div>
 
                     <a class="se-btn se-btn-blue" target="_blank"
-                        :href="breakdownUrl.replace('_serc_id', selected.event?.id)"
+                        :href="breakdownUrl.replace('_serc_id', selected.event?.id) + `?league=${selected.league?.id}`"
                         x-show="selected.event?.type == 'serc' && error == null">Breakdowns</a>
                 </div>
 
 
 
-                <div class="flex items-center justify-center"
+                <div class="flex items-center justify-center" x-cloak
                     x-show="!table && selected.league != null && selected.event != null && error == null">
                     <svg aria-hidden="true" class="w-8 h-8 animate-spin text-gray-200 fill-se" viewBox="0 0 100 101"
                         fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -164,7 +235,7 @@
                     </div>
                 </div>
 
-                <div class="se-table" x-show="table != null" x-transition>
+                <div class="se-table" x-show="table != null" x-transition x-cloak>
                     <table>
                         <thead>
                             <tr>
@@ -255,19 +326,45 @@
         </div>
 
         <x-s-e-modal id="violation" title="Violation">
-            <div>
-                <h2 x-text="violationData?.code"></h2>
-                <p x-text="violationData?.for"></p>
+            <div x-effect="title = violationData?.for ">
+                <h2 class="text-red-500" x-text="violationData?.code"></h2>
+                <p x-text="violationData?.description"></p>
+
             </div>
+
+            <template x-if="violationData?.submission">
+
+                <div class="mt-2 space-y-2">
+
+                    <div class="flex justify-between flex-col md:flex-row  md:space-y-0">
+                        <p>
+                            <strong>Reporter</strong>: <span x-text="violationData.submission.name"></span> (<span
+                                x-text="violationData.submission.position"></span>)
+                            <br class="md:hidden">
+                            <strong>Seconder</strong>: <span x-text="violationData.submission.seconder_name"></span>
+                            (<span x-text="violationData.submission.seconder_position"></span>)
+                        </p>
+
+                        <p><strong>Turn</strong>: <span x-text="violationData?.submission?.turn ?? '-'"></span>
+                            <strong>Length</strong>: <span x-text="violationData?.submission?.length ?? '-'"></span>
+                        </p>
+                    </div>
+
+                    <p>
+                        <i x-text="violationData.submission.details || 'No details provided.'"></i>
+                    </p>
+
+                </div>
+            </template>
         </x-s-e-modal>
 
-        <hr class="spacer my-8! mt-10!">
+        <hr x-show="events.length > 0" class="spacer my-8! mt-10!" x-cloak>
 
     </div>
 
 
     <div x-data="{
-        schemas: {{ $comp->getResultSchemas->pluck('name', 'id') }},
+        schemas: {{ $comp->public_results ? $comp->getResultSchemas->pluck('name', 'id') : '[]' }},
     
         selected: {
             schema: null,
@@ -312,14 +409,50 @@
     
         },
     
+        init() {
+    
+            $watch('selected.schema', (newVal, oldVal) => {
+                // set schema query param
+                const url = new URL(window.location);
+                if (newVal) {
+                    url.searchParams.set('schema', newVal.id);
+                } else {
+                    url.searchParams.delete('schema');
+                }
+                window.history.replaceState({}, '', url);
+            });
+    
+            $watch('selected.display', (newVal, oldVal) => {
+                // set display query param
+                const url = new URL(window.location);
+                if (newVal && newVal !== 'simple') {
+                    url.searchParams.set('display', newVal);
+                } else {
+                    url.searchParams.delete('display');
+                }
+                window.history.replaceState({}, '', url);
+            });
+    
+            // On load, check for schema query param
+            const params = new URLSearchParams(window.location.search);
+            const schemaParam = params.get('schema');
+            const displayParam = params.get('display');
+    
+            if (schemaParam) {
+                const schema = Object.entries(this.schemas).find(([id, name]) => id == schemaParam);
+                if (schema) {
+                    this.selected.schema = { id: schema[0], name: schema[1] };
+                    this.loadResults();
+                }
+            }
+    
+            if (displayParam && ['simple', 'detailed'].includes(displayParam)) {
+                this.selected.display = displayParam;
+            }
+        }
+    
     
     }">
-
-
-
-
-
-
 
 
         <div>
@@ -339,7 +472,8 @@
                 </template>
             </div>
 
-            <div x-show="selected.schema != null" x-transition class="space-y-4 row-start-1 col-start-1  overflow-x-hidden">
+            <div x-show="selected.schema != null" x-transition x-cloak
+                class="space-y-4 row-start-1 col-start-1  overflow-x-hidden">
 
 
 
@@ -349,7 +483,8 @@
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-6 hover:text-se transition-color cursor-pointer"
                             @click="selected.schema = null; table = null;">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
                         </svg>
 
                         <h1 x-text="selected.schema?.name"></h1>
@@ -358,7 +493,7 @@
 
 
                     <div class="se-form-input text-sm!  w-auto! imb-0">
-                        <select name="" id="" class="py-0! h-6! px-1!"
+                        <select name="" id="" class="py-0! h-6! px-1!" x-model="selected.display"
                             @change="selected.display = $event.target.value">
 
                             <option value="simple">Simple View</option>

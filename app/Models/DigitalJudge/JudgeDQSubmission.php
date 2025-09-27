@@ -5,7 +5,7 @@ namespace App\Models\DigitalJudge;
 use App\Models\AbstractClasses\Loggable;
 use App\Models\Competition;
 use App\Models\CompetitionTeam;
-use App\Models\Heat;
+use App\Models\Orders\Heat;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -55,5 +55,10 @@ class JudgeDQSubmission extends Loggable
     public function resolveJudgeLogAssociation()
     {
         return $this;
+    }
+
+    public function violation()
+    {
+        return $this->morphTo();
     }
 }

@@ -225,28 +225,25 @@ class PublicResultsController extends Controller
         fclose($fp);
     }
 
-    public function viewTeamSercNotes(Competition $comp, SERC $event, CompetitionTeam $team)
+    public function viewEntitySercNotes(Competition $comp, SERC $event, int $entity_id)
     {
 
-        if ($comp->scoring_type == 'bulsca' || $comp->scoring_type == 'rlss-cs') {
+        $entity = $event->getScorableEntity()::find($entity_id);
 
-            $notes = [];
+        $notes = [];
 
-            foreach ($event->getNotesForTeam($team) as $note) {
-                $notes[] = [
-                    'judge' => $note->getJudge->name,
-                    'note' => $note->note
-                ];
-            }
-
-
-            return [
-                'name' => $team->getFullname(),
-                'notes' => $notes
+        foreach ($event->getNotesForEntity($entity) as $note) {
+            $notes[] = [
+                'judge' => $note->getJudge->name,
+                'note' => $note->note
             ];
         }
 
-        return view("public-results.$comp->scoring_type.view-team-serc-notes", ['comp' => $comp, 'serc' => $event, 'team' => $team]);
+
+        return [
+            'name' => $entity->getName(),
+            'notes' => $notes
+        ];
     }
 
     public function resolve($date, $name)
