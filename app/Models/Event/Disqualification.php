@@ -3,6 +3,7 @@
 namespace App\Models\Event;
 
 use App\Models\AbstractClasses\Violation;
+use App\Models\Competition;
 use App\Models\DQCode;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -24,12 +25,11 @@ class Disqualification extends Violation
 
     public function getMessage(): string
     {
-
         return match ($this->code) {
             99915 => 'Did Not Finish',
             99904 => 'Did Not Start',
             99901 => 'Out Of Time',
-            default => DQCode::message($this->code),
+            default => DQCode::message($this->code, $this->event?->getCompetition?->getOrganisation),
         };
     }
 }

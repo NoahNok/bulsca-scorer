@@ -4,8 +4,10 @@ namespace App\Models\Organisation;
 
 use App\Models\AccountInvite;
 use App\Models\Competition;
+use App\Models\DQCode;
 use App\Models\Event\ScoringSchema;
 use App\Models\Interfaces\IInvitable;
+use App\Models\PenaltyCode;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
@@ -235,5 +237,15 @@ class Organisation extends Model implements IInvitable
     public function scoringSchemas()
     {
         return $this->hasMany(ScoringSchema::class, 'organisation')->orderBy('name', 'asc');
+    }
+
+    public function penaltyCodes()
+    {
+        return $this->hasMany(PenaltyCode::class, 'organisation')->orderBy('id', 'asc');
+    }
+
+    public function disqualificationCodes()
+    {
+        return $this->hasMany(DQCode::class, 'organisation')->orderBy('id', 'asc');
     }
 }

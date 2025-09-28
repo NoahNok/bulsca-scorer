@@ -37,6 +37,10 @@
             <a href="{{ route('orgs.scoring', $org->name) }}"
                 class="@if (Str::startsWith(Route::currentRouteName(), 'orgs.scoring')) active @endif">Scoring</a>
 
+
+            <a href="{{ route('orgs.infractions', $org->name) }}"
+                class="@if (Str::startsWith(Route::currentRouteName(), 'orgs.infractions')) active @endif">Infractions</a>
+
             <a href="{{ route('orgs.edit', $org->name) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'orgs.edit')) active @endif">Settings</a>
         @endcan
 

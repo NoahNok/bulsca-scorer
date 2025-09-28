@@ -42,5 +42,6 @@ abstract class Violation extends Model
         return $this->morphOne(JudgeDQSubmission::class, 'violation');
     }
 
+    // make this take an organisation param (optional) so that we get the right pen/dq message for the current org
     abstract public function getMessage(): string;
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Organisation\Organisation;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,8 +16,12 @@ class SpeedEvent extends Model
         return $this->name;
     }
 
-    public function getEventCodes($type = null, $codeType = null)
+    public function getEventCodes(Organisation $organisation, $type = null, $codeType = null)
     {
+
+
+
+
 
         $ec = new EventCode();
 
@@ -33,8 +38,8 @@ class SpeedEvent extends Model
         $dqCodes = $codes->where('pendq_type', 'App\Models\DQCode')->pluck('pendq_id');
         $penCodes = $codes->where('pendq_type', 'App\Models\PenaltyCode')->pluck('pendq_id');
 
-        $dqCodes = DQCode::whereIn('id', $dqCodes)->get();
-        $penCodes = PenaltyCode::whereIn('id', $penCodes)->get();
+        $dqCodes = DQCode::whereIn('id', $dqCodes)->where('organisation', $organisation->id)->get();
+        $penCodes = PenaltyCode::whereIn('id', $penCodes)->where('organisation', $organisation->id)->get();
 
         foreach ($dqCodes as $dq) {
             $dq->type = $codes->where('pendq_id', $dq->id)->first()->type;
@@ -58,15 +63,15 @@ class SpeedEvent extends Model
         ];
     }
 
-    public function getMissingEventCodes()
+    public function getMissingEventCodes(Organisation $organisation)
     {
 
 
         $dqCodes = EventCode::where('event', $this->name)->where('pendq_type', 'App\Models\DQCode')->pluck('pendq_id');
         $penCodes = EventCode::where('event', $this->name)->where('pendq_type', 'App\Models\PenaltyCode')->pluck('pendq_id');
 
-        $missingDQCodes = DQCode::whereNotIn('id', $dqCodes)->get();
-        $missingPenCodes = PenaltyCode::whereNotIn('id', $penCodes)->get();
+        $missingDQCodes = DQCode::whereNotIn('id', $dqCodes)->where('organisation', $organisation->id)->get();
+        $missingPenCodes = PenaltyCode::whereNotIn('id', $penCodes)->where('organisation', $organisation->id)->get();
 
         foreach ($missingDQCodes as $dq) {
             $dq->type = "OTHER";

@@ -12,6 +12,7 @@ use App\Models\CompetitionSpeedEvent;
 use App\Models\CompetitionTeam;
 use App\Models\DigitalJudge\JudgeDQSubmission;
 use App\Models\DQCode;
+use App\Models\Organisation\Organisation;
 use App\Models\Penalty;
 use App\Models\PenaltyCode;
 use App\Models\SERC;
@@ -149,16 +150,16 @@ class DJDQController extends Controller
     public function resolveCode(string $code)
     {
 
-
+        $organisation = DigitalJudge::getClientCompetition()->getOrganisation;
 
         if (str_starts_with($code, 'p')) {
             $code = substr($code, 1);
 
-            return response()->json(['description' => PenaltyCode::find($code)->description ?? "Penalty code not found", 'type' => 'penalty']);
+            return response()->json(['description' => PenaltyCode::message($code, $organisation) ?? "Penalty code not found", 'type' => 'penalty']);
         } else {
             $code = substr($code, 2);
 
-            return response()->json(['description' => DQCode::find($code)->description ?? "DQ code not found"]);
+            return response()->json(['description' => DQCode::message($code, $organisation) ?? "DQ code not found"]);
         }
     }
 
@@ -273,20 +274,20 @@ class DJDQController extends Controller
     {
         $accepted = JudgeDQSubmission::where('competition',  DigitalJudge::getClientCompetition()->id)->where('resolved', true)->orderBy('updated_at', 'DESC')->get();
 
-
+        $organisation = DigitalJudge::getClientCompetition()->getOrganisation;
 
         foreach ($accepted as $submission) {
             $submission->eventName = $submission->getEvent?->getName() ?: "Event not found";
             $submission->teamName = $submission->getHeat?->entity->getName() ?? null;
             $submission->heat = $submission->getHeat->heat ?? null;
             $submission->lane = $submission->getHeat->lane ?? null;
-            $submission->code_desc = $this->internalResolveCode(($submission->code));
+            $submission->code_desc = $this->internalResolveCode($submission->code, $organisation);
         }
 
         return $accepted->groupBy('eventName');
     }
 
-    private function internalResolveCode($code)
+    private function internalResolveCode($code, ?Organisation $organisation = null)
     {
 
         $code = Str::lower($code);
@@ -294,11 +295,11 @@ class DJDQController extends Controller
         if (str_starts_with($code, 'p')) {
             $code = substr($code, 1);
 
-            return PenaltyCode::find($code)->description ?? "Penalty code not found";
+            return PenaltyCode::message($code, $organisation) ?? "Penalty code not found";
         } else {
             $code = substr($code, 2);
 
-            return DQCode::find($code)->description ?? "DQ code not found";
+            return DQCode::message($code, $organisation) ?? "DQ code not found";
         }
     }
 
@@ -380,21 +381,101 @@ class DJDQController extends Controller
     public function getEventRelatedCodes(string $eventName)
     {
 
-        $event = null;
-
         if (str_starts_with($eventName, 'sp')) {
 
             $event = CompetitionSpeedEvent::find(substr($eventName, 3));
 
-            $event = $event->getBaseEvent();
+            $eventName = $event->getBaseEvent()->name;
         } else {
-            $event = new SpeedEvent();
-            $event->name = 'SERC';
+
+            $eventName = 'SERC';
+        }
+
+        $organisation = DigitalJudge::getClientCompetition()->getOrganisation;
+
+        if (!$organisation) {
+            return response()->json(['related' => [], 'other' => []]);
+        }
+
+        $dqs = $organisation->disqualificationCodes()->with('eventCodes')->get();
+        $pens = $organisation->penaltyCodes()->with('eventCodes')->get();
+
+
+
+        $related = ['dq' => [], 'pen' => []];
+        $other = ['dq' => [], 'pen' => []];
+
+        foreach ($dqs as $dq) {
+            $eventCode = $dq->eventCodes->where('event', $eventName)->first();
+
+            $dq = [
+                'id' => $dq->id,
+                'code' => $dq->code,
+                'description' => $dq->description
+            ];
+
+            if (!$eventCode) {
+                if (array_key_exists('OTHER', $other['dq'])) {
+                    $data = $other['dq']['OTHER'];
+                    $data[] = $dq;
+                    $other['dq']['OTHER'] = $data;
+                } else {
+                    $other['dq']['OTHER'] = [$dq];
+                }
+            } else {
+
+                if (array_key_exists($eventCode->type, $related['dq'])) {
+
+                    $data = $related['dq'][$eventCode->type];
+                    $data[] = $dq;
+                    $related['dq'][$eventCode->type] = $data;
+                } else {
+                    $related['dq'][$eventCode->type] = [$dq];
+                }
+            }
+        }
+
+        foreach ($pens as $pen) {
+            $eventCode = $pen->eventCodes->where('event', $eventName)->first();
+
+            $pen = [
+                'id' => $pen->id,
+                'code' => $pen->code,
+                'description' => $pen->description
+            ];
+
+            if (!$eventCode) {
+                if (array_key_exists('OTHER', $other['pen'])) {
+                    $data = $other['pen']['OTHER'];
+                    $data[] = $pen;
+                    $other['pen']['OTHER'] = $data;
+                } else {
+                    $other['pen']['OTHER'] = [$pen];
+                }
+            } else {
+
+                if (array_key_exists($eventCode->type, $related['pen'])) {
+
+                    $data = $related['pen'][$eventCode->type];
+                    $data[] = $pen;
+                    $related['pen'][$eventCode->type] = $data;
+                } else {
+                    $related['pen'][$eventCode->type] = [$pen];
+                }
+            }
         }
 
 
 
 
-        return response()->json(['related' => $event->getEventCodes(), 'other' => $event->getMissingEventCodes()]);
+
+
+
+
+
+
+
+
+        return response()->json(compact('related', 'other'));
     }
 }

@@ -569,7 +569,7 @@
                 shouldDisplayGroup(type, codes) {
             
                     for (let code of codes) {
-                        if (this.shouldDisplaySelf(type + code.id, type + code.id.toString().padStart(3, '0'), code.description)) {
+                        if (this.shouldDisplaySelf(type + code.code, type + code.code.toString().padStart(3, '0'), code.description)) {
                             return true;
                         }
                     }
@@ -728,9 +728,9 @@
                                 <div class="flex flex-col space-y-2">
                                     <template x-for="dq in dqs">
                                         <div class="card cursor-pointer"
-                                            @click="setCode(`DQ${dq.id.toString().padStart(3, '0')}`, dq.description)"
-                                            x-show="shouldDisplaySelf(`dq${dq.id}`, `dq${dq.id.toString().padStart(3, '0')}`, dq.description)">
-                                            <strong>DQ<span x-text="dq.id.toString().padStart(3, '0')"></span></strong>
+                                            @click="setCode(`DQ${dq.code.toString().padStart(3, '0')}`, dq.description)"
+                                            x-show="shouldDisplaySelf(`dq${dq.code}`, `dq${dq.code.toString().padStart(3, '0')}`, dq.description)">
+                                            <strong>DQ<span x-text="dq.code.toString().padStart(3, '0')"></span></strong>
                                             <p x-text="dq.description"></p>
                                         </div>
                                     </template>
@@ -746,9 +746,9 @@
                                 <div class="flex flex-col space-y-2">
                                     <template x-for="dq in dqs">
                                         <div class="card cursor-pointer"
-                                            @click="setCode(`DQ${dq.id.toString().padStart(3, '0')}`, dq.description)"
-                                            x-show="shouldDisplaySelf(`dq${dq.id}`, `dq${dq.id.toString().padStart(3, '0')}`, dq.description)">
-                                            <strong>DQ<span x-text="dq.id.toString().padStart(3, '0')"></span></strong>
+                                            @click="setCode(`DQ${dq.code.toString().padStart(3, '0')}`, dq.description)"
+                                            x-show="shouldDisplaySelf(`dq${dq.code}`, `dq${dq.code.toString().padStart(3, '0')}`, dq.description)">
+                                            <strong>DQ<span x-text="dq.code.toString().padStart(3, '0')"></span></strong>
                                             <p x-text="dq.description"></p>
                                         </div>
                                     </template>
@@ -780,9 +780,9 @@
                                 <div class="flex flex-col space-y-2">
                                     <template x-for="pen in pens">
                                         <div class="card cursor-pointer"
-                                            @click="setCode(`P${pen.id.toString().padStart(3, '0')}`, pen.description)"
-                                            x-show="shouldDisplaySelf(`p${pen.id}`, `p${pen.id.toString().padStart(3, '0')}`, pen.description)">
-                                            <strong>P<span x-text="pen.id.toString().padStart(3, '0')"></span></strong>
+                                            @click="setCode(`P${pen.code.toString().padStart(3, '0')}`, pen.description)"
+                                            x-show="shouldDisplaySelf(`p${pen.code}`, `p${pen.code.toString().padStart(3, '0')}`, pen.description)">
+                                            <strong>P<span x-text="pen.code.toString().padStart(3, '0')"></span></strong>
                                             <p x-text="pen.description"></p>
                                         </div>
                                     </template>
@@ -799,9 +799,9 @@
                                 <div class="flex flex-col space-y-2">
                                     <template x-for="pen in pens">
                                         <div class="card cursor-pointer"
-                                            @click="setCode(`P${pen.id.toString().padStart(3, '0')}`, pen.description)"
-                                            x-show="shouldDisplaySelf(`p${pen.id}`, `p${pen.id.toString().padStart(3, '0')}`, pen.description)">
-                                            <strong>P<span x-text="pen.id.toString().padStart(3, '0')"></span></strong>
+                                            @click="setCode(`P${pen.code.toString().padStart(3, '0')}`, pen.description)"
+                                            x-show="shouldDisplaySelf(`p${pen.code}`, `p${pen.code.toString().padStart(3, '0')}`, pen.description)">
+                                            <strong>P<span x-text="pen.code.toString().padStart(3, '0')"></span></strong>
                                             <p x-text="pen.description"></p>
                                         </div>
                                     </template>

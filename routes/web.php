@@ -291,6 +291,13 @@ Route::middleware('auth')->group(function () {
 
         Route::delete('/accounts/remove', [OrganisationController::class, 'accountRemove'])->name('orgs.account.remove');
 
+        Route::prefix('infractions')->group(function () {
+            Route::get('', [OrganisationController::class, 'infractions'])->name('orgs.infractions');
+            Route::post('create', [OrganisationController::class, 'createInfraction'])->name('orgs.infractions.create');
+            Route::get('{type}/{id}', [OrganisationController::class, 'getInfraction'])->name('orgs.infractions.view');
+            Route::post('{type}/{id}', [OrganisationController::class, 'updateInfraction'])->name('orgs.infractions.update');
+            Route::delete('{type}/{id}', [OrganisationController::class, 'deleteInfraction'])->name('orgs.infractions.delete');
+        });
 
         Route::prefix('scoring')->group(function () {
             Route::get('', [OrganisationController::class, 'scoringSettings'])->name('orgs.scoring');
