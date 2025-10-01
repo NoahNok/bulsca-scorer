@@ -71,7 +71,9 @@ class SpeedsEventController extends Controller
             $eventResults = $event->getRankedResults($league);
         }
 
-        return view('competition.events.speeds.view', ['comp' => $comp, 'event' => $event, 'eventResults' => $eventResults, 'activeLeague' => $league]);
+        $show_dq_points = $event->scoringSchema->schema['allow_disqualified_to_rank'] ?? false;
+
+        return view('competition.events.speeds.view', ['comp' => $comp, 'event' => $event, 'eventResults' => $eventResults, 'activeLeague' => $league, 'show_dq_points' => $show_dq_points]);
     }
 
     public function edit(Competition $comp, CompetitionSpeedEvent $event)
@@ -258,29 +260,7 @@ class SpeedsEventController extends Controller
             $event->save();
         }
 
-        $ss = ['equation' => $validated['equation'], 'global_variables' => $validated['global_variables']];
-
-        if (array_key_exists('local_variables', $validated)) {
-            $ss['local_variables'] = $validated['local_variables'];
-        }
-
-        if (array_key_exists('penalty_func', $validated)) {
-            $ss['penalty_func'] = $validated['penalty_func'];
-        }
-
-        if (array_key_exists('auto_penalties', $validated)) {
-            $ss['auto_penalties'] = $validated['auto_penalties'];
-        }
-
-        if (array_key_exists('auto_disqualifications', $validated)) {
-            $ss['auto_disqualifications'] = $validated['auto_disqualifications'];
-        }
-
-        $schema->schema = $ss;
-
-
-
-        $schema->Save();
+        $schema->editFromRequest($request);
 
         return response()->json([]);
     }

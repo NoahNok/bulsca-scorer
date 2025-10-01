@@ -86,62 +86,118 @@
                                 @endphp
 
                                 @forelse ($eventResults as $result)
-                                    <tr x-data="{ name: `{{ $result->entity->getName() }}` }" x-show="name.toLowerCase().includes(search.toLowerCase())">
-                                        <th scope="row">
-                                            {{ $result->entity->getName() }}
-                                        </th>
-                                        @if ($event->digitalJudgeEnabled)
-                                            <td scope="col">
-                                                @php
-                                                    $h = $eventHeats
-                                                        ->where('entity_id', $result->entity->id)
-                                                        ->where('entity_type', $result->entity->getMorphClass())
-                                                        ->first();
-                                                @endphp
-                                                @if ($h)
-                                                    H{{ $h->heat }}L{{ $h->lane }}:
-                                                    {{ $h->getOOF($event->id)?->oof ?: '-' }}
-                                                @else
-                                                    -
-                                                @endif
-                                            </td>
-                                        @endif
-                                        <td>
+                                    @dump($result)
+                                    @if ($result->isCombined())
+                                        <tr x-data="{ name: `{{ $result->entity->getName() }}` }"
+                                            x-show="name.toLowerCase().includes(search.toLowerCase())">
+                                            <th scope="row">
+                                                {!! $result->combined->map(fn($item) => $item->entity->getName())->implode('<br>') !!}
+
+
+                                            </th>
+                                            @if ($event->digitalJudgeEnabled)
+                                                <td scope="col">
 
 
 
-                                            {{ App\Models\SpeedResult::prettyTime($result->resolvedResult) }}
-
-                                            @if ($result->resolvedResult != $result->result)
-                                                <br>
-                                                <small>
-                                                    Was {{ App\Models\SpeedResult::prettyTime($result->result) }}
-                                                </small>
+                                                    N/A
+                                                </td>
                                             @endif
+                                            <td>
+                                                <div class="flex justify-end items-center ">
+                                                    <div class="border-r-2 pr-2">
+                                                        {!! $result->combined->map(fn($item) => App\Models\SpeedResult::prettyTime($item->result))->implode('<br>') !!}
+                                                    </div>
+                                                    <div class="pl-2">
+                                                        {{ App\Models\SpeedResult::prettyTime($result->resolvedResult) }}
+                                                    </div>
+                                                </div>
 
 
-                                        </td>
+                                            </td>
 
 
-                                        <td>
-                                            {{ $result->getDisqualificationsString() ?: '-' }}
-                                        </td>
+                                            <td>
+                                                {!! $result->combined->map(fn($item) => $item->getDisqualificationsString() ?: '-')->implode('<br>') !!}
 
-                                        @if ($event->hasPenalties())
+                                            </td>
+
+                                            @if ($event->hasPenalties())
+                                                <td>
+
+                                                    {{ $result->getPenaltiesString() ?: '-' }}
+
+                                                </td>
+                                            @endif
+                                            <td>
+                                                {{ $result->isDisqualified() && !$show_dq_points ? 'DQ' : (round($result->points, 1) ?: '-') }}
+                                            </td>
+                                            <td>
+                                                {{ $result->position }}
+                                            </td>
+
+                                        </tr>
+                                    @else
+                                        <tr x-data="{ name: `{{ $result->entity->getName() }}` }"
+                                            x-show="name.toLowerCase().includes(search.toLowerCase())">
+                                            <th scope="row">
+                                                {{ $result->entity->getName() }}
+                                            </th>
+                                            @if ($event->digitalJudgeEnabled)
+                                                <td scope="col">
+                                                    @php
+                                                        $h = $eventHeats
+                                                            ->where('entity_id', $result->entity->id)
+                                                            ->where('entity_type', $result->entity->getMorphClass())
+                                                            ->first();
+                                                    @endphp
+                                                    @if ($h)
+                                                        H{{ $h->heat }}L{{ $h->lane }}:
+                                                        {{ $h->getOOF($event->id)?->oof ?: '-' }}
+                                                    @else
+                                                        -
+                                                    @endif
+                                                </td>
+                                            @endif
                                             <td>
 
-                                                {{ $result->getPenaltiesString() ?: '-' }}
+
+
+                                                {{ App\Models\SpeedResult::prettyTime($result->resolvedResult) }}
+
+                                                @if ($result->resolvedResult != $result->result)
+                                                    <br>
+                                                    <small>
+                                                        Was {{ App\Models\SpeedResult::prettyTime($result->result) }}
+                                                    </small>
+                                                @endif
+
 
                                             </td>
-                                        @endif
-                                        <td>
-                                            {{ $result->isDisqualified() ? 'DQ' : (round($result->points) ?: '-') }}
-                                        </td>
-                                        <td>
-                                            {{ $result->position }}
-                                        </td>
 
-                                    </tr>
+
+                                            <td>
+                                                {{ $result->getDisqualificationsString() ?: '-' }}
+                                            </td>
+
+                                            @if ($event->hasPenalties())
+                                                <td>
+
+                                                    {{ $result->getPenaltiesString() ?: '-' }}
+
+                                                </td>
+                                            @endif
+                                            <td>
+                                                {{ $result->isDisqualified() && !$show_dq_points ? 'DQ' : (round($result->points, 1) ?: '-') }}
+                                            </td>
+                                            <td>
+                                                {{ $result->position }}
+                                            </td>
+
+                                        </tr>
+                                    @endif
+
+
                                 @empty
                                     <tr class="empty ">
                                         <th colspan="100" scope="row">

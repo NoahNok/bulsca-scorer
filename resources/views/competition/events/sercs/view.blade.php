@@ -76,7 +76,7 @@
                                         </td>
                                         <td>
                                             @php
-                                                $res = round($result->points);
+                                                $res = round($result->points, 1);
                                             @endphp
                                             {!! $result->isDisqualified() ? "<s>{$res}</s> DQ" : $res !!}
 

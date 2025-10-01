@@ -88,6 +88,9 @@
  
      init() {
          this.data = {{ json_encode($schema->schema ?? null) }};
+         console.log({{ json_encode($schema->schema ?? null) }})
+ 
+ 
  
  
          if (!this.data) {
@@ -119,6 +122,19 @@
              this.data['global_variables'] = []
          }
  
+         if (!('rank_higher' in this.data)) {
+             this.data['rank_higher'] = true
+         }
+ 
+         if (!this.data['rank_equation']) {
+             this.data['rank_equation'] = ''
+         }
+ 
+         if (!('allow_disqualified_to_rank' in this.data)) {
+             this.data['allow_disqualified_to_rank'] = false
+         }
+ 
+ 
      },
  
      createNew() {
@@ -129,7 +145,10 @@
              global_variables: [],
              local_variables: [],
              auto_penalties: [],
-             auto_disqualifications: []
+             auto_disqualifications: [],
+             rank_higher: true,
+             rank_equation: '',
+             allow_disqualified_to_rank: false
          }
      },
  
@@ -391,6 +410,28 @@
          </div>
 
          <br>
+
+         <hr class="spacer">
+         <h2>Ranking Options</h2>
+         <p class="-mt-4">
+             The following options apply to ranking, and occur when ranking each item based on its calculated points
+         </p>
+         <div class="se-form-input">
+             <input type="text" x-model="data.rank_equation" placeholder="rank equation">
+         </div>
+
+         <div class="flex items-center space-x-6">
+             <div class="se-form-input checkbox">
+                 <label for="rank_higher">Highest Score Wins</label>
+                 <input type="checkbox" id="rank_higher" x-model="data.rank_higher">
+
+             </div>
+
+             <div class="se-form-input checkbox">
+                 <label for="rank_disqualified">Rank Disqualified Items</label>
+                 <input type="checkbox" id="rank_disqualified" x-model="data.allow_disqualified_to_rank">
+             </div>
+         </div>
 
          <button class="se-btn se-btn-success" @click="save">Save</button>
 

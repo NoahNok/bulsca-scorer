@@ -20,6 +20,7 @@ class RankedResult extends Result
     /**
      * @param Collection<int, Disqualification> $disqualifications
      * @param Collection<int, Penalty> $penalties
+     * @param Collection<int, Result> $combined
      */
     public function __construct(
         public int $id,
@@ -31,10 +32,12 @@ class RankedResult extends Result
         public ?float $points,
         public ?Collection $disqualifications = null,
         public ?Collection $penalties = null,
+        public ?Collection $combined = null,
     ) {
         $this->disqualifications ??= new Collection();
         $this->penalties ??= new Collection();
-        parent::__construct($id, $result, $entity, $event, $disqualifications, $penalties);
+        $this->combined ??= new Collection();
+        parent::__construct($id, $result, $entity, $event, $disqualifications, $penalties, $combined);
     }
 
     public static function fromResolved(ResolvedResult $resolved, int $position): RankedResult
@@ -48,7 +51,8 @@ class RankedResult extends Result
             $position,
             $resolved->points,
             $resolved->disqualifications,
-            $resolved->penalties
+            $resolved->penalties,
+            $resolved->combined
         );
     }
 }

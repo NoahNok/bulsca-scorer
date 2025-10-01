@@ -57,6 +57,14 @@ class ScoringSchema extends Model
             $ss['auto_disqualifications'] = $validated['auto_disqualifications'];
         }
 
+        //rank_higher rank_equation allow_disqualified_to_rank
+
+        foreach (['rank_higher', 'rank_equation', 'allow_disqualified_to_rank'] as $key) {
+            if (array_key_exists($key, $validated)) {
+                $ss[$key] = $validated[$key];
+            }
+        }
+
         $this->schema = $ss;
 
 
@@ -142,6 +150,22 @@ class ScoringEngine
         $this->registerBuiltins();
     }
 
+
+    public function evaluateInstance(string $equation, $item, array $variables)
+    {
+
+        $variables['item'] = $item;
+        // Lets precopile each local variable's expression
+        $variableNames = array_keys($variables);
+
+
+
+        $equation = $this->el->parse($equation, $variableNames);
+
+
+        return $this->safeEval($equation, $variables, "equation");
+    }
+
     public function applyViolations(array $payload, Collection $results): Collection
     {
         $autoPens = $payload['auto_penalties'] ?? [];
@@ -195,13 +219,15 @@ class ScoringEngine
 
         $penalty_func = array_key_exists('penalty_func', $payload) && $payload['penalty_func'] ? $this->el->parse($payload['penalty_func'], ['item']) : null;
 
+        $force_penalty_function = true;
+
         // Apply penalty function 
         $resolvedResults = collect([]);
         foreach ($results as $result) {
             $resolvedResult = $result->result;
 
             // Do penalty func
-            if ($penalty_func && $result->penalties->count() > 0) {
+            if ($penalty_func && ($result->penalties->count() > 0 || $force_penalty_function)) {
                 $resolvedResult = $this->el->evaluate($penalty_func, ['item' => $result]);
             }
 
@@ -322,6 +348,9 @@ class ScoringEngine
         return $ctx;
     }
 
+    private $rankCache = [];
+    private $rankMedianCache = [];
+
     /**
      * Register helper functions like FILTER and MAXIMUM.
      */
@@ -415,6 +444,106 @@ class ScoringEngine
             function ($arguments, $numb) {
 
                 return floor($numb);
+            }
+        );
+
+
+        $this->el->register(
+            'RANK',
+            function ($array, $attribute, $item) {
+                return sprintf('RANK(%s, %s, %s)', $array, $attribute, $item);
+            },
+            function ($arguments, $array, $attribute, $item) {
+
+                $ids = collect($array)->pluck('id')->sort()->values()->all();
+                $cacheKey = md5(json_encode($ids) . $attribute);
+
+                if (!isset($this->rankCache[$cacheKey])) {
+                    $items = $this->toCollection($array);
+
+                    // Sort descending for points, ascending for time (customize as needed)
+                    $sorted = $items->sortByDesc($attribute)->values();
+
+                    // Find all values for the attribute
+                    $this->rankCache[$cacheKey] = $values = $sorted->pluck($attribute)->all();
+                }
+
+                $values = $this->rankCache[$cacheKey];
+
+                // Get the value for the current item
+                $itemValue = is_object($item) ? $item->{$attribute} : $item[$attribute];
+
+                // Find the rank (1-based, ties get same rank)
+                $rank = 1;
+                foreach ($values as $i => $val) {
+                    if ($val == $itemValue) {
+                        $rank = $i + 1;
+                        break;
+                    }
+                }
+                return $rank;
+            }
+        );
+
+        // THIS WILL NOT RANK INCLUDE DISQUALIFIED ENTITIES
+        $this->el->register(
+            'RANKMEDIAN',
+            function ($array, $attribute, $item) {
+                return sprintf('RANKMEDIAN(%s, %s, %s)', $array, $attribute, $item);
+            },
+            function ($arguments, $array, $attribute, $item) {
+                $items = $this->toCollection($array);
+
+
+
+                // Generate a cache key using sorted model IDs and the attribute
+                $ids = $items->pluck('id')->sort()->values()->all();
+                $cacheKey = md5(json_encode($ids) . $attribute);
+
+                // Cache the rank map if not already stored
+                if (!isset($this->rankMedianCache[$cacheKey])) {
+                    // Sort descending so highest score gets rank 1
+
+
+                    // need to add option to pass thru allowing ranking on dq'd results
+                    // also need to pass an option to change ranking order, even if this is
+                    // just a seperate function called RANKUPMEDIAN (then have both RANKMEDIAN functions call a function that takes a specifier)
+
+
+                    // $sorted = $items->filter(function ($item) {
+                    //     return !$item->isDisqualified();
+                    // })->sortByDesc($attribute)->values();
+
+                    $sorted = $items->sortBy($attribute)->values();
+
+
+                    // Build a map of value => list of rank positions
+                    $rankMap = [];
+                    foreach ($sorted as $i => $entry) {
+                        $val = is_object($entry) ? $entry->{$attribute} : $entry[$attribute];
+                        $rankMap[$val][] = $i + 1; // 1-based rank
+                    }
+
+                    $this->rankMedianCache[$cacheKey] = $rankMap;
+                }
+
+                $itemValue = is_object($item) ? $item->{$attribute} : $item[$attribute];
+                $ranks = $this->rankMedianCache[$cacheKey][$itemValue] ?? [];
+
+                if (empty($ranks)) {
+                    return null; // or throw exception
+                }
+
+
+
+                $count = count($ranks);
+                $middle = floor($count / 2);
+
+                $median = ($count % 2 === 0)
+                    ? ($ranks[$middle - 1] + $ranks[$middle]) / 2
+                    : $ranks[$middle];
+
+                return $median;
             }
         );
     }

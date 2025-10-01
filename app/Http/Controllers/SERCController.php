@@ -319,29 +319,31 @@ class SERCController extends Controller
             $serc->save();
         }
 
-        $ss = ['equation' => $validated['equation'], 'global_variables' => $validated['global_variables']];
+        $schema->editFromRequest($request);
 
-        if (array_key_exists('local_variables', $validated)) {
-            $ss['local_variables'] = $validated['local_variables'];
-        }
+        // $ss = ['equation' => $validated['equation'], 'global_variables' => $validated['global_variables']];
 
-        if (array_key_exists('penalty_func', $validated)) {
-            $ss['penalty_func'] = $validated['penalty_func'];
-        }
+        // if (array_key_exists('local_variables', $validated)) {
+        //     $ss['local_variables'] = $validated['local_variables'];
+        // }
 
-        if (array_key_exists('auto_penalties', $validated)) {
-            $ss['auto_penalties'] = $validated['auto_penalties'];
-        }
+        // if (array_key_exists('penalty_func', $validated)) {
+        //     $ss['penalty_func'] = $validated['penalty_func'];
+        // }
 
-        if (array_key_exists('auto_disqualifications', $validated)) {
-            $ss['auto_disqualifications'] = $validated['auto_disqualifications'];
-        }
+        // if (array_key_exists('auto_penalties', $validated)) {
+        //     $ss['auto_penalties'] = $validated['auto_penalties'];
+        // }
 
-        $schema->schema = $ss;
+        // if (array_key_exists('auto_disqualifications', $validated)) {
+        //     $ss['auto_disqualifications'] = $validated['auto_disqualifications'];
+        // }
+
+        // $schema->schema = $ss;
 
 
 
-        $schema->Save();
+        // $schema->Save();
 
         return response()->json([]);
     }

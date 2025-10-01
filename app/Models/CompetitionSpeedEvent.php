@@ -9,6 +9,7 @@ use App\Models\AbstractClasses\Entity;
 use App\Models\AbstractClasses\Event;
 use App\Models\Event\Disqualification;
 use App\Models\Event\Penalty;
+use App\Models\Event\ScoringEngine;
 use App\Models\Event\ScoringSchema;
 use App\Models\Orders\EntityEventSeed;
 use App\Models\Orders\Heat;
@@ -24,14 +25,30 @@ class CompetitionSpeedEvent extends Event
         $resolvedResults = collect($this->getResolvedResults(league: $league));
 
 
-        $scoringSchema = $this->scoringSchema;
-        // $scoringSchema = ScoringSchema::where('name', 'BULSCA Rope Throw')->first();
 
-        $sortedResults = $scoringSchema->applyToResults($resolvedResults)->sortBy(function ($result) {
-            return [
-                count($result->disqualifications) > 0 ? 1 : 0,
-                -$result->points
-            ];
+        $scoringSchema = $this->scoringSchema;
+
+        $rankHigher = $scoringSchema->schema['rank_higher'] ?? true; // If we are ranking based on highest score or not
+        $rankEquation = $scoringSchema->schema['rank_equation'] ?? null;
+        $allowDisqualifiedToRank = $scoringSchema->schema['allow_disqualified_to_rank'] ?? false;
+
+        $rankFunction = null;
+
+        if ($allowDisqualifiedToRank) {
+            $rankFunction = function ($result) use ($rankHigher) {
+                return $result->points * ($rankHigher ? -1 : 1);
+            };
+        } else {
+            $rankFunction = function ($result) use ($rankHigher) {
+                return [
+                    count($result->disqualifications) > 0 ? 1 : 0,
+                    $result->points * ($rankHigher ? -1 : 1)
+                ];
+            };
+        }
+
+        $sortedResults = $scoringSchema->applyToResults($resolvedResults)->sortBy(function ($result) use ($rankFunction) {
+            return $rankFunction($result);
         })->values();
 
         $rankedResults = collect();
@@ -40,7 +57,7 @@ class CompetitionSpeedEvent extends Event
         $position = 1;
 
         foreach ($sortedResults as $result) {
-            $currentScore = count($result->disqualifications) > 0 ? 'DQ' : $result->points;
+            $currentScore = (count($result->disqualifications) > 0 && !$allowDisqualifiedToRank) ? 'DQ' : $result->points;
 
             if ($currentScore === $previousScore) {
                 $rank = $previousRank;
@@ -54,6 +71,14 @@ class CompetitionSpeedEvent extends Event
             $position++;
         }
 
+        if ($rankEquation) {
+            $totalResults = count($sortedResults);
+
+            $rankEngine = new ScoringEngine();
+            $rankedResults->each(function ($rankedResult) use ($rankEngine, $totalResults, $rankEquation) {
+                $rankedResult->position = $rankEngine->evaluateInstance($rankEquation, $rankedResult, ['teams' => $totalResults, 'rank' => $rankedResult->position]);
+            });
+        }
 
         return $rankedResults->toArray();
     }
@@ -66,7 +91,25 @@ class CompetitionSpeedEvent extends Event
         $resolvedResults = [];
         $results = collect($this->getRawResults(league: $league));
 
-        return $this->scoringSchema->applyViolations($results)->toArray();
+        $resolvedResults = $this->scoringSchema->applyViolations($results)->toArray();
+
+
+
+        $grouped = collect($resolvedResults)->groupBy(function (ResolvedResult $result) {
+            return $result->entity->getLeague->id; // or just $result->getLeague() if appropriate
+        });
+
+        // Combine results within each group
+        $combinedResults = $grouped->map(function ($group) {
+            /** @var ResolvedResult[] $group */
+            $base = $group->shift(); // take the first result as base
+            foreach ($group as $result) {
+                $base->combineWith($result);
+            }
+            return $base;
+        })->values()->all();
+
+        return $combinedResults;
     }
 
     public function getRawResults(bool $withEmpty = false, ?League $league = null): array

@@ -12,6 +12,7 @@ use App\Models\AbstractClasses\Event;
 use App\Models\DigitalJudge\JudgeNote;
 use App\Models\Event\Disqualification;
 use App\Models\Event\Penalty;
+use App\Models\Event\ScoringEngine;
 use App\Models\Event\ScoringSchema;
 use App\Models\Interfaces\IEvent;
 use App\Models\Interfaces\IPenalisable;
@@ -43,12 +44,29 @@ class SERC extends Event
 
 
         $scoringSchema = $this->scoringSchema;
+        $rankHigher = $scoringSchema->schema['rank_higher'] ?? true; // If we are ranking based on highest score or not
+        $rankEquation = $scoringSchema->schema['rank_equation'] ?? null;
+        $allowDisqualifiedToRank = $scoringSchema->schema['allow_disqualified_to_rank'] ?? false;
 
-        $sortedResults = $scoringSchema->applyToResults($resolvedResults)->sortBy(function ($result) {
-            return [
-                count($result->disqualifications) > 0 ? 1 : 0,
-                -$result->points
-            ];
+
+        $rankFunction = null;
+
+        if ($allowDisqualifiedToRank) {
+            $rankFunction = function ($result) use ($rankHigher) {
+                return $result->points * ($rankHigher ? -1 : 1);
+            };
+        } else {
+            $rankFunction = function ($result) use ($rankHigher) {
+                return [
+                    count($result->disqualifications) > 0 ? 1 : 0,
+                    $result->points * ($rankHigher ? -1 : 1)
+                ];
+            };
+        }
+
+
+        $sortedResults = $scoringSchema->applyToResults($resolvedResults)->sortBy(function ($result) use ($rankFunction) {
+            return $rankFunction($result);
         })->values();
 
         $rankedResults = collect();
@@ -69,6 +87,15 @@ class SERC extends Event
 
             $rankedResults->push(RankedResult::fromResolved($result, $rank));
             $position++;
+        }
+
+        if ($rankEquation) {
+            $totalResults = count($sortedResults);
+
+            $rankEngine = new ScoringEngine();
+            $rankedResults->each(function ($rankedResult) use ($rankEngine, $totalResults, $rankEquation) {
+                $rankedResult->position = $rankEngine->evaluateInstance($rankEquation, $rankedResult, ['teams' => $totalResults, 'rank' => $rankedResult->position]);
+            });
         }
 
 

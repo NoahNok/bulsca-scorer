@@ -12,9 +12,12 @@ use Illuminate\Database\Eloquent\Collection;
 class Result
 {
 
+
+
     /**
      * @param Collection<int, Disqualification> $disqualifications
      * @param Collection<int, Penalty> $penalties
+     * @param Collection<int, Result> $combined
      */
     public function __construct(
         public int $id,
@@ -23,9 +26,11 @@ class Result
         public Event $event,
         public ?Collection $disqualifications = null,
         public ?Collection $penalties = null,
+        public ?Collection $combined = null
     ) {
         $this->disqualifications ??= new Collection();
         $this->penalties ??= new Collection();
+        $this->combined ??= new Collection();
     }
 
 
@@ -66,5 +71,10 @@ class Result
     public function hasPenalties(): bool
     {
         return $this->penalties->count() > 0;
+    }
+
+    public function isCombined(): bool
+    {
+        return $this->combined->count() > 0;
     }
 }
