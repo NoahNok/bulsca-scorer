@@ -158,8 +158,10 @@ Route::middleware('auth')->group(function () {
                 Route::delete('/{event}/delete', [SpeedsEventController::class, 'delete'])->name('comps.view.events.speeds.delete');
 
                 Route::get('/{event}', [SpeedsEventController::class, 'view'])->name('comps.events.speeds.view');
+                Route::get('/{event}/edit-result', [SpeedsEventController::class, 'editResult'])->name('comps.events.speeds.editResult');
                 Route::get('/{event}/edit', [SpeedsEventController::class, 'edit'])->name('comps.events.speeds.edit');
-                Route::post('/{event}/edit', [SpeedsEventController::class, 'updateResults'])->name('comps.view.events.speeds.editPost');
+                Route::post('/{event}/edit', [SpeedsEventController::class, 'editPost'])->name('comps.events.speeds.editPost');
+                Route::post('/{event}/edit-result', [SpeedsEventController::class, 'updateResults'])->name('comps.view.events.speeds.editResultPost');
 
 
                 Route::get('/{event}/digital-judge-toggle', [DigitalJudgeController::class, 'speedToggle'])->name('dj.speedToggle');

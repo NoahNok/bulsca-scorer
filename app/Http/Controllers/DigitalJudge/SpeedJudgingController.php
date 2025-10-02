@@ -67,7 +67,6 @@ class SpeedJudgingController extends Controller
 
         $teams = [];
 
-        //dump($request->all());
         foreach ($request->all() as $key => $value) {
             if (!str_starts_with($key, "team-")) continue;
             $splt = explode("-", $key);
@@ -76,7 +75,6 @@ class SpeedJudgingController extends Controller
             $teams[$splt[1]][$splt[2]] = $value;
         }
 
-        //dump($teams);
 
         foreach ($teams as $team => $values) {
 

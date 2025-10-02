@@ -31,7 +31,9 @@ class UpdateScoringSettings extends FormRequest
             'penalty_func' => 'string|sometimes|nullable',
             'rank_higher' => 'boolean|required',
             'rank_equation' => 'string|sometimes|nullable',
-            'allow_disqualified_to_rank' => 'boolean|required'
+            'allow_disqualified_to_rank' => 'boolean|required',
+            'group_by' => 'array',
+            'force_penalty' => 'boolean|required',
         ];
     }
 }

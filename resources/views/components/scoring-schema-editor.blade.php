@@ -134,6 +134,14 @@
              this.data['allow_disqualified_to_rank'] = false
          }
  
+         if (!('group_by' in this.data)) {
+             this.data['group_by'] = []
+         }
+ 
+         if (!('force_penalty' in this.data)) {
+             this.data['force_penalty'] = false
+         }
+ 
  
      },
  
@@ -148,7 +156,9 @@
              auto_disqualifications: [],
              rank_higher: true,
              rank_equation: '',
-             allow_disqualified_to_rank: false
+             allow_disqualified_to_rank: false,
+             group_by: [],
+             force_penalty: false
          }
      },
  
@@ -174,6 +184,36 @@
          this.data = schema.schema
          this.data.name = schema.name
          this.stage = 2
+ 
+         if (!('rank_higher' in this.data)) {
+             this.data['rank_higher'] = true
+         }
+ 
+         if (!this.data['rank_equation']) {
+             this.data['rank_equation'] = ''
+         }
+ 
+         if (!('allow_disqualified_to_rank' in this.data)) {
+             this.data['allow_disqualified_to_rank'] = false
+         }
+ 
+         if (!('group_by' in this.data)) {
+             this.data['group_by'] = []
+         }
+ 
+         if (!('force_penalty' in this.data)) {
+             this.data['force_penalty'] = false
+         }
+     },
+ 
+     toggleGrouping(item) {
+         if (this.data.group_by.includes(item)) {
+             // remove it
+             this.data.group_by = this.data.group_by.filter(i => i !== item);
+         } else {
+             // add it
+             this.data.group_by.push(item)
+         }
      },
  
  
@@ -407,6 +447,41 @@
          </p>
          <div class="se-form-input">
              <input type="text" x-model="data.penalty_func" placeholder="equation">
+         </div>
+
+         <div class="se-form-input checkbox">
+             <label for="rank_higher">Always Run</label>
+             <input type="checkbox" id="rank_higher" x-model="data.force_penalty">
+             <p>If enabled, the penatly function will run regardless of if the result has a penalty.</p>
+
+         </div>
+
+         <br>
+
+         <h3>
+             Grouping
+         </h3>
+         <p class="-mt-4">Group results by one or more of the below or none at all.
+         </p>
+         <div class="flex items-center space-x-6">
+             <div class="se-form-input checkbox">
+                 <label for="grouping_league">League</label>
+                 <input type="checkbox" id="grouping_league" @change="toggleGrouping('league')"
+                     :checked="data.group_by.includes('league')">
+
+             </div>
+
+             <div class="se-form-input checkbox">
+                 <label for="grouping_club">Club</label>
+                 <input type="checkbox" id="grouping_club" @change="toggleGrouping('club')"
+                     :checked="data.group_by.includes('club')">
+             </div>
+
+             <div class="se-form-input checkbox">
+                 <label for="grouping_team">Team</label>
+                 <input type="checkbox" id="grouping_team" @change="toggleGrouping('team')"
+                     :checked="data.group_by.includes('team')">
+             </div>
          </div>
 
          <br>

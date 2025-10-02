@@ -22,12 +22,13 @@ class CompetitionSpeedEvent extends Event
 
     public function getRankedResults(?League $league = null): array
     {
+
+        if (!$this->scoringSchema) {
+            return [];
+        }
+
         $resolvedResults = collect($this->getResolvedResults(league: $league));
-
-
-
         $scoringSchema = $this->scoringSchema;
-
         $rankHigher = $scoringSchema->schema['rank_higher'] ?? true; // If we are ranking based on highest score or not
         $rankEquation = $scoringSchema->schema['rank_equation'] ?? null;
         $allowDisqualifiedToRank = $scoringSchema->schema['allow_disqualified_to_rank'] ?? false;
@@ -91,25 +92,11 @@ class CompetitionSpeedEvent extends Event
         $resolvedResults = [];
         $results = collect($this->getRawResults(league: $league));
 
-        $resolvedResults = $this->scoringSchema->applyViolations($results)->toArray();
+        $resolvedResults = $this->scoringSchema->applyViolations($results);
 
 
 
-        $grouped = collect($resolvedResults)->groupBy(function (ResolvedResult $result) {
-            return $result->entity->getLeague->id; // or just $result->getLeague() if appropriate
-        });
-
-        // Combine results within each group
-        $combinedResults = $grouped->map(function ($group) {
-            /** @var ResolvedResult[] $group */
-            $base = $group->shift(); // take the first result as base
-            foreach ($group as $result) {
-                $base->combineWith($result);
-            }
-            return $base;
-        })->values()->all();
-
-        return $combinedResults;
+        return $this->applyGrouping($resolvedResults)->toArray();
     }
 
     public function getRawResults(bool $withEmpty = false, ?League $league = null): array

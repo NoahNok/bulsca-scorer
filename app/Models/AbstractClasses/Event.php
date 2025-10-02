@@ -18,6 +18,7 @@ use App\Models\SpeedResult;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 
@@ -46,6 +47,47 @@ abstract class Event extends Model
             $event->penalties()->delete();
             $event->disqualifications()->delete();
         });
+    }
+
+    protected function applyGrouping(SupportCollection $results): SupportCollection
+    {
+
+
+
+        $groupBy = $this->scoringSchema->schema['group_by'] ?? null; // could come from user input
+
+        if (!$groupBy || empty($groupBy)) {
+            return $results;
+        }
+
+        $grouped = collect($results)->groupBy(function (ResolvedResult $result) use ($groupBy) {
+            $parts = collect($groupBy)->map(function ($key) use ($result) {
+                return match ($key) {
+                    'league' => $result->entity->getLeague->id ?? 'no-league',
+                    'team'   => $result->entity->id ?? 'no-team',
+                    'club'   => $result->entity->getClub()->id ?? 'no-club',
+                    default  => 'unknown',
+                };
+            });
+
+            // Join into a single flat key like "league:1|team:5|club:9"
+            return $parts->implode('|');
+        });
+
+
+
+
+        // Combine results within each group
+        $combinedResults = $grouped->map(function ($group) {
+            /** @var ResolvedResult[] $group */
+            $base = $group->shift(); // take the first result as base
+            foreach ($group as $result) {
+                $base->combineWith($result);
+            }
+            return $base;
+        })->values();
+
+        return $combinedResults;
     }
 
     public function penalties()

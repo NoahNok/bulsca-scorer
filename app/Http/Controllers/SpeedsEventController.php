@@ -27,6 +27,7 @@ class SpeedsEventController extends Controller
         $cse = new CompetitionSpeedEvent();
         $cse->event = $data['event'];
         $cse->competition = $comp->id;
+        $cse->scorable_entity = $data['target_entity'];
 
         $time = $data['record'];
         $minSecSplit = explode(":", $time);
@@ -45,7 +46,7 @@ class SpeedsEventController extends Controller
 
 
         // Need to add all teams to this new event
-        $allTeams = $comp->getCompetitionTeams;
+        $allTeams = $cse->getScorableEntities();
         foreach ($allTeams as $team) {
             $sr = new SpeedResult();
             $sr->entity()->associate($team);
@@ -78,7 +79,47 @@ class SpeedsEventController extends Controller
 
     public function edit(Competition $comp, CompetitionSpeedEvent $event)
     {
-        return view('competition.events.speeds.edit', ['comp' => $comp, 'event' => $event]);
+        return view('competition.events.speeds.edit', compact('comp', 'event'));
+    }
+
+
+    public function editPost(Competition $comp, CompetitionSpeedEvent $event, Request $request)
+    {
+
+        $same = $request->input('target_entity', $event->scorable_entity) == $event->scorable_entity;
+
+        if ($same) {
+            return redirect()->route('comps.events.speeds.view', [$comp, $event]);
+        }
+
+
+        $event->scorable_entity = $request->input('target_entity', $event->scorable_entity);
+
+
+        $event->save();
+
+        $event->results()->delete();
+        // Need to add all teams to this new event
+        $allTeams = $event->getScorableEntities();
+        foreach ($allTeams as $team) {
+            $sr = new SpeedResult();
+            $sr->entity()->associate($team);
+            $sr->event = $event->id;
+            $sr->save();
+        }
+
+
+
+
+        return redirect()->route('comps.events.speeds.view', [$comp, $event])->with('success', 'Event Updated');
+    }
+
+
+
+
+    public function editResult(Competition $comp, CompetitionSpeedEvent $event)
+    {
+        return view('competition.events.speeds.edit-result', ['comp' => $comp, 'event' => $event]);
     }
 
     public function updateResults(Competition $comp, CompetitionSpeedEvent $event, Request $request)

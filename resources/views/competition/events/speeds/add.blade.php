@@ -25,6 +25,17 @@
                 </select>
             </div>
 
+
+            <div class="se-form-input" style="margin-bottom: 0 !important">
+                <label for="">Target</label>
+
+                <select style="margin-bottom: 0 !important" name="target_entity" required>
+                    <option value="club">Clubs</option>
+                    <option value="team" selected>Teams</option>
+                    <option value="competitor">Competitiors</option>
+                </select>
+            </div>
+
             <input type="number" name="weight" value="1" required class="hidden">
             <input type="text" name="record" value="00:00.000" required class="hidden">
 

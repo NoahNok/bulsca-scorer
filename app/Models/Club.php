@@ -2,17 +2,24 @@
 
 namespace App\Models;
 
+use App\Models\AbstractClasses\Entity;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
-class Club extends Model
+class Club extends Entity
 {
     use HasFactory, Cloneable;
 
-    protected $fillable = ['name', 'region'];
+    protected $fillable = ['name', 'region', 'competition'];
+
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
 
     public function getTeams()
     {

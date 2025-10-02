@@ -36,7 +36,7 @@ class AppServiceProvider extends ServiceProvider
         Relation::morphMap([
             'club' => Club::class,
             'team' => CompetitionTeam::class,
-            'competitior' => Competitor::class
+            'competitor' => Competitor::class
         ]);
 
         View::composer('*', function ($view) {

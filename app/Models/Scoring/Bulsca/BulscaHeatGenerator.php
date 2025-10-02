@@ -13,7 +13,7 @@ class BulscaHeatGenerator implements IHeatGenerator
     public function generate(Competition $comp): void
     {
         $teams = $comp->getCompetitionTeams()->get()->sortByDesc('st_time');
-        //dump($teams->pluck('st_time'));
+
         $heats = [];
         $maxHeats = ceil($teams->count() / $comp->max_lanes);
 

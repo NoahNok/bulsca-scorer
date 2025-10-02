@@ -33,16 +33,11 @@ class SERC extends Event
 
     public function getRankedResults(?League $league = null): array
     {
-
         if (!$this->scoringSchema) {
             return [];
         }
 
         $resolvedResults = collect($this->getResolvedResults(league: $league));
-
-
-
-
         $scoringSchema = $this->scoringSchema;
         $rankHigher = $scoringSchema->schema['rank_higher'] ?? true; // If we are ranking based on highest score or not
         $rankEquation = $scoringSchema->schema['rank_equation'] ?? null;
@@ -123,15 +118,7 @@ class SERC extends Event
         foreach ($results->groupBy(fn($result) => $result->entity->id) as $id => $entityResults) {
 
             $resultTotal = $entityResults->reduce(fn($acc, $result) => $acc += $result->result * $result->markingPoint->weight, 0);
-
             $resultData = $entityResults->first();
-
-            // In SERC case fetch dq and pen now
-
-            // Apply any impacts of DQ/Pen APPLY DQ last as it overrides
-            // if ($disqualification) {
-            //     $resultTotal = 0;
-            // }
 
             $resolvedResults[] = new Result(
                 $resultData->id,
@@ -143,7 +130,9 @@ class SERC extends Event
             );
         }
 
-        return $this->scoringSchema->applyViolations($resolvedResults)->toArray();
+        $resolvedResults = $this->scoringSchema->applyViolations($resolvedResults);
+
+        return $this->applyGrouping($resolvedResults)->toArray();
     }
 
     public function getRawResults(bool $withEmpty = false, ?League $league = null): array
@@ -157,10 +146,6 @@ class SERC extends Event
         }
 
         $query = $query->with(['entity', 'getMarkingPoint', 'getMarkingPoint.getJudge']);
-
-
-
-
 
 
 

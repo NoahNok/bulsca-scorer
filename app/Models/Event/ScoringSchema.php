@@ -59,7 +59,7 @@ class ScoringSchema extends Model
 
         //rank_higher rank_equation allow_disqualified_to_rank
 
-        foreach (['rank_higher', 'rank_equation', 'allow_disqualified_to_rank'] as $key) {
+        foreach (['rank_higher', 'rank_equation', 'allow_disqualified_to_rank', 'group_by', 'force_penalty'] as $key) {
             if (array_key_exists($key, $validated)) {
                 $ss[$key] = $validated[$key];
             }
@@ -170,6 +170,7 @@ class ScoringEngine
     {
         $autoPens = $payload['auto_penalties'] ?? [];
         $autoDqs = $payload['auto_disqualifications'] ?? [];
+        $force_penalty_function = $payload['force_penalty'] ?? false;
 
         // Apply pens
         foreach ($autoPens as $autoPen) {
@@ -218,8 +219,6 @@ class ScoringEngine
         }
 
         $penalty_func = array_key_exists('penalty_func', $payload) && $payload['penalty_func'] ? $this->el->parse($payload['penalty_func'], ['item']) : null;
-
-        $force_penalty_function = true;
 
         // Apply penalty function 
         $resolvedResults = collect([]);
@@ -450,10 +449,10 @@ class ScoringEngine
 
         $this->el->register(
             'RANK',
-            function ($array, $attribute, $item) {
-                return sprintf('RANK(%s, %s, %s)', $array, $attribute, $item);
+            function ($array, $attribute, $item, $direction = 'DESC') {
+                return sprintf('RANK(%s, %s, %s, %s)', $array, $attribute, $item, $direction);
             },
-            function ($arguments, $array, $attribute, $item) {
+            function ($arguments, $array, $attribute, $item, $direction = 'DESC') {
 
                 $ids = collect($array)->pluck('id')->sort()->values()->all();
                 $cacheKey = md5(json_encode($ids) . $attribute);
@@ -462,7 +461,11 @@ class ScoringEngine
                     $items = $this->toCollection($array);
 
                     // Sort descending for points, ascending for time (customize as needed)
-                    $sorted = $items->sortByDesc($attribute)->values();
+                    if ($direction == 'ASC') {
+                        $sorted = $items->sortBy($attribute)->values();
+                    } else {
+                        $sorted = $items->sortByDesc($attribute)->values();
+                    }
 
                     // Find all values for the attribute
                     $this->rankCache[$cacheKey] = $values = $sorted->pluck($attribute)->all();
@@ -488,10 +491,10 @@ class ScoringEngine
         // THIS WILL NOT RANK INCLUDE DISQUALIFIED ENTITIES
         $this->el->register(
             'RANKMEDIAN',
-            function ($array, $attribute, $item) {
-                return sprintf('RANKMEDIAN(%s, %s, %s)', $array, $attribute, $item);
+            function ($array, $attribute, $item, $direction = 'DESC') {
+                return sprintf('RANKMEDIAN(%s, %s, %s, %s)', $array, $attribute, $item, $direction);
             },
-            function ($arguments, $array, $attribute, $item) {
+            function ($arguments, $array, $attribute, $item, $direction = 'DESC') {
                 $items = $this->toCollection($array);
 
 
@@ -510,11 +513,13 @@ class ScoringEngine
                     // just a seperate function called RANKUPMEDIAN (then have both RANKMEDIAN functions call a function that takes a specifier)
 
 
-                    // $sorted = $items->filter(function ($item) {
-                    //     return !$item->isDisqualified();
-                    // })->sortByDesc($attribute)->values();
 
-                    $sorted = $items->sortBy($attribute)->values();
+                    if ($direction == 'ASC') {
+                        $sorted = $items->sortBy($attribute)->values();
+                    } else {
+                        $sorted = $items->sortByDesc($attribute)->values();
+                    }
+
 
 
                     // Build a map of value => list of rank positions
