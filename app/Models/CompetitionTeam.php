@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Data\TeamAdditionalDetailsData;
+use App\DTO\EntityGrouping;
 use App\Helpers\ClassHelpers;
 use App\Models\AbstractClasses\Entity;
 use App\Traits\Cloneable;
@@ -35,10 +36,6 @@ class CompetitionTeam extends Entity
     }
 
 
-    public function getLeague()
-    {
-        return $this->hasOne(League::class, 'id', 'league');
-    }
 
     public function getSwimTowTime()
     {
@@ -55,16 +52,30 @@ class CompetitionTeam extends Entity
         return $this->getClubName() . " " . $this->team;
     }
 
-    public function formatName($format = ':C :N')
+    public function formatName($format = ':C - :N - (:S)')
     {
 
-        // if ($this->getCompetition->scoring_type == 'rlss-nationals' && $format == ':C :N (:S)') {
-        //     $format = ":N - :C (:R) - :L";
-        // } else if ($this->getCompetition->scoring_type == 'bulsca') {
-        //     $format = ":C :N";
-        // }
+        $targets = [':C', ':L', ':N', ':R', ':S'];
+        $search = [];
+        $replace = [];
 
-        return str_replace([":C", ":L", ":N", ":S", ":R"], [$this->getClub->name, $this->getLeague?->name ?? '-', $this->team, $this->getSwimTowTimeForDefault(), $this->getClub->region], $format);
+        foreach ($targets as $target) {
+            if (str_contains($format, $target)) {
+                $search[] = $target;
+
+                $value = match ($target) {
+                    ':C' => $this->getClub?->name ?? '-',
+                    ':L' => $this->getLeague?->name ?? '-',
+                    ':N' => $this->team ?? '-',
+                    ':R' => $this->getClub?->region ?? '-',
+                    ':S' => $this->getCompetitors->pluck('name')->implode(', ')
+                };
+
+                $replace[] = $value;
+            }
+        }
+
+        return str_replace($search, $replace, $format);
     }
 
     public function getCompetition()
@@ -85,8 +96,13 @@ class CompetitionTeam extends Entity
         return $position;
     }
 
-    public function asCompetitior()
+    public function getGrouping(): EntityGrouping
     {
-        return ClassHelpers::castToClass($this, Competitor::class);
+        return new EntityGrouping($this->getClub->id, $this->id, null, $this->league);
+    }
+
+    public function getCompetitors()
+    {
+        return $this->hasMany(Competitor::class, 'team');
     }
 }

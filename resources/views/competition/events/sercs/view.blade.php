@@ -119,11 +119,20 @@
 
             <h4>All teams</h4>
 
-            <div class="alert-box alert-warning">
-                <h1>NOAH DO THIS</h1>
-                <p>Make team list show in SERC order for the SERC, or use the global one if not serc_per_event
-                </p>
-            </div>
+
+
+            @php
+                $sercDraw = $serc->getDraw;
+
+            @endphp
+
+            @if ($sercDraw->empty())
+                <div class="alert-box">
+                    <h1>No SERC Draw</h1>
+                    <p>No SERC draw has been made, the items below are not ordered.
+                    </p>
+                </div>
+            @endif
 
             <div class="  relative w-full  ">
                 <div class="se-form-input imb-0 ">
@@ -148,27 +157,51 @@
                         </thead>
                         <tbody>
 
-                            @forelse ($serc->getDraw as $draw)
-                                <tr x-data="{ name: `{{ $draw->entity->getName() }}` }" x-show="name.toLowerCase().includes(search.toLowerCase())">
-                                    <th scope="row">
-                                        {{ $draw->draw }}. {{ $draw->entity->getName() }}
-                                    </th>
+                            @if (!$sercDraw->empty())
+                                @forelse ($sercDraw as $draw)
+                                    <tr x-data="{ name: `{{ $draw->entity->getName() }}` }" x-show="name.toLowerCase().includes(search.toLowerCase())">
+                                        <th scope="row">
+                                            {{ $draw->draw }}. {{ $draw->entity->getName() }}
+                                        </th>
 
-                                    <td>
-                                        <a href="{{ route('comps.events.sercs.editResults', [$comp, $serc, $draw->entity]) }}"
-                                            class="se-btn text-black0">
-                                            Edit
-                                        </a>
-                                    </td>
+                                        <td>
+                                            <a href="{{ route('comps.events.sercs.editResults', [$comp, $serc, $draw->entity]) }}"
+                                                class="se-btn text-black0">
+                                                Edit
+                                            </a>
+                                        </td>
 
-                                </tr>
-                            @empty
-                                <tr class="empty ">
-                                    <th colspan="100" scope="row">
-                                        None
-                                    </th>
-                                </tr>
-                            @endforelse
+                                    </tr>
+                                @empty
+                                    <tr class="empty ">
+                                        <th colspan="100" scope="row">
+                                            None
+                                        </th>
+                                    </tr>
+                                @endforelse
+                            @else
+                                @forelse ($serc->getScorableEntities() as $entity)
+                                    <tr x-data="{ name: `{{ $entity->getName() }}` }" x-show="name.toLowerCase().includes(search.toLowerCase())">
+                                        <th scope="row">
+                                            {{ $entity->getName() }}
+                                        </th>
+
+                                        <td>
+                                            <a href="{{ route('comps.events.sercs.editResults', [$comp, $serc, $entity]) }}"
+                                                class="se-btn text-black0">
+                                                Edit
+                                            </a>
+                                        </td>
+
+                                    </tr>
+                                @empty
+                                    <tr class="empty ">
+                                        <th colspan="100" scope="row">
+                                            None
+                                        </th>
+                                    </tr>
+                                @endforelse
+                            @endif
 
 
 

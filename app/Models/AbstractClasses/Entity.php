@@ -3,10 +3,13 @@
 namespace App\Models\AbstractClasses;
 
 use App\DigitalJudge\DigitalJudge;
+use App\DTO\EntityGrouping;
+use App\Models\Club;
 use App\Models\Competition;
 use App\Models\CompetitionTeam;
 use App\Models\DigitalJudge\BetterJudgeLog;
 use App\Models\EntityData;
+use App\Models\League;
 use App\Models\Orders\EntityEventSeed;
 use App\Models\SERCResult;
 use App\Models\SpeedResult;
@@ -47,6 +50,10 @@ abstract class Entity extends Model
     }
 
 
+    public function getLeague()
+    {
+        return $this->hasOne(League::class, 'id', 'league');
+    }
 
     public function data()
     {
@@ -83,4 +90,6 @@ abstract class Entity extends Model
     }
 
     public abstract function getName(): string;
+
+    public abstract function getGrouping(): EntityGrouping;
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\DTO\EntityGrouping;
 use App\Models\AbstractClasses\Entity;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -152,5 +153,11 @@ class Club extends Entity
             return $placings;
         });
         return $placings;
+    }
+
+
+    public function getGrouping(): EntityGrouping
+    {
+        return new EntityGrouping($this->id, null, null, $this->league);
     }
 }

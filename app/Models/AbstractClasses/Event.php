@@ -61,11 +61,12 @@ abstract class Event extends Model
         }
 
         $grouped = collect($results)->groupBy(function (ResolvedResult $result) use ($groupBy) {
-            $parts = collect($groupBy)->map(function ($key) use ($result) {
+            $entityGrouping = $result->entity->getGrouping();
+            $parts = collect($groupBy)->map(function ($key) use ($entityGrouping) {
                 return match ($key) {
-                    'league' => $result->entity->getLeague->id ?? 'no-league',
-                    'team'   => $result->entity->id ?? 'no-team',
-                    'club'   => $result->entity->getClub()->id ?? 'no-club',
+                    'league' => $entityGrouping->league_id ?? 'no-league',
+                    'team'   => $entityGrouping->team_id ?? 'no-team',
+                    'club'   => $entityGrouping->club_id ?? 'no-club',
                     default  => 'unknown',
                 };
             });

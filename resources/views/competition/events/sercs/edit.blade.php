@@ -30,7 +30,7 @@
     <br>
 
     <div class="grid-4">
-        <div class="se-form-input col-span-3">
+        <div class="se-form-input col-span-2">
             <label for="">Name</label>
             <input type="text" class="input" placeholder="Name" serc-builder-name value="{{ $serc->name }}">
         </div>
@@ -40,6 +40,15 @@
             <select serc-builder-type>
                 <option value="DRY" @if ($serc->type == 'DRY') selected @endif>Dry</option>
                 <option value="WET" @if ($serc->type == 'WET') selected @endif>Wet</option>
+            </select>
+        </div>
+        <div class="se-form-input" style="margin-bottom: 0 !important">
+            <label for="">Target</label>
+
+            <select style="margin-bottom: 0 !important" name="target_entity" serc-builder-target>
+                <option value="club" @if ($serc->scorable_entity == 'club') selected @endif>Clubs</option>
+                <option value="team" @if ($serc->scorable_entity == 'team') selected @endif>Teams</option>
+                <option value="competitor" @if ($serc->scorable_entity == 'competitor') selected @endif>Competitiors</option>
             </select>
         </div>
     </div>

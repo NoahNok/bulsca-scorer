@@ -26,7 +26,7 @@
     <br>
 
     <div class="grid-4">
-        <div class="se-form-input col-span-3">
+        <div class="se-form-input col-span-2">
             <label for="">Name</label>
             <input type="text" placeholder="Name" serc-builder-name>
         </div>
@@ -35,6 +35,15 @@
             <select serc-builder-type>
                 <option value="DRY">Dry</option>
                 <option value="WET">Wet</option>
+            </select>
+        </div>
+        <div class="se-form-input" style="margin-bottom: 0 !important">
+            <label for="">Target</label>
+
+            <select style="margin-bottom: 0 !important" name="target_entity" serc-builder-target>
+                <option value="club">Clubs</option>
+                <option value="team" selected>Teams</option>
+                <option value="competitor">Competitiors</option>
             </select>
         </div>
     </div>

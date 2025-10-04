@@ -1,7 +1,7 @@
 @extends('layouts.competition')
 
 @section('title')
-    {{ $team->getFullname() }} | {{ $serc->name }}
+    {{ $team->getName() }} | {{ $serc->name }}
 @endsection
 
 
@@ -14,7 +14,7 @@
 
             <div class="flex justify-between items-start relative">
                 <div>
-                    <h2 class="mb-0">{{ $team->getFullname() }}</h2>
+                    <h2 class="mb-0">{{ $team->getName() }}</h2>
                     <small>SERC: {{ $serc->name }}</small>
                 </div>
 
