@@ -164,6 +164,17 @@
   }
 }
 
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Hide number input arrows in Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
 .se-card {
   @apply border bg-white shadow-sm flex flex-col rounded-md overflow-hidden;
 
@@ -181,6 +192,10 @@
 
   &.se-card-active {
     @apply shadow-lg border-gray-400 cursor-pointer
+  }
+
+    &.se-card-success {
+    @apply  border-green-500  hover:border-green-600;
   }
 }
 

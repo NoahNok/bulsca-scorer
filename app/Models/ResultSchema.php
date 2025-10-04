@@ -12,6 +12,7 @@ use App\Models\ResultSchemas\NationalsResultSchema;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -34,6 +35,13 @@ class ResultSchema extends Model
             $league = League::find($this->schema['league']);
         }
 
+        $ignore_dq = $this->schema['ignore_dq'] ?? false;
+        $group_on = $this->schema['group_on'] ?? 'team';
+        $group_class = Relation::getMorphedModel($group_on);
+        $rank_higher = $this->schema['rank_higher'] ?? true;
+
+        $break_ties = $this->schema['break_ties'] ?? []; // Should be a list of event ids to break ties on, or empty if not breaking
+
         foreach ($this->getEvents as $event) {
 
             $scoringEngine = ScoringSchema::engine();
@@ -55,10 +63,10 @@ class ResultSchema extends Model
             $eventResults = $scoringEngine->process($this->schema, $eventResults, 'adjustedPoints');
 
             // mutiply by event weight
-            $eventResults = $eventResults->map(function ($result) use ($event) {
+            $eventResults = $eventResults->map(function ($result) use ($event, $ignore_dq) {
                 $result->adjustedPoints = $result->adjustedPoints * $event->weight;
 
-                if ($result->isDisqualified()) {
+                if (!$ignore_dq && $result->isDisqualified()) {
                     $result->adjustedPoints = 0;
                 }
 
@@ -66,18 +74,18 @@ class ResultSchema extends Model
             });
 
 
-
             $allResults = $allResults->merge($eventResults);
         }
 
-
-
-        $grouped = $allResults->groupBy(function ($result) {
-            return $result->entity->id;
+        $grouped = $allResults->groupBy(function ($result) use ($group_on) {
+            return $result->entity->getGrouping()->{"{$group_on}_id"};
         });
 
-        $preRanked = $grouped->map(function ($results, $entityId) {
-            $entity = $results->first()->entity;
+
+        $preRanked = $grouped->map(function ($results) use ($group_class) {
+            $entity = $results->filter(function ($result) use ($group_class) {
+                return $result->entity instanceof $group_class;
+            })->first()->entity;
             $totalPoints = 0;
             foreach ($results as $result) {
 
@@ -91,7 +99,39 @@ class ResultSchema extends Model
             );
         });
 
-        $preRanked = $preRanked->sortByDesc(fn($result) => $result->totalPoints)->values();
+
+
+
+        $sortFunction = null;
+
+        if ($break_ties) {
+            $sortFunction = function ($result) use ($break_ties) {
+                $options = [$result->totalPoints];
+
+                foreach ($break_ties as $bt) {
+                    $eventPosition = $result->events->where('event.id', $bt)->first()->position;
+                    $options[] = $eventPosition;
+                }
+
+                return $options;
+            };
+        } else {
+            $sortFunction = function ($result) {
+                return [$result->totalPoints];
+            };
+        }
+
+
+
+        if ($rank_higher) {
+            $preRanked = $preRanked->sortByDesc(fn($result) => $sortFunction($result))->values();
+        } else {
+            $preRanked = $preRanked->sortBy(fn($result) => $sortFunction($result))->values();
+        }
+
+
+
+
 
         $rankedResults = collect();
         $previousScore = null;
@@ -101,7 +141,7 @@ class ResultSchema extends Model
         foreach ($preRanked as $result) {
             $currentScore = $result->totalPoints;
 
-            if ($currentScore === $previousScore) {
+            if (!$break_ties && $currentScore === $previousScore) {
                 $rank = $previousRank;
             } else {
                 $rank = $position;

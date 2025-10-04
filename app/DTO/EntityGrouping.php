@@ -19,7 +19,7 @@ class EntityGrouping
     public function __construct(
         public ?int $club_id,
         public ?int $team_id,
-        public ?int $competitior_id,
+        public ?int $competitor_id,
         public ?int $league_id
     ) {}
 }
