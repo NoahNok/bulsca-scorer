@@ -35,6 +35,38 @@
         rank_higher: true,
         ignore_disqualified: false,
         repeat_for_all_leagues: false,
+        formula: null,
+        formula_data: {
+            equation: '',
+            global_variables: []
+        },
+    
+        onFormulaChange() {
+            let splt = this.formula.split(':')
+    
+            switch (splt[0]) {
+                case 'bi':
+                    let parts = splt[1].split('-')
+                    let isLow = parts.length > 1
+    
+                    this.rank_higher = !isLow
+    
+                    if (parts[0] == 'point') {
+                        this.formula_data.equation = 'item.points'
+                    } else if (parts[0] == 'position') {
+                        this.formula_data.equation = 'item.position'
+                    } else if (parts[0] == 'result') {
+                        this.formula_data.equation = 'item.resolvedResult'
+                    } else {
+                        showAlert('Unknown builtin')
+                    }
+    
+                    break
+    
+    
+            }
+    
+        },
     
         toggleTieBreak(event) {
     
@@ -82,6 +114,12 @@
                 return
             }
     
+            if (!this.formula) {
+                showAlert('You must select a formula')
+                return
+            }
+    
+    
     
             data = {
                 name: this.name,
@@ -90,8 +128,12 @@
                 events: selected_events,
                 rank_higher: this.rank_higher,
                 ignore_disqualified: this.ignore_disqualified,
-                repeat_for_all_leagues: this.repeat_for_all_leagues
+                repeat_for_all_leagues: this.repeat_for_all_leagues,
+                equation: this.formula_data.equation,
+                global_variables: this.formula_data.global_variables,
             }
+    
+    
     
             let response = await fetch('{{ route('comps.results.addPost', [$comp]) }}', {
                 method: 'POST',
@@ -151,7 +193,7 @@
         </div>
 
 
-        <h3>Events</h3>
+        <h3 class="mb-0!">Events</h3>
         <p>Select events to include, they will become green when selected. You can also specify an event weighting.
             (Defaults to 1 for speed events, and 2 for SERCs)</p>
         <div class="grid-4">
@@ -182,7 +224,38 @@
 
         <hr class="spacer mb-6! mt-4!">
 
+        <h3 class="mb-0!">Formula</h3>
+        <p>Use a simple pre-made formula, or create your own</p>
+
+
+
+
         <div class="grid-4">
+            <div class="se-form-input" style="margin-bottom: 0 !important">
+
+
+                <select style="margin-bottom: 0 !important" name="target_entity" x-model="formula"
+                    @change="onFormulaChange">
+                    <option value="null" selected disabled>Please select a formula</option>
+
+                    <option value="custom">Custom</option>
+
+                    <optgroup label="Clone from Organisation">
+                        <option value="org:na" disabled>Not Available</option>
+                    </optgroup>
+
+                    <optgroup label="Built-in">
+                        <option value="bi:point">Highest Point Sum Wins</option>
+                        <option value="bi:point-low">Lowest Points Sum Wins</option>
+                        <option value="bi:position">Highest Position Sum Wins</option>
+                        <option value="bi:position-low">Lowest Position Sum Wins</option>
+                        <option value="bi:result">Highest Result Sum Wins</option>
+                        <option value="bi:result-low">Lowset Result Sum Wins</option>
+                    </optgroup>
+
+
+                </select>
+            </div>
 
 
             <div class="se-checkbox">
@@ -190,7 +263,7 @@
                     <input type="checkbox" id="rank_higher" x-model="rank_higher">
                     <label for="rank_higher">Rank Higher</label>
                 </div>
-                <p>Highest points wins</p>
+                <p>Highest wins</p>
             </div>
 
             <div class="se-checkbox">
@@ -217,6 +290,61 @@
 
 
         </div>
+
+        <div class="flex flex-col space-y-4 se-card se-card-body se-card-hover" x-cloak x-show="formula == 'custom'"
+            x-data="{
+                addGlobal() {
+                    this.formula_data.global_variables.push({
+                        order: Math.max(...this.formula_data.global_variables.map(v => v.order)),
+                        name: '',
+                        expression: ''
+                    })
+                },
+            }">
+            <h2>Custom Formula</h2>
+            <h3>Global Variables</h3>
+            <p class="-mt-4">Global variables are generated once per event, and are usable in both local variables and
+                the
+                result equation. See <a class="link" href="#">here</a> for available functions.
+            </p>
+
+            <div class="flex flex-col space-y-2">
+                <template x-for="gvar in formula_data.global_variables">
+                    <div class="flex flex-row items-center gap-1 ">
+
+                        <input rows="1" cols="2" x-init="dynamicInput($el)" class="badge badge-gray"
+                            x-model="gvar.name" placeholder="var"></input>
+
+                        <span class="badge">=</span>
+
+                        <input class="badge badge-info" x-init="dynamicInput($el)" x-model="gvar.expression"
+                            placeholder="score * 2">
+                    </div>
+                </template>
+
+                <button class="se-btn" @click="addGlobal">Add</button>
+            </div>
+
+
+            <br>
+
+            <h3>
+                Result Equation
+            </h3>
+            <p class="-mt-4">This equation is evaluated once per row and produces the final points for the row, which
+                is
+                then passed to ranking (defaults to highest points wins). You can use the above local and global
+                variables
+                here. See <a class="link" href="#">here</a> for
+                available functions.
+            </p>
+            <div class="se-form-input">
+                <input type="text" x-model="formula_data.equation" placeholder="equation">
+
+            </div>
+
+        </div>
+
         <br>
         <div>
             <h4>Break Ties</h4>

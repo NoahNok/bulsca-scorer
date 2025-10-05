@@ -85,7 +85,12 @@ class ResultSchema extends Model
         $preRanked = $grouped->map(function ($results) use ($group_class) {
             $entity = $results->filter(function ($result) use ($group_class) {
                 return $result->entity instanceof $group_class;
-            })->first()->entity;
+            })->first()?->entity;
+
+            if (!$entity) {
+                $entity = $results->first()->entity;
+            }
+
             $totalPoints = 0;
             foreach ($results as $result) {
 

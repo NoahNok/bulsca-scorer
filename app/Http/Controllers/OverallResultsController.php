@@ -72,14 +72,15 @@ class OverallResultsController extends Controller
     {
 
 
-        function createForLeague($name, League $league, string $group_on, array $events, bool $rank_higher, bool $ignore_disqualified, array $break_ties, Competition $comp): ResultSchema
+        function createForLeague($name, ?League $league, string $group_on, array $events, bool $rank_higher, bool $ignore_disqualified, array $break_ties, string $equation, array $global_vars, Competition $comp): ResultSchema
         {
             $rs = new ResultSchema();
             $rs->name = $name == '' || !$name ? $league->name : $name;
             $rs->competition = $comp->id;
             $rs->schema = [
-                'equation' => 'item.position',
-                'league' => $league->id,
+                'equation' => $equation,
+                'global_variables' => $global_vars,
+                'league' => $league?->id ?? null,
                 'ignore_dq' => $ignore_disqualified,
                 'group_on' => $group_on,
                 'rank_higher' => $rank_higher,
@@ -108,6 +109,8 @@ class OverallResultsController extends Controller
         $rank_higher = $request->input('rank_higher');
         $ignore_disqualified = $request->input('ignore_disqualified');
         $repeat_for_all_leagues = $request->input('repeat_for_all_leagues');
+        $equation = $request->input('equation', 'item.points');
+        $global_vars = $request->input('global_variables', []);
 
         $break_ties = collect($events)->filter(fn($event) => $event['break_ties'])->sortBy('break_ties')->pluck('id')->all();
 
@@ -122,7 +125,7 @@ class OverallResultsController extends Controller
         }
 
         foreach ($repeat_for as $league) {
-            $created[] = createForLeague($name, $league, $group_on, $events, $rank_higher, $ignore_disqualified, $break_ties, $comp);
+            $created[] = createForLeague($name, $league, $group_on, $events, $rank_higher, $ignore_disqualified, $break_ties, $equation, $global_vars, $comp);
         }
 
         // $rs->schema = [

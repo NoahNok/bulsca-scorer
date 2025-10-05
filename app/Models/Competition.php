@@ -76,6 +76,11 @@ class Competition extends Model implements IInvitable
         return $this->hasMany(League::class, 'competition', 'id');
     }
 
+    public function getClubs()
+    {
+        return $this->hasMany(Club::class, 'competition', 'id');
+    }
+
     public function getCompetitionTeams()
     {
         return $this->hasMany(CompetitionTeam::class, 'competition', 'id');
@@ -85,6 +90,12 @@ class Competition extends Model implements IInvitable
     {
         return $this->hasMany(ResultSchema::class, 'competition', 'id');
     }
+
+    public function getMasterSchemas()
+    {
+        return $this->hasMany(MasterSchema::class, 'competition', 'id');
+    }
+
 
     public function getAllEvents()
     {

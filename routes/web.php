@@ -32,6 +32,7 @@ use App\Http\Controllers\Pdf\PdfController;
 use App\Http\Controllers\PrintableController;
 use App\Http\Controllers\PublicResultsController;
 use App\Http\Controllers\Push\PushController;
+use App\Http\Controllers\Result\MasterSchemaController;
 use App\Http\Controllers\SpeedsEventController;
 use App\Http\Controllers\TeamsController;
 use App\Http\Controllers\SERCController;
@@ -226,6 +227,14 @@ Route::middleware('auth')->group(function () {
 
         // RESULTS
         Route::prefix('/results')->middleware('can:access,comp,"results"')->group(function () {
+
+            Route::prefix('/master')->group(function () {
+                Route::get('add', [MasterSchemaController::class, 'add'])->name('comps.results.master.add');
+                Route::post('add', [MasterSchemaController::class, 'addPost'])->name('comps.results.master.addPost');
+
+                Route::get('{schema}', [MasterSchemaController::class, 'view'])->name('comps.results.master.view');
+            });
+
             Route::get('', [OverallResultsController::class, 'view'])->name('comps.results');
             Route::get('/add', [OverallResultsController::class, 'add'])->name('comps.results.add');
             Route::get('/qg', [OverallResultsController::class, 'quickGen'])->name('comps.results.quickGen');

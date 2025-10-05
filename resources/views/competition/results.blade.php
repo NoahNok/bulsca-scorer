@@ -60,14 +60,23 @@
         @endif
     </div>
     <br>
-    <h3>Quick Generate</h3>
-    <p class="mb-4">Click the button below to quickly generate the normal scoresheets for Overall, A-League and B-League
+    <h3>Masters</h3>
+    <p class="mb-4">Master result sheets are made up by combining multiple normal result sheets. These are good for
+        calculating an overall from multiple League result sheets
     </p>
 
-    @if (DigitalJudge::canGenerateCompetitionResults($comp))
-        <a href="{{ route('comps.results.quickGen', $comp) }}" class="se-btn se-btn-outline-success mr-auto">Quick
-            Generate</a>
-    @endif
+    <div class="grid-4">
+        @foreach ($comp->getMasterSchemas as $schema)
+            <a href="{{ route('comps.results.view-schema', ['comp' => $comp, 'schema' => $schema]) }}" class="se-btn">
+                <p class="text-lg font-semibold">{{ $schema->name }}</p>
+
+
+            </a>
+        @endforeach
+        @if (DigitalJudge::canGenerateCompetitionResults($comp))
+            <x-add-card link="{{ route('comps.results.master.add', $comp) }}" text="Results" />
+        @endif
+    </div>
 
     <br>
 
