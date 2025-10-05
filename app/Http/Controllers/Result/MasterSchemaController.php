@@ -22,8 +22,10 @@ class MasterSchemaController extends Controller
 
         $name = $request->input('name');
         $sumOver = $request->input('sum_over', 'position');
+        $groupOn = $request->input('group_on', 'club');
         $defaultValue = $request->input('default_value', 0) * 1;
         $sheets = $request->input('sheets', []);
+        $exclude = $request->input('exclude', []);
 
         $sheets = array_map(function ($sheet) {
             return ['id' => $sheet['id'], 'weight' => $sheet['weight']];
@@ -36,7 +38,9 @@ class MasterSchemaController extends Controller
         $ms->schema = [
             'sum_over' => $sumOver,
             'default_value' => $defaultValue,
-            'sheets' => $sheets
+            'sheets' => $sheets,
+            'group_on' => $groupOn,
+            'exclude' => $exclude
         ];
 
         $ms->save();
@@ -50,5 +54,18 @@ class MasterSchemaController extends Controller
         $results = $schema->getResults() ?? [];
 
         return view('competition.results.master.view', ['results' => $results, 'schema' => $schema, 'comp' => $comp]);
+    }
+
+    public function delete(Competition $comp, MasterSchema $schema)
+    {
+        $schema->delete();
+        return redirect()->route('comps.results', $comp);
+    }
+
+    public function hide(Competition $comp, MasterSchema $schema)
+    {
+        $schema->viewable = !$schema->viewable;
+        $schema->save();
+        return redirect()->back();
     }
 }

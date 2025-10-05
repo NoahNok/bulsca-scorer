@@ -222,6 +222,13 @@ class SERCController extends Controller
 
 
         $teamIds = $serc->getScorableEntities()->pluck('id')->toArray();
+
+        $draw = $serc->getDraw;
+
+        if ($draw) {
+            $teamIds = $draw->pluck('entity_id')->toArray();
+        }
+
         $index = array_search($team->id, array_values($teamIds));
 
 
@@ -242,7 +249,13 @@ class SERCController extends Controller
     {
         $team = $serc->getScorableEntity()->findOrFail($entity_id);
 
-        $teamIds = $serc->getTeams()->pluck('id')->toArray();
+        $teamIds = $serc->getScorableEntities()->pluck('id')->toArray();
+
+        $draw = $serc->getDraw;
+
+        if ($draw) {
+            $teamIds = $draw->pluck('entity_id')->toArray();
+        }
         $index = array_search($team->id, array_values($teamIds));
 
 

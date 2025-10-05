@@ -197,6 +197,10 @@ input[type=number] {
     &.se-card-success {
     @apply  border-green-500  hover:border-green-600;
   }
+
+  &.se-card-danger {
+    @apply border-red-500 hover:border-red-600;
+  }
 }
 
 div.se-table {

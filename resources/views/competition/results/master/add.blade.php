@@ -9,6 +9,7 @@
     <div class="flex flex-col space-y-4" x-data="{
         name: '',
         sum_over: 'position',
+        group_on: 'club',
         default_value: 0,
         sheets: {{ $comp->getResultSchemas->map(function ($sheet) {
             return [
@@ -19,7 +20,21 @@
             ];
         }) }},
     
+        excludes: {
+            clubs: {{ $comp->getClubs->map(fn($c) => ['id' => $c->id, 'name' => $c->name]) }}
+        },
     
+        exclude: [],
+    
+        toggleExclude(id) {
+    
+            if (this.exclude.includes(id)) {
+                this.exclude = this.exclude.filter(item => item != id)
+            } else {
+                this.exclude.push(id)
+            }
+    
+        },
     
         async submit() {
             selected_sheets = this.sheets.filter(event => event.selected)
@@ -42,6 +57,8 @@
                 name: this.name,
                 sum_over: this.sum_over,
                 default_value: this.default_value,
+                group_on: this.group_on,
+                exclude: this.exclude,
                 sheets: selected_sheets,
             }
     
@@ -77,9 +94,19 @@
             default for when the given item doesn't exist in the specified sheet.</p>
 
         <div class="grid-4">
-            <div class="se-form-input col-span-2">
+            <div class="se-form-input ">
                 <label for="">Name</label>
                 <input type="text" placeholder="Name" x-model="name">
+            </div>
+
+            <div class="se-form-input" style="margin-bottom: 0 !important">
+                <label for="">Group On</label>
+
+                <select style="margin-bottom: 0 !important" name="target_entity" x-model="group_on">
+                    <option value="club">Clubs</option>
+                    <option value="team" disabled>Teams</option>
+                    <option value="competitor" disabled>Competitiors</option>
+                </select>
             </div>
 
             <div class="se-form-input" style="margin-bottom: 0 !important">
@@ -128,6 +155,23 @@
 
 
 
+        </div>
+
+        <div>
+            <h4>Exclude</h4>
+            <p>You can exclude any items from the result by clicking them here</p>
+            <div class="grid-5">
+                <template x-for="club in excludes.clubs">
+                    <div class="se-card se-card-body se-card-hover px-2! py-2!" @click="toggleExclude(club.id)"
+                        :class="exclude.includes(club.id) ? 'se-card-danger' : ''">
+                        <span x-text="club.name"></span>
+                    </div>
+
+                </template>
+
+
+
+            </div>
         </div>
 
 

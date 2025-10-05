@@ -52,12 +52,9 @@ class ResultSchema extends Model
             $eventResults = collect($event->getActualEvent->getRankedResults($league));
 
 
-
             $eventResults = $eventResults->map(function ($result) {
                 return ScaledResult::fromRanked($result, -1);
             });
-
-
 
 
             $eventResults = $scoringEngine->process($this->schema, $eventResults, 'adjustedPoints');
@@ -77,15 +74,20 @@ class ResultSchema extends Model
             $allResults = $allResults->merge($eventResults);
         }
 
+
         $grouped = $allResults->groupBy(function ($result) use ($group_on) {
             return $result->entity->getGrouping()->{"{$group_on}_id"};
         });
+
+
 
 
         $preRanked = $grouped->map(function ($results) use ($group_class) {
             $entity = $results->filter(function ($result) use ($group_class) {
                 return $result->entity instanceof $group_class;
             })->first()?->entity;
+
+
 
             if (!$entity) {
                 $entity = $results->first()->entity;

@@ -121,9 +121,18 @@ class CompetitionSpeedEvent extends Event
         $penalties = $this->penalties()->get();
         $disqualifications = $this->disqualifications()->get();
 
+        $seeds = $this->getCompetition->getSpeedEvents->first()->seeds;
+        $usingSeeds = $seeds->count() > 0;
 
-        return $query->get()->map(function ($result) use ($penalties, $disqualifications) {
+
+        return $query->get()->map(function ($result) use ($penalties, $disqualifications, $seeds, $usingSeeds) {
             $r = $result->transformToResult();
+
+            if ($usingSeeds) {
+                $r->seed = $seeds->first(function ($item) use ($r) {
+                    return $item->entity->id == $r->entity->id;
+                })?->seed ?? 0;
+            }
 
             $r->penalties = $penalties->where('entity_id', $result->entity->id);
             $r->disqualifications = $disqualifications->where('entity_id', $result->entity->id);

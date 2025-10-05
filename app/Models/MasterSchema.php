@@ -45,16 +45,17 @@ class MasterSchema extends Model
         });
         $schema = $this->schema;
 
-        $group_on = 'club';
+        $group_on = $schema['group_on'] ?? 'club';;
         $sum_over = $schema['sum_over'] ?? 'position';
         $default_value = $schema['default_value'];
+        $exclude = $schema['exclude'] ?? [];
 
         $target_entities = match ($group_on) {
             'club' => $this->getCompetition->getClubs,
         };
 
         // Specify entities we want
-        $target_entities = $target_entities->whereIn('id', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
+        $target_entities = $target_entities->whereNotIn('id', $exclude);
 
         $final_results = collect();
 

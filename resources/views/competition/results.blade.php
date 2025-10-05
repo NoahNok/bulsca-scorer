@@ -67,7 +67,7 @@
 
     <div class="grid-4">
         @foreach ($comp->getMasterSchemas as $schema)
-            <a href="{{ route('comps.results.view-schema', ['comp' => $comp, 'schema' => $schema]) }}" class="se-btn">
+            <a href="{{ route('comps.results.master.view', ['comp' => $comp, 'schema' => $schema]) }}" class="se-btn">
                 <p class="text-lg font-semibold">{{ $schema->name }}</p>
 
 

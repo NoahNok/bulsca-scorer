@@ -69,7 +69,7 @@
 
 
             <div>
-                <form action="{{ route('comps.results.delete', [$comp, $schema->id]) }}}"
+                <form action="{{ route('comps.results.master.delete', [$comp, $schema->id]) }}}"
                     onsubmit="return confirm('Are you sure you want to delete this result sheet?')" method="post">
                     <input type="hidden" name="sid" value="{{ $schema->id }}">
                     {{ method_field('DELETE') }}
@@ -122,7 +122,7 @@
                 </a>
 
                 @if ($schema->viewable)
-                    <a href="{{ route('comps.results.hide', [$comp, $schema->id]) }}"
+                    <a href="{{ route('comps.results.master.hide', [$comp, $schema->id]) }}"
                         class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
                         <p class="font-archivo">Hide sheet from results</p>
 
@@ -136,7 +136,7 @@
 
                     </a>
                 @else
-                    <a href="{{ route('comps.results.hide', [$comp, $schema->id]) }}"
+                    <a href="{{ route('comps.results.master.hide', [$comp, $schema->id]) }}"
                         class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
                         <p class="font-archivo">Show sheet in results</p>
 

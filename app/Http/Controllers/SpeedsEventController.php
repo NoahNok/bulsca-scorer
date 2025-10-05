@@ -88,25 +88,28 @@ class SpeedsEventController extends Controller
 
         $same = $request->input('target_entity', $event->scorable_entity) == $event->scorable_entity;
 
-        if ($same) {
-            return redirect()->route('comps.events.speeds.view', [$comp, $event]);
+        if (!$same) {
+            $event->scorable_entity = $request->input('target_entity', $event->scorable_entity);
+
+
+            $event->save();
+
+            $event->results()->delete();
+            // Need to add all teams to this new event
+            $allTeams = $event->getScorableEntities();
+            foreach ($allTeams as $team) {
+                $sr = new SpeedResult();
+                $sr->entity()->associate($team);
+                $sr->event = $event->id;
+                $sr->save();
+            }
         }
 
-
-        $event->scorable_entity = $request->input('target_entity', $event->scorable_entity);
-
-
+        $event->has_penalties = $request->input('has_penalties', false) == 'on';
         $event->save();
 
-        $event->results()->delete();
-        // Need to add all teams to this new event
-        $allTeams = $event->getScorableEntities();
-        foreach ($allTeams as $team) {
-            $sr = new SpeedResult();
-            $sr->entity()->associate($team);
-            $sr->event = $event->id;
-            $sr->save();
-        }
+
+
 
 
 

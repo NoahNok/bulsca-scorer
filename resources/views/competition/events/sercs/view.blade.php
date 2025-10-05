@@ -126,7 +126,7 @@
 
             @endphp
 
-            @if ($sercDraw->empty())
+            @if ($sercDraw->count() == 0)
                 <div class="alert-box">
                     <h1>No SERC Draw</h1>
                     <p>No SERC draw has been made, the items below are not ordered.
@@ -157,7 +157,7 @@
                         </thead>
                         <tbody>
 
-                            @if (!$sercDraw->empty())
+                            @if ($sercDraw->count() > 0)
                                 @forelse ($sercDraw as $draw)
                                     <tr x-data="{ name: `{{ $draw->entity->getName() }}` }" x-show="name.toLowerCase().includes(search.toLowerCase())">
                                         <th scope="row">

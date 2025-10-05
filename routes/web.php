@@ -233,6 +233,9 @@ Route::middleware('auth')->group(function () {
                 Route::post('add', [MasterSchemaController::class, 'addPost'])->name('comps.results.master.addPost');
 
                 Route::get('{schema}', [MasterSchemaController::class, 'view'])->name('comps.results.master.view');
+
+                Route::delete('/{schema}', [MasterSchemaController::class, 'delete'])->name('comps.results.master.delete');
+                Route::get('/{schema}/hide', [MasterSchemaController::class, 'hide'])->name('comps.results.master.hide');
             });
 
             Route::get('', [OverallResultsController::class, 'view'])->name('comps.results');

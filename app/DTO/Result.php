@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Collection;
 class Result
 {
 
-
+    public int $seed = 0;
 
     /**
      * @param Collection<int, Disqualification> $disqualifications
@@ -32,6 +32,7 @@ class Result
         $this->penalties ??= new Collection();
         $this->combined ??= new Collection();
     }
+
 
 
     public function getPenaltiesString(): ?string

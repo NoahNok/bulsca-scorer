@@ -19,7 +19,7 @@ class MasterResult
     public function __construct(
         public Entity $entity,
         public array $sheetResults = [],
-        public int $total = 0,
+        public float $total = 0,
         public int $position = 0
     ) {}
 }
