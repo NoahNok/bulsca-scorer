@@ -31,13 +31,8 @@
         @endcan
 
         @can('access', [$comp, 'teams'])
-            @if (\App\Helpers\ScoringHelper::getCompetitionScoringDetails($comp)['use_competitors'])
-                <a href="{{ route('comps.competitors', $comp) }}"
-                    class="@if (Str::startsWith(Route::currentRouteName(), 'comps.competitor')) active @endif">Competitors</a>
-            @else
-                <a href="{{ route('comps.teams', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.team')) active @endif">Teams &
-                    Leagues</a>
-            @endif
+            <a href="{{ route('comps.teams', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.team')) active @endif">Teams &
+                Leagues</a>
         @endcan
 
         @can('access', [$comp, 'heats_and_draws'])
