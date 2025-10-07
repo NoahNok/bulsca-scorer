@@ -137,7 +137,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/account/serc-writer/new-password', [CompetitionController::class, 'resetSercWriterAccountPassword'])->name('comps.accounts.serc-writer.new-password');
         });
 
-        Route::prefix('/leagues')->group(function () {
+        Route::prefix('/leagues')->middleware('can:access,comp,"teams"')->group(function () {
             Route::get('create', [LeagueController::class, 'create'])->name('comps.leagues.create');
             Route::post('create', [LeagueController::class, 'store'])->name('comps.leagues.store');
 
