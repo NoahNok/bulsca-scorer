@@ -294,7 +294,7 @@ Route::middleware('auth')->group(function () {
 
 
     Route::resource('organisation', OrganisationController::class)->names('orgs');
-    Route::prefix('organisation/{organisation}')->group(function () {
+    Route::prefix('organisation/{organisation}')->middleware('can:access,organisation,"admin"')->group(function () {
         Route::get('/accounts', [OrganisationController::class, 'accounts'])->name('orgs.accounts');
         Route::post('/accounts', [OrganisationController::class, 'accountsPost'])->name('orgs.accounts.post');
 
