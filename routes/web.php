@@ -315,6 +315,20 @@ Route::middleware('auth')->group(function () {
 
         Route::prefix('scoring')->group(function () {
             Route::get('', [OrganisationController::class, 'scoringSettings'])->name('orgs.scoring');
+
+
+            Route::prefix('result-schemas')->group(function () {
+                Route::post('/create', [OrganisationController::class, 'createResultSchemaTemplatePost'])->name('orgs.scoring.result-schema.create.post');
+                Route::get('/create', [OrganisationController::class, 'createResultSchemaTemplate'])->name('orgs.scoring.result-schema.create');
+
+                Route::prefix('{schema}')->group(function () {
+                    Route::get('/edit', [OrganisationController::class, 'editResultSchemaTemplate'])->name('orgs.scoring.result-schema.edit');
+                    Route::post('/edit', [OrganisationController::class, 'editResultSchemaTemplatePost'])->name('orgs.scoring.result-schema.edit.post');
+                    Route::delete('', [OrganisationController::class, 'deleteResultSchemaTemplate'])->name('orgs.scoring.result-schema.delete');
+                });
+            });
+
+
             Route::post('/create', [OrganisationController::class, 'createScoringSchemaPost'])->name('orgs.scoring.create.post');
             Route::get('/create', [OrganisationController::class, 'createScoringSchema'])->name('orgs.scoring.create');
 

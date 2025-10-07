@@ -11,12 +11,14 @@ use App\Http\Requests\Organisation\EditOrganisationRequest;
 use App\Http\Requests\Organisation\InviteAccountToOrganisationRequest;
 use App\Http\Requests\Organisation\NameSubdomainTakenRequest;
 use App\Http\Requests\Organisation\RemoveOrganisationAccountRequest;
+use App\Http\Requests\Result\UpdateResultSchemaScoringSettings;
 use App\Models\DQCode;
 use App\Models\Event\ScoringSchema;
 use App\Models\EventCode;
 use App\Models\Organisation\Organisation;
 use App\Models\Organisation\OrganisationUserAccess;
 use App\Models\PenaltyCode;
+use App\Models\ResultSchemaTemplate;
 use App\Models\SpeedEvent;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -447,6 +449,50 @@ class OrganisationController extends Controller
         $code->delete();
 
         session()->flash('success', 'Infraction code deleted.');
+
+        return response()->json([]);
+    }
+
+
+    public function createResultSchemaTemplate(Organisation $organisation)
+    {
+        return view('organisation.scoring.result-schema.create', ['org' => $organisation]);
+    }
+
+    public function createResultSchemaTemplatePost(Organisation $organisation, UpdateResultSchemaScoringSettings $request)
+    {
+        $schema = new ResultSchemaTemplate();
+
+        $schema->editFromRequest($request);
+
+        $schema->organisation = $organisation->id;
+        $schema->save();
+
+        return response()->json(['url' => route('orgs.scoring.result-schema.edit', ['organisation' => $organisation->name, 'schema' => $schema->id])]);
+    }
+
+    public function editResultSchemaTemplate(Organisation $organisation, ResultSchemaTemplate $schema)
+    {
+
+
+        if ($schema->organisation != $organisation->id) {
+            abort(404);
+        }
+
+
+
+        return view('organisation.scoring.result-schema.edit', ['org' => $organisation, 'schema' => $schema]);
+    }
+
+    public function editResultSchemaTemplatePost(Organisation $organisation, ResultSchemaTemplate $schema, UpdateResultSchemaScoringSettings $request)
+    {
+        if ($schema->organisation != $organisation->id) {
+            abort(404);
+        }
+
+        $schema->editFromRequest($request);
+
+        $schema->save();
 
         return response()->json([]);
     }

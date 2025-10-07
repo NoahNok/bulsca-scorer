@@ -30,7 +30,7 @@
                     ];
                 }),
             ) }},
-    
+        schema_templates: {{ $comp->getOrganisation->resultSchemas->map(fn($i) => ['id' => $i->id, 'name' => $i->name, 'schema' => $i->schema]) }},
         league: null,
         rank_higher: true,
         ignore_disqualified: false,
@@ -61,6 +61,16 @@
                         showAlert('Unknown builtin')
                     }
     
+                    break
+    
+                case 'org':
+                    let id = splt[1]
+    
+                    let target_schema = this.schema_templates.find(s => s.id == id)
+    
+                    this.formula_data = target_schema.schema
+    
+                    this.formula = 'custom'
                     break
     
     
@@ -241,7 +251,10 @@
                     <option value="custom">Custom</option>
 
                     <optgroup label="Clone from Organisation">
-                        <option value="org:na" disabled>Not Available</option>
+                        <template x-for="schema in schema_templates">
+                            <option :value="`org:${schema.id}`" x-text="schema.name"></option>
+                        </template>
+
                     </optgroup>
 
                     <optgroup label="Built-in">

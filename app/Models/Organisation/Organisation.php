@@ -8,6 +8,7 @@ use App\Models\DQCode;
 use App\Models\Event\ScoringSchema;
 use App\Models\Interfaces\IInvitable;
 use App\Models\PenaltyCode;
+use App\Models\ResultSchemaTemplate;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
@@ -237,6 +238,11 @@ class Organisation extends Model implements IInvitable
     public function scoringSchemas()
     {
         return $this->hasMany(ScoringSchema::class, 'organisation')->orderBy('name', 'asc');
+    }
+
+    public function resultSchemas()
+    {
+        return $this->hasMany(ResultSchemaTemplate::class, 'organisation')->orderBy('name', 'asc');
     }
 
     public function penaltyCodes()
