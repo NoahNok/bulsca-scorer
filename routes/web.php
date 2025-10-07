@@ -77,7 +77,7 @@ Route::get('/', function () {
         $upcoming = Competition::where('when', '>=', Carbon::today())->orderBy('when')->limit(10)->get();
 
         if ($upcoming->count() < 10) {
-            $extra = Competition::where('when', '<', Carbon::today())->orderBy('when')->limit(10 - $upcoming->count())->get();
+            $extra = Competition::where('when', '<', Carbon::today())->orderByDesc('when')->limit(10 - $upcoming->count())->get();
             $upcoming = $upcoming->merge($extra);
         }
 
