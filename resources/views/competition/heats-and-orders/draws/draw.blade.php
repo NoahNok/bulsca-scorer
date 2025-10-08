@@ -7,7 +7,7 @@
 @section('content')
     <div x-data="{
         tanks: {{ json_encode($comp->getTanks()) }},
-        brackets: {{ json_encode($comp->getCompetitorsPerBracket()) }},
+        brackets: {{ json_encode($comp->getTargetEntitiesPerLeague()) }},
     
         selected: [],
     
@@ -74,7 +74,7 @@
                 return;
             }
     
-            fetch('{{ route('comps.view.serc-order.editTanksPost', $comp) }}', {
+            fetch('{{ route('comps.heats_and_draws.draws.tank_setup.post', $comp) }}', {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}',
@@ -83,7 +83,7 @@
                 body: JSON.stringify(this.tanks)
             }).then(resp => resp.json()).then(
                 data => {
-                    window.location.href = '{{ route('comps.heats', $comp) }}'
+                    window.location.href = '{{ route('comps.heats_and_draws', $comp) }}'
                 })
         }
     }">
@@ -116,7 +116,8 @@
 
         </div>
 
-        <p>Selected #: <span x-text="selected.reduce((a1, b) => a1 + b.count, 0)"></span></p>
+        <p class="mt-2 font-semibold font-archivo">Selected #: <span
+                x-text="selected.reduce((a1, b) => a1 + b.count, 0)"></span></p>
 
         <br>
 
@@ -156,13 +157,9 @@
                 </div>
             </template>
 
-            <div class="se-btn border-green-500! text-green-500 hover:bg-green-500 flex  items-center justify-center"
-                @click="addTank()">
-
-                <p class="text-2xl font-semibold">Add Tank</p>
-
-
-            </div>
+            <button type="button" class="se-btn se-btn-outline-success" @click="addTank()">
+                Add Tank
+            </button>
 
         </div>
 

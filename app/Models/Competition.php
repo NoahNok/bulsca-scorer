@@ -191,33 +191,46 @@ class Competition extends Model implements IInvitable
         $manager->computeStats();
     }
 
-    public function getCompetitorsPerLeague()
+    public function getTargetEntitiesPerLeague()
     {
-        return DB::select('WITH totals AS (SELECT league, COUNT(*) as count FROM competition_teams WHERE competition=? GROUP BY league) SELECT t.league, l.name, t.count FROM totals t INNER JOIN leagues l ON l.id=t.league', [$this->id]);
+
+        // for now assume target type is competitor
+        $competitors = CompetitionTeam::where('competition', $this->id)->with('getLeague')->get();
+
+        $grouped = $competitors->groupBy(function ($competitor) {
+            return $competitor->getLeague->id;
+        });
+
+        // Transform into desired array format
+        $result = $grouped->map(function ($group, $leagueId) {
+            $leagueName = $group->first()->getLeague->name;
+            return ['league' => $leagueId, 'name' => $leagueName, 'count' => $group->count()];
+        })->values()->toArray();
+
+        return $result;
+
+
+        //return DB::select('WITH totals AS (SELECT league, COUNT(*) as count FROM competition_teams WHERE competition=? GROUP BY league) SELECT t.league, l.name, t.count FROM totals t INNER JOIN leagues l ON l.id=t.league', [$this->id]);
     }
 
     public function getTanks()
     {
 
-        $data = collect(DB::select('WITH totals AS (SELECT serc_tank, league, COUNT(*) AS count FROM competition_teams WHERE competition=? AND serc_tank>0 GROUP BY league, serc_tank ORDER BY serc_tank) SELECT t.league, l.name, t.count, t.serc_tank FROM totals t INNER JOIN leagues l ON l.id=t.league', [$this->id]));
-        $return = [];
 
-        foreach ($data->groupBy('serc_tank') as $group) {
-            $return[] = $group;
-        }
+        $serc = SERC::where('competition', $this->id)->orderBy('id')->first();
 
-        return $return;
-    }
+        return $serc->draw()->with('entity')->get()->sortBy('tank')->groupBy('tank')->map(function ($tank) {
+            return $tank->groupBy('entity.getLeague.id')->map(function ($competitors, $leagueId) {
 
-    // Like above but for just simple listing of names
-    public function getSercTanks()
-    {
+                return [
+                    'league' => $leagueId,
+                    'name' => $competitors->first()->entity->getLeague->name,
+                    'count' => $competitors->count()
+                ];
+            })->values();
+        })->values();
 
-        if ($this->scoring_type == 'rlss-nationals') {
-            return collect(DB::select('SELECT ct.team, ct.id AS tid, l.name AS league, c.name AS club, c.region, ct.serc_tank, ct.serc_order FROM competition_teams ct INNER JOIN clubs c ON c.id=ct.club INNER JOIN leagues l ON l.id=ct.league WHERE competition=? AND serc_tank > 0 ORDER BY serc_tank, serc_order;', [$this->id]));
-        } else {
-            return collect(DB::select('SELECT ct.team, ct.id AS tid, l.name AS league, c.name AS club, c.region, ct.serc_tank, ct.serc_order FROM competition_teams ct INNER JOIN clubs c ON c.id=ct.club INNER JOIN leagues l ON l.id=ct.league WHERE competition=? ORDER BY serc_tank, serc_order;', [$this->id]));
-        }
+        return [];
     }
 
     /**

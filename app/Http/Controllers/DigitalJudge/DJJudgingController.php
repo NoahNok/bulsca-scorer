@@ -10,6 +10,7 @@ use App\Models\Competition;
 use App\Models\CompetitionTeam;
 use App\Models\DigitalJudge\JudgeNote;
 use App\Models\DigitalJudge\OverallJudgeNote;
+use App\Models\Orders\Draw;
 use App\Models\SERC;
 use App\Models\SERCJudge;
 use App\Models\SERCResult;
@@ -64,7 +65,11 @@ class DJJudgingController extends Controller
 
     public function selectTank()
     {
-        $tanks = DB::select("SELECT DISTINCT serc_tank FROM competition_teams WHERE competition=? AND serc_tank > 0 ORDER BY serc_tank ASC", [DigitalJudge::getClientCompetition()->id]);
+
+
+
+        $tanks = SERC::where('competition', DigitalJudge::getClientCompetition()->id)->first()->draw()->orderBy('tank')->distinct('tank')->get('tank')->pluck('tank')->toArray();
+        //$tanks = DB::select("SELECT DISTINCT serc_tank FROM competition_teams WHERE competition=? AND serc_tank > 0 ORDER BY serc_tank ASC", [DigitalJudge::getClientCompetition()->id]);
 
         return view('digitaljudge.judging.select-tank', array_merge(DigitalJudge::getBladeProps(), ['head' => DigitalJudge::isClientHeadJudge(), 'tanks' => $tanks]));
     }
@@ -74,7 +79,7 @@ class DJJudgingController extends Controller
 
         if ($tank < 1) $tank = 1;
 
-        $max = DB::select("SELECT MAX(serc_tank) AS max FROM competition_teams WHERE competition=?;", [DigitalJudge::getClientCompetition()->id])[0]->max;
+        $max = SERC::where('competition', DigitalJudge::getClientCompetition()->id)->first()->draw()->orderBy('tank')->distinct('tank')->get('tank')->pluck('tank')->max();
 
 
         if ($tank > $max) $tank = $max;

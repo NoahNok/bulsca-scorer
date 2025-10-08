@@ -68,15 +68,21 @@
             
             
             
+                },
+            
+                init() {
+                    this.open_tank = Math.min(...Object.keys(this.tanks).map(Number))
                 }
             }">
 
-                <template x-for="(_, tank_no) in tanks">
-                    <div class="tabbed-bar mb-4">
+
+                <div class="tabbed-bar mb-4">
+                    <template x-for="(_, tank_no) in tanks">
                         <div @click="open_tank = tank_no" :class="open_tank == tank_no ? 'active' : ''">Tank <span
                                 x-text="tank_no"></span></div>
-                    </div>
-                </template>
+                    </template>
+                </div>
+
                 <div class="grid grid-flow-row grid-cols-6 gap-4 flex-wrap">
 
                     <template x-for="draw in tanks[open_tank]">

@@ -73,9 +73,20 @@
 
         <h4>Team Order</h4>
 
+        @php
+            $draws = $serc->getDraw;
+
+            if (App\DigitalJudge\DigitalJudge::getTank()) {
+                $draws = $draws->where('tank', App\DigitalJudge\DigitalJudge::getTank());
+            }
+        @endphp
+
         @if ($comp->show_teams_to_judges || $head)
             <ul class=" list-none -mt-2  w-full ">
-                @foreach ($serc->getDraw as $draw)
+
+
+
+                @foreach ($draws as $draw)
                     @if ($head)
                         <li class=" ">
 

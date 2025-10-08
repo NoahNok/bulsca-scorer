@@ -274,6 +274,8 @@ Route::middleware('auth')->group(function () {
 
             Route::prefix('draws')->group(function () {
                 Route::get('generate', [DrawController::class, 'generate'])->name('comps.heats_and_draws.draws.generate');
+                Route::get('tank-setup', [DrawController::class, 'tankSetup'])->name('comps.heats_and_draws.draws.tank_setup');
+                Route::post('tank-setup', [DrawController::class, 'tankSetupPost'])->name('comps.heats_and_draws.draws.tank_setup.post');
                 Route::get('{serc}/edit', [DrawController::class, 'edit'])->name('comps.heats_and_draws.draws.edit');
                 Route::post('{serc}/edit', [DrawController::class, 'swap'])->name('comps.heats_and_draws.draws.swap');
                 Route::get('{serc}/reset', [DrawController::class, 'reset'])->name('comps.heats_and_draws.draws.reset');

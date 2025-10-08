@@ -4,29 +4,6 @@
     Heats and Draws
 @endsection
 
-@section('breadcrumbs')
-    <div>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="w-3 h-3">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-        </svg>
-        <a href="{{ route('comps') }}">Competitions</a>
-    </div>
-    <div>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="w-3 h-3">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-        </svg>
-        <a href="{{ route('comps.view', $comp) }}">{{ $comp->name }}</a>
-    </div>
-    <div>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="w-3 h-3">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-        </svg>
-        <a href="{{ route('comps.heats_and_draws', $comp) }}">Heats and Orders</a>
-    </div>
-@endsection
 
 @section('content')
     <div class="">
@@ -97,6 +74,13 @@
             </div>
 
 
+            @php
+                $use_tanks = $comp->getScoringSettings->use_tanks;
+            @endphp
+            @if ($use_tanks)
+                <a href="{{ route('comps.heats_and_draws.draws.tank_setup', $comp) }}" id="edit-heats-kill"
+                    class="se-btn">Edit Tank Setup</a>
+            @endif
             @forelse ($comp->getDraws() as $heatevent)
                 @if ($comp->heats_per_event)
                     <h3>{{ $heatevent['serc']->getName() }} Draw</h3>
@@ -110,11 +94,25 @@
 
 
                     @foreach ($heatevent['draws'] as $tank_no => $draw)
-                        @foreach ($draw as $drawEntry)
-                            <div class="se-card  se-card-body min-w-56 p-2! px-4! rounded">
-                                {{ $drawEntry->draw }}. {{ $drawEntry->entity->getName() ?? '-' }}
+                        @if ($use_tanks)
+                            <div>
+                                <h4>Tank {{ $tank_no + 1 }}</h4>
+                                <ol>
+                                    @foreach ($draw as $drawEntry)
+                                        <li class="overflow-hidden line-clamp-1 hover:line-clamp-none ">
+                                            {{ $drawEntry->draw }}.
+                                            {{ $drawEntry->entity->getName() ?? '-' }}</li>
+                                    @endforeach
+                                </ol>
+
                             </div>
-                        @endforeach
+                        @else
+                            @foreach ($draw as $drawEntry)
+                                <div class="se-card  se-card-body min-w-56 p-2! px-4! rounded">
+                                    {{ $drawEntry->draw }}. {{ $drawEntry->entity->getName() ?? '-' }}
+                                </div>
+                            @endforeach
+                        @endif
                     @endforeach
 
 

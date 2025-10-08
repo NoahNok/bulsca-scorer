@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Orders;
 
 use App\Http\Controllers\Controller;
 use App\Models\Competition;
+use App\Models\CompetitionTeam;
+use App\Models\Competitor;
 use App\Models\Orders\Draw;
 use App\Models\SERC;
 use App\Services\DrawService;
@@ -13,6 +15,10 @@ class DrawController extends Controller
 {
     public function generate(Competition $comp, DrawService $drawService)
     {
+
+        if ($comp->getScoringSettings->use_tanks) {
+            return redirect()->route('comps.heats_and_draws.draws.tank_setup', $comp);
+        }
 
         $serc = $comp->getSERCs()->orderBy('id')->first();
 
@@ -55,5 +61,48 @@ class DrawController extends Controller
 
 
         return redirect()->back()->with('success', 'Draw Reset');
+    }
+
+    public function tankSetup(Competition $comp)
+    {
+        return view('competition.heats-and-orders.draws.draw', ['comp' => $comp]);
+    }
+
+    public function tankSetupPost(Competition $comp, Request $request)
+    {
+        $allCompetitorsPerLeague = CompetitionTeam::where('competition', $comp->id)->with('getLeague')->get()->groupBy('getLeague.id');
+
+        $tank_target = $request->json()->all();
+
+        $targetSerc = SERC::where('competition', $comp->id)->orderBy('id')->first();
+
+        // remove old draw 
+        Draw::where('serc', $targetSerc->id)->delete();
+
+        foreach ($tank_target as $ind => $tank) {
+            $tankTotal = 0;
+
+            foreach ($tank as $bracket) {
+                $leagueId = $bracket['league'];
+
+                $competitors = $allCompetitorsPerLeague->get($leagueId);
+
+                $competitors = $competitors->shuffle();
+
+                foreach ($competitors as $competitor) {
+                    $tankTotal++;
+                    $draw = new Draw();
+                    $draw->entity()->associate($competitor);
+                    $draw->serc = $targetSerc->id;
+
+                    $draw->tank = $ind + 1;
+                    $draw->draw = $tankTotal;
+
+                    $draw->save();
+                }
+            }
+        }
+
+        return response()->json();
     }
 }
