@@ -164,6 +164,11 @@ class CompetitionSpeedEvent extends Event
 
     public function getHeats()
     {
+
+        if ($this->getCompetition->heats_per_event) {
+            return $this->heats();
+        }
+
         return CompetitionSpeedEvent::where('competition', $this->competition)->orderBy('id')->first()->heats();
     }
 

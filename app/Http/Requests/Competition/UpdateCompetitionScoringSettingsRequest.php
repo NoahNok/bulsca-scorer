@@ -24,6 +24,9 @@ class UpdateCompetitionScoringSettingsRequest extends FormRequest
         return [
 
             'use_tanks' => 'sometimes|boolean',
+            'heats_per_event' => 'sometimes|boolean',
+            'seed_per_event' => 'sometimes|boolean',
+            'use_seeds' => 'sometimes|boolean',
 
 
         ];

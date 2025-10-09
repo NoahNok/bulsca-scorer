@@ -23,11 +23,18 @@ class HeatController extends Controller
     {
 
         if ($comp->heats_per_event) {
-            throw new NotImplementedException("Heats per event not implemented");
+
+            $events = $comp->getSpeedEvents;
+
+            foreach ($events as $event) {
+                $heatService->generateHeatsForEvent($event);
+            }
+        } else {
+            $heatService->generateHeatsForEvent($comp->getSpeedEvents()->orderBy('id')->first());
         }
 
 
-        $heatService->generateHeatsForEvent($comp->getSpeedEvents()->orderBy('id')->first());
+
 
         return redirect()->back()->with('success', 'Heats Generated');
     }

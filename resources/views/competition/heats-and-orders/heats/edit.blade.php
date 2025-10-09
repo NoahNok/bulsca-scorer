@@ -11,7 +11,11 @@
         <div class="flex flex-col space-y-4">
 
             <div class="flex justify-between">
-                <h2 class="mb-0">Heats</h2>
+                <h2 class="mb-0">
+                    @if ($comp->heats_per_event)
+                        {{ $event->getNAme() }}
+                    @endif Heats
+                </h2>
                 <a href="{{ route('comps.heats_and_draws', $comp) }}" class="se-btn">Back</a>
             </div>
 
@@ -54,6 +58,7 @@
                     <tbody>
                         @php
                             $tableEntries = $event->heats->sortBy(['heat', 'lane'])->groupBy('heat');
+                            $use_seeds = $comp->use_seeds;
                         @endphp
                         @for ($l = 1; $l <= $comp->max_lanes; $l++)
                             <tr>
@@ -71,7 +76,7 @@
                                         class="hover:bg-black/60 hover:text-white cursor-pointer min-w-[30ch]">
                                         @if ($lane)
                                             {{ $lane->entity->getName() }}
-                                            ({{ $lane->entity->getSeeds()->where('speed_event', $event->id)->first()->prettySeed() }})
+                                            {{ $use_seeds ? "({$lane->entity->getSeeds()->where('speed_event', $event->id)->first()->prettySeed()})" : '' }}
                                         @else
                                             &nbsp;
                                         @endif

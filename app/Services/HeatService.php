@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\AbstractClasses\Entity;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\Orders\Heat;
@@ -19,12 +20,20 @@ class HeatService
         // Get seeds
         $seeds = $event->seeds()->orderBy('seed', 'desc')->get();
 
+        $comp = $event->getCompetition;
+
+        $use_seeds = $comp->use_seeds;
+
         // Expect # seeds = # teams
-        if ($seeds->count() != $event->getScorableEntities()->count()) {
+        if ($use_seeds && $seeds->count() != $event->getScorableEntities()->count()) {
             throw new Exception("# Seeds and # Entities do not match");
         }
 
-        $max_lanes = $event->getCompetition->max_lanes;
+        if (!$use_seeds) {
+            $seeds = $event->getScorableEntities();
+        }
+
+        $max_lanes = $comp->max_lanes;
         $max_heats = ceil($seeds->count() / $max_lanes);
 
         $heats = [];
@@ -44,8 +53,11 @@ class HeatService
             $heat = $heats[$i];
             foreach (array_keys($heat) as $l) {
 
-
-                $entity = $heat[$l]->entity;
+                if ($use_seeds) {
+                    $entity = $heat[$l]->entity;
+                } else {
+                    $entity = $heat[$l];
+                }
 
 
                 $d = [

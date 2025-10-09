@@ -540,6 +540,30 @@
                             </select>
                         </div>
 
+                        <div class="se-form-input imb-0">
+                            <label for="">Use Seed Times</label>
+                            <select name="use_seeds" id="">
+                                <option value="1" @if ($comp->use_seeds) selected @endif>Yes</option>
+                                <option value="0" @if (!$comp->use_seeds) selected @endif>No</option>
+                            </select>
+                        </div>
+
+                        <div class="se-form-input imb-0">
+                            <label for="">Heats Per Event</label>
+                            <select name="heats_per_event" id="">
+                                <option value="1" @if ($comp->heats_per_event) selected @endif>Yes</option>
+                                <option value="0" @if (!$comp->heats_per_event) selected @endif>No</option>
+                            </select>
+                        </div>
+
+                        <div class="se-form-input imb-0">
+                            <label for="">Seed Per Event</label>
+                            <select name="seed_per_event" id="">
+                                <option value="1" @if ($comp->seed_per_event) selected @endif>Yes</option>
+                                <option value="0" @if (!$comp->seed_per_event) selected @endif>No</option>
+                            </select>
+                        </div>
+
 
 
 

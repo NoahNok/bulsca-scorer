@@ -19,14 +19,22 @@
 
             @forelse ($comp->getHeats() as $heatevent)
                 @if ($comp->heats_per_event)
-                    <h3>{{ $heatevent['event']->getName() }} Heats</h3>
+                    <div class="flex items-center justify-between">
+                        <h3>{{ $heatevent['event']->getName() }} Heats</h3>
+                        <a href="{{ route('comps.heats_and_draws.heats.edit', [$comp, $heatevent['event']]) }}"
+                            id="edit-heats-kill" class="se-btn">Edit
+                            Heats</a>
+                    </div>
+                @else
+                    <a href="{{ route('comps.heats_and_draws.heats.edit', [$comp, $heatevent['event']]) }}"
+                        id="edit-heats-kill" class="se-btn">Edit
+                        Heats</a>
                 @endif
-                <a href="{{ route('comps.heats_and_draws.heats.edit', [$comp, $heatevent['event']]) }}" id="edit-heats-kill"
-                    class="se-btn">Edit
-                    Heats</a>
-                <div class="grid grid-flow-col auto-cols-max gap-4 flex-wrap">
 
-                    <div class="flex flex-col  py-2">
+
+                <div class="grid grid-flow-col auto-cols-max gap-4 flex-wrap overflow-x-auto snap-x snap-mandatory">
+
+                    <div class="flex flex-col  py-2 sticky top-0 left-0 bg-white pr-2 ">
                         <h3 class="font-bold  mb-2">L</h3>
                         <div class="space-y-2">
 
@@ -41,7 +49,7 @@
                     </div>
 
                     @foreach ($heatevent['heats'] as $heat_no => $lanes)
-                        <div class="flex flex-col  py-2">
+                        <div class="flex flex-col  py-2 snap-start pl-5">
                             <h3 class="font-bold  mb-2">Heat {{ $heat_no }}</h3>
                             <div class="space-y-2">
 
@@ -61,6 +69,7 @@
 
 
                 </div>
+
             @empty
                 <a href="{{ route('comps.heats_and_draws.heats.generate', $comp) }}" class="se-btn">Generate Heats</a>
             @endforelse
@@ -68,26 +77,31 @@
 
             <br>
 
-            <div class="flex justify-between">
-                <h2 class="mb-0">Draw</h2>
-
-            </div>
 
 
             @php
                 $use_tanks = $comp->getScoringSettings->use_tanks;
             @endphp
-            @if ($use_tanks)
-                <a href="{{ route('comps.heats_and_draws.draws.tank_setup', $comp) }}" id="edit-heats-kill"
-                    class="se-btn">Edit Tank Setup</a>
-            @endif
+
             @forelse ($comp->getDraws() as $heatevent)
-                @if ($comp->heats_per_event)
-                    <h3>{{ $heatevent['serc']->getName() }} Draw</h3>
-                @endif
-                <a href="{{ route('comps.heats_and_draws.draws.edit', [$comp, $heatevent['serc']]) }}" id="edit-heats-kill"
-                    class="se-btn">Edit
-                    Draw</a>
+                <div class="flex items-center justify-between">
+
+                    <h2 class="mb-0">Draw</h2>
+
+                    <div>
+                        @if ($use_tanks)
+                            <a href="{{ route('comps.heats_and_draws.draws.tank_setup', $comp) }}" id="edit-heats-kill"
+                                class="se-btn">Edit Tank Setup</a>
+                        @endif
+                        <a href="{{ route('comps.heats_and_draws.draws.edit', [$comp, $heatevent['serc']]) }}"
+                            id="edit-heats-kill" class="se-btn">Edit
+                            Draw</a>
+                    </div>
+
+
+                </div>
+
+
 
                 <div class="grid grid-flow-row grid-cols-6 gap-4 flex-wrap">
 

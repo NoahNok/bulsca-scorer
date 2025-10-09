@@ -242,7 +242,7 @@ class Competition extends Model implements IInvitable
     {
         $heats = Heat::whereHas('speedEvent', function ($query) {
             $query->where('competition', $this->id);
-        })->get()->groupBy('speed_event');
+        })->with('entity')->get()->groupBy('speed_event');
 
         return $heats->map(function ($heatsForEvent, $speedEventId) {
             $speedEvent = $heatsForEvent->first()->speedEvent;
@@ -258,7 +258,7 @@ class Competition extends Model implements IInvitable
 
     public function getDraws()
     {
-        return $this->hasManyThrough(Draw::class, SERC::class, 'competition', 'serc', 'id', 'id')->get()->groupBy('serc')->map(function ($draws, $sercId) {
+        return $this->hasManyThrough(Draw::class, SERC::class, 'competition', 'serc', 'id', 'id')->with('entity')->get()->groupBy('serc')->map(function ($draws, $sercId) {
             $serc = SERC::find($sercId);
             return [
                 'serc' => $serc,

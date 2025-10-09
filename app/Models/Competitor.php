@@ -15,7 +15,32 @@ class Competitor extends Entity
     {
         // Implement the logic to return the competitor's name
         // For example, if there is a 'name' property:
-        return $this->name ?? '';
+        return $this->formatName();
+    }
+
+    public function formatName($format = ':C - :N - (:L)')
+    {
+
+        $targets = [':C', ':L', ':N', ':R', ':S'];
+        $search = [];
+        $replace = [];
+
+        foreach ($targets as $target) {
+            if (str_contains($format, $target)) {
+                $search[] = $target;
+
+                $value = match ($target) {
+                    ':C' => $this->getTeam->getClub?->name ?? '-',
+                    ':L' => $this->getLeague?->name ?? '-',
+                    ':T' => $this->getTeam->name ?? '-',
+                    ':N' => $this->name
+                };
+
+                $replace[] = $value;
+            }
+        }
+
+        return str_replace($search, $replace, $format);
     }
 
     public function getTeam()

@@ -110,13 +110,23 @@ class CompetitionController extends Controller
 
         $settings = $comp->getScoringSettings;
 
+
+
+
         foreach ($validated as $key => $value) {
 
+            if ($key == 'heats_per_event' || $key == 'seed_per_event' || $key == 'use_seeds') {
+                $comp->{$key} = $value;
+                continue;
+            }
 
 
             $settings->$key = $value;
         }
 
+
+
+        $comp->save();
 
         $settings->save();
 
