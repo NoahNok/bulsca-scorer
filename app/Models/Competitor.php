@@ -11,6 +11,9 @@ class Competitor extends Entity
 {
     use HasFactory;
 
+
+    protected $fillable = ['team', 'league', 'competition', 'name'];
+
     public function getName(): string
     {
         // Implement the logic to return the competitor's name

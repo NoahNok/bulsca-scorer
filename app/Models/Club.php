@@ -14,7 +14,7 @@ class Club extends Entity
 {
     use HasFactory, Cloneable;
 
-    protected $fillable = ['name', 'region', 'competition'];
+    protected $fillable = ['name', 'region', 'competition', 'league'];
 
 
     public function getName(): string

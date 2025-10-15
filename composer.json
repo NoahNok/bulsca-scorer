@@ -9,7 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
-        "doctrine/dbal": "^3.6",
+        "doctrine/dbal": "^3.10",
         "guzzlehttp/guzzle": "^7.2",
         "laravel-notification-channels/webpush": "^9.0",
         "laravel/framework": "^10.0",

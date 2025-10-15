@@ -16,7 +16,7 @@ class CompetitionTeam extends Entity
 {
     use HasFactory, Cloneable, MorphableModel;
 
-    protected $fillable = ['club', 'team'];
+    protected $fillable = ['club', 'team', 'league', 'competition'];
 
     protected $with = ['getClub', 'getLeague', 'getCompetitors'];
 

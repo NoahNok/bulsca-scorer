@@ -49,6 +49,17 @@ abstract class Entity extends Model
         return $this->morphMany(EntityEventSeed::class, 'entity');
     }
 
+    public function getSeedTimes()
+    {
+
+        // if ($this->getCompetition->seed_per_heat) {
+        return (object) $this->getSeeds->mapWithKeys(fn($seed) => [$seed->speed_event => ['id' => $seed->id, 'seed' => SpeedResult::prettyTime($seed->seed)]])->toArray();
+        // } else {
+        //     $seed = $this->getSeeds->sortBy('speed_event')->first();
+
+        //     return [$seed->speed_event => ['id' => $seed->id, 'seed' => SpeedResult::prettyTime($seed->seed)]];
+        // }
+    }
 
     public function getLeague()
     {

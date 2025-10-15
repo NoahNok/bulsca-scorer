@@ -86,6 +86,11 @@ class Competition extends Model implements IInvitable
         return $this->hasMany(CompetitionTeam::class, 'competition', 'id');
     }
 
+    public function getCompetitors()
+    {
+        return $this->hasMany(Competitor::class, 'competition', 'id');
+    }
+
     public function getResultSchemas()
     {
         return $this->hasMany(ResultSchema::class, 'competition', 'id');
@@ -110,6 +115,83 @@ class Competition extends Model implements IInvitable
     public function getUser()
     {
         return $this->hasOne(User::class, 'competition', 'id');
+    }
+
+    public function getEntityMakeup()
+    {
+        $clubs = $this->getClubs()
+            ->with('getLeague', 'getTeams.getLeague', 'getTeams.getCompetitors.getLeague')
+            ->get()
+            ->map(function ($club) {
+                return [
+                    'id' => $club->id,
+                    'name' => $club->name,
+                    'league' => $club->getLeague->id ?? null,
+                    'teams' => $club->getTeams->map(function ($team) {
+                        return [
+                            'id' => $team->id,
+                            'name' => $team->team,
+                            'league' => $team->getLeague->id ?? null,
+                            'seeds' => $team->getSeedTimes(),
+                            'competitors' => $team->getCompetitors->map(function ($competitor) {
+                                return [
+                                    'id' => $competitor->id,
+                                    'name' => $competitor->name,
+                                    'league' => $competitor->getLeague->id ?? null,
+                                    'seeds' => $competitor->getSeedTimes()
+                                ];
+                            })->toArray(),
+                        ];
+                    })->toArray(),
+                ];
+            })->toArray();
+
+        $teams = $this->getCompetitionTeams()->whereNull('club')->get()->map(function ($team) {
+            return [
+                'id' => $team->id,
+                'name' => $team->team,
+                'league' => $team->getLeague->id ?? null,
+                'seeds' => $team->getSeedTimes(),
+                'competitors' => $team->getCompetitors->map(function ($competitor) {
+                    return [
+                        'id' => $competitor->id,
+                        'name' => $competitor->name,
+                        'league' => $competitor->getLeague->id ?? null,
+                        'seeds' => $competitor->getSeedTimes()
+                    ];
+                })->toArray(),
+            ];
+        })->toArray();
+
+        $competitors = $this->getCompetitors()->whereNull('team')->get()->map(function ($competitor) {
+            return [
+                'id' => $competitor->id,
+                'name' => $competitor->name,
+                'league' => $competitor->getLeague->id ?? null,
+                'seeds' => $competitor->getSeedTimes()
+            ];
+        })->toArray();
+
+        return [
+            'clubs' => $clubs,
+            'teams' => $teams,
+            'competitors' => $competitors
+        ];
+    }
+
+    public function getSeedableEvents()
+    {
+        if (!$this->use_seeds) {
+            return [];
+        }
+
+
+        if ($this->seed_per_event) {
+            return $this->getSpeedEvents()->orderBy('id')->get()->map(fn($event) => ['id' => $event->id, 'name' => $event->getName()]);
+        } else {
+            $event = $this->getSpeedEvents()->first();
+            return [['id' => $event->id, 'name' => $event->getName()]];
+        }
     }
 
     public function areResultsPublic()

@@ -3,12 +3,15 @@
 namespace App\Models\Orders;
 
 use App\Models\CompetitionSpeedEvent;
+use App\Models\SpeedResult;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class EntityEventSeed extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['seed', 'entity_type', 'entity_id', 'speed_event'];
 
     public function entity()
     {
@@ -22,6 +25,6 @@ class EntityEventSeed extends Model
 
     public function prettySeed()
     {
-        return gmdate('i:s', $this->seed / 1000);
+        return SpeedResult::prettyTime($this->seed);
     }
 }

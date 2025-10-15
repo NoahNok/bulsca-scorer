@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CompetitionController;
 use App\Http\Controllers\CompetitorController;
 use App\Http\Controllers\DigitalJudge\DigitalJudgeController;
-
+use App\Http\Controllers\EntityController;
 use App\Http\Controllers\Orders\HeatController;
 use App\Http\Controllers\Landing\LandingController;
 use App\Http\Controllers\Landing\ResultsController;
@@ -225,11 +225,11 @@ Route::middleware('auth')->group(function () {
             Route::delete('/delete', [TeamsController::class, 'delete'])->name('comps.view.teams.delete');
         });
 
-        // COMPETITORS - Only shows if socring type is set to use it instead of teams
-        Route::prefix('/competitors')->middleware('can:access,comp,"teams"')->group(function () {
-            Route::get('', [CompetitionController::class, 'competitors'])->name('comps.competitors');
-            Route::get('/edit', [CompetitorController::class, 'edit'])->name('comps.competitors.edit');
-            Route::post('/edit', [CompetitorController::class, 'save'])->name('comps.competitors.save');
+        // ENTITIES - Only shows if socring type is set to use it instead of teams
+        Route::prefix('/entities')->middleware('can:access,comp,"teams"')->group(function () {
+            Route::get('', [EntityController::class, 'view'])->name('comps.entities');
+            Route::get('/edit', [EntityController::class, 'edit'])->name('comps.entities.edit');
+            Route::post('/edit', [EntityController::class, 'save'])->name('comps.entities.save');
             // Route::delete('/delete', [TeamsController::class, 'delete'])->name('comps.view.competitors.delete');
         });
 
