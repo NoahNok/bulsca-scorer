@@ -388,6 +388,7 @@
                                         <h4 x-text="team.name" class="hover:scale-101 cursor-pointer hover:underline"
                                             @click="editTeam(t_index, cl_index)"></h4>
 
+
                                         <div class="flex items-center space-x-2">
                                             <p x-text="league_map[team.league]"></p>
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -434,6 +435,7 @@
 
                                 </div>
                             </template>
+
 
                             <button class="se-btn se-btn-outline-success w-full mt-2 flex items-center justify-center"
                                 style="" @click="addTeam(cl_index)">
