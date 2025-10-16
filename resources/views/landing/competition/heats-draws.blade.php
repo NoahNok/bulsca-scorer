@@ -14,15 +14,18 @@
 
         </div>
 
-
         @forelse ($comp->getHeats() as $heatevent)
             @if ($comp->heats_per_event)
-                <h3>{{ $heatevent['event']->getName() }} Heats</h3>
+                <div class="flex items-center justify-between">
+                    <h3>{{ $heatevent['event']->getName() }} Heats</h3>
+
+                </div>
             @endif
 
-            <div class="grid grid-flow-col auto-cols-max gap-4 flex-wrap">
 
-                <div class="flex flex-col  py-2">
+            <div class="grid grid-flow-col auto-cols-max gap-4 flex-wrap overflow-x-auto snap-x snap-mandatory">
+
+                <div class="flex flex-col  py-2 sticky top-0 left-0 bg-white pr-2 ">
                     <h3 class="font-bold  mb-2">L</h3>
                     <div class="space-y-2">
 
@@ -37,7 +40,7 @@
                 </div>
 
                 @foreach ($heatevent['heats'] as $heat_no => $lanes)
-                    <div class="flex flex-col  py-2">
+                    <div class="flex flex-col  py-2 snap-start pl-5">
                         <h3 class="font-bold  mb-2">Heat {{ $heat_no }}</h3>
                         <div class="space-y-2">
 
@@ -57,12 +60,15 @@
 
 
             </div>
+
         @empty
             <div class="alert-box alert-warning md:w-1/3">
 
                 <p>Heats are not currently available, please check back later.</p>
             </div>
         @endforelse
+
+
 
 
         <br>
@@ -72,23 +78,39 @@
 
         </div>
 
+        @php
+            $use_tanks = $comp->getScoringSettings->use_tanks;
+        @endphp
 
         @forelse ($comp->getDraws() as $heatevent)
-            @if ($comp->heats_per_event)
-                <h3>{{ $heatevent['serc']->getName() }} Draw</h3>
-            @endif
 
 
-            <div class="grid grid-flow-row grid-cols-6 gap-4 flex-wrap">
+
+            <div class="grid grid-flow-row grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4    gap-4 flex-wrap">
 
 
 
                 @foreach ($heatevent['draws'] as $tank_no => $draw)
-                    @foreach ($draw as $drawEntry)
-                        <div class="se-card  se-card-body min-w-56 p-2! px-4! rounded">
-                            {{ $drawEntry->draw }}. {{ $drawEntry->entity->getName() ?? '-' }}
+                    @if ($use_tanks)
+                        <div>
+                            <h4>Tank {{ $tank_no + 1 }}</h4>
+                            <ol>
+                                @foreach ($draw as $drawEntry)
+                                    <li
+                                        class="overflow-hidden line-clamp-1 hover:line-clamp-none focus:line-clamp-none active:line-clamp-none focus-within:line-clamp-none ">
+                                        {{ $drawEntry->draw }}.
+                                        {{ $drawEntry->entity->getName() ?? '-' }}</li>
+                                @endforeach
+                            </ol>
+
                         </div>
-                    @endforeach
+                    @else
+                        @foreach ($draw as $drawEntry)
+                            <div class="se-card  se-card-body min-w-56 p-2! px-4! rounded">
+                                {{ $drawEntry->draw }}. {{ $drawEntry->entity->getName() ?? '-' }}
+                            </div>
+                        @endforeach
+                    @endif
                 @endforeach
 
 
@@ -99,6 +121,8 @@
                 <p>Draws are not currently available, please check back later.</p>
             </div>
         @endforelse
+
+
 
 
 
