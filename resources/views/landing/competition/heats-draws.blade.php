@@ -5,25 +5,62 @@
 @section('content')
 
 
-    <div class="flex flex-col space-y-4">
+    @php
+        $events = $comp->getHeats();
+        $sercs = $comp->getDraws();
+
+        $first_item = 'heats';
+
+        if ($comp->heats_per_event && count($events) > 0) {
+            $event = $events[0]['event'];
+            $first_item = "sp:{$event->id}";
+        }
+
+    @endphp
+
+    <div class="flex flex-col space-y-4" x-data="{
+        open: '{{ $first_item }}',
+    
+    }">
 
 
 
-        <div class="flex justify-between">
-            <h2 class="mb-0">Heats</h2>
+
+
+        <div class="tabbed-bar mb-4">
+            @if ($comp->heats_per_event)
+                @foreach ($events as $heatevent)
+                    <div @click="open = 'sp:{{ $heatevent['event']->id }}'"
+                        :class="open == 'sp:{{ $heatevent['event']->id }}' ? 'active' : ''">
+                        {{ $heatevent['event']->getName() }}</div>
+                @endforeach
+            @else
+                <div @click="open = 'heats'" :class="open == 'heats' ? 'active' : ''">Heats</div>
+            @endif
+
+            @foreach ($sercs as $heatevent)
+                <div @click="open = 'se:{{ $heatevent['serc']->id }}'"
+                    :class="open == 'se:{{ $heatevent['serc']->id }}' ? 'active' : ''">
+                    {{ $heatevent['serc']->getName() }}</div>
+            @endforeach
 
         </div>
 
+
+
+
+
         @forelse ($comp->getHeats() as $heatevent)
-            @if ($comp->heats_per_event)
-                <div class="flex items-center justify-between">
-                    <h3>{{ $heatevent['event']->getName() }} Heats</h3>
 
-                </div>
-            @endif
+            @php
+
+                $speed_key = $comp->heats_per_event ? "sp:{$heatevent['event']->id}" : 'heats';
+            @endphp
 
 
-            <div class="grid grid-flow-col auto-cols-max gap-4 flex-wrap overflow-x-auto snap-x snap-mandatory">
+
+            <div class="grid grid-flow-col auto-cols-max gap-4 flex-wrap overflow-x-auto snap-x snap-mandatory"
+                x-show="open == '{{ $speed_key }}'">
 
                 <div class="flex flex-col  py-2 sticky top-0 left-0 bg-white pr-2 ">
                     <h3 class="font-bold  mb-2">L</h3>
@@ -71,12 +108,9 @@
 
 
 
-        <br>
 
-        <div class="flex justify-between">
-            <h2 class="mb-0">Draw</h2>
 
-        </div>
+
 
         @php
             $use_tanks = $comp->getScoringSettings->use_tanks;
@@ -86,22 +120,42 @@
 
 
 
-            <div class="grid grid-flow-row grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4    gap-4 flex-wrap">
+            <div class="grid grid-flow-row grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4    gap-4 flex-wrap"
+                x-show="open == 'se:{{ $heatevent['serc']->id }}'">
 
 
 
                 @foreach ($heatevent['draws'] as $tank_no => $draw)
                     @if ($use_tanks)
                         <div>
-                            <h4>Tank {{ $tank_no + 1 }}</h4>
-                            <ol>
+                            <h2 class="-mb-1!">Tank {{ $tank_no + 1 }}</h2>
+
+                            @php
+                                $uniqueLeagues = $draw
+                                    ->map(function ($drawEntry) {
+                                        return $drawEntry->entity->getLeague->name ?? null;
+                                    })
+                                    ->filter()
+                                    ->unique()
+                                    ->values()
+                                    ->implode(', ');
+
+                            @endphp
+
+                            <small class="text-gray-600 font-semibold">{{ $uniqueLeagues }}</small>
+
+
+
+                            <div class="flex flex-col space-y-2 mt-2">
                                 @foreach ($draw as $drawEntry)
-                                    <li
-                                        class="overflow-hidden line-clamp-1 hover:line-clamp-none focus:line-clamp-none active:line-clamp-none focus-within:line-clamp-none ">
+                                    <div class="se-card  se-card-body min-w-56 p-2! px-4! rounded ">
                                         {{ $drawEntry->draw }}.
-                                        {{ $drawEntry->entity->getName($comp) ?? '-' }}</li>
+                                        {{ $drawEntry->entity->getName($comp) ?? '-' }}</div>
                                 @endforeach
-                            </ol>
+                            </div>
+
+
+
 
                         </div>
                     @else
