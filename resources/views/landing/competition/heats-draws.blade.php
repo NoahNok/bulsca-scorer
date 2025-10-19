@@ -20,14 +20,21 @@
 
     <div class="flex flex-col space-y-4" x-data="{
         open: '{{ $first_item }}',
+        search: '',
+    
+        matchesSearch(term) {
+            return term.trim().startsWith(this.search.trim())
+        }
     
     }">
 
+        <div class="se-form-input">
+            <input type="text" x-model="search" placeholder="Search...">
+        </div>
 
 
 
-
-        <div class="tabbed-bar mb-4">
+        <div class="tabbed-bar mb-4 ">
             @if ($comp->heats_per_event)
                 @foreach ($events as $heatevent)
                     <div @click="open = 'sp:{{ $heatevent['event']->id }}'"
@@ -60,7 +67,16 @@
 
 
             <div class="grid grid-flow-col auto-cols-max gap-4 flex-wrap overflow-x-auto snap-x snap-mandatory"
-                x-show="open == '{{ $speed_key }}'">
+                x-data="{
+                
+                    children: [],
+                
+                    shouldShow() {
+                        return open == '{{ $speed_key }}' || (search.trim() != '' && this.children.some(Boolean))
+                
+                
+                    }
+                }" x-show="shouldShow">
 
                 <div class="flex flex-col  py-2 sticky top-0 left-0 bg-white pr-2 ">
                     <h3 class="font-bold  mb-2">L</h3>
@@ -77,7 +93,17 @@
                 </div>
 
                 @foreach ($heatevent['heats'] as $heat_no => $lanes)
-                    <div class="flex flex-col  py-2 snap-start pl-5">
+                    @php
+                        $names = $lanes->map(fn($lane) => $lane->entity->getName($comp))->filter()->implode(' ');
+                    @endphp
+
+                    <div class="flex flex-col  py-2 snap-start pl-5" x-data="{
+                        shouldShow() {
+                            let show = search.trim() === '' || `{{ strtolower($names) }}`.includes(search.trim().toLowerCase())
+                            children['{{ $heat_no }}'] = show
+                            return show;
+                        }
+                    }" x-show="shouldShow">
                         <h3 class="font-bold  mb-2">Heat {{ $heat_no }}</h3>
                         <div class="space-y-2">
 
@@ -85,7 +111,10 @@
                                 @php
                                     $lane = $lanes->where('lane', $i + 1)->first();
                                 @endphp
-                                <div class="se-card  se-card-body min-w-56 p-2! px-4! rounded">
+                                <div class="se-card  se-card-body min-w-56 p-2! px-4! rounded"
+                                    :class="(search.trim() !== '' &&
+                                        `{{ strtolower($lane?->entity->getName($comp) ?? '-') }}`
+                                        .includes(search.trim().toLowerCase())) ? 'se-card-success' : ''">
                                     {{ $lane?->entity->getName($comp) ?? '-' }}
                                 </div>
                             @endfor
@@ -120,14 +149,25 @@
 
 
 
-            <div class="grid grid-flow-row grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4    gap-4 flex-wrap"
-                x-show="open == 'se:{{ $heatevent['serc']->id }}'">
+            <div class="grid grid-flow-row grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4    gap-4 flex-wrap">
 
 
 
                 @foreach ($heatevent['draws'] as $tank_no => $draw)
+                    @php
+                        $names = $draw->map(fn($lane) => $lane->entity->getName($comp))->filter()->implode(' ');
+                    @endphp
                     @if ($use_tanks)
-                        <div>
+                        <div x-data="{
+                        
+                            children: [],
+                        
+                            shouldShow() {
+                                return open == 'se:{{ $heatevent['serc']->id }}' || (search.trim() != '' && this.children.some(Boolean))
+                        
+                        
+                            }
+                        }" x-show="shouldShow">
                             <h2 class="-mb-1!">Tank {{ $tank_no + 1 }}</h2>
 
                             @php
@@ -148,7 +188,15 @@
 
                             <div class="flex flex-col space-y-2 mt-2">
                                 @foreach ($draw as $drawEntry)
-                                    <div class="se-card  se-card-body min-w-56 p-2! px-4! rounded ">
+                                    <div class="se-card  se-card-body min-w-56 p-2! px-4! rounded " x-data="{
+                                        shouldShow() {
+                                            let show = search.trim() === '' || `{{ strtolower($drawEntry->entity->getName($comp) ?? '-') }}`.includes(search.trim().toLowerCase())
+                                            children['{{ $drawEntry->draw }}'] = show
+                                            return show;
+                                        }
+                                    }"
+                                        x-show="shouldShow"
+                                        :class="(shouldShow && search.trim()) != '' ? 'se-card-success' : ''">
                                         {{ $drawEntry->draw }}.
                                         {{ $drawEntry->entity->getName($comp) ?? '-' }}</div>
                                 @endforeach
