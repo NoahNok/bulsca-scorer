@@ -190,6 +190,11 @@ class Competition extends Model implements IInvitable
             return $this->getSpeedEvents()->orderBy('id')->get()->map(fn($event) => ['id' => $event->id, 'name' => $event->getName()]);
         } else {
             $event = $this->getSpeedEvents()->first();
+
+            if (!$event) {
+                return [];
+            }
+
             return [['id' => $event->id, 'name' => $event->getName()]];
         }
     }
@@ -322,9 +327,14 @@ class Competition extends Model implements IInvitable
      */
     public function getHeats()
     {
+
+
+
+
+
         $heats = Heat::whereHas('speedEvent', function ($query) {
             $query->where('competition', $this->id);
-        })->with('entity')->get()->groupBy('speed_event');
+        })->with('entity', 'entity.getLeague')->get()->groupBy('speed_event');
 
         return $heats->map(function ($heatsForEvent, $speedEventId) {
             $speedEvent = $heatsForEvent->first()->speedEvent;
@@ -342,6 +352,26 @@ class Competition extends Model implements IInvitable
     {
         return $this->hasManyThrough(Draw::class, SERC::class, 'competition', 'serc', 'id', 'id')->with('entity')->get()->groupBy('serc')->map(function ($draws, $sercId) {
             $serc = SERC::find($sercId);
+
+            if ($serc->scorable_entity == 'team') {
+
+                $entityIds = $draws->pluck('entity')->filter()->unique('id')->pluck('id');
+
+                $loadedEntities = CompetitionTeam::whereIn('id', $entityIds)->with('getCompetitors')->get();
+
+                $teamMap = $loadedEntities->keyBy('id');
+
+
+                $draws->each(function ($draw) use ($teamMap) {
+
+                    $draw->entity = $teamMap[$draw->entity->id];
+                });
+            }
+
+
+
+
+
             return [
                 'serc' => $serc,
                 'draws' => $draws->sortBy('tank')->groupBy('tank')->map(function ($group) {

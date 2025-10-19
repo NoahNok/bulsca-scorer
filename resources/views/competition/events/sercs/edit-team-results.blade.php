@@ -1,7 +1,7 @@
 @extends('layouts.competition')
 
 @section('title')
-    {{ $team->getName() }} | {{ $serc->name }}
+    {{ $team->getName($comp) }} | {{ $serc->name }}
 @endsection
 
 
@@ -14,8 +14,13 @@
 
             <div class="flex justify-between items-start relative">
                 <div>
-                    <h2 class="mb-0">{{ $team->getName() }}</h2>
+                    <h2 class="mb-0">{{ $team->getName($comp) }}</h2>
                     <small>SERC: {{ $serc->name }}</small>
+                    @php
+                        $draw = $serc->getDraw()->whereMorphedTo('entity', $team)->first();
+                        $use_tanks = $serc->getCompetition->getScoringSettings->use_tanks;
+                    @endphp
+                    <small>, {{ ($use_tanks ? "Tank $draw->tank-" : '') . $draw->draw }}</small>
                 </div>
 
 

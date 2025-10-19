@@ -83,21 +83,7 @@
 
 
 
-            <div class="form-input ">
-                <label for="scoring_type" class="">Scoring Type</label>
-                <select required id="scoring_type" name="scoring_type" class="input "
-                    style="padding-top: 0.65em; padding-bottom: 0.75em;">
-                    @foreach (\App\Helpers\ScoringHelper::$availableTypes as $key => $data)
-                        <option value="{{ $key }}" @if ($comp->scoring_type == $key) selected @endif>
-                            {{ $data['name'] }}</option>
-                    @endforeach
 
-
-
-
-                </select>
-
-            </div>
 
         </div>
         <button type="submit" class="btn">Save</button>

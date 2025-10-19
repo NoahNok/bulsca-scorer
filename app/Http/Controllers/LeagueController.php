@@ -23,7 +23,7 @@ class LeagueController extends Controller
             'name' => $validated['name']
         ]);
 
-        return redirect()->route('comps.teams', $comp);
+        return redirect()->route('comps.entities', $comp);
     }
 
     public function view(Competition $comp, League $league)
@@ -38,13 +38,13 @@ class LeagueController extends Controller
         $league->name = $validated['name'];
         $league->save();
 
-        return redirect()->route('comps.teams', $comp)->with('success', 'Updated league');
+        return redirect()->route('comps.entities', $comp)->with('success', 'Updated league');
     }
 
     public function delete(Competition $comp, League $league)
     {
         $league->delete();
 
-        return redirect()->route('comps.teams', $comp)->with('success', 'League deleted');
+        return redirect()->route('comps.entities', $comp)->with('success', 'League deleted');
     }
 }

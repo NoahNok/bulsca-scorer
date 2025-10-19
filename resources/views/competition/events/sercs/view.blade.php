@@ -63,9 +63,12 @@
                             <tbody>
 
                                 @forelse ($eventResults as $result)
-                                    <tr x-data="{ name: `{{ $result->entity->getName() }}` }" x-show="name.toLowerCase().includes(search.toLowerCase())">
+                                    @php
+                                        $name = $result->entity->getName($comp);
+                                    @endphp
+                                    <tr x-data="{ name: `{{ $name }}` }" x-show="name.toLowerCase().includes(search.toLowerCase())">
                                         <th scope="row">
-                                            {{ $result->entity->getName() }}
+                                            {{ $name }}
                                         </th>
                                         <td>
                                             {{ $result->getDisqualificationsString() ?: '-' }}
@@ -124,6 +127,20 @@
             @php
                 $sercDraw = $serc->getDraw;
 
+                if ($serc->scorable_entity == 'team') {
+                    $entityIds = $sercDraw->pluck('entity')->filter()->unique('id')->pluck('id');
+
+                    $loadedEntities = \App\Models\CompetitionTeam::whereIn('id', $entityIds)
+                        ->with('getCompetitors')
+                        ->get();
+
+                    $teamMap = $loadedEntities->keyBy('id');
+
+                    $sercDraw->each(function ($draw) use ($teamMap) {
+                        $draw->entity = $teamMap[$draw->entity->id];
+                    });
+                }
+
             @endphp
 
             @if ($sercDraw->count() == 0)
@@ -156,12 +173,20 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @php
+                                $use_tanks = $comp->getScoringSettings->use_tanks;
+                            @endphp
 
                             @if ($sercDraw->count() > 0)
-                                @forelse ($sercDraw as $draw)
-                                    <tr x-data="{ name: `{{ $draw->entity->getName() }}` }" x-show="name.toLowerCase().includes(search.toLowerCase())">
+                                @forelse ($sercDraw->sortBy('tank') as $draw)
+                                    @php
+                                        $name = $draw->entity->getName($comp);
+                                    @endphp
+                                    <tr x-data="{ name: `{{ $name }}` }" x-show="name.toLowerCase().includes(search.toLowerCase())">
                                         <th scope="row">
-                                            {{ $draw->draw }}. {{ $draw->entity->getName() }}
+                                            {{ ($use_tanks ? "Tank $draw->tank-" : '') . $draw->draw }}.
+
+                                            {{ $name }}
                                         </th>
 
                                         <td>
@@ -181,9 +206,12 @@
                                 @endforelse
                             @else
                                 @forelse ($serc->getScorableEntities() as $entity)
-                                    <tr x-data="{ name: `{{ $entity->getName() }}` }" x-show="name.toLowerCase().includes(search.toLowerCase())">
+                                    @php
+                                        $name = $entity->getName($comp);
+                                    @endphp
+                                    <tr x-data="{ name: `{{ $name }}` }" x-show="name.toLowerCase().includes(search.toLowerCase())">
                                         <th scope="row">
-                                            {{ $entity->getName() }}
+                                            {{ $name }}
                                         </th>
 
                                         <td>

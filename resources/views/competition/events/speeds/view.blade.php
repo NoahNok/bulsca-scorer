@@ -87,10 +87,10 @@
 
                                 @forelse ($eventResults as $result)
                                     @if ($result->isCombined())
-                                        <tr x-data="{ name: `{{ $result->entity->getName() }}` }"
+                                        <tr x-data="{ name: `{{ $result->entity->getName($comp) }}` }"
                                             x-show="name.toLowerCase().includes(search.toLowerCase())">
                                             <th scope="row">
-                                                {!! $result->combined->map(fn($item) => $item->entity->getName())->implode('<br>') !!}
+                                                {!! $result->combined->map(fn($item) => $item->entity->getName($comp))->implode('<br>') !!}
 
 
                                             </th>
@@ -137,10 +137,10 @@
 
                                         </tr>
                                     @else
-                                        <tr x-data="{ name: `{{ $result->entity->getName() }}` }"
+                                        <tr x-data="{ name: `{{ $result->entity->getName($comp) }}` }"
                                             x-show="name.toLowerCase().includes(search.toLowerCase())">
                                             <th scope="row">
-                                                {{ $result->entity->getName() }}
+                                                {{ $result->entity->getName($comp) }}
                                             </th>
                                             @if ($event->digitalJudgeEnabled)
                                                 <td scope="col">

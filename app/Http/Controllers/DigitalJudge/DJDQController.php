@@ -257,11 +257,12 @@ class DJDQController extends Controller
 
     public function getNeedingResolving()
     {
-        $submissions = JudgeDQSubmission::where('competition', DigitalJudge::getClientCompetition()->id)->whereNull('resolved')->get();
+        $comp = DigitalJudge::getClientCompetition();
+        $submissions = JudgeDQSubmission::where('competition', $comp->id)->whereNull('resolved')->get();
 
         foreach ($submissions as $submission) {
             $submission->eventName = $submission->getEvent->getName();
-            $submission->teamName = $submission->getHeat?->entity->getName() ?? null;
+            $submission->teamName = $submission->getHeat?->entity->getName($comp) ?? null;
             $submission->heat = $submission->getHeat->heat ?? null;
             $submission->lane = $submission->getHeat->lane ?? null;
         }
@@ -273,12 +274,12 @@ class DJDQController extends Controller
     public function getAccepted()
     {
         $accepted = JudgeDQSubmission::where('competition',  DigitalJudge::getClientCompetition()->id)->where('resolved', true)->orderBy('updated_at', 'DESC')->get();
-
+        $comp = DigitalJudge::getClientCompetition();
         $organisation = DigitalJudge::getClientCompetition()->getOrganisation;
 
         foreach ($accepted as $submission) {
             $submission->eventName = $submission->getEvent?->getName() ?: "Event not found";
-            $submission->teamName = $submission->getHeat?->entity->getName() ?? null;
+            $submission->teamName = $submission->getHeat?->entity->getName($comp) ?? null;
             $submission->heat = $submission->getHeat->heat ?? null;
             $submission->lane = $submission->getHeat->lane ?? null;
             $submission->code_desc = $this->internalResolveCode($submission->code, $organisation);

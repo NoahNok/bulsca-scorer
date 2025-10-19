@@ -24,7 +24,7 @@ class SercMarked extends GenericPush
     {
 
         $sercName = $serc->getName();
-        $teamName = $entity->getName();
+        $teamName = $entity->getName($serc->getCompetition);
 
         parent::__construct("$sercName SERC Marked", "$teamName has been marked.");
     }

@@ -172,12 +172,6 @@ class OverallResultsController extends Controller
         }
     }
 
-    public function quickGen(Competition $comp)
-    {
-        ScoringHelper::generateDefaultResultSheets($comp);
-
-        return redirect()->route('comps.results', $comp);
-    }
 
     public function publishToggle(Competition $comp)
     {

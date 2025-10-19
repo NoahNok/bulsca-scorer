@@ -11,6 +11,7 @@ use App\Models\DigitalJudge\JudgeDQSubmission;
 use App\Models\Event\Disqualification;
 use App\Models\Event\Penalty;
 use App\Models\League;
+use App\Models\MasterSchema;
 use App\Models\ResultSchema;
 use App\Models\SERC;
 use App\Models\SpeedResult;
@@ -60,7 +61,7 @@ class ResultsController extends Controller
 
         $results = $event->getRankedResults($league);
 
-        return response()->json($this->tablify($results, $target_columns, $type));
+        return response()->json($this->tablify($comp, $results, $target_columns, $type));
     }
 
     public function getSheetResults(Competition $comp, ResultSchema $schema)
@@ -72,9 +73,9 @@ class ResultsController extends Controller
 
         $rawResults = $schema->getResults();
 
-        $results = $rawResults->map(function ($r) use ($schema) {
+        $results = $rawResults->map(function ($r) use ($comp) {
             return [
-                'name' => $r->entity->getName(),
+                'name' => $r->entity->getName($comp),
                 'points' => round($r->totalPoints),
                 'position' => $r->position,
                 ...$r->events->mapWithKeys(fn($res) => [
@@ -88,6 +89,29 @@ class ResultsController extends Controller
 
         return response()->json([
             'columns' => array_merge(['name' => 'Name'], $rawResults->first()->events->mapWithKeys(fn($e) => ["{$e->event->id}:{$e->event->getType()}" => $e->event->getName()])->toArray(), ['points' => 'Points', 'position' => 'Position']),
+            'data' => $results,
+        ]);
+    }
+
+    public function getMasterSheetResults(Competition $comp, MasterSchema $schema)
+    {
+
+        if (!$schema->viewable || !$comp->public_results) {
+            return response()->json(['error' => 'Results unavailable at this time, please try again later.'], 403);
+        }
+
+        $rawResults = $schema->getResults();
+
+        $results = $rawResults->map(function ($r) use ($comp) {
+            return [
+                'name' => $r->entity->getName($comp),
+                'points' => $r->total,
+                'position' => $r->position,
+            ];
+        });
+
+        return response()->json([
+            'columns' => array_merge(['name' => 'Name'], ['points' => 'Points', 'position' => 'Position']),
             'data' => $results,
         ]);
     }
@@ -121,7 +145,7 @@ class ResultsController extends Controller
                 'seconder_position',
                 'resolved'
             ]),
-            'for' => $violation->entity->getName(),
+            'for' => $violation->entity->getName($comp),
         ]);
     }
 
@@ -151,7 +175,7 @@ class ResultsController extends Controller
 
 
         return [
-            'name' => $entity->getName(),
+            'name' => $entity->getName($comp),
             'notes' => $notes
         ];
     }
@@ -160,9 +184,9 @@ class ResultsController extends Controller
     /**
      * @param RankedResult[] $results
      */
-    private function tablify(array $results, array $use_columns, string $type)
+    private function tablify(Competition $comp, array $results, array $use_columns, string $type)
     {
-        $t = new Tablify($type);
+        $t = new Tablify($comp, $type);
 
         return $t->from($use_columns, $results, function ($row) {
             return $row->entity->id;
@@ -183,9 +207,11 @@ class Tablify
     ];
 
     private $event_type;
+    private Competition $comp;
 
-    public function __construct($event_type = 'speed')
+    public function __construct(Competition $comp, $event_type = 'speed')
     {
+        $this->comp = $comp;
         $this->event_type = $event_type;
     }
 
@@ -225,7 +251,7 @@ class Tablify
     private function resolveColumnData($column, $result)
     {
         return match ($column) {
-            'name' => $result->entity->getName(),
+            'name' => $result->entity->getName($this->comp),
             'position' => $result->position,
             'points' => $result->isDisqualified() ? 'DQ' : round($result->points),
             'result' => $this->resolveResult($result),

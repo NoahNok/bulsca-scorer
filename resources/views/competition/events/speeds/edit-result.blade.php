@@ -71,7 +71,7 @@
                             @forelse ($event->getRawResults(true) as $result)
                                 <tr table-row table-row-owner="{{ $result->id }}">
                                     <th scope="row">
-                                        {{ $result->entity->getName() }}
+                                        {{ $result->entity->getName($comp) }}
                                     </th>
                                     <td class="table-input">
 

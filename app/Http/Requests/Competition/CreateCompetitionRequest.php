@@ -28,7 +28,6 @@ class CreateCompetitionRequest extends FormRequest
             'where' => 'required',
             'lanes' => 'required',
             'anytimepin' => 'required|boolean',
-            'scoring_type' => 'required',
             'org' => ''
         ];
     }

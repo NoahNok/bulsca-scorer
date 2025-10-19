@@ -440,6 +440,7 @@ Route::prefix('competition/{comp}')->group(function () {
         Route::get('', [LandingController::class, 'showResults'])->name('landing.competition.results');
         Route::get('breakdown/serc/{serc}', [ResultsController::class, 'showSercBreakdown'])->name('landing.competition.results.breakdown.serc');
         Route::get('notes/serc/{serc}/{entity_id}', [ResultsController::class, 'getSercNote'])->name('landing.competition.results.notes.serc');
+        Route::get('sheet/master/{schema}', [ResultsController::class, 'getMasterSheetResults'])->name('landing.competition.results.get.master.sheet');
         Route::get('sheet/{schema}', [ResultsController::class, 'getSheetResults'])->name('landing.competition.results.get.sheet');
         Route::get('violation/{violation_id}/{violation_type}', [ResultsController::class, 'getViolation'])->name('landing.competition.results.get.violation');
 

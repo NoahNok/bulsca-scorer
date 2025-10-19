@@ -1,7 +1,7 @@
 @extends('digitaljudge.mpa-layout')
 
 @section('title')
-    {{ $serc->getName() }}
+    {{ $team->getName($comp) }} {{ $serc->getName() }}
 @endsection
 
 @php
@@ -51,14 +51,24 @@
                 </strong></p>
             <br>
             @php
-
-                if ($comp->scoring_type == 'rlss-nationals') {
-                    $team = $team->asCompetitior();
-                }
+                $draw_text = $serc->getPositionInDraw($team);
             @endphp
-            <p class="text-xl">Team: <strong
-                    class="text-bulsca">{{ $comp->show_teams_to_judges || $head ? $team->getFullname() : $serc->getPositionInDraw($team) }}
-                </strong></p>
+            <p class="text-xl">
+
+                @if ($comp->show_teams_to_judges || $head)
+                    <div class="flex item-center justify-between">
+                        <p class="text-bulsca font-bold text-xl  ">{{ $team->getName($comp) }}
+                        </p>
+
+                        <div class="flex items-center">
+                            <p class="text-sm text-gray-500 font-semibold whitespace-nowrap ">{{ $draw_text }}</p>
+                        </div>
+                    </div>
+                @else
+                    <strong class="text-bulsca">{{ $draw_text }}
+                    </strong>
+                @endif
+            </p>
 
 
 
@@ -302,7 +312,7 @@
             <div class="flex flex-col items-start w-full space-y-2 ">
                 @foreach ($judges[0]->getNotes as $note)
                     <div class="se-card se-card-body w-full">
-                        <h4> {{ $comp->show_teams_to_judges || $head ? $note->entity->getName() : $serc->getPositionInDraw($note->entity) }}
+                        <h4> {{ $comp->show_teams_to_judges || $head ? $note->entity->getName($comp) : $serc->getPositionInDraw($note->entity) }}
                         </h4>
                         <p>{{ $note->note }}</p>
                     </div>

@@ -14,17 +14,19 @@ class Competitor extends Entity
 
     protected $fillable = ['team', 'league', 'competition', 'name'];
 
-    public function getName(): string
+    protected $with = ['getLeague', 'getTeam'];
+
+    public function getName(?Competition $comp): string
     {
         // Implement the logic to return the competitor's name
         // For example, if there is a 'name' property:
-        return $this->formatName();
+        return $this->formatName($comp?->competitor_format);
     }
 
     public function formatName($format = ':C - :N - (:L)')
     {
 
-        $targets = [':C', ':L', ':N', ':R', ':S'];
+        $targets = [':C', ':L', ':N', ':T', ':S'];
         $search = [];
         $replace = [];
 
@@ -35,7 +37,7 @@ class Competitor extends Entity
                 $value = match ($target) {
                     ':C' => $this->getTeam->getClub?->name ?? '-',
                     ':L' => $this->getLeague?->name ?? '-',
-                    ':T' => $this->getTeam->name ?? '-',
+                    ':T' => $this->getTeam->team ?? '-',
                     ':N' => $this->name
                 };
 

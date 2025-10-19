@@ -28,7 +28,9 @@ class UpdateCompetitionRequest extends FormRequest
             'max_lanes' => 'sometimes|numeric|min:1',
             'serc_start_time' => 'sometimes|nullable|date',
             'can_be_live' => 'sometimes|boolean',
-            'timezone' => 'sometimes|timezone'
+            'timezone' => 'sometimes|timezone',
+            'team_format' => 'sometimes|string',
+            'competitor_format' => 'sometimes|string'
 
         ];
     }

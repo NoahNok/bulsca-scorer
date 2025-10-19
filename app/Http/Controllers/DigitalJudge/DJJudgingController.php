@@ -103,6 +103,14 @@ class DJJudgingController extends Controller
         $serc = $j->getSERC;
         $draw = $serc->getDraw;
 
+        // Check if we are marking a tank
+        $tank = DigitalJudge::getTank();
+        if ($tank != null) {
+            $draw = $draw->where('tank', $tank);
+        }
+
+        $draw = $draw->sortBy('draw');
+
         foreach ($draw as $allocation) {
             $marked = DigitalJudge::hasTeamBeenJudgedAlready($allocation->entity);
             if (!$marked) {

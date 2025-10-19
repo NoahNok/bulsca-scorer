@@ -164,8 +164,14 @@ class DigitalJudge
         Session::put('digitalJudgeJudgeTank', $tank);
     }
 
-    public static function getTank(): int
+    public static function getTank(): ?int
     {
-        return (int) Session::get('digitalJudgeJudgeTank');
+        $value = Session::get('digitalJudgeJudgeTank');
+
+        if (!$value) {
+            return null;
+        }
+
+        return (int) $value;
     }
 }

@@ -9,6 +9,7 @@ use App\Http\Requests\Competition\EditCompetitionAccount;
 use App\Http\Requests\Competition\UpdateCompetitionRequest;
 use App\Http\Requests\Competition\UpdateCompetitionScoringSettingsRequest;
 use App\Models\Competition;
+use App\Models\Competition\CompetitionScoringSettings;
 use App\Models\Organisation\Organisation;
 use App\Models\User;
 use App\Models\UserCompetitionAccess;
@@ -259,16 +260,11 @@ class CompetitionController extends Controller
         $comp->name = $validated['name'];
         $comp->when = $validated['when'];
         $comp->where = $validated['where'];
-        $comp->isLeague = true;
         $comp->max_lanes = $validated['lanes'];
         $comp->anytimepin = $validated['anytimepin'];
-        $comp->scoring_Version = "1.1.0"; // Must forcibly set the updated version 1.1.0 programatically - UPDATE THIS WITH EACH NEW SCORING UPDATE
         $comp->seed_per_event = false;
         $comp->heats_per_event = false;
-
-
-
-        $comp->scoring_type = $validated['scoring_type'];
+        $comp->use_seeds = true;
         $comp->save();
 
 
@@ -288,6 +284,11 @@ class CompetitionController extends Controller
             $comp->addAccount(Auth::user(), ['owner']);
         }
 
+
+        $css = new CompetitionScoringSettings();
+        $css->use_tanks = true;
+        $css->competition = $comp->id;
+        $css->save();
 
         $request->session()->flash('success', 'Competition created!');
 

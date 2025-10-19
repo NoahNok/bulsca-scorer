@@ -22,14 +22,14 @@
         @endif
 
 
-        @foreach ($speed->getHeats->sortBy('heat')->groupBy('heat') as $heat => $lanes)
+        @foreach ($speed->getHeats()->with('entity.speedResults')->get()->sortBy('heat')->groupBy('heat') as $heat => $lanes)
             @php
 
                 $missingResult = false;
 
                 // Code that checks if each team has a reuslt for the event
                 foreach ($lanes as $team) {
-                    $sr = $team->entity->speedResults()->where('event', $speed->id)->first();
+                    $sr = $team->entity->speedResults->where('event', $speed->id)->first();
 
                     if ($sr->result == null) {
                         $missingResult = true;

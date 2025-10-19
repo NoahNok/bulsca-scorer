@@ -6,7 +6,8 @@
 
 @php
     $backlink = route('dj.home');
-    $icon = '<path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />';
+    $icon =
+        '<path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />';
 @endphp
 
 @section('content')
@@ -27,7 +28,7 @@
 
 
 
-        @foreach ($comp->getHeatEntries->sortBy(['heat', 'lane'])->groupBy('heat') as $key => $heat)
+        @foreach ($speed->getHeats->sortBy(['heat', 'lane'])->groupBy('heat') as $key => $heat)
             <div>
                 <h5>Heat {{ $key }}</h5>
                 <ol class=" list-item space-y-2">
@@ -58,17 +59,24 @@
                             @if ($lane)
                                 @php
                                     $sr = \App\Models\SpeedResult::where('event', $speed->id)
-                                        ->where('competition_team', $lane->team)
+                                        ->whereMorphedTo('entity', $lane->entity)
                                         ->first();
                                 @endphp
+                                @php
+                                    $mins = floor($sr?->result / 60000);
+                                    $secs = ($sr?->result - $mins * 60000) / 1000;
+                                @endphp
                                 <div class="card justify-center">
-                                    {{ $sr->getResultAsString() ?? '-' }}
+                                    {{ $sr != null ? sprintf('%02d', $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT) : '-' }}
                                 </div>
                                 <div class="card grow ">
                                     <div class="grid-3">
-                                        <div>{{ $lane->getTeam->getFullname() }}</div>
-                                        <div>{{ $sr->disqualification }}</div>
-                                        <div>{{ $sr->getPenaltiesAsString() }}</div>
+                                        <div>{{ $lane->entity->getName($comp) }}</div>
+                                        <div>{{ $speed->getEntityDisqualifications($lane->entity)->first() ?? '' }}
+                                        </div>
+                                        <div>
+                                            {{ $speed->getEntityPenalties($lane->entity)->get()->map(fn($p) => "$p")->implode(', ') }}
+                                        </div>
                                     </div>
                                 </div>
                             @else

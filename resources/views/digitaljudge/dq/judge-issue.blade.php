@@ -314,7 +314,7 @@
                                     @foreach ($lanes->sortBy('lane') as $lane)
                                         <option value="{{ $lane->id }}">
                                             {{ $lane->heat }}-{{ $lane->lane }}:
-                                            {{ $lane->entity->getName() }}
+                                            {{ $lane->entity->getName($comp) }}
                                         </option>
                                     @endforeach
                                 </optgroup>
@@ -675,9 +675,9 @@
 
                         @foreach ($lanes->sortBy('lane') as $lane)
                             <button class="btn btn-primary" style="text-align: left"
-                                @click="setTeam({{ $lane->id }}, 'Heat {{ $lane->heat }}, Lane {{ $lane->lane }}, {{ $lane->entity->getName() }}')">
+                                @click="setTeam({{ $lane->id }}, 'Heat {{ $lane->heat }}, Lane {{ $lane->lane }}, {{ $lane->entity->getName($comp) }}')">
                                 Lane {{ $lane->lane }}:
-                                {{ $lane->entity->getName() }}
+                                {{ $lane->entity->getName($comp) }}
                             </button>
                         @endforeach
                     @endforeach

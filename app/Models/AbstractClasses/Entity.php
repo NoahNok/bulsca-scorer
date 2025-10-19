@@ -100,7 +100,7 @@ abstract class Entity extends Model
         $data->save();
     }
 
-    public abstract function getName(): string;
+    public abstract function getName(?Competition $comp): string;
 
     public abstract function getGrouping(): EntityGrouping;
 }

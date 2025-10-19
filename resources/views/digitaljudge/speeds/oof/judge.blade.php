@@ -39,7 +39,7 @@
 
                     $lanes[$lane] = [
                         'number' => $lane,
-                        'name' => $pLane->entity->getName(),
+                        'name' => $pLane->entity->getName($comp),
                         'id' => $pLane->entity->id,
                     ];
 

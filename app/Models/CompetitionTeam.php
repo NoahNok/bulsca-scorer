@@ -18,11 +18,13 @@ class CompetitionTeam extends Entity
 
     protected $fillable = ['club', 'team', 'league', 'competition'];
 
-    protected $with = ['getClub', 'getLeague', 'getCompetitors'];
+    protected $with = ['getClub', 'getLeague'];
 
-    public function getName(): string
+    public function getName(?Competition $comp): string
     {
-        return $this->formatName();
+
+
+        return $this->formatName($comp?->team_format);
     }
 
     public function getClubName()
@@ -54,7 +56,6 @@ class CompetitionTeam extends Entity
 
     public function formatName($format = ':C - :N - (:S)')
     {
-
         $targets = [':C', ':L', ':N', ':R', ':S'];
         $search = [];
         $replace = [];
@@ -64,14 +65,14 @@ class CompetitionTeam extends Entity
                 $search[] = $target;
 
                 $value = match ($target) {
-                    ':C' => $this->getClub?->name ?? '-',
-                    ':L' => $this->getLeague?->name ?? '-',
-                    ':N' => $this->team ?? '-',
-                    ':R' => $this->getClub?->region ?? '-',
-                    ':S' => $this->getCompetitors->pluck('name')->implode(', ')
+                    ':C' => fn() => $this->getClub?->name ?? '-',
+                    ':L' => fn() => $this->getLeague?->name ?? '-',
+                    ':N' => fn() => $this->team ?? '-',
+                    ':R' => fn() => $this->getClub?->region ?? '-',
+                    ':S' => fn() => $this->getCompetitors->pluck('name')->implode(', ')
                 };
 
-                $replace[] = $value;
+                $replace[] = $value();
             }
         }
 

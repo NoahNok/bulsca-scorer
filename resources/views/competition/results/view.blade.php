@@ -36,7 +36,7 @@
                         @forelse ($results as $result)
                             <tr>
                                 <th scope="row">
-                                    {{ $result->entity->getName() }}
+                                    {{ $result->entity->getName($comp) }}
                                 </th>
                                 <td>
                                     {{ round($result->totalPoints) }}

@@ -369,6 +369,7 @@
                     <li :class="active == 'details' ? 'active' : ''" @click="active = 'details'">Details</li>
                     <li :class="active == 'setup' ? 'active' : ''" @click="active = 'setup'">Setup</li>
                     <li :class="active == 'hd' ? 'active' : ''" @click="active = 'hd'">Heats & Draws</li>
+                    <li :class="active == 'names' ? 'active' : ''" @click="active = 'names'">Names</li>
 
                 </ul>
 
@@ -570,6 +571,110 @@
 
                     </form>
                     <button class="se-btn se-btn-success ml-auto" form="compScoringSettingsForm">Save</button>
+                </div>
+
+
+                <div x-cloak x-show="active == 'names'">
+                    <h3>Names</h3>
+
+                    <form id="compNamesForm" class="grid-2 w-full"
+                        x-on:submit="(e) => {
+                            e.preventDefault()
+                        
+
+                        
+                            loading = true
+
+
+                            fetch('{{ route('comps.settings', $comp) }}', {
+                                method: 'POST',
+                                body: new FormData($event.target),
+                                headers: {
+                                    'Accept': 'application/json',
+                                }
+                            }).then(resp => {
+                            this.loading = false
+                                if (!resp.ok) {
+                                    showAlert('Something went wrong, you changes have been reversed.')
+                                    $event.target.reset()
+                                    return
+                                }
+                    
+
+                                loading = false
+                             
+                                showSuccess('Competition scoring settings saved')
+                            })
+                        }">
+
+
+                        @csrf
+
+
+                        <div class="se-form-input imb-0" x-data="{
+                            format: '{{ $comp->team_format }}',
+                        
+                        
+                            sample: {
+                                club: 'Club',
+                                league: 'Youth',
+                                name: 'Team',
+                                competitors: 'Noah, Kirsty'
+                            },
+                        
+                            getSample() {
+                                return this.format
+                                    .replace(/:C/g, this.sample.club)
+                                    .replace(/:L/g, this.sample.league)
+                                    .replace(/:N/g, this.sample.name)
+                                    .replace(/:S/g, this.sample.competitors);
+                        
+                        
+                            }
+                        }">
+                            <label for="">Team Name Format</label>
+                            <p><strong>:C</strong> - Club, <strong>:L</strong> - League, <strong>:N</strong> - Name,
+                                <strong>:S</strong> - Competitor Names,
+                            </p>
+                            <input x-model="format" type="text" name="team_format" value="{{ $comp->team_format }}">
+                            <small class="text-gray-500!" x-text="getSample">example</small>
+                        </div>
+
+                        <div class="se-form-input imb-0" x-data="{
+                            format: '{{ $comp->competitor_format }}',
+                        
+                        
+                            sample: {
+                                club: 'Club',
+                                league: 'Youth',
+                                name: 'Noah',
+                                team: 'Team'
+                            },
+                        
+                            getSample() {
+                                return this.format
+                                    .replace(/:C/g, this.sample.club)
+                                    .replace(/:L/g, this.sample.league)
+                                    .replace(/:N/g, this.sample.name)
+                                    .replace(/:T/g, this.sample.team);
+                        
+                        
+                            }
+                        }">
+                            <label for="">Competitor Name Format</label>
+                            <p><strong>:C</strong> - Club, <strong>:L</strong> - League, <strong>:N</strong> - Name,
+                                <strong>:T</strong> - Team,
+                            </p>
+                            <input x-model="format" type="text" name="competitor_format"
+                                value="{{ $comp->competitor_format }}">
+                            <small class="text-gray-500!" x-text="getSample">example</small>
+                        </div>
+
+
+
+
+                    </form>
+                    <button class="se-btn se-btn-success ml-auto" form="compNamesForm">Save</button>
                 </div>
 
 

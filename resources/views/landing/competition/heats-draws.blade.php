@@ -49,7 +49,7 @@
                                     $lane = $lanes->where('lane', $i + 1)->first();
                                 @endphp
                                 <div class="se-card  se-card-body min-w-56 p-2! px-4! rounded">
-                                    {{ $lane?->entity->getName() ?? '-' }}
+                                    {{ $lane?->entity->getName($comp) ?? '-' }}
                                 </div>
                             @endfor
 
@@ -99,7 +99,7 @@
                                     <li
                                         class="overflow-hidden line-clamp-1 hover:line-clamp-none focus:line-clamp-none active:line-clamp-none focus-within:line-clamp-none ">
                                         {{ $drawEntry->draw }}.
-                                        {{ $drawEntry->entity->getName() ?? '-' }}</li>
+                                        {{ $drawEntry->entity->getName($comp) ?? '-' }}</li>
                                 @endforeach
                             </ol>
 
@@ -107,7 +107,7 @@
                     @else
                         @foreach ($draw as $drawEntry)
                             <div class="se-card  se-card-body min-w-56 p-2! px-4! rounded">
-                                {{ $drawEntry->draw }}. {{ $drawEntry->entity->getName() ?? '-' }}
+                                {{ $drawEntry->draw }}. {{ $drawEntry->entity->getName($comp) ?? '-' }}
                             </div>
                         @endforeach
                     @endif

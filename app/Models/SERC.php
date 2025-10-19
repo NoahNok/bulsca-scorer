@@ -147,9 +147,26 @@ class SERC extends Event
 
         $query = $query->with(['entity', 'getMarkingPoint', 'getMarkingPoint.getJudge']);
 
+        $results = $query->get();
+
+        if ($this->scorable_entity == 'team') {
+
+            $entityIds = $results->pluck('entity')->filter()->unique('id')->pluck('id');
+
+            $loadedEntities = CompetitionTeam::whereIn('id', $entityIds)->with('getCompetitors')->get();
+
+            $teamMap = $loadedEntities->keyBy('id');
 
 
-        return $query->get()->map(function ($result) {
+            $results->each(function ($draw) use ($teamMap) {
+
+                $draw->entity = $teamMap[$draw->entity->id];
+            });
+        }
+
+
+
+        return $results->map(function ($result) {
             return $result->transformToResult();
         })->toArray();
     }
@@ -170,30 +187,38 @@ class SERC extends Event
         // if using seperate draws per SERC, this is where that would be handled
 
         // OTHERWISE USE DRAW ROM SERC WITH LOWEST ID
-        return SERC::where('competition', $this->competition)->orderBy('id')->first()->draw()->with(['entity'])->orderBy('draw');
+        return SERC::where('competition', $this->competition)->orderBy('id')->first()->draw()->with('entity')->orderBy('draw');
     }
 
     public function getPositionInDraw(Entity $entity)
     {
         $draw = $this->getDraw()->whereMorphedTo('entity', $entity)->first();
 
-        if ($draw) {
-            return $draw->draw;
+        $use_tanks = $this->getCompetition->getScoringSettings->use_tanks;
+
+        if (!$draw) {
+            return -1;
         }
 
-        return -1;
+        if ($use_tanks) {
+            return "Tank {$draw->tank}-{$draw->draw}";
+        }
+
+        return $draw->draw;
     }
 
 
 
     public function getTankDraw()
     {
-        return $this->draw()->with('entity')->orderBy('tank')->orderBy('draw')->get()->map(function ($draw) {
+        $comp = $this->getCompetition;
+
+        return $this->draw()->with('entity')->orderBy('tank')->orderBy('draw')->get()->map(function ($draw) use ($comp) {
             return [
                 'id' => $draw->id,
                 'tank' => $draw->tank,
                 'draw' => $draw->draw,
-                'entity_name' => $draw->entity->getName(),
+                'entity_name' => $draw->entity->getName($comp),
             ];
         })->groupBy('tank');
     }
@@ -355,6 +380,8 @@ class SERC extends Event
     public function getSERCData()
     {
 
+        $comp = $this->getCompetition;
+
         $dbData = DB::select('SELECT j.name AS judge_name, smp.name AS mp_name, smp.weight AS mp_weight , sr.marking_point AS mp_id, sr.entity_type, sr.entity_id, result FROM serc_results sr INNER JOIN serc_marking_points smp ON smp.id=sr.marking_point INNER JOIN serc_judges j ON j.id=smp.judge WHERE smp.serc=? ORDER BY j.id,smp.id;', [$this->id]);
 
 
@@ -383,7 +410,7 @@ class SERC extends Event
 
 
 
-            $results[$placeResult->entity->id]['team'] = $placeResult->entity->getName();
+            $results[$placeResult->entity->id]['team'] = $placeResult->entity->getName($comp);
             $results[$placeResult->entity->id]['raw'] = $placeResult->resolvedResult;
             $results[$placeResult->entity->id]['tid'] = $placeResult->entity->id;
             $results[$placeResult->entity->id]['disqualification'] = "{$placeResult->disqualifications->first()}";

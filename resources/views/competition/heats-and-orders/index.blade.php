@@ -58,7 +58,7 @@
                                         $lane = $lanes->where('lane', $i + 1)->first();
                                     @endphp
                                     <div class="se-card  se-card-body min-w-56 p-2! px-4! rounded">
-                                        {{ $lane?->entity->getName() ?? '-' }}
+                                        {{ $lane?->entity->getName($comp) ?? '-' }}
                                     </div>
                                 @endfor
 
@@ -115,7 +115,7 @@
                                     @foreach ($draw as $drawEntry)
                                         <li class="overflow-hidden line-clamp-1 hover:line-clamp-none ">
                                             {{ $drawEntry->draw }}.
-                                            {{ $drawEntry->entity->getName() ?? '-' }}</li>
+                                            {{ $drawEntry->entity->getName($comp) ?? '-' }}</li>
                                     @endforeach
                                 </ol>
 
@@ -123,7 +123,7 @@
                         @else
                             @foreach ($draw as $drawEntry)
                                 <div class="se-card  se-card-body min-w-56 p-2! px-4! rounded">
-                                    {{ $drawEntry->draw }}. {{ $drawEntry->entity->getName() ?? '-' }}
+                                    {{ $drawEntry->draw }}. {{ $drawEntry->entity->getName($comp) ?? '-' }}
                                 </div>
                             @endforeach
                         @endif
@@ -132,7 +132,15 @@
 
                 </div>
             @empty
-                <a href="{{ route('comps.heats_and_draws.draws.generate', $comp) }}" class="se-btn">Generate Draw</a>
+
+                @if ($comp->getSERCs->count() == 0)
+                    <div class="alert-box">
+                        <h1>Draw</h1>
+                        <p>You must add a SERC before you can generate a draw. (The SERC can be empty)</p>
+                    </div>
+                @else
+                    <a href="{{ route('comps.heats_and_draws.draws.generate', $comp) }}" class="se-btn">Generate Draw</a>
+                @endif
             @endforelse
 
 

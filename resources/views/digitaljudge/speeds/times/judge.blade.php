@@ -66,7 +66,7 @@
                                     <td
                                         class="p-2 pr-6 border-r whitespace-nowrap hover:max-w-none bg-white max-w-[200px] overflow-hidden text-ellipsis">
 
-                                        {{ $pLane->entity->getName() }}
+                                        {{ $pLane->entity->getName($comp) }}
 
                                     </td>
 

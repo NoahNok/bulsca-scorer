@@ -75,7 +75,7 @@
                                         data-lane="{{ $l }}"
                                         class="hover:bg-black/60 hover:text-white cursor-pointer min-w-[30ch]">
                                         @if ($lane)
-                                            {{ $lane->entity->getName() }}
+                                            {{ $lane->entity->getName($comp) }}
                                             {{ $use_seeds ? "({$lane->entity->getSeeds()->where('speed_event', $event->id)->first()->prettySeed()})" : '' }}
                                         @else
                                             &nbsp;

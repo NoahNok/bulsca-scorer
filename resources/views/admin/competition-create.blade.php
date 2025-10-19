@@ -74,19 +74,6 @@
             </div>
 
 
-            <div class="se-form-input ">
-                <label for="scoring_type" class="">Scoring Type</label>
-                <select required id="scoring_type" name="scoring_type" class="input ">
-                    @foreach (\App\Helpers\ScoringHelper::$availableTypes as $key => $data)
-                        <option value="{{ $key }}">{{ $data['name'] }}</option>
-                    @endforeach
-
-
-
-
-                </select>
-
-            </div>
         </div>
         <button type="submit" class="se-btn se-btn-success">Add</button>
     </form>

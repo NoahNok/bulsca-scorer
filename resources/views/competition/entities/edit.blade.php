@@ -531,6 +531,13 @@
                             changes!
                         </p>
                     </div>
+
+                    <div class="alert-box alert-warning mb-3"
+                        x-show="seed_settings.use_seeds && speed_events.length == 0">
+                        <h1>Seeds</h1>
+                        <p>You will be unable to add seed times until you have added a speed event!</p>
+                    </div>
+
                 </div>
 
             </div>

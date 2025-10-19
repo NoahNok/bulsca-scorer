@@ -221,37 +221,24 @@ class SERCController extends Controller
         }
 
 
-        $teamIds = $serc->getScorableEntities()->pluck('id')->toArray();
+        $nextTeamId = $this->nextTeamId($comp, $serc, $entity_id);
 
-        $draw = $serc->getDraw;
+        session()->flash('success', "Results updated for " . $team->getName($comp));
 
-        if ($draw) {
-            $teamIds = $draw->pluck('entity_id')->toArray();
-        }
-
-        $index = array_search($team->id, array_values($teamIds));
-
-
-
-        if ($index + 2 > count($teamIds)) {
-
+        if (!$nextTeamId) {
             return response()->json(['sid' => $serc->id]);
         }
-
-        $nextTeamId = $teamIds[$index + 1];
-
-        session()->flash('success', "Results updated for " . $team->getName());
 
         return response()->json(['url' => Route('comps.events.sercs.editResults', [$comp, $serc, $nextTeamId])]);
     }
 
-    public function next(Competition $comp, SERC $serc, int $entity_id)
+    private function nextTeamId(Competition $comp, SERC $serc, int $entity_id): ?int
     {
         $team = $serc->getScorableEntity()->findOrFail($entity_id);
 
         $teamIds = $serc->getScorableEntities()->pluck('id')->toArray();
 
-        $draw = $serc->getDraw;
+        $draw = $serc->getDraw->sortBy('draw')->sortBy('tank');
 
         if ($draw) {
             $teamIds = $draw->pluck('entity_id')->toArray();
@@ -262,10 +249,19 @@ class SERCController extends Controller
 
         if ($index + 2 > count($teamIds)) {
 
-            return redirect()->route('comps.events.sercs.view', compact('comp', 'serc'));
+            return null;
         }
 
-        $nextTeamId = $teamIds[$index + 1];
+        return $teamIds[$index + 1];
+    }
+
+    public function next(Competition $comp, SERC $serc, int $entity_id)
+    {
+        $nextTeamId = $this->nextTeamId($comp, $serc, $entity_id);
+
+        if (!$nextTeamId) {
+            return redirect()->route('comps.events.sercs.view', compact('comp', 'serc'));
+        }
 
         return redirect()->route('comps.events.sercs.editResults', [$comp, $serc, $nextTeamId]);
     }

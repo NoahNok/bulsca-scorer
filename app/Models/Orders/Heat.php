@@ -22,9 +22,14 @@ class Heat extends Model
         return $this->belongsTo(CompetitionSpeedEvent::class, 'speed_event');
     }
 
+    public function oofs()
+    {
+        return $this->hasOne(EventOOF::class, 'heat_lane', 'id');
+    }
+
     public function getOOF($speedId)
     {
-        return $this->hasOne(EventOOF::class, 'heat_lane', 'id')->where('event', $speedId)->first();
+        return $this->oofs?->where('event', $speedId)->first();
     }
 
     public function getResult(): ?SpeedResult

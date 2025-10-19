@@ -79,6 +79,18 @@
             if (App\DigitalJudge\DigitalJudge::getTank()) {
                 $draws = $draws->where('tank', App\DigitalJudge\DigitalJudge::getTank());
             }
+
+            if ($serc->scorable_entity == 'team') {
+                $entityIds = $draws->pluck('entity')->filter()->unique('id')->pluck('id');
+
+                $loadedEntities = App\Models\CompetitionTeam::whereIn('id', $entityIds)->with('getCompetitors')->get();
+
+                $teamMap = $loadedEntities->keyBy('id');
+
+                $draws->each(function ($draw) use ($teamMap) {
+                    $draw->entity = $teamMap[$draw->entity->id];
+                });
+            }
         @endphp
 
         @if ($comp->show_teams_to_judges || $head)
@@ -92,13 +104,13 @@
 
                             <div class="flex justify-between">
 
-                                <p>{{ $loop->index + 1 }}. {{ $draw->entity->getName() }}</p> <a
+                                <p>{{ $loop->index + 1 }}. {{ $draw->entity->getName($comp) }}</p> <a
                                     href="{{ route('dj.judging.judge-team', [$draw->entity]) }}"
                                     class="link col-start-5">Edit</a>
                             </div>
                         </li>
                     @else
-                        <li>{{ $loop->index + 1 }}. {{ $draw->entity->getName() }}</li>
+                        <li>{{ $loop->index + 1 }}. {{ $draw->entity->getName($comp) }}</li>
                     @endif
                 @endforeach
             </ul>

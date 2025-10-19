@@ -31,7 +31,8 @@
         @endcan
 
         @can('access', [$comp, 'teams'])
-            <a href="{{ route('comps.entities', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.entities')) active @endif">Entities &
+            <a href="{{ route('comps.entities', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.entities') ||
+                    Str::startsWith(Route::currentRouteName(), 'comps.league')) active @endif">Entities &
                 Leagues</a>
         @endcan
 

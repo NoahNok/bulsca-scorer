@@ -51,10 +51,13 @@
 
     <br>
 
+
     <div class="flex justify-between ">
         <h2 class="mb-0">Entities</h2>
         <a href="{{ route('comps.entities.edit', $comp) }}" class="se-btn  flex items-center ">Edit</a>
     </div>
+
+
 
     <div class="flex space-x-3 mb-2 font-archivo uppercase font-semibold ">
         <small>{{ $comp->getClubs->count() }} Clubs</small>
@@ -65,8 +68,15 @@
 
     @php
         $seed_events = $comp->getSeedableEvents();
-        $first_speed_id = $comp->getSpeedEvents->first()->id;
+        $first_speed_id = $comp->getSpeedEvents->first()?->id;
     @endphp
+
+    @if (!$first_speed_id && $comp->use_seeds)
+        <div class="alert-box alert-warning mb-3">
+            <h1>Seeds</h1>
+            <p>You will be unable to add seed times until you have added a speed event!</p>
+        </div>
+    @endif
 
 
     <div class=" se-table  md:w-2/3! ">
@@ -304,4 +314,5 @@
             </tbody>
         </table>
     </div>
+
 @endsection
