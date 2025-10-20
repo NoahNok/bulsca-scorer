@@ -20,6 +20,8 @@ class DrawService
 
         $entities = $serc->getScorableEntities();
 
+        $entities = $entities->shuffle();
+
         $tank = 0;
         $draw = 1;
 

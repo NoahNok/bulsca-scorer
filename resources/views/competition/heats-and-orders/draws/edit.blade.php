@@ -99,13 +99,17 @@
             <br>
 
         </div>
-        <h4>Regen SERC Order</h4>
-        <p>Regenerating the SERC order will randomly assign teams. <strong>You will loose</strong> any alterations you have
-            made!</p>
-        <br>
-        <form action="{{ route('comps.heats_and_draws.draws.reset', [$comp, $serc]) }}" method="get"
-            onsubmit="return confirm('Are you sure you want to reset the heats?')">
-            <button class="se-btn se-btn-danger">Regen</button>
-        </form>
+
+        @if (!$comp->getScoringSettings->use_tanks)
+            <h4>Regen SERC Order</h4>
+            <p>Regenerating the SERC order will randomly assign teams. <strong>You will loose</strong> any alterations you
+                have
+                made!</p>
+            <br>
+            <form action="{{ route('comps.heats_and_draws.draws.reset', [$comp, $serc]) }}" method="get"
+                onsubmit="return confirm('Are you sure you want to reset the heats?')">
+                <button class="se-btn se-btn-danger">Regen</button>
+            </form>
+        @endif
     </div>
 @endsection
