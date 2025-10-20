@@ -247,6 +247,8 @@ class OrganisationController extends Controller
         $schema->organisation = $organisation->id;
         $schema->save();
 
+        session()->flash('success', 'Created scoring schema');
+
         return response()->json(['url' => route('orgs.scoring.edit', ['organisation' => $organisation->name, 'schema' => $schema->id])]);
     }
 
@@ -275,6 +277,20 @@ class OrganisationController extends Controller
 
         return response()->json([]);
     }
+
+    public function deleteScoringSchema(Organisation $organisation, ScoringSchema $schema)
+    {
+        if ($schema->organisation != $organisation->id) {
+            abort(404);
+        }
+
+        $schema->delete();
+
+        session()->flash('success', 'Schema Deleted');
+
+        return response()->json([]);
+    }
+
 
     public function infractions(Organisation $organisation)
     {

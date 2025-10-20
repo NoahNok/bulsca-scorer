@@ -1,19 +1,25 @@
- @props(['type', 'route', 'schema' => null, 'org' => null])
+ @props(['type', 'route', 'schema' => null, 'org' => null, 'edit_create' => false, 'delete_route' => '#'])
 
- <div class="flex flex-col space-y-4 col-span-2 mt-2" x-data="{
-     type: '{{ $type ?? 'event' }}',
- 
-     data: null,
-     errors: {},
-     schemas: {{ $org
-         ? $org->scoringSchemas->map(function ($schema) {
+ @php
+     $availableSchemas = Auth::user()->getOrganisations->flatMap(function ($org) {
+         return $org->scoringSchemas->map(function ($schema) {
              return [
                  'id' => $schema->id,
                  'name' => $schema->name,
                  'schema' => $schema->schema,
              ];
-         })
-         : '[]' }},
+         });
+     });
+ @endphp
+
+ <div class="flex flex-col space-y-4 col-span-2 mt-2" x-data="{
+     type: '{{ $type ?? 'event' }}',
+ 
+     edit_create: {{ $edit_create ? 'true' : 'false' }},
+ 
+     data: null,
+     errors: {},
+     schemas: {{ $availableSchemas }},
  
      addGlobal() {
          this.data.global_variables.push({
@@ -51,6 +57,11 @@
  
      save() {
  
+         if (this.data.name.trim() == '') {
+             this.errors['name'] = 'Please enter a schema name'
+             return
+         }
+ 
          this.data.local_variables = this.data.local_variables.filter(v => v.name.trim() != '' && v.expression.trim() != '')
          this.data.global_variables = this.data.global_variables.filter(v => v.name.trim() != '' && v.expression.trim() != '')
  
@@ -86,12 +97,44 @@
          })
      },
  
+     async delete_schema() {
+         if (!confirm('Are you sure you want to delete this scoring schema? It cannot be undone!')) {
+             return
+         }
+ 
+         let route = '{{ $delete_route }}'
+ 
+         if (route == '#') {
+             return
+         }
+ 
+ 
+         let response = await fetch(route, {
+             method: 'DELETE',
+             headers: {
+                 Accept: 'application/json',
+                 'Content-Type': 'application/json',
+                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
+             },
+         })
+ 
+         if (!response.ok) {
+             showAlert('Failed to delete schema');
+             return
+         }
+ 
+         @if($org)
+         window.location.href = '{{ route('orgs.scoring', [$org->name]) }}'
+         @endif
+ 
+ 
+     },
+ 
      init() {
          this.data = {{ json_encode($schema->schema ?? null) }};
          console.log({{ json_encode($schema->schema ?? null) }})
  
- 
- 
+         console.log(this.type == 'org')
  
          if (!this.data) {
              this.createNew()
@@ -289,9 +332,9 @@
 
      </div>
 
-     <div class="se-form-input mt-2" x-cloak x-show="data != null && type == 'org' && stage == 2">
+     <div class="se-form-input mt-2" x-cloak x-show="edit_create && stage == 2">
          <label for="name">Name</label>
-         <input type="text" x-model="data.name" placeholder="Scoring Schema Name">
+         <input type="text" x-model="data.name" placeholder="Scoring Schema Name" required>
          <small x-show="errors['name']" x-text="errors['name']"></small>
      </div>
 
@@ -508,7 +551,20 @@
              </div>
          </div>
 
-         <button class="se-btn se-btn-success" @click="save">Save</button>
+
+         @if ($delete_route != '#')
+             <div class="grid-2">
+                 <button class="se-btn se-btn-danger" @click="delete_schema">Delete</button>
+                 <button class="se-btn se-btn-success" @click="save">Save</button>
+             </div>
+         @else
+             <button class="se-btn se-btn-success" @click="save">Save</button>
+         @endif
+
+
+
+
+
 
 
      </div>
