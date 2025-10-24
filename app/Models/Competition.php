@@ -364,6 +364,10 @@ class Competition extends Model implements IInvitable
 
                 $draws->each(function ($draw) use ($teamMap) {
 
+                    if (!$draw->entity) {
+                        return;
+                    }
+
                     $draw->entity = $teamMap[$draw->entity->id];
                 });
             }
