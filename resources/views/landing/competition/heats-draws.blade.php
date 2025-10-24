@@ -94,7 +94,7 @@
 
                 @foreach ($heatevent['heats'] as $heat_no => $lanes)
                     @php
-                        $names = $lanes->map(fn($lane) => $lane->entity->getName($comp))->filter()->implode(' ');
+                        $names = $lanes->map(fn($lane) => $lane->entity?->getName($comp))->filter()->implode(' ');
                     @endphp
 
                     <div class="flex flex-col  py-2 snap-start pl-5" x-data="{
