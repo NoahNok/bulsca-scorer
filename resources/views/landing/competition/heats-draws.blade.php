@@ -155,7 +155,7 @@
 
                 @foreach ($heatevent['draws'] as $tank_no => $draw)
                     @php
-                        $names = $draw->map(fn($lane) => $lane->entity->getName($comp))->filter()->implode(' ');
+                        $names = $draw->map(fn($lane) => $lane->entity?->getName($comp))->filter()->implode(' ');
                     @endphp
                     @if ($use_tanks)
                         <div x-data="{
@@ -173,7 +173,7 @@
                             @php
                                 $uniqueLeagues = $draw
                                     ->map(function ($drawEntry) {
-                                        return $drawEntry->entity->getLeague->name ?? null;
+                                        return $drawEntry->entity?->getLeague->name ?? null;
                                     })
                                     ->filter()
                                     ->unique()
@@ -190,7 +190,7 @@
                                 @foreach ($draw as $drawEntry)
                                     <div class="se-card  se-card-body min-w-56 p-2! px-4! rounded " x-data="{
                                         shouldShow() {
-                                            let show = search.trim() === '' || `{{ strtolower($drawEntry->entity->getName($comp) ?? '-') }}`.includes(search.trim().toLowerCase())
+                                            let show = search.trim() === '' || `{{ strtolower($drawEntry->entity?->getName($comp) ?? '-') }}`.includes(search.trim().toLowerCase())
                                             children['{{ $drawEntry->draw }}'] = show
                                             return show;
                                         }
@@ -198,7 +198,7 @@
                                         x-show="shouldShow"
                                         :class="(shouldShow && search.trim()) != '' ? 'se-card-success' : ''">
                                         {{ $drawEntry->draw }}.
-                                        {{ $drawEntry->entity->getName($comp) ?? '-' }}</div>
+                                        {{ $drawEntry->entity?->getName($comp) ?? '-' }}</div>
                                 @endforeach
                             </div>
 
@@ -209,7 +209,7 @@
                     @else
                         @foreach ($draw as $drawEntry)
                             <div class="se-card  se-card-body min-w-56 p-2! px-4! rounded">
-                                {{ $drawEntry->draw }}. {{ $drawEntry->entity->getName($comp) ?? '-' }}
+                                {{ $drawEntry->draw }}. {{ $drawEntry->entity?->getName($comp) ?? '-' }}
                             </div>
                         @endforeach
                     @endif
