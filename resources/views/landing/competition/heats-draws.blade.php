@@ -113,9 +113,9 @@
                                 @endphp
                                 <div class="se-card  se-card-body min-w-56 p-2! px-4! rounded"
                                     :class="(search.trim() !== '' &&
-                                        `{{ strtolower($lane?->entity->getName($comp) ?? '-') }}`
+                                        `{{ strtolower($lane?->entity?->getName($comp) ?? '-') }}`
                                         .includes(search.trim().toLowerCase())) ? 'se-card-success' : ''">
-                                    {{ $lane?->entity->getName($comp) ?? '-' }}
+                                    {{ $lane?->entity?->getName($comp) ?? '-' }}
                                 </div>
                             @endfor
 
