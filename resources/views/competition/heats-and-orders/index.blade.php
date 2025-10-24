@@ -115,7 +115,7 @@
                                     @foreach ($draw as $drawEntry)
                                         <li class="overflow-hidden line-clamp-1 hover:line-clamp-none ">
                                             {{ $drawEntry->draw }}.
-                                            {{ $drawEntry->entity->getName($comp) ?? '-' }}</li>
+                                            {{ $drawEntry->entity?->getName($comp) ?? '-' }}</li>
                                     @endforeach
                                 </ol>
 
@@ -123,7 +123,7 @@
                         @else
                             @foreach ($draw as $drawEntry)
                                 <div class="se-card  se-card-body min-w-56 p-2! px-4! rounded">
-                                    {{ $drawEntry->draw }}. {{ $drawEntry->entity->getName($comp) ?? '-' }}
+                                    {{ $drawEntry->draw }}. {{ $drawEntry->entity?->getName($comp) ?? '-' }}
                                 </div>
                             @endforeach
                         @endif
