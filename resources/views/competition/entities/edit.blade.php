@@ -1,12 +1,12 @@
 @extends('layouts.competition')
 
 @section('title')
-    Entities & Leagues
+    Entries & Leagues
 @endsection
 
 
 @section('content')
-    <h2>Edit Entities</h2>
+    <h2>Edit Entries</h2>
 
     <div x-data="{
         data: {{ json_encode($comp->getEntityMakeup()) }},
@@ -153,6 +153,11 @@
                 return
             }
     
+            if (!this.checkSeedTimes(this.add.team.seeds)) {
+                showAlert('Invalid seed time')
+                return
+            }
+    
             let data = {
                 id: null,
                 name: name,
@@ -260,6 +265,11 @@
                 return
             }
     
+            if (!this.checkSeedTimes(this.add.competitor.seeds)) {
+                showAlert('Invalid seed time')
+                return
+            }
+    
             let data = {
                 id: null,
                 name: name,
@@ -278,7 +288,10 @@
     
     
             this.add.competitor.name = ''
-            this.add.competitor.seeds = []
+            this.speed_events.forEach(event => {
+                this.add.competitor.seeds[event.id] = { seed: '', id: null }
+            })
+    
     
             this.modals.addCompetitor = false
         },
@@ -315,6 +328,33 @@
     
         },
     
+    
+        seed_regex: /^\d{2}:\d{2}\.\d{3}$/,
+        checkSeedTimes(seeds) {
+            let all_good = true
+            for ([id, seed_item] of Object.entries(seeds)) {
+                time = seed_item.seed
+                let valid_seed = time === '' || this.seed_regex.test(time)
+    
+                if (valid_seed) {
+                    continue
+                }
+    
+                seed_item.error = true
+                all_good = false
+            }
+    
+            return all_good;
+        },
+    
+        checkSeedTime(seed) {
+    
+    
+            return !(seed.seed == '' || this.seed_regex.test(seed.seed))
+    
+    
+        },
+    
         async save() {
     
     
@@ -341,6 +381,8 @@
     
         },
     
+    
+    
         init() {
             if (!('teams' in this.data)) {
                 this.data.teams = []
@@ -358,6 +400,13 @@
                 this.edit.competitor.seeds[event.id] = { seed: '', id: null }
                 this.add.competitor.seeds[event.id] = { seed: '', id: null }
             })
+    
+            window.addEventListener('beforeunload', (event) => {
+                if (this.has_changes) {
+                    event.preventDefault();
+                    event.returnValue = '';
+                }
+            });
     
         }
     
@@ -610,6 +659,8 @@
                                         x-show="seed_settings.seed_per_event"></label>
                                     <input type="text" x-mask="99:99.999" placeholder="01:23.456" name=""
                                         id="" x-model="add.team.seeds[event.id].seed">
+                                    <small x-show="add.team.seeds[event.id]?.error">Seed must be empty or match
+                                        format 12:34.567</small>
                                 </div>
                             </template>
                         </div>
@@ -658,7 +709,11 @@
                                 <label for="" x-text="event.name" x-show="seed_settings.seed_per_event"></label>
                                 <input type="text" x-mask="99:99.999" placeholder="01:23.456" name=""
                                     id="" x-model="edit.team.seeds[event.id].seed">
+                                <small x-show="checkSeedTime(edit.team.seeds[event.id])">This seed will not be saved! It
+                                    must be empty or match
+                                    format 12:34.567</small>
                             </div>
+
                         </template>
                     </div>
                 </div>
@@ -728,6 +783,8 @@
                                         x-show="seed_settings.seed_per_event"></label>
                                     <input type="text" x-mask="99:99.999" placeholder="01:23.456" name=""
                                         id="" x-model="add.competitor.seeds[event.id].seed">
+                                    <small x-show="add.competitor.seeds[event.id]?.error">Seed must be empty or match
+                                        format 12:34.567</small>
                                 </div>
                             </template>
                         </div>
@@ -771,6 +828,8 @@
                                 <label for="" x-text="event.name" x-show="seed_settings.seed_per_event"></label>
                                 <input type="text" x-mask="99:99.999" placeholder="01:23.456" name=""
                                     id="" x-model="edit.competitor.seeds[event.id].seed">
+                                <small x-show="checkSeedTime(edit.competitor.seeds[event.id])">This seed will not be saved!
+                                    It must be empty or match format 12:34.567</small>
                             </div>
                         </template>
                     </div>

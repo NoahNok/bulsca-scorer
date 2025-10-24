@@ -14,6 +14,7 @@
     
             this.modals.{{ $id }} = false;
         },
+        shared: {}
     }">
     <div @click.outside="closeModal" class="relative overflow-hidden" x-init="() => {
         modals.data.{{ $id }} = {}
@@ -30,6 +31,7 @@
         </div>
 
         <footer>
+            {{ $left_footer }}
             <button class="se-btn" @click="closeModal">Close</button>
 
             {{ $footer }}

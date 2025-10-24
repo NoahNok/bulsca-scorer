@@ -23,7 +23,8 @@
                         class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
                         <div class="font-archivo">
                             <p class="-mb-1">Chief Timekeeper Pack</p>
-                            <small class=" ml-5 text-gray-500">CContains heat sheets for all speed events. Pre-filled with
+                            <small class="block mt-1 ml-5 text-gray-500">Contains heat sheets for all speed events.
+                                Pre-filled with
                                 data.</small>
                         </div>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -37,7 +38,9 @@
                         class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
                         <div class="font-archivo">
                             <p class="-mb-1">Marshalling Pack</p>
-                            <small class=" ml-5 text-gray-500">Contains a list of competitior names grouped and ordered by
+                            <small class="block mt-1 ml-5 text-gray-500">Contains a list of competitior names grouped and
+                                ordered
+                                by
                                 heat.</small>
                         </div>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -53,7 +56,9 @@
                         class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
                         <div class="font-archivo">
                             <p class="-mb-1">Marking Pack</p>
-                            <small class=" ml-5 text-gray-500">Contains marking sheets for all teams/competitiors in every
+                            <small class="block mt-1 ml-5 text-gray-500">Contains marking sheets for all teams/competitiors
+                                in
+                                every
                                 SERC/initiative.</small>
                         </div>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -67,7 +72,9 @@
                         class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
                         <div class="font-archivo">
                             <p class="-mb-1">Marshalling Pack</p>
-                            <small class=" ml-5 text-gray-500">Contains a list of competitior names grouped and ordered by
+                            <small class="block mt-1 ml-5 text-gray-500">Contains a list of competitior names grouped and
+                                ordered
+                                by
                                 heat.</small>
                         </div>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -84,7 +91,8 @@
                             class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
                             <div class="font-archivo">
                                 <p class="-mb-1">{{ $serc->getName() }} Raw Marking Sheets</p>
-                                <small class=" ml-5 text-gray-500">Table based marking sheets for rough judge marks</small>
+                                <small class="block mt-1 ml-5 text-gray-500">Table based marking sheets for rough judge
+                                    marks</small>
                             </div>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor"

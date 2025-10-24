@@ -14,16 +14,18 @@ class SEModal extends Component
     private bool $open = false;
 
     private $footer = null;
+    private $left_footer = null;
 
     /**
      * Create a new component instance.
      */
-    public function __construct($id, $title, $open = false, $footer = null)
+    public function __construct($id, $title, $open = false, $footer = null, $left_footer = null)
     {
         $this->id = $id;
         $this->title = $title;
         $this->open = $open;
         $this->footer = $footer;
+        $this->left_footer = $left_footer;
     }
 
 
@@ -37,6 +39,7 @@ class SEModal extends Component
             'title' => $this->title,
             'open' => $this->open,
             'footer' => $this->footer,
+            'left_footer' => $this->left_footer
         ]);
     }
 }

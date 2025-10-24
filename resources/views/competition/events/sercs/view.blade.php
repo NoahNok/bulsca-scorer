@@ -109,7 +109,7 @@
                         </table>
                     </div>
                 @else
-                    <div class="alert-box ">
+                    <div class="alert-box alert-warning ">
                         <h1>No Scoring Setup</h1>
                         <p>You have not setup any scoring rules for this SERC, thus no results could be generated.
                             <br>
@@ -144,7 +144,7 @@
             @endphp
 
             @if ($sercDraw->count() == 0)
-                <div class="alert-box">
+                <div class="alert-box alert-warning">
                     <h1>No SERC Draw</h1>
                     <p>No SERC draw has been made, the items below are not ordered.
                     </p>

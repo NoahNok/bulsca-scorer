@@ -32,8 +32,12 @@
 
         @can('access', [$comp, 'teams'])
             <a href="{{ route('comps.entities', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.entities') ||
-                    Str::startsWith(Route::currentRouteName(), 'comps.league')) active @endif">Entities &
+                    Str::startsWith(Route::currentRouteName(), 'comps.league')) active @endif">Entries &
                 Leagues</a>
+        @endcan
+
+        @can('access', [$comp, ['serc', 'speed', 'serc_writer']])
+            <a href="{{ route('comps.events', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.events')) active @endif">Events</a>
         @endcan
 
         @can('access', [$comp, 'heats_and_draws'])
@@ -47,9 +51,7 @@
                 class="@if (Str::startsWith(Route::currentRouteName(), 'comps.printables')) active @endif">Printables</a>
         @endcan
 
-        @can('access', [$comp, ['serc', 'speed', 'serc_writer']])
-            <a href="{{ route('comps.events', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.events')) active @endif">Events</a>
-        @endcan
+
 
         @can('access', [$comp, 'results'])
             <a href="{{ route('comps.results', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.results')) active @endif">Results</a>

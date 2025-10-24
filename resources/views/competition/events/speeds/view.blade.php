@@ -211,7 +211,7 @@
                         </table>
                     </div>
                 @else
-                    <div class="alert-box ">
+                    <div class="alert-box alert-warning ">
                         <h1>No Scoring Setup</h1>
                         <p>You have not setup any scoring rules for this SERC, thus no results could be generated.
                             <br>

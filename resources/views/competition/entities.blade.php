@@ -1,7 +1,7 @@
 @extends('layouts.competition')
 
 @section('title')
-    Entities & Leagues
+    Entries & Leagues
 @endsection
 
 
@@ -49,12 +49,13 @@
 
     </div>
 
-    <br>
+
+    <hr class="spacer my-5! mt-7!">
 
 
     <div class="flex justify-between ">
-        <h2 class="mb-0">Entities</h2>
-        <a href="{{ route('comps.entities.edit', $comp) }}" class="se-btn  flex items-center ">Edit</a>
+        <h2 class="mb-0">Entries</h2>
+        <a href="{{ route('comps.entities.edit', $comp) }}" class="se-btn  flex items-center ">Edit Entries</a>
     </div>
 
 

@@ -12,7 +12,7 @@
      });
  @endphp
 
- <div class="flex flex-col space-y-4 col-span-2 mt-2" x-data="{
+ <div class="flex flex-col space-y-4 col-span-2 mt-2" @change="has_changes=true" x-data="{
      type: '{{ $type ?? 'event' }}',
  
      edit_create: {{ $edit_create ? 'true' : 'false' }},
@@ -20,6 +20,8 @@
      data: null,
      errors: {},
      schemas: {{ $availableSchemas }},
+ 
+     has_changes: false,
  
      addGlobal() {
          this.data.global_variables.push({
@@ -84,6 +86,8 @@
                  if (data.errors) {
                      this.errors = data.errors
                  }
+ 
+                 showAlert('Failed to save, check your inputs')
              }
              return resp.json()
          }).then(data => {
@@ -185,6 +189,12 @@
              this.data['force_penalty'] = false
          }
  
+         window.addEventListener('beforeunload', (event) => {
+             if (this.has_changes) {
+                 event.preventDefault();
+                 event.returnValue = '';
+             }
+         });
  
      },
  
@@ -272,7 +282,7 @@
              <div class="flex items-center justify-between h-full">
                  <div>
                      <h4>Clone from Organisation</h3>
-                         <p>This will clone the socring setup from one of your organisations defaults</p>
+                         <p>This will clone the scoring setup from one of your organisations defaults</p>
                  </div>
                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                      stroke="currentColor" class="size-8">

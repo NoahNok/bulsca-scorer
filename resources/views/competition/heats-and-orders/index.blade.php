@@ -58,7 +58,7 @@
                                         $lane = $lanes->where('lane', $i + 1)->first();
                                     @endphp
                                     <div class="se-card  se-card-body min-w-56 p-2! px-4! rounded">
-                                        {{ $lane?->entity->getName($comp) ?? '-' }}
+                                        {{ $lane?->entity?->getName($comp) ?? '-' }}
                                     </div>
                                 @endfor
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Orders;
 
+use App\Exceptions\HeatException;
 use App\Http\Controllers\Controller;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
@@ -22,21 +23,21 @@ class HeatController extends Controller
     public function generate(Competition $comp, HeatService $heatService)
     {
 
-        if ($comp->heats_per_event) {
+        try {
+            if ($comp->heats_per_event) {
 
-            $events = $comp->getSpeedEvents;
+                $events = $comp->getSpeedEvents;
 
-            foreach ($events as $event) {
-                $heatService->generateHeatsForEvent($event);
+                foreach ($events as $event) {
+                    $heatService->generateHeatsForEvent($event);
+                }
+            } else {
+                $heatService->generateHeatsForEvent($comp->getSpeedEvents()->orderBy('id')->first());
             }
-        } else {
-            $heatService->generateHeatsForEvent($comp->getSpeedEvents()->orderBy('id')->first());
+            return redirect()->back()->with('success', 'Heats Generated');
+        } catch (HeatException $s) {
+            return redirect()->back()->with('alert-error', 'Failed to generate: an entry is missing a seed time');
         }
-
-
-
-
-        return redirect()->back()->with('success', 'Heats Generated');
     }
 
     public function edit(Competition $comp, CompetitionSpeedEvent $event)
@@ -110,9 +111,14 @@ class HeatController extends Controller
 
     public function reset(Competition $comp, CompetitionSpeedEvent $event, HeatService $heatService)
     {
-        $heatService->generateHeatsForEvent($event);
 
-        return redirect()->back()->with('success', 'Heats Reset');
+        try {
+            $heatService->generateHeatsForEvent($event);
+
+            return redirect()->back()->with('success', 'Heats Reset');
+        } catch (HeatException $e) {
+            return redirect()->back()->with('alert-error', 'Failed to generate: an entry is missing a seed time');
+        }
     }
 
     public function deleteHeat(Competition $comp, CompetitionSpeedEvent $event, Request $request)

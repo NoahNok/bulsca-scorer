@@ -52,7 +52,7 @@ class EntityController extends Controller
             $this->saveCompetitor($comp, $competitor);
         }
 
-        session()->flash('success', 'Saved.');
+        session()->flash('success', 'Saved entries');
 
         return response()->json([]);
     }

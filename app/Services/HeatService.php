@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\HeatException;
 use App\Models\AbstractClasses\Entity;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
@@ -20,13 +21,18 @@ class HeatService
         // Get seeds
         $seeds = $event->seeds()->orderBy('seed', 'desc')->get();
 
+        if (!$event->getCompetition->seed_per_event) {
+            $seeds = $event->getCompetition->getSpeedEvents->first()->seeds()->orderBy('seed', 'desc')->get();
+        }
+
+
         $comp = $event->getCompetition;
 
         $use_seeds = $comp->use_seeds;
 
         // Expect # seeds = # teams
         if ($use_seeds && $seeds->count() != $event->getScorableEntities()->count()) {
-            throw new Exception("# Seeds and # Entities do not match");
+            throw new HeatException("# Seeds and # Entities do not match");
         }
 
         if (!$use_seeds) {
