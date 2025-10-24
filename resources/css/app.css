@@ -594,6 +594,15 @@ div.se-checkbox {
     }
   }
 
+    >small {
+    @apply text-red-500 mt-1;
+
+    &.info {
+      @apply text-gray-500;
+    }
+  }
+
+
   p {
     @apply text-sm ml-5;
   }

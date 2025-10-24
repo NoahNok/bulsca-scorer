@@ -358,18 +358,85 @@
             @endslot
         </x-s-e-modal>
 
-        <x-s-e-modal id="compSettings" title="Settings" class="se-modal-wide">
+        <x-s-e-modal id="compSettings" title="Settings" class="se-modal-wide ">
 
 
 
-            <div class="se-pannel" x-data="{
+            <div class="se-pannel" id="competition_settings" x-data="{
                 active: 'details',
-            }">
+            
+                form: {
+                    changes: false,
+                    data: {},
+            
+                },
+            
+            
+                async validateForm() {
+            
+                    if (!this.form.changes) {
+                        console.log('no changes')
+                        return
+                    }
+            
+                    for ([name, data] of Object.entries(this.form.data)) {
+                        if (data.error) {
+                            this.active = data.section
+                            this.$nextTick(() => {
+                                data.element.focus()
+                            })
+                            return
+                        }
+                    }
+            
+                    let form_data = {}
+            
+                    for ([name, data] of Object.entries(this.form.data)) {
+                        form_data[name] = data.data
+                    }
+            
+                    let response = await fetch('{{ route('comps.settings', $comp) }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify(form_data)
+                    })
+            
+                    if (!response.ok) {
+                        showAlert('Failed to save settings. Check your inputs')
+                        return
+                    }
+            
+                    showSuccess('Competition settings saved')
+            
+                    this.form.changes = false
+                    this.$nextTick(() => this.shared.changes = false)
+            
+                    this.modals.compSettings = false
+            
+                },
+            
+                init() {
+                    shared.submit = () => {
+                        this.validateForm()
+                    }
+            
+                    $watch('form.changes', (v) => shared.changes = true)
+            
+                },
+            
+            
+            
+            
+            }" @input="form.changes = true">
                 <ul class="">
                     <li :class="active == 'details' ? 'active' : ''" @click="active = 'details'">Details</li>
                     <li :class="active == 'setup' ? 'active' : ''" @click="active = 'setup'">Setup</li>
                     <li :class="active == 'hd' ? 'active' : ''" @click="active = 'hd'">Heats & Draws</li>
-                    <li :class="active == 'names' ? 'active' : ''" @click="active = 'names'">Names</li>
+                    <li :class="active == 'names' ? 'active' : ''" @click="active = 'names'">Name Formatting</li>
 
                 </ul>
 
@@ -377,95 +444,32 @@
                 <div x-cloak x-show="active == 'details'">
                     <h3>Details</h3>
 
-                    <form id="compDetailsForm" class="grid-2 w-full"
-                        x-on:submit="(e) => {
-                            e.preventDefault()
-                            loading = true
-
-
-                            fetch('{{ route('comps.settings', $comp) }}', {
-                                method: 'POST',
-                                body: new FormData($event.target),
-                                headers: {
-                                    'Accept': 'application/json',
-                                }
-                            }).then(resp => {
-                            this.loading = false
-                                if (!resp.ok) {
-                                    showAlert('Something went wrong, you changes have been reversed.')
-                                    $event.target.reset()
-                                    return
-                                }
-
-                                global_state.competition_name = $event.target.name.value
-
-                                loading = false
-                                showSuccess('Competition settings saved')
-                            })
-                        }">
+                    <div class="grid-2 w-full">
 
                         @csrf
-                        <div class="se-form-input imb-0">
-                            <label for="">Name</label>
-                            <input type="text" name="name" value="{{ $comp->name }}">
-                        </div>
-                        <div class="se-form-input imb-0">
-                            <label for="">Date</label>
-                            <input type="date" name="when" value="{{ $comp->when->format('Y-m-d') }}">
-                        </div>
-                        <div class="se-form-input imb-0">
-                            <label for="">Location</label>
-                            <input type="text" name="where" value="{{ $comp->where }}">
-                        </div>
+                        <x-se-input label="Name" name="name" :default="$comp->name" required minlength="3"
+                            section="details" />
+
+                        <x-se-input label="Date" name="when" type="date" :default="$comp->when->format('Y-m-d')" required
+                            section="details" />
+
+                        <x-se-input label="Location" name="where" :default="$comp->where" required section="details" />
 
 
+                    </div>
 
-
-
-
-                    </form>
-                    <button class="se-btn se-btn-success ml-auto" form="compDetailsForm">Save</button>
                 </div>
                 <div x-cloak x-show="active == 'setup'">
                     <h3>Setup</h3>
 
-                    <form id="compSettingsForm" class="grid-2 w-full"
-                        x-on:submit="(e) => {
-                            e.preventDefault()
-                        
-
-                        
-                            loading = true
-
-
-                            fetch('{{ route('comps.settings', $comp) }}', {
-                                method: 'POST',
-                                body: new FormData($event.target),
-                                headers: {
-                                    'Accept': 'application/json',
-                                }
-                            }).then(resp => {
-                            this.loading = false
-                                if (!resp.ok) {
-                                    showAlert('Something went wrong, you changes have been reversed.')
-                                    $event.target.reset()
-                                    return
-                                }
-                    
-
-                                loading = false
-                             
-                                showSuccess('Competition settings saved')
-                            })
-                        }">
+                    <div class="grid-2 w-full">
 
 
                         @csrf
 
-                        <div class="se-form-input imb-0">
-                            <label for="">Lanes</label>
-                            <input type="text" name="max_lanes" value="{{ $comp->max_lanes }}">
-                        </div>
+                        <x-se-input label="Lanes" name="max_lanes" type="number" min="1" :default="$comp->max_lanes" required
+                            section="setup" />
+
 
                         @php
                             $sercStart = $comp->serc_start_time;
@@ -473,145 +477,72 @@
                             $sercStart?->setSeconds(0);
                         @endphp
 
-                        <div class="se-form-input imb-0">
-                            <label for="">SERC Start Time</label>
-                            <input type="datetime-local" name="serc_start_time" value="{{ $sercStart }}">
-                            <input type="hidden" name="timezone" x-init="$el.value = Intl.DateTimeFormat().resolvedOptions().timeZone;">
-                        </div>
+
+                        <x-se-input label="SERC Start Time" name="serc_start_time" type="datetime-local" :default="$sercStart"
+                            required section="setup" />
+
+                        <x-se-input name="timezone" type="hidden" x-init="self.data = Intl.DateTimeFormat().resolvedOptions().timeZone;" section="setup" />
 
 
-
-                        <div class="se-checkbox">
-                            <div>
-                                <input type="checkbox" name="can_be_live" @if ($comp->can_be_live) checked @endif
-                                    id="can_be_live">
-                                <input type="hidden" name="can_be_live" value="0">
-                                <label for="can_be_live">Viewable Live</label>
-                            </div>
-                            <p>If this competition can be viewed live</p>
-                        </div>
+                        <x-se-input label="Viewable Live" name="can_be_live" type="checkbox" :default="$comp->can_be_live"
+                            section="setup" />
 
 
+                    </div>
 
-                    </form>
-                    <button class="se-btn se-btn-success ml-auto" form="compSettingsForm">Save</button>
                 </div>
 
                 <div x-cloak x-show="active == 'hd'">
                     <h3>Heats & Draws</h3>
 
-                    <form id="compScoringSettingsForm" class="grid-2 w-full"
-                        x-on:submit="(e) => {
-                            e.preventDefault()
-                        
-
-                        
-                            loading = true
-
-
-                            fetch('{{ route('comps.settings.scoring', $comp) }}', {
-                                method: 'POST',
-                                body: new FormData($event.target),
-                                headers: {
-                                    'Accept': 'application/json',
-                                }
-                            }).then(resp => {
-                            this.loading = false
-                                if (!resp.ok) {
-                                    showAlert('Something went wrong, you changes have been reversed.')
-                                    $event.target.reset()
-                                    return
-                                }
-                    
-
-                                loading = false
-                             
-                                showSuccess('Competition scoring settings saved')
-                            })
-                        }">
+                    <div class="grid-2 w-full">
 
 
                         @csrf
 
-                        <div class="se-form-input imb-0">
-                            <label for="">Tanks</label>
-                            <select name="use_tanks" id="">
-                                <option value="1" @if ($comp->getScoringSettings->use_tanks) selected @endif>Yes</option>
-                                <option value="0" @if (!$comp->getScoringSettings->use_tanks) selected @endif>No</option>
-                            </select>
-                        </div>
+                        <x-se-input label="Tanks" name="ss:use_tanks" type="select" section="hd" :default="$comp->getScoringSettings->use_tanks">
+                            <option value="1" @if ($comp->getScoringSettings->use_tanks) selected @endif>Yes</option>
+                            <option value="0" @if (!$comp->getScoringSettings->use_tanks) selected @endif>No</option>
+                        </x-se-input>
 
-                        <div class="se-form-input imb-0">
-                            <label for="">Use Seed Times</label>
-                            <select name="use_seeds" id="">
-                                <option value="1" @if ($comp->use_seeds) selected @endif>Yes</option>
-                                <option value="0" @if (!$comp->use_seeds) selected @endif>No</option>
-                            </select>
-                        </div>
+                        <x-se-input label="Use Seed Times" name="use_seeds" type="select" section="hd" :default="$comp->use_seeds">
+                            <option value="1" @if ($comp->use_seeds) selected @endif>Yes</option>
+                            <option value="0" @if (!$comp->use_seeds) selected @endif>No</option>
+                        </x-se-input>
 
-                        <div class="se-form-input imb-0">
-                            <label for="">Heats Per Event</label>
-                            <select name="heats_per_event" id="">
-                                <option value="1" @if ($comp->heats_per_event) selected @endif>Yes</option>
-                                <option value="0" @if (!$comp->heats_per_event) selected @endif>No</option>
-                            </select>
-                        </div>
+                        <x-se-input label="Heats Per Event" name="heats_per_event" type="select" section="hd"
+                            :default="$comp->heats_per_event">
+                            <option value="1" @if ($comp->heats_per_event) selected @endif>Yes</option>
+                            <option value="0" @if (!$comp->heats_per_event) selected @endif>No</option>
+                        </x-se-input>
 
-                        <div class="se-form-input imb-0">
-                            <label for="">Seed Per Event</label>
-                            <select name="seed_per_event" id="">
-                                <option value="1" @if ($comp->seed_per_event) selected @endif>Yes</option>
-                                <option value="0" @if (!$comp->seed_per_event) selected @endif>No</option>
-                            </select>
-                        </div>
+                        <x-se-input label="Seed Per Event" name="seed_per_event" type="select" section="hd"
+                            :default="$comp->seed_per_event">
+                            <option value="1" @if ($comp->seed_per_event) selected @endif>Yes</option>
+                            <option value="0" @if (!$comp->seed_per_event) selected @endif>No</option>
+                        </x-se-input>
 
 
+                    </div>
 
-
-
-                    </form>
-                    <button class="se-btn se-btn-success ml-auto" form="compScoringSettingsForm">Save</button>
                 </div>
 
 
                 <div x-cloak x-show="active == 'names'">
-                    <h3>Names</h3>
+                    <h3>Name Formatting</h3>
 
-                    <form id="compNamesForm" class="grid-2 w-full"
-                        x-on:submit="(e) => {
-                            e.preventDefault()
-                        
+                    <p>Name formatting allows you to customise how Team and Competitor names are displayed. The identifiers
+                        lsited in <strong>BOLD</strong> can be included and will be replaced with the associated
+                        name/identifier. An formatted example is displayed below each input
+                    </p>
+                    <br>
 
-                        
-                            loading = true
-
-
-                            fetch('{{ route('comps.settings', $comp) }}', {
-                                method: 'POST',
-                                body: new FormData($event.target),
-                                headers: {
-                                    'Accept': 'application/json',
-                                }
-                            }).then(resp => {
-                            this.loading = false
-                                if (!resp.ok) {
-                                    showAlert('Something went wrong, you changes have been reversed.')
-                                    $event.target.reset()
-                                    return
-                                }
-                    
-
-                                loading = false
-                             
-                                showSuccess('Competition scoring settings saved')
-                            })
-                        }">
+                    <div class="grid-2 w-full">
 
 
                         @csrf
 
-
-                        <div class="se-form-input imb-0" x-data="{
+                        <div x-data="{
                             format: '{{ $comp->team_format }}',
                         
                         
@@ -628,20 +559,32 @@
                                     .replace(/:L/g, this.sample.league)
                                     .replace(/:N/g, this.sample.name)
                                     .replace(/:S/g, this.sample.competitors);
+                            },
                         
-                        
+                            init() {
+                                $watch('form.data.team_foramt', (v) => {
+                                    this.format = v.data
+                                })
                             }
                         }">
-                            <label for="">Team Name Format</label>
-                            <p><strong>:C</strong> - Club, <strong>:L</strong> - League, <strong>:N</strong> - Name,
-                                <strong>:S</strong> - Competitor Names,
-                            </p>
-                            <input x-model="format" type="text" name="team_format" value="{{ $comp->team_format }}">
+
+                            <x-se-input label="Team Name Format" name="team_format" :default="$comp->team_format" required
+                                section="names">
+                                <x-slot name="description">
+                                    <p><strong>:C</strong> - Club, <strong>:L</strong> - League, <strong>:N</strong> - Name,
+                                        <strong>:S</strong> - Competitor Names,
+                                    </p>
+                                </x-slot>
+                            </x-se-input>
+
                             <small class="text-gray-500!" x-text="getSample">example</small>
+
                         </div>
 
-                        <div class="se-form-input imb-0" x-data="{
-                            format: '{{ $comp->competitor_format }}',
+
+
+                        <div x-data="{
+                            format: '{{ $comp->team_format }}',
                         
                         
                             sample: {
@@ -659,23 +602,39 @@
                                     .replace(/:T/g, this.sample.team);
                         
                         
+                            },
+                        
+                            init() {
+                                $watch('form.data.competitor_foramt', (v) => {
+                                    this.format = v.data
+                                })
                             }
                         }">
-                            <label for="">Competitor Name Format</label>
-                            <p><strong>:C</strong> - Club, <strong>:L</strong> - League, <strong>:N</strong> - Name,
-                                <strong>:T</strong> - Team,
-                            </p>
-                            <input x-model="format" type="text" name="competitor_format"
-                                value="{{ $comp->competitor_format }}">
+
+                            <x-se-input label="Competitor Name Format" name="competitor_format" :default="$comp->competitor_format" required
+                                section="names">
+                                <x-slot name="description">
+                                    <p><strong>:C</strong> - Club, <strong>:L</strong> - League, <strong>:N</strong> - Name,
+                                        <strong>:T</strong> - Team,
+                                    </p>
+                                </x-slot>
+                            </x-se-input>
+
                             <small class="text-gray-500!" x-text="getSample">example</small>
+
                         </div>
 
 
 
 
-                    </form>
-                    <button class="se-btn se-btn-success ml-auto" form="compNamesForm">Save</button>
+                    </div>
+
                 </div>
+
+                <x-slot name="left_footer">
+                    <small class="  text-red-500   mr-auto! animate-pulse" x-show="shared.changes">You have unsaved
+                        changes!</small>
+                </x-slot>
 
 
             </div>
@@ -685,7 +644,7 @@
 
 
             <x-slot name="footer">
-
+                <button form="competition_settings" class="se-btn se-btn-success" @click="shared.submit()">Save</button>
             </x-slot>
         </x-s-e-modal>
 

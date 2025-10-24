@@ -78,6 +78,7 @@ class CompetitionController extends Controller
     {
 
         $validated = $request->validated();
+        $settings = $comp->getScoringSettings;
 
         foreach ($validated as $key => $value) {
 
@@ -95,10 +96,15 @@ class CompetitionController extends Controller
                 }
             }
 
+            if (str_starts_with($key, 'ss:') && $value != null) {
+                $settings->{substr($key, 3)} = $value;
+                continue;
+            }
+
             $comp->$key = $value;
         }
 
-
+        $settings->save();
         $comp->save();
 
         return response()->json([]);

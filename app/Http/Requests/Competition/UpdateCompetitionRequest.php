@@ -30,7 +30,11 @@ class UpdateCompetitionRequest extends FormRequest
             'can_be_live' => 'sometimes|boolean',
             'timezone' => 'sometimes|timezone',
             'team_format' => 'sometimes|string',
-            'competitor_format' => 'sometimes|string'
+            'competitor_format' => 'sometimes|string',
+            'ss:use_tanks' => 'sometimes|boolean',
+            'heats_per_event' => 'sometimes|boolean',
+            'seed_per_event' => 'sometimes|boolean',
+            'use_seeds' => 'sometimes|boolean',
 
         ];
     }
