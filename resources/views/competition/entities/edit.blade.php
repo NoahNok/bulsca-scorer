@@ -357,7 +357,7 @@
     
         async save() {
     
-    
+            this.has_changes = false
     
             let response = await fetch('{{ route('comps.entities.save', $comp) }}', {
                 method: 'POST',

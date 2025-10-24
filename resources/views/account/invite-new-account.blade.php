@@ -24,6 +24,7 @@
                 @csrf
 
                 <div class="se-form-input mb-0!">
+                    <label for="name">Name</label>
                     <input type="text" name="name" placeholder="Mr Scoring" value="{{ old('name') }}" required>
                     @error('name')
                         <small>{{ $message }}</small>

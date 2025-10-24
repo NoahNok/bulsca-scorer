@@ -267,7 +267,7 @@ class CompetitionController extends Controller
         $comp->when = $validated['when'];
         $comp->where = $validated['where'];
         $comp->max_lanes = $validated['lanes'];
-        $comp->anytimepin = $validated['anytimepin'];
+        $comp->anytimepin = false;
         $comp->seed_per_event = false;
         $comp->heats_per_event = false;
         $comp->use_seeds = true;

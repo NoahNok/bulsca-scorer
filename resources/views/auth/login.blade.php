@@ -62,7 +62,7 @@
         </div>
 
         <div
-            class="shape shape-square bg-black! blur-lg   absolute top-2/8 left-[55%] rotate-12 size-28 animate-pulse animate-8s">
+            class="shape shape-square bg-black! blur-lg hidden md:flex  absolute top-2/8 left-[55%] rotate-12 size-28 animate-pulse animate-8s">
         </div>
 
         <div class="shape shape-circle absolute blur-3xl size-75 top-35 left-[90%] z-10"></div>

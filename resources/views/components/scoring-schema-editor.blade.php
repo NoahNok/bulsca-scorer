@@ -59,6 +59,7 @@
  
      save() {
  
+ 
          if (this.data.name.trim() == '') {
              this.errors['name'] = 'Please enter a schema name'
              return
@@ -95,6 +96,8 @@
              if (data.url) {
                  window.location.href = data.url
              }
+ 
+             this.has_changes = false
  
              showSuccess('Saved scoring settings')
  

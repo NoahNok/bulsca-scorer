@@ -74,7 +74,7 @@
         </div>
 
         <div>
-            <h3>Leages/Brackets</h3>
+            <h3>Leagues/Brackets</h3>
 
 
             @foreach ($comp->getLeagues as $league)

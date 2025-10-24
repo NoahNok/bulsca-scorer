@@ -134,9 +134,11 @@
                 element.onclick = (event) => {
                     if (!hasClicked) {
 
+                        if (element.getAttribute('data-heat-id') === "-1") return
 
 
                         teamInput.value = element.getAttribute('data-heat-id');
+
                         element.classList.toggle('selected')
                         hasClicked = !hasClicked;
                         return;

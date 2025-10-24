@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Create Competition')
+@section('title', 'Create a Competition')
 
 @section('content')
 
@@ -147,7 +147,7 @@
         }
     
     }" x-init="onInit">
-        <h1>Competition Creator</h1>
+        <h1>Create a Competition</h1>
         <br>
 
         <div class="grid-2" x-show="!hideType" x-cloak>
@@ -231,7 +231,7 @@
 
 
                         <div class="se-form-input col-span-2">
-                            <label for="name">Name</label>
+                            <label for="name">Competition Name</label>
                             <input type="text" name="name" id="name" placeholder="Name"
                                 value="{{ old('name') }}" required>
                         </div>
@@ -257,16 +257,7 @@
                         </div>
 
 
-                        <div class="se-form-input ">
-                            <label for="anytimepin">Any-time Pin</label>
-                            <select required id="anytimepin" name="anytimepin">
-                                <option value="0">No</option>
-                                <option value="1">Yes</option>
 
-
-                            </select>
-
-                        </div>
 
 
 
