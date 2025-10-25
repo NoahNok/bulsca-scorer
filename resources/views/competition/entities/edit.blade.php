@@ -96,9 +96,9 @@
             this.modals.editClub = true
         },
     
-        removeClub(club_index) {
+        async removeClub(club_index) {
             let club = this.data.clubs[club_index]
-            if (!confirm(`Are you want to remove '${club.name}'? This change will not be permanent until you click save!`)) {
+            if (!await askConfirm(`Are you want to remove '${club.name}'? This change will not be permanent until you click save!`)) {
                 return
             }
     
@@ -184,7 +184,7 @@
             this.modals.addTeam = false
         },
     
-        removeTeam(team_index, club_index = null) {
+        async removeTeam(team_index, club_index = null) {
     
             let team = null;
             if (club_index != null) {
@@ -193,7 +193,7 @@
                 team = this.data.teams[team_index]
             }
     
-            if (!confirm(`Are you want to remove '${team.name}'? This change will not be permanent until you click save!`)) {
+            if (!await askConfirm(`Are you want to remove '${team.name}'? This change will not be permanent until you click save!`)) {
                 return
             }
     
@@ -296,7 +296,7 @@
             this.modals.addCompetitor = false
         },
     
-        removeCompetitor(competitor_index, team_index = null, club_index = null) {
+        async removeCompetitor(competitor_index, team_index = null, club_index = null) {
             let competitor = null
             if (team_index != null && club_index != null) {
                 competitor = this.data.clubs[club_index].teams[team_index].competitors[competitor_index]
@@ -307,7 +307,7 @@
             }
     
     
-            if (!confirm(`Are you want to remove '${competitor.name}'? This change will not be permanent until you click save!`)) {
+            if (!await askConfirm(`Are you want to remove '${competitor.name}'? This change will not be permanent until you click save!`)) {
                 return
             }
     

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Mail\CompetitionAccountCreated;
 use App\Mail\CompetitionAccountInvite;
 use App\Models\Competition\CompetitionScoringSettings;
+use App\Models\Competition\CompetitionStatusMessage;
 use App\Models\DigitalJudge\JudgeLog;
 use App\Models\Interfaces\IInvitable;
 use App\Models\Orders\Draw;

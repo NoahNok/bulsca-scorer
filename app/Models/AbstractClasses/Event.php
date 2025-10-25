@@ -21,9 +21,16 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
+use ShiftOneLabs\LaravelCascadeDeletes\CascadesDeletes;
 
 abstract class Event extends Model
 {
+
+    use CascadesDeletes;
+    protected $cascadeDeletes = [
+        'penalties',
+        'disqualifications'
+    ];
 
     public abstract function getName(): string;
     /**

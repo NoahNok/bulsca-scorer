@@ -362,7 +362,7 @@
 
 
 
-            <div class="se-pannel" id="competition_settings" x-data="{
+            <div class="se-pannel " id="competition_settings" x-data="{
                 active: 'details',
             
                 form: {
@@ -432,211 +432,259 @@
             
             
             }" @input="form.changes = true">
-                <ul class="">
+
+                <ul class="w-1/4 whitespace-nowrap ">
                     <li :class="active == 'details' ? 'active' : ''" @click="active = 'details'">Details</li>
                     <li :class="active == 'setup' ? 'active' : ''" @click="active = 'setup'">Setup</li>
                     <li :class="active == 'hd' ? 'active' : ''" @click="active = 'hd'">Heats & Draws</li>
                     <li :class="active == 'names' ? 'active' : ''" @click="active = 'names'">Name Formatting</li>
+                    <li :class="active == 'status' ? 'active' : ''" @click="active = 'status'">Status Message</li>
 
                 </ul>
 
 
-                <div x-cloak x-show="active == 'details'">
-                    <h3>Details</h3>
 
-                    <div class="grid-2 w-full">
+                <div class="w-3/4">
+                    <div class="w-2/3" x-cloak x-show="active == 'details'">
+                        <h3>Details</h3>
 
-                        @csrf
-                        <x-se-input label="Name" name="name" :default="$comp->name" required minlength="3"
-                            section="details" />
+                        <div class="grid-2 w-full">
 
-                        <x-se-input label="Date" name="when" type="date" :default="$comp->when->format('Y-m-d')" required
-                            section="details" />
+                            @csrf
+                            <x-se-input label="Name" name="name" :default="$comp->name" required minlength="3"
+                                section="details" />
 
-                        <x-se-input label="Location" name="where" :default="$comp->where" required section="details" />
+                            <x-se-input label="Date" name="when" type="date" :default="$comp->when->format('Y-m-d')" required
+                                section="details" />
 
+                            <x-se-input label="Location" name="where" :default="$comp->where" required section="details" />
 
-                    </div>
-
-                </div>
-                <div x-cloak x-show="active == 'setup'">
-                    <h3>Setup</h3>
-
-                    <div class="grid-2 w-full">
-
-
-                        @csrf
-
-                        <x-se-input label="Lanes" name="max_lanes" type="number" min="1" :default="$comp->max_lanes" required
-                            section="setup" />
-
-
-                        @php
-                            $sercStart = $comp->serc_start_time;
-
-                            $sercStart?->setSeconds(0);
-                        @endphp
-
-
-                        <x-se-input label="SERC Start Time" name="serc_start_time" type="datetime-local" :default="$sercStart"
-                            required section="setup" />
-
-                        <x-se-input name="timezone" type="hidden" x-init="self.data = Intl.DateTimeFormat().resolvedOptions().timeZone;" section="setup" />
-
-
-                        <x-se-input label="Viewable Live" name="can_be_live" type="checkbox" :default="$comp->can_be_live"
-                            section="setup" />
-
-
-                    </div>
-
-                </div>
-
-                <div x-cloak x-show="active == 'hd'">
-                    <h3>Heats & Draws</h3>
-
-                    <div class="grid-2 w-full">
-
-
-                        @csrf
-
-                        <x-se-input label="Tanks" name="ss:use_tanks" type="select" section="hd" :default="$comp->getScoringSettings->use_tanks">
-                            <option value="1" @if ($comp->getScoringSettings->use_tanks) selected @endif>Yes</option>
-                            <option value="0" @if (!$comp->getScoringSettings->use_tanks) selected @endif>No</option>
-                        </x-se-input>
-
-                        <x-se-input label="Use Seed Times" name="use_seeds" type="select" section="hd" :default="$comp->use_seeds">
-                            <option value="1" @if ($comp->use_seeds) selected @endif>Yes</option>
-                            <option value="0" @if (!$comp->use_seeds) selected @endif>No</option>
-                        </x-se-input>
-
-                        <x-se-input label="Heats Per Event" name="heats_per_event" type="select" section="hd"
-                            :default="$comp->heats_per_event">
-                            <option value="1" @if ($comp->heats_per_event) selected @endif>Yes</option>
-                            <option value="0" @if (!$comp->heats_per_event) selected @endif>No</option>
-                        </x-se-input>
-
-                        <x-se-input label="Seed Per Event" name="seed_per_event" type="select" section="hd"
-                            :default="$comp->seed_per_event">
-                            <option value="1" @if ($comp->seed_per_event) selected @endif>Yes</option>
-                            <option value="0" @if (!$comp->seed_per_event) selected @endif>No</option>
-                        </x-se-input>
-
-
-                    </div>
-
-                </div>
-
-
-                <div x-cloak x-show="active == 'names'">
-                    <h3>Name Formatting</h3>
-
-                    <p>Name formatting allows you to customise how Team and Competitor names are displayed. The identifiers
-                        lsited in <strong>BOLD</strong> can be included and will be replaced with the associated
-                        name/identifier. An formatted example is displayed below each input
-                    </p>
-                    <br>
-
-                    <div class="grid-2 w-full">
-
-
-                        @csrf
-
-                        <div x-data="{
-                            format: '{{ $comp->team_format }}',
-                        
-                        
-                            sample: {
-                                club: 'Club',
-                                league: 'Youth',
-                                name: 'Team',
-                                competitors: 'Noah, Kirsty'
-                            },
-                        
-                            getSample() {
-                                return this.format
-                                    .replace(/:C/g, this.sample.club)
-                                    .replace(/:L/g, this.sample.league)
-                                    .replace(/:N/g, this.sample.name)
-                                    .replace(/:S/g, this.sample.competitors);
-                            },
-                        
-                            init() {
-                                $watch('form.data.team_foramt', (v) => {
-                                    this.format = v.data
-                                })
-                            }
-                        }">
-
-                            <x-se-input label="Team Name Format" name="team_format" :default="$comp->team_format" required
-                                section="names">
-                                <x-slot name="description">
-                                    <p><strong>:C</strong> - Club, <strong>:L</strong> - League, <strong>:N</strong> - Name,
-                                        <strong>:S</strong> - Competitor Names,
-                                    </p>
-                                </x-slot>
-                            </x-se-input>
-
-                            <small class="text-gray-500!" x-text="getSample">example</small>
 
                         </div>
 
+                    </div>
+                    <div x-cloak x-show="active == 'setup'">
+                        <h3>Setup</h3>
+
+                        <div class="grid-2 w-full">
 
 
-                        <div x-data="{
-                            format: '{{ $comp->team_format }}',
-                        
-                        
-                            sample: {
-                                club: 'Club',
-                                league: 'Youth',
-                                name: 'Noah',
-                                team: 'Team'
-                            },
-                        
-                            getSample() {
-                                return this.format
-                                    .replace(/:C/g, this.sample.club)
-                                    .replace(/:L/g, this.sample.league)
-                                    .replace(/:N/g, this.sample.name)
-                                    .replace(/:T/g, this.sample.team);
-                        
-                        
-                            },
-                        
-                            init() {
-                                $watch('form.data.competitor_foramt', (v) => {
-                                    this.format = v.data
-                                })
-                            }
-                        }">
+                            @csrf
 
-                            <x-se-input label="Competitor Name Format" name="competitor_format" :default="$comp->competitor_format" required
-                                section="names">
-                                <x-slot name="description">
-                                    <p><strong>:C</strong> - Club, <strong>:L</strong> - League, <strong>:N</strong> - Name,
-                                        <strong>:T</strong> - Team,
-                                    </p>
-                                </x-slot>
-                            </x-se-input>
+                            <x-se-input label="Lanes" name="max_lanes" type="number" min="1" :default="$comp->max_lanes"
+                                required section="setup" />
 
-                            <small class="text-gray-500!" x-text="getSample">example</small>
+
+                            @php
+                                $sercStart = $comp->serc_start_time;
+
+                                $sercStart?->setSeconds(0);
+                            @endphp
+
+
+                            <x-se-input label="SERC Start Time" name="serc_start_time" type="datetime-local"
+                                :default="$sercStart" required section="setup" />
+
+                            <x-se-input name="timezone" type="hidden" x-init="self.data = Intl.DateTimeFormat().resolvedOptions().timeZone;" section="setup" />
+
+
+                            <x-se-input label="Viewable Live" name="can_be_live" type="checkbox" :default="$comp->can_be_live"
+                                section="setup" />
+
 
                         </div>
+
+                    </div>
+
+                    <div x-cloak x-show="active == 'hd'">
+                        <h3>Heats & Draws</h3>
+
+                        <div class="grid-2 w-full">
+
+
+                            @csrf
+
+                            <x-se-input label="Tanks" name="ss:use_tanks" type="select" section="hd" :default="$comp->getScoringSettings->use_tanks">
+                                <option value="1" @if ($comp->getScoringSettings->use_tanks) selected @endif>Yes</option>
+                                <option value="0" @if (!$comp->getScoringSettings->use_tanks) selected @endif>No</option>
+                            </x-se-input>
+
+                            <x-se-input label="Use Seed Times" name="use_seeds" type="select" section="hd"
+                                :default="$comp->use_seeds">
+                                <option value="1" @if ($comp->use_seeds) selected @endif>Yes</option>
+                                <option value="0" @if (!$comp->use_seeds) selected @endif>No</option>
+                            </x-se-input>
+
+                            <x-se-input label="Heats Per Event" name="heats_per_event" type="select" section="hd"
+                                :default="$comp->heats_per_event">
+                                <option value="1" @if ($comp->heats_per_event) selected @endif>Yes</option>
+                                <option value="0" @if (!$comp->heats_per_event) selected @endif>No</option>
+                            </x-se-input>
+
+                            <x-se-input label="Seed Per Event" name="seed_per_event" type="select" section="hd"
+                                :default="$comp->seed_per_event">
+                                <option value="1" @if ($comp->seed_per_event) selected @endif>Yes</option>
+                                <option value="0" @if (!$comp->seed_per_event) selected @endif>No</option>
+                            </x-se-input>
+
+
+                        </div>
+
+                    </div>
+
+
+                    <div x-cloak x-show="active == 'names'">
+                        <h3>Name Formatting</h3>
+
+                        <p>Name formatting allows you to customise how Team and Competitor names are displayed. The identifiers
+                            lsited in <strong>BOLD</strong> can be included and will be replaced with the associated
+                            name/identifier. An formatted example is displayed below each input
+                        </p>
+                        <br>
+
+                        <div class="grid-2 w-full">
+
+
+                            @csrf
+
+                            <div x-data="{
+                                format: '{{ $comp->team_format }}',
+                            
+                            
+                                sample: {
+                                    club: 'Club',
+                                    league: 'Youth',
+                                    name: 'Team',
+                                    competitors: 'Noah, Kirsty'
+                                },
+                            
+                                getSample() {
+                                    return this.format
+                                        .replace(/:C/g, this.sample.club)
+                                        .replace(/:L/g, this.sample.league)
+                                        .replace(/:N/g, this.sample.name)
+                                        .replace(/:S/g, this.sample.competitors);
+                                },
+                            
+                                init() {
+                                    $watch('form.data.team_foramt', (v) => {
+                                        this.format = v.data
+                                    })
+                                }
+                            }">
+
+                                <x-se-input label="Team Name Format" name="team_format" :default="$comp->team_format" required
+                                    section="names">
+                                    <x-slot name="description">
+                                        <p><strong>:C</strong> - Club, <strong>:L</strong> - League, <strong>:N</strong> - Name,
+                                            <strong>:S</strong> - Competitor Names,
+                                        </p>
+                                    </x-slot>
+                                </x-se-input>
+
+                                <small class="text-gray-500!" x-text="getSample">example</small>
+
+                            </div>
+
+
+
+                            <div x-data="{
+                                format: '{{ $comp->team_format }}',
+                            
+                            
+                                sample: {
+                                    club: 'Club',
+                                    league: 'Youth',
+                                    name: 'Noah',
+                                    team: 'Team'
+                                },
+                            
+                                getSample() {
+                                    return this.format
+                                        .replace(/:C/g, this.sample.club)
+                                        .replace(/:L/g, this.sample.league)
+                                        .replace(/:N/g, this.sample.name)
+                                        .replace(/:T/g, this.sample.team);
+                            
+                            
+                                },
+                            
+                                init() {
+                                    $watch('form.data.competitor_foramt', (v) => {
+                                        this.format = v.data
+                                    })
+                                }
+                            }">
+
+                                <x-se-input label="Competitor Name Format" name="competitor_format" :default="$comp->competitor_format"
+                                    required section="names">
+                                    <x-slot name="description">
+                                        <p><strong>:C</strong> - Club, <strong>:L</strong> - League, <strong>:N</strong> - Name,
+                                            <strong>:T</strong> - Team,
+                                        </p>
+                                    </x-slot>
+                                </x-se-input>
+
+                                <small class="text-gray-500!" x-text="getSample">example</small>
+
+                            </div>
+
+
+
+
+                        </div>
+
+                    </div>
+
+                    <div x-cloak x-show="active == 'status'" x-data="{
+                        init() {
+                            let editor = new Quill(this.$refs.editor, {
+                                theme: 'snow',
+                                placeholder: 'Enter status message here...',
+                                modules: {
+                                    toolbar: [
+                                        ['bold', 'italic', 'underline', 'link'],
+                    
+                                    ],
+                                },
+                            });
+                    
+                            editor.on('text-change', () => {
+                                const html = editor.root.innerHTML;
+                                const textOnly = html.replace(/<[^>]+>/g, '').trim();
+                    
+                                if (textOnly.length === 0) {
+                                    editor.root.innerHTML = '';
+                                }
+                    
+                                this.form.data.status_message.data = editor.root.innerHTML;
+                            })
+                    
+                    
+                        }
+                    }">
+                        <h3>Status Message</h3>
+
+                        <div id="editor" x-ref="editor">{!! $comp->status_message ?? '' !!}</div>
+
+                        <x-se-input type="hidden" name="status_message" :default="$comp->status_message" section="status" />
+
+
+
+
 
 
 
 
                     </div>
 
+                    <x-slot name="left_footer">
+                        <small class="  text-red-500   mr-auto! animate-pulse" x-show="shared.changes">You have unsaved
+                            changes!</small>
+                    </x-slot>
+
+
                 </div>
-
-                <x-slot name="left_footer">
-                    <small class="  text-red-500   mr-auto! animate-pulse" x-show="shared.changes">You have unsaved
-                        changes!</small>
-                </x-slot>
-
-
             </div>
 
 

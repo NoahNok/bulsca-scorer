@@ -11,8 +11,8 @@
 
         <div class="se-table se-table-thin">
             <table x-data="{
-                cancelInvite(id) {
-                    if (!confirm('Are you sure you want to cancel this invite?')) { return }
+                async cancelInvite(id) {
+                    if (!await askConfirm('Are you sure you want to cancel this invite?')) { return }
                     window.location.href = '{{ route('orgs.invite.cancel', [$org, '__id']) }}'.replace('__id', id)
                 }
             
@@ -325,8 +325,8 @@
         <br>
         <form x-on:submit.prevent="removeAccount()" method="POST" action="{{ route('orgs.account.remove', $org) }}"
             x-data="{
-                removeAccount() {
-                    if (!confirm('Are you sure you want to remvoe this account?')) { return false }
+                async removeAccount() {
+                    if (!await askConfirm('Are you sure you want to remove this account?')) { return false }
             
                     $refs.rmid.value = modals.data.orgEditAccount?.id
             

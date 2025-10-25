@@ -245,7 +245,7 @@
 
             <div class="sticky top-4">
                 <form action="{{ route('comps.view.events.sercs.delete', [$comp, $serc]) }}"
-                    onsubmit="return confirm('Are you sure you want to delete this SERC!')" method="post">
+                    @submit="doConfirm($event, 'Are you sure you want to delete this SERC!')" method="post">
                     <input type="hidden" name="sid" value="{{ $serc->id }}">
                     {{ method_field('DELETE') }}
                     @csrf

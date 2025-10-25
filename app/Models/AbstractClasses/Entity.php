@@ -9,17 +9,34 @@ use App\Models\Competition;
 use App\Models\CompetitionTeam;
 use App\Models\DigitalJudge\BetterJudgeLog;
 use App\Models\EntityData;
+use App\Models\Event\Disqualification;
+use App\Models\Event\Penalty;
 use App\Models\League;
+use App\Models\Orders\Draw;
 use App\Models\Orders\EntityEventSeed;
+use App\Models\Orders\Heat;
 use App\Models\SERCResult;
 use App\Models\SpeedResult;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Nette\NotImplementedException;
+use ShiftOneLabs\LaravelCascadeDeletes\CascadesDeletes;
 
 abstract class Entity extends Model
 {
+    use CascadesDeletes;
+
+    protected $cascadeDeletes = [
+        'speedResults',
+        'sercResults',
+        'getSeeds',
+        'data',
+        'disqualifications',
+        'penalties',
+        'heats',
+        'draws'
+    ];
 
     protected static function booted()
     {
@@ -48,6 +65,27 @@ abstract class Entity extends Model
     {
         return $this->morphMany(EntityEventSeed::class, 'entity');
     }
+
+    public function disqualifications()
+    {
+        return $this->morphMany(Disqualification::class, 'entity');
+    }
+
+    public function penalties()
+    {
+        return $this->morphMany(Penalty::class, 'entity');
+    }
+
+    public function heats()
+    {
+        return $this->morphMany(Heat::class, 'entity');
+    }
+
+    public function draws()
+    {
+        return $this->morphMany(Draw::class, 'entity');
+    }
+
 
     public function getSeedTimes()
     {

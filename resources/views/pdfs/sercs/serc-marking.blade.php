@@ -40,9 +40,14 @@
         <br>
         <br>
         <ol class="list ">
-            @foreach ($events as $event)
-                <li>{{ count($tanks) }}x {{ $event->getName() }} Marking Sheets (Over
-                    {{ count($tanks->groupBy('serc_tank')) }} tanks)</li>
+            @foreach ($tanks as $drawevent)
+                <li>{{ 
+                    $drawevent['draws']->reduce(function ($carry, $item) {
+                        return $carry + count($item);
+                    }, 0),
+             }}x
+                    {{ $drawevent['serc']->getName() }} Marking Sheets (Over
+                    {{ count($drawevent['draws']) }} tanks)</li>
             @endforeach
         </ol>
         <br>
@@ -52,41 +57,38 @@
     </div>
 
 
-    @foreach ($events as $event)
-        @forelse ($tanks->groupBy('serc_tank') as $key => $tank)
-            @foreach ($tank as $draw => $competitior)
+    @foreach ($tanks as $drawevent)
+        @forelse ($drawevent['draws'] as $key => $tank)
+            @foreach ($tank as $draw_no => $draw)
                 <div class="min-h-[297mm] min-w-[210mm] max-w-[210mm] bg-white p-5 flex flex-col grow-0 relative">
                     @if ($loop->index == 0)
                         <div class="absolute top-0 left-0 w-full h-2 bg-black">&nbsp;</div>
                     @endif
 
                     <div class="flex w-full justify-between items-center">
-                        <h2 class="hmb-0">{{ $event->getName() }}</h2>
+                        <h2 class="hmb-0">{{ $drawevent['serc']->getName() }}</h2>
                         <p class=" font-semibold text-right">{{ $comp->name }} -
                             {{ $comp->when->format('jS F') }}<br><small>{{ $location }}</small></p>
                     </div>
 
                     <div class="flex w-full justify-between items-center">
-                        <p>Tank {{ $key }} | Draw {{ $draw + 1 }}</p>
+                        <p>Tank {{ $key + 1 }} | Draw {{ $draw_no + 1 }}</p>
                         <p class=" font-semibold text-right">Initiative Judge</p>
                     </div>
 
 
                     <br>
                     <div class="flex justify-between items-center">
-                        @php
-                            $team = App\Models\Competitor::find($competitior->tid);
-                            $name = $team->getFUllname();
-                            $name = Str::substr($name, 0, strpos($name, '-'));
-                        @endphp
-                        <h4>{{ $name }}</h4>
-                        <p class="text-small text-gray-500">{{ $competitior->region }} | {{ $competitior->league }}
+
+                        <h4>{{ $draw?->entity?->getName($comp) ?? '-' }}</h4>
+                        <p class="text-small text-gray-500">{{ $draw?->entity?->getLeague?->name ?? 'No League' }}
                         </p>
                     </div>
 
-                    @if ($event->image)
+                    @if ($drawevent['serc']->image)
                         <div class="flex items-center justify-center">
-                            <img src="{{ asset('storage/' . $event->image) }}" alt="SERC Image" class=" w-[70%] ">
+                            <img src="{{ asset('storage/' . $drawevent['serc']->image) }}" alt="SERC Image"
+                                class=" w-[70%] ">
 
                         </div>
                     @endif
@@ -104,7 +106,7 @@
                         </thead>
                         <tbody class="">
 
-                            @foreach ($event->getJudges as $judge)
+                            @foreach ($drawevent['serc']->getJudges as $judge)
                                 <tr class="border-b border-black">
                                     <td class="py-1 bg-gray-200 " colspan="2">{{ $judge->name }}
                                         <br>
@@ -149,15 +151,15 @@
 
                     <div class="mt-auto">
                         @php
-                            preg_match_all('/\b\w/', $event->getName(), $matches);
+                            preg_match_all('/\b\w/', $drawevent['serc']->getName(), $matches);
                             $firstLetters = implode('', $matches[0]);
 
                         @endphp
                         <p class="text-sm text-right">IJ -
                             {{ $firstLetters }}
                             -
-                            T{{ $key }} -
-                            D{{ $draw + 1 }}</p>
+                            T{{ $key + 1 }} -
+                            D{{ $draw_no + 1 }}</p>
                         {{-- ROLE - EVENT - TANK - DRAW --}}
                     </div>
 

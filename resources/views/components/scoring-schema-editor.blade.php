@@ -105,7 +105,7 @@
      },
  
      async delete_schema() {
-         if (!confirm('Are you sure you want to delete this scoring schema? It cannot be undone!')) {
+         if (!await askConfirm('Are you sure you want to delete this scoring schema? It cannot be undone!')) {
              return
          }
  

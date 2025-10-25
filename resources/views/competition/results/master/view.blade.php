@@ -70,7 +70,7 @@
 
             <div>
                 <form action="{{ route('comps.results.master.delete', [$comp, $schema->id]) }}}"
-                    onsubmit="return confirm('Are you sure you want to delete this result sheet?')" method="post">
+                    @submit="doConfirm($event, 'Are you sure you want to delete this result sheet?')" method="post">
                     <input type="hidden" name="sid" value="{{ $schema->id }}">
                     {{ method_field('DELETE') }}
                     @csrf

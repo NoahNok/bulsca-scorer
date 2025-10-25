@@ -31,9 +31,10 @@ class EntityController extends Controller
         $removed = $request_data['removed'];
 
         // Handle removals
-        Club::whereIn('id', $removed['clubs'])->delete();
-        CompetitionTeam::whereIn('id', $removed['teams'])->delete();
-        Competitor::whereIn('id', $removed['competitors'])->delete();
+        Club::whereIn('id', $removed['clubs'])->get()->each->delete();
+        CompetitionTeam::whereIn('id', $removed['teams'])->get()->each->delete();
+        Competitor::whereIn('id', $removed['competitors'])->get()->each->delete();
+
 
         // Add/update items
         $clubs = $data['clubs'];
@@ -51,6 +52,8 @@ class EntityController extends Controller
         foreach ($competitors as $competitor) {
             $this->saveCompetitor($comp, $competitor);
         }
+
+        // need to add new items to speed events
 
         session()->flash('success', 'Saved entries');
 

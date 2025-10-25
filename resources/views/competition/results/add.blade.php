@@ -30,7 +30,7 @@
                     ];
                 }),
             ) }},
-        schema_templates: {{ $comp->getOrganisation?->resultSchemas->map(fn($i) => ['id' => $i->id, 'name' => $i->name, 'schema' => $i->schema]) }},
+        schema_templates: {{ $comp->getOrganisation?->resultSchemas->map(fn($i) => ['id' => $i->id, 'name' => $i->name, 'schema' => $i->schema]) ?? '[]' }},
         league: null,
         rank_higher: true,
         ignore_disqualified: false,

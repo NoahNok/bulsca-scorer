@@ -218,7 +218,7 @@ class SERC extends Event
                 'id' => $draw->id,
                 'tank' => $draw->tank,
                 'draw' => $draw->draw,
-                'entity_name' => $draw->entity->getName($comp),
+                'entity_name' => $draw?->entity?->getName($comp) ?? 'No Entity',
             ];
         })->groupBy('tank');
     }

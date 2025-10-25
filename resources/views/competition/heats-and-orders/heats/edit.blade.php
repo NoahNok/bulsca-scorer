@@ -110,7 +110,7 @@
             have made!</p>
         <br>
         <form action="{{ route('comps.heats_and_draws.heats.reset', [$comp, $event]) }}" method="get"
-            onsubmit="return confirm('Are you sure you want to reset the heats?')">
+            @submit="doConfirm($event, 'Are you sure you want to reset the heats?')">
             <button class="se-btn se-btn-danger">Reset</button>
         </form>
     </div>
@@ -171,7 +171,7 @@
 
             document.getElementById('all-teams').querySelectorAll('[data-delete-heat]').forEach(element => {
 
-                element.onclick = (event) => {
+                element.onclick = async (event) => {
                     event.stopPropagation()
                     if (!confirm('Are you sure you want to delete this heat?')) return
 

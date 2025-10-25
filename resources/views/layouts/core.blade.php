@@ -88,6 +88,10 @@
 
 
             });
+
+
+
+
         });
     </script>
 
@@ -99,6 +103,40 @@
     asideCollapsed: false,
     modals: {
         data: {}
+    },
+
+    customConfirm(message) {
+        return new Promise((resolve) => {
+            this.modals.confirmDialog = true;
+            this.modals.data.confirmDialog.message = message;
+
+
+            $watch('modals.data.confirmDialog.action', (newVal) => {
+                console.log('watched', newVal);
+                if (!newVal) {
+                    resolve(false);
+                }
+                this.modals.confirmDialog = false;
+
+                resolve(true)
+            });
+        });
+    },
+
+    async doConfirm(e, message) {
+
+        e.preventDefault();
+        const confirmed = await this.customConfirm(message);
+        if (confirmed) {
+            // Now you can manually submit the form or proceed with your logic
+
+            e.target.submit(); // Optional: manually submit the form
+        }
+    },
+
+    async askConfirm(message) {
+        const confirmed = await this.customConfirm(message);
+        return confirmed;
     }
 }">
 
@@ -120,7 +158,7 @@
                 <div class="hidden lg:flex space-x-10 items-center">
                     <a href="{{ route('explore') }}"
                         class="text-sm/6 font-semibold text-gray-900 hover:text-se transition-colors">Explore</a>
-                        <a href="{{ route('dj.home') }}"
+                    <a href="{{ route('dj.home') }}"
                         class="text-sm/6 font-semibold text-se hover:text-se-accent transition-colors">Officials</a>
                 </div>
 
@@ -291,7 +329,8 @@
                         class="-mx-3 block rounded-lg px-3 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Explore</a>
 
                     <a href="{{ route('dj.home') }}"
-                        class="-mx-3 block rounded-lg px-3 text-se font-semibold text-gray-900 hover:bg-gray-50">Officials Login</a>
+                        class="-mx-3 block rounded-lg px-3 text-se font-semibold text-gray-900 hover:bg-gray-50">Officials
+                        Login</a>
 
 
 
@@ -335,7 +374,23 @@
 <div class=" w-[90%] lg:w-[85%] 3xl:w-[65%] sm:px-6 md:px-8 flex flex-col " x-data="{
     global_state: {}
 }">
+
     @yield('core-content')
+
+
+
+
+    <x-s-e-modal id="confirmDialog" title="Confirm" x-init="() => {
+        onClose = () => {
+            modals.data.confirmDialog.action = false;
+        }
+    }">
+        <p x-text="modals.data.confirmDialog.message ?? ''">Are you sure?</p>
+        <x-slot name="footer">
+            <button class="se-btn se-btn-success"
+                @click="modals.data.confirmDialog.action = true">Yes</button>
+        </x-slot>
+    </x-s-e-modal>
 </div>
 </main>
 

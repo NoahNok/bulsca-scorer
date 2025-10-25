@@ -93,7 +93,7 @@
     <h3 class="mb-0">Delete Competition</h3>
     <br>
     <form action="{{ route('admin.comp.delete', $comp) }}"
-        onsubmit="return confirm('This action cannot be undone! Are you sure?')" method="post">
+        @submit="doConfirm($event, 'Are you sure you want to delete this Competition!')" method="post">
         @csrf
         @method('DELETE')
         <div class="grid-4">

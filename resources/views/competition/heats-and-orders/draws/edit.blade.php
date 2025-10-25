@@ -107,7 +107,7 @@
                 made!</p>
             <br>
             <form action="{{ route('comps.heats_and_draws.draws.reset', [$comp, $serc]) }}" method="get"
-                onsubmit="return confirm('Are you sure you want to reset the heats?')">
+                @submit="doConfirm($event, 'Are you sure you want to reset the draw?')">
                 <button class="se-btn se-btn-danger">Regen</button>
             </form>
         @endif

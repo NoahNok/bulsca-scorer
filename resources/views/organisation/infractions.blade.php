@@ -139,7 +139,7 @@
         },
     
         async deleteCode() {
-            if (!confirm('Are you sure you want to delete this code? This action cannot be undone.')) {
+            if (!await askConfirm('Are you sure you want to delete this code? This action cannot be undone.')) {
                 return;
             }
     

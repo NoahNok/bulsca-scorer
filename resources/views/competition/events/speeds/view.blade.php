@@ -248,7 +248,8 @@
 
 
                 <form action="{{ route('comps.view.events.speeds.delete', [$comp, $event]) }}"
-                    onsubmit="return confirm('Are you sure you want to delete this event!')" method="post">
+                    @submit="doConfirm($event, '{{ $event->heats->count() > 0 ? 'Deleting this event will also remove its attached heats!' : 'Are you sure you want to delete this event!' }}')"
+                    method="post">
                     <input type="hidden" name="eid" value="{{ $event->id }}">
                     {{ method_field('DELETE') }}
                     @csrf

@@ -20,7 +20,7 @@
                         $draw = $serc->getDraw()->whereMorphedTo('entity', $team)->first();
                         $use_tanks = $serc->getCompetition->getScoringSettings->use_tanks;
                     @endphp
-                    <small>, {{ ($use_tanks ? "Tank $draw->tank-" : '') . $draw->draw }}</small>
+                    <small>, {{ ($use_tanks ? "Tank $draw->tank-" : '') . ($draw?->draw ?? 'No Draw') }}</small>
                 </div>
 
 

@@ -35,6 +35,7 @@ class UpdateCompetitionRequest extends FormRequest
             'heats_per_event' => 'sometimes|boolean',
             'seed_per_event' => 'sometimes|boolean',
             'use_seeds' => 'sometimes|boolean',
+            'status_message' => 'sometimes|nullable|string',
 
         ];
     }

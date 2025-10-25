@@ -39,18 +39,18 @@
         <br>
         <br>
         <ol class="lis list-disc">
-            @foreach ($eventNames as $eventName)
-                <li>{{ count($heats[$eventName]->groupBy('heat')) }}x {{ $eventName }} Heats</li>
+            @foreach ($heats as $heatevent)
+                <li>{{ count($heatevent['heats']) }}x {{ $heatevent['event']->getName() }} Heats</li>
             @endforeach
         </ol>
     </div>
 
 
-    @foreach ($eventNames as $eventName)
-        @forelse ($heats[$eventName]->sortBy(['heat','lane'])->groupBy('heat') as $key => $heat)
+    @foreach ($heats as $heatevent)
+        @forelse ($heatevent['heats'] as $key => $heat)
             <div class="min-h-[297mm] min-w-[210mm] bg-white p-5 flex flex-col grow-0 ">
                 <div class="flex w-full justify-between items-center">
-                    <h2 class="hmb-0">{{ $eventName }}</h2>
+                    <h2 class="hmb-0">{{ $heatevent['event']->getName() }}</h2>
                     <p class=" font-semibold text-right">{{ $comp->name }} -
                         {{ $comp->when->format('jS F') }}<br><small>{{ $location }}</small></p>
                 </div>
@@ -79,8 +79,8 @@
                         <tr>
                             <th class="text-center">Lane</th>
                             <th>Bracket</th>
-                            <th>Region</th>
-                            <th>Competitor</th>
+
+                            <th>Name</th>
                             <th class="w-14 text-center">DQ</th>
                             <th class="w-14 text-center">Mins</th>
                             <th class="w-14 text-center">Secs</th>
@@ -99,9 +99,9 @@
                             @if ($lane)
                                 <tr class="border-b border-black">
                                     <td class="py-2 text-center">{{ $l }}</td>
-                                    <td>{{ $lane->league }}</td>
-                                    <td>{{ $lane->region }}</td>
-                                    <td>{{ $lane->team }}</td>
+                                    <td>{{ $lane?->entity?->getLeague?->name ?? '-' }}</td>
+
+                                    <td>{{ $lane?->entity?->getName($comp) }}</td>
                                     <td></td>
                                     <td class="border-x border-black"></td>
                                     <td class="border-x border-black"></td>
@@ -143,7 +143,7 @@
 
                 <div class="mt-auto">
                     @php
-                        preg_match_all('/\b\w/', $eventName, $matches);
+                        preg_match_all('/\b\w/', $heatevent['event']->getName(), $matches);
                         $firstLetters = implode('', $matches[0]);
 
                         preg_match_all('/\b\w/', $poolNames[($key - 1) % count($poolNames)], $matches);
