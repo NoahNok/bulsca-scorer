@@ -183,17 +183,23 @@
                     @php
                         $names = $draw->map(fn($lane) => $lane->entity?->getName($comp))->filter()->implode(' ');
                     @endphp
-                    @if ($use_tanks)
-                        <div x-data="{
-                        
-                            children: [],
-                        
-                            shouldShow() {
-                                return open == 'se:{{ $heatevent['serc']->id }}' || (search.trim() != '' && this.children.some(Boolean))
-                        
-                        
+
+                    <div x-data="{
+                    
+                        children: [],
+                    
+                        shouldShow() {
+                    
+                            if (search.trim() != '') {
+                                return this.children.some(Boolean)
                             }
-                        }" x-show="shouldShow" x-transition>
+                    
+                            return open == 'se:{{ $heatevent['serc']->id }}'
+                    
+                    
+                        }
+                    }" x-show="shouldShow" x-transition>
+                        @if ($use_tanks)
                             <h2 class="-mb-1!">Tank {{ $tank_no + 1 }}</h2>
 
                             @php
@@ -209,36 +215,34 @@
                             @endphp
 
                             <small class="text-gray-600 font-semibold">{{ $uniqueLeagues }}</small>
+                        @else
+                            <h2 class="-mb-1!">
+                                Draw
+                            </h2>
+                        @endif
 
 
 
-                            <div class="flex flex-col space-y-2 mt-2">
-                                @foreach ($draw as $drawEntry)
-                                    <div class="se-card  se-card-body min-w-56 p-2! px-4! rounded " x-data="{
-                                        shouldShow() {
-                                            let show = search.trim() === '' || `{{ strtolower($drawEntry->entity?->getName($comp) ?? '-') }}`.includes(search.trim().toLowerCase())
-                                            children['{{ $drawEntry->draw }}'] = show
-                                            return show;
-                                        }
-                                    }"
-                                        x-show="shouldShow"
-                                        :class="(shouldShow && search.trim()) != '' ? 'se-card-success' : ''">
-                                        {{ $drawEntry->draw }}.
-                                        {{ $drawEntry->entity?->getName($comp) ?? '-' }}</div>
-                                @endforeach
-                            </div>
-
-
-
-
+                        <div class="flex flex-col space-y-2 mt-2">
+                            @foreach ($draw as $drawEntry)
+                                <div class="se-card  se-card-body min-w-56 p-2! px-4! rounded " x-data="{
+                                    shouldShow() {
+                                        let show = search.trim() === '' || `{{ strtolower($drawEntry->entity?->getName($comp) ?? '-') }}`.includes(search.trim().toLowerCase())
+                                        children['{{ $drawEntry->draw }}'] = show
+                                        return show;
+                                    }
+                                }"
+                                    x-show="shouldShow"
+                                    :class="(shouldShow && search.trim()) != '' ? 'se-card-success' : ''">
+                                    {{ $drawEntry->draw }}.
+                                    {{ $drawEntry->entity?->getName($comp) ?? '-' }}</div>
+                            @endforeach
                         </div>
-                    @else
-                        @foreach ($draw as $drawEntry)
-                            <div class="se-card  se-card-body min-w-56 p-2! px-4! rounded">
-                                {{ $drawEntry->draw }}. {{ $drawEntry->entity?->getName($comp) ?? '-' }}
-                            </div>
-                        @endforeach
-                    @endif
+
+
+
+
+                    </div>
                 @endforeach
 
 
