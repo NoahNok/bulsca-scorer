@@ -89,7 +89,7 @@
 
 
 
-            <div class=" hidden" :class="displayMode == 'grid' ? 'grid-4' : 'flex! flex-col space-y-'"
+            <div class=" hidden" :class="displayMode == 'grid' ? 'grid-4' : 'flex! flex-col space-y-5'"
                 x-data="{
                 
                     children: [],
@@ -175,7 +175,7 @@
 
 
 
-            <div class="hidden" :class="displayMode == 'grid' ? 'grid-4' : 'flex! flex-col space-y-1'">
+            <div class="hidden" :class="displayMode == 'grid' ? 'grid-4' : 'flex! flex-col space-y-5'">
 
 
 
