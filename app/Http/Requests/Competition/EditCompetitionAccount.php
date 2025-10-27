@@ -13,19 +13,7 @@ class EditCompetitionAccount extends FormRequest
      */
     public function authorize(): bool
     {
-        /** @var User $user */
-        $user = Auth::user();
-
-        if ($user->isAdmin()) {
-            // admins can create accounts for any competition
-            return true;
-        }
-
-        // get the current compeition
-        /** @var Competition $competition */
-        $competition = $this->route('comp');
-
-        return $user->competition == $competition->id;
+        return true; // handled by route middleware
     }
 
     /**
