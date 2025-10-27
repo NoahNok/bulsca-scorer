@@ -99,7 +99,7 @@
                             @if ($lane)
                                 <tr class="border-b border-black">
                                     <td class="py-2 text-center">{{ $l }}</td>
-                                    <td>{{ $lane?->entity?->getLeague?->name ?? '-' }}</td>
+                                    <td class="pr-4">{{ $lane?->entity?->getLeague?->name ?? '-' }}</td>
 
                                     <td>{{ $lane?->entity?->getName($comp) }}</td>
                                     <td></td>
