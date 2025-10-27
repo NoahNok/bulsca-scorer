@@ -55,25 +55,50 @@ class CompetitionPdfCreator
         switch ($type) {
             case 'serc':
 
+                $use_tanks = $this->comp->getScoringSettings->use_tanks;
+
                 foreach ($this->comp->getDraws() as $heatevent) {
 
                     $hd = [];
 
-                    foreach ($heatevent['draws'] as $tank_no => $draw) {
-                        $draw_data = $draw->map(function ($lane) use ($heatevent) {
-                            $comp = $this->comp;
-                            return "{$lane->draw}: {$lane->entity?->getName($comp)}";
-                        });
+                    if ($use_tanks) {
+                        $draws = $heatevent['draws'];
+                        $maxDraws = $draws->map->count()->max();
 
-                        $uniqueLeagues = $draw->map(function ($lane) use ($heatevent) {
-                            return $lane->entity?->getLeague->name;
-                        })->unique()->values()->implode(', ');
+                        for ($i = 0; $i < $maxDraws; $i++) {
+                            $names = [];
+                            foreach ($draws as $tank_no => $tank_draws) {
+                                if ($tank_draws->has($i)) {
+                                    $tank_no += 1;
+                                    $names[] = "Tank {$tank_no}: {$tank_draws[$i]->entity?->getName($this->comp)}\n";
+                                } else {
+                                    $names[] = "Tank " . ($tank_no + 1) . ": -\n";
+                                }
+                            }
+                            $names[] = "--------------------------";
+
+                            $draw_no = $i + 1;
+                            $hd[] = ['name' => "Draw {$draw_no}", 'data' => $names, 'number' => $i];
+                        }
+                    } else {
+                        foreach ($heatevent['draws'] as $tank_no => $draw) {
+                            $draw_data = $draw->map(function ($lane) use ($heatevent) {
+                                $comp = $this->comp;
+                                return "{$lane->draw}: {$lane->entity?->getName($comp)}";
+                            });
+
+                            $uniqueLeagues = $draw->map(function ($lane) use ($heatevent) {
+                                return $lane->entity?->getLeague->name;
+                            })->unique()->values()->implode(', ');
 
 
-                        $tank_no += 1;
+                            $tank_no += 1;
 
-                        $hd[] = ['name' => "Tank {$tank_no} ($uniqueLeagues)", 'data' => $draw_data, 'number' => $tank_no];
+                            $hd[] = ['name' => "Tank {$tank_no} ($uniqueLeagues)", 'data' => $draw_data, 'number' => $tank_no];
+                        }
                     }
+
+
 
 
                     $data[] = ['event' => $heatevent['serc']->getName(), 'heats' => $hd];

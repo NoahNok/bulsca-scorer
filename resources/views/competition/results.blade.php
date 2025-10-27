@@ -38,8 +38,7 @@
 
     <div class="flex items-center justify-between">
         <h2>Results</h2>
-        <a href="{{ route('comps.results.print-all', $comp) }}" target="_blank"
-            class="se-btn @if ($comp->scoring_type != 'rlss-nationals') se-btn-disabled @endif">Print All</a>
+        <a href="{{ route('comps.results.print-all', $comp) }}" target="_blank" class="se-btn ">Print All</a>
     </div>
 
     <p><strong>Do not</strong> make a results sheet until you have made all your events! (You cannot edit which events are

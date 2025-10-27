@@ -39,6 +39,7 @@ use App\Http\Controllers\SERCController;
 use App\Models\Competition;
 use App\Models\DQCode;
 use App\Models\Organisation\Organisation;
+use App\Models\SERC;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -172,6 +173,8 @@ Route::middleware('auth')->group(function () {
                 Route::post('/{event}/edit', [SpeedsEventController::class, 'editPost'])->name('comps.events.speeds.editPost');
                 Route::post('/{event}/edit-result', [SpeedsEventController::class, 'updateResults'])->name('comps.view.events.speeds.editResultPost');
 
+                Route::get('/{event}/print-results', [SpeedsEventController::class, 'printResults'])->name('comps.view.events.speeds.printResults');
+
 
                 Route::get('/{event}/digital-judge-toggle', [DigitalJudgeController::class, 'speedToggle'])->name('dj.speedToggle');
 
@@ -193,6 +196,7 @@ Route::middleware('auth')->group(function () {
                     Route::get('', [SERCController::class, 'view'])->name('comps.events.sercs.view');
                     Route::get('/edit', [SERCController::class, 'edit'])->name('comps.events.sercs.edit');
                     Route::post('/edit', [SERCController::class, 'editPost'])->name('comps.view.events.sercs.editPost');
+                    Route::get('/print-results', [SERCController::class, 'printResults'])->name('comps.view.events.sercs.printResults');
 
 
                     Route::middleware('can:access,comp,"serc"')->group(function () {

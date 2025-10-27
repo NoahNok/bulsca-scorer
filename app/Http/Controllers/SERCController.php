@@ -358,4 +358,23 @@ class SERCController extends Controller
 
         return response()->json([]);
     }
+
+    public function printResults(Competition $comp, SERC $serc)
+    {
+        $data = [[
+            'league' => 'Overall',
+            'results' => $serc->getRankedResults(),
+        ]];
+
+        foreach ($comp->getLeagues->sortBy('name') as $league) {
+            $results = $serc->getRankedResults($league);
+
+            $data[] = [
+                'league' => $league->name,
+                'results' => $results,
+            ];
+        }
+
+        return view('competition.events.sercs.print', ['comp' => $comp, 'serc' => $serc, 'data' => $data]);
+    }
 }

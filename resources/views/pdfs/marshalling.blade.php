@@ -48,8 +48,11 @@
         @php
 
             $data = collect($eventData['heats']);
+            $use_tanks = $comp->getScoringSettings->use_tanks;
 
-            $chunks = $type == 'SERC' ? $data->chunk(1) : $data->chunk(3);
+            $serc_chunks = $use_tanks ? 3 : 1;
+
+            $chunks = $type == 'SERC' ? $data->chunk($serc_chunks) : $data->chunk(3);
         @endphp
 
         @foreach ($chunks as $chunk)
