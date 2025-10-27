@@ -39,7 +39,7 @@
                                     {{ $result->entity->getName($comp) }}
                                 </th>
                                 <td>
-                                    {{ round($result->totalPoints) }}
+                                    {{ round($result->totalPoints, 1) }}
                                 </td>
 
                                 <td>

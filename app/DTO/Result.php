@@ -78,4 +78,9 @@ class Result
     {
         return $this->combined->count() > 0;
     }
+
+    public function isDNF(): bool
+    {
+        return $this->disqualifications->firstWhere('code', '99915') !== null && $this->disqualifications->count() == 1;
+    }
 }

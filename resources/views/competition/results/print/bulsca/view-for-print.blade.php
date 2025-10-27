@@ -46,7 +46,7 @@
                     <tr class=" border-b text-right ">
 
                         <td class="py-2 px-4 text-black text-sm whitespace-nowrap">
-                            {{ $result->entity->getName() }}
+                            {{ $result->entity->getName($comp) }}
 
                         </td>
 

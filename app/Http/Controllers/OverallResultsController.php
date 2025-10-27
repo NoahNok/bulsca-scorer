@@ -34,7 +34,7 @@ class OverallResultsController extends Controller
 
         $results = $schema->getResults() ?? [];
         $comp = $schema->getCompetition;
-        return view("competition.results.print.$comp->scoring_type.view-for-print-basic", ['results' => $results, 'schema' => $schema, 'comp' => $comp]);
+        return view("competition.results.print.bulsca.view-for-print-basic", ['results' => $results, 'schema' => $schema, 'comp' => $comp]);
     }
 
     public function viewForPrint(ResultSchema $schema)
@@ -42,7 +42,7 @@ class OverallResultsController extends Controller
 
         $results = $schema->getResults() ?? [];
         $comp = $schema->getCompetition;
-        return view("competition.results.print.$comp->scoring_type.view-for-print", ['results' => $results, 'schema' => $schema, 'comp' => $comp]);
+        return view("competition.results.print.bulsca.view-for-print", ['results' => $results, 'schema' => $schema, 'comp' => $comp]);
     }
 
     public function printAll(Competition $comp)

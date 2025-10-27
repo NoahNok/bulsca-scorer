@@ -33,7 +33,7 @@
             @forelse ($results as $result)
                 <tr class="bg-white border-b text-right ">
                     <th scope="row" class="py-2 text-left px-4 font-medium text-black whitespace-nowrap ">
-                        {{ $result->entity->getName() }}
+                        {{ $result->entity->getName($comp) }}
                     </th>
                     <td class="py-2 px-4 text-black">
                         {{ round($result->totalPoints) }}
