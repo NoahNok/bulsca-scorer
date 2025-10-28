@@ -20,7 +20,7 @@
 
 
             <div class="  relative  overflow-x-hidden max-w-full  ">
-                @if ($eventResults)
+                @if ($event->scoringSchema)
                     <div class="se-form-input imb-0 ">
                         <input type="text" table-search placeholder="Search teams" x-model="search">
                     </div>
