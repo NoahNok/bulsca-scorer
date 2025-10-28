@@ -84,7 +84,7 @@
         @php
             $allHeats = $comp->getHeats();
 
-            if (!$comp->heats_per_event) {
+            if (count($allHeats) > 0 && !$comp->heats_per_event) {
                 $allHeats = [$allHeats[0]];
             }
         @endphp
