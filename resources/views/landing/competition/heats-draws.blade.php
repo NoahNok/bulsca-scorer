@@ -32,7 +32,7 @@
 
         <div class="flex md:space-x-3 w-full items-center md:flex-row flex-col">
             <div class="se-form-input w-full imb-0! mb-0!">
-                <input type="text" x-model="search" placeholder="Search...">
+                <input type="text" x-model="search" placeholder="Search name, club, team...">
             </div>
 
             <div class="flex space-x-2 items-center  ">
@@ -68,19 +68,28 @@
                 <div @click="open = 'heats'" :class="open == 'heats' ? 'active' : ''">Heats</div>
             @endif
 
-            @foreach ($sercs as $heatevent)
+            <div @click="open = 'sercs'" :class="open == 'sercs' ? 'active' : ''">
+                Initiative</div>
+
+            {{-- @foreach ($sercs as $heatevent)
                 <div @click="open = 'se:{{ $heatevent['serc']->id }}'"
                     :class="open == 'se:{{ $heatevent['serc']->id }}' ? 'active' : ''">
                     {{ $heatevent['serc']->getName() }}</div>
-            @endforeach
+            @endforeach --}}
 
         </div>
 
 
 
+        @php
+            $allHeats = $comp->getHeats();
 
+            if (!$comp->heats_per_event) {
+                $allHeats = [$allHeats[0]];
+            }
+        @endphp
 
-        @forelse ($comp->getHeats() as $heatevent)
+        @forelse ($allHeats as $heatevent)
 
             @php
 
@@ -130,7 +139,14 @@
                                 @php
                                     $lane = $lanes->where('lane', $i + 1)->first();
                                 @endphp
-                                <div class="flex items-center w-full space-x-3">
+                                <div class="flex items-center w-full space-x-3" x-data="{
+                                    shouldShow() {
+                                        let show = search.trim() === '' || `{{ strtolower($lane?->entity?->getName($comp) ?? '-') }}`.includes(search.trim().toLowerCase())
+                                
+                                        return show;
+                                    }
+                                }"
+                                    x-show="shouldShow()">
                                     <h4 class="font-bold ">{{ $i + 1 }}</h4>
                                     <div class="se-card  se-card-body min-w-56 p-2! px-4! rounded w-full"
                                         :class="(search.trim() !== '' &&

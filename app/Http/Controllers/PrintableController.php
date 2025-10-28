@@ -38,6 +38,6 @@ class PrintableController extends Controller
     {
         $pdfCreator = new CompetitionPdfCreator($comp);
 
-        return $pdfCreator->marshalling($request->input('type', 'speed'));
+        return $pdfCreator->marshalling($request->input('type', 'speed'), $request->input('even_odd', false));
     }
 }

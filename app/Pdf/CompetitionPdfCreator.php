@@ -47,7 +47,7 @@ class CompetitionPdfCreator
         return view("pdfs.sercs.serc-marking", ['location' => $this->comp->where, 'events' => $events, 'tanks' => $tanks, 'comp' => $this->comp]);
     }
 
-    public function marshalling(string $type)
+    public function marshalling(string $type, bool $evenOdd = false)
     {
 
         $data = [];
@@ -106,6 +106,7 @@ class CompetitionPdfCreator
                 break;
             case 'speed':
 
+
                 foreach ($this->comp->getHeats() as $heatevent) {
 
                     $hd = [];
@@ -123,8 +124,37 @@ class CompetitionPdfCreator
                         $hd[] = ['name' => "Heat $heat_no ($uniqueLeagues)", 'data' => $lane_data, 'number' => $heat_no];
                     }
 
+                    if ($evenOdd) {
+                        $perPage = 3;
+                        $oddHeats = array_filter($hd, fn($h) => $h['number'] % 2 !== 0);
+                        $evenHeats = array_filter($hd, fn($h) => $h['number'] % 2 === 0);
 
-                    $data[] = ['event' => $heatevent['event']->getName(), 'heats' => $hd];
+                        // Step 2: Sort both groups by heat number
+                        usort($oddHeats, fn($a, $b) => $a['number'] <=> $b['number']);
+                        usort($evenHeats, fn($a, $b) => $a['number'] <=> $b['number']);
+
+                        // Step 3: Calculate buffer heats needed
+                        $remainder = count($oddHeats) % $perPage;
+                        $bufferCount = $remainder === 0 ? 0 : $perPage - $remainder;
+
+                        // Step 4: Create buffer heats
+                        $bufferHeats = array_fill(0, $bufferCount, [
+                            'name' => '',
+                            'data' => [],
+                            'number' => -1
+                        ]);
+
+                        // Step 5: Merge padded odd heats with even heats
+                        $hd = array_merge($oddHeats, $bufferHeats, $evenHeats);
+                    }
+
+                    $eventName = $this->comp->heats_per_event ? $heatevent['event']->getName() : 'Speeds';
+
+                    $data[] = ['event' => $eventName, 'heats' => $hd];
+
+                    if (!$this->comp->heats_per_event) {
+                        break;
+                    }
                 }
         }
 

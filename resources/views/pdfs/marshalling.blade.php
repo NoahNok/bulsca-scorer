@@ -40,7 +40,7 @@
         <br>
         <br>
         <ol class="list list-disc capitalize">
-            {{ $type }}s
+            {{ $type == 'SERC' ? 'Initiative' : $type }}s
         </ol>
     </div>
 
@@ -58,7 +58,7 @@
         @foreach ($chunks as $chunk)
             <div class="min-h-[297mm]   w-[210mm] bg-white p-5 flex flex-col grow ">
                 <div class="flex w-full justify-between items-center">
-                    <h2 class="hmb-0">Marshalling - {{ $eventData['event'] }}</h2>
+                    <h2 class="hmb-0">Marshalling - {{ $type == 'SERC' ? 'Initiatives' : $eventData['event'] }}</h2>
                     <p class=" font-semibold text-right break-words">{{ $comp->name }} -
                         {{ $comp->when->format('jS F') }}<br><small>{{ $location }}</small></p>
                 </div>
