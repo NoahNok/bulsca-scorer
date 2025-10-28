@@ -184,7 +184,7 @@
                 <div class="flex flex-col md:flex-row md:items-center  md:space-x-3">
                     <div class="flex items-center space-x-3 ">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="size-6 hover:text-se transition-color cursor-pointer"
+                            stroke="currentColor" class="size-6 min-w-6 hover:text-se transition-color cursor-pointer"
                             @click="selected.event = null; table = null;">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
                         </svg>
@@ -481,7 +481,7 @@
                 <div class="flex flex-col md:flex-row md:items-center  md:space-x-3">
                     <div class="flex items-center space-x-3 ">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="size-6 hover:text-se transition-color cursor-pointer"
+                            stroke="currentColor" class="size-6 min-w-6 hover:text-se transition-color cursor-pointer"
                             @click="selected.schema = null; table = null;">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
@@ -670,6 +670,7 @@
             // On load, check for schema query param
             const params = new URLSearchParams(window.location.search);
             const schemaParam = params.get('masterSchema');
+            const displayParam = params.get('display');
     
     
             if (schemaParam) {

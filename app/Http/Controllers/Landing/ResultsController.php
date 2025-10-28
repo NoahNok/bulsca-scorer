@@ -88,7 +88,7 @@ class ResultsController extends Controller
         });
 
         return response()->json([
-            'columns' => array_merge(['name' => 'Name'], $rawResults->first()->events->mapWithKeys(fn($e) => ["{$e->event->id}:{$e->event->getType()}" => $e->event->getName()])->toArray(), ['points' => 'Points', 'position' => 'Position']),
+            'columns' => array_merge(['name' => 'Name'], $rawResults->first()?->events->mapWithKeys(fn($e) => ["{$e->event->id}:{$e->event->getType()}" => $e->event->getName()])->toArray() ?? [], ['points' => 'Points', 'position' => 'Position']),
             'data' => $results,
         ]);
     }
