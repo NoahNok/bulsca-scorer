@@ -286,12 +286,12 @@ class Competition extends Model implements IInvitable
         $competitors = CompetitionTeam::where('competition', $this->id)->with('getLeague')->get();
 
         $grouped = $competitors->groupBy(function ($competitor) {
-            return $competitor->getLeague->id;
+            return $competitor->getLeague?->id ?? -1;
         });
 
         // Transform into desired array format
         $result = $grouped->map(function ($group, $leagueId) {
-            $leagueName = $group->first()->getLeague->name;
+            $leagueName = $group->first()->getLeague?->name ?? 'No League';
             return ['league' => $leagueId, 'name' => $leagueName, 'count' => $group->count()];
         })->values()->toArray();
 
@@ -312,7 +312,7 @@ class Competition extends Model implements IInvitable
 
                 return [
                     'league' => $leagueId,
-                    'name' => $competitors->first()->entity->getLeague->name,
+                    'name' => $competitors->first()->entity->getLeague?->name ?? 'No League',
                     'count' => $competitors->count()
                 ];
             })->values();

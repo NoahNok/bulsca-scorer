@@ -29,7 +29,7 @@ class CompetitionTeam extends Entity
 
     public function getClubName()
     {
-        return $this->hasOne(Club::class, 'id', 'club')->first()->name;
+        return $this->hasOne(Club::class, 'id', 'club')->first()?->name ?? '';
     }
 
     public function getClub()

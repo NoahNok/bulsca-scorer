@@ -85,6 +85,10 @@ class DrawController extends Controller
             foreach ($tank as $bracket) {
                 $leagueId = $bracket['league'];
 
+                if ($leagueId === -1) {
+                    $leagueId = null;
+                }
+
                 $competitors = $allCompetitorsPerLeague->get($leagueId);
 
                 $competitors = $competitors->shuffle();

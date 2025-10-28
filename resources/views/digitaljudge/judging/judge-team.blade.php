@@ -134,7 +134,10 @@
                                 $mpValue = $mp->getScoreForTeam($team) ?: -1;
                                 $mpIds[] = $mp->id;
                             @endphp
-                            <div class="flex flex-col space-y-2 border-b pb-4" id="mpcontainer-{{ $mp->id }}">
+                            <div class="flex flex-col space-y-2 border-b pb-4" id="mpcontainer-{{ $mp->id }}"
+                                x-data="{
+                                    half_open: {{ fmod($mpValue, 1) === 0.5 ? 'true' : 'false' }}
+                                }">
                                 <div class="flex justify-between items-center ">
                                     <p>{{ $mp->name }}</p>
                                     <div class="flex items-center justify-center">
@@ -148,7 +151,7 @@
                                     </div>
                                 </div>
 
-                                <div class="grid grid-cols-5 gap-2 gap-y-4">
+                                <div class="grid grid-cols-5 gap-2 gap-y-4" x-show="!half_open">
                                     @for ($i = 1; $i <= 10; $i++)
                                         <div class="flex items-center justify-center">
                                             <input type="radio" required class="w-0 h-0 peer" value="{{ $i }}"
@@ -162,6 +165,31 @@
                                         </div>
                                     @endfor
                                 </div>
+
+                                <div class="grid grid-cols-5 gap-2 gap-y-4" x-show="half_open">
+                                    @for ($i = 0.5; $i <= 10; $i++)
+                                        <div class="flex items-center justify-center">
+                                            <input type="radio" required class="w-0 h-0 peer" value="{{ $i }}"
+                                                name="mp-{{ $mp->id }}"
+                                                @if ($mpValue == $i) checked @endif
+                                                id="mp-{{ $mp->id }}-{{ $i }}">
+                                            <label for="mp-{{ $mp->id }}-{{ $i }}"
+                                                class="w-6 h-6 flex items-center justify-center p-4 font-semibold font-mono rounded-md bg-gray-200 text-sm peer-checked:bg-bulsca peer-checked:text-white ">
+                                                {{ $i }}
+                                            </label>
+                                        </div>
+                                    @endfor
+                                </div>
+
+
+                                <div class="flex items-center justify-center mt-2">
+                                    <button type="button" class="badge  font-mono! text-black!"
+                                        :class="half_open ? 'bg-bulsca! text-white!' : 'bg-gray-200!'"
+                                        @click="half_open = !half_open">Toggle Half Marks</button>
+                                </div>
+
+
+
                                 <div class="text-gray-500 pt-2 flex justify-between">
                                     <small>Min:
                                         {{ round(App\Models\SERCResult::where('marking_point', $mp->id)->min('result')) ?: '0' }}</small><small>Avg:
