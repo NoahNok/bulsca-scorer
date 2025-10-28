@@ -99,7 +99,7 @@ class CompetitionTeam extends Entity
 
     public function getGrouping(): EntityGrouping
     {
-        return new EntityGrouping($this->getClub->id, $this->id, null, $this->league);
+        return new EntityGrouping($this->getClub?->id ?? -1, $this->id, null, $this->league);
     }
 
     public function getCompetitors()

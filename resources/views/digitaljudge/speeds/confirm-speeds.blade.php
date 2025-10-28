@@ -58,6 +58,7 @@
 
                             @if ($lane)
                                 @php
+                                    $isRopeThrow = $speed->getName() == 'Rope Throw';
                                     $sr = \App\Models\SpeedResult::where('event', $speed->id)
                                         ->whereMorphedTo('entity', $lane->entity)
                                         ->first();
@@ -65,9 +66,18 @@
                                 @php
                                     $mins = floor($sr?->result / 60000);
                                     $secs = ($sr?->result - $mins * 60000) / 1000;
+
+                                    $print_result =
+                                        $sr != null
+                                            ? ($isRopeThrow
+                                                ? $sr?->result
+                                                : sprintf('%02d', $mins) .
+                                                    ':' .
+                                                    str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT))
+                                            : '-';
                                 @endphp
                                 <div class="card justify-center">
-                                    {{ $sr != null ? sprintf('%02d', $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT) : '-' }}
+                                    {{ $print_result }}
                                 </div>
                                 <div class="card grow ">
                                     <div class="grid-3">
