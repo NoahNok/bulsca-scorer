@@ -54,6 +54,7 @@ class EntityController extends Controller
         }
 
         // need to add new items to speed events
+        $comp->clearEntityNameCache();
 
         session()->flash('success', 'Saved entries');
 

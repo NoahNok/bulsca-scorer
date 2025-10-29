@@ -16,6 +16,7 @@ use App\Traits\Cloneable;
 use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -369,9 +370,12 @@ class Competition extends Model implements IInvitable
                         return;
                     }
 
+
+
                     $draw->entity = $teamMap[$draw->entity->id];
                 });
             }
+
 
 
 
@@ -598,5 +602,20 @@ class Competition extends Model implements IInvitable
         $this->addAccount($user, $details['access']);
 
         return redirect()->route('comps.view', $this->id);
+    }
+
+    public function cacheKey(): string
+    {
+        return "competition.{$this->id}";
+    }
+
+    public function clearEntityNameCache()
+    {
+        Cache::tags("{$this->cacheKey()}}.entity-names")->flush();
+    }
+
+    public function clearResultSchemaCaches()
+    {
+        Cache::tags("{$this->cacheKey()}.result-schemas")->flush();
     }
 }

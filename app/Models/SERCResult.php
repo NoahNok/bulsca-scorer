@@ -102,4 +102,9 @@ class SERCResult extends Resultable
     {
         return $this->getMarkingPoint->getJudge;
     }
+
+    public function getCompetition()
+    {
+        return $this->getSerc->getCompetition();
+    }
 }

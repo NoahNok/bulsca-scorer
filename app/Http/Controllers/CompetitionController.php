@@ -80,10 +80,16 @@ class CompetitionController extends Controller
         $validated = $request->validated();
         $settings = $comp->getScoringSettings;
 
+        $updatedNameFormats = false;
+
         foreach ($validated as $key => $value) {
 
             if ($key == "timezone") {
                 continue;
+            }
+
+            if ($key == 'team_format' || $key == 'competitor_format') {
+                $updatedNameFormats = true;
             }
 
             if (is_string($value) && strtotime($value)) {
@@ -106,6 +112,10 @@ class CompetitionController extends Controller
 
         $settings->save();
         $comp->save();
+
+        if ($updatedNameFormats) {
+            $comp->clearEntityNameCache();
+        }
 
         return response()->json([]);
     }

@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -28,6 +29,16 @@ class ResultSchema extends Model
     public function getResults(): Collection
     {
 
+        $cacheKey = 'result_schema_' . $this->id . '_results';
+        $competitionCacheKey = $this->getCompetition->cacheKey();
+
+        return Cache::tags("{$competitionCacheKey}.result-schemas")->rememberForever($cacheKey, function () {
+            return $this->getCachedResults();
+        });
+    }
+
+    private function getCachedResults(): Collection
+    {
         $allResults = collect();
 
         $league = null;

@@ -2,6 +2,7 @@
 
 namespace App\Models\AbstractClasses;
 
+
 use App\DigitalJudge\DigitalJudge;
 use App\DTO\Result;
 use App\DTO\ResolvedResult;
@@ -19,6 +20,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection as SupportCollection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use ShiftOneLabs\LaravelCascadeDeletes\CascadesDeletes;
@@ -175,5 +177,19 @@ abstract class Event extends Model
     public function getScorableEntities()
     {
         return $this->getScorableEntity()::where('competition', $this->competition)->get();
+    }
+
+
+    public function getCachedRankedResults(?League $league = null): array
+    {
+        $clazz = static::class;
+        $leaguePart = $league ? "-league-{$league->id}" : "-all-leagues";
+        $cacheKey = "event.{$clazz}-{$this->id}{$leaguePart}.ranked-results";
+
+        $competition_tag = $this->getCompetition->cacheKey();
+
+        return Cache::tags("{$competition_tag}.event-results")->rememberForever($cacheKey, function () use ($league) {
+            return $this->getRankedResults($league);
+        });
     }
 }

@@ -20,7 +20,7 @@ class CompetitionTeam extends Entity
 
     protected $with = ['getClub', 'getLeague'];
 
-    public function getName(?Competition $comp): string
+    public function getFormattedName(?Competition $comp): string
     {
 
 

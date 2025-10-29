@@ -44,6 +44,11 @@ class SpeedResult extends Resultable
         return $this->getEvent->disqualifications()->whereMorphedTo('entity', $this->entity);
     }
 
+    public function getCompetition()
+    {
+        return $this->getEvent->getCompetition();
+    }
+
 
 
     public function getEvent()

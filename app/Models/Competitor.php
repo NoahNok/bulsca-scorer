@@ -16,7 +16,7 @@ class Competitor extends Entity
 
     protected $with = ['getLeague', 'getTeam'];
 
-    public function getName(?Competition $comp): string
+    public function getFormattedName(?Competition $comp): string
     {
         // Implement the logic to return the competitor's name
         // For example, if there is a 'name' property:

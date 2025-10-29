@@ -18,6 +18,7 @@ use App\Models\Orders\Heat;
 use App\Models\SERCResult;
 use App\Models\SpeedResult;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Nette\NotImplementedException;
@@ -138,7 +139,32 @@ abstract class Entity extends Model
         $data->save();
     }
 
-    public abstract function getName(?Competition $comp): string;
+
+    protected static array $nameCache = [];
+
+
+    public function getName(?Competition $comp): string
+    {
+
+        $clazz = static::class;
+
+        $cacheKey = "entity.{$clazz}-{$this->id}.name";
+
+        if (isset(self::$nameCache[$cacheKey])) {
+            return self::$nameCache[$cacheKey];
+        }
+
+
+        $name = Cache::tags("{$comp->cacheKey()}}.entity-names")->rememberForever($cacheKey, function () use ($comp) {
+            return $this->getFormattedName($comp);
+        });
+
+        self::$nameCache[$cacheKey] = $name;
+
+        return $name;
+    }
+
+    public abstract function getFormattedName(?Competition $comp): string;
 
     public abstract function getGrouping(): EntityGrouping;
 }

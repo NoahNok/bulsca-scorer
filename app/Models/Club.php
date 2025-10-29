@@ -17,7 +17,7 @@ class Club extends Entity
     protected $fillable = ['name', 'region', 'competition', 'league'];
 
 
-    public function getName(?Competition $comp): string
+    public function getFormattedName(?Competition $comp): string
     {
         return $this->name;
     }

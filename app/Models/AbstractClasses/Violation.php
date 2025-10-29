@@ -22,6 +22,29 @@ abstract class Violation extends Model
 
     protected $fillable = ['entity', 'code', 'event'];
 
+    protected static function boot()
+    {
+
+        parent::boot();
+
+        static::created(function ($model) {
+            $model->triggerResultCacheClear();
+        });
+
+        static::updated(function ($model) {
+            $model->triggerResultCacheClear();
+        });
+
+        static::deleted(function ($model) {
+            $model->triggerResultCacheClear();
+        });
+    }
+
+    private function triggerResultCacheClear()
+    {
+        $this->entity->getCompetition->clearResultSchemaCaches();
+    }
+
     public function entity()
     {
         return $this->morphTo();
