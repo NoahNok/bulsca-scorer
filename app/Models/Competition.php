@@ -330,64 +330,70 @@ class Competition extends Model implements IInvitable
     public function getHeats()
     {
 
+        return Cache::rememberForever("{$this->cacheKey()}.heats", function () {
 
 
 
+            $heats = Heat::whereHas('speedEvent', function ($query) {
+                $query->where('competition', $this->id);
+            })->with('entity', 'entity.getLeague')->get()->groupBy('speed_event');
 
-        $heats = Heat::whereHas('speedEvent', function ($query) {
-            $query->where('competition', $this->id);
-        })->with('entity', 'entity.getLeague')->get()->groupBy('speed_event');
+            return $heats->map(function ($heatsForEvent, $speedEventId) {
+                $speedEvent = $heatsForEvent->first()->speedEvent;
 
-        return $heats->map(function ($heatsForEvent, $speedEventId) {
-            $speedEvent = $heatsForEvent->first()->speedEvent;
-
-            return [
-                'event' => $speedEvent,
-                'heats' => $heatsForEvent->values()->sortBy('heat')->groupBy('heat')->map(function ($group) {
-                    return $group->sortBy('lane')->values(); // sort each group by lane number
-                }), // optional: reindex
-            ];
-        })->values()->toArray();
+                return [
+                    'event' => $speedEvent,
+                    'heats' => $heatsForEvent->values()->sortBy('heat')->groupBy('heat')->map(function ($group) {
+                        return $group->sortBy('lane')->values(); // sort each group by lane number
+                    }), // optional: reindex
+                ];
+            })->values()->toArray();
+        });
     }
 
     public function getDraws()
     {
-        return $this->hasManyThrough(Draw::class, SERC::class, 'competition', 'serc', 'id', 'id')->with('entity')->get()->groupBy('serc')->map(function ($draws, $sercId) {
-            $serc = SERC::find($sercId);
 
-            if ($serc->scorable_entity == 'team') {
-
-                $entityIds = $draws->pluck('entity')->filter()->unique('id')->pluck('id');
-
-                $loadedEntities = CompetitionTeam::whereIn('id', $entityIds)->with('getCompetitors')->get();
-
-                $teamMap = $loadedEntities->keyBy('id');
+        return Cache::rememberForever("{$this->cacheKey()}.draws", function () {
 
 
-                $draws->each(function ($draw) use ($teamMap) {
+            return $this->hasManyThrough(Draw::class, SERC::class, 'competition', 'serc', 'id', 'id')->with('entity')->get()->groupBy('serc')->map(function ($draws, $sercId) {
+                $serc = SERC::find($sercId);
 
-                    if (!$draw->entity) {
-                        return;
-                    }
+                if ($serc->scorable_entity == 'team') {
+
+                    $entityIds = $draws->pluck('entity')->filter()->unique('id')->pluck('id');
+
+                    $loadedEntities = CompetitionTeam::whereIn('id', $entityIds)->with('getCompetitors')->get();
+
+                    $teamMap = $loadedEntities->keyBy('id');
 
 
+                    $draws->each(function ($draw) use ($teamMap) {
 
-                    $draw->entity = $teamMap[$draw->entity->id];
-                });
-            }
+                        if (!$draw->entity) {
+                            return;
+                        }
 
 
 
+                        $draw->entity = $teamMap[$draw->entity->id];
+                    });
+                }
 
 
 
-            return [
-                'serc' => $serc,
-                'draws' => $draws->sortBy('tank')->groupBy('tank')->map(function ($group) {
-                    return $group->sortBy('draw')->values(); // sort each group by draw number
-                })->values(), // optional: reindex
-            ];
-        })->values()->toArray();
+
+
+
+                return [
+                    'serc' => $serc,
+                    'draws' => $draws->sortBy('tank')->groupBy('tank')->map(function ($group) {
+                        return $group->sortBy('draw')->values(); // sort each group by draw number
+                    })->values(), // optional: reindex
+                ];
+            })->values()->toArray();
+        });
     }
 
     public function getTotalDQs()
@@ -617,5 +623,15 @@ class Competition extends Model implements IInvitable
     public function clearResultSchemaCaches()
     {
         Cache::tags("{$this->cacheKey()}.result-schemas")->flush();
+    }
+
+    public function clearHeatCache()
+    {
+        Cache::forget("{$this->cacheKey()}.heats");
+    }
+
+    public function clearDrawCache()
+    {
+        Cache::forget("{$this->cacheKey()}.draws");
     }
 }

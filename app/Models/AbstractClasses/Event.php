@@ -178,18 +178,4 @@ abstract class Event extends Model
     {
         return $this->getScorableEntity()::where('competition', $this->competition)->get();
     }
-
-
-    public function getCachedRankedResults(?League $league = null): array
-    {
-        $clazz = static::class;
-        $leaguePart = $league ? "-league-{$league->id}" : "-all-leagues";
-        $cacheKey = "event.{$clazz}-{$this->id}{$leaguePart}.ranked-results";
-
-        $competition_tag = $this->getCompetition->cacheKey();
-
-        return Cache::tags("{$competition_tag}.event-results")->rememberForever($cacheKey, function () use ($league) {
-            return $this->getRankedResults($league);
-        });
-    }
 }

@@ -34,6 +34,7 @@ class HeatController extends Controller
             } else {
                 $heatService->generateHeatsForEvent($comp->getSpeedEvents()->orderBy('id')->first());
             }
+            $comp->clearHeatCache();
             return redirect()->back()->with('success', 'Heats Generated');
         } catch (HeatException $s) {
             return redirect()->back()->with('alert-error', 'Failed to generate: an entry is missing a seed time');
@@ -77,6 +78,8 @@ class HeatController extends Controller
         $currentAllocation->save();
         $targetAllocation->save();
 
+        $comp->clearHeatCache();
+
         return redirect()->back();
     }
 
@@ -105,6 +108,7 @@ class HeatController extends Controller
             $lane->save();
         });
 
+        $comp->clearHeatCache();
 
         return response()->json(['result' => 'ok']);
     }
@@ -115,6 +119,8 @@ class HeatController extends Controller
         try {
             $heatService->generateHeatsForEvent($event);
 
+            $comp->clearHeatCache();
+
             return redirect()->back()->with('success', 'Heats Reset');
         } catch (HeatException $e) {
             return redirect()->back()->with('alert-error', 'Failed to generate: an entry is missing a seed time');
@@ -124,6 +130,8 @@ class HeatController extends Controller
     public function deleteHeat(Competition $comp, CompetitionSpeedEvent $event, Request $request)
     {
         $event->heats()->where('heat', $request->input('heat'))->delete();
+
+        $comp->clearHeatCache();
 
         return response()->json(['result' => 'ok']);
     }

@@ -84,7 +84,7 @@
 
 
         @php
-            $allHeats = $comp->getHeats();
+            $allHeats = $events;
 
             if (count($allHeats) > 0 && !$comp->heats_per_event) {
                 $allHeats = [$allHeats[0]];
@@ -189,7 +189,7 @@
             $use_tanks = $comp->getScoringSettings->use_tanks;
         @endphp
 
-        @forelse ($comp->getDraws() as $heatevent)
+        @forelse ($sercs as $heatevent)
 
 
 

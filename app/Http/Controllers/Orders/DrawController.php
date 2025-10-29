@@ -24,6 +24,8 @@ class DrawController extends Controller
 
         $drawService->generateDrawForSERC($serc);
 
+        $comp->clearDrawCache();
+
         return redirect()->back()->with('success', 'Draw Generated');
     }
 
@@ -48,6 +50,7 @@ class DrawController extends Controller
             ], 400);
         }
 
+        $comp->clearDrawCache();
 
         return response()->json([
             'status' => 'success',
@@ -58,6 +61,8 @@ class DrawController extends Controller
     public function reset(Competition $comp, SERC $serc, DrawService $drawService)
     {
         $drawService->generateDrawForSERC($serc);
+
+        $comp->clearDrawCache();
 
 
         return redirect()->back()->with('success', 'Draw Reset');
@@ -106,6 +111,8 @@ class DrawController extends Controller
                 }
             }
         }
+
+        $comp->clearDrawCache();
 
         return response()->json();
     }
