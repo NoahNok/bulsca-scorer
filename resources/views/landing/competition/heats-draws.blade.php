@@ -14,6 +14,8 @@
         if ($comp->heats_per_event && count($events) > 0) {
             $event = $events[0]['event'];
             $first_item = "sp:{$event->id}";
+        } elseif (count($events) == 0) {
+            $first_item = 'sercs';
         }
 
     @endphp
@@ -69,7 +71,7 @@
             @endif
 
             <div @click="open = 'sercs'" :class="open == 'sercs' ? 'active' : ''">
-                Initiative</div>
+                Initiatives</div>
 
             {{-- @foreach ($sercs as $heatevent)
                 <div @click="open = 'se:{{ $heatevent['serc']->id }}'"
@@ -210,7 +212,7 @@
                                 return this.children.some(Boolean)
                             }
                     
-                            return open == 'se:{{ $heatevent['serc']->id }}'
+                            return open == 'sercs'
                     
                     
                         }
