@@ -41,6 +41,8 @@
             global_variables: []
         },
     
+        advanced: false,
+    
         onFormulaChange() {
             let splt = this.formula.split(':')
     
@@ -71,6 +73,11 @@
                     this.formula_data = target_schema.schema
     
                     this.formula = 'custom'
+                    this.advanced = true
+                    break
+    
+                case 'custom':
+                    this.advanced = true
                     break
     
     
@@ -191,15 +198,7 @@
                 </select>
             </div>
 
-            <div class="se-form-input" style="margin-bottom: 0 !important">
-                <label for="">Group On</label>
 
-                <select style="margin-bottom: 0 !important" name="target_entity" x-model="group_on">
-                    <option value="club">Clubs</option>
-                    <option value="team">Teams</option>
-                    <option value="competitor">Competitiors</option>
-                </select>
-            </div>
         </div>
 
 
@@ -231,31 +230,34 @@
 
 
         </div>
-
-        <hr class="spacer mb-6! mt-4!">
-
-        <h3 class="mb-0!">Formula</h3>
-        <p>Use a simple pre-made formula, or create your own</p>
-
-
+        <br>
+        <div>
+            <h3 class="mb-0!">Result Adjustments</h3>
+            <p>Specify if points/position are used for scoring, and if any adjustments to those values should be applied.
+            </p>
 
 
-        <div class="grid-4">
             <div class="se-form-input" style="margin-bottom: 0 !important">
 
 
                 <select style="margin-bottom: 0 !important" name="target_entity" x-model="formula"
                     @change="onFormulaChange">
-                    <option value="null" selected disabled>Please select a formula</option>
+                    <option value="null" selected disabled>Please select an adjustment</option>
 
-                    <option value="custom">Custom</option>
+                    <option value="custom">Create Custom</option>
 
-                    <optgroup label="Clone from Organisation">
-                        <template x-for="schema in schema_templates">
-                            <option :value="`org:${schema.id}`" x-text="schema.name"></option>
-                        </template>
+                    @php
+                        $org = $comp->getOrganisation;
+                    @endphp
 
-                    </optgroup>
+                    @if ($org)
+                        <optgroup label="{{ $org->name }}">
+                            <template x-for="schema in schema_templates">
+                                <option :value="`org:${schema.id}`" x-text="schema.name"></option>
+                            </template>
+
+                        </optgroup>
+                    @endif
 
                     <optgroup label="Built-in">
                         <option value="bi:point">Highest Point Sum Wins</option>
@@ -269,116 +271,149 @@
 
                 </select>
             </div>
-
-
-            <div class="se-checkbox">
-                <div>
-                    <input type="checkbox" id="rank_higher" x-model="rank_higher">
-                    <label for="rank_higher">Rank Higher</label>
-                </div>
-                <p>Highest wins</p>
-            </div>
-
-            <div class="se-checkbox">
-                <div>
-                    <input type="checkbox" id="ignore_disqualified" x-model="ignore_disqualified">
-                    <label for="ignore_disqualified">Ignore Disqualified</label>
-                </div>
-                <p>Includes disqualified results</p>
-            </div>
-
-
-            <div class="se-checkbox">
-                <div>
-                    <input type="checkbox" id="repeat_for_all_leagues" x-model="repeat_for_all_leagues">
-                    <label for="repeat_for_all_leagues">Repeat for All Leagues</label>
-                </div>
-                <p>If checked, this result sheet will be duplicated for each league in the competition</p>
-            </div>
-
-
-
-
-
+        </div>
+        <br>
+        <div class="flex items-center my-3 mb-6!" @click="advanced = !advanced" style="cursor: pointer;">
+            <h3>Advanced</h3>
+            <hr class="spacer ">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="size-6 transition-transform ml-2" :class="advanced ? 'rotate-180' : ''">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+            </svg>
 
 
         </div>
 
-        <div class="flex flex-col space-y-4 se-card se-card-body se-card-hover" x-cloak x-show="formula == 'custom'"
-            x-data="{
-                addGlobal() {
-                    this.formula_data.global_variables.push({
-                        order: Math.max(...this.formula_data.global_variables.map(v => v.order)),
-                        name: '',
-                        expression: ''
-                    })
-                },
-            }">
-            <h2>Custom Formula</h2>
-            <h3>Global Variables</h3>
-            <p class="-mt-4">Global variables are generated once per event, and are usable in both local variables and
-                the
-                result equation. See <a class="link" href="#">here</a> for available functions.
-            </p>
 
-            <div class="flex flex-col space-y-2">
-                <template x-for="gvar in formula_data.global_variables">
-                    <div class="flex flex-row items-center gap-1 ">
+        <div x-show="advanced" x-collapse>
 
-                        <input rows="1" cols="2" x-init="dynamicInput($el)" class="badge badge-gray"
-                            x-model="gvar.name" placeholder="var"></input>
 
-                        <span class="badge">=</span>
 
-                        <input class="badge badge-info" x-init="dynamicInput($el)" x-model="gvar.expression"
-                            placeholder="score * 2">
+            <div class="grid-4">
+                <div class="se-form-input" style="margin-bottom: 0 !important">
+                    <label for="">Group On</label>
+
+                    <select style="margin-bottom: 0 !important" name="target_entity" x-model="group_on">
+                        <option value="club">Clubs</option>
+                        <option value="team">Teams</option>
+                        <option value="competitor">Competitiors</option>
+                    </select>
+                </div>
+
+
+
+                <div class="se-checkbox">
+                    <div>
+                        <input type="checkbox" id="rank_higher" x-model="rank_higher">
+                        <label for="rank_higher">Rank Higher</label>
                     </div>
-                </template>
+                    <p>Highest wins</p>
+                </div>
 
-                <button class="se-btn" @click="addGlobal">Add</button>
+                <div class="se-checkbox">
+                    <div>
+                        <input type="checkbox" id="ignore_disqualified" x-model="ignore_disqualified">
+                        <label for="ignore_disqualified">Ignore Disqualified</label>
+                    </div>
+                    <p>Includes disqualified results</p>
+                </div>
+
+
+                <div class="se-checkbox">
+                    <div>
+                        <input type="checkbox" id="repeat_for_all_leagues" x-model="repeat_for_all_leagues">
+                        <label for="repeat_for_all_leagues">Repeat for All Leagues</label>
+                    </div>
+                    <p>If checked, this result sheet will be duplicated for each league in the competition</p>
+                </div>
+
+
+
+
+
+
+
             </div>
+            <br>
+            <div class="flex flex-col space-y-4 se-card se-card-body se-card-hover" x-cloak x-show="formula == 'custom'"
+                x-data="{
+                    addGlobal() {
+                        this.formula_data.global_variables.push({
+                            order: Math.max(...this.formula_data.global_variables.map(v => v.order)),
+                            name: '',
+                            expression: ''
+                        })
+                    },
+                }">
+                <h2>Custom Formula</h2>
+                <h3>Global Variables</h3>
+                <p class="-mt-4">Global variables are generated once per event, and are usable in both local variables and
+                    the
+                    result equation. See <a class="link" href="#">here</a> for available functions.
+                </p>
 
+                <div class="flex flex-col space-y-2">
+                    <template x-for="gvar in formula_data.global_variables">
+                        <div class="flex flex-row items-center gap-1 ">
+
+                            <input rows="1" cols="2" x-init="dynamicInput($el)" class="badge badge-gray"
+                                x-model="gvar.name" placeholder="var"></input>
+
+                            <span class="badge">=</span>
+
+                            <input class="badge badge-info" x-init="dynamicInput($el)" x-model="gvar.expression"
+                                placeholder="score * 2">
+                        </div>
+                    </template>
+
+                    <button class="se-btn" @click="addGlobal">Add</button>
+                </div>
+
+
+                <br>
+
+                <h3>
+                    Result Equation
+                </h3>
+                <p class="-mt-4">This equation is evaluated once per row and produces the final points for the row, which
+                    is
+                    then passed to ranking (defaults to highest points wins). You can use the above local and global
+                    variables
+                    here. See <a class="link" href="#">here</a> for
+                    available functions.
+                </p>
+                <div class="se-form-input">
+                    <input type="text" x-model="formula_data.equation" placeholder="equation">
+
+                </div>
+
+            </div>
 
             <br>
+            <div>
+                <h4>Break Ties</h4>
+                <p>Optionally select which events should be used to break ties. If none are selected, ties are allowed</p>
+                <div class="grid-4 mt-2">
 
-            <h3>
-                Result Equation
-            </h3>
-            <p class="-mt-4">This equation is evaluated once per row and produces the final points for the row, which
-                is
-                then passed to ranking (defaults to highest points wins). You can use the above local and global
-                variables
-                here. See <a class="link" href="#">here</a> for
-                available functions.
-            </p>
-            <div class="se-form-input">
-                <input type="text" x-model="formula_data.equation" placeholder="equation">
+                    <template x-for="event in events.filter(event => event.selected)">
+                        <div class="se-card se-card-body px-2! py-1! " :class="event.break_ties ? 'se-card-success' : ''"
+                            @click="toggleTieBreak(event)">
+                            <div class="flex items-center justify-between">
+                                <h4 x-text="event.name"></h4>
 
-            </div>
-
-        </div>
-
-        <br>
-        <div>
-            <h4>Break Ties</h4>
-            <p>Optionally select which events should be used to break ties. If none are selected, ties are allowed</p>
-            <div class="grid-4 mt-2">
-
-                <template x-for="event in events.filter(event => event.selected)">
-                    <div class="se-card se-card-body px-2! py-1! " :class="event.break_ties ? 'se-card-success' : ''"
-                        @click="toggleTieBreak(event)">
-                        <div class="flex items-center justify-between">
-                            <h4 x-text="event.name"></h4>
-
-                            <p class="text-lg font-bold font-archivo" x-text="event.break_ties"></p>
+                                <p class="text-lg font-bold font-archivo" x-text="event.break_ties"></p>
+                            </div>
                         </div>
-                    </div>
-                </template>
-                <small x-show="events.filter(event => event.selected).length == 0" class="col-span-2 text-red-500">
-                    Please select one or more events above to allow for tie breaking
-                </small>
+                    </template>
+                    <small x-show="events.filter(event => event.selected).length == 0" class="col-span-2 text-red-500">
+                        Please select one or more events above to allow for tie breaking
+                    </small>
+                </div>
             </div>
         </div>
+
+
+
 
         <br>
         <button class=" ml-auto se-btn se-btn-success" @click="submit">Create</button>
