@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AbstractClasses\Entity;
 use App\Models\Club;
 use App\Models\Competition;
 use App\Models\CompetitionTeam;
 use App\Models\Competitor;
 use App\Models\Orders\EntityEventSeed;
+use App\Models\SpeedResult;
 use Illuminate\Http\Request;
 
 class EntityController extends Controller
@@ -72,6 +74,11 @@ class EntityController extends Controller
             'league' => null
         ]);
 
+        if ($club->wasRecentlyCreated) {
+            // create entity event entries for club
+            $this->createEntityEventEntries($comp, $club);
+        }
+
         if (count($data['teams']) > 0) {
             foreach ($data['teams'] as $team) {
                 $this->saveTeam($comp, $team, $club);
@@ -111,6 +118,10 @@ class EntityController extends Controller
             'club' => $club?->id,
             'league' => $data['league']
         ]);
+
+        if ($team->wasRecentlyCreated) {
+            $this->createEntityEventEntries($comp, $team);
+        }
 
         foreach ($data['seeds'] as $event_id => $seed_data) {
 
@@ -154,6 +165,10 @@ class EntityController extends Controller
             'league' => $data['league']
         ]);
 
+        if ($competitor->wasRecentlyCreated) {
+            $this->createEntityEventEntries($comp, $competitor);
+        }
+
 
         foreach ($data['seeds'] as $event_id => $seed_data) {
 
@@ -177,6 +192,24 @@ class EntityController extends Controller
             ], [
                 'seed' => $seed
             ]);
+        }
+    }
+
+    private function createEntityEventEntries(Competition $comp, Entity $entity)
+    {
+
+
+        foreach ($comp->getSpeedEvents as $event) {
+            // check event scorable entity type matches entity type
+            if (get_class($entity) != get_class($event->getScorableEntity())) {
+                continue;
+            }
+
+
+            $sr = new SpeedResult();
+            $sr->entity()->associate($entity);
+            $sr->event = $event->id;
+            $sr->save();
         }
     }
 }
