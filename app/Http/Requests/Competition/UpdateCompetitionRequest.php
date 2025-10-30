@@ -36,6 +36,7 @@ class UpdateCompetitionRequest extends FormRequest
             'seed_per_event' => 'sometimes|boolean',
             'use_seeds' => 'sometimes|boolean',
             'status_message' => 'sometimes|nullable|string',
+            'select_league_first' => 'sometimes|boolean',
 
         ];
     }

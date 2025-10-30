@@ -19,6 +19,8 @@
     
         table: null,
     
+        select_league_first: {{ $comp->select_league_first ? 'true' : 'false' }},
+    
         getColumns() {
             return Object.fromEntries(
                 Object.entries(this.table?.columns ?? {}).filter(([key]) => !key.startsWith('_'))
@@ -177,8 +179,26 @@
             </div>
 
 
-            <div x-show="selected.event != null" x-transition class="space-y-4 row-start-1 col-start-1  overflow-x-hidden"
-                x-cloak>
+            <div x-show="selected.event != null && select_league_first && selected.league_id === null" x-transition
+                class="space-y-4 row-start-1 col-start-1 overflow-x-hidden">
+                <div class="flex items-center justify-center flex-col space-y-4">
+                    <h4>Please select a league/bracket</h4>
+                    <div class="se-form-input text-sm!  w-auto! imb-0">
+                        <select name="" id="" class="py-0! h-6! px-1!" x-model="selected.league_id"
+                            @change="onLeagueChange(leagues.find(l => l.id == $event.target.value))">
+
+                            <option value="null" :disabled="!select_league_first">Select League</option>
+
+                            <template x-for="league in leagues" :key="league.id">
+                                <option :value="league.id" x-text="league.name"></option>
+                            </template>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div x-show="selected.event != null && (!select_league_first || selected.league_id !== null)" x-transition
+                class="space-y-4 row-start-1 col-start-1  overflow-x-hidden" x-cloak>
 
 
                 <div class="flex flex-col md:flex-row md:items-center  md:space-x-3">
@@ -200,6 +220,8 @@
                     <div class="se-form-input text-sm!  w-auto! imb-0">
                         <select name="" id="" class="py-0! h-6! px-1!" x-model="selected.league_id"
                             @change="onLeagueChange(leagues.find(l => l.id == $event.target.value))">
+
+
 
                             <template x-for="league in leagues" :key="league.id">
                                 <option :value="league.id" x-text="league.name"></option>
@@ -460,7 +482,8 @@
             <div class="grid-4 mt-2" x-show="selected.schema == null" x-transition:enter.duration.500ms>
 
                 <template x-for="(schema_name, schema_id) in schemas" :key="schema_id">
-                    <div class="se-card se-card-hover" @click.prevent="onSchemaChange({id: schema_id, name: schema_name})">
+                    <div class="se-card se-card-hover"
+                        @click.prevent="onSchemaChange({id: schema_id, name: schema_name})">
                         <div class="se-card-body flex items-center justify-between">
                             <h4 class="-mb-1!" x-text="schema_name"></h4>
 

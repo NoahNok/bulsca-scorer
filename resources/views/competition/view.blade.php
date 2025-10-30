@@ -440,6 +440,7 @@
                     <li :class="active == 'names' ? 'active' : ''" @click="active = 'names'">Name Formatting</li>
                     <li :class="active == 'status' ? 'active' : ''" @click="active = 'status'">Status Message</li>
 
+
                 </ul>
 
 
@@ -490,6 +491,13 @@
 
                             <x-se-input label="Viewable Live" name="can_be_live" type="checkbox" :default="$comp->can_be_live"
                                 section="setup" />
+
+                            <x-se-input label="Select League First" class="grow-0!" name="select_league_first"
+                                type="checkbox" :default="$comp->select_league_first" section="results">
+                                <x-slot name="description">
+                                    <small>If users viewing results need to select a league first</small>
+                                </x-slot>
+                            </x-se-input>
 
 
                         </div>
@@ -677,6 +685,8 @@
 
 
                     </div>
+
+
 
                     <x-slot name="left_footer">
                         <small class="  text-red-500   mr-auto! animate-pulse" x-show="shared.changes">You have unsaved

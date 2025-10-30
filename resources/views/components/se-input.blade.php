@@ -30,12 +30,13 @@
 
     @if ($type == 'checkbox')
         <div>
-            <input type="checkbox" :name="name" @if ($default) checked @endif
-                id="can_be_live" x-model="self.data" x-ref="input" {{ $attributes->merge() }} @input="checkError($el)">
+            <input type="checkbox" x-model="self.data" :name="name"
+                @if ($default) checked @endif id="checkbox-{{ $name }}"
+                @input="checkError($el)">
             <input type="hidden" :name="name" value="0">
-            <label for="can_be_live">{{ $label }}</label>
+            <label for="checkbox-{{ $name }}">{{ $label }}</label>
         </div>
-        <p>If this competition can be viewed live</p>
+        <p>{{ $description }}</p>
     @elseif ($type == 'select')
         @if ($label)
             <label for="">{{ $label }}</label>
