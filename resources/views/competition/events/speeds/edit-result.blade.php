@@ -27,7 +27,9 @@
                 <br>
             </p>
 
-
+            @php
+                $allResults = $event->getRawResults(true);
+            @endphp
 
             <div class="  relative w-full  ">
                 <div class="se-form-input imb-0 ">
@@ -35,6 +37,8 @@
                 </div>
 
                 <br>
+
+                <p class="font-semibold font-archivo text-sm text-right w-full">{{ count($allResults) }} results</p>
 
                 <div class="se-table ">
                     <table editable-table="scores" table-submit-csrf="{{ csrf_token() }}"
@@ -68,7 +72,7 @@
                         </thead>
                         <tbody>
 
-                            @forelse ($event->getRawResults(true) as $result)
+                            @forelse ($allResults as $result)
                                 <tr table-row table-row-owner="{{ $result->id }}">
                                     <th scope="row">
                                         {{ $result->entity->getName($comp) }}
