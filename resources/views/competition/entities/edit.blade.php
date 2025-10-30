@@ -108,6 +108,15 @@
                 return
             }
     
+            // delete any teams and competitors within the club
+            club.teams.forEach(team => {
+    
+                if (team.id != null) {
+                    this.removed.teams.push(team.id)
+                    this.removed.competitors.push(...team.competitors.filter(c => c.id != null).map(c => c.id))
+                }
+            })
+    
             this.removed.clubs.push(club.id)
         },
     
@@ -206,6 +215,9 @@
             if (team.id == null) {
                 return
             }
+    
+            // delete any competitors within the team
+            this.removed.competitors.push(...team.competitors.filter(c => c.id != null).map(c => c.id))
     
             this.removed.teams.push(team.id)
         },

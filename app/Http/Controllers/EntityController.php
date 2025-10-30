@@ -31,9 +31,10 @@ class EntityController extends Controller
         $removed = $request_data['removed'];
 
         // Handle removals
-        Club::whereIn('id', $removed['clubs'])->get()->each->delete();
-        CompetitionTeam::whereIn('id', $removed['teams'])->get()->each->delete();
         Competitor::whereIn('id', $removed['competitors'])->get()->each->delete();
+        CompetitionTeam::whereIn('id', $removed['teams'])->get()->each->delete();
+        Club::whereIn('id', $removed['clubs'])->get()->each->delete();
+
 
 
         // Add/update items
