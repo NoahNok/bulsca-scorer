@@ -56,8 +56,10 @@ class EntityController extends Controller
             $this->saveCompetitor($comp, $competitor);
         }
 
-        // need to add new items to speed events
+
         $comp->clearEntityNameCache();
+        $comp->clearDrawCache();
+        $comp->clearHeatCache();
 
         session()->flash('success', 'Saved entries');
 

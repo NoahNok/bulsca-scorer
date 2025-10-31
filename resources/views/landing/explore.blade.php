@@ -8,16 +8,18 @@
 
 
     @isset($ongoing)
-        <div class="se-card se-card-body se-card-hover cursor-default! mb-6">
+        <div class="se-card se-card-body se-card-hover cursor-default! mb-6"
+            @click="window.location='{{ route('landing.competition', $ongoing->getSlug()) }}'">
             <div class="se-card-body">
                 <h3 class="text-se animate-pulse">Live</h3>
                 <h1>{{ $ongoing->name }}</h1>
                 <p class="font-archivo text-xs! text-gray-700! uppercase -mb-1">{{ $ongoing->when->format('M jS Y') }}</p>
 
                 <div class="mt-5">
-                    <a href="{{ route('live', ['comp' => $ongoing->id]) }}" class="se-btn se-btn-outline-primary">Live</a>
+                    {{-- <a href="{{ route('live', ['comp' => $ongoing->id]) }}" class="se-btn se-btn-outline-primary">Live</a> --}}
 
-                    <a href="{{ route('landing.competition.heats-draws', $ongoing->getSlug()) }}" class="se-btn">Heats &
+                    <a href="{{ route('landing.competition.heats-draws', $ongoing->getSlug()) }}"
+                        class="se-btn se-btn-outline-primary">Heats &
                         Draws</a>
                     <a href="{{ route('landing.competition.results', $ongoing->getSlug()) }}"
                         class="se-btn @if (!$ongoing->public_results) se-btn-disabled @endif">
