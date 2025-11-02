@@ -304,6 +304,18 @@
                                                 <span x-text="data"></span>
                                             </template>
 
+                                            <template x-if="type === 'string-array'">
+                                                <div class="">
+                                                    <template x-for="item in data">
+
+                                                        <div>
+                                                            <span x-text="item"></span>
+                                                        </div>
+
+                                                    </template>
+                                                </div>
+                                            </template>
+
                                             <template x-if="type == 'violation'">
                                                 <div>
                                                     <template x-for="(violation, indx) in data">
@@ -314,12 +326,45 @@
                                                 </div>
                                             </template>
 
+                                            <template x-if="type == 'violation-combined'">
+                                                <div>
+                                                    <template x-for="item in data">
+                                                        <div>
+                                                            <template x-for="(violation, indx) in item">
+                                                                <span
+                                                                    @click="loadViolation(violation['id'], violation['type'])"
+                                                                    x-text="typeof violation == 'string' ? violation : violation['display'] + (indx === item.length - 1 ? '' : ', ')"
+                                                                    class="hover:font-semibold cursor-pointer"></span>
+                                                            </template>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </template>
+
                                             <template x-if="type == 'result'">
                                                 <div>
                                                     <span x-text="data['is']"></span>
                                                     <template x-if="data['is'] != data['was']">
                                                         <small><br>Was <span x-text="data['was']"></span></small>
                                                     </template>
+                                                </div>
+                                            </template>
+
+                                            <template x-if="type == 'result-combined'">
+                                                <div class="flex justify-end items-center ">
+                                                    <div class="border-r-2 pr-2">
+
+                                                        <template x-for="time in data['combined']['results']">
+                                                            <div>
+                                                                <span x-text="time"></span>
+                                                            </div>
+                                                        </template>
+
+
+                                                    </div>
+                                                    <div class="pl-2">
+                                                        <span x-text="data['is']"></span>
+                                                    </div>
                                                 </div>
                                             </template>
 

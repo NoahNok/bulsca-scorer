@@ -61,7 +61,9 @@ class ResultsController extends Controller
 
         $results = $event->getRankedResults($league);
 
-        return response()->json($this->tablify($comp, $results, $target_columns, $type));
+        $show_dq_points = $event->scoringSchema->schema['allow_disqualified_to_rank'] ?? false;
+
+        return response()->json($this->tablify($comp, $results, $target_columns, $type, $show_dq_points));
     }
 
     public function getSheetResults(Competition $comp, ResultSchema $schema)
@@ -184,9 +186,9 @@ class ResultsController extends Controller
     /**
      * @param RankedResult[] $results
      */
-    private function tablify(Competition $comp, array $results, array $use_columns, string $type)
+    private function tablify(Competition $comp, array $results, array $use_columns, string $type, bool $show_dq_points = false)
     {
-        $t = new Tablify($comp, $type);
+        $t = new Tablify($comp, $type, $show_dq_points);
 
         return $t->from($use_columns, $results, function ($row) {
             return $row->entity->id;
@@ -208,11 +210,13 @@ class Tablify
 
     private $event_type;
     private Competition $comp;
+    private bool $show_dq_points;
 
-    public function __construct(Competition $comp, $event_type = 'speed')
+    public function __construct(Competition $comp, $event_type = 'speed', $show_dq_points = false)
     {
         $this->comp = $comp;
         $this->event_type = $event_type;
+        $this->show_dq_points = $show_dq_points;
     }
 
     public function from(array $use_columns, array $results, $row_id_func = null)
@@ -250,29 +254,52 @@ class Tablify
 
     private function resolveColumnData($column, $result)
     {
+
+        $is_combined = $result->isCombined();
+
         return match ($column) {
-            'name' => $result->entity->getName($this->comp),
+            'name' => $is_combined ? ['type' => 'string-array', 'data' => $result->combined->map(fn($item) => $item->entity->getName($this->comp))->toArray()] : $result->entity->getName($this->comp),
             'position' => $result->position,
-            'points' => $result->isDisqualified() ? 'DQ' : round($result->points),
-            'result' => $this->resolveResult($result),
-            'disqualifications' => $this->resolveDisqualifications($result),
+            'points' => $result->isDisqualified() && !$this->show_dq_points ? 'DQ' : round($result->points),
+            'result' => $this->resolveResult($result, $is_combined),
+            'disqualifications' => $this->resolveDisqualifications($result, $is_combined),
             'penalties' => $this->resolvePenalties($result),
             default => null,
         };
     }
 
-    private function resolveResult($result)
+    private function resolveResult($result, $combined = false)
     {
         $type = $this->event_type;
         $data = ['is' => $type == 'speed' ? SpeedResult::prettyTime($result->resolvedResult) : $result->resolvedResult, 'was' => $type == 'speed' ? SpeedResult::prettyTime($result->result) : $result->result];
 
+        $result_type = 'result';
 
+        if ($combined) {
+            $result_type = 'result-combined';
+            $data['combined'] = [
+                'results' => $result->combined->map(fn($item) => SpeedResult::prettyTime($item->result))->toArray(),
+                'dqs' => $result->combined->map(fn($item) => $item->getDisqualificationsString() ?: '-')->toArray(),
+            ];
+        }
 
-        return ['type' => 'result', 'data' => $data];
+        return ['type' => $result_type, 'data' => $data];
     }
 
-    private function resolveDisqualifications($result)
+    private function resolveDisqualifications($result, $combined = false)
     {
+
+
+
+        if ($combined) {
+            return ['type' => 'violation-combined', 'data' => $result->combined->map(function ($item) {
+                if (!$item->isDisqualified()) {
+                    return '-';
+                }
+                return $item->disqualifications->map(fn(Disqualification $dq) => ['display' => "{$dq}", 'id' => $dq->id, 'type' => 'dq'])->values()->toArray();
+            })->toArray()];
+        }
+
         if (!$result->isDisqualified()) {
             return '-';
         }
