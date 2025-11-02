@@ -116,11 +116,12 @@ class SERC extends Event
 
 
         foreach ($results->groupBy(fn($result) => $result->entity->id) as $id => $entityResults) {
-
+            $totalItems = $entityResults->count();
             $resultTotal = $entityResults->reduce(fn($acc, $result) => $acc += $result->result * $result->markingPoint->weight, 0);
+
             $resultData = $entityResults->first();
 
-            $resolvedResults[] = new Result(
+            $r = new Result(
                 $resultData->id,
                 $resultTotal,
                 $resultData->entity,
@@ -128,6 +129,11 @@ class SERC extends Event
                 $disqualifications->where('entity_id', $id),
                 $penalties->where('entity_id', $resultData->entity->id)
             );
+
+            $r->total_marking_points = $totalItems;
+
+
+            $resolvedResults[] = $r;
         }
 
         $resolvedResults = $this->scoringSchema->applyViolations($resolvedResults);
@@ -226,6 +232,11 @@ class SERC extends Event
     public function getJudges()
     {
         return $this->hasMany(SERCJudge::class, 'serc', 'id');
+    }
+
+    public function getMarkingPoints()
+    {
+        return $this->hasManyThrough(SERCMarkingPoint::class, SERCJudge::class, 'serc', 'judge', 'id', 'id');
     }
 
 

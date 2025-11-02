@@ -80,7 +80,9 @@ class SERCController extends Controller
             $eventResults = $serc->getRankedResults($league);
         }
 
-        return view('competition.events.sercs.view', ['comp' => $comp, 'serc' => $serc, 'eventResults' => $eventResults, 'activeLeague' => $league]);
+        $totalMPs = $serc->getMarkingPoints()->count();
+
+        return view('competition.events.sercs.view', ['comp' => $comp, 'serc' => $serc, 'eventResults' => $eventResults, 'activeLeague' => $league, 'totalMPs' => $totalMPs]);
     }
 
 

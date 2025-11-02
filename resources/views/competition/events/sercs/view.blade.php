@@ -87,7 +87,20 @@
                                         <td>
                                             {{ $result->position }}
                                         </td>
-                                        <td>
+                                        <td class="flex justify-end items-center space-x-2">
+
+                                            @if ($result->total_marking_points < $totalMPs)
+                                                <span class="mt-1"
+                                                    title="Incomplete marking - {{ $result->total_marking_points }} / {{ $totalMPs }}">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                        class="size-6 text-yellow-500 ">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                                                    </svg>
+                                                </span>
+                                            @endif
+
                                             <a href="{{ route('comps.events.sercs.editResults', [$comp, $serc, $result->entity->id]) }}"
                                                 class="se-btn text-black">
                                                 Edit

@@ -42,7 +42,7 @@ class RankedResult extends Result
 
     public static function fromResolved(ResolvedResult $resolved, int $position): RankedResult
     {
-        return new RankedResult(
+        $rr = new RankedResult(
             $resolved->id,
             $resolved->resolvedResult,
             $resolved->result,
@@ -54,5 +54,9 @@ class RankedResult extends Result
             $resolved->penalties,
             $resolved->combined
         );
+
+        $rr->total_marking_points = $resolved->total_marking_points;
+
+        return $rr;
     }
 }

@@ -14,6 +14,8 @@ class Result
 
     public int $seed = 0;
 
+    public int $total_marking_points = 1;
+
     /**
      * @param Collection<int, Disqualification> $disqualifications
      * @param Collection<int, Penalty> $penalties

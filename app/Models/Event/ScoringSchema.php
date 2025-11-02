@@ -230,7 +230,7 @@ class ScoringEngine
                 $resolvedResult = $this->el->evaluate($penalty_func, ['item' => $result]);
             }
 
-            $resolvedResults[] = new ResolvedResult(
+            $rr = new ResolvedResult(
                 $result->id,
                 $resolvedResult,
                 $result->result,
@@ -239,6 +239,10 @@ class ScoringEngine
                 $result->disqualifications,
                 $result->penalties
             );
+
+            $rr->total_marking_points = $result->total_marking_points;
+
+            $resolvedResults[] = $rr;
         }
 
         return $resolvedResults;
