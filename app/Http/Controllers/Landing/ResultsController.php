@@ -34,12 +34,18 @@ class ResultsController extends Controller
 
         if ($type == 'speed') {
             $event = CompetitionSpeedEvent::findOrFail($event);
-            $target_columns = [
 
+            $target_columns = $event->hasPenalties() ? [
                 'name',
                 'result',
                 'disqualifications',
                 'penalties',
+                'points',
+                'position',
+            ] : [
+                'name',
+                'result',
+                'disqualifications',
                 'points',
                 'position',
             ];
