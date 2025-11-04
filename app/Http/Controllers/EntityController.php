@@ -118,8 +118,10 @@ class EntityController extends Controller
         ], [
             'team' => $data['name'],
             'club' => $club?->id,
-            'league' => $data['league']
+
         ]);
+
+        $team->leagues()->sync($data['league']);
 
         if ($team->wasRecentlyCreated) {
             $this->createEntityEventEntries($comp, $team);
@@ -164,8 +166,10 @@ class EntityController extends Controller
         ], [
             'name' => $data['name'],
             'team' => $team?->id,
-            'league' => $data['league']
+
         ]);
+
+        $competitor->leagues()->sync($data['league']);
 
         if ($competitor->wasRecentlyCreated) {
             $this->createEntityEventEntries($comp, $competitor);

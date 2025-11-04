@@ -18,7 +18,7 @@ class CompetitionTeam extends Entity
 
     protected $fillable = ['club', 'team', 'league', 'competition'];
 
-    protected $with = ['getClub', 'getLeague'];
+    protected $with = ['getClub', 'leagues'];
 
     public function getFormattedName(?Competition $comp): string
     {
@@ -66,7 +66,7 @@ class CompetitionTeam extends Entity
 
                 $value = match ($target) {
                     ':C' => fn() => $this->getClub?->name ?? '-',
-                    ':L' => fn() => $this->getLeague?->name ?? '-',
+                    ':L' => fn() => $this->leagues->pluck('name')->join(', ') ?? '-',
                     ':N' => fn() => $this->team ?? '-',
                     ':R' => fn() => $this->getClub?->region ?? '-',
                     ':S' => fn() => $this->getCompetitors->pluck('name')->implode(', ')
@@ -99,7 +99,7 @@ class CompetitionTeam extends Entity
 
     public function getGrouping(): EntityGrouping
     {
-        return new EntityGrouping($this->getClub?->id ?? -1, $this->id, null, $this->league);
+        return new EntityGrouping($this->getClub?->id ?? -1, $this->id, null, $this->leagues()->orderBy('id')->first()?->id);
     }
 
     public function getCompetitors()

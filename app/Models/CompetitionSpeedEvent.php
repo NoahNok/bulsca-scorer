@@ -111,7 +111,10 @@ class CompetitionSpeedEvent extends Event
 
         if ($league !== null) {
             $query = $query->whereHas('entity', function ($q) use ($league) {
-                $q->where('league', $league->id);
+
+                $q->whereHas('leagues', function ($qq) use ($league) {
+                    $qq->where('leagues.id', $league->id);
+                });
             });
         }
 

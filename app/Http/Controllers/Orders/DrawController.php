@@ -75,7 +75,9 @@ class DrawController extends Controller
 
     public function tankSetupPost(Competition $comp, Request $request)
     {
-        $allCompetitorsPerLeague = CompetitionTeam::where('competition', $comp->id)->with('getLeague')->get()->groupBy('getLeague.id');
+        $allCompetitorsPerLeague = CompetitionTeam::where('competition', $comp->id)->with('leagues')->get()->groupBy(function ($entity) {
+            return optional($entity->getLeague())->id;
+        });
 
         $tank_target = $request->json()->all();
 

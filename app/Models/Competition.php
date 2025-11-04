@@ -122,24 +122,24 @@ class Competition extends Model implements IInvitable
     public function getEntityMakeup()
     {
         $clubs = $this->getClubs()
-            ->with('getLeague', 'getTeams.getLeague', 'getTeams.getCompetitors.getLeague')
+            ->with('leagues', 'getTeams.leagues', 'getTeams.getCompetitors.leagues')
             ->get()
             ->map(function ($club) {
                 return [
                     'id' => $club->id,
                     'name' => $club->name,
-                    'league' => $club->getLeague->id ?? null,
+                    'league' => $club->leagues->pluck('id') ?? null,
                     'teams' => $club->getTeams->map(function ($team) {
                         return [
                             'id' => $team->id,
                             'name' => $team->team,
-                            'league' => $team->getLeague->id ?? null,
+                            'league' => $team->leagues->pluck('id') ?? null,
                             'seeds' => $team->getSeedTimes(),
                             'competitors' => $team->getCompetitors->map(function ($competitor) {
                                 return [
                                     'id' => $competitor->id,
                                     'name' => $competitor->name,
-                                    'league' => $competitor->getLeague->id ?? null,
+                                    'league' => $competitor->leagues->pluck('id') ?? null,
                                     'seeds' => $competitor->getSeedTimes()
                                 ];
                             })->toArray(),
@@ -152,13 +152,13 @@ class Competition extends Model implements IInvitable
             return [
                 'id' => $team->id,
                 'name' => $team->team,
-                'league' => $team->getLeague->id ?? null,
+                'league' => $team->leagues->pluck('id') ?? null,
                 'seeds' => $team->getSeedTimes(),
                 'competitors' => $team->getCompetitors->map(function ($competitor) {
                     return [
                         'id' => $competitor->id,
                         'name' => $competitor->name,
-                        'league' => $competitor->getLeague->id ?? null,
+                        'league' => $competitor->leagues->pluck('id') ?? null,
                         'seeds' => $competitor->getSeedTimes()
                     ];
                 })->toArray(),
@@ -169,7 +169,7 @@ class Competition extends Model implements IInvitable
             return [
                 'id' => $competitor->id,
                 'name' => $competitor->name,
-                'league' => $competitor->getLeague->id ?? null,
+                'league' => $competitor->leagues->pluck('id') ?? null,
                 'seeds' => $competitor->getSeedTimes()
             ];
         })->toArray();
@@ -284,15 +284,15 @@ class Competition extends Model implements IInvitable
     {
 
         // for now assume target type is competitor
-        $competitors = CompetitionTeam::where('competition', $this->id)->with('getLeague')->get();
+        $competitors = CompetitionTeam::where('competition', $this->id)->with('leagues')->get();
 
         $grouped = $competitors->groupBy(function ($competitor) {
-            return $competitor->getLeague?->id ?? -1;
+            return $competitor->getLeague()?->id ?? -1;
         });
 
         // Transform into desired array format
         $result = $grouped->map(function ($group, $leagueId) {
-            $leagueName = $group->first()->getLeague?->name ?? 'No League';
+            $leagueName = $group->first()->getLeague()?->name ?? 'No League';
             return ['league' => $leagueId, 'name' => $leagueName, 'count' => $group->count()];
         })->values()->toArray();
 
@@ -309,11 +309,13 @@ class Competition extends Model implements IInvitable
         $serc = SERC::where('competition', $this->id)->orderBy('id')->first();
 
         return $serc->draw()->with('entity')->get()->sortBy('tank')->groupBy('tank')->map(function ($tank) {
-            return $tank->groupBy('entity.getLeague.id')->map(function ($competitors, $leagueId) {
+            return $tank->groupBy(function ($draw) {
+                return optional($draw->entity->getLeague())->id;
+            })->map(function ($competitors, $leagueId) {
 
                 return [
                     'league' => $leagueId,
-                    'name' => $competitors->first()->entity->getLeague?->name ?? 'No League',
+                    'name' => $competitors->first()->entity->getLeague()->name ?? 'No League',
                     'count' => $competitors->count()
                 ];
             })->values();
@@ -336,7 +338,7 @@ class Competition extends Model implements IInvitable
 
             $heats = Heat::whereHas('speedEvent', function ($query) {
                 $query->where('competition', $this->id);
-            })->with('entity', 'entity.getLeague')->get()->groupBy('speed_event');
+            })->with('entity', 'entity.leagues')->get()->groupBy('speed_event');
 
             return $heats->map(function ($heatsForEvent, $speedEventId) {
                 $speedEvent = $heatsForEvent->first()->speedEvent;

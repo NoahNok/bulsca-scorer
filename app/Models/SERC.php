@@ -146,9 +146,16 @@ class SERC extends Event
         $query = $this->results();
 
         if ($league !== null) {
+
             $query = $query->whereHas('entity', function ($q) use ($league) {
-                $q->where('league', $league->id);
+
+                $q->whereHas('leagues', function ($qq) use ($league) {
+                    $qq->where('leagues.id', $league->id);
+                });
             });
+            // $query = $query->whereHas('entity', function ($q) use ($league) {
+            //     $q->where('league', $league->id);
+            // });
         }
 
         $query = $query->with(['entity', 'getMarkingPoint', 'getMarkingPoint.getJudge']);

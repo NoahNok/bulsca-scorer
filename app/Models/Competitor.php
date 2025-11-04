@@ -14,7 +14,7 @@ class Competitor extends Entity
 
     protected $fillable = ['team', 'league', 'competition', 'name'];
 
-    protected $with = ['getLeague', 'getTeam'];
+    protected $with = ['getTeam', 'leagues'];
 
     public function getFormattedName(?Competition $comp): string
     {
@@ -36,7 +36,7 @@ class Competitor extends Entity
 
                 $value = match ($target) {
                     ':C' => $this->getTeam->getClub?->name ?? '-',
-                    ':L' => $this->getLeague?->name ?? '-',
+                    ':L' => $this->leagues->pluck('name')->join(', ') ?? '-',
                     ':T' => $this->getTeam->team ?? '-',
                     ':N' => $this->name
                 };
@@ -57,6 +57,6 @@ class Competitor extends Entity
     {
 
         $team = $this->getTeam;
-        return new EntityGrouping($team->club, $team->id, $this->id, $this->league);
+        return new EntityGrouping($team->club, $team->id, $this->id, $this->leagues()->orderBy('id')->first()?->id);
     }
 }

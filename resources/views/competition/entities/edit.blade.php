@@ -226,6 +226,8 @@
             this.add.competitor.club = club
             this.add.competitor.team = team
             this.modals.addCompetitor = true
+    
+    
         },
     
         editCompetitor(competitor_index, team_index = null, club_index = null) {
@@ -285,7 +287,7 @@
             let data = {
                 id: null,
                 name: name,
-                league: this.add.competitor.league,
+                league: [this.add.competitor.league],
                 seeds: this.add.competitor.seeds
             }
     
@@ -365,6 +367,15 @@
             return !(seed.seed == '' || this.seed_regex.test(seed.seed))
     
     
+        },
+    
+        getLeagueNames(leagues) {
+            let names = [];
+            for (league of leagues) {
+                names.push(this.league_map[league])
+            }
+    
+            return names.join(', ')
         },
     
         async save() {
@@ -451,7 +462,7 @@
 
 
                                         <div class="flex items-center space-x-2">
-                                            <p x-text="league_map[team.league]"></p>
+                                            <p x-text="getLeagueNames(team.league)"></p>
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="2" stroke="currentColor"
                                                 class="size-5 hover:text-red-500 transition-all hover:rotate-90 cursor-pointer"
@@ -470,7 +481,7 @@
                                                     class="hover:scale-101 cursor-pointer hover:underline"
                                                     @click="editCompetitor(c_index, t_index, cl_index)"></h5>
                                                 <div class="flex items-center space-x-2">
-                                                    <p x-text="league_map[competitor.league]"></p>
+                                                    <p x-text="getLeagueNames(competitor.league)"></p>
 
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                                         viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
@@ -519,7 +530,7 @@
                                 @click="editTeam(t_index)"></h4>
 
                             <div class="flex items-center space-x-2">
-                                <p x-text="league_map[team.league]"></p>
+                                <p x-text="getLeagueNames(team.league)"></p>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                     stroke="currentColor"
                                     class="size-5 hover:text-red-500 transition-all hover:rotate-90 cursor-pointer"
@@ -536,7 +547,7 @@
                                     <h5 x-text="competitor.name" class="hover:scale-101 cursor-pointer hover:underline"
                                         @click="editCompetitor(c_index, t_index)"></h5>
                                     <div class="flex items-center space-x-2">
-                                        <p x-text="league_map[competitor.league]"></p>
+                                        <p x-text="getLeagueNames(competitor.league)"></p>
 
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="2" stroke="currentColor"
@@ -566,7 +577,7 @@
                         <h5 x-text="competitor.name" class="hover:scale-101 cursor-pointer hover:underline"
                             @click="editCompetitor(c_index)"></h5>
                         <div class="flex items-center space-x-2">
-                            <p x-text="league_map[competitor.league]"></p>
+                            <p x-text="getLeagueNames(competitor.league)"></p>
 
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                 stroke="currentColor"
@@ -641,14 +652,17 @@
                         <input type="text" x-model="add.team.name" placeholder="Name" required>
                     </div>
 
-                    <div class="se-form-input">
-                        <select name="" x-model="add.team.league" id="">
-                            <option value="null">No league</option>
+                    <div class="se-form-input col-span-2 row-start-2">
+                        <select name="" x-model="add.team.league" id="" multiple>
+
                             <template x-for="[key, value] in Object.entries(league_map)" :key="key">
                                 <option :value="key" x-text="value"></option>
 
                             </template>
                         </select>
+                        <small>Hold <kbd>CTRL</kbd> or <kbd>⌘</kbd> whilst selecting/deseecting options. <strong>Select
+                                nothing for
+                                No-League</strong></small>
                     </div>
                     <div class="se-form-input">
                         <select name="" id="" x-model="add.team.club">
@@ -701,15 +715,28 @@
 
 
                 <div class="se-form-input">
-                    <select name="" x-model="edit.team.league" id="">
-                        <option value="null">No league</option>
+
+
+
+
+                    <select name="" x-model="edit.team.league" id="team-leagues" multiple>
+
                         <template x-for="[key, value] in Object.entries(league_map)" :key="key">
                             <option :value="key" x-text="value"></option>
 
                         </template>
                     </select>
+
+                    <small>Hold <kbd>CTRL</kbd> or <kbd>⌘</kbd> whilst selecting/deseecting options. <strong>Select
+                            nothing for
+                            No-League</strong></small>
+
+
                 </div>
             </div>
+
+
+
 
 
             <template x-if="seed_settings.use_seeds">
@@ -721,7 +748,8 @@
                                 <label for="" x-text="event.name" x-show="seed_settings.seed_per_event"></label>
                                 <input type="text" x-mask="99:99.999" placeholder="01:23.456" name=""
                                     id="" x-model="edit.team.seeds[event.id].seed">
-                                <small x-show="checkSeedTime(edit.team.seeds[event.id])">This seed will not be saved! It
+                                <small x-show="checkSeedTime(edit.team.seeds[event.id])">This seed will not be saved!
+                                    It
                                     must be empty or match
                                     format 12:34.567</small>
                             </div>
@@ -740,14 +768,17 @@
                         <input type="text" x-model="add.competitor.name" placeholder="Name" required>
                     </div>
 
-                    <div class="se-form-input">
-                        <select name="" x-model="add.competitor.league" id="">
-                            <option value="null">No league</option>
+                    <div class="se-form-input col-span-2 row-start-2">
+                        <select name="" x-model="add.competitor.league" id="" multiple>
+
                             <template x-for="[key, value] in Object.entries(league_map)" :key="key">
                                 <option :value="key" x-text="value"></option>
 
                             </template>
                         </select>
+                        <small>Hold <kbd>CTRL</kbd> or <kbd>⌘</kbd> whilst selecting/deseecting options. <strong>Select
+                                nothing for
+                                No-League</strong></small>
                     </div>
 
                     <div class="se-form-input">
@@ -821,13 +852,16 @@
                 </div>
 
                 <div class="se-form-input">
-                    <select name="" x-model="edit.competitor.league" id="">
-                        <option value="null">No league</option>
+                    <select name="" x-model="edit.competitor.league" id="" multiple>
+
                         <template x-for="[key, value] in Object.entries(league_map)" :key="key">
                             <option :value="key" x-text="value"></option>
 
                         </template>
                     </select>
+                    <small>Hold <kbd>CTRL</kbd> or <kbd>⌘</kbd> whilst selecting/deseecting options. <strong>Select
+                            nothing for
+                            No-League</strong></small>
                 </div>
             </div>
 

@@ -102,7 +102,13 @@ abstract class Entity extends Model
 
     public function getLeague()
     {
-        return $this->hasOne(League::class, 'id', 'league');
+        return $this->leagues()->first();
+    }
+
+
+    public function leagues()
+    {
+        return $this->morphToMany(League::class, 'entity', 'leagueables');
     }
 
     public function data()

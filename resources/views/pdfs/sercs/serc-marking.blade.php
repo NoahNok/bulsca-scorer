@@ -81,7 +81,7 @@
                     <div class="flex justify-between items-center">
 
                         <h4>{{ $draw?->entity?->getName($comp) ?? '-' }}</h4>
-                        <p class="text-small text-gray-500">{{ $draw?->entity?->getLeague?->name ?? 'No League' }}
+                        <p class="text-small text-gray-500">{{ $draw?->entity?->getLeague()?->name ?? 'No League' }}
                         </p>
                     </div>
 

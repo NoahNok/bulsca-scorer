@@ -88,7 +88,7 @@ class CompetitionPdfCreator
                             });
 
                             $uniqueLeagues = $draw->map(function ($lane) use ($heatevent) {
-                                return $lane->entity?->getLeague->name;
+                                return $lane->entity?->getLeague()->name;
                             })->unique()->values()->implode(', ');
 
 
@@ -118,7 +118,7 @@ class CompetitionPdfCreator
                         });
 
                         $uniqueLeagues = $lanes->map(function ($lane) use ($heatevent) {
-                            return $lane->entity?->getLeague->name;
+                            return $lane->entity?->getLeague()->name;
                         })->unique()->values()->implode(', ');
 
                         $hd[] = ['name' => "Heat $heat_no ($uniqueLeagues)", 'data' => $lane_data, 'number' => $heat_no];

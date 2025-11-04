@@ -223,7 +223,7 @@
                             @php
                                 $uniqueLeagues = $draw
                                     ->map(function ($drawEntry) {
-                                        return $drawEntry->entity?->getLeague->name ?? null;
+                                        return $drawEntry->entity?->getLeague()->name ?? null;
                                     })
                                     ->filter()
                                     ->unique()

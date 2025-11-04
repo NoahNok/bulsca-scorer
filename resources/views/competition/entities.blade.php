@@ -113,7 +113,7 @@
             </thead>
             <tbody>
 
-                @foreach ($comp->getClubs()->with('getTeams.getCompetitors.getLeague', 'getTeams.getSeeds', 'getTeams.getCompetitors.getSeeds')->get() as $club)
+                @foreach ($comp->getClubs()->with('getTeams.getCompetitors.leagues', 'getTeams.getSeeds', 'getTeams.getCompetitors.getSeeds')->get() as $club)
                     @if ($club->getTeams->count() == 0)
                         <tr>
                             <th scope="row">
@@ -153,7 +153,7 @@
                                         -
                                     </td>
                                     <td>
-                                        {{ $team->getLeague->name ?? '-' }}
+                                        {{ $team->leagues->pluck('name')->join(', ') ?? '-' }}
                                     </td>
                                     @if ($comp->use_seeds)
                                         @if ($comp->seed_per_event)
@@ -184,7 +184,7 @@
                                             {{ $competitor->name }}
                                         </td>
                                         <td>
-                                            {{ $competitor->getLeague->name ?? '-' }}
+                                            {{ $competitor->leagues->pluck('name')->join(', ') ?? '-' }}
                                         </td>
                                         @if ($comp->use_seeds)
                                             @if ($comp->seed_per_event)
@@ -210,7 +210,7 @@
                 {{-- Loose Teams --}}
 
 
-                @foreach ($comp->getCompetitionTeams()->whereNull('club')->with('getCompetitors.getLeague', 'getSeeds', 'getCompetitors.getSeeds')->get() as $team)
+                @foreach ($comp->getCompetitionTeams()->whereNull('club')->with('getCompetitors.leagues', 'getSeeds', 'getCompetitors.getSeeds')->get() as $team)
                     @if ($team->getCompetitors->count() == 0)
                         <tr>
                             <th scope="row">
@@ -224,7 +224,7 @@
                                 -
                             </td>
                             <td>
-                                {{ $team->getLeague->name ?? '-' }}
+                                {{ $team->leagues->pluck('name')->join(', ') ?? '-' }}
                             </td>
                             @if ($comp->use_seeds)
                                 @if ($comp->seed_per_event)
@@ -255,7 +255,7 @@
                                     {{ $competitor->name }}
                                 </td>
                                 <td>
-                                    {{ $competitor->getLeague->name ?? '-' }}
+                                    {{ $competitor->leagues->pluck('name')->join(', ') ?? '-' }}
                                 </td>
                                 @if ($comp->use_seeds)
                                     @if ($comp->seed_per_event)
@@ -278,7 +278,7 @@
 
                 {{-- Loose Competitors --}}
 
-                @foreach ($comp->getCompetitors()->whereNull('team')->with('getLeague', 'getSeeds')->get() as $competitor)
+                @foreach ($comp->getCompetitors()->whereNull('team')->with('leagues', 'getSeeds')->get() as $competitor)
                     <tr>
                         <th scope="row">
                             -
@@ -291,7 +291,7 @@
                             {{ $competitor->name }}
                         </td>
                         <td>
-                            {{ $competitor->getLeague->name ?? '-' }}
+                            {{ $competitor->leagues->pluck('name')->join(', ') ?? '-' }}
                         </td>
                         @if ($comp->use_seeds)
                             @if ($comp->seed_per_event)

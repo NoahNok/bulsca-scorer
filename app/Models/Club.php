@@ -158,6 +158,6 @@ class Club extends Entity
 
     public function getGrouping(): EntityGrouping
     {
-        return new EntityGrouping($this->id, null, null, $this->league);
+        return new EntityGrouping($this->id, null, null, $this->leagues()->orderBy('id')->first()?->id);
     }
 }
