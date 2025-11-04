@@ -6,6 +6,7 @@ use App\Models\AbstractClasses\Entity;
 use App\Models\Club;
 use App\Models\CompetitionTeam;
 use App\Models\Competitor;
+use App\Models\League;
 use Illuminate\Console\Command;
 
 class UpgradeEntityLeagues extends Command
@@ -44,7 +45,7 @@ class UpgradeEntityLeagues extends Command
 
     private function updateEntityLeague(Entity $entity)
     {
-        $league = $entity->getLeague;
+        $league = League::find($entity->league);
 
         if (!$league) return;
 
