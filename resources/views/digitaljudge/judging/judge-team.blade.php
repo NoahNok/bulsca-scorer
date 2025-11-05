@@ -1,7 +1,7 @@
 @extends('digitaljudge.mpa-layout')
 
 @section('title')
-    {{ $team->getName($comp) }} {{ $serc->getName() }}
+    {{ $serc->getName() }}
 @endsection
 
 @php

@@ -15,8 +15,8 @@
             <div class="mb-5 relative card" x-data="{ collapsed: true }">
 
                 <div @click="collapsed = !collapsed" class="flex justify-between items-center">
-                    <div class="flex space-x-5">
-                        <h3>{{ $dq->getHeat?->getTeam?->getFullname() ?? '-' }}
+                    <div class="flex items-center space-x-5">
+                        <h3>{{ $dq->getHeat?->entity?->getName($comp) ?? '-' }}
                         </h3>
                         @if ($dq->appealed)
                             <div class=" flex items-center justify-center ">
@@ -44,7 +44,7 @@
                     </div>
 
                     <div class="flex justify-between">
-                        <p><strong>Team</strong>: {{ $dq->getHeat?->getTeam?->getFullname() ?? '-' }}</p>
+                        <p><strong>Team</strong>: {{ $dq->getHeat?->entity->getName($comp) ?? '-' }}</p>
                         <p><strong>Turn</strong>: {{ $dq['turn'] ?? '-' }} <strong>Length</strong>:
                             {{ $dq['length'] ?? '-' }}
                         </p>

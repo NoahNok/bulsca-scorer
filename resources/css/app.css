@@ -1053,9 +1053,11 @@ aside {
 }
 
 
-// LIVE STUFF
+
 .finished {
-  @apply text-white;
+  @apply text-white!;
+
+
 
 
 }

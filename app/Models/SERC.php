@@ -334,7 +334,7 @@ class SERC extends Event
 
         // This new query takes into account larger outliers in seconds above the below threshold
         $outlierThreshold = 541; // Query use <, so this means any team time diff > 12m is an outlier
-        $res = DB::select('WITH base AS (SELECT team, sr.created_at, serc, ROW_NUMBER() OVER (PARTITION BY smp.id) AS rn FROM serc_results sr INNER JOIN serc_marking_points smp ON sr.marking_point=smp.id WHERE serc=?) (SELECT SUM(IF(btw<?,btw,0))/GREATEST(COUNT(IF(btw<?,1,NULL)),1) AS avg_time FROM (SELECT TIMESTAMPDIFF(SECOND, b1.created_at, b2.created_at) AS btw FROM base b1 INNER JOIN base b2 ON b1.rn=b2.rn-1) AS t);', [$this->id, $outlierThreshold, $outlierThreshold]);
+        $res = DB::select('WITH base AS (SELECT entity_id, sr.created_at, serc, ROW_NUMBER() OVER (PARTITION BY smp.id) AS rn FROM serc_results sr INNER JOIN serc_marking_points smp ON sr.marking_point=smp.id WHERE serc=?) (SELECT SUM(IF(btw<?,btw,0))/GREATEST(COUNT(IF(btw<?,1,NULL)),1) AS avg_time FROM (SELECT TIMESTAMPDIFF(SECOND, b1.created_at, b2.created_at) AS btw FROM base b1 INNER JOIN base b2 ON b1.rn=b2.rn-1) AS t);', [$this->id, $outlierThreshold, $outlierThreshold]);
 
 
         $avgTime = $res[0]->avg_time;
@@ -342,7 +342,7 @@ class SERC extends Event
 
         if ($avgTime <= 0) {
             // Try again with a bigger outlier thresh
-            $res = DB::select('WITH base AS (SELECT team, sr.created_at, serc, ROW_NUMBER() OVER (PARTITION BY smp.id) AS rn FROM serc_results sr INNER JOIN serc_marking_points smp ON sr.marking_point=smp.id WHERE serc=?) (SELECT SUM(IF(btw<?,btw,0))/GREATEST(COUNT(IF(btw<?,1,NULL)),1) AS avg_time FROM (SELECT TIMESTAMPDIFF(SECOND, b1.created_at, b2.created_at) AS btw FROM base b1 INNER JOIN base b2 ON b1.rn=b2.rn-1) AS t);', [$this->id, $outlierThreshold * 2, $outlierThreshold * 2]);
+            $res = DB::select('WITH base AS (SELECT entity_id, sr.created_at, serc, ROW_NUMBER() OVER (PARTITION BY smp.id) AS rn FROM serc_results sr INNER JOIN serc_marking_points smp ON sr.marking_point=smp.id WHERE serc=?) (SELECT SUM(IF(btw<?,btw,0))/GREATEST(COUNT(IF(btw<?,1,NULL)),1) AS avg_time FROM (SELECT TIMESTAMPDIFF(SECOND, b1.created_at, b2.created_at) AS btw FROM base b1 INNER JOIN base b2 ON b1.rn=b2.rn-1) AS t);', [$this->id, $outlierThreshold * 2, $outlierThreshold * 2]);
             $avgTime = $res[0]->avg_time;
 
             if ($avgTime < 0) {

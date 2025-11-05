@@ -40,11 +40,13 @@ class LiveController extends Controller
         $comp = $this->resolveComp($request);
         if ($comp instanceof \Illuminate\View\View) return $comp;
 
-        if ($comp->scoring_type == "rlss-nationals") {
-            return view('live.nationals', ['comp' => $comp]);
-        }
 
         return view('live.index', ['comp' => $comp]);
+    }
+
+    public function all()
+    {
+        return view('live.unavailable', ['message' => 'No competitions are currently available to view live.']);
     }
 
     public function liveData(Competition $comp)
@@ -87,7 +89,7 @@ class LiveController extends Controller
             });
         }
 
-        return response()->json(['sercsFinished' => $sercsFinished, 'avgTime' => (float) $avgTime, 'sercStartTime' => (int) $startTime, 'heatsFinished' => $comp->whichSpeedEventHeatsHaveFinished()]);
+        return response()->json(['sercsFinished' => $sercsFinished, 'avgTime' => (float) $avgTime, 'sercStartTime' => (int) $startTime]);
     }
 
     public function dqs(Request $request)

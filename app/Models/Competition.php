@@ -243,7 +243,7 @@ class Competition extends Model implements IInvitable
     {
 
         // This is much faster than doing it via ORM models. Reduce to one query instead of sercs * teams
-        $res = DB::select('SELECT sr.team AS team, COUNT(DISTINCT smp.serc) AS total FROM serc_results sr INNER JOIN serc_marking_points smp ON smp.id=sr.marking_point INNER JOIN sercs s ON s.id=smp.serc WHERE s.competition=? GROUP BY sr.team;', [$this->id]);
+        $res = DB::select('SELECT sr.entity_id AS team, COUNT(DISTINCT smp.serc) AS total FROM serc_results sr INNER JOIN serc_marking_points smp ON smp.id=sr.marking_point INNER JOIN sercs s ON s.id=smp.serc WHERE s.competition=? GROUP BY sr.entity_id;', [$this->id]);
 
         $teamsFinished = [];
 

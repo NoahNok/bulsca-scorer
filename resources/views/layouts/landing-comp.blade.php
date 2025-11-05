@@ -27,6 +27,11 @@
 
     <div class="  tabbed-bar mt-2 mb-4 ">
 
+        @if ($comp->can_be_live)
+            <a href="{{ route('live') }}?comp={{ $comp->id }}" target="_blank"
+                class="text-se! font-semibold! animate-pulse!">Live</a>
+        @endif
+
         <a href="{{ route('landing.competition', $comp->getSlug()) }}"
             class="@if (Route::currentRouteName() == 'landing.competition') active @endif">Info</a>
 

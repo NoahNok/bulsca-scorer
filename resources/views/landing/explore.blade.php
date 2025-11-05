@@ -18,6 +18,12 @@
                 <div class="mt-5">
                     {{-- <a href="{{ route('live', ['comp' => $ongoing->id]) }}" class="se-btn se-btn-outline-primary">Live</a> --}}
 
+
+                    @if ($ongoing->can_be_live)
+                        <a href="{{ route('live') }}?comp={{ $ongoing->id }}"
+                            class="se-btn se-btn-primary animate-pulse">Live</a>
+                    @endif
+
                     <a href="{{ route('landing.competition.heats-draws', $ongoing->getSlug()) }}"
                         class="se-btn se-btn-outline-primary">Heats &
                         Draws</a>
