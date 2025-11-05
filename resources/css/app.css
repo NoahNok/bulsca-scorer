@@ -51,6 +51,22 @@
   }
 }
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-200%); }
+  }
+
+  .animate-marquee {
+    animation: marquee 200s linear infinite;
+  }
+}
+
+
 @theme {
 
   --font-sans:

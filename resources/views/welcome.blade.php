@@ -15,9 +15,93 @@
 
         <div class="
             w-full 2xl:w-[75%]  ">
-            <h1 class="text-4xl! md:text-6xl! tracking-tight font-extrabold! text-white  ">Score the
-                Action.<br><span class="text-se-accent text-5xl! md:text-7xl! ">Own the
-                    Moment.</span></h1>
+            <div class=" md:hidden">
+                <h1 class=" text-6xl! tracking-tight font-extrabold! text-white  ">Scoring.<br><span
+                        class="text-se-accent text-5xl! md:text-7xl! ">Events</span></h1>
+            </div>
+
+
+
+            <div class="relative w-full  whitespace-nowrap h-32 hidden md:block">
+                <div class="absolute top-0 flex w-full right-full space-x-36 animate-marquee transition-colors  ">
+                    <h1
+                        class="text-4xl! md:text-6xl! tracking-tight font-extrabold! text-white group hover:text-se-accent! transition-colors  ">
+                        Scoring.<br><span
+                            class="text-se-accent text-5xl! md:text-7xl! group-hover:text-white! transition-colors ">Events</span>
+                    </h1>
+                    <h1
+                        class="text-4xl! md:text-6xl! tracking-tight font-extrabold! text-se-accent group hover:text-white! transition-colors ">
+                        Scoring.<br><span
+                            class="text-white text-5xl! md:text-7xl! group-hover:text-se-accent! transition-colors ">Events</span>
+                    </h1>
+
+
+                    <h1
+                        class="text-4xl! md:text-6xl! tracking-tight font-extrabold! text-white group hover:text-se-accent! transition-colors  ">
+                        Scoring.<br><span
+                            class="text-se-accent text-5xl! md:text-7xl! group-hover:text-white! transition-colors ">Events</span>
+                    </h1>
+                    <h1
+                        class="text-4xl! md:text-6xl! tracking-tight font-extrabold! text-se-accent group hover:text-white! transition-colors ">
+                        Scoring.<br><span
+                            class="text-white text-5xl! md:text-7xl! group-hover:text-se-accent! transition-colors ">Events</span>
+                    </h1>
+                    <h1
+                        class="text-4xl! md:text-6xl! tracking-tight font-extrabold! text-white group hover:text-se-accent! transition-colors  ">
+                        Scoring.<br><span
+                            class="text-se-accent text-5xl! md:text-7xl! group-hover:text-white! transition-colors ">Events</span>
+                    </h1>
+                    <h1
+                        class="text-4xl! md:text-6xl! tracking-tight font-extrabold! text-se-accent group hover:text-white! transition-colors ">
+                        Scoring.<br><span
+                            class="text-white text-5xl! md:text-7xl! group-hover:text-se-accent! transition-colors ">Events</span>
+                    </h1>
+                    <h1
+                        class="text-4xl! md:text-6xl! tracking-tight font-extrabold! text-white group hover:text-se-accent! transition-colors  ">
+                        Scoring.<br><span
+                            class="text-se-accent text-5xl! md:text-7xl! group-hover:text-white! transition-colors ">Events</span>
+                    </h1>
+                    <h1
+                        class="text-4xl! md:text-6xl! tracking-tight font-extrabold! text-se-accent group hover:text-white! transition-colors ">
+                        Scoring.<br><span
+                            class="text-white text-5xl! md:text-7xl! group-hover:text-se-accent! transition-colors ">Events</span>
+                    </h1>
+                    <h1
+                        class="text-4xl! md:text-6xl! tracking-tight font-extrabold! text-white group hover:text-se-accent! transition-colors  ">
+                        Scoring.<br><span
+                            class="text-se-accent text-5xl! md:text-7xl! group-hover:text-white! transition-colors ">Events</span>
+                    </h1>
+                    <h1
+                        class="text-4xl! md:text-6xl! tracking-tight font-extrabold! text-se-accent group hover:text-white! transition-colors ">
+                        Scoring.<br><span
+                            class="text-white text-5xl! md:text-7xl! group-hover:text-se-accent! transition-colors ">Events</span>
+                    </h1>
+                    <h1
+                        class="text-4xl! md:text-6xl! tracking-tight font-extrabold! text-white group hover:text-se-accent! transition-colors  ">
+                        Scoring.<br><span
+                            class="text-se-accent text-5xl! md:text-7xl! group-hover:text-white! transition-colors ">Events</span>
+                    </h1>
+                    <h1
+                        class="text-4xl! md:text-6xl! tracking-tight font-extrabold! text-se-accent group hover:text-white! transition-colors ">
+                        Scoring.<br><span
+                            class="text-white text-5xl! md:text-7xl! group-hover:text-se-accent! transition-colors ">Events</span>
+                    </h1>
+                    <h1
+                        class="text-4xl! md:text-6xl! tracking-tight font-extrabold! text-white group hover:text-se-accent! transition-colors  ">
+                        Scoring.<br><span
+                            class="text-se-accent text-5xl! md:text-7xl! group-hover:text-white! transition-colors ">Events</span>
+                    </h1>
+                    <h1
+                        class="text-4xl! md:text-6xl! tracking-tight font-extrabold! text-se-accent group hover:text-white! transition-colors ">
+                        Scoring.<br><span
+                            class="text-white text-5xl! md:text-7xl! group-hover:text-se-accent! transition-colors ">Events</span>
+                    </h1>
+
+
+                </div>
+            </div>
+
+
 
             <br>
 
