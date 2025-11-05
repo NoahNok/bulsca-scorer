@@ -42,7 +42,7 @@
             @endphp
 
             @foreach ($comps as $comp)
-                <x-competition-card url="{{ route('landing.competition', $comp->getSlug()) }}" :comp="$comp"
+                <x-competition-card url="{{ route('live') }}?comp={{ $comp->id }}" :comp="$comp"
                     class=" "></x-competition-card>
             @endforeach
 
