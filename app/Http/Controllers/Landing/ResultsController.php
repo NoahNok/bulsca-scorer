@@ -84,12 +84,12 @@ class ResultsController extends Controller
         $results = $rawResults->map(function ($r) use ($comp) {
             return [
                 'name' => $r->entity->getName($comp),
-                'points' => round($r->totalPoints),
+                'points' => round($r->totalPoints, 1),
                 'position' => $r->position,
                 ...$r->events->mapWithKeys(fn($res) => [
                     "{$res->event->id}:{$res->event->getType()}" => [
                         'position' => $res->position,
-                        'points' => round($res->adjustedPoints),
+                        'points' => round($res->adjustedPoints, 1),
                     ],
                 ]),
             ];
@@ -266,7 +266,7 @@ class Tablify
         return match ($column) {
             'name' => $is_combined ? ['type' => 'string-array', 'data' => $result->combined->map(fn($item) => $item->entity->getName($this->comp))->toArray()] : $result->entity->getName($this->comp),
             'position' => $result->position,
-            'points' => $result->isDisqualified() && !$this->show_dq_points ? 'DQ' : round($result->points),
+            'points' => $result->isDisqualified() && !$this->show_dq_points ? 'DQ' : round($result->points, 1),
             'result' => $this->resolveResult($result, $is_combined),
             'disqualifications' => $this->resolveDisqualifications($result, $is_combined),
             'penalties' => $this->resolvePenalties($result),
