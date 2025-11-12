@@ -52,7 +52,7 @@
                                 {{ $l }}
                             </div>
                             <div class="card justify-center">
-                                {{ $lane?->getOOF($speed->id)->oof ?? '-' }}
+                                {{ $lane?->oof?->oof ?? '-' }}
                             </div>
 
 

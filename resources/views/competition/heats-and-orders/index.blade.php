@@ -71,7 +71,14 @@
                 </div>
 
             @empty
-                <a href="{{ route('comps.heats_and_draws.heats.generate', $comp) }}" class="se-btn">Generate Heats</a>
+                @if ($comp->getSpeedEvents->count() == 0)
+                    <div class="alert-box">
+                        <h1>Heats</h1>
+                        <p>You must add a Speed Event before you can generate heats.</p>
+                    </div>
+                @else
+                    <a href="{{ route('comps.heats_and_draws.heats.generate', $comp) }}" class="se-btn">Generate Heats</a>
+                @endif
             @endforelse
 
 

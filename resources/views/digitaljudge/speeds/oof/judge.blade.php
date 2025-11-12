@@ -43,8 +43,8 @@
                         'id' => $pLane->entity->id,
                     ];
 
-                    if ($pLane->getOOF($speed->id) != null) {
-                        $lanes[$lane]['place'] = $pLane->getOOF($speed->id)->oof;
+                    if ($pLane->oof != null) {
+                        $lanes[$lane]['place'] = $pLane->oof->oof;
                         $hasAssigned = true;
                     }
 

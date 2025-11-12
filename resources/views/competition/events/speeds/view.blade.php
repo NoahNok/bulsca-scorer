@@ -152,7 +152,7 @@
                                                     @endphp
                                                     @if ($h)
                                                         H{{ $h->heat }}L{{ $h->lane }}:
-                                                        {{ $h->getOOF($event->id)?->oof ?: '-' }}
+                                                        {{ $h->oof?->oof ?: '-' }}
                                                     @else
                                                         -
                                                     @endif
