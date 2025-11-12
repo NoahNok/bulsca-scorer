@@ -312,9 +312,12 @@
                             @foreach ($comp->getHeats()[0]['heats'] as $heat_no => $lanes)
                                 <optgroup label="Heat {{ $heat_no }}">
                                     @foreach ($lanes->sortBy('lane') as $lane)
+                                        @if ($lane->entity == null)
+                                            @continue
+                                        @endif
                                         <option value="{{ $lane->id }}">
                                             {{ $lane->heat }}-{{ $lane->lane }}:
-                                            {{ $lane->entity->getName($comp) }}
+                                            {{ $lane->entity?->getName($comp) ?? '-' }}
                                         </option>
                                     @endforeach
                                 </optgroup>
