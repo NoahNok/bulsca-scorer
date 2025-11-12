@@ -18,16 +18,17 @@
         <div>
             <h3 class="mb-0">Events</h3>
             <br>
+
             <div class="grid-2">
                 @foreach ($comp->getSpeedEvents as $event)
-                    <button class="se-btn">
+                    <button class="se-btn se-btn-disabled">
                         <p class="text-lg font-semibold">{{ $event->getName() }}</p>
 
 
                     </button>
                 @endforeach
                 @foreach ($comp->getSERCs as $event)
-                    <button class="se-btn flex items-center justify-center space-x-2">
+                    <button class="se-btn flex items-center justify-center space-x-2 se-btn-disabled">
                         <span class="badge badge-sm">SERC</span>
                         <p class="text-lg font-semibold">{{ $event->name }}</p>
 
@@ -38,6 +39,7 @@
                 @endforeach
 
             </div>
+
         </div>
 
         <div>

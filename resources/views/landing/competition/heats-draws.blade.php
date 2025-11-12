@@ -11,10 +11,10 @@
 
         $first_item = 'heats';
 
-        if ($comp->heats_per_event && count($events) > 0) {
+        if ($comp->heats_per_event && count($events) > 0 && $comp->show_heats) {
             $event = $events[0]['event'];
             $first_item = "sp:{$event->id}";
-        } elseif (count($events) == 0) {
+        } elseif (count($events) == 0 || !$comp->show_heats) {
             $first_item = 'sercs';
         }
 
@@ -60,18 +60,22 @@
 
 
         <div class="tabbed-bar mb-4 ">
-            @if ($comp->heats_per_event)
-                @foreach ($events as $heatevent)
-                    <div @click="open = 'sp:{{ $heatevent['event']->id }}'"
-                        :class="open == 'sp:{{ $heatevent['event']->id }}' ? 'active' : ''">
-                        {{ $heatevent['event']->getName() }}</div>
-                @endforeach
-            @else
-                <div @click="open = 'heats'" :class="open == 'heats' ? 'active' : ''">Heats</div>
+            @if ($comp->show_heats)
+                @if ($comp->heats_per_event)
+                    @foreach ($events as $heatevent)
+                        <div @click="open = 'sp:{{ $heatevent['event']->id }}'"
+                            :class="open == 'sp:{{ $heatevent['event']->id }}' ? 'active' : ''">
+                            {{ $heatevent['event']->getName() }}</div>
+                    @endforeach
+                @else
+                    <div @click="open = 'heats'" :class="open == 'heats' ? 'active' : ''">Heats</div>
+                @endif
             @endif
 
-            <div @click="open = 'sercs'" :class="open == 'sercs' ? 'active' : ''">
-                Initiatives</div>
+            @if (count($sercs) > 0 && $comp->show_draws)
+                <div @click="open = 'sercs'" :class="open == 'sercs' ? 'active' : ''">
+                    Draws</div>
+            @endif
 
             {{-- @foreach ($sercs as $heatevent)
                 <div @click="open = 'se:{{ $heatevent['serc']->id }}'"
@@ -82,195 +86,200 @@
         </div>
 
 
-
-        @php
-            $allHeats = $events;
-
-            if (count($allHeats) > 0 && !$comp->heats_per_event) {
-                $allHeats = [$allHeats[0]];
-            }
-        @endphp
-
-        @forelse ($allHeats as $heatevent)
-
+        @if ($comp->show_heats)
             @php
+                $allHeats = $events;
 
-                $speed_key = $comp->heats_per_event ? "sp:{$heatevent['event']->id}" : 'heats';
+                if (count($allHeats) > 0 && !$comp->heats_per_event) {
+                    $allHeats = [$allHeats[0]];
+                }
             @endphp
 
+            @forelse ($allHeats as $heatevent)
+                @php
 
-
-            <div class=" hidden" :class="displayMode == 'grid' ? 'grid-4' : 'flex! flex-col space-y-5'"
-                x-data="{
-                
-                    children: [],
-                
-                    shouldShow() {
-                        return open == '{{ $speed_key }}' || (search.trim() != '' && this.children.some(Boolean))
-                
-                
-                    }
-                }" x-show.important="shouldShow" x-transition>
+                    $speed_key = $comp->heats_per_event ? "sp:{$heatevent['event']->id}" : 'heats';
+                @endphp
 
 
 
-
-
-
-                @foreach ($heatevent['heats'] as $heat_no => $lanes)
-                    @php
-                        $names = $lanes->map(fn($lane) => $lane->entity?->getName($comp))->filter()->implode(' ');
-                    @endphp
-
-                    <div class="flex flex-col space-x-2 " x-data="{
-                        shouldShow() {
-                            let show = search.trim() === '' || `{{ strtolower($names) }}`.includes(search.trim().toLowerCase())
-                            children['{{ $heat_no }}'] = show
-                            return show;
-                        }
-                    }" x-show="shouldShow">
-
-                        <div class="flex space-x-3">
-                            <h3 class="font-bold mb-2">L</h3>
-                            <h3 class="font-bold  mb-2">Heat {{ $heat_no }}</h3>
-                        </div>
-
-                        <div class="space-y-2">
-
-                            @for ($i = 0; $i < $comp->max_lanes; $i++)
-                                @php
-                                    $lane = $lanes->where('lane', $i + 1)->first();
-                                @endphp
-                                <div class="flex items-center w-full space-x-3" x-data="{
-                                    shouldShow() {
-                                        let show = search.trim() === '' || `{{ strtolower($lane?->entity?->getName($comp) ?? '-') }}`.includes(search.trim().toLowerCase())
-                                
-                                        return show;
-                                    }
-                                }"
-                                    x-show="shouldShow()">
-                                    <h4 class="font-bold ">{{ $i + 1 }}</h4>
-                                    <div class="se-card  se-card-body min-w-56 p-2! px-4! rounded w-full"
-                                        :class="(search.trim() !== '' &&
-                                            `{{ strtolower($lane?->entity?->getName($comp) ?? '-') }}`
-                                            .includes(search.trim().toLowerCase())) ? 'se-card-success' : ''">
-                                        {{ $lane?->entity?->getName($comp) ?? '-' }}
-                                    </div>
-                                </div>
-                            @endfor
-
-
-                        </div>
-
-
-
-
-                    </div>
-                @endforeach
-
-
-            </div>
-
-        @empty
-            <div class="alert-box alert-warning md:w-1/3">
-
-                <p>Heats are not currently available, please check back later.</p>
-            </div>
-        @endforelse
-
-
-
-
-
-
-
-
-        @php
-            $use_tanks = $comp->getScoringSettings->use_tanks;
-        @endphp
-
-        @forelse ($sercs as $heatevent)
-
-
-
-            <div class="hidden" :class="displayMode == 'grid' ? 'grid-4' : 'flex! flex-col space-y-5'">
-
-
-
-                @foreach ($heatevent['draws'] as $tank_no => $draw)
-                    @php
-                        $names = $draw->map(fn($lane) => $lane->entity?->getName($comp))->filter()->implode(' ');
-                    @endphp
-
-                    <div x-data="{
+                <div class=" hidden" :class="displayMode == 'grid' ? 'grid-4' : 'flex! flex-col space-y-5'"
+                    x-data="{
                     
                         children: [],
                     
                         shouldShow() {
-                    
-                            if (search.trim() != '') {
-                                return this.children.some(Boolean)
-                            }
-                    
-                            return open == 'sercs'
+                            return open == '{{ $speed_key }}' || (search.trim() != '' && this.children.some(Boolean))
                     
                     
                         }
-                    }" x-show="shouldShow" x-transition>
-                        @if ($use_tanks)
-                            <h2 class="-mb-1!">Tank {{ $tank_no + 1 }}</h2>
-
-                            @php
-                                $uniqueLeagues = $draw
-                                    ->map(function ($drawEntry) {
-                                        return $drawEntry->entity?->getLeague()->name ?? null;
-                                    })
-                                    ->filter()
-                                    ->unique()
-                                    ->values()
-                                    ->implode(', ');
-
-                            @endphp
-
-                            <small class="text-gray-600 font-semibold">{{ $uniqueLeagues }}</small>
-                        @else
-                            <h2 class="-mb-1!">
-                                Draw
-                            </h2>
-                        @endif
+                    }" x-show.important="shouldShow" x-transition>
 
 
 
-                        <div class="flex flex-col space-y-2 mt-2">
-                            @foreach ($draw as $drawEntry)
-                                <div class="se-card  se-card-body min-w-56 p-2! px-4! rounded " x-data="{
-                                    shouldShow() {
-                                        let show = search.trim() === '' || `{{ strtolower($drawEntry->entity?->getName($comp) ?? '-') }}`.includes(search.trim().toLowerCase())
-                                        children['{{ $drawEntry->draw }}'] = show
-                                        return show;
-                                    }
-                                }"
-                                    x-show="shouldShow"
-                                    :class="(shouldShow && search.trim()) != '' ? 'se-card-success' : ''">
-                                    {{ $drawEntry->draw }}.
-                                    {{ $drawEntry->entity?->getName($comp) ?? '-' }}</div>
-                            @endforeach
+
+
+
+                    @foreach ($heatevent['heats'] as $heat_no => $lanes)
+                        @php
+                            $names = $lanes->map(fn($lane) => $lane->entity?->getName($comp))->filter()->implode(' ');
+                        @endphp
+
+                        <div class="flex flex-col space-x-2 " x-data="{
+                            shouldShow() {
+                                let show = search.trim() === '' || `{{ strtolower($names) }}`.includes(search.trim().toLowerCase())
+                                children['{{ $heat_no }}'] = show
+                                return show;
+                            }
+                        }" x-show="shouldShow">
+
+                            <div class="flex space-x-3">
+                                <h3 class="font-bold mb-2">L</h3>
+                                <h3 class="font-bold  mb-2">Heat {{ $heat_no }}</h3>
+                            </div>
+
+                            <div class="space-y-2">
+
+                                @for ($i = 0; $i < $comp->max_lanes; $i++)
+                                    @php
+                                        $lane = $lanes->where('lane', $i + 1)->first();
+                                    @endphp
+                                    <div class="flex items-center w-full space-x-3" x-data="{
+                                        shouldShow() {
+                                            let show = search.trim() === '' || `{{ strtolower($lane?->entity?->getName($comp) ?? '-') }}`.includes(search.trim().toLowerCase())
+                                    
+                                            return show;
+                                        }
+                                    }"
+                                        x-show="shouldShow()">
+                                        <h4 class="font-bold ">{{ $i + 1 }}</h4>
+                                        <div class="se-card  se-card-body min-w-56 p-2! px-4! rounded w-full"
+                                            :class="(search.trim() !== '' &&
+                                                `{{ strtolower($lane?->entity?->getName($comp) ?? '-') }}`
+                                                .includes(search.trim().toLowerCase())) ? 'se-card-success' : ''">
+                                            {{ $lane?->entity?->getName($comp) ?? '-' }}
+                                        </div>
+                                    </div>
+                                @endfor
+
+
+                            </div>
+
+
+
+
                         </div>
+                    @endforeach
 
 
+                </div>
 
-
-                    </div>
-                @endforeach
-
-
-            </div>
-        @empty
+            @empty
+                <div class="alert-box alert-warning md:w-1/3">
+                    <p>Heats are not currently available, please check back later.</p>
+                </div>
+            @endforelse
+        @else
             <div class="alert-box alert-warning md:w-1/3">
-
-                <p>Draws are not currently available, please check back later.</p>
+                <p>Heats have not been released, please check back later.</p>
             </div>
-        @endforelse
+        @endif
+
+
+
+
+
+
+
+        @if ($comp->show_draws)
+            @php
+                $use_tanks = $comp->getScoringSettings->use_tanks;
+            @endphp
+
+            @forelse ($sercs as $heatevent)
+                <div class="hidden" :class="displayMode == 'grid' ? 'grid-4' : 'flex! flex-col space-y-5'">
+
+
+
+                    @foreach ($heatevent['draws'] as $tank_no => $draw)
+                        @php
+                            $names = $draw->map(fn($lane) => $lane->entity?->getName($comp))->filter()->implode(' ');
+                        @endphp
+
+                        <div x-data="{
+                        
+                            children: [],
+                        
+                            shouldShow() {
+                        
+                                if (search.trim() != '') {
+                                    return this.children.some(Boolean)
+                                }
+                        
+                                return open == 'sercs'
+                        
+                        
+                            }
+                        }" x-show="shouldShow" x-transition>
+                            @if ($use_tanks)
+                                <h2 class="-mb-1!">Tank {{ $tank_no + 1 }}</h2>
+
+                                @php
+                                    $uniqueLeagues = $draw
+                                        ->map(function ($drawEntry) {
+                                            return $drawEntry->entity?->getLeague()->name ?? null;
+                                        })
+                                        ->filter()
+                                        ->unique()
+                                        ->values()
+                                        ->implode(', ');
+
+                                @endphp
+
+                                <small class="text-gray-600 font-semibold">{{ $uniqueLeagues }}</small>
+                            @else
+                                <h2 class="-mb-1!">
+                                    Draw
+                                </h2>
+                            @endif
+
+
+
+                            <div class="flex flex-col space-y-2 mt-2">
+                                @foreach ($draw as $drawEntry)
+                                    <div class="se-card  se-card-body min-w-56 p-2! px-4! rounded " x-data="{
+                                        shouldShow() {
+                                            let show = search.trim() === '' || `{{ strtolower($drawEntry->entity?->getName($comp) ?? '-') }}`.includes(search.trim().toLowerCase())
+                                            children['{{ $drawEntry->draw }}'] = show
+                                            return show;
+                                        }
+                                    }"
+                                        x-show="shouldShow"
+                                        :class="(shouldShow && search.trim()) != '' ? 'se-card-success' : ''">
+                                        {{ $drawEntry->draw }}.
+                                        {{ $drawEntry->entity?->getName($comp) ?? '-' }}</div>
+                                @endforeach
+                            </div>
+
+
+
+
+                        </div>
+                    @endforeach
+
+
+                </div>
+            @empty
+                <div class="alert-box alert-warning md:w-1/3">
+
+                    <p>Draws are not currently available, please check back later.</p>
+                </div>
+            @endforelse
+        @else
+            <div class="alert-box alert-warning md:w-1/3">
+                <p>Draws have not been released, please check back later.</p>
+            </div>
+        @endif
 
 
 

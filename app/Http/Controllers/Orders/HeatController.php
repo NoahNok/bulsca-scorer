@@ -41,6 +41,14 @@ class HeatController extends Controller
         }
     }
 
+    public function hide(Competition $comp)
+    {
+        $comp->show_heats = !$comp->show_heats;
+        $comp->save();
+
+        return redirect()->back();
+    }
+
     public function edit(Competition $comp, CompetitionSpeedEvent $event)
     {
         return view('competition.heats-and-orders.heats.edit', ['comp' => $comp, 'event' => $event]);

@@ -29,6 +29,15 @@ class DrawController extends Controller
         return redirect()->back()->with('success', 'Draw Generated');
     }
 
+    public function hide(Competition $comp)
+    {
+
+        $comp->show_draws = !$comp->show_draws;
+        $comp->save();
+
+        return redirect()->back();
+    }
+
     public function edit(Competition $comp, SERC $serc)
     {
 

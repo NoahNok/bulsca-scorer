@@ -148,7 +148,7 @@
         }
     }">
 
-        @if ($comp->results_provisional)
+        @if ($comp->public_results && $comp->results_provisional)
             <div class="alert-box alert-warning">
                 <h1>Provisional Results</h1>
                 <p>The results displayed here are provisional and may be subject to change.</p>

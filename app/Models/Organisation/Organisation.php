@@ -232,7 +232,7 @@ class Organisation extends Model implements IInvitable
 
     public function getOngoingCompetition(): ?Competition
     {
-        return $this->getCompetitions()->whereDate('when', Carbon::today())->first();
+        return $this->getCompetitions()->where('show_competition', true)->whereDate('when', Carbon::today())->first();
     }
 
     public function scoringSchemas()

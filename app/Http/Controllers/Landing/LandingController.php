@@ -14,9 +14,9 @@ class LandingController extends Controller
     public function explore()
     {
 
-        $comps = Competition::orderBy('when', 'desc')->paginate(12);
+        $comps = Competition::where('show_competition', true)->orderBy('when', 'desc')->paginate(12);
         $orgs = Organisation::orderBy('name')->paginate(12, ['*'], 'orgs_page');
-        $ongoing = Competition::whereDate('when', Carbon::today())->first();
+        $ongoing = Competition::where('show_competition', true)->whereDate('when', Carbon::today())->first();
 
 
         return view('landing.explore', compact(['comps', 'orgs', 'ongoing']));
@@ -53,6 +53,7 @@ class LandingController extends Controller
             END as relevance
             ", [$search, "$search%", "%$search%"])
             ->where('name', 'LIKE', "%$search%")
+            ->where('show_competition', true)
             ->orderByDesc('relevance')->limit(6)->get();
 
         $comps = [];

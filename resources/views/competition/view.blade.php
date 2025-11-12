@@ -489,11 +489,24 @@
                             <x-se-input name="timezone" type="hidden" x-init="self.data = Intl.DateTimeFormat().resolvedOptions().timeZone;" section="setup" />
 
 
-                            <x-se-input label="Viewable Live" name="can_be_live" type="checkbox" :default="$comp->can_be_live"
-                                section="setup" />
+                            <x-se-input label="Public Competition" class="grow-0!" name="show_competition" type="checkbox"
+                                :default="$comp->show_competition" section="setup">
+                                <x-slot name="description">
+                                    <small>If this competition shows up in Explore and Search</small>
+                                </x-slot>
+                            </x-se-input>
+
+                            <x-se-input label="Live" class="grow-0!" name="can_be_live" type="checkbox" :default="$comp->can_be_live"
+                                section="setup">
+                                <x-slot name="description">
+                                    <small>If this competition can be viewed at live.scoring.events</small>
+                                </x-slot>
+                            </x-se-input>
+
+
 
                             <x-se-input label="Select League First" class="grow-0!" name="select_league_first"
-                                type="checkbox" :default="$comp->select_league_first" section="results">
+                                type="checkbox" :default="$comp->select_league_first" section="setup">
                                 <x-slot name="description">
                                     <small>If users viewing results need to select a league first</small>
                                 </x-slot>
