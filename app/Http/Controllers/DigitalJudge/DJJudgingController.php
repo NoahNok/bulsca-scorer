@@ -243,6 +243,8 @@ class DJJudgingController extends Controller
 
         $data = [];
 
+        $comp = DigitalJudge::getClientCompetition();
+
         foreach (DigitalJudge::getClientJudges() as $judge) {
 
             $head = DigitalJudge::isClientHeadJudge();
@@ -257,7 +259,7 @@ class DJJudgingController extends Controller
 
                 foreach ($judge->getSERC->getDraw as $draw) {
                     $mpData['marks'][] = [
-                        'team' => DigitalJudge::getClientCompetition()->show_teams_to_judges || $head ? $draw->entity->getName() : $draw->draw,
+                        'team' => $comp->show_teams_to_judges || $head ? $draw->entity->getName($comp) : $draw->draw,
                         'mark' => $mp->getScoreForTeam($draw->entity)
                     ];
                 }
