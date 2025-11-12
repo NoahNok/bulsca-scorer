@@ -63,22 +63,27 @@ class CompetitionPdfCreator
 
                     if ($use_tanks) {
                         $draws = $heatevent['draws'];
-                        $maxDraws = $draws->map->count()->max();
+                        $maxDraws = $draws->map(fn($d) => $d->max('draw'))->max() + 1;
 
-                        for ($i = 0; $i < $maxDraws; $i++) {
+                        for ($i = 1; $i < $maxDraws; $i++) {
                             $names = [];
                             foreach ($draws as $tank_no => $tank_draws) {
-                                if ($tank_draws->has($i)) {
+
+
+                                $tdraw = $tank_draws->where('draw', $i)->first();
+
+
+                                if ($tdraw) {
                                     $tank_no += 1;
-                                    $names[] = "Tank {$tank_no}: {$tank_draws[$i]->entity?->getName($this->comp)}\n";
+                                    $names[] = "Tank {$tank_no}: {$tdraw->entity?->getName($this->comp)}\n";
                                 } else {
                                     $names[] = "Tank " . ($tank_no + 1) . ": -\n";
                                 }
                             }
                             $names[] = "--------------------------";
 
-                            $draw_no = $i + 1;
-                            $hd[] = ['name' => "Draw {$draw_no}", 'data' => $names, 'number' => $i];
+
+                            $hd[] = ['name' => "Draw {$i}", 'data' => $names, 'number' => $i];
                         }
                     } else {
                         foreach ($heatevent['draws'] as $tank_no => $draw) {

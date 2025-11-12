@@ -72,7 +72,7 @@
                     </div>
 
                     <div class="flex w-full justify-between items-center">
-                        <p>Tank {{ $key + 1 }} | Draw {{ $draw_no + 1 }}</p>
+                        <p>Tank {{ $draw->tank }} | Draw {{ $draw->draw }}</p>
                         <p class=" font-semibold text-right">Initiative Judge</p>
                     </div>
 
