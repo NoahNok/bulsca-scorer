@@ -24,13 +24,17 @@
             <p>Heats will turn green once complete (unless no teams finish)</p>
         @endif
 
-        @foreach ($speed->getHeats()->with('oof')->get()->sortBy('heat')->groupBy('heat') as $heat => $lanes)
+        @foreach ($speed->getHeats()->with([
+                'oofs' => function ($query) use ($speed) {
+                    $query->where('event', $speed->id);
+                },
+            ])->get()->sortBy('heat')->groupBy('heat') as $heat => $lanes)
             @php
 
                 $hasResult = false;
 
                 foreach ($lanes as $lane) {
-                    if ($lane->oof) {
+                    if ($lane->oofs->count() > 0) {
                         $hasResult = true;
                         break;
                     }
