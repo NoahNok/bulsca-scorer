@@ -73,14 +73,20 @@
     
         },
     
-        async loadViolation(violation_id, violation_type) {
+        async loadViolation(violation_id, violation_type, team_name = '') {
             let url = this.violationUrl.replace('_id', violation_id).replace('_type', violation_type);
     
             let response = await fetch(url)
     
             if (response.ok) {
                 let data = await response.json()
+    
+                if (!data.for || data.for == '') {
+                    data.for = team_name;
+                }
+    
                 this.violationData = data
+    
     
                 this.modals.violation = true
             }
@@ -319,7 +325,8 @@
                                             <template x-if="type == 'violation'">
                                                 <div>
                                                     <template x-for="(violation, indx) in data">
-                                                        <span @click="loadViolation(violation['id'], violation['type'])"
+                                                        <span
+                                                            @click="loadViolation(violation['id'], violation['type'], row.data['name'])"
                                                             x-text="violation['display'] + (indx === data.length - 1 ? '' : ', ')"
                                                             class="hover:font-semibold cursor-pointer"></span>
                                                     </template>

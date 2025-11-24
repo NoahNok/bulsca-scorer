@@ -46,6 +46,19 @@ class Result
             return null;
         }
 
+        // Count how many P900 there are and add on to the string with a multiplier if more than 1
+        $penaltyMessage = "";
+
+        $p900Count = $pens->where('code', '900')->count();
+        if ($p900Count > 1) {
+            $pens = $pens->filter(fn($pen) => $pen->code != '900');
+            $pens->add("P900 (x$p900Count)");
+        }
+
+
+
+
+
         return $pens->map(fn($pen) => "$pen")->implode(', ');
     }
 

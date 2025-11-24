@@ -12,6 +12,7 @@ use App\Models\Event\Disqualification;
 use App\Models\Event\Penalty;
 use App\Models\League;
 use App\Models\MasterSchema;
+use App\Models\PenaltyCode;
 use App\Models\ResultSchema;
 use App\Models\SERC;
 use App\Models\SpeedResult;
@@ -131,6 +132,13 @@ class ResultsController extends Controller
 
         if ($violation_type == 'dq') {
             $violation = Disqualification::findOrFail($violation_id);
+        } else if ($violation_type == 'pen-special') {
+            return response()->json([
+                'code' => "P{$violation_id}",
+                'description' => PenaltyCode::message($violation_id, $comp->getOrganisation),
+                'submission' => null,
+
+            ]);
         } else {
             $violation = Penalty::findOrFail($violation_id);
         }
@@ -318,6 +326,22 @@ class Tablify
         if (!$result->hasPenalties()) {
             return '-';
         }
-        return ['type' => 'violation', 'data' => $result->penalties->map(fn(Penalty $p) => ['display' => "{$p}", 'id' => $p->id, 'type' => 'pen'])->values()->toArray()];
+
+        $penaltie_values = [];
+        $penalties = $result->penalties;
+
+        // Check for P900, remove all of them and add a single entry with the count if more than 1
+        $p900Count = $penalties->where('code', '900')->count();
+        if ($p900Count > 1) {
+            $penalties = $penalties->filter(fn($pen) => $pen->code != '900');
+            $penaltie_values[] = ['display' => "P900 (x$p900Count)", 'id' => 900, 'type' => 'pen-special'];
+        }
+
+        foreach ($penalties as $penalty) {
+            $penaltie_values[] = ['display' => "{$penalty}", 'id' => $penalty->id, 'type' => 'pen'];
+        }
+
+
+        return ['type' => 'violation', 'data' => $penaltie_values];
     }
 }
