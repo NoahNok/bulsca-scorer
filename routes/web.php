@@ -215,6 +215,9 @@ Route::middleware('auth')->group(function () {
 
                         Route::get('/scoring-settings', [SERCController::class, 'scoringSettings'])->name('comps.events.sercs.scoring-settings');
                         Route::post('/scoring-settings', [SERCController::class, 'saveScoringSettings'])->name('comps.events.sercs.scoring-settings.save');
+
+                        Route::get('/mark-splits', [SERCController::class, 'markSplits'])->name('comps.events.sercs.mark-splits');
+                        Route::get('/mark-splits/{judge}', [SERCController::class, 'loadMarkSplit'])->name('comps.events.sercs.mark-splits.judge');
                     });
                 });
             });

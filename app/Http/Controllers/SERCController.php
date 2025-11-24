@@ -379,4 +379,37 @@ class SERCController extends Controller
 
         return view('competition.events.sercs.print', ['comp' => $comp, 'serc' => $serc, 'data' => $data]);
     }
+
+    public function markSplits(Competition $comp, SERC $serc)
+    {
+        return view('competition.events.sercs.mark-splits', ['comp' => $comp, 'serc' => $serc]);
+    }
+
+    public function loadMarkSplit(Competition $comp, SERC $serc, SERCJudge $judge)
+    {
+        $marking_points = $serc->getMarkingPoints()->where('judge', $judge->id)->get();
+
+        $results = SERCResult::with('entity')->whereIn('marking_point', $marking_points->pluck('id'))->get();
+
+        // group by the entity and then order by marking point id
+        $grouped = $results->groupBy(function ($item) use ($comp) {
+            return $item->entity ? $item->entity->getName($comp) : 'Unknown';
+        })->map(function ($item) {
+            return $item->sortBy('marking_point')->map(function ($mp) {
+                return [
+
+                    'result' => $mp->result,
+                    'date_recorded' => $mp->created_at->toDateTimeString(),
+                ];
+            })->values();
+        });
+
+        $marking_point_names = $marking_points->sortBy('id')->map(function ($mp) {
+            return $mp->name;
+        })->toArray();
+
+        array_unshift($marking_point_names, 'Entity');
+
+        return response()->json(['mpn' => $marking_point_names, 'results' => $grouped]);
+    }
 }

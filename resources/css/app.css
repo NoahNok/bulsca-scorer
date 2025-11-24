@@ -214,6 +214,10 @@ input[type=number] {
     @apply  border-green-500  hover:border-green-600;
   }
 
+  &.se-card-se {
+    @apply border-se hover:border-se-accent;
+  }
+
   &.se-card-danger {
     @apply border-red-500 hover:border-red-600;
   }
