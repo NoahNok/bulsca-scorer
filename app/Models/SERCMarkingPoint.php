@@ -33,6 +33,16 @@ class SERCMarkingPoint extends Model
         //});
     }
 
+    
+    public function getLastUpdatedForTeam(Entity $entity)
+    {
+
+        $mpId = $this->id;
+
+        return SERCResult::where('marking_point', $mpId)->forEntity($entity)->first()?->updated_at ?: null;
+    }
+
+
     public function getJudge()
     {
         return $this->belongsTo(SERCJudge::class, 'judge', 'id');

@@ -39,6 +39,10 @@
                                 </th>
 
                                 <th scope="col">
+                                    Last Updated
+                                </th>
+
+                                <th scope="col">
                                     Value
                                 </th>
 
@@ -57,6 +61,9 @@
                                 <th scope="row">
                                     <span class="pl-4">Disqualification</span>
                                 </th>
+                                <td class="text-sm text-gray-600">
+                                    {{ $serc->getEntityDisqualifications($team)->first()?->updated_at?->format('Y-m-d H:i:s') ?? '' }}
+                                </td>
                                 <td class="table-input">
                                     <input class="table-input" table-cell table-cell-name="disqualification"
                                         placeholder="DQ###" x-data x-mask="DQ999" type="text"
@@ -67,6 +74,9 @@
                                 <th scope="row">
                                     <span class="pl-4">Penalties</span>
                                 </th>
+                                <td class="text-sm text-gray-600">
+                                    {{ $serc->getEntityPenalties($team)->first()?->updated_at?->format('Y-m-d H:i:s') ?? '' }}
+                                </td>
                                 <td class="table-input">
                                     <input class="table-input" table-cell table-cell-name="penalties" placeholder="P###"
                                         type="text"
@@ -88,6 +98,10 @@
                                             <span class="pl-4">{{ $mp->name }}</span>
                                         </th>
 
+                                        <td class="text-sm text-gray-600">
+                                            {{ $mp->getLastUpdatedForTeam($team)?->format('Y-m-d H:i:s') ?? '' }}
+                                        </td>
+
                                         <td class="table-input">
 
                                             <input class="table-input" table-cell table-cell-name="score" min="0"
@@ -96,9 +110,9 @@
 
                                         </td>
 
+                                        
 
-
-
+                                        
                                     </tr>
                                 @endforeach
 
