@@ -17,6 +17,31 @@
                 <a href="{{ route('comps.events.sercs.edit', [$comp, $serc]) }}" class="se-btn">Edit SERC Setup</a>
             </div>
 
+
+            @php
+
+                if ($totalResults == 0 || $totalPossibleResults == 0) {
+                    $resultPercent = 0;
+                } else {
+                    $resultPercent = $totalResults / $totalPossibleResults;
+                }
+
+                $class =
+                    $resultPercent < 0.4 ? 'badge-danger' : ($resultPercent >= 1 ? 'badge-success' : 'badge-orange');
+            @endphp
+
+            <div class=" -mt-3 font-archivo  ">
+                @if ($resultPercent < 1)
+                    <span class="badge badge-danger">Marking Incomplete</span>
+                    <span class="badge {{ $class }}">
+                        {{ $totalResults }}/{{ $totalPossibleResults }} Results
+                    </span>
+                @else
+                    <span class="badge badge-success">Marking Complete</span>
+                @endif
+
+            </div>
+
             <h4>Marked Teams</h4>
             <div class="  relative w-full overflow-x-auto  ">
                 @if ($serc->scoringSchema)
@@ -90,7 +115,7 @@
                                         <td class="flex justify-end items-center space-x-2">
 
                                             @if ($result->total_marking_points < $totalMPs)
-                                                <span class="mt-1"
+                                                <span class="mt-1 tooltip" data-tooltip="test"
                                                     title="Incomplete marking - {{ $result->total_marking_points }} / {{ $totalMPs }}">
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                                         viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"

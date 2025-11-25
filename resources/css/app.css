@@ -321,6 +321,10 @@ div.se-table {
     @apply bg-gray-400 text-white;
   }
 
+  &.badge-md {
+    @apply px-1.5 py-0.5 text-[0.8rem] ;
+  }
+
   &.badge-sm {
     @apply text-xs px-1 py-0.5;
   }
@@ -1061,6 +1065,18 @@ aside {
     }
   }
 
+  &.alert-success {
+    @apply bg-green-50 border-green-300 text-green-800;
+
+    h1 {
+      @apply text-green-800;
+    }
+
+    h1::before {
+      content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="rgb(22 101 52)" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>');
+    }
+  }
+
 
 }
 
@@ -1257,3 +1273,18 @@ aside {
     @apply relative pl-8 before:absolute before:left-1  before:top-1/2 before:-translate-y-[7px] before:size-4 before:text-se before:bg-[url('/resources/arrow.svg')] before:bg-no-repeat before:bg-contain before:flex before:items-center before:justify-center;
   }
 }
+
+[title] {
+  @apply relative cursor-pointer ;
+
+  &::after {
+    @apply absolute whitespace-nowrap bg-black text-white text-xs rounded-md px-2 py-1 opacity-0 transition-opacity pointer-events-none left-1/2 -top-8 -translate-x-1/2;
+
+    content: attr(title);
+  }
+
+  &:hover::after, &:focus::after, &:active::after {
+    @apply opacity-100 pointer-events-auto;
+  }
+}
+

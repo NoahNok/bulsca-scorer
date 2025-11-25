@@ -80,9 +80,13 @@ class SERCController extends Controller
             $eventResults = $serc->getRankedResults($league);
         }
 
-        $totalMPs = $serc->getMarkingPoints()->count();
+        $markingPoints = $serc->getMarkingPoints;
+        $totalMPs = $markingPoints->count();
 
-        return view('competition.events.sercs.view', ['comp' => $comp, 'serc' => $serc, 'eventResults' => $eventResults, 'activeLeague' => $league, 'totalMPs' => $totalMPs]);
+        $totalPossibleResults = $totalMPs * $serc->getScorableEntities()->count();
+        $totalResults = SERCResult::whereIn('marking_point', $markingPoints->pluck('id'))->count('entity_id');
+
+        return view('competition.events.sercs.view', ['comp' => $comp, 'serc' => $serc, 'eventResults' => $eventResults, 'activeLeague' => $league, 'totalMPs' => $totalMPs, 'totalResults' => $totalResults, 'totalPossibleResults' => $totalPossibleResults]);
     }
 
 
