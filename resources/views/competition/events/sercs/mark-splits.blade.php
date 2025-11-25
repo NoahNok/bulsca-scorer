@@ -13,23 +13,35 @@
             selected: -1,
             url: '{{ route('comps.events.sercs.mark-splits.judge', [$comp, $serc, 'JUDGE_ID']) }}',
         
-            judge_data: {
-                'mpn': []
+            data: {
+                'marking_points': [],
+                'results': []
             },
         
         
         
             async loadJudge(judge_id) {
+                this.data = {
+                    'marking_points': [],
+                    'results': []
+                }
                 this.selected = judge_id;
         
                 const response = await fetch(this.url.replace('JUDGE_ID', judge_id));
                 const data = await response.json();
                 console.log(data);
         
-                this.judge_data = data;
+                this.data = data;
             }
         }">
-            <h2>Mark Splits</h2>
+            <div class="flex flex-row justify-between items-center mb-2">
+                <h2 class="mb-0">Mark Splits - {{ $serc->name }}</h2>
+
+                <div class="sticky top-4 flex space-x-2 ">
+                    <a href="{{ route('comps.events.sercs.view', [$comp, $serc]) }}" class="se-btn">Back</a>
+
+                </div>
+            </div>
 
 
             <div class="flex  space-x-3">
@@ -41,22 +53,25 @@
 
             </div>
 
-            <div class="se-table">
+            <div class="se-table" x-show="data != null && data.marking_points.length > 0" x-transition>
                 <table>
                     <thead>
                         <tr>
-                            <template x-for="marking_point_name in judge_data['mpn']" :key="marking_point_name">
-                                <th x-text="marking_point_name"></th>
+                            <th>Entry</th>
+                            <template x-for="marking_point in data.marking_points" :key="marking_point.id">
+                                <th x-text="marking_point.name"></th>
                             </template>
                         </tr>
 
                     </thead>
                     <tbody>
-                        <template x-for="entry_data, entry_name in judge_data['results']">
+                        <template x-for="entry in data.results" :key="entry.entity">
                             <tr>
-                                <th x-text="entry_name"></th>
-                                <template x-for="mp in entry_data">
-                                    <td x-text="mp.result"></td>
+                                <th x-text="entry.entity"></th>
+                                <template x-for="marking_point in data.marking_points" :key="marking_point.id">
+                                    <td x-data="{
+                                        result: entry.results[marking_point.id] ?? null
+                                    }" x-text="result?.result ?? '-'"></td>
                                 </template>
                             </tr>
                     </tbody>

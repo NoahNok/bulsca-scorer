@@ -390,26 +390,44 @@ class SERCController extends Controller
         $marking_points = $serc->getMarkingPoints()->where('judge', $judge->id)->get();
 
         $results = SERCResult::with('entity')->whereIn('marking_point', $marking_points->pluck('id'))->get();
-
-        // group by the entity and then order by marking point id
-        $grouped = $results->groupBy(function ($item) use ($comp) {
-            return $item->entity ? $item->entity->getName($comp) : 'Unknown';
-        })->map(function ($item) {
-            return $item->sortBy('marking_point')->map(function ($mp) {
+        $grouped = $results->groupBy('entity_id')->map(function ($item) {
+            return $item->sortBy('marking_point')->mapWithKeys(function ($mp) {
                 return [
-
-                    'result' => $mp->result,
-                    'date_recorded' => $mp->created_at->toDateTimeString(),
+                    $mp->marking_point => [
+                        'result' => $mp->result,
+                        'date_recorded' => $mp->created_at->toDateTimeString()
+                    ],
                 ];
-            })->values();
+            });
         });
 
-        $marking_point_names = $marking_points->sortBy('id')->map(function ($mp) {
-            return $mp->name;
+        $draw = $serc->getDraw->sortBy('draw')->sortBy('tank');
+
+
+
+
+        $data = [];
+
+        foreach ($draw as $draw_team) {
+
+            $entity = $draw_team->entity;
+            $entity_results = $grouped->get($draw_team->entity_id, collect([]));
+            $data[] = [
+                'entity' => "{$draw_team->draw}. {$entity->getName($comp)}",
+                'results' => $entity_results,
+            ];
+        }
+
+
+        // group by the entity and then order by marking point id
+
+
+        $marking_points = $marking_points->sortBy('id')->map(function ($mp) {
+            return ['id' => $mp->id, 'name' => $mp->name];
         })->toArray();
 
-        array_unshift($marking_point_names, 'Entity');
 
-        return response()->json(['mpn' => $marking_point_names, 'results' => $grouped]);
+
+        return response()->json(['marking_points' => $marking_points, 'results' => $data]);
     }
 }
