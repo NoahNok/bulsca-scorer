@@ -56,7 +56,7 @@
                             <tr>
                                 <th x-text="entry_name"></th>
                                 <template x-for="mp in entry_data">
-                                    <td x-text="mp.result"></td>
+                                    <td x-text="mp?.result ?? '-'"></td>
                                 </template>
                             </tr>
                     </tbody>

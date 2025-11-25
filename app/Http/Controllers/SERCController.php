@@ -391,17 +391,37 @@ class SERCController extends Controller
 
         $results = SERCResult::with('entity')->whereIn('marking_point', $marking_points->pluck('id'))->get();
 
-        // group by the entity and then order by marking point id
-        $grouped = $results->groupBy(function ($item) use ($comp) {
-            return $item->entity ? $item->entity->getName($comp) : 'Unknown';
-        })->map(function ($item) {
-            return $item->sortBy('marking_point')->map(function ($mp) {
-                return [
+        // create ordered marking point IDs array
+        $mp_ids = $marking_points->pluck('id')->values()->toArray();
 
-                    'result' => $mp->result,
-                    'date_recorded' => $mp->created_at->toDateTimeString(),
-                ];
+        // Get all entities from the draw
+        $allEntities = $serc->getDraw->map(function ($draw) use ($comp) {
+            return $draw->entity->getName($comp);
+        })->unique();
+
+        // group by the entity
+        $resultsByEntity = $results->groupBy(function ($item) use ($comp) {
+            return $item->entity ? $item->entity->getName($comp) : 'Unknown';
+        });
+
+        // Build results for ALL entities (including those with no results)
+        $grouped = $allEntities->mapWithKeys(function ($entityName) use ($resultsByEntity, $mp_ids) {
+            $entityResults = $resultsByEntity->get($entityName, collect());
+            $resultMap = $entityResults->keyBy('marking_point');
+            
+            // Build array aligned with marking points, filling gaps with null
+            $alignedResults = collect($mp_ids)->map(function ($mp_id) use ($resultMap) {
+                if (isset($resultMap[$mp_id])) {
+                    return [
+                        
+                        'result' => $resultMap[$mp_id]->result,
+                        'date_recorded' => $resultMap[$mp_id]->created_at->toDateTimeString(),
+                    ];
+                }
+                return null;
             })->values();
+
+            return [$entityName => $alignedResults];
         });
 
         $marking_point_names = $marking_points->sortBy('id')->map(function ($mp) {
