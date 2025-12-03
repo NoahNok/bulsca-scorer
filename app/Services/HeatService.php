@@ -7,7 +7,9 @@ use App\Models\AbstractClasses\Entity;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\Orders\Heat;
+use App\Models\SpeedResult;
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
 
 class HeatService
 {
@@ -101,5 +103,83 @@ class HeatService
         }
 
         return $allocatedHeat;
+    }
+
+    /**
+     * @param Collection<int, Heat> $heats
+     */
+    public function anyTimeAndOofConflicts(CompetitionSpeedEvent $event)
+    {
+        $heats = $event->getHeats()->with('oofs', 'entity')->orderBy('heat')->orderBy('lane')->get()->groupBy('heat');
+
+        $results = $event->results;
+
+        // first lets map each heat into a [heat, lane, time, oof] array
+        $heats = $heats->map(function ($heatGroup) use ($results, $event) {
+            return $heatGroup->map(function (Heat $heat) use ($results, $event) {
+                $result = $results->where('entity_id', $heat->entity_id)->where('entity_type', $heat->entity_type)->first();
+
+                return [
+                    'heat' => $heat->heat,
+                    'lane' => $heat->lane,
+                    'result' => (int) $result?->result ?? -1,
+                    'pretty_result' => SpeedResult::prettyTime($result->result) ?? 'N/A',
+                    'oof' => $heat->getOOF($event->id)?->oof ?? -1,
+                    'entity' => $heat->entity
+                ];
+            })->filter(fn($item) => $item['oof'] != -1);
+        });
+
+        $comparison = [];
+
+        // want to check that the order of times and the order of oofs are the same in each heat
+        foreach ($heats as $heatNumber => $heatGroup) {
+            $times = $heatGroup->sortBy('result')->values();
+            $oofs = $heatGroup->sortBy('oof')->values();
+
+            // skips heats where all oof are -1
+            if ($oofs->every(fn($item) => $item['oof'] == -1)) {
+                continue;
+            }
+
+            $comparison_key = $heatNumber;
+
+            // lets check they are the same length first
+            if ($times->count() != $oofs->count()) {
+
+                continue;
+            }
+
+            // now check the lanes match up
+            $conflicts = [];
+            for ($i = 0; $i < $times->count(); $i++) {
+                if ($times[$i]['lane'] == $oofs[$i]['lane']) {
+                    continue;
+                }
+
+                $offEquivalent = $oofs->firstWhere('lane', $times[$i]['lane']);
+
+
+                $conflicts[] = [
+                    'lane' => $times[$i]['lane'],
+                    'entity_name' => $times[$i]['entity']->getName($event->getCompetition),
+                    'time' => $times[$i]['pretty_result'],
+                    'raw_time' => $times[$i]['result'],
+                    'oof' => $offEquivalent['oof'],
+
+                ];
+            }
+
+            if (count($conflicts) > 0) {
+                // sort by raw_time
+                usort($conflicts, function ($a, $b) {
+                    return $a['raw_time'] <=> $b['raw_time'];
+                });
+
+                $comparison[$comparison_key] = $conflicts;
+            }
+        }
+
+        return $comparison;
     }
 }

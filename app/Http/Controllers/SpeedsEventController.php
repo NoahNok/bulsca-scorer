@@ -10,6 +10,7 @@ use App\Models\Event\ScoringSchema;
 use App\Models\League;
 use App\Models\SpeedEvent;
 use App\Models\SpeedResult;
+use App\Services\HeatService;
 use Illuminate\Http\Request;
 
 class SpeedsEventController extends Controller
@@ -60,7 +61,7 @@ class SpeedsEventController extends Controller
         return redirect()->route('comps.events', $comp);
     }
 
-    public function view(Competition $comp, CompetitionSpeedEvent $event)
+    public function view(Competition $comp, CompetitionSpeedEvent $event, HeatService $heatService)
     {
 
         $eventResults = null;
@@ -74,7 +75,7 @@ class SpeedsEventController extends Controller
 
         $show_dq_points = $event->scoringSchema->schema['allow_disqualified_to_rank'] ?? false;
 
-        return view('competition.events.speeds.view', ['comp' => $comp, 'event' => $event, 'eventResults' => $eventResults, 'activeLeague' => $league, 'show_dq_points' => $show_dq_points]);
+        return view('competition.events.speeds.view', ['comp' => $comp, 'event' => $event, 'eventResults' => $eventResults, 'activeLeague' => $league, 'show_dq_points' => $show_dq_points, 'heatService' => $heatService]);
     }
 
     public function edit(Competition $comp, CompetitionSpeedEvent $event)

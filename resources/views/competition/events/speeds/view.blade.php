@@ -19,6 +19,86 @@
 
 
 
+
+            @php
+                $conflicts = $heatService->anyTimeAndOofConflicts($event);
+            @endphp
+
+            @if (count($conflicts) > 0)
+                <div x-data="{
+                    conflicts: {{ json_encode($conflicts) }},
+                    open_conflict: null,
+                
+                    openHeatConflictModal(heat_no) {
+                        this.open_conflict = heat_no;
+                        this.modals.conflictDetailsModal = true;
+                
+                
+                    }
+                }">
+                    <h4>Time & Order of Finish Conflict(s)</h4>
+                    <div class="grid-3">
+                        @foreach ($conflicts as $heat_no => $conflict)
+                            <div @click="openHeatConflictModal({{ $heat_no }})"
+                                class="flex items-center
+                    cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
+                                <p class="font-archivo">Heat {{ $heat_no }}</p>
+
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor"
+                                    class="ml-auto size-5 text-red-500 transition-all group-hover:stroke-2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                                </svg>
+
+
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <x-s-e-modal id="conflictDetailsModal" title="Time & Order of Finish Conflicts">
+                        <div class="se-table" x-data x-init="() => {
+                            $watch('open_conflict', (value) => {
+                                title = `Heat ${value} Conflicts`;
+                            });
+                        }">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Entry</th>
+                                        <th scope="col">Lane</th>
+                                        <th scope="col">Time</th>
+                                        <th scope="col">Order of Finish</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template x-for="conflict in conflicts[open_conflict]" :key="conflict.lane">
+                                        <tr>
+                                            <th x-text="conflict.entity_name"></th>
+                                            <td x-text="conflict.lane"></td>
+                                            <td x-text="conflict.time"></td>
+                                            <td x-text="conflict.oof"></td>
+                                        </tr>
+                                    </template>
+
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <br>
+                        <small>Lanes are in order of finish time</small>
+
+                    </x-s-e-modal>
+                </div>
+            @endif
+
+
+
+
+
+
+
+
             <div class="  relative  overflow-x-hidden max-w-full  ">
                 @if ($event->scoringSchema)
                     <div class="se-form-input imb-0 ">
@@ -82,7 +162,7 @@
                             <tbody>
 
                                 @php
-                                    $eventHeats = $event->getHeats;
+                                    $eventHeats = $event->getHeats()->with('oofs')->get();
                                 @endphp
 
                                 @forelse ($eventResults as $result)

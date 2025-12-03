@@ -32,6 +32,10 @@ class Heat extends Model
         return $this->oofs?->where('event', $speedId)->first();
     }
 
+    /**
+     * DO NOT USE THIS METHOD
+     * @deprecated
+     */
     public function getResult(): ?SpeedResult
     {
         return $this->speedEvent->results()->whereMorphedTo('entity', $this->entity)->first();

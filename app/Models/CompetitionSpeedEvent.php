@@ -124,7 +124,7 @@ class CompetitionSpeedEvent extends Event
         $penalties = $this->penalties()->get();
         $disqualifications = $this->disqualifications()->get();
 
-        $seeds = $this->getCompetition->getSpeedEvents->first()->seeds;
+        $seeds = $this->getCompetition->getSpeedEvents->first()->seeds()->with('entity')->get();
         $usingSeeds = $seeds->count() > 0;
 
 
