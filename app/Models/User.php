@@ -22,9 +22,11 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'sso_user_id',
         'name',
         'email',
         'password',
+        'auth_type',
     ];
 
     /**

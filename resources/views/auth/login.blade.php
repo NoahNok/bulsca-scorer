@@ -56,6 +56,19 @@
                     </button>
                 </div>
             </form>
+
+            @if(config('sso.enabled'))
+                <div style="text-align: center; margin: 20px 0;">
+                    <p>- OR -</p>
+                </div>
+                
+                <a href="{{ route('auth.sso') }}" style="text-decoration: none;">
+                    <button type="button" style="width: 100%; padding: 12px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        Sign in with BULSCA SSO
+                    </button>
+                </a>
+            @endif
+
         </div>
 
         <div class="shape shape-square blur-sm absolute top-4/5 left-1/4 rotate-[67deg] size-40 animate-pulse animate-6s">

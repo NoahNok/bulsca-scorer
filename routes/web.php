@@ -60,6 +60,9 @@ require __DIR__ . '/whatif.php';
 // Import STATS routes first so results. overrides
 require __DIR__ . '/stats.php';
 
+// Import SSO Auth routes
+require __DIR__ . '/ssoauth.php';
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
