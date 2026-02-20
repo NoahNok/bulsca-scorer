@@ -217,4 +217,12 @@ class CompetitionSpeedEvent extends Event
     {
         return $this->hasOne(SpeedEvent::class, 'id', 'event')->first();
     }
+
+    public function checkCompletion(): bool
+    {
+        $results = $this->results()->whereNotNull('result')->count();
+        $possibleResults = $this->getScorableEntities()->count();
+
+        return $results >= $possibleResults;
+    }
 }

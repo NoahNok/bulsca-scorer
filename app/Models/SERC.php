@@ -457,4 +457,15 @@ class SERC extends Event
 
         return $notes;
     }
+
+    public function checkCompletion(): bool
+    {
+        $markingPoints = $this->getMarkingPoints;
+        $totalMPs = $markingPoints->count();
+
+        $totalPossibleResults = $totalMPs * $this->getScorableEntities()->count();
+        $totalResults = SERCResult::whereIn('marking_point', $markingPoints->pluck('id'))->count('entity_id');
+
+        return $totalResults >= $totalPossibleResults;
+    }
 }

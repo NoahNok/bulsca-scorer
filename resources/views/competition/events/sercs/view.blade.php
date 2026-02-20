@@ -18,29 +18,39 @@
             </div>
 
 
-            @php
-
-                if ($totalResults == 0 || $totalPossibleResults == 0) {
-                    $resultPercent = 0;
-                } else {
-                    $resultPercent = $totalResults / $totalPossibleResults;
-                }
-
-                $class =
-                    $resultPercent < 0.4 ? 'badge-danger' : ($resultPercent >= 1 ? 'badge-success' : 'badge-orange');
-            @endphp
-
-            <div class=" -mt-3 font-archivo  ">
-                @if ($resultPercent < 1)
-                    <span class="badge badge-danger">Marking Incomplete</span>
-                    <span class="badge {{ $class }}">
-                        {{ $totalResults }}/{{ $totalPossibleResults }} Results
-                    </span>
-                @else
+            @if ($serc->isComplete())
+                <div class=" -mt-3 font-archivo  ">
                     <span class="badge badge-success">Marking Complete</span>
-                @endif
+                </div>
+            @else
+                @php
 
-            </div>
+                    if ($totalResults == 0 || $totalPossibleResults == 0) {
+                        $resultPercent = 0;
+                    } else {
+                        $resultPercent = $totalResults / $totalPossibleResults;
+                    }
+
+                    $class =
+                        $resultPercent < 0.4
+                            ? 'badge-danger'
+                            : ($resultPercent >= 1
+                                ? 'badge-success'
+                                : 'badge-orange');
+                @endphp
+
+                <div class=" -mt-3 font-archivo  ">
+                    @if ($resultPercent < 1)
+                        <span class="badge badge-danger">Marking Incomplete</span>
+                        <span class="badge {{ $class }}">
+                            {{ $totalResults }}/{{ $totalPossibleResults }} Results
+                        </span>
+                    @else
+                        <span class="badge badge-success">Marking Complete</span>
+                    @endif
+
+                </div>
+            @endif
 
             <h4>Marked Teams</h4>
             <div class="  relative w-full overflow-x-auto  ">

@@ -49,6 +49,20 @@ abstract class Event extends Model
     public abstract function getRankedResults(?League $league = null): array;
     public abstract function results();
     public abstract function getCompetition();
+    public function isComplete($no_check = False): bool
+    {
+        if ($no_check) {
+            return $this->completed;
+        }
+
+        $complete = $this->checkCompletion();
+
+        $this->completed = $complete;
+        $this->save();
+
+        return $complete;
+    }
+    public abstract function checkCompletion(): bool;
 
     protected static function booted()
     {

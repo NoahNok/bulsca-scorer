@@ -686,6 +686,10 @@ div.se-checkbox {
     @apply text-xl font-archivo font-semibold uppercase py-2 px-10;
   }
 
+  &.se-btn-inline {
+    @apply flex justify-between items-center;
+  }
+
   &.se-btn-pagination {
     @apply text-sm font-archivo uppercase py-1 px-3 rounded-none flex items-center justify-center border-r-0 hover:border-r text-gray-500 hover:text-black;
 
@@ -746,6 +750,7 @@ div.se-checkbox {
   &.btn-icon {
     @apply flex items-center justify-center grow-0 w-12 h-12 min-w-12 min-h-12 p-1 bg-blue-600 hover:bg-blue-700;
   }
+  
 }
 
 
@@ -1281,6 +1286,10 @@ aside {
     @apply absolute whitespace-nowrap bg-black text-white text-xs rounded-md px-2 py-1 opacity-0 transition-opacity pointer-events-none left-1/2 -top-8 -translate-x-1/2;
 
     content: attr(title);
+  }
+
+  &.tooltip-left::after {
+    @apply !top-0 !-translate-x-5/4;
   }
 
   &:hover::after, &:focus::after, &:active::after {

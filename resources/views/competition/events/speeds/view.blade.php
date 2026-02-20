@@ -17,6 +17,15 @@
                 <a href="{{ route('comps.events.speeds.editResult', [$comp, $event]) }}" class="se-btn">Edit Results</a>
             </div>
 
+            <div class=" -mt-3 font-archivo  ">
+                @if ($event->isComplete())
+                    <span class="badge badge-success">Event Complete</span>
+                @else
+                    <span class="badge badge-danger">Event Incomplete</span>
+                @endif
+
+            </div>
+
 
 
 
