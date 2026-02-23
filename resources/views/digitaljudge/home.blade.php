@@ -18,7 +18,7 @@
                 @if ($head)
                     <div class="flex items-center justify-between space-x-3">
                         <h3>{{ $serc->getName() }}</h3>
-                        @if ($serc->isComplete(true))
+                        @if ($serc->completed || $serc->isComplete())
                             <span class="tooltip-left" title="Event Complete">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                                     class="size-6 text-green-500" title="ahh">
@@ -131,7 +131,7 @@
                 @if ($head)
                     <div class="flex items-center justify-between space-x-3">
                         <h3>{{ $event->getName() }}</h3>
-                        @if ($event->isComplete(true))
+                        @if ($event->completed || $event->isComplete())
                             <span class="tooltip-left" title="Event Complete">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                                     class="size-6 text-green-500" title="ahh">
