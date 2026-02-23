@@ -14,6 +14,7 @@ use MathParser\StdMathParser;
 use RuntimeException;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
+use Illuminate\Support\Facades\Log;
 
 class ScoringSchema extends Model
 {
@@ -292,6 +293,14 @@ class ScoringEngine
 
 
             $globalContext[$name] = $this->safeEval($expr, $globalContext, "global variable '{$name}'");
+
+            // only debug no array values as these can be large collections
+            if (is_array($globalContext[$name]) || $this->isCollection($globalContext[$name])) {
+
+                Log::info("Global variable '{$name}' evaluated to a collection/array of size " . count($globalContext[$name]));
+            } else {
+                Log::info("Global variable '{$name}' evaluated to: " . $globalContext[$name]);
+            }
         }
 
 

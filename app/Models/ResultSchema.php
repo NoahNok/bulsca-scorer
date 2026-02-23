@@ -17,6 +17,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class ResultSchema extends Model
 {
@@ -67,7 +68,7 @@ class ResultSchema extends Model
                 return ScaledResult::fromRanked($result, -1);
             });
 
-
+            Log::info("Processing event '{$event->getActualEVENT->getName()}' with " . $eventResults->count() . " results.");
             $eventResults = $scoringEngine->process($this->schema, $eventResults, 'adjustedPoints');
 
             // mutiply by event weight
