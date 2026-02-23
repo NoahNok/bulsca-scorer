@@ -27,11 +27,15 @@ class ResultSchema extends Model
         'schema' => 'array',
     ];
 
-    public function getResults(): Collection
+    public function getResults($refreshCache = false): Collection
     {
 
         $cacheKey = 'result_schema_' . $this->id . '_results';
         $competitionCacheKey = $this->getCompetition->cacheKey();
+
+        if ($refreshCache) {
+            Cache::tags("{$competitionCacheKey}.result-schemas")->forget($cacheKey);
+        }
 
         return Cache::tags("{$competitionCacheKey}.result-schemas")->rememberForever($cacheKey, function () {
             return $this->getCachedResults();

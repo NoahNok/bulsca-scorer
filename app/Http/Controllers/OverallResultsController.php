@@ -15,12 +15,12 @@ class OverallResultsController extends Controller
 {
 
 
-    public function computeResults(ResultSchema $schema)
+    public function computeResults(ResultSchema $schema, Request $request)
     {
 
+        $refreshCache = $request->query('refresh_cache', false) == 'true' && auth()->user()->isAdmin();
 
-
-        $results = $schema->getResults() ?? [];
+        $results = $schema->getResults($refreshCache) ?? [];
         // if ($final != null) {
         //     $results = DB::select($final);
         // }
