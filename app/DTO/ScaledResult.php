@@ -53,4 +53,12 @@ class ScaledResult extends RankedResult
             $resolved->penalties
         );
     }
+
+    public function simplifyContext(): array
+    {
+        $context = parent::simplifyContext();
+        $context['adjusted_points'] = $this->adjustedPoints;
+
+        return $context;
+    }
 }

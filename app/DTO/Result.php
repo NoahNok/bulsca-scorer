@@ -6,10 +6,11 @@ use App\Models\AbstractClasses\Entity;
 use App\Models\AbstractClasses\Event;
 use App\Models\Event\Penalty;
 use App\Models\Event\Disqualification;
+use App\Models\Interfaces\IScoringContextSimplify;
 use App\Models\SpeedResult;
 use Illuminate\Database\Eloquent\Collection;
 
-class Result
+class Result implements IScoringContextSimplify
 {
 
     public int $seed = 0;
@@ -97,5 +98,16 @@ class Result
     public function isDNF(): bool
     {
         return $this->disqualifications->firstWhere('code', '99915') !== null && $this->disqualifications->count() == 1;
+    }
+
+    public function simplifyContext(): array
+    {
+        return [
+            'result' => $this->result,
+            'entity' => $this->entity->getName($this->event->getCompetition),
+            'event' => $this->event->getName(),
+            'disqualifications' => $this->getDisqualificationsString(),
+            'penalties' => $this->getPenaltiesString(),
+        ];
     }
 }

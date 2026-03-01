@@ -59,4 +59,13 @@ class RankedResult extends Result
 
         return $rr;
     }
+
+    public function simplifyContext(): array
+    {
+        $context = parent::simplifyContext();
+        $context['position'] = $this->position;
+        $context['points'] = $this->points;
+        $context['resolved_result'] = $this->resolvedResult;
+        return $context;
+    }
 }

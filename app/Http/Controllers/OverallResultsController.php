@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\ScoringException;
 use App\Helpers\ScoringHelper;
 use App\Models\Competition;
 use App\Models\League;
@@ -9,6 +10,7 @@ use App\Models\ResultSchema;
 use App\Models\ResultSchemaEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class OverallResultsController extends Controller
@@ -19,14 +21,27 @@ class OverallResultsController extends Controller
     {
 
         $refreshCache = $request->query('refresh_cache', false) == 'true' && auth()->user()->isAdmin();
+        $error = null;
 
-        $results = $schema->getResults($refreshCache) ?? [];
-        // if ($final != null) {
-        //     $results = DB::select($final);
-        // }
+        try {
+            $results = $schema->getResults($refreshCache) ?? [];
+        } catch (ScoringException $e) {
+            // Log the exception context for debugging
+            Log::error("ScoringException in computeResults: " . $e->getMessage(), $e->getContext());
+            $error = [
+                'message' => $e->getMessage(),
+                'context' => $e->getContext()
+            ];
+            $results = [];
+
+            // set error into nati9ve larvel error for use on blade
 
 
-        return view('competition.results.view', ['results' => $results, 'schema' => $schema, 'comp' => $schema->getCompetition]);
+        }
+
+
+
+        return view('competition.results.view', ['results' => $results, 'schema' => $schema, 'comp' => $schema->getCompetition, 'error' => $error]);
     }
 
     public function viewForPrintBasic(ResultSchema $schema)

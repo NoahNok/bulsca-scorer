@@ -5,6 +5,7 @@ namespace App\Models\Event;
 use App\DTO\RankedResult;
 use App\DTO\ResolvedResult;
 use App\DTO\Result;
+use App\Exceptions\ScoringException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -287,8 +288,13 @@ class ScoringEngine
         foreach ($globalVars as $def) {
             $name = $def['name'] ?? null;
             $expr = $def['expression'] ?? null;
-            if (!$name || !$expr) {
-                throw new InvalidArgumentException("Each global variable must have 'name' and 'expression'.");
+            $expr = str($expr);
+
+
+            if (!$name) {
+                continue;
+            } else if (!$expr) {
+                throw new ScoringException("Global variable '{$name}' must have an 'expression': {$expr}.", $globalContext);
             }
 
 
@@ -575,7 +581,7 @@ class ScoringEngine
 
             return $this->el->evaluate($expr, $context);
         } catch (\Throwable $e) {
-            throw new RuntimeException("Error evaluating {$label}: {$e->getMessage()}");
+            throw new ScoringException("Error evaluating expresion {$expr} - {$label}: {$e->getMessage()}", $context);
         }
     }
 
