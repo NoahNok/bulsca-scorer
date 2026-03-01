@@ -581,7 +581,7 @@ class ScoringEngine
 
             return $this->el->evaluate($expr, $context);
         } catch (\Throwable $e) {
-            throw new ScoringException("Error evaluating expresion {$expr} - {$label}: {$e->getMessage()}", $context);
+            throw new ScoringException("Error evaluating {$label}: {$e->getMessage()} - '{$expr}'", $context);
         }
     }
 
