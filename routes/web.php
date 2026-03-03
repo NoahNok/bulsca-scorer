@@ -127,8 +127,7 @@ Route::middleware('auth')->group(function () {
 
             Route::post('/digital-judge-settings', [DigitalJudgeController::class, 'settingsPost'])->name('dj.settings');
             Route::get('/digital-judge-qrs', [DigitalJudgeController::class, 'qrs'])->name('dj.qrs');
-            Route::get('/judge-log/v1', [DigitalJudgeController::class, 'judgeLog'])->name('dj.judgeLog');
-            Route::get('/judge-log/v2', [DigitalJudgeController::class, 'betterJudgeLog'])->name('dj.betterJudgeLog');
+
 
             Route::get('/create-stats', [CompetitionController::class, 'createCompetitionStats'])->name('comps.createStats');
 

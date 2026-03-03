@@ -8,11 +8,14 @@ use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\Orders\Heat;
 use App\Services\HeatService;
+use App\Traits\RecordActivity;
 use Illuminate\Http\Request;
 use Nette\NotImplementedException;
 
 class HeatController extends Controller
 {
+    use RecordActivity;
+
     public function index(Competition $comp)
     {
 
@@ -35,6 +38,9 @@ class HeatController extends Controller
                 $heatService->generateHeatsForEvent($comp->getSpeedEvents()->orderBy('id')->first());
             }
             $comp->clearHeatCache();
+
+            $this->recordActivity('HEATS_GENERATED', related: $comp);
+
             return redirect()->back()->with('success', 'Heats Generated');
         } catch (HeatException $s) {
             return redirect()->back()->with('alert-error', 'Failed to generate: an entry is missing a seed time');
@@ -66,9 +72,14 @@ class HeatController extends Controller
             $currentAllocation->lane = $heatLaneSplit[1];
             $currentAllocation->save();
 
+            $comp->clearHeatCache();
+
+            $this->recordActivity('HEAT_SWAP', "Moved " . $currentAllocation->entity->getName($comp) . " to Heat {$currentAllocation->heat}, Lane {$currentAllocation->lane}", context: ['current_allocation' => $currentAllocation->id], related: $comp);
+
             return redirect()->back();
         }
 
+        $activityDescription = "Swapped heats: " . $currentAllocation->entity->getName($comp) . " (Heat {$currentAllocation->heat}, Lane {$currentAllocation->lane}) <-> " . $targetAllocation->entity->getName($comp) . " (Heat {$targetAllocation->heat}, Lane {$targetAllocation->lane})";
 
         $currentHeat = $currentAllocation->heat;
         $currentLane = $currentAllocation->lane;
@@ -87,6 +98,8 @@ class HeatController extends Controller
         $targetAllocation->save();
 
         $comp->clearHeatCache();
+
+        $this->recordActivity('HEAT_SWAP', $activityDescription, context: ['current_allocation' => $currentAllocation->id, 'target_allocation' => $targetAllocation->id], related: $comp);
 
         return redirect()->back();
     }
@@ -118,6 +131,8 @@ class HeatController extends Controller
 
         $comp->clearHeatCache();
 
+        $this->recordActivity('HEATS_SWAPPED', "Swapped heats $first and $second", context: ['first' => $first, 'second' => $second], related: $comp);
+
         return response()->json(['result' => 'ok']);
     }
 
@@ -128,6 +143,8 @@ class HeatController extends Controller
             $heatService->generateHeatsForEvent($event);
 
             $comp->clearHeatCache();
+
+            $this->recordActivity('HEATS_RESET', related: $comp);
 
             return redirect()->back()->with('success', 'Heats Reset');
         } catch (HeatException $e) {

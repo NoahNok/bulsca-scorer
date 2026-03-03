@@ -6,8 +6,6 @@ use App\DigitalJudge\DigitalJudge;
 use App\DTO\EntityGrouping;
 use App\Models\Club;
 use App\Models\Competition;
-use App\Models\CompetitionTeam;
-use App\Models\DigitalJudge\BetterJudgeLog;
 use App\Models\EntityData;
 use App\Models\Event\Disqualification;
 use App\Models\Event\Penalty;

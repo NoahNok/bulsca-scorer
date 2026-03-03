@@ -13,6 +13,7 @@ use App\Models\Orders\Heat;
 use App\Models\Organisation\Organisation;
 use App\Stats\StatsManager;
 use App\Traits\Cloneable;
+use App\Traits\RecordActivity;
 use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -24,7 +25,7 @@ use Illuminate\Support\Str;
 
 class Competition extends Model implements IInvitable
 {
-    use HasFactory, Cloneable;
+    use HasFactory, Cloneable, RecordActivity;
 
     public static $accessTypes = [
         'admin' => 'Admin',
@@ -267,11 +268,6 @@ class Competition extends Model implements IInvitable
         }
 
         return $heatsFinished;
-    }
-
-    public function resolveJudgeLogVersionUrl()
-    {
-        return JudgeLog::where('competition', $this->id)->exists() ? route('dj.judgeLog', $this) : route('dj.betterJudgeLog', $this);
     }
 
     public function generateStats()
@@ -635,5 +631,12 @@ class Competition extends Model implements IInvitable
     public function clearDrawCache()
     {
         Cache::forget("{$this->cacheKey()}.draws");
+    }
+
+    protected static function booted()
+    {
+        static::created(function (Competition $competition) {
+            $competition->recordActivity('COMPETITION_CREATED', 'Competition \'' . $competition->name . '\' created');
+        });
     }
 }

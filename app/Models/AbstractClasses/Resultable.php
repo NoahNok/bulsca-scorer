@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Event\Penalty;
 use App\Models\Event\Disqualification;
 
-abstract class Resultable extends Loggable
+abstract class Resultable extends Model
 {
 
     public function scopeForEntity(Builder $query, Entity $entity): Builder

@@ -138,7 +138,7 @@
 
                     </a>
 
-                    <a href="{{ $comp->resolveJudgeLogVersionUrl() }}""
+                    <a href="#not-implemented" @click.prevent="showAlert('This feature is not implemented yet, stay tuned!')"
                         class="flex items-center
                     cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
                         <p class="font-archivo">Log</p>

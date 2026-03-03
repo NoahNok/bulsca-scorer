@@ -9,13 +9,14 @@ use App\DTO\ResolvedResult;
 use App\DTO\RankedResult;
 use App\Models\Competition;
 use App\Models\CompetitionTeam;
-use App\Models\DigitalJudge\BetterJudgeLog;
+
 use App\Models\Event\Disqualification;
 use App\Models\Event\Penalty;
 use App\Models\Event\ScoringSchema;
 use App\Models\League;
 use App\Models\SERCResult;
 use App\Models\SpeedResult;
+use App\Traits\RecordActivity;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -28,7 +29,7 @@ use ShiftOneLabs\LaravelCascadeDeletes\CascadesDeletes;
 abstract class Event extends Model
 {
 
-    use CascadesDeletes;
+    use CascadesDeletes, RecordActivity;
     protected $cascadeDeletes = [
         'penalties',
         'disqualifications'
@@ -66,6 +67,20 @@ abstract class Event extends Model
 
     protected static function booted()
     {
+
+        static::created(function (Event $event) {
+            $event->recordActivity('EVENT_CREATED', 'Event \'' . $event->getName() . '\' created', context: [
+                'competition_id' => $event->getCompetition->id,
+            ]);
+        });
+
+
+        static::deleted(function (Event $event) {
+            $event->recordActivity('EVENT_DELETED', 'Event \'' . $event->getName() . '\' deleted', context: [
+                'competition_id' => $event->getCompetition->id,
+            ]);
+        });
+
         static::deleting(function (Event $event) {
             $event->penalties()->delete();
             $event->disqualifications()->delete();

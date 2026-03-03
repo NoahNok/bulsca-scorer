@@ -9,10 +9,13 @@ use App\Models\Competitor;
 use App\Models\Orders\Draw;
 use App\Models\SERC;
 use App\Services\DrawService;
+use App\Traits\RecordActivity;
 use Illuminate\Http\Request;
 
 class DrawController extends Controller
 {
+    use RecordActivity;
+
     public function generate(Competition $comp, DrawService $drawService)
     {
 
@@ -25,6 +28,8 @@ class DrawController extends Controller
         $drawService->generateDrawForSERC($serc);
 
         $comp->clearDrawCache();
+
+        $this->recordActivity('DRAW_GENERATED', related: $comp);
 
         return redirect()->back()->with('success', 'Draw Generated');
     }
@@ -49,6 +54,8 @@ class DrawController extends Controller
 
         $swap_from = Draw::find(request()->input('swap_from'));
         $swap_to = Draw::find(request()->input('swap_to'));
+        $activityDescription = "Swapped draw positions: " . ($swap_from->entity ? $swap_from->entity->getName($comp) : 'Empty') . " (Tank {$swap_from->tank}, Draw {$swap_from->draw}) <-> " . ($swap_to->entity ? $swap_to->entity->getName($comp) : 'Empty') . " (Tank {$swap_to->tank}, Draw {$swap_to->draw})";
+
 
         $drawService->swapInDraw($swap_from, $swap_to);
 
@@ -60,6 +67,8 @@ class DrawController extends Controller
         }
 
         $comp->clearDrawCache();
+
+        $this->recordActivity('DRAW_SWAP', $activityDescription, context: ['swap_from' => $swap_from->id, 'swap_to' => $swap_to->id], related: $comp);
 
         return response()->json([
             'status' => 'success',
@@ -73,6 +82,7 @@ class DrawController extends Controller
 
         $comp->clearDrawCache();
 
+        $this->recordActivity('DRAW_RESET', related: $comp);
 
         return redirect()->back()->with('success', 'Draw Reset');
     }
