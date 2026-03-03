@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AccountInviteController;
+use App\Http\Controllers\Activity\ActivityController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -389,6 +390,8 @@ Route::prefix('/admin')->middleware('isAdmin')->group(function () {
     Route::post('season/edit/{season}', [AdminController::class, 'seasonEditPost'])->name('admin.seasons.edit.post');
 
     Route::delete('/competition/{comp}/delete', [AdminController::class, 'deleteCompPost'])->name('admin.comp.delete');
+
+    Route::get('/activity', [ActivityController::class, 'admin'])->name('admin.activity');
 });
 
 
