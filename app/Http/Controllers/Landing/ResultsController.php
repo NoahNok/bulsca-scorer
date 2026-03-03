@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Landing;
 
 use App\DTO\RankedResult;
+use App\Exceptions\ScoringException;
 use App\Http\Controllers\Controller;
 use App\Models\AbstractClasses\Event;
 use App\Models\Competition;
@@ -80,7 +81,11 @@ class ResultsController extends Controller
             return response()->json(['error' => 'Results unavailable at this time, please try again later.'], 403);
         }
 
-        $rawResults = $schema->getResults();
+        try {
+            $rawResults = $schema->getResults();
+        } catch (ScoringException $e) {
+            return response()->json(['error' => 'Results unavailable at this time, please try again later. (S_ERR)'], 403);
+        }
 
         $results = $rawResults->map(function ($r) use ($comp) {
             return [

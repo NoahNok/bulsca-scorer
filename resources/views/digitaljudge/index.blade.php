@@ -40,7 +40,7 @@
         <small class="text-center" style="
     width: 60%;
 ">Personal devices are used at <strong>your own risk</strong>.
-            The event host and affiliated parties assume no responsibility for any <strong>loss, damage, or
+            Scoring.Events, the event host and affiliated parties assume no responsibility for any <strong>loss, damage, or
                 malfunction</strong> of devices during or as a result of participating in this event.</small>
     </div>
 
