@@ -74,7 +74,7 @@ class HeatController extends Controller
 
             $comp->clearHeatCache();
 
-            $this->recordActivity('HEAT_SWAP', "Moved " . $currentAllocation->entity->getName($comp) . " to Heat {$currentAllocation->heat}, Lane {$currentAllocation->lane}", context: ['current_allocation' => $currentAllocation->id], related: $comp);
+            $this->recordActivity('HEAT_SWAP', "Moved " . $currentAllocation->entity->getName($comp) . " to Heat {$currentAllocation->heat}, Lane {$currentAllocation->lane}", context: ['current_allocation' => $currentAllocation->id], related: [$comp, $currentAllocation->entity]);
 
             return redirect()->back();
         }
@@ -99,7 +99,7 @@ class HeatController extends Controller
 
         $comp->clearHeatCache();
 
-        $this->recordActivity('HEAT_SWAP', $activityDescription, context: ['current_allocation' => $currentAllocation->id, 'target_allocation' => $targetAllocation->id], related: $comp);
+        $this->recordActivity('HEAT_SWAP', $activityDescription, context: ['current_allocation' => $currentAllocation->id, 'target_allocation' => $targetAllocation->id], related: [$comp, $currentAllocation->entity, $targetAllocation->entity]);
 
         return redirect()->back();
     }

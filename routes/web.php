@@ -123,6 +123,8 @@ Route::middleware('auth')->group(function () {
     Route::prefix('/comps/{comp}')->group(function () {
         Route::get('', [CompetitionController::class, 'view'])->middleware('can:access,comp,"view"')->name('comps.view');
 
+        Route::get('/activity-log', [CompetitionController::class, 'activityLog'])->middleware('can:access,comp,"admin"')->name('comps.activityLog');
+
         Route::middleware('can:access,comp,"admin"')->group(function () {
             Route::get('/digital-judge-toggle', [DigitalJudgeController::class, 'toggle'])->name('dj.toggle');
 

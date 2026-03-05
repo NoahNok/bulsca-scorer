@@ -250,6 +250,20 @@
 
                 </div>
 
+                <a href="{{ route('comps.activityLog', $comp) }}"
+                    class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
+                    <p class="font-archivo">Activity Log</p>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="ml-auto size-4 group-hover:text-se transition-all group-hover:stroke-3">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                    </svg>
+
+
+                </a>
+
             </div>
         @endcan
     </div>

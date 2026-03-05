@@ -68,7 +68,7 @@ class DrawController extends Controller
 
         $comp->clearDrawCache();
 
-        $this->recordActivity('DRAW_SWAP', $activityDescription, context: ['swap_from' => $swap_from->id, 'swap_to' => $swap_to->id], related: $comp);
+        $this->recordActivity('DRAW_SWAP', $activityDescription, context: ['swap_from' => $swap_from->id, 'swap_to' => $swap_to->id], related: [$comp, $swap_from->entity, $swap_to->entity]);
 
         return response()->json([
             'status' => 'success',
@@ -134,6 +134,8 @@ class DrawController extends Controller
         }
 
         $comp->clearDrawCache();
+
+        $this->recordActivity('DRAW_TANK_SETUP', related: $comp);
 
         return response()->json();
     }

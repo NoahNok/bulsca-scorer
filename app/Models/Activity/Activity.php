@@ -24,9 +24,9 @@ class Activity extends Model
         'context' => 'array',
     ];
 
-    public function related()
+    public function relations()
     {
-        return $this->morphTo();
+        return $this->hasMany(ActivityRelation::class, 'activity_id');
     }
 
     public function user()

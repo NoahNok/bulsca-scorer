@@ -147,8 +147,12 @@ abstract class Entity extends Model
     protected static array $nameCache = [];
 
 
-    public function getName(?Competition $comp): string
+    public function getName(?Competition $comp = null): string
     {
+
+        if (!$comp) {
+            $comp = $this->getCompetition;
+        }
 
         $clazz = static::class;
 

@@ -69,16 +69,12 @@ abstract class Event extends Model
     {
 
         static::created(function (Event $event) {
-            $event->recordActivity('EVENT_CREATED', 'Event \'' . $event->getName() . '\' created', context: [
-                'competition_id' => $event->getCompetition->id,
-            ]);
+            $event->recordActivity('EVENT_CREATED', 'Event \'' . $event->getName() . '\' created', related: [$event, $event->getCompetition]);
         });
 
 
         static::deleted(function (Event $event) {
-            $event->recordActivity('EVENT_DELETED', 'Event \'' . $event->getName() . '\' deleted', context: [
-                'competition_id' => $event->getCompetition->id,
-            ]);
+            $event->recordActivity('EVENT_DELETED', 'Event \'' . $event->getName() . '\' deleted', related: [$event->getCompetition]);
         });
 
         static::deleting(function (Event $event) {

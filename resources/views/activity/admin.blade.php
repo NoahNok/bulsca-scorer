@@ -24,28 +24,5 @@
 @section('content')
     <h2>Activity Monitor</h2>
 
-    <div class="se-table">
-        <table>
-            <thead>
-                <tr>
-                    <th>Timestamp</th>
-                    <th class="text-left">Type</th>
-                    <th>Description</th>
-                    <th>By</th>
-
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($activities as $activity)
-                    <tr class="cursor-pointer">
-                        <th class=" font-normal!">{{ $activity->created_at }}</th>
-                        <th>{{ $activity->activity }}</th>
-                        <td>{{ $activity->description ?? 'N/A' }}</td>
-
-                        <td>{{ $activity->user->name ?? 'N/A' }}</td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
+    <x-activity-log />
 @endsection

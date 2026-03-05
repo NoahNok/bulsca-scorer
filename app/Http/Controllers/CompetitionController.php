@@ -62,6 +62,12 @@ class CompetitionController extends Controller
         return view('competition.competitors', ['comp' => $comp]);
     }
 
+    public function activityLog(Competition $comp, Request $request)
+    {
+
+        return view('competition.activity-log', ['comp' => $comp]);
+    }
+
     public function createCompetitionStats(Competition $comp)
     {
 

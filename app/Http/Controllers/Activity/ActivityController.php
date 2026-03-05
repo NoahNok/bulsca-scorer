@@ -11,8 +11,8 @@ class ActivityController extends Controller
 
     public function admin()
     {
-        $activities = Activity::with('user', 'related')->latest()->paginate(50);
 
-        return view('activity.admin', compact('activities'));
+
+        return view('activity.admin');
     }
 }

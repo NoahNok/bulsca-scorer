@@ -17,7 +17,15 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->json('context')->nullable();
+
+            $table->timestamps();
+        });
+
+        Schema::create('activity_relations', function (Blueprint $table) {
+            $table->id();
+            $table->foreignUuid('activity_id')->constrained('activities')->cascadeOnDelete();
             $table->morphs('related');
+
             $table->timestamps();
         });
     }
@@ -27,6 +35,8 @@ return new class extends Migration
      */
     public function down(): void
     {
+
+        Schema::dropIfExists('activity_relations');
         Schema::dropIfExists('activities');
     }
 };

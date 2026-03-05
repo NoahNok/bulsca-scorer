@@ -636,7 +636,7 @@ class Competition extends Model implements IInvitable
     protected static function booted()
     {
         static::created(function (Competition $competition) {
-            $competition->recordActivity('COMPETITION_CREATED', 'Competition \'' . $competition->name . '\' created');
+            $competition->recordActivity('COMPETITION_CREATED', 'Competition \'' . $competition->name . '\' created', related: $competition);
         });
     }
 }
