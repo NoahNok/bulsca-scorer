@@ -26,7 +26,6 @@ class ActivityLog extends Component
     private array $allowedQueryFilters = [
         'activity',
         'related',
-
         // Add more allowed filters as needed
     ];
 
@@ -41,7 +40,7 @@ class ActivityLog extends Component
 
                 // handle related filter separately, it should be in the format related[related_type]=related_id
                 if ($key == 'related') {
-                    $resolvedRelated = $this->resolveRelated($value);
+                    $this->resolveRelated($value);
                 } else {
 
                     $this->filters[$key] = $value;
@@ -52,8 +51,6 @@ class ActivityLog extends Component
 
     private function resolveRelated($related)
     {
-        $resolved = [];
-
         // if not array, make it an array
         if (!is_array($related)) {
             $related = [$related];

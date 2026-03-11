@@ -7,7 +7,7 @@
                         <p class="font-semibold uppercase text-xs!">{{ $activity->created_at->format('H:i:s d/m/Y') }}
                         </p>
 
-                        <h3>{{ $activity->activity }}</h3>
+                        <h3 class=" capitalize!">{{ strtolower(str_replace('_', ' ', $activity->activity)) }}</h3>
                         <p>{{ $activity->description ?? 'N/A' }}</p>
                     </div>
                     <div class="flex-col self-center items-center justify-center">
@@ -20,7 +20,7 @@
             <div class="bg-gray-100 px-4 py-3 flex items-center divide-x divide-gray-300">
                 @foreach ($activity->relations as $relation)
                     <div class="px-6 first-of-type:pl-0 last-of-type:pr-0">
-                        {!! $relation->render() !!}
+                        {!! $relation->render($activity) !!}
                     </div>
                 @endforeach
             </div>

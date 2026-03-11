@@ -3,10 +3,13 @@
 namespace App\Models\AbstractClasses;
 
 use App\Models\DigitalJudge\JudgeDQSubmission;
+use App\Models\Event\Disqualification;
+use App\Traits\RecordActivity;
 use Illuminate\Database\Eloquent\Model;
 
 abstract class Violation extends Model
 {
+    use RecordActivity;
 
     protected $fillable = ['entity', 'code', 'event'];
 
@@ -25,6 +28,32 @@ abstract class Violation extends Model
 
         static::deleted(function ($model) {
             $model->triggerResultCacheClear();
+        });
+    }
+
+    public function activity(string $activity): string
+    {
+        if ($this instanceof Disqualification) {
+            return "DISQUALIFICATION_{$activity}";
+        } else {
+            return "PENALTY_{$activity}";
+        }
+    }
+
+    protected static function booted()
+    {
+        static::created(function (Violation $violation) {
+            $entity = $violation->entity;
+            $event = $violation->event;
+
+            $related = [$entity, $event, $event->getCompetition, $violation];
+            if ($violation->submission) {
+                $related[] = $violation->submission;
+            }
+
+
+
+            $violation->recordActivity($violation->activity('APPLIED'), "{$violation} given to {$entity->getName()} for {$event->getName()}", context: ['code' => "{$violation}"], related: $related);
         });
     }
 

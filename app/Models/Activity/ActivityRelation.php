@@ -4,7 +4,11 @@ namespace App\Models\Activity;
 
 use App\Models\AbstractClasses\Entity;
 use App\Models\AbstractClasses\Event;
+use App\Models\AbstractClasses\Violation;
 use App\Models\Competition;
+use App\Models\CompetitionSpeedEvent;
+use App\Models\Event\Disqualification;
+use App\Models\Event\Penalty;
 use App\Models\SERC;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -29,7 +33,26 @@ class ActivityRelation extends Model
         return $this->morphTo();
     }
 
-    public function render()
+    private function renderNullRelated(Activity $activity)
+    {
+        $related_class = $this->related_type;
+
+
+        return match ($related_class) {
+
+            Penalty::class => view('components.activity-log.null', ['name' => 'Penalty Removed', 'description' => 'This penalty has been removed.']),
+            Disqualification::class => view('components.activity-log.null', ['name' => 'Disqualification Removed', 'description' => 'This disqualification has been removed.']),
+            CompetitionSpeedEvent::class => view('components.activity-log.null', ['name' => 'Speed Event Deleted', 'description' => 'This speed event has been deleted.']),
+            SERC::class => view('components.activity-log.null', ['name' => 'SERC Deleted', 'description' => 'This SERC has been deleted.']),
+
+
+
+
+            default => 'N/A',
+        };
+    }
+
+    public function render(Activity $activity)
     {
         $related = $this->related;
 
@@ -38,6 +61,8 @@ class ActivityRelation extends Model
             $related instanceof Competition => view('components.activity-log.competition', ['name' => $related->name, 'org' => $related->getOrganisation, 'link' => route('comps.view', $related)]),
             $related instanceof Event => view('components.activity-log.event', ['name' => $related->getName(), 'is_serc' => $related instanceof SERC, 'event' => $related]),
             $related instanceof Entity => view('components.activity-log.entity', ['name' => $related->getName(), 'type' => class_basename($related)]),
+            $related instanceof Violation => view('components.activity-log.violation', ['name' => "{$related}", 'description' => $related->getMessage()]),
+            $related === null => $this->renderNullRelated($activity),
 
 
             default => 'Related Item Deleted',

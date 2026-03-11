@@ -9,7 +9,7 @@ use App\Models\Orders\Heat;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class JudgeDQSubmission extends Loggable
+class JudgeDQSubmission extends Model
 {
     use HasFactory;
 

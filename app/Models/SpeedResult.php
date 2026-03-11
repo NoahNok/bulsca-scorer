@@ -9,12 +9,13 @@ use App\Models\AbstractClasses\Eventable;
 use App\Models\AbstractClasses\Loggable;
 use App\Models\AbstractClasses\Resultable;
 use App\Traits\Cloneable;
+use App\Traits\RecordActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class SpeedResult extends Resultable
 {
-    use HasFactory, Cloneable;
+    use HasFactory, Cloneable, RecordActivity;
 
 
 

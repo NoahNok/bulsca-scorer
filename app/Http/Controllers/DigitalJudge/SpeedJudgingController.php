@@ -75,7 +75,6 @@ class SpeedJudgingController extends Controller
             $teams[$splt[1]][$splt[2]] = $value;
         }
 
-
         foreach ($teams as $team => $values) {
 
             $entity = $speed->getScorableEntity()::find($team);
@@ -141,10 +140,24 @@ class SpeedJudgingController extends Controller
 
 
             $sr->save();
-            $toResult = $sr->getResultAsString();
 
-            $from = "Result: " . $fromResult;
-            $to = "Result: " . $toResult;
+            $changed = [
+                'result' => [
+                    'old' => $fromResult,
+                    'new' => $sr->getResultAsString(),
+                ],
+            ];
+
+            if ($changed['result']['old'] == $changed['result']['new']) {
+                continue;
+            }
+
+            $comp = DigitalJudge::getClientCompetition();
+            $clientName = DigitalJudge::getClientName();
+
+            $sr->recordActivity('SPEED_RESULT_MARKED', "{$clientName} marked {$sr->entity->getName($comp)}. Result: " . $changed['result']['old'] . " → " . $changed['result']['new'], context: [
+                'changes' => $changed,
+            ], related: [$speed, $sr->entity, $comp]);
         }
 
 

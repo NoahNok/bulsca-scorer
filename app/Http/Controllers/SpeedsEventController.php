@@ -136,6 +136,8 @@ class SpeedsEventController extends Controller
             $id = $row->id;
             $sr = SpeedResult::find($id);
 
+            $originalResult = $sr->result;
+
 
 
             if ($row->values->disqualification != "") {
@@ -216,21 +218,20 @@ class SpeedsEventController extends Controller
                 if (count($minSecSplit) == 1) {
                     $sr->result = $row->values->result;
                     $sr->save();
-                    continue;
+                } else {
+                    $min = $minSecSplit[0];
+                    $secMillisSplit = explode(".", $minSecSplit[1]);
+
+                    if (strlen($secMillisSplit[1]) == 2) {
+                        $secMillisSplit[1] = $secMillisSplit[1] * 10;
+                    }
+
+                    $totalMillis = $min * 60000 + $secMillisSplit[0] * 1000 + $secMillisSplit[1];
+
+
+                    $sr->result = $totalMillis;
+                    $sr->save();
                 }
-
-                $min = $minSecSplit[0];
-                $secMillisSplit = explode(".", $minSecSplit[1]);
-
-                if (strlen($secMillisSplit[1]) == 2) {
-                    $secMillisSplit[1] = $secMillisSplit[1] * 10;
-                }
-
-                $totalMillis = $min * 60000 + $secMillisSplit[0] * 1000 + $secMillisSplit[1];
-
-
-                $sr->result = $totalMillis;
-                $sr->save();
             } else {
                 if (preg_match("/^[0-9]{1,2}:[0-9]{1,2}.[0-9]{2}$/", $row->values->result) == 0) {
                     array_push($errors, ["id" => $id, "option" => "result"]);
@@ -252,6 +253,21 @@ class SpeedsEventController extends Controller
                 $sr->result = $totalMillis;
                 $sr->save();
             }
+
+            $newResult = $sr->result;
+
+            if ($originalResult != $newResult) {
+                $changed = [
+                    'result' => [
+                        'old' => $originalResult ? SpeedResult::prettyTime($originalResult) : "-",
+                        'new' => SpeedResult::prettyTime($newResult),
+                    ],
+                ];
+
+                $sr->recordActivity('SPEED_RESULT_UPDATED', "Result changed from " . $changed['result']['old'] . " to " . $changed['result']['new'], context: [
+                    'changes' => $changed,
+                ], related: [$event, $sr->entity, $comp]);
+            }
         }
 
 
@@ -260,6 +276,10 @@ class SpeedsEventController extends Controller
         if (!empty($errors)) {
             return response()->json($errors, 500);
         }
+
+
+
+
         session()->flash('success', 'Results saved');
     }
 
