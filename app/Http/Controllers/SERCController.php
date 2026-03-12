@@ -176,6 +176,10 @@ class SERCController extends Controller
         $sawDQ = false;
         $sawPen = false;
 
+        $changes = [];
+
+        $marking_points = $serc->getMarkingPoints()->select('serc_marking_points.id', 'serc_marking_points.name', 'serc_marking_points.judge', 'serc_judges.name AS judge_name')->get();
+
         foreach ($json as $mp) {
 
             if ($mp->id == "disqualification") {
@@ -205,15 +209,23 @@ class SERCController extends Controller
 
             $result = SERCResult::where('marking_point', $id)->forEntity($team)->first();
 
+            $was = null;
+
             if (!$result) {
                 $result = new SERCResult();
                 $result->marking_point = $id;
+            } else {
+                $was = $result->result;
             }
 
             $result->result = $score;
             $result->entity()->associate($team);
 
             $result->save();
+
+            if ($was != $score) {
+                $changes[] = ['name' => "{$marking_points->find($id)->name}", 'old' => $was, 'new' => $score];
+            }
 
             Cache::forget('mp.' . $id . '.team.' . $team->id);
         }
@@ -230,6 +242,14 @@ class SERCController extends Controller
         $nextTeamId = $this->nextTeamId($comp, $serc, $entity_id);
 
         session()->flash('success', "Results updated for " . $team->getName($comp));
+
+        $changeCount = count($changes);
+        if ($changeCount > 0) {
+            $serc->recordActivity('SERC_RESULT_UPDATED', $changeCount > 1 ? "{$changeCount} results changed" : "1 result changed", context: [
+                'changes' => $changes,
+            ], related: [$serc, $team, $comp]);
+        }
+
 
         if (!$nextTeamId) {
             return response()->json(['sid' => $serc->id]);

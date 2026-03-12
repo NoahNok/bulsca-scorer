@@ -9,6 +9,10 @@
 
                         <h3 class=" capitalize!">{{ strtolower(str_replace('_', ' ', $activity->activity)) }}</h3>
                         <p>{{ $activity->description ?? 'N/A' }}</p>
+
+
+                        {!! $activity->renderContext() !!}
+
                     </div>
                     <div class="flex-col self-center items-center justify-center">
                         <p class="font-semibold uppercase text-xs!">Actioned by
@@ -26,6 +30,10 @@
             </div>
         </div>
     @endforeach
+
+
+
+
 </div>
 
 {!! $activities->links() !!}

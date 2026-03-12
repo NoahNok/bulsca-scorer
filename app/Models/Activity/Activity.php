@@ -33,4 +33,15 @@ class Activity extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function renderContext()
+    {
+
+
+        return match ($this->activity) {
+
+            "SERC_RESULT_UPDATED" => view('components.activity-log.context.serc', ['context' => $this->context]),
+            default => null
+        };
+    }
 }

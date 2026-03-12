@@ -195,6 +195,11 @@ class DJDQController extends Controller
         array_push($activeSubmissions, $submission->id);
         Session::put('activeSubmissions', $activeSubmissions);
 
+        $activity_type = str_starts_with($submission->code, 'P') ? 'PENALTY_SUBMISSION' : 'DISQUALIFICATION_SUBMISSION';
+        $entity = $submission->getHeat?->entity;
+        $event = $submission->getEvent;
+        $submission->recordActivity($activity_type, "{$submission->name} ({$submission->position}) submitted a {$submission->code} for {$entity->getName()} in {$event->getName()}", related: [$entity, $event, $event->getCompetition, $submission], context: ['code' => $submission->code]);
+
         return response()->json(['success' => true, 'result' => $submission->id]);
     }
 
@@ -246,11 +251,21 @@ class DJDQController extends Controller
 
             $submission->violation()->associate($violation);
             $submission->save();
+
+            $violation->reportActivity("APPROVED", $submission);
+        } else {
+
+            $activity_type = str_starts_with($submission->code, 'P') ? 'PENALTY_REJECTED' : 'DISQUALIFICATION_REJECTED';
+            $entity = $submission->getHeat?->entity;
+            $event = $submission->getEvent;
+            $submission->recordActivity($activity_type, "Referee rejected submission {$submission->code} for {$entity->getName()} in {$event->getName()} by {$submission->name} ({$submission->position})", related: [$entity, $event, $event->getCompetition, $submission], context: ['code' => $submission->code]);
         }
 
         $activeSubmissions = Session::get('activeSubmissions', []);
         $activeSubmissions = array_diff($activeSubmissions, [$submission->id]);
         Session::put('activeSubmissions', $activeSubmissions);
+
+
 
         return response()->json(['success' => true]);
     }
@@ -314,6 +329,7 @@ class DJDQController extends Controller
         }
 
         try {
+            $submission->violation->reportActivity("REMOVED", $submission);
             $this->removeCode($submission);
 
             $submission->delete();
@@ -332,11 +348,14 @@ class DJDQController extends Controller
         }
 
         try {
+            $submission->violation->reportActivity("APPEALED", $submission);
             $this->removeCode($submission);
 
             $submission->appealed = true;
 
             $submission->save();
+
+
 
             return response()->json(['success' => true]);
         } catch (\Throwable $th) {

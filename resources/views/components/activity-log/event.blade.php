@@ -22,4 +22,5 @@
                 clip-rule="evenodd" />
         </svg>
     @endif
+
 </a>

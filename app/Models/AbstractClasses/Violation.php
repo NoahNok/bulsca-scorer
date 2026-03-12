@@ -52,8 +52,20 @@ abstract class Violation extends Model
             }
 
 
+            $violation->reportActivity("APPLIED");
+        });
 
-            $violation->recordActivity($violation->activity('APPLIED'), "{$violation} given to {$entity->getName()} for {$event->getName()}", context: ['code' => "{$violation}"], related: $related);
+        static::deleted(function (Violation $violation) {
+            $entity = $violation->entity;
+            $event = $violation->event;
+
+            $related = [$entity, $event, $event->getCompetition, $violation];
+            if ($violation->submission) {
+                $related[] = $violation->submission;
+            }
+
+
+            $violation->reportActivity("DELETED");
         });
     }
 
@@ -84,4 +96,25 @@ abstract class Violation extends Model
 
     // make this take an organisation param (optional) so that we get the right pen/dq message for the current org
     abstract public function getMessage(): string;
+
+    public function reportActivity(string $activity, ?JudgeDQSubmission $submission = null): void
+    {
+        $entity = $this->entity;
+        $event = $this->event;
+
+        $related = [$entity, $event, $event->getCompetition, $this];
+        if ($submission) {
+            $related[] = $submission;
+        }
+
+        $description = match ($activity) {
+            'APPROVED' => "{$this} for {$entity->getName()} in {$event->getName()} given by {$submission->name} ({$submission->position}) was approved by the Referee",
+            'APPLIED' => "{$this} given to {$entity->getName()} for {$event->getName()}",
+            'APPEALED' => "{$this} for {$entity->getName()} in {$event->getName()} was appealed by {$submission->name} ({$submission->position})",
+            'REMOVED' => "{$this} for {$entity->getName()} in {$event->getName()} was removed by the Referee",
+            default => "{$activity} activity for {$this} on {$entity->getName()} in {$event->getName()}",
+        };
+
+        $this->recordActivity($this->activity($activity), $description, context: ['code' => "{$this}"], related: $related);
+    }
 }

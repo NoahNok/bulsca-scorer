@@ -6,12 +6,13 @@ use App\Models\AbstractClasses\Loggable;
 use App\Models\Competition;
 use App\Models\CompetitionTeam;
 use App\Models\Orders\Heat;
+use App\Traits\RecordActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class JudgeDQSubmission extends Model
 {
-    use HasFactory;
+    use HasFactory, RecordActivity;
 
     protected $table = "judge_dq_submissions";
 

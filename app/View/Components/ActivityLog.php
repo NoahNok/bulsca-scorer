@@ -13,14 +13,16 @@ class ActivityLog extends Component
 
     private array $filters;
     private array $related;
+    private $context;
 
     /**
      * Create a new component instance.
      */
-    public function __construct($filters = [], $related = [])
+    public function __construct($filters = [], $related = [], $context = null)
     {
         $this->filters = $filters;
         $this->related = $related;
+        $this->context = $context;
     }
 
     private array $allowedQueryFilters = [
@@ -35,13 +37,18 @@ class ActivityLog extends Component
         // loop through request query parameters and if they are in allowedQueryFilters add them to filters
         foreach (request()->query() as $key => $value) {
 
-
             if (in_array($key, $this->allowedQueryFilters)) {
 
                 // handle related filter separately, it should be in the format related[related_type]=related_id
                 if ($key == 'related') {
                     $this->resolveRelated($value);
                 } else {
+
+                    // Check for | in value for multiple values
+                    if (str_contains($value, '|')) {
+                        $value = explode('|', $value);
+                    }
+
 
                     $this->filters[$key] = $value;
                 }
@@ -107,12 +114,19 @@ class ActivityLog extends Component
         if (count($this->filters) > 0) {
             // loop filters as key value pairs and apply to query
             foreach ($this->filters as $key => $value) {
-                $activitiesQuery = $activitiesQuery->where($key, $value);
+
+
+                if (is_array($value)) {
+                    $activitiesQuery = $activitiesQuery->whereIn($key, $value);
+                } else {
+                    $activitiesQuery = $activitiesQuery->where($key, $value);
+                }
             }
         }
 
         $activities = $activitiesQuery->latest()->paginate(20);
+        $context = $this->context;
 
-        return view('components.activity-log', compact('activities'));
+        return view('components.activity-log', compact('activities', 'context'));
     }
 }
