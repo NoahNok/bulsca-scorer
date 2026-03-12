@@ -1,5 +1,46 @@
 <div class="flex-col space-y-3 mb-3">
-    @foreach ($activities as $activity)
+
+    <div x-data="{
+        filters: {
+            activity: '{{ request()->query('activity', '') }}'.split('|'),
+        },
+    
+        toggleActivity(value) {
+            if (this.filters.activity.includes(value)) {
+                this.filters.activity = this.filters.activity.filter(v => v !== value);
+            } else {
+                this.filters.activity = [...this.filters.activity, value];
+            }
+        },
+    
+        applyFilters() {
+            const query = new URLSearchParams();
+    
+            if (this.filters.activity.length > 0) {
+                query.set('activity', this.filters.activity.join('|'));
+            }
+    
+            window.location.search = query.toString();
+        }
+    }">
+        <h3>Filters</h3>
+
+        <div>
+            <h4>Activity</h4>
+            <div>
+                @foreach ($types as $type)
+                    <button class="se-btn text-xs! font-semibold! "
+                        :class="{ 'bg-se text-white hover:bg-se!': filters.activity.includes('{{ $type }}') }"
+                        @click="toggleActivity('{{ $type }}')">{{ str_replace('_', ' ', $type) }}</button>
+                @endforeach
+            </div>
+
+            <button class="se-btn mt-2" @click="applyFilters()">Apply Filters</button>
+        </div>
+    </div>
+
+
+    @forelse ($activities as $activity)
         <div class="se-card">
             <div class=" se-card-body">
                 <div class=" grid grid-cols-1 md:grid-cols-[1fr_auto]  md:divide-x divide-gray-300 gap-2 md:gap-6">
@@ -29,7 +70,9 @@
                 @endforeach
             </div>
         </div>
-    @endforeach
+    @empty
+        <p>No activities found.</p>
+    @endforelse
 
 
 

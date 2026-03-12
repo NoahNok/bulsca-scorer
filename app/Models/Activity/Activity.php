@@ -2,6 +2,7 @@
 
 namespace App\Models\Activity;
 
+use App\Models\Competition;
 use App\Models\User;
 use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -43,5 +44,10 @@ class Activity extends Model
             "SERC_RESULT_UPDATED" => view('components.activity-log.context.serc', ['context' => $this->context]),
             default => null
         };
+    }
+
+    public static function uniqueActivities()
+    {
+        return self::select('activity')->distinct()->pluck('activity');
     }
 }

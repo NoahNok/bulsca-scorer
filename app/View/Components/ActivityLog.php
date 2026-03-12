@@ -4,6 +4,9 @@ namespace App\View\Components;
 
 use App\Models\Activity\Activity;
 use App\Models\CompetitionTeam;
+use App\Models\DigitalJudge\JudgeDQSubmission;
+use App\Models\Event\Disqualification;
+use App\Models\Event\Penalty;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
@@ -37,6 +40,11 @@ class ActivityLog extends Component
         // loop through request query parameters and if they are in allowedQueryFilters add them to filters
         foreach (request()->query() as $key => $value) {
 
+            // skip empty values
+            if (empty($value)) {
+                continue;
+            }
+
             if (in_array($key, $this->allowedQueryFilters)) {
 
                 // handle related filter separately, it should be in the format related[related_type]=related_id
@@ -65,19 +73,25 @@ class ActivityLog extends Component
 
         // these will be in the format of sp:12 se:11 etc where they should then reference the full class
         foreach ($related as $rel) {
-            [$relatedType, $relatedId] = explode(':', $rel);
-            $class = match ($relatedType) {
+            $split = explode(':', $rel);
+
+            $class = match ($split[0]) {
                 'speed' => \App\Models\CompetitionSpeedEvent::class,
                 'serc' => \App\Models\SERC::class,
                 'comp' => \App\Models\Competition::class,
                 'team' => CompetitionTeam::class,
+                'submission' => JudgeDQSubmission::class,
+                'dq' => Disqualification::class,
+                'penalty' => Penalty::class,
                 // Add more mappings as needed
                 default => null,
             };
 
-            if ($class) {
-                $this->related[$class] = $relatedId;
+            if (!$class) {
+                continue;
             }
+
+            $this->related[$class] = count($split) > 1 ? $split[1] : null;
         }
     }
 
@@ -103,9 +117,15 @@ class ActivityLog extends Component
                             ->where('related_id', $value->id);
                     });
                 } else {
+
+                    // Need to add support for multiple relations but as an OR query rather than an AND query, so we need to use whereHas multiple times and not nest them
                     $activitiesQuery = $activitiesQuery->whereHas('relations', function ($query) use ($key, $value) {
-                        $query->where('related_type', $key)
-                            ->where('related_id', $value);
+                        if ($value === null) {
+                            $query->where('related_type', $key);
+                        } else {
+                            $query->where('related_type', $key)
+                                ->where('related_id', $value);
+                        }
                     });
                 }
             }
@@ -126,7 +146,8 @@ class ActivityLog extends Component
 
         $activities = $activitiesQuery->latest()->paginate(20);
         $context = $this->context;
+        $types = Activity::uniqueActivities();
 
-        return view('components.activity-log', compact('activities', 'context'));
+        return view('components.activity-log', compact('activities', 'context', 'types'));
     }
 }
