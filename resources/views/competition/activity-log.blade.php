@@ -11,6 +11,6 @@
 
     <br>
     <div>
-        <x-activity-log :related="[$comp]" />
+        <x-activity-log :related='["comp:{$comp->id}"]' />
     </div>
 @endsection

@@ -15,7 +15,8 @@ class ActivityLog extends Component
 {
 
     private array $filters;
-    private array $related;
+    private array $related = [];
+    private array $forcedRelated = [];
     private $context;
 
     /**
@@ -24,8 +25,10 @@ class ActivityLog extends Component
     public function __construct($filters = [], $related = [], $context = null)
     {
         $this->filters = $filters;
-        $this->related = $related;
+
         $this->context = $context;
+
+        $this->forcedRelated = $related;
     }
 
     private array $allowedQueryFilters = [
@@ -49,7 +52,7 @@ class ActivityLog extends Component
 
                 // handle related filter separately, it should be in the format related[related_type]=related_id
                 if ($key == 'related') {
-                    $this->resolveRelated($value);
+                    $this->related = explode('|', $value);
                 } else {
 
                     // Check for | in value for multiple values
@@ -64,7 +67,7 @@ class ActivityLog extends Component
         }
     }
 
-    private function resolveRelated($related)
+    private function resolveRelated($related): array
     {
         // if not array, make it an array
         if (!is_array($related)) {
@@ -91,8 +94,10 @@ class ActivityLog extends Component
                 continue;
             }
 
-            $this->related[$class] = count($split) > 1 ? $split[1] : null;
+            $related[$class] = count($split) > 1 ? $split[1] : null;
         }
+
+        return $related;
     }
 
     /**
@@ -102,34 +107,37 @@ class ActivityLog extends Component
     {
         $this->loadSearchQueryFiltersFromRequest();
 
+        $related = $this->resolveRelated($this->related);
+        $forcedRelated = $this->resolveRelated($this->forcedRelated);
+
         $activitiesQuery = Activity::with('user', 'relations.related');
 
-        if (count($this->related) > 0) {
+        if (count($related) > 0 || count($forcedRelated) > 0) {
 
+            $activitiesQuery = $activitiesQuery->whereHas('relations', function ($query) use ($related, $forcedRelated) {
+                foreach ($forcedRelated as $type => $type_id) {
+                    $query->where(function ($query) use ($type, $type_id) {
+                        $query->where('related_type', $type);
 
-            // loop related, if its a model use it to query, otherwise assume its a key value pair of related_type and related_id
-            foreach ($this->related as $key => $value) {
-
-                if (is_object($value)) {
-
-                    $activitiesQuery = $activitiesQuery->whereHas('relations', function ($query) use ($value) {
-                        $query->where('related_type', get_class($value))
-                            ->where('related_id', $value->id);
-                    });
-                } else {
-
-                    // Need to add support for multiple relations but as an OR query rather than an AND query, so we need to use whereHas multiple times and not nest them
-                    $activitiesQuery = $activitiesQuery->whereHas('relations', function ($query) use ($key, $value) {
-                        if ($value === null) {
-                            $query->where('related_type', $key);
-                        } else {
-                            $query->where('related_type', $key)
-                                ->where('related_id', $value);
+                        if ($type_id !== null && $type_id !== '') {
+                            $query->where('related_id', $type_id);
                         }
                     });
                 }
-            }
+
+                foreach ($related as $type => $type_id) {
+                    $query->orWhere(function ($query) use ($type, $type_id) {
+                        $query->where('related_type', $type);
+
+                        if ($type_id !== null && $type_id !== '') {
+                            $query->where('related_id', $type_id);
+                        }
+                    });
+                }
+            });
         }
+
+
 
         if (count($this->filters) > 0) {
             // loop filters as key value pairs and apply to query

@@ -14,7 +14,7 @@
         },
     
         applyFilters() {
-            const query = new URLSearchParams();
+            const query = new URLSearchParams(window.location.search);
     
             if (this.filters.activity.length > 0) {
                 query.set('activity', this.filters.activity.join('|'));
@@ -79,4 +79,4 @@
 
 </div>
 
-{!! $activities->links() !!}
+{!! $activities->withQueryString()->links() !!}
