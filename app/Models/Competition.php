@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Mail\CompetitionAccountCreated;
 use App\Mail\CompetitionAccountInvite;
+use App\Models\Activity\Activity;
 use App\Models\Competition\CompetitionScoringSettings;
 use App\Models\Competition\CompetitionStatusMessage;
 use App\Models\DigitalJudge\JudgeLog;
@@ -638,5 +639,10 @@ class Competition extends Model implements IInvitable
         static::created(function (Competition $competition) {
             $competition->recordActivity('COMPETITION_CREATED', 'Competition \'' . $competition->name . '\' created', related: $competition);
         });
+    }
+
+    public function activities()
+    {
+        return $this->morphMany(Activity::class, 'related');
     }
 }
