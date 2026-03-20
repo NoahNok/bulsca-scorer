@@ -3,6 +3,7 @@
     <div x-data="{
         filters: {
             activity: '{{ request()->query('activity', '') }}'.split('|'),
+            open: false
         },
     
         toggleActivity(value) {
@@ -18,14 +19,35 @@
     
             if (this.filters.activity.length > 0) {
                 query.set('activity', this.filters.activity.join('|'));
+            } else {
+                query.delete('activity');
             }
     
             window.location.search = query.toString();
+        },
+    
+        clearFilters() {
+            this.filters.activity = [];
+            this.applyFilters();
         }
     }">
-        <h3>Filters</h3>
 
-        <div>
+
+        <div class="flex items-center my-3 mb-3! hover:text-se" @click="filters.open = !filters.open"
+            style="cursor: pointer;">
+            <h3>Filters</h3>
+            <hr class="spacer ">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="size-6 transition-transform ml-2 rotate-180"
+                :class="filters.open ? '' : 'rotate-0!'">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+            </svg>
+
+
+        </div>
+
+
+        <div x-show="filters.open" x-collapse>
             <h4>Activity</h4>
             <div>
                 @foreach ($types as $type)
@@ -35,9 +57,14 @@
                 @endforeach
             </div>
 
-            <button class="se-btn mt-2" @click="applyFilters()">Apply Filters</button>
+            <div class=" flex space-x-2">
+                <button class="se-btn ml-auto mt-2 " @click="applyFilters()">Apply Filters</button>
+                <button class="se-btn se-btn-danger mt-2" @click="clearFilters()">Clear Filters</button>
+            </div>
         </div>
     </div>
+
+    <br>
 
 
     @forelse ($activities as $activity)

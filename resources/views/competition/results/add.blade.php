@@ -273,7 +273,7 @@
             </div>
         </div>
         <br>
-        <div class="flex items-center my-3 mb-6!" @click="advanced = !advanced" style="cursor: pointer;">
+        <div class="flex items-center my-3 mb-6! hover:text-se" @click="advanced = !advanced" style="cursor: pointer;">
             <h3>Advanced</h3>
             <hr class="spacer ">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
