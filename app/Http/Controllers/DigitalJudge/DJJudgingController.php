@@ -185,7 +185,9 @@ class DJJudgingController extends Controller
             if ($was != $value) {
                 $overridden = $overridden || $was != null;
 
-                $changes[] = ['name' => "{$marking_points->find($markingPointId)->name}", 'old' => $was, 'new' => $value];
+                $mp_record = $marking_points->find($markingPointId);
+
+                $changes[] = ['name' => "{$mp_record->judge_name} - {$mp_record->name}", 'old' => $was, 'new' => $value];
             }
 
             $sercResult->save();

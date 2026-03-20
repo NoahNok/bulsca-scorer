@@ -224,7 +224,8 @@ class SERCController extends Controller
             $result->save();
 
             if ($was != $score) {
-                $changes[] = ['name' => "{$marking_points->find($id)->name}", 'old' => $was, 'new' => $score];
+                $mp_record = $marking_points->find($id);
+                $changes[] = ['name' => "{$mp_record->judge_name} - {$mp_record->name}", 'old' => $was, 'new' => $score];
             }
 
             Cache::forget('mp.' . $id . '.team.' . $team->id);
