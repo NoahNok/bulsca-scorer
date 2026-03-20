@@ -74,6 +74,7 @@ class ActivityLog extends Component
             $related = [$related];
         }
 
+        $returnedRelated = [];
         // these will be in the format of sp:12 se:11 etc where they should then reference the full class
         foreach ($related as $rel) {
             $split = explode(':', $rel);
@@ -94,10 +95,10 @@ class ActivityLog extends Component
                 continue;
             }
 
-            $related[$class] = count($split) > 1 ? $split[1] : null;
+            $returnedRelated[$class] = count($split) > 1 ? $split[1] : null;
         }
 
-        return $related;
+        return $returnedRelated;
     }
 
     /**
@@ -155,6 +156,7 @@ class ActivityLog extends Component
         $activities = $activitiesQuery->latest()->paginate(20);
         $context = $this->context;
         $types = Activity::uniqueActivities();
+
 
         return view('components.activity-log', compact('activities', 'context', 'types'));
     }

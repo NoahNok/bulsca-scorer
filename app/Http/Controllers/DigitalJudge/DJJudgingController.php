@@ -160,6 +160,12 @@ class DJJudgingController extends Controller
 
         $serc = SERC::find($request->input('serc'));
 
+        $changes = [];
+        $overridden = false;
+        $marking_points = $serc->getMarkingPoints()->select('serc_marking_points.id', 'serc_marking_points.name', 'serc_marking_points.judge', 'serc_judges.name AS judge_name')->get();
+
+
+
         foreach ($request->all() as $key => $value) {
 
             if (!str_starts_with($key, 'mp-')) continue;
@@ -167,10 +173,20 @@ class DJJudgingController extends Controller
             $markingPointId = explode("-", $key)[1];
 
             $sercResult = SERCResult::firstOrNew(['marking_point' => $markingPointId, 'entity_type' => $team->getMorphClass(), 'entity_id' => $team->id]);
-            $from .= $sercResult->getMarkingPointName() . ": " . ($sercResult->result ?: "-") . ", ";
-            $sercResult->result = $value;
-            $to .= $sercResult->getMarkingPointName() . ": " . $sercResult->result . ", ";
 
+            $was = null;
+
+            if ($sercResult) {
+                $was = $sercResult->result;
+            }
+
+            $sercResult->result = $value;
+
+            if ($was != $value) {
+                $overridden = $overridden || $was != null;
+
+                $changes[] = ['name' => "{$marking_points->find($markingPointId)->name}", 'old' => $was, 'new' => $value];
+            }
 
             $sercResult->save();
             Cache::forget('mp.' . $markingPointId . '.entity.' . $team->id);
@@ -193,7 +209,17 @@ class DJJudgingController extends Controller
             $judgeNote->save();
         }
 
+        $changeCount = count($changes);
+        if ($changeCount > 0) {
+            $comp = DigitalJudge::getClientCompetition();
+            $clientName = DigitalJudge::getClientName();
 
+            $message = $overridden ? "{$team->getName($comp)}'s scores were overridden by {$clientName}" : "{$team->getName($comp)}'s scores were marked by {$clientName}";
+
+            $serc->recordActivity('SERC_MARKED', $message, context: [
+                'changes' => $changes,
+            ], related: [$serc, $team, $comp]);
+        }
 
 
         $this->dispatchTeamMarkedNotification($serc, $team);

@@ -41,13 +41,13 @@ class Activity extends Model
 
         return match ($this->activity) {
 
-            "SERC_RESULT_UPDATED" => view('components.activity-log.context.serc', ['context' => $this->context]),
+            "SERC_RESULT_UPDATED", "SERC_MARKED" => view('components.activity-log.context.serc', ['context' => $this->context]),
             default => null
         };
     }
 
     public static function uniqueActivities()
     {
-        return self::select('activity')->distinct()->pluck('activity');
+        return self::select('activity')->distinct()->orderBy('activity')->pluck('activity');
     }
 }
