@@ -10,25 +10,42 @@
 @endphp
 
 @section('content')
-    <div class="flex flex-col space-y-3 items-center ">
+    <div class="flex flex-col space-y-3  ">
 
         <p>Please select a judge below to add:</p>
 
 
-        @foreach ($serc->getJudges as $judge)
-            @if ($judges->contains($judge))
-                @continue
-            @endif
+        <div class="w-full space-y-2">
+            @foreach ($serc->getJudges as $judge)
+                @if ($judges->contains($judge))
+                    @continue
+                @endif
 
-            <form action="" method="post">
-                @csrf
-                <input type="hidden" name="addJudgeId" value="{{ $judge->id }}">
-                <button class="btn">{{ $judge->name }}</button>
-            </form>
-        @endforeach
+                <form action="" method="post">
+                    @csrf
+                    <input type="hidden" name="addJudgeId" value="{{ $judge->id }}">
+                    <button class="w-full">
+                        <div class="se-card se-card-hover se-card-body">
+                            <div class="flex items-center justify-between h-full">
+                                <div class="text-left">
+                                    <h2>{{ $judge->name }}</h3>
+                                        <p>{{ $judge->getMarkingPoints->count() }} marking points</p>
+                                </div>
 
-        <br>
-        <a href="{{ route('dj.judging.home', $judge) }}" class="btn btn-danger">Back</a>
+
+
+
+
+
+                            </div>
+                        </div>
+                    </button>
+                </form>
+            @endforeach
+        </div>
+
+
+        <a href="{{ route('dj.judging.home', $judge) }}" class="se-btn w-full ">Back</a>
 
 
     </div>

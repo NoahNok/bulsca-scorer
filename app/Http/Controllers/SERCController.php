@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ClassHelpers;
+use App\Http\Requests\Event\UpdateScoringSettings;
 use App\Models\Competition;
 use App\Models\CompetitionTeam;
 use App\Models\Competitor;
+use App\Models\Event\ScoringSchema;
+use App\Models\League;
 use App\Models\SERC;
 use App\Models\SERCDisqualification;
 use App\Models\SERCJudge;
@@ -38,6 +41,7 @@ class SERCController extends Controller
         $serc->name = $json->serc_name;
         $serc->competition = $comp->id;
         $serc->type = $json->serc_type;
+        $serc->scorable_entity = $json->serc_target;
         $serc->save();
 
         foreach ($json->judges as $judge) {
@@ -66,7 +70,23 @@ class SERCController extends Controller
 
     public function view(Competition $comp, SERC $serc)
     {
-        return view('competition.events.sercs.view', ['comp' => $comp, 'serc' => $serc]);
+
+        $eventResults = null;
+        $league = request()->query('league', null);
+
+        $league = League::find($league);
+
+        if ($serc->scoringSchema()) {
+            $eventResults = $serc->getRankedResults($league);
+        }
+
+        $markingPoints = $serc->getMarkingPoints;
+        $totalMPs = $markingPoints->count();
+
+        $totalPossibleResults = $totalMPs * $serc->getScorableEntities()->count();
+        $totalResults = SERCResult::whereIn('marking_point', $markingPoints->pluck('id'))->count('entity_id');
+
+        return view('competition.events.sercs.view', ['comp' => $comp, 'serc' => $serc, 'eventResults' => $eventResults, 'activeLeague' => $league, 'totalMPs' => $totalMPs, 'totalResults' => $totalResults, 'totalPossibleResults' => $totalPossibleResults]);
     }
 
 
@@ -91,6 +111,7 @@ class SERCController extends Controller
 
         $serc->name = $json->serc_name;
         $serc->type = $json->serc_type;
+        $serc->scorable_entity = $json->serc_target;
 
         $serc->save();
 
@@ -136,41 +157,46 @@ class SERCController extends Controller
 
         $serc->delete();
 
-        return redirect()->route('comps.view.events', $comp)->with('success', 'SERC deleted!');
+        return redirect()->route('comps.events', $comp)->with('success', 'SERC deleted!');
     }
 
-    public function editResultsView(Competition $comp, SERC $serc, CompetitionTeam $team)
+    public function editResultsView(Competition $comp, SERC $serc, int $entity_id)
     {
 
-        if ($comp->scoring_type == "rlss-nationals") {
-            $team = ClassHelpers::castToClass($team, Competitor::class);
-        }
+        $team = $serc->getScorableEntity()->findOrFail($entity_id);
 
         return view('competition.events.sercs.edit-team-results', ['comp' => $comp, 'serc' => $serc, 'team' => $team]);
     }
 
-    public function updateTeamResults(Competition $comp, SERC $serc, CompetitionTeam $team, Request $request)
+    public function updateTeamResults(Competition $comp, SERC $serc, int $entity_id, Request $request)
     {
-        $json = json_decode($request->input('data'));
+        $team = $serc->getScorableEntity()->findOrFail($entity_id);
 
-        $disSet = false;
-        $penSet = false;
+        $json = json_decode($request->input('data'));
+        $sawDQ = false;
+        $sawPen = false;
+
+        $changes = [];
+
+        $marking_points = $serc->getMarkingPoints()->select('serc_marking_points.id', 'serc_marking_points.name', 'serc_marking_points.judge', 'serc_judges.name AS judge_name')->get();
 
         foreach ($json as $mp) {
 
             if ($mp->id == "disqualification") {
-                $sd = SERCDisqualification::firstOrNew(['team' => $team->id, 'serc' => $serc->id]);
-                $sd->code = $mp->values->disqualification;
-                $sd->save();
-                $disSet = true;
+                $sawDQ = true;
+                $serc->clearEntityDisqualifications($team);
+                $dq = str_replace('dq', '', strtolower(trim($mp->values->disqualification)));
+                $serc->addEntityDisqualification($team, $dq);
                 continue;
             }
 
             if ($mp->id == "penalties") {
-                $sd = SERCPenalty::firstOrNew(['team' => $team->id, 'serc' => $serc->id]);
-                $sd->codes = $mp->values->penalties;
-                $sd->save();
-                $penSet = true;
+                $sawPen = true;
+                $serc->clearEntityPenalties($team);
+                foreach (explode(',', $mp->values->penalties) as $pen) {
+                    $pen = str_replace('p', '', strtolower(trim($pen)));
+                    $serc->addEntityPenalty($team, $pen);
+                }
                 continue;
             }
 
@@ -181,53 +207,90 @@ class SERCController extends Controller
             if ($score > 10) $score = 10;
             if ($score < 0) $score = 0;
 
-            $result = SERCResult::firstOrNew(['marking_point' => $id, 'team' => $team->id]);
+            $result = SERCResult::where('marking_point', $id)->forEntity($team)->first();
+
+            $was = null;
+
+            if (!$result) {
+                $result = new SERCResult();
+                $result->marking_point = $id;
+            } else {
+                $was = $result->result;
+            }
 
             $result->result = $score;
+            $result->entity()->associate($team);
 
             $result->save();
+
+            if ($was != $score) {
+                $mp_record = $marking_points->find($id);
+                $changes[] = ['name' => "{$mp_record->judge_name} - {$mp_record->name}", 'old' => $was, 'new' => $score];
+            }
 
             Cache::forget('mp.' . $id . '.team.' . $team->id);
         }
 
-        if (!$disSet) {
-            SERCDisqualification::where(['team' => $team->id, 'serc' => $serc->id])->delete();
-        }
-        if (!$penSet) {
-            SERCPenalty::where(['team' => $team->id, 'serc' => $serc->id])->delete();
+        if (!$sawDQ) {
+            $serc->clearEntityDisqualifications($team);
         }
 
+        if (!$sawPen) {
+            $serc->clearEntityPenalties($team);
+        }
 
-        $teamIds = $serc->getTeams()->pluck('id')->toArray();
-        $index = array_search($team->id, array_values($teamIds));
+
+        $nextTeamId = $this->nextTeamId($comp, $serc, $entity_id);
+
+        session()->flash('success', "Results updated for " . $team->getName($comp));
+
+        $changeCount = count($changes);
+        if ($changeCount > 0) {
+            $serc->recordActivity('SERC_RESULT_UPDATED', $changeCount > 1 ? "{$changeCount} results changed" : "1 result changed", context: [
+                'changes' => $changes,
+            ], related: [$serc, $team, $comp]);
+        }
 
 
-
-        if ($index + 2 > count($teamIds)) {
-
+        if (!$nextTeamId) {
             return response()->json(['sid' => $serc->id]);
         }
 
-        $nextTeamId = $teamIds[$index + 1];
-
-        return response()->json(['url' => Route('comps.view.events.sercs.editResults', [$comp, $serc, $nextTeamId])]);
+        return response()->json(['url' => Route('comps.events.sercs.editResults', [$comp, $serc, $nextTeamId])]);
     }
 
-    public function next(Competition $comp, SERC $serc, CompetitionTeam $team)
+    private function nextTeamId(Competition $comp, SERC $serc, int $entity_id): ?int
     {
-        $teamIds = $serc->getTeams()->pluck('id')->toArray();
+        $team = $serc->getScorableEntity()->findOrFail($entity_id);
+
+        $teamIds = $serc->getScorableEntities()->pluck('id')->toArray();
+
+        $draw = $serc->getDraw->sortBy('draw')->sortBy('tank');
+
+        if ($draw) {
+            $teamIds = $draw->pluck('entity_id')->toArray();
+        }
         $index = array_search($team->id, array_values($teamIds));
 
 
 
         if ($index + 2 > count($teamIds)) {
 
-            return redirect()->route('comps.view.events.sercs.view', compact('comp', 'serc'));
+            return null;
         }
 
-        $nextTeamId = $teamIds[$index + 1];
+        return $teamIds[$index + 1];
+    }
 
-        return redirect()->route('comps.view.events.sercs.editResults', [$comp, $serc, $nextTeamId]);
+    public function next(Competition $comp, SERC $serc, int $entity_id)
+    {
+        $nextTeamId = $this->nextTeamId($comp, $serc, $entity_id);
+
+        if (!$nextTeamId) {
+            return redirect()->route('comps.events.sercs.view', compact('comp', 'serc'));
+        }
+
+        return redirect()->route('comps.events.sercs.editResults', [$comp, $serc, $nextTeamId]);
     }
 
     public function hide(Competition $comp, SERC $serc)
@@ -268,5 +331,128 @@ class SERCController extends Controller
         $serc->image = null;
         $serc->save();
         return redirect()->back();
+    }
+
+
+    public function scoringSettings(Competition $comp, SERC $serc)
+    {
+        $event = $serc;
+        $route = route('comps.events.sercs.scoring-settings.save', [$comp, $event]);
+        $returnRoute = route('comps.events.sercs.view', [$comp, $event]);
+        return view('competition.events.event-settings', compact('comp', 'event', 'route', 'returnRoute'));
+    }
+
+    public function saveScoringSettings(Competition $comp, SERC $serc, UpdateScoringSettings $request)
+    {
+        $validated = $request->validated();
+
+        $schema = $serc->scoringSchema;
+
+        if (!$schema) {
+            $schema = new ScoringSchema();
+            $schema->name = "Scoring Schema for {$serc->getType()}:{$serc->id}";
+            $schema->schema = [];
+            $schema->save();
+            $serc->scoring_schema = $schema->id;
+            $serc->save();
+        }
+
+        $schema->editFromRequest($request);
+
+        // $ss = ['equation' => $validated['equation'], 'global_variables' => $validated['global_variables']];
+
+        // if (array_key_exists('local_variables', $validated)) {
+        //     $ss['local_variables'] = $validated['local_variables'];
+        // }
+
+        // if (array_key_exists('penalty_func', $validated)) {
+        //     $ss['penalty_func'] = $validated['penalty_func'];
+        // }
+
+        // if (array_key_exists('auto_penalties', $validated)) {
+        //     $ss['auto_penalties'] = $validated['auto_penalties'];
+        // }
+
+        // if (array_key_exists('auto_disqualifications', $validated)) {
+        //     $ss['auto_disqualifications'] = $validated['auto_disqualifications'];
+        // }
+
+        // $schema->schema = $ss;
+
+
+
+        // $schema->Save();
+
+        return response()->json([]);
+    }
+
+    public function printResults(Competition $comp, SERC $serc)
+    {
+        $data = [[
+            'league' => 'Overall',
+            'results' => $serc->getRankedResults(),
+        ]];
+
+        foreach ($comp->getLeagues->sortBy('name') as $league) {
+            $results = $serc->getRankedResults($league);
+
+            $data[] = [
+                'league' => $league->name,
+                'results' => $results,
+            ];
+        }
+
+        return view('competition.events.sercs.print', ['comp' => $comp, 'serc' => $serc, 'data' => $data]);
+    }
+
+    public function markSplits(Competition $comp, SERC $serc)
+    {
+        return view('competition.events.sercs.mark-splits', ['comp' => $comp, 'serc' => $serc]);
+    }
+
+    public function loadMarkSplit(Competition $comp, SERC $serc, SERCJudge $judge)
+    {
+        $marking_points = $serc->getMarkingPoints()->where('judge', $judge->id)->get();
+
+        $results = SERCResult::with('entity')->whereIn('marking_point', $marking_points->pluck('id'))->get();
+        $grouped = $results->groupBy('entity_id')->map(function ($item) {
+            return $item->sortBy('marking_point')->mapWithKeys(function ($mp) {
+                return [
+                    $mp->marking_point => [
+                        'result' => $mp->result,
+                        'date_recorded' => $mp->created_at->toDateTimeString()
+                    ],
+                ];
+            });
+        });
+
+        $draw = $serc->getDraw->sortBy('draw')->sortBy('tank');
+
+
+
+
+        $data = [];
+
+        foreach ($draw as $draw_team) {
+
+            $entity = $draw_team->entity;
+            $entity_results = $grouped->get($draw_team->entity_id, collect([]));
+            $data[] = [
+                'entity' => "{$draw_team->draw}. {$entity->getName($comp)}",
+                'results' => $entity_results,
+            ];
+        }
+
+
+        // group by the entity and then order by marking point id
+
+
+        $marking_points = $marking_points->sortBy('id')->map(function ($mp) {
+            return ['id' => $mp->id, 'name' => $mp->name];
+        })->toArray();
+
+
+
+        return response()->json(['marking_points' => $marking_points, 'results' => $data]);
     }
 }

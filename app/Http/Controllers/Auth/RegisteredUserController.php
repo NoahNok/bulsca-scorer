@@ -20,6 +20,9 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
+
+        return view('auth.register-disabled');
+
         return view('auth.register');
     }
 
@@ -30,9 +33,11 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        abort(403);
+
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 

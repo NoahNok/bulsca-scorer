@@ -5,10 +5,12 @@ namespace App\Http\Controllers\DigitalJudge;
 use App\DigitalJudge\DigitalJudge;
 use App\Http\Controllers\Controller;
 use App\Jobs\WebPush;
+use App\Models\AbstractClasses\Entity;
 use App\Models\Competition;
 use App\Models\CompetitionTeam;
 use App\Models\DigitalJudge\JudgeNote;
 use App\Models\DigitalJudge\OverallJudgeNote;
+use App\Models\Orders\Draw;
 use App\Models\SERC;
 use App\Models\SERCJudge;
 use App\Models\SERCResult;
@@ -41,7 +43,7 @@ class DJJudgingController extends Controller
     {
         DigitalJudge::setClientJudge($judge);
 
-        if (DigitalJudge::getClientCompetition()->scoring_type == 'rlss-nationals') {
+        if (DigitalJudge::getClientCompetition()->getScoringSettings->use_tanks) {
             return redirect()->route('dj.judging.tank');
         }
         DigitalJudge::setTank(null);
@@ -63,7 +65,11 @@ class DJJudgingController extends Controller
 
     public function selectTank()
     {
-        $tanks = DB::select("SELECT DISTINCT serc_tank FROM competition_teams WHERE competition=? AND serc_tank > 0 ORDER BY serc_tank ASC", [DigitalJudge::getClientCompetition()->id]);
+
+
+
+        $tanks = SERC::where('competition', DigitalJudge::getClientCompetition()->id)->first()->draw()->orderBy('tank')->distinct('tank')->get('tank')->pluck('tank')->toArray();
+        //$tanks = DB::select("SELECT DISTINCT serc_tank FROM competition_teams WHERE competition=? AND serc_tank > 0 ORDER BY serc_tank ASC", [DigitalJudge::getClientCompetition()->id]);
 
         return view('digitaljudge.judging.select-tank', array_merge(DigitalJudge::getBladeProps(), ['head' => DigitalJudge::isClientHeadJudge(), 'tanks' => $tanks]));
     }
@@ -73,7 +79,7 @@ class DJJudgingController extends Controller
 
         if ($tank < 1) $tank = 1;
 
-        $max = DB::select("SELECT MAX(serc_tank) AS max FROM competition_teams WHERE competition=?;", [DigitalJudge::getClientCompetition()->id])[0]->max;
+        $max = SERC::where('competition', DigitalJudge::getClientCompetition()->id)->first()->draw()->orderBy('tank')->distinct('tank')->get('tank')->pluck('tank')->max();
 
 
         if ($tank > $max) $tank = $max;
@@ -90,21 +96,30 @@ class DJJudgingController extends Controller
         // For each team, determine if any marking points for the judge have been filled, get the first team with 0 filled
         // SELECT id FROM (SELECT id, (SELECT COUNT(*) FROM serc_results WHERE team=competition_teams.id AND marking_point IN (SELECT id FROM serc_marking_points WHERE judge=1)) AS markedPoints FROM competition_teams WHERE competition=3) AS b WHERE b.markedPoints = 0 LIMIT 1;
 
-        $j = DigitalJudge::getClientJudges()[0]->id;
-        $c = DigitalJudge::getClientCompetition()->id;
+        $j = DigitalJudge::getClientJudges()[0];
 
-        $nextTeamIdRow = null;
+        $nextTeamId = null;
 
-        if (DigitalJudge::getTank()) {
-            $nextTeamIdRow = DB::select("SELECT id FROM (SELECT id, (SELECT COUNT(*) FROM serc_results WHERE team=competition_teams.id AND marking_point IN (SELECT id FROM serc_marking_points WHERE judge=?)) AS markedPoints FROM competition_teams WHERE competition=? AND serc_tank=? ORDER BY serc_order) AS b WHERE b.markedPoints = 0 LIMIT 1;", [$j, $c, DigitalJudge::getTank()]);
-        } else {
-            $nextTeamIdRow = DB::select("SELECT id FROM (SELECT id, (SELECT COUNT(*) FROM serc_results WHERE team=competition_teams.id AND marking_point IN (SELECT id FROM serc_marking_points WHERE judge=?)) AS markedPoints FROM competition_teams WHERE competition=? ORDER BY serc_order) AS b WHERE b.markedPoints = 0 LIMIT 1;", [$j, $c]);
+        $serc = $j->getSERC;
+        $draw = $serc->getDraw;
+
+        // Check if we are marking a tank
+        $tank = DigitalJudge::getTank();
+        if ($tank != null) {
+            $draw = $draw->where('tank', $tank);
         }
 
+        $draw = $draw->sortBy('draw');
 
+        foreach ($draw as $allocation) {
+            $marked = DigitalJudge::hasTeamBeenJudgedAlready($allocation->entity);
+            if (!$marked) {
 
+                $nextTeamId = $allocation->entity->id;
+                break;
+            }
+        }
 
-        $nextTeamId = $nextTeamIdRow ? $nextTeamIdRow[0]->id : null;
 
         if ($nextTeamId == null) return redirect()->route('dj.judging.overall-comments', [$judge])->with('alert-error', 'No more teams left to judge!');
 
@@ -115,8 +130,11 @@ class DJJudgingController extends Controller
         return $resp;
     }
 
-    public function judgeTeam(CompetitionTeam $team, Request $request)
+    public function judgeTeam(int $entity_id, Request $request)
     {
+
+
+        $team = DigitalJudge::getClientJudges()[0]->getSERC->getScorableEntity()->findOrFail($entity_id);
 
         // Check team are part of this competition to avoid any dangerous behaviour
         if ($team->competition != DigitalJudge::getClientCompetition()->id) return redirect()->route('dj.judging.home');
@@ -130,10 +148,10 @@ class DJJudgingController extends Controller
         return $resp;
     }
 
-    public function saveTeamScores(Request $request, CompetitionTeam $team)
+    public function saveTeamScores(int $entity_id, Request $request)
     {
 
-        $teamAlreadyJudged = DigitalJudge::hasTeamBeenJudgedAlready($team);
+        $team = DigitalJudge::getClientJudges()[0]->getSERC->getScorableEntity()->findOrFail($entity_id);
 
         if ($team->competition != DigitalJudge::getClientCompetition()->id) return redirect()->route('dj.judging.home');
 
@@ -142,37 +160,68 @@ class DJJudgingController extends Controller
 
         $serc = SERC::find($request->input('serc'));
 
+        $changes = [];
+        $overridden = false;
+        $marking_points = $serc->getMarkingPoints()->select('serc_marking_points.id', 'serc_marking_points.name', 'serc_marking_points.judge', 'serc_judges.name AS judge_name')->get();
+
+
+
         foreach ($request->all() as $key => $value) {
 
             if (!str_starts_with($key, 'mp-')) continue;
 
             $markingPointId = explode("-", $key)[1];
 
-            $sercResult = SERCResult::firstOrNew(['marking_point' => $markingPointId, 'team' => $team->id]);
-            $from .= $sercResult->getMarkingPointName() . ": " . ($sercResult->result ?: "-") . ", ";
-            $sercResult->result = $value;
-            $to .= $sercResult->getMarkingPointName() . ": " . $sercResult->result . ", ";
+            $sercResult = SERCResult::firstOrNew(['marking_point' => $markingPointId, 'entity_type' => $team->getMorphClass(), 'entity_id' => $team->id]);
 
+            $was = null;
+
+            if ($sercResult) {
+                $was = $sercResult->result;
+            }
+
+            $sercResult->result = $value;
+
+            if ($was != $value) {
+                $overridden = $overridden || $was != null;
+
+                $mp_record = $marking_points->find($markingPointId);
+
+                $changes[] = ['name' => "{$mp_record->judge_name} - {$mp_record->name}", 'old' => $was, 'new' => $value];
+            }
 
             $sercResult->save();
-            Cache::forget('mp.' . $markingPointId . '.team.' . $team->id);
+            Cache::forget('mp.' . $markingPointId . '.entity.' . $team->id);
         }
 
         foreach ($request->all() as $key => $value) {
             if (!str_starts_with($key, 'team-notes-')) continue;
 
-            if ($value == "") continue;
 
-            $judgeNote = new JudgeNote();
-            $judgeNote->team = $team->id;
-            $judgeNote->judge = substr($key, 11);
+
+            $judgeNote = JudgeNote::firstOrNew(['judge' => substr($key, 11), 'entity_type' => $team->getMorphClass(), 'entity_id' => $team->id]);
 
             $judgeNote->note = $value;
+
+            if ($value == "") {
+                if ($judgeNote->id) $judgeNote->delete();
+                continue;
+            }
 
             $judgeNote->save();
         }
 
+        $changeCount = count($changes);
+        if ($changeCount > 0) {
+            $comp = DigitalJudge::getClientCompetition();
+            $clientName = DigitalJudge::getClientName();
 
+            $message = $overridden ? "{$team->getName($comp)}'s scores were overridden by {$clientName}" : "{$team->getName($comp)}'s scores were marked by {$clientName}";
+
+            $serc->recordActivity('SERC_MARKED', $message, context: [
+                'changes' => $changes,
+            ], related: [$serc, $team, $comp]);
+        }
 
 
         $this->dispatchTeamMarkedNotification($serc, $team);
@@ -222,6 +271,8 @@ class DJJudgingController extends Controller
 
         $data = [];
 
+        $comp = DigitalJudge::getClientCompetition();
+
         foreach (DigitalJudge::getClientJudges() as $judge) {
 
             $head = DigitalJudge::isClientHeadJudge();
@@ -234,10 +285,10 @@ class DJJudgingController extends Controller
                 $mpData['name'] = $mp->name;
                 $mpData['marks'] = [];
 
-                foreach (DigitalJudge::getClientCompetition()->getCompetitionTeams as $team) {
+                foreach ($judge->getSERC->getDraw as $draw) {
                     $mpData['marks'][] = [
-                        'team' => DigitalJudge::getClientCompetition()->show_teams_to_judges || $head ? $team->getFullname() : $team->getPositionInDraw(),
-                        'mark' => $mp->getScoreForTeam($team->id)
+                        'team' => $comp->show_teams_to_judges || $head ? $draw->entity->getName($comp) : $draw->draw,
+                        'mark' => $mp->getScoreForTeam($draw->entity)
                     ];
                 }
 
@@ -263,10 +314,10 @@ class DJJudgingController extends Controller
         return redirect()->route('dj.judging.home')->with('success', 'Tutorial completed!');
     }
 
-    private function dispatchTeamMarkedNotification(SERC $serc, CompetitionTeam $team)
+    private function dispatchTeamMarkedNotification(SERC $serc, Entity $entity)
     {
 
-        $key = "webpush_notif_{$serc->id}_{$team->id}";
+        $key = "webpush_notif_{$serc->id}_{$entity->id}";
 
         if (Redis::exists($key)) return;
 
@@ -276,7 +327,7 @@ class DJJudgingController extends Controller
 
         Redis::expire($key, 86400);
 
-        WebPush::dispatch(new SercMarked($serc, $team));
+        WebPush::dispatch(new SercMarked($serc, $entity));
     }
 
     public function overallComments()

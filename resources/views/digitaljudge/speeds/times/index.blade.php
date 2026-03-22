@@ -22,20 +22,14 @@
         @endif
 
 
-        @for ($heat = 1; $heat <= $comp->getMaxHeats(); $heat++)
+        @foreach ($speed->getHeats()->with('entity.speedResults')->get()->sortBy('heat')->groupBy('heat') as $heat => $lanes)
             @php
-                $heatTeams = $comp
-                    ->getHeatEntries()
-                    ->where('heat', $heat)
-                    ->get();
 
                 $missingResult = false;
 
                 // Code that checks if each team has a reuslt for the event
-                foreach ($heatTeams as $team) {
-                    $sr = App\Models\SpeedResult::where('competition_team', $team->team)
-                        ->where('event', $speed->id)
-                        ->first();
+                foreach ($lanes as $team) {
+                    $sr = $team->entity->speedResults->where('event', $speed->id)->first();
 
                     if ($sr->result == null) {
                         $missingResult = true;
@@ -46,16 +40,16 @@
             @endphp
 
             @if ($missingResult)
-                <a href="{{ route('dj.speeds.times.judge', [$speed, $heat]) }}" class="btn btn-primary">Heat
+                <a href="{{ route('dj.speeds.times.judge', [$speed, $heat]) }}" class="se-btn se-btn-primary">Heat
                     {{ $heat }}</a>
             @elseif ($head)
-                <a href="{{ route('dj.speeds.times.judge', [$speed, $heat]) }}" class="btn btn-success">Heat
+                <a href="{{ route('dj.speeds.times.judge', [$speed, $heat]) }}" class="se-btn se-btn-success">Heat
                     {{ $heat }}</a>
             @else
-                <button class="btn btn-success cursor-not-allowed">Heat
+                <button class="se-btn se-btn-success cursor-not-allowed">Heat
                     {{ $heat }}</button>
             @endif
-        @endfor
+        @endforeach
 
 
 

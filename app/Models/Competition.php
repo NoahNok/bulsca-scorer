@@ -2,24 +2,66 @@
 
 namespace App\Models;
 
-use App\Models\Brands\Brand;
+use App\Mail\CompetitionAccountCreated;
+use App\Mail\CompetitionAccountInvite;
+use App\Models\Activity\Activity;
+use App\Models\Competition\CompetitionScoringSettings;
+use App\Models\Competition\CompetitionStatusMessage;
 use App\Models\DigitalJudge\JudgeLog;
+use App\Models\Interfaces\IInvitable;
+use App\Models\Orders\Draw;
+use App\Models\Orders\Heat;
+use App\Models\Organisation\Organisation;
 use App\Stats\StatsManager;
 use App\Traits\Cloneable;
+use App\Traits\RecordActivity;
+use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
-class Competition extends Model
+class Competition extends Model implements IInvitable
 {
-    use HasFactory, Cloneable;
+    use HasFactory, Cloneable, RecordActivity;
+
+    public static $accessTypes = [
+        'admin' => 'Admin',
+        'view' => 'Overview',
+        'teams' => 'Teams/Competitors',
+        'heats_and_draws' => 'Heats and Draws',
+        'printables' => 'Printables',
+        'serc' => 'SERCs',
+        'speed' => 'Speeds',
+        'results' => 'Results',
+        'serc_writer' => 'SERC Writer',
+    ];
 
     protected $casts = [
         'when' => 'datetime',
         'serc_start_time' => 'datetime',
+        'data' => 'array'
     ];
+
+
+    public function getSlug()
+    {
+        return str_replace(' ', '-', $this->name) . "." . $this->id;
+    }
+
+    public function resolveRouteBinding($value, $field = null)
+    {
+
+        if (!is_numeric($value)) {
+            $arr = explode('.', $value);
+            $value = end($arr);
+        }
+
+        return parent::resolveRouteBinding($value, $field);
+    }
 
     public function getSpeedEvents()
     {
@@ -33,15 +75,36 @@ class Competition extends Model
         //return $this->hasMany(CompetitionSpeedEvent::class, 'event', 'id');
     }
 
+    public function getLeagues()
+    {
+        return $this->hasMany(League::class, 'competition', 'id');
+    }
+
+    public function getClubs()
+    {
+        return $this->hasMany(Club::class, 'competition', 'id');
+    }
+
     public function getCompetitionTeams()
     {
-        return $this->hasMany(CompetitionTeam::class, 'competition', 'id')->orderBy('serc_order');
+        return $this->hasMany(CompetitionTeam::class, 'competition', 'id');
+    }
+
+    public function getCompetitors()
+    {
+        return $this->hasMany(Competitor::class, 'competition', 'id');
     }
 
     public function getResultSchemas()
     {
         return $this->hasMany(ResultSchema::class, 'competition', 'id');
     }
+
+    public function getMasterSchemas()
+    {
+        return $this->hasMany(MasterSchema::class, 'competition', 'id');
+    }
+
 
     public function getAllEvents()
     {
@@ -56,6 +119,88 @@ class Competition extends Model
     public function getUser()
     {
         return $this->hasOne(User::class, 'competition', 'id');
+    }
+
+    public function getEntityMakeup()
+    {
+        $clubs = $this->getClubs()
+            ->with('leagues', 'getTeams.leagues', 'getTeams.getCompetitors.leagues')
+            ->get()
+            ->map(function ($club) {
+                return [
+                    'id' => $club->id,
+                    'name' => $club->name,
+                    'league' => $club->leagues->pluck('id') ?? null,
+                    'teams' => $club->getTeams->map(function ($team) {
+                        return [
+                            'id' => $team->id,
+                            'name' => $team->team,
+                            'league' => $team->leagues->pluck('id') ?? null,
+                            'seeds' => $team->getSeedTimes(),
+                            'competitors' => $team->getCompetitors->map(function ($competitor) {
+                                return [
+                                    'id' => $competitor->id,
+                                    'name' => $competitor->name,
+                                    'league' => $competitor->leagues->pluck('id') ?? null,
+                                    'seeds' => $competitor->getSeedTimes()
+                                ];
+                            })->toArray(),
+                        ];
+                    })->toArray(),
+                ];
+            })->toArray();
+
+        $teams = $this->getCompetitionTeams()->whereNull('club')->get()->map(function ($team) {
+            return [
+                'id' => $team->id,
+                'name' => $team->team,
+                'league' => $team->leagues->pluck('id') ?? null,
+                'seeds' => $team->getSeedTimes(),
+                'competitors' => $team->getCompetitors->map(function ($competitor) {
+                    return [
+                        'id' => $competitor->id,
+                        'name' => $competitor->name,
+                        'league' => $competitor->leagues->pluck('id') ?? null,
+                        'seeds' => $competitor->getSeedTimes()
+                    ];
+                })->toArray(),
+            ];
+        })->toArray();
+
+        $competitors = $this->getCompetitors()->whereNull('team')->get()->map(function ($competitor) {
+            return [
+                'id' => $competitor->id,
+                'name' => $competitor->name,
+                'league' => $competitor->leagues->pluck('id') ?? null,
+                'seeds' => $competitor->getSeedTimes()
+            ];
+        })->toArray();
+
+        return [
+            'clubs' => $clubs,
+            'teams' => $teams,
+            'competitors' => $competitors
+        ];
+    }
+
+    public function getSeedableEvents()
+    {
+        if (!$this->use_seeds) {
+            return [];
+        }
+
+
+        if ($this->seed_per_event) {
+            return $this->getSpeedEvents()->orderBy('id')->get()->map(fn($event) => ['id' => $event->id, 'name' => $event->getName()]);
+        } else {
+            $event = $this->getSpeedEvents()->first();
+
+            if (!$event) {
+                return [];
+            }
+
+            return [['id' => $event->id, 'name' => $event->getName()]];
+        }
     }
 
     public function areResultsPublic()
@@ -78,21 +223,7 @@ class Competition extends Model
         return Str::lower(str_replace(" ", "-", $this->name)) . "." . $this->id;
     }
 
-    public function needsToRegenerateSERCDraw(): bool
-    {
 
-        if ($this->scoring_type == 'rlss-nationals') {
-            $tanks = $this->getCompetitionTeams->unique('serc_tank')->pluck('serc_tank')->toArray();
-            return count($tanks) == 1 && $tanks[0] == '0';
-        }
-
-        return $this->getCompetitionTeams()->where('serc_order', 0)->exists();
-    }
-
-    public function getMaxHeats(): int
-    {
-        return $this->getHeatEntries->max('heat') ?: -1;
-    }
 
     public function getMaxLanes(): int
     {
@@ -109,18 +240,12 @@ class Competition extends Model
         return $this->hasMany(Heat::class, 'competition', 'id');
     }
 
-    public function getBrand()
-    {
-        return $this->hasOne(Brand::class, 'id', 'brand');
-    }
-
-
 
     public function howManySercsHasEachTeamFinished()
     {
 
         // This is much faster than doing it via ORM models. Reduce to one query instead of sercs * teams
-        $res = DB::select('SELECT sr.team AS team, COUNT(DISTINCT smp.serc) AS total FROM serc_results sr INNER JOIN serc_marking_points smp ON smp.id=sr.marking_point INNER JOIN sercs s ON s.id=smp.serc WHERE s.competition=? GROUP BY sr.team;', [$this->id]);
+        $res = DB::select('SELECT sr.entity_id AS team, COUNT(DISTINCT smp.serc) AS total FROM serc_results sr INNER JOIN serc_marking_points smp ON smp.id=sr.marking_point INNER JOIN sercs s ON s.id=smp.serc WHERE s.competition=? GROUP BY sr.entity_id;', [$this->id]);
 
         $teamsFinished = [];
 
@@ -146,54 +271,128 @@ class Competition extends Model
         return $heatsFinished;
     }
 
-    public function resolveJudgeLogVersionUrl()
-    {
-        return JudgeLog::where('competition', $this->id)->exists() ? route('dj.judgeLog', $this) : route('dj.betterJudgeLog', $this);
-    }
-
     public function generateStats()
     {
         $manager = new StatsManager($this);
         $manager->computeStats();
     }
 
-    public function getCompetitorsPerLeague()
+    public function getTargetEntitiesPerLeague()
     {
-        return DB::select('WITH totals AS (SELECT league, COUNT(*) as count FROM competition_teams WHERE competition=? GROUP BY league) SELECT t.league, l.name, t.count FROM totals t INNER JOIN leagues l ON l.id=t.league', [$this->id]);
+
+        // for now assume target type is competitor
+        $competitors = CompetitionTeam::where('competition', $this->id)->with('leagues')->get();
+
+        $grouped = $competitors->groupBy(function ($competitor) {
+            return $competitor->getLeague()?->id ?? -1;
+        });
+
+        // Transform into desired array format
+        $result = $grouped->map(function ($group, $leagueId) {
+            $leagueName = $group->first()->getLeague()?->name ?? 'No League';
+            return ['league' => $leagueId, 'name' => $leagueName, 'count' => $group->count()];
+        })->values()->toArray();
+
+        return $result;
+
+
+        //return DB::select('WITH totals AS (SELECT league, COUNT(*) as count FROM competition_teams WHERE competition=? GROUP BY league) SELECT t.league, l.name, t.count FROM totals t INNER JOIN leagues l ON l.id=t.league', [$this->id]);
     }
 
     public function getTanks()
     {
 
-        $data = collect(DB::select('WITH totals AS (SELECT serc_tank, league, COUNT(*) AS count FROM competition_teams WHERE competition=? AND serc_tank>0 GROUP BY league, serc_tank ORDER BY serc_tank) SELECT t.league, l.name, t.count, t.serc_tank FROM totals t INNER JOIN leagues l ON l.id=t.league', [$this->id]));
-        $return = [];
 
-        foreach ($data->groupBy('serc_tank') as $group) {
-            $return[] = $group;
-        }
+        $serc = SERC::where('competition', $this->id)->orderBy('id')->first();
 
-        return $return;
+        return $serc->draw()->with('entity')->get()->sortBy('tank')->groupBy('tank')->map(function ($tank) {
+            return $tank->groupBy(function ($draw) {
+                return optional($draw->entity->getLeague())->id;
+            })->map(function ($competitors, $leagueId) {
+
+                return [
+                    'league' => $leagueId,
+                    'name' => $competitors->first()->entity->getLeague()->name ?? 'No League',
+                    'count' => $competitors->count()
+                ];
+            })->values();
+        })->values();
+
+        return [];
     }
 
-    // Like above but for just simple listing of names
-    public function getSercTanks()
+    /**
+     * Returns heats for all events for the competition that have them
+     * 
+     * Heats and lanes pre-sorted
+     */
+    public function getHeats()
     {
 
-        if ($this->scoring_type == 'rlss-nationals') {
-            return collect(DB::select('SELECT ct.team, ct.id AS tid, l.name AS league, c.name AS club, c.region, ct.serc_tank, ct.serc_order FROM competition_teams ct INNER JOIN clubs c ON c.id=ct.club INNER JOIN leagues l ON l.id=ct.league WHERE competition=? AND serc_tank > 0 ORDER BY serc_tank, serc_order;', [$this->id]));
-        } else {
-            return collect(DB::select('SELECT ct.team, ct.id AS tid, l.name AS league, c.name AS club, c.region, ct.serc_tank, ct.serc_order FROM competition_teams ct INNER JOIN clubs c ON c.id=ct.club INNER JOIN leagues l ON l.id=ct.league WHERE competition=? ORDER BY serc_tank, serc_order;', [$this->id]));
-        }
+        return Cache::rememberForever("{$this->cacheKey()}.heats", function () {
+
+
+
+            $heats = Heat::whereHas('speedEvent', function ($query) {
+                $query->where('competition', $this->id);
+            })->with('entity', 'entity.leagues')->get()->groupBy('speed_event');
+
+            return $heats->map(function ($heatsForEvent, $speedEventId) {
+                $speedEvent = $heatsForEvent->first()->speedEvent;
+
+                return [
+                    'event' => $speedEvent,
+                    'heats' => $heatsForEvent->values()->sortBy('heat')->groupBy('heat')->map(function ($group) {
+                        return $group->sortBy('lane')->values(); // sort each group by lane number
+                    }), // optional: reindex
+                ];
+            })->values()->toArray();
+        });
     }
 
-    public function getHeats(int|null $eventId = null)
+    public function getDraws()
     {
 
-        if ($eventId == null) {
-            return collect(DB::select('SELECT h.id, h.heat, h.lane, ct.team, l.name AS league, c.name AS club, c.region FROM heats h INNER JOIN competition_teams ct ON ct.id=h.team INNER JOIN leagues l ON l.id=ct.league INNER JOIN clubs c ON c.id=ct.club WHERE h.competition = ? AND h.event IS NULL ORDER BY heat, lane;', [$this->id]));
-        }
+        return Cache::rememberForever("{$this->cacheKey()}.draws", function () {
 
-        return collect(DB::select('SELECT h.id, h.heat, h.lane, ct.team, l.name AS league, c.name AS club, c.region FROM heats h INNER JOIN competition_teams ct ON ct.id=h.team INNER JOIN leagues l ON l.id=ct.league INNER JOIN clubs c ON c.id=ct.club WHERE h.competition = ? AND h.event = ? ORDER BY heat, lane;', [$this->id, $eventId]));
+
+            return $this->hasManyThrough(Draw::class, SERC::class, 'competition', 'serc', 'id', 'id')->with('entity')->get()->groupBy('serc')->map(function ($draws, $sercId) {
+                $serc = SERC::find($sercId);
+
+                if ($serc->scorable_entity == 'team') {
+
+                    $entityIds = $draws->pluck('entity')->filter()->unique('id')->pluck('id');
+
+                    $loadedEntities = CompetitionTeam::whereIn('id', $entityIds)->with('getCompetitors')->get();
+
+                    $teamMap = $loadedEntities->keyBy('id');
+
+
+                    $draws->each(function ($draw) use ($teamMap) {
+
+                        if (!$draw->entity) {
+                            return;
+                        }
+
+
+
+                        $draw->entity = $teamMap[$draw->entity->id];
+                    });
+                }
+
+
+
+
+
+
+                return [
+                    'serc' => $serc,
+                    'draws' => $draws->sortBy('tank')->groupBy('tank')->map(function ($group) {
+                        return $group->sortBy('draw')->values(); // sort each group by draw number
+                    })->values(), // optional: reindex
+                ];
+            })->values()->toArray();
+        });
     }
 
     public function getTotalDQs()
@@ -230,67 +429,6 @@ class Competition extends Model
         return ["speed" => $speedTotal, "serc" => $sercTotal, "total" => $speedTotal + $sercTotal];
     }
 
-    public function createSercWriterAccount()
-    {
-
-        if ($this->getBrand == null) {
-            return response()->json([
-                'error' => 'Unable to create a SERC user as this requires this competition to be part of a brand.'
-            ]);
-        }
-
-        if ($this->getSercWriterAccount()) {
-            return response()->json([
-                'error' => 'SERC writer account already exists'
-            ]);
-        }
-
-
-        $sercWriter = new User();
-        $sercWriter->name = $this->name . " SERC Writer";
-        $sercWriter->email = "sercwriter-" . $this->id . "@" . ($this->getBrand?->website ?? 'scoring.events');
-
-        $passwordRaw = Str::random(16);
-        $sercWriter->password = Hash::make($passwordRaw);
-
-        $sercWriter->competition = $this->id;
-
-        $sercWriter->save();
-
-        $this->getBrand->attachUser($sercWriter, 'serc');
-
-        return response()->json([
-            'email' => $sercWriter->email,
-            'password' => $passwordRaw
-        ]);
-    }
-
-    public function resetSercWriterAccountPassword()
-    {
-        $sercWriter = $this->getSercWriterAccount();
-
-        if ($sercWriter) {
-            $passwordRaw = Str::random(16);
-            $sercWriter->password = Hash::make($passwordRaw);
-            $sercWriter->save();
-
-            return response()->json([
-                'email' => $sercWriter->email,
-                'password' => $passwordRaw
-            ]);
-        }
-
-        return response()->json([
-            'error' => 'No SERC writer account found'
-        ]);
-    }
-
-    public function getSercWriterAccount(): ?User
-    {
-
-        return $this->getBrand?->getUsers->where('pivot.role', 'serc')->where('competition', $this->id)->first();
-    }
-
     public function getEventsInDQFormat()
     {
 
@@ -306,5 +444,205 @@ class Competition extends Model
         });
 
         return $events;
+    }
+
+
+    public function canUser(User $user, array|string $access_to): bool
+    {
+        // If the user is the owner of the competition or an admin, they have access
+        if ($user->competition == $this->id || $user->isAdmin()) {
+
+            return true;
+        }
+
+        if (is_string($access_to)) {
+            $access_to = [$access_to];
+        }
+
+        // If access_to is an array, check if the user has any of the specified access types
+        $access = UserCompetitionAccess::where('user', $user->id)
+            ->where('competition', $this->id)
+            ->get();
+
+        // Check if user has admin access
+        if ($access->contains('access_to', 'admin') || $access->contains('access_to', 'owner')) {
+
+            return true;
+        }
+
+        // Check if user has any of the specified access types
+        foreach ($access as $a) {
+            if (in_array($a->access_to, $access_to)) {
+
+                return true;
+            }
+        }
+
+
+        // If no access found, return false
+
+        return false;
+    }
+
+    public function userBelongsToCompetition(User $user): bool
+    {
+        $access = UserCompetitionAccess::where('user', $user->id)
+            ->where('competition', $this->id)
+            ->first();
+
+        return $access !== null;
+    }
+
+
+
+    public function addAccount(User $account, string|array $access_to = 'view')
+    {
+
+        if (is_string($access_to)) {
+            $access_to = [$access_to];
+        }
+
+        if (in_array('admin', $access_to)) {
+            # If given admin it will auto apply all others
+            $access_to = ['admin'];
+        }
+
+        // Remove any existing access for this user in this competition
+        UserCompetitionAccess::where('user', $account->id)
+            ->where('competition', $this->id)
+            ->delete();
+
+        // Create an access record for each access type
+        foreach ($access_to as $accessType) {
+            $access = new UserCompetitionAccess();
+            $access->user = $account->id;
+            $access->competition = $this->id;
+            $access->access_to = $accessType;
+            $access->save();
+        }
+
+        // Send email
+        $accessDisplay = collect($access_to)->map(function ($type) {
+            return self::$accessTypes[$type] ?? $type;
+        })->toArray();
+
+        if (in_array('owner', $access_to)) {
+            return;
+        }
+    }
+
+    public function editCompetitionAccount(User $account, array $access_to)
+    {
+        if (!$this->userBelongsToCompetition($account)) {
+            return "Account does not belong to this competition.";
+        }
+
+        if (in_array('admin', $access_to)) {
+            # If given admin it will auto apply all others
+            $access_to = ['admin'];
+        }
+
+        // Remove all existing access for this user in this competition
+        UserCompetitionAccess::where('user', $account->id)
+            ->where('competition', $this->id)
+            ->delete();
+
+        // Add new access
+        foreach ($access_to as $accessType) {
+            $access = new UserCompetitionAccess();
+            $access->user = $account->id;
+            $access->competition = $this->id;
+            $access->access_to = $accessType;
+            $access->save();
+        }
+    }
+
+    public function deleteCompetitionAccount(User $account)
+    {
+        if (!$this->userBelongsToCompetition($account)) {
+            return "Account does not belong to this competition.";
+        }
+
+        // Remove all access for this user in this competition
+        UserCompetitionAccess::where('user', $account->id)
+            ->where('competition', $this->id)
+            ->delete();
+
+        // If the user has no other competitions, delete the user
+        if (UserCompetitionAccess::where('user', $account->id)->count() == 0) {
+            $account->delete();
+        }
+    }
+
+    public function getOrganisation()
+    {
+        return $this->belongsTo(Organisation::class, 'organisation');
+    }
+
+    public function getScoringSettings()
+    {
+        return $this->hasOne(CompetitionScoringSettings::class, 'competition');
+    }
+
+    public function getInvites()
+    {
+        return $this->morphMany(AccountInvite::class, 'to');
+    }
+
+    public function applyInvite(AccountInvite $invite)
+    {
+
+        $user = $invite->getUser();
+
+        if (!$user) {
+            throw new Exception("Expected loggedin user during applyInvite");
+        }
+
+        $details = $invite->details;
+
+        if (!array_key_exists('access', $details)) {
+            throw new Exception("Organisation invite missing 'access' details");
+        }
+
+        $this->addAccount($user, $details['access']);
+
+        return redirect()->route('comps.view', $this->id);
+    }
+
+    public function cacheKey(): string
+    {
+        return "competition.{$this->id}";
+    }
+
+    public function clearEntityNameCache()
+    {
+        Cache::tags("{$this->cacheKey()}}.entity-names")->flush();
+    }
+
+    public function clearResultSchemaCaches()
+    {
+        Cache::tags("{$this->cacheKey()}.result-schemas")->flush();
+    }
+
+    public function clearHeatCache()
+    {
+        Cache::forget("{$this->cacheKey()}.heats");
+    }
+
+    public function clearDrawCache()
+    {
+        Cache::forget("{$this->cacheKey()}.draws");
+    }
+
+    protected static function booted()
+    {
+        static::created(function (Competition $competition) {
+            $competition->recordActivity('COMPETITION_CREATED', 'Competition \'' . $competition->name . '\' created', related: $competition);
+        });
+    }
+
+    public function activities()
+    {
+        return $this->morphMany(Activity::class, 'related');
     }
 }

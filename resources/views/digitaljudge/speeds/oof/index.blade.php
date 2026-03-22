@@ -18,22 +18,23 @@
 
 
         @if ($head)
-            <p>Heats will turn green once complete (unless no teams finish) <strong>and</strong> maybe be edited at any time</p>
+            <p>Heats will turn green once complete (unless no teams finish) <strong>and</strong> maybe be edited at any time
+            </p>
         @else
             <p>Heats will turn green once complete (unless no teams finish)</p>
         @endif
 
-        @for ($heat = 1; $heat <= $comp->getMaxHeats(); $heat++)
+        @foreach ($speed->getHeats()->with([
+                'oofs' => function ($query) use ($speed) {
+                    $query->where('event', $speed->id);
+                },
+            ])->get()->sortBy('heat')->groupBy('heat') as $heat => $lanes)
             @php
-                $heatlanes = $comp
-                    ->getHeatEntries()
-                    ->where('heat', $heat)
-                    ->get();
 
                 $hasResult = false;
 
-                foreach ($heatlanes as $lane) {
-                    if ($lane->getOOF($speed->id)) {
+                foreach ($lanes as $lane) {
+                    if ($lane->oofs->count() > 0) {
                         $hasResult = true;
                         break;
                     }
@@ -45,16 +46,16 @@
 
 
             @if (!$hasResult)
-                <a href="{{ route('dj.speeds.oof.judge', [$speed, $heat]) }}" class="btn btn-primary">Heat
+                <a href="{{ route('dj.speeds.oof.judge', [$speed, $heat]) }}" class="se-btn se-btn-primary">Heat
                     {{ $heat }}</a>
             @elseif ($head)
-                <a href="{{ route('dj.speeds.oof.judge', [$speed, $heat]) }}" class="btn btn-success">Heat
+                <a href="{{ route('dj.speeds.oof.judge', [$speed, $heat]) }}" class="se-btn se-btn-success">Heat
                     {{ $heat }}</a>
             @else
-                <button class="btn btn-success cursor-not-allowed">Heat
+                <button class="se-btn se-btn-success cursor-not-allowed">Heat
                     {{ $heat }}</button>
             @endif
-        @endfor
+        @endforeach
 
 
 

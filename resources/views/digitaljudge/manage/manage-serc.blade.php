@@ -51,8 +51,8 @@
         @endforeach
 
 
-        <div class="fixed left-0 top-0 w-screen h-screen bg-gray-100 bg-opacity-50 flex items-center justify-center"
-            x-show="open" style="display: none" @click="toggle()">
+        <div class="fixed left-0 top-0 w-screen h-screen bg-gray-100/50 flex items-center justify-center" x-show="open"
+            style="display: none" @click="toggle()">
             <div class="card w-[90%] md:w-[20%]" @click.stop>
                 <div class="flex items-center justify-between">
                     <h4 class="hmb-0">Edit Marking Point</h4>

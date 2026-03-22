@@ -1,7 +1,7 @@
-@extends('layout')
+@extends('layouts.competition')
 
 @section('title')
-    {{ $comp->name }}
+    Overview
 @endsection
 
 @section('breadcrumbs')
@@ -22,380 +22,1129 @@
 @endsection
 
 @section('content')
-    <div class="flex items-center justify-between">
+    <div class="grid-3">
         <div>
+            <h3>Events</h3>
 
-            <h2 class="@if (!$comp->brand) mb-0 @endif">{{ $comp->name }}</h2>
-
-            <div class="flex  items-center text-sm">
-                @if ($comp->brand)
-                    <img src="{{ $comp->getBrand->getLogo() }}" alt="{{ $comp->getBrand->name }}"
-                        class="max-w-[20px] max-h-[20px] ">
-                    <p class="mb-0 ml-[2px]">{{ $comp->getBrand->name }} </p>
+            @can('access', [$comp, ['speed']])
+                @foreach ($comp->getSpeedEvents as $event)
+                    <a href="{{ route('comps.events.speeds.view', [$comp, $event]) }}"
+                        class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
+                        <p class="font-archivo">{{ $event->getName() }}</p>
 
 
-                    <span class="w-1 h-1 bg-black rounded-full mx-2"></span>
-                @endif
 
-                <small class="text-gray-500">Scoring v{{ $comp->scoring_version }}</small>
-            </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor"
+                            class="ml-auto size-4 group-hover:text-se transition-all group-hover:stroke-3">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                        </svg>
+
+
+                    </a>
+                @endforeach
+            @endcan
+
+            @can('access', [$comp, ['serc', 'serc_writer']])
+                @foreach ($comp->getSERCs as $event)
+                    <a href="{{ route('comps.events.sercs.view', [$comp, $event]) }}"
+                        class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
+                        <p class="font-archivo flex items-center">{{ $event->getName() }}
+                            <span class="ml-2 badge badge-info badge-sm">SERC</span>
+                        </p>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor"
+                            class="ml-auto size-4 group-hover:text-se transition-all group-hover:stroke-3">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                        </svg>
+
+
+                    </a>
+                @endforeach
+            @endcan
+
+            <x-add-card link="{{ route('comps.events', $comp) }}" />
+
+
 
 
         </div>
 
+        <div>
+            <h3>Leagues/Brackets</h3>
 
-        @can('access', $comp)
-            <div class="flex items-center justify-center">
-                <a href="{{ route('comps.notifications.user-settings', $comp) }}"
-                    class=" transition-color cursor-pointer text-gray-600 hover:text-white hover:bg-bulsca rounded-full p-[0.375rem]">
+
+            @foreach ($comp->getLeagues as $league)
+                <a href="{{ route('comps.leagues.view', [$comp, $league]) }}"
+                    class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
+                    <p class="font-archivo flex items-center">{{ $league->name }}
+                    </p>
+
+
+
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="w-7 h-7">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+                        stroke="currentColor"
+                        class="ml-auto size-4 group-hover:text-se transition-all group-hover:stroke-3">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                     </svg>
+
+
                 </a>
-
-                <x-settings-cog href="{{ route('comps.settings', $comp) }}" />
-            </div>
-        @endcan
+            @endforeach
 
 
-
-    </div>
-
-
-    <p class="mt-2">Welcome to the scorer for {{ $comp->name }}. If you run into any issues please contact the Data
-        Manager (<a class="link" href="mailto:data@bulsca.co.uk">data@bulsca.co.uk</a>) or find them on the day!
-
-    </p>
-    <br>
-    <div class="grid-5">
-        @can('access', $comp)
-            @if (\App\Helpers\ScoringHelper::getCompetitionScoringDetails($comp)['use_competitors'])
-                <a href="{{ route('comps.view.competitors', $comp) }}"
-                    class="p-5 border shadow-md bg-white rounded-md flex items-center justify-center space-x-2 hover:bg-gray-400 hover:text-white transition-colors cursor-pointer">
-                    <p class="text-lg font-semibold">Competitors</p>
-                </a>
-            @else
-                <a href="{{ route('comps.view.teams', $comp) }}"
-                    class="p-5 border shadow-md bg-white rounded-md flex items-center justify-center space-x-2 hover:bg-gray-400 hover:text-white transition-colors cursor-pointer">
-                    <p class="text-lg font-semibold">Teams</p>
-                </a>
-            @endif
-        @endcan
-
-        @can('access', [$comp, '*'])
-            <a href="{{ route('comps.view.heats', $comp) }}"
-                class="p-5 border shadow-md bg-white rounded-md flex items-center justify-center space-x-2 hover:bg-gray-400 hover:text-white transition-colors cursor-pointer">
-                <p class="text-lg font-semibold">Heats/Orders</p>
-            </a>
-        @endcan
-        @can('access', $comp)
-            <a href="{{ route('comps.view.printables', $comp) }}"
-                class="p-5 border shadow-md bg-white rounded-md flex items-center justify-center space-x-2 hover:bg-gray-400 hover:text-white transition-colors cursor-pointer">
-                <p class="text-lg font-semibold">Printables</p>
-            </a>
-            <a href="{{ route('comps.view.events', $comp) }}"
-                class="p-5 border shadow-md bg-white rounded-md flex items-center justify-center space-x-2 hover:bg-gray-400 hover:text-white transition-colors cursor-pointer">
-                <p class="text-lg font-semibold">Events</p>
-            </a>
-            <a href="{{ route('comps.view.results', $comp) }}"
-                class="p-5 border shadow-md bg-white rounded-md flex items-center justify-center space-x-2 hover:bg-gray-400 hover:text-white transition-colors cursor-pointer">
-                <p class="text-lg font-semibold">Results</p>
-            </a>
-        @endcan
-
-    </div>
-    <br>
-    <div>
-        <h3>Scorer Manual</h3>
-        <p>You can find the scorer manual <a class="link" target="_blank" rel="noopener noreferrer"
-                href="https://docs.google.com/document/d/1P1XMiKYkcwFP9gp-GMf7Uj7DJhRER65IVTUDG-sJu5o/edit?usp=sharing">here
-                (Google Drive)</a>
-            or <a class="link" target="_blank" rel="noopener noreferrer"
-                href="https://www.bulsca.co.uk/resources/view/7851d57a-e23a-4e83-bdfd-58df662748a5">here (PDF)</a>
-        </p>
-    </div>
-    <br>
-    <hr>
-    <br>
-
-    @can('access', $comp)
-        <div class="grid-3">
-            <div class="card">
-                <div class="flex items-center justify-between">
-                    <h3>Digital Judging</h3>
-                    @if ($comp->digitalJudgeEnabled)
-                        <x-settings-cog href="{{ route('dj.settings', $comp) }}" />
-                    @endif
-                </div>
+            <x-add-card link="{{ route('comps.leagues.create', $comp) }}" />
 
 
-                <p>Digital judging allows Judges to enter SERC marks on their own device. It is enabled per comp.</p>
-                <strong>If you need to DQ a SERC team, please talk with the competitions Scorer or Organiser!</strong>
-                <p><a href="https://docs.google.com/document/d/1HKTR9HUzgTKadyE7vyVqDWXeaheK4XFmzlw9Hrn1Q1s/edit?usp=sharing"
-                        target="_blank" rel="noopener noreferrer" class="link">DigitalJudge Manual</a></p>
-                <br>
+
+
+        </div>
+
+        @can('access', [$comp, 'admin'])
+            <div>
+                <h3>Digital Judge</h3>
+
                 @if ($comp->digitalJudgeEnabled)
-                    <h5>Judges</h5>
-                    <a href="{{ route('dj.qrs', $comp) }}" target="_blank" class="btn btn-thin btn-primary ">Print QR</a>
-                    <p class="text-center font-semibold text-bulsca_red">OR</p>
-                    <p>Please instruct Judges to go to here: <a
-                            href="{{ \App\Helpers\RouteHelpers::externalRoute('judge', 'dj.index') . ($comp->brand ? '?b=' . $comp->brand : '') }}"
-                            class="link">{{ \App\Helpers\RouteHelpers::externalRoute('judge', 'dj.index') . ($comp->brand ? '?b=' . $comp->brand : '') }}
-                        </a> and enter the following pin:</p>
+                    <div class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1"
+                        @click="modals.djPin = true">
+                        <p class="font-archivo">Pins</p>
 
-                    <p class="text-xl"><strong>{{ $comp->digitalJudgePin }}</strong></p>
 
-                    <br>
-                    <h5>Head Judge/SERC Setter</h5>
-                    <p>Please instruct your Head Judge and SERC Setters to follw the same above link, but use the following pin
-                        instead:</p>
-                    <p class="text-xl"><strong>{{ $comp->digitalJudgeHeadPin }}</strong></p>
-                    <br>
-                    <p>This pin grants the ability for your Head Judge and SERC Setters to override Judge scores incase they
-                        accidently make a mistake</p>
-                    <br>
 
-                    <h5>Judging Log</h5>
-                    <p><a class="link" href="{{ $comp->resolveJudgeLogVersionUrl() }}">Click here</a> to view an activity
-                        log of all
-                        judge activity.</p>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor"
+                            class="ml-auto size-4 group-hover:text-se transition-all group-hover:stroke-3">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                        </svg>
 
-                    <br>
 
-                    <a href="{{ route('dj.toggle', $comp) }}" class="btn btn-danger">Disable Digital Judging</a>
-                @else
-                    <a href="{{ route('dj.toggle', $comp) }}" class="btn">Enable Digital Judging</a>
-                @endif
-            </div>
-
-            @if ($comp->digitalJudgeEnabled && $comp->getMaxHeats() == -1)
-                <div>
-                    <div class="alert-box">
-                        <p class="font-semibold">No Heats Set</p>
-                        <p class="text-sm">You have not generated heats any yet. You will not be able to digitally judge any
-                            speeds
-                            events until you do so!</p>
                     </div>
-                </div>
-            @endif
 
+                    <a href="{{ route('dj.qrs', $comp) }}" target="_blank"
+                        class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
+                        <p class="font-archivo">QR Code</p>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor"
+                            class="ml-auto size-4 group-hover:text-se transition-all group-hover:stroke-3">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                        </svg>
+
+
+                    </a>
+
+                    <a href="#not-implemented" @click.prevent="showAlert('This feature is not implemented yet, stay tuned!')"
+                        class="flex items-center
+                    cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
+                        <p class="font-archivo">Log</p>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor"
+                            class="ml-auto size-4 group-hover:text-se transition-all group-hover:stroke-3">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                        </svg>
+
+
+                    </a>
+
+                    <hr class="spacer">
+
+                    <a href="https://docs.google.com/document/d/1HKTR9HUzgTKadyE7vyVqDWXeaheK4XFmzlw9Hrn1Q1s/edit?usp=sharing"
+                        target="_blank" rel="noopener noreferrer"
+                        class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
+                        <p class="font-archivo">Help (Manual)</p>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor"
+                            class="ml-auto size-4 group-hover:text-se transition-all group-hover:stroke-3">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                        </svg>
+
+
+                    </a>
+
+
+                    <div @click="modals.djSettings = true"
+                        class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1 mb-2">
+                        <p class="font-archivo">Settings</p>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor"
+                            class="ml-auto size-4 group-hover:text-se transition-all group-hover:stroke-3">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                        </svg>
+
+
+                    </div>
+
+                    <a href="{{ route('dj.toggle', $comp) }}" class="se-btn se-btn-danger block ">Disable</a>
+                @else
+                    <p class="mb-2">DigitalJudge allows officials to enter SERC marks on their own devices.</p>
+                    <a href="{{ route('dj.toggle', $comp) }}" class="se-btn se-btn-success block">Enable</a>
+                @endif
+
+
+
+
+
+
+
+            </div>
 
             <div>
-                <div class="card !grow-0">
-                    <div class="flex items-center justify-between">
-                        <h3>Additional Accounts</h3>
+                <h3>Competition</h3>
+                <div @click="modals.compSettings = true"
+                    class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
+                    <p class="font-archivo">Settings</p>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="ml-auto size-4 group-hover:text-se transition-all group-hover:stroke-3">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                    </svg>
+
+
+                </div>
+
+                <div @click="modals.compAccounts = true"
+                    class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
+                    <p class="font-archivo">Additional Accounts</p>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="ml-auto size-4 group-hover:text-se transition-all group-hover:stroke-3">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                    </svg>
+
+
+                </div>
+
+                <div @click="modals.compDelete = true"
+                    class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1 w-full">
+                    <p class="font-archivo">Delete Competition</p>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="ml-auto size-4 group-hover:text-se transition-all group-hover:stroke-3">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                    </svg>
+
+
+
+
+
+                </div>
+
+                <a href="{{ route('comps.activityLog', $comp) }}"
+                    class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
+                    <p class="font-archivo">Activity Log</p>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="ml-auto size-4 group-hover:text-se transition-all group-hover:stroke-3">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                    </svg>
+
+
+                </a>
+
+            </div>
+        @endcan
+    </div>
+
+    @can('access', [$comp, 'admin'])
+        <x-s-e-modal id="djPin" title="Pins">
+            <p class="mb-4">Officials should navigate to <a
+                    href="{{ \App\Helpers\RouteHelpers::externalRoute('judge', 'dj.index') }}"
+                    class="link">{{ \App\Helpers\RouteHelpers::externalRoute('judge', 'dj.index') }}
+                </a> and enter one of the following:</p>
+
+
+            <div class="grid-2">
+                <div>
+                    <h4>Judges</h4>
+                    <p class="font-semibold text-lg">{{ $comp->digitalJudgePin }}</p>
+
+                </div>
+
+                <div>
+                    <h4>Head Referee</h4>
+                    <p class="font-semibold text-lg">{{ $comp->digitalJudgeHeadPin }}</p>
+                </div>
+            </div>
+        </x-s-e-modal>
+
+        <x-s-e-modal id="djSettings" title="DigitalJudge Settings">
+
+            <form id="djSettingsForm"
+                x-on:submit="(e) => {
+            e.preventDefault()
+         
+
+          if (this.loading) {
+                return
+            }
+
+               this.loading = true
+            
+
+
+            fetch('{{ route('dj.settings', $comp) }}', {
+                method: 'POST',
+                body: new FormData($event.target),
+            }).then(resp => {
+               this.loading = false
+                if (!resp.ok) {
+                    showAlert('Something went wrong, you changes have been reversed.')
+                    $event.target.reset()
+                    return
+                }
+     
+
+                loading = false
+                modals.djSettings = false
+                showSuccess('DigitalJudge settings saved')
+            })
+        }">
+
+
+                @csrf
+                <h4>Enabled Events</h4>
+                <p>Please check all the events below that you want to enable DigitalJudge for:</p>
+                <div class="ml-3 mt-1 mb-6">
+
+
+
+                    @foreach ($comp->getSpeedEvents as $event)
+                        <div class="flex space-x-2">
+                            <input type="checkbox" name="sp:{{ $event->id }}"
+                                @if ($event->digitalJudgeEnabled) checked @endif id="sp:{{ $event->id }}">
+                            <label for="sp:{{ $event->id }}"
+                                class="font-archivo flex items-center">{{ $event->getName() }}</label>
+                        </div>
+                    @endforeach
+
+                    @foreach ($comp->getSERCs as $event)
+                        <div class="flex space-x-2">
+                            <input type="checkbox" name="se:{{ $event->id }}"
+                                @if ($event->digitalJudgeEnabled) checked @endif id="se:{{ $event->id }}">
+                            <label for="se:{{ $event->id }}" class="font-archivo flex items-center">
+                                {{ $event->getName() }}
+                                <span class="ml-2 badge badge-info badge-sm">SERC</span>
+                            </label>
+                        </div>
+                    @endforeach
+
+
+                </div>
+
+                <h4>Other</h4>
+
+
+                <div class="flex space-x-2 items-start">
+                    <input type="checkbox" name="show_teams_to_judges" @if ($comp->show_teams_to_judges) checked @endif
+                        id="show_teams_to_judges" class="mt-[0.375rem] ml-3">
+
+                    <label for="show_teams_to_judges" class="flex flex-col">
+                        Show Team names
+                        <small>If enabled, Judges will see team names when marking instead of the number</small>
+                    </label>
+                </div>
+            </form>
+            @slot('footer')
+                <button type="submit" form="djSettingsForm" class="se-btn se-btn-success ml-auto">Save</button>
+            @endslot
+        </x-s-e-modal>
+
+        <x-s-e-modal id="compSettings" title="Settings" class="se-modal-wide ">
+
+
+
+            <div class="se-pannel " id="competition_settings" x-data="{
+                active: 'details',
+            
+                form: {
+                    changes: false,
+                    data: {},
+            
+                },
+            
+            
+                async validateForm() {
+            
+                    if (!this.form.changes) {
+                        console.log('no changes')
+                        return
+                    }
+            
+                    for ([name, data] of Object.entries(this.form.data)) {
+                        if (data.error) {
+                            this.active = data.section
+                            this.$nextTick(() => {
+                                data.element.focus()
+                            })
+                            return
+                        }
+                    }
+            
+                    let form_data = {}
+            
+                    for ([name, data] of Object.entries(this.form.data)) {
+                        form_data[name] = data.data
+                    }
+            
+                    let response = await fetch('{{ route('comps.settings', $comp) }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify(form_data)
+                    })
+            
+                    if (!response.ok) {
+                        showAlert('Failed to save settings. Check your inputs')
+                        return
+                    }
+            
+                    showSuccess('Competition settings saved')
+            
+                    this.form.changes = false
+                    this.$nextTick(() => this.shared.changes = false)
+            
+                    this.modals.compSettings = false
+            
+                },
+            
+                init() {
+                    shared.submit = () => {
+                        this.validateForm()
+                    }
+            
+                    $watch('form.changes', (v) => shared.changes = true)
+            
+                },
+            
+            
+            
+            
+            }" @input="form.changes = true">
+
+                <ul class="w-1/4 whitespace-nowrap ">
+                    <li :class="active == 'details' ? 'active' : ''" @click="active = 'details'">Details</li>
+                    <li :class="active == 'setup' ? 'active' : ''" @click="active = 'setup'">Setup</li>
+                    <li :class="active == 'hd' ? 'active' : ''" @click="active = 'hd'">Heats & Draws</li>
+                    <li :class="active == 'names' ? 'active' : ''" @click="active = 'names'">Name Formatting</li>
+                    <li :class="active == 'status' ? 'active' : ''" @click="active = 'status'">Status Message</li>
+
+
+                </ul>
+
+
+
+                <div class="w-3/4">
+                    <div class="w-2/3" x-cloak x-show="active == 'details'">
+                        <h3>Details</h3>
+
+                        <div class="grid-2 w-full">
+
+                            @csrf
+                            <x-se-input label="Name" name="name" :default="$comp->name" required minlength="3"
+                                section="details" />
+
+                            <x-se-input label="Date" name="when" type="date" :default="$comp->when->format('Y-m-d')" required
+                                section="details" />
+
+                            <x-se-input label="Location" name="where" :default="$comp->where" required section="details" />
+
+
+                        </div>
+
+                    </div>
+                    <div x-cloak x-show="active == 'setup'">
+                        <h3>Setup</h3>
+
+                        <div class="grid-2 w-full">
+
+
+                            @csrf
+
+                            <x-se-input label="Lanes" name="max_lanes" type="number" min="1" :default="$comp->max_lanes"
+                                required section="setup" />
+
+
+                            @php
+                                $sercStart = $comp->serc_start_time;
+
+                                $sercStart?->setSeconds(0);
+                            @endphp
+
+
+                            <x-se-input label="SERC Start Time" name="serc_start_time" type="datetime-local"
+                                :default="$sercStart" required section="setup" />
+
+                            <x-se-input name="timezone" type="hidden" x-init="self.data = Intl.DateTimeFormat().resolvedOptions().timeZone;" section="setup" />
+
+
+                            <x-se-input label="Public Competition" class="grow-0!" name="show_competition" type="checkbox"
+                                :default="$comp->show_competition" section="setup">
+                                <x-slot name="description">
+                                    <small>If this competition shows up in Explore and Search</small>
+                                </x-slot>
+                            </x-se-input>
+
+                            <x-se-input label="Live" class="grow-0!" name="can_be_live" type="checkbox" :default="$comp->can_be_live"
+                                section="setup">
+                                <x-slot name="description">
+                                    <small>If this competition can be viewed at live.scoring.events</small>
+                                </x-slot>
+                            </x-se-input>
+
+
+
+                            <x-se-input label="Select League First" class="grow-0!" name="select_league_first"
+                                type="checkbox" :default="$comp->select_league_first" section="setup">
+                                <x-slot name="description">
+                                    <small>If users viewing results need to select a league first</small>
+                                </x-slot>
+                            </x-se-input>
+
+
+                        </div>
+
                     </div>
 
-                    <p>For assistance please see the <strong>"SERC Writer Login"</strong> section of the <a class="link"
-                            target="_blank" rel="noopener noreferrer"
-                            href="https://docs.google.com/document/d/1P1XMiKYkcwFP9gp-GMf7Uj7DJhRER65IVTUDG-sJu5o/edit?usp=sharing#heading=h.3dqfvnjctnuo">Scorer
-                            Manual</a></p>
-                    <br>
+                    <div x-cloak x-show="active == 'hd'">
+                        <h3>Heats & Draws</h3>
 
-                    <div class="  relative w-full  ">
-                        <table class=" text-sm w-full shadow-md rounded-lg overflow-hidden text-left text-gray-500 ">
-                            <thead class="text-xs text-gray-700 text-right uppercase bg-gray-50 ">
-                                <tr>
-                                    <th scope="col" class="py-3 px-6 text-left">
-                                        Name
-                                    </th>
-                                    <th scope="col" class="py-3 px-6">
-                                        Email
-                                    </th>
-                                    <th scope="col" class="py-3 px-6">
-                                        Actions
-                                    </th>
-
-                                </tr>
-                            </thead>
-                            <tbody>
+                        <div class="grid-2 w-full">
 
 
-                                <tr class="bg-white border-b text-right " x-data="{
-                                    openModal: false,
-                                    data: null,
-                                
-                                
-                                    createAccount() {
-                                
-                                        fetch('{{ route('comps.accounts.serc-writer.create', $comp) }}', {
-                                            method: 'POST',
-                                            headers: {
-                                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                            }
-                                        }).then(resp => resp.json()).then(data => {
-                                            if (data?.error) {
-                                                alert(data.error)
-                                                return
-                                            }
-                                
-                                            this.data = data
-                                            this.openModal = true
-                                        })
-                                
-                                
-                                    },
-                                
-                                    resetAccountPassword() {
-                                        fetch('{{ route('comps.accounts.serc-writer.new-password', $comp) }}', {
-                                            method: 'POST',
-                                            headers: {
-                                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                            }
-                                        }).then(resp => resp.json()).then(data => {
-                                            if (data?.error) {
-                                                alert(data.error)
-                                                return
-                                            }
-                                
-                                            this.data = data
-                                            this.openModal = true
-                                        })
-                                    }
-                                }">
-                                    <th scope="row"
-                                        class="py-4 text-left px-6 font-medium text-gray-900 whitespace-nowrap ">
-                                        SERC Writer
-                                    </th>
+                            @csrf
 
-                                    @php
-                                        $swa = $comp->getSercWriterAccount();
-                                    @endphp
+                            <x-se-input label="Tanks" name="ss:use_tanks" type="select" section="hd" :default="$comp->getScoringSettings->use_tanks">
+                                <option value="1" @if ($comp->getScoringSettings->use_tanks) selected @endif>Yes</option>
+                                <option value="0" @if (!$comp->getScoringSettings->use_tanks) selected @endif>No</option>
+                            </x-se-input>
 
-                                    <td class="py-4 px-6 ">
-                                        <p>{{ $swa?->email ?? '-' }}</p>
-                                    </td>
+                            <x-se-input label="Use Seed Times" name="use_seeds" type="select" section="hd"
+                                :default="$comp->use_seeds">
+                                <option value="1" @if ($comp->use_seeds) selected @endif>Yes</option>
+                                <option value="0" @if (!$comp->use_seeds) selected @endif>No</option>
+                            </x-se-input>
+
+                            <x-se-input label="Heats Per Event" name="heats_per_event" type="select" section="hd"
+                                :default="$comp->heats_per_event">
+                                <option value="1" @if ($comp->heats_per_event) selected @endif>Yes</option>
+                                <option value="0" @if (!$comp->heats_per_event) selected @endif>No</option>
+                            </x-se-input>
+
+                            <x-se-input label="Seed Per Event" name="seed_per_event" type="select" section="hd"
+                                :default="$comp->seed_per_event">
+                                <option value="1" @if ($comp->seed_per_event) selected @endif>Yes</option>
+                                <option value="0" @if (!$comp->seed_per_event) selected @endif>No</option>
+                            </x-se-input>
 
 
-                                    <td class="py-4 px-6 ">
-                                        <div class="flex items-end justify-end space-x-3 relative">
+                        </div>
 
-
-
-
-                                            @if ($swa)
-                                                <div title="Reset Password" @click="resetAccountPassword">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                        class="size-6 hover:text-black cursor-pointer">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" />
-                                                    </svg>
-                                                </div>
-                                            @else
-                                                <div title="Create Account" @click="createAccount">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                        class="size-6 hover:text-black cursor-pointer">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            d="M12 4.5v15m7.5-7.5h-15" />
-                                                    </svg>
-
-                                                </div>
-                                            @endif
-
-
-                                            <div class="relative">
-                                                <div class="modal" x-cloak x-show="openModal">
-                                                    <div class="modal-content">
-                                                        <div class="flex flex-col text-left text-black">
-                                                            <h4>SERC Writer Account</h4>
-                                                            <p>Please give the following details to your SERC Writer(s) so that
-                                                                they
-                                                                can login and setup their SERCs.</p>
-                                                            <br>
-
-                                                            <p>
-                                                                <strong>Email</strong>
-                                                                <br>
-                                                                <span x-text="data?.email"></span>
-                                                                <br>
-                                                                <strong>Password</strong>
-                                                                <br>
-                                                                <span x-text="data?.password"></span>
-                                                            </p>
-                                                            <br>
-                                                            <button class="btn btn-danger"
-                                                                @click="() => { window.location.reload() }">Close</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-
-
-
-                                        </div>
-
-
-
-
-                                    </td>
-
-                                </tr>
-
-
-
-
-                            </tbody>
-                        </table>
                     </div>
+
+
+                    <div x-cloak x-show="active == 'names'">
+                        <h3>Name Formatting</h3>
+
+                        <p>Name formatting allows you to customise how Team and Competitor names are displayed. The identifiers
+                            lsited in <strong>BOLD</strong> can be included and will be replaced with the associated
+                            name/identifier. An formatted example is displayed below each input
+                        </p>
+                        <br>
+
+                        <div class="grid-2 w-full">
+
+
+                            @csrf
+
+                            <div x-data="{
+                                format: '{{ $comp->team_format }}',
+                            
+                            
+                                sample: {
+                                    club: 'Club',
+                                    league: 'Youth',
+                                    name: 'Team',
+                                    competitors: 'Noah, Kirsty'
+                                },
+                            
+                                getSample() {
+                                    return this.format
+                                        .replace(/:C/g, this.sample.club)
+                                        .replace(/:L/g, this.sample.league)
+                                        .replace(/:N/g, this.sample.name)
+                                        .replace(/:S/g, this.sample.competitors);
+                                },
+                            
+                                init() {
+                                    $watch('form.data.team_foramt', (v) => {
+                                        this.format = v.data
+                                    })
+                                }
+                            }">
+
+                                <x-se-input label="Team Name Format" name="team_format" :default="$comp->team_format" required
+                                    section="names">
+                                    <x-slot name="description">
+                                        <p><strong>:C</strong> - Club, <strong>:L</strong> - League, <strong>:N</strong> - Name,
+                                            <strong>:S</strong> - Competitor Names,
+                                        </p>
+                                    </x-slot>
+                                </x-se-input>
+
+                                <small class="text-gray-500!" x-text="getSample">example</small>
+
+                            </div>
+
+
+
+                            <div x-data="{
+                                format: '{{ $comp->team_format }}',
+                            
+                            
+                                sample: {
+                                    club: 'Club',
+                                    league: 'Youth',
+                                    name: 'Noah',
+                                    team: 'Team'
+                                },
+                            
+                                getSample() {
+                                    return this.format
+                                        .replace(/:C/g, this.sample.club)
+                                        .replace(/:L/g, this.sample.league)
+                                        .replace(/:N/g, this.sample.name)
+                                        .replace(/:T/g, this.sample.team);
+                            
+                            
+                                },
+                            
+                                init() {
+                                    $watch('form.data.competitor_foramt', (v) => {
+                                        this.format = v.data
+                                    })
+                                }
+                            }">
+
+                                <x-se-input label="Competitor Name Format" name="competitor_format" :default="$comp->competitor_format"
+                                    required section="names">
+                                    <x-slot name="description">
+                                        <p><strong>:C</strong> - Club, <strong>:L</strong> - League, <strong>:N</strong> - Name,
+                                            <strong>:T</strong> - Team,
+                                        </p>
+                                    </x-slot>
+                                </x-se-input>
+
+                                <small class="text-gray-500!" x-text="getSample">example</small>
+
+                            </div>
+
+
+
+
+                        </div>
+
+                    </div>
+
+                    <div x-cloak x-show="active == 'status'" x-data="{
+                        init() {
+                            let editor = new Quill(this.$refs.editor, {
+                                theme: 'snow',
+                                placeholder: 'Enter status message here...',
+                                modules: {
+                                    toolbar: [
+                                        ['bold', 'italic', 'underline', 'link'],
+                    
+                                    ],
+                                },
+                            });
+                    
+                            editor.on('text-change', () => {
+                                const html = editor.root.innerHTML;
+                                const textOnly = html.replace(/<[^>]+>/g, '').trim();
+                    
+                                if (textOnly.length === 0) {
+                                    editor.root.innerHTML = '';
+                                }
+                    
+                                this.form.data.status_message.data = editor.root.innerHTML;
+                            })
+                    
+                    
+                        }
+                    }">
+                        <h3>Status Message</h3>
+
+                        <div id="editor" x-ref="editor">{!! $comp->status_message ?? '' !!}</div>
+
+                        <x-se-input type="hidden" name="status_message" :default="$comp->status_message" section="status" />
+
+
+
+
+
+
+
+
+                    </div>
+
+
+
+                    <x-slot name="left_footer">
+                        <small class="  text-red-500   mr-auto! animate-pulse" x-show="shared.changes">You have unsaved
+                            changes!</small>
+                    </x-slot>
+
 
                 </div>
             </div>
 
 
 
-        </div>
-        <br>
-        <hr>
-        <br>
+
+
+            <x-slot name="footer">
+                <button form="competition_settings" class="se-btn se-btn-success" @click="shared.submit()">Save</button>
+            </x-slot>
+        </x-s-e-modal>
+
+
+        <x-s-e-modal id="compAccounts" title="Additional Accounts">
+
+            <div class="se-table" x-data="{
+                accounts: [],
+            
+                getAccounts() {
+                    fetch('{{ route('comps.accounts', $comp) }}')
+                        .then(resp => resp.json())
+                        .then(data => {
+                            this.accounts = data;
+            
+                        })
+                        .catch(err => {
+                            console.error('Failed to fetch accounts:', err);
+                            showAlert('Failed to load accounts');
+                        });
+                },
+            }" x-init="$watch('modals.compAccounts', value => value ? getAccounts() : null)">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Access</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="account in accounts">
+                            <tr
+                                @click="() => {modals.data.compEditAccount.id = account.id; modals.compEditAccount = true; modals.compAccounts = false}">
+                                <th><span x-text="account.name"></span></th>
+                                <td
+                                    x-text="account.access.length > 2 ? `${account.access.slice(0,2).join(', ')} & ${account.access.length - 2} more` : account.access.join(', ')">
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+
+            <br>
+
+            <button class="se-btn se-btn-success"
+                @click="() => {modals.compAddAccount = true; modals.compAccounts = false}">Add
+                Account</button>
+
+
+        </x-s-e-modal>
+
+
+        <x-s-e-modal id="compAddAccount" title="Add Account">
+
+            <form id="compAddAccountForm" x-data="{
+                accounts: [],
+                email: '',
+            
+                searchEmail() {
+                    email = this.email.trim()
+                    if (email.length < 3) {
+                        return
+                    }
+            
+                    fetch('{{ route('accounts.search', '__id') }}'.replace('__id', email)).then(resp => resp.json()).then(data => {
+                        this.accounts = data
+                    })
+                }
+            }"
+                x-on:submit="(e) => {
+            e.preventDefault()
+           
+            
+            if (this.loading) {
+                return
+            }
+
+            this.loading = true
+
+
+            fetch('{{ route('comps.accounts.invite', $comp) }}', {
+                method: 'POST',
+                body: new FormData($event.target),
+                headers: {
+                    'Accept': 'application/json',
+                    
+                }
+            }).then(resp => {
+                this.loading = false
+                if (!resp.ok && resp.status != 422) {
+                    showAlert('Something went wrong, account not invited.')
+             
+                    return
+                }
+
+              
+                return resp.json()
+
+               
+            }).then(data => {
+
+                
+                if (data.errors) {
+                    showAlert(Object.entries(data.errors)[0][1])
+                    return
+                }
+
+                if (data.error) {
+                    showAlert(data.error)
+                    return
+                }
+
+                loading = false
+                modals.compAddAccount = false
+                modals.compAccounts = true
+                $event.target.reset()
+                showSuccess('Account invited')
+            })
+        }"
+                x-init="() => {
+                    onClose = () => {
+                        modals.compAccounts = true
+                    }
+                }">
+
+
+                @csrf
+
+
+                <p class="text-sm">Invite someone to this organisaiton. If they have an account it will appear as you type
+                    their email,
+                    otherwise they will be invited to create an account.</p>
+                <br>
+
+                <div class="se-form-input relative">
+                    <input type="text" name="email" id="email" required placeholder="Email Address"
+                        x-model="email" @keyup.debounce.200ms="searchEmail">
+
+
+
+                    <div class="absolute w-full top-2/3 left-0  bg-white border" x-show="accounts.length > 0" x-cloak>
+                        <template x-for="account in accounts">
+                            <div class="se-card se-card-hover p-2! text-sm! flex-row! rounded-none! items-center justify-between"
+                                @click="() => {email = account.email; accounts = []}">
+                                <span x-text="account.name"></span>
+                                <small x-text="account.email"></small>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <div class="grid-3 gap-1!">
+                    @foreach (App\Models\Competition::$accessTypes as $type => $name)
+                        <div class="flex space-x-2">
+                            <input type="checkbox" name="access[]" value="{{ $type }}"
+                                id="access-{{ $type }}">
+                            <label for="access-{{ $type }}" class="font-archivo flex items-center">
+                                {{ $name }}
+                            </label>
+                        </div>
+                    @endforeach
+                </div>
+
+
+
+
+
+
+
+            </form>
+
+            <x-slot name="footer">
+                <button type="submit" form="compAddAccountForm" class="se-btn se-btn-success ml-auto">Add</button>
+            </x-slot>
+        </x-s-e-modal>
+
+
+        <x-s-e-modal id="compEditAccount" title="Edit Account">
+
+            <form id="compEditAccountForm"
+                x-on:submit="(e) => {
+            e.preventDefault()
+           
+            
+            if (this.loading) {
+                return
+            }
+
+            this.loading = true
+
+
+            fetch('{{ route('comps.accounts.edit', [$comp, 'account' => '__id']) }}'.replace('__id', modals.data.compEditAccount?.id), {
+                method: 'POST',
+                body: new FormData($event.target),
+                headers: {
+                    'Accept': 'application/json',
+                    
+                }
+            }).then(resp => {
+                this.loading = false
+                if (!resp.ok && resp.status != 422) {
+                    showAlert('Something went wrong, unable to save changes')
+                  
+                    return null
+                }
+
+              
+                return resp.json()
+
+               
+            }).then(data => {
+
+                
+
+                if (data.errors) {
+                    showAlert(Object.entries(data.errors)[0][1])
+                    return
+                }
+
+                closeModal()
+                
+                showSuccess('Account updated')
+            })
+        }"
+                x-data="{
+                    data: {
+                        name: '',
+                
+                        access: [],
+                        owner: false,
+                    },
+                
+                    fetchAccount(id) {
+                        this.loading = true
+                        fetch('{{ route('comps.accounts.view', [$comp, 'account' => '__id']) }}'.replace('__id', id))
+                            .then(resp => resp.json())
+                            .then(rdata => {
+                
+                                if (rdata.error) {
+                                    showAlert(rdata.error);
+                                    return;
+                                }
+                
+                                this.data.name = rdata.name;
+                                this.data.email = rdata.email;
+                
+                                rdata.access.forEach(access => {
+                                    let target = $el.querySelector(`#edit-access-${access}`)
+                                    if (target) {
+                                        target.checked = true
+                                    }
+                
+                
+                                })
+                
+                                this.data.owner = rdata.access.includes('owner')
+                
+                
+                            })
+                            .catch(err => {
+                                console.error('Failed to fetch account:', err);
+                                showAlert('Failed to load account details');
+                            }).finally(() => {
+                                this.loading = false;
+                            });
+                    },
+                
+                    deleteAccount() {
+                
+                        if (this.loading) {
+                            return;
+                        }
+                
+                        if (this.data.owner) {
+                            alert('You cannot remove yourself');
+                            return
+                        }
+                
+                        if (!confirm('Are you sure you want to remove this account? This cannot be undone.')) {
+                            return;
+                        }
+                
+                        this.loading = true
+                
+                        fetch('{{ route('comps.accounts.delete', [$comp, 'account' => '__id']) }}'.replace('__id', modals.data.compEditAccount?.id), {
+                            method: 'DELETE',
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            }
+                        }).then(resp => {
+                            if (!resp.ok) {
+                                showAlert('Something went wrong, unable to delete account')
+                                return;
+                            }
+                
+                            showSuccess('Account deleted')
+                            modals.compAccounts = true
+                            modals.compEditAccount = false
+                        }).finally(() => {
+                            this.loading = false;
+                        });
+                    }
+                
+                }" x-init="() => {
+                
+                    onClose = () => {
+                        modals.compAccounts = true
+                    }
+                
+                    $watch('modals.data.compEditAccount?.id', value => {
+                        if (value == undefined) {
+                            return;
+                        }
+                
+                        fetchAccount(value)
+                
+                    })
+                
+                    window.addEventListener('delete-account', () => deleteAccount())
+                }">
+
+
+                @csrf
+
+                <h3 x-text="data.name"></h3>
+                <p class="text-sm text-gray-400 mb-4" x-text="data.email"></p>
+
+
+
+                <div class="grid-4 gap-1!" x-show="!data.owner">
+                    @foreach (App\Models\Competition::$accessTypes as $type => $name)
+                        <div class="flex space-x-2">
+                            <input type="checkbox" name="access[]" value="{{ $type }}"
+                                id="edit-access-{{ $type }}">
+                            <label for="edit-access-{{ $type }}" class="font-archivo flex items-center">
+                                {{ $name }}
+                            </label>
+                        </div>
+                    @endforeach
+                </div>
+
+                <p x-show="data.owner">
+                    You own this competition
+                </p>
+
+
+            </form>
+
+            <x-slot name="footer">
+                <button type="button" class="se-btn se-btn-danger"
+                    @click.stop="window.dispatchEvent(new CustomEvent('delete-account'))">Remove</button>
+                <button type="submit" form="compEditAccountForm" class="se-btn se-btn-success ml-auto">Save</button>
+
+
+            </x-slot>
+        </x-s-e-modal>
+
+
+        <x-s-e-modal id="compDelete" title="Delete Competition">
+
+            <div x-data="{
+                name: '',
+                targetName: '{{ $comp->name }}',
+            
+                deleteCompetition() {
+            
+                    if (this.name != this.targetName) {
+                        return
+                    }
+            
+                    if (!confirm('Are you sure, everything will be removed!')) {
+                        return
+                    }
+            
+                    let fd = new FormData()
+                    fd.append('name', this.name)
+            
+            
+                    fetch('{{ route('comps.delete', $comp) }}', {
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: fd,
+                        method: 'POST'
+                    }).then(resp => resp.json()).then(data => {
+                        if (data.error) {
+                            showAlert(data.error)
+                            return
+                        }
+            
+                        window.location.href = '/'
+                    })
+            
+                }
+            }">
+                <div class="alert-box">
+                    <h1>Warning</h1>
+                    <p>This cannot be undone!</p>
+                </div>
+                <br>
+                <div class="se-form-input">
+                    <label for="comp-del-name">Confirm Competition Name</label>
+                    <input type="text" id="comp-del-name" name="name" placeholder="{{ $comp->name }}"
+                        x-model="name">
+                    <small x-show="name != targetName">Competition name doesn't match</small>
+
+                </div>
+
+                <button class="se-btn se-btn-danger" @click="deleteCompetition">Delete Competition</button>
+            </div>
+
+
+        </x-s-e-modal>
     @endcan
-
-
-
-
-    <h3>Important Notes</h3>
-    <div class="grid-4">
-        <div>
-            <h4>Results</h4>
-            <ul class=" list-disc list-inside space-y-1">
-                <li>The setup of a results sheet cannot be altered after creation. If you need to change a weighting, you'll
-                    need to create a new sheet and delete the old one.</li>
-                <li>Results sheets automatically update when you change scores so you don't need to worry about having to
-                    recreate the sheet every time you make a change to a result.</li>
-            </ul>
-
-        </div>
-        <div>
-            <h4>Time Format</h4>
-            <ul class=" list-disc list-inside space-y-1">
-                <li>When entering a time please enter it in the following format: <code>xx:xx.xx</code>, where each x is a
-                    digit between 0-9!</li>
-                <li>You may omit leading zeros for the minute and seconds but you must include both digits for millis.</li>
-
-            </ul>
-        </div>
-        <div>
-            <h4>Multiple Penalties</h4>
-            <ul class=" list-disc list-inside space-y-1">
-                <li>If an event allows for multiple penalties, then they must be entered as a comma (,) separated list.</li>
-                <li>Penalties should take the form <code>Pxxx</code> with x being a digit. <strong>They must</strong> be 3
-                    characters long!</li>
-            </ul>
-        </div>
-        <div>
-            <h4>Disqualifications</h4>
-            <ul class=" list-disc list-inside space-y-1">
-                <li><strong>Only one</strong> disqualification should be entered into the disqualification box.</li>
-                <li>They should be in the form of <code>DQxxx</code> with x being a digit and there must be 3 digits!</li>
-                <li>DQ501 relating to excessive penalties <strong>MUST</strong> be left out as the system automatically
-                    applies it to
-                    relevant
-                    events (Swim & Tow)</li>
-            </ul>
-        </div>
-    </div>
 @endsection

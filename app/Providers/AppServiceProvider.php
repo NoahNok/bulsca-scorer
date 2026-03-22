@@ -2,10 +2,15 @@
 
 namespace App\Providers;
 
+use App\Models\Club;
+use App\Models\CompetitionTeam;
+use App\Models\Competitor;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Telescope\TelescopeServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -17,7 +22,6 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         if ($this->app->environment('local')) {
-            $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
             $this->app->register(TelescopeServiceProvider::class);
         }
     }
@@ -29,23 +33,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Relation::morphMap([
+            'club' => Club::class,
+            'team' => CompetitionTeam::class,
+            'competitor' => Competitor::class
+        ]);
+
         View::composer('*', function ($view) {
 
             if (!Auth::check()) {
-                return;
-            }
-
-            $user = Auth::user();
-
-            // Try and get brand from connected competition
-            if ($user->competition && $user->getCompetition->brand) {
-                $view->with('brand', $user->getCompetition->getBrand);
-                return;
-            }
-
-            // Try and get brand if user is a brand account
-            if ($user->getBrands()->exists()) {
-                $view->with('brand', $user->getBrands->first());
                 return;
             }
         });

@@ -116,15 +116,23 @@
         </div>
 
         <div class="grid grid-rows-12 md:grid-rows-8 2xl:grid-rows-6 gap-3 md:grid-flow-col">
-            @if ($comp->getCompetitionTeams->count() == 0)
+            @php
+                $sercDraw = $comp->getDraws();
+
+                $sercDraw = count($sercDraw) > 0 ? $sercDraw[0] : null;
+
+            @endphp
+            @if ($comp->getCompetitionTeams->count() == 0 || $sercDraw == null)
                 <p>No SERC Order available yet!</p>
             @else
-                @foreach ($comp->getCompetitionTeams as $team)
-                    <div class="card whitespace-nowrap transition-colors " data-team="{{ $team->id }}">
-                        {{ $loop->index + 1 }}. {{ $team->getFullname() }}
-                        <br>
-                        <small class="text-xs font-semibold">Est: <span data-team-time>-</span></small>
-                    </div>
+                @foreach ($sercDraw['draws'] as $tank_no => $draws)
+                    @foreach ($draws as $draw)
+                        <div class="card whitespace-nowrap transition-colors " data-team="{{ $draw->entity->id }}">
+                            {{ $draw->draw }}. {{ $draw->entity->getName($comp) }}
+                            <br>
+                            <small class="text-xs font-semibold">Est: <span data-team-time>-</span></small>
+                        </div>
+                    @endforeach
                 @endforeach
             @endif
 
@@ -133,61 +141,7 @@
         <br>
         <br>
 
-        <h3>Heats</h3>
-        <div class="flex space-x-4 mb-2">
-            <p>Finished:</p>
 
-
-            <div class="px-4 speed speed-1 rounded-md  flex items-center justify-center font-semibold text-sm">
-                Rope Throw</div>
-
-            <div class="px-4 speed speed-2 rounded-md  flex items-center justify-center font-semibold text-sm">
-                + League Event</div>
-            <div class="px-4 speed speed-3 rounded-md  flex items-center justify-center font-semibold text-sm">
-                + Swim & Tow</div>
-        </div>
-        <div class="flex space-x-2  ">
-            <div class=" hidden md:block  ">
-                <h5>Lane</h5>
-                <ol class="space-y-2">
-                    @for ($l = 1; $l <= $comp->max_lanes; $l++)
-                        <li class="px-5 py-3 border border-transparent">{{ $l }}</li>
-                    @endfor
-                </ol>
-            </div>
-            <div class=" w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 3xl:grid-cols-5 gap-3   ">
-
-
-                @forelse ($comp->getHeatEntries->sortBy(['heat','lane'])->groupBy('heat') as $key => $heat)
-                    <div class="w-full">
-                        <h5>Heat {{ $key }}</h5>
-                        <ol class=" list-item space-y-2 ">
-                            @for ($l = 1; $l <= $comp->max_lanes; $l++)
-                                @php
-                                    $lane = $heat->where('lane', $l)->first();
-                                @endphp
-
-
-                                <div class="flex flex-row md:block ">
-                                    <p class="px-5 py-3 border border-transparent md:hidden">{{ $l }}</p>
-                                    <li class="card whitespace-nowrap flex-grow  " data-heat="{{ $key }}">
-                                        @if ($lane)
-                                            {{ $lane->getTeam->getFullname() }}
-                                        @else
-                                            &nbsp;
-                                        @endif
-                                    </li>
-                                </div>
-                            @endfor
-                        </ol>
-                    </div>
-                @empty
-
-                    <p>No Heats available yet!</p>
-                @endforelse
-
-            </div>
-        </div>
         <br>
         <br>
 
@@ -288,7 +242,7 @@
 
                         handleSercsFinished(data.sercsFinished);
                         handleEstimatedTeamTime(data.avgTime, data.sercStartTime);
-                        handleHeatsFinished(data.heatsFinished);
+
                         switchStatus(true);
                     }).catch(err => {
                         switchStatus(false);
@@ -298,54 +252,5 @@
             window.onload = update;
         </script>
 
-        <script>
-            var elements = [];
 
-            [...document.getElementById('results-scroller').children].forEach(el => {
-                elements.push(el)
-                el.addEventListener('click', () => {
-                    run(true)
-                    resetInterval()
-                })
-                el.addEventListener('dblclick', () => {
-                    window.open("{{ route('public.results.comp', $comp->resultsSlug()) }}")
-                })
-            })
-
-            var paused = false
-            var index = 1;
-
-            document.getElementById('results-scroller').addEventListener('mouseenter', () => {
-                paused = true;
-            });
-            document.getElementById('results-scroller').addEventListener('mouseleave', () => {
-                paused = false;
-            })
-
-
-
-            function run(ignorePause = false) {
-                if (paused && !ignorePause) {
-                    return;
-                }
-
-                var element = elements[index]
-                element.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'nearest',
-                    inline: 'start'
-                });
-                index++;
-                if (index >= elements.length) {
-                    index = 0;
-                }
-            }
-            var interv = null;
-            interv = setInterval(() => run(), 5000)
-
-            function resetInterval() {
-                clearInterval(interv)
-                interv = setInterval(() => run(), 5000)
-            }
-        </script>
     @endsection

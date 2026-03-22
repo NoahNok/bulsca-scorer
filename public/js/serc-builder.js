@@ -6,6 +6,7 @@ class SERCBuilder {
         this.builder_name = target.getAttribute("serc-builder");
         this.serc_name = document.querySelector("[serc-builder-name]");
         this.serc_type = document.querySelector("[serc-builder-type]");
+        this.serc_target = document.querySelector("[serc-builder-target]");
         this.url = target.getAttribute("serc-builder-url");
         this.after = target.getAttribute("serc-builder-after-url");
         this.csrf = target.getAttribute("serc-builder-csrf");
@@ -81,6 +82,7 @@ class SERCBuilder {
             serc_id: this.builder_id,
             serc_name: this.serc_name.value,
             serc_type: this.serc_type.value,
+            serc_target: this.serc_target.value,
             judges: [],
             deleted: this.deleted,
         };
@@ -149,9 +151,8 @@ class SERCJudge {
             newPoint.querySelectorAll("input").forEach((i) => {
                 i.value = null;
                 if (i.type == "text") {
-                    i.placeholder = `Marking Point ${
-                        clazz.marking_points.length + 1
-                    }`;
+                    i.placeholder = `Marking Point ${clazz.marking_points.length + 1
+                        }`;
                 }
             });
             newPoint.querySelectorAll("label").forEach((l) => {

@@ -41,7 +41,7 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
 
             Route::get('team/next', [DJJudgingController::class, 'nextTeamForJudge'])->name('dj.judging.next-team');
 
-            Route::get('team/{team}', [DJJudgingController::class, 'judgeTeam'])->name('dj.judging.judge-team');
+            Route::get('team/{entity_id}', [DJJudgingController::class, 'judgeTeam'])->name('dj.judging.judge-team');
             Route::post('team/{team}', [DJJudgingController::class, 'saveTeamScores'])->name('dj.judging.save-team-scores');
 
             Route::get('tutorial', [DJJudgingController::class, 'tutorial'])->name('dj.judging.tutorial');

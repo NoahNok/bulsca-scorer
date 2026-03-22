@@ -51,14 +51,24 @@
                 </strong></p>
             <br>
             @php
-
-                if ($comp->scoring_type == 'rlss-nationals') {
-                    $team = $team->asCompetitior();
-                }
+                $draw_text = $serc->getPositionInDraw($team);
             @endphp
-            <p class="text-xl">Team: <strong
-                    class="text-bulsca">{{ $comp->show_teams_to_judges || $head ? $team->getFullname() : $team->getPositionInDraw() }}
-                </strong></p>
+            <p class="text-xl">
+
+                @if ($comp->show_teams_to_judges || $head)
+                    <div class="flex item-center justify-between">
+                        <p class="text-bulsca font-bold text-xl  ">{{ $team->getName($comp) }}
+                        </p>
+
+                        <div class="flex items-center">
+                            <p class="text-sm text-gray-500 font-semibold whitespace-nowrap ">{{ $draw_text }}</p>
+                        </div>
+                    </div>
+                @else
+                    <strong class="text-bulsca">{{ $draw_text }}
+                    </strong>
+                @endif
+            </p>
 
 
 
@@ -105,7 +115,7 @@
 
                                 </div>
                                 <article
-                                    class="block prose prose-neutral prose-p:mb-0 prose-ul:my-0 prose-ol:my-0 prose-li:my-0 !leading-5"
+                                    class="block prose prose-neutral prose-p:mb-0 prose-ul:my-0 prose-ol:my-0 prose-li:my-0 leading-5!"
                                     x-show="open" x-collapse>
                                     {!! $mJudge->description !!}
                                 </article>
@@ -113,18 +123,21 @@
                         @endif
 
 
-                        <button class="btn btn-purple btn-thin w-full @if ($hasDescription) !mt-3 @endif"
-                            style="margin-bottom: -0.75rem" type="button" onclick="zeroAll({{ $mJudge->id }})">ZERO
+                        <button class="se-btn se-btn-danger  @if ($hasDescription) mt-3! @endif mb-3"
+                            type="button" onclick="zeroAll({{ $mJudge->id }})">ZERO
                             all</button>
 
 
 
                         @foreach ($mJudge->getMarkingPoints as $mp)
                             @php
-                                $mpValue = $mp->getScoreForTeam($team->id) ?: -1;
+                                $mpValue = $mp->getScoreForTeam($team) ?: -1;
                                 $mpIds[] = $mp->id;
                             @endphp
-                            <div class="flex flex-col space-y-2 border-b pb-4" id="mpcontainer-{{ $mp->id }}">
+                            <div class="flex flex-col space-y-2 border-b pb-4" id="mpcontainer-{{ $mp->id }}"
+                                x-data="{
+                                    half_open: {{ fmod($mpValue, 1) === 0.5 ? 'true' : 'false' }}
+                                }">
                                 <div class="flex justify-between items-center ">
                                     <p>{{ $mp->name }}</p>
                                     <div class="flex items-center justify-center">
@@ -132,13 +145,13 @@
                                             x-judge="{{ $mJudge->id }}" name="mp-{{ $mp->id }}"
                                             @if ($mpValue == 0) checked @endif id="mp-{{ $mp->id }}-0">
                                         <label for="mp-{{ $mp->id }}-0"
-                                            class="  flex items-center justify-center px-4 py-0.5 font-semibold  rounded-sm bg-gray-200 text-xs peer-checked:bg-bulsca_red peer-checked:text-white ">
+                                            class="  flex items-center justify-center px-4 py-0.5 font-semibold  rounded-xs bg-gray-200 text-xs peer-checked:bg-bulsca_red peer-checked:text-white ">
                                             ZERO
                                         </label>
                                     </div>
                                 </div>
 
-                                <div class="grid grid-cols-5 gap-2 gap-y-4">
+                                <div class="grid grid-cols-5 gap-2 gap-y-4" x-show="!half_open">
                                     @for ($i = 1; $i <= 10; $i++)
                                         <div class="flex items-center justify-center">
                                             <input type="radio" required class="w-0 h-0 peer" value="{{ $i }}"
@@ -152,6 +165,31 @@
                                         </div>
                                     @endfor
                                 </div>
+
+                                <div class="grid grid-cols-5 gap-2 gap-y-4" x-show="half_open">
+                                    @for ($i = 0.5; $i <= 10; $i++)
+                                        <div class="flex items-center justify-center">
+                                            <input type="radio" required class="w-0 h-0 peer" value="{{ $i }}"
+                                                name="mp-{{ $mp->id }}"
+                                                @if ($mpValue == $i) checked @endif
+                                                id="mp-{{ $mp->id }}-{{ $i }}">
+                                            <label for="mp-{{ $mp->id }}-{{ $i }}"
+                                                class="w-6 h-6 flex items-center justify-center p-4 font-semibold font-mono rounded-md bg-gray-200 text-sm peer-checked:bg-bulsca peer-checked:text-white ">
+                                                {{ $i }}
+                                            </label>
+                                        </div>
+                                    @endfor
+                                </div>
+
+
+                                <div class="flex items-center justify-center mt-2">
+                                    <button type="button" class="badge  font-mono! text-black!"
+                                        :class="half_open ? 'bg-bulsca! text-white!' : 'bg-gray-200!'"
+                                        @click="half_open = !half_open">Toggle Half Marks</button>
+                                </div>
+
+
+
                                 <div class="text-gray-500 pt-2 flex justify-between">
                                     <small>Min:
                                         {{ round(App\Models\SERCResult::where('marking_point', $mp->id)->min('result')) ?: '0' }}</small><small>Avg:
@@ -166,17 +204,16 @@
                             <h5>Notes for {{ $mJudge->name }}</h5>
                             @php
                                 $n = '';
-                            @endphp
-                            @if ($head)
-                                @php
-                                    $n = App\Models\DigitalJudge\JudgeNote::where('team', $team->id)
+
+                                if ($head) {
+                                    $n = App\Models\DigitalJudge\JudgeNote::whereMorphedTo('entity', $team)
                                         ->where('judge', $mJudge->id)
                                         ->first();
-                                @endphp
-                            @endif
-                            <textarea @if ($head && DigitalJudge::hasTeamBeenJudgedAlreadyForJudge($team, $mJudge)) disabled @endif name="team-notes-{{ $mJudge->id }}" rows="5"
-                                placeholder="Type your notes for this team here..."
-                                class="w-full border hover:border-gray-400 p-3 h-max focus:border-gray-400 outline-none rounded-md" id="">{{ $n ? $n->note : '' }}</textarea>
+                                }
+                            @endphp
+                            <textarea name="team-notes-{{ $mJudge->id }}" rows="5" placeholder="Type your notes for this team here..."
+                                class="w-full border hover:border-gray-400 p-3 h-max focus:border-gray-400 outline-hidden rounded-md"
+                                id="">{{ $n ? $n->note : '' }}</textarea>
                         </div>
                         <br>
                     @endforeach
@@ -196,12 +233,11 @@
                 <br>
                 @csrf
                 <input type="hidden" name="serc" value="{{ $serc->id }}">
-                <button type="submit" onclick="submissionCheck()" class="btn w-full">Submit</button>
+                <button type="submit" onclick="submissionCheck()" class="se-btn se-btn-success w-full">Submit</button>
 
                 @if ($head)
-                
                     <button type="submit" onclick="submissionCheck()" formaction="?a=back"
-                        class="btn btn-purple btn-thin w-full mt-3">Submit and Back</button>
+                        class="se-btn se-btn-purple btn-thin w-full mt-3">Submit and Back</button>
                 @endif
             </form>
 
@@ -291,9 +327,9 @@
 
     </div>
 
-    <div class="fixed top-0 right-0 border-b border-l rounded-bl-md p-1 pb-2 px-4 text-md border-gray-300 bg-bulsca text-white font-semibold z-20"
+    <div class="fixed top-0 right-0 border-b border-l rounded-bl-lg p-1 pb-2 px-4 text-md border-se bg-se text-white font-semibold z-20"
         id="notes-open">
-        Notes
+        Previous Notes
     </div>
 
     <div class="hidden judge-notes fixed top-0 left-0 w-full  h-full overflow-scroll bg-white  p-4" id="notes-pane">
@@ -301,11 +337,11 @@
             <h1>Your Notes</h1>
             <p class="link" id="notes-close-1">Close</p>
 
-            <div class="flex flex-col items-start ">
+            <div class="flex flex-col items-start w-full space-y-2 ">
                 @foreach ($judges[0]->getNotes as $note)
-                    <div class="border-b pb-4 mb-3 last-of-type:border-b-0 border-b-gray-300">
-                        <h3> {{ $comp->show_teams_to_judges || $head ? $note->getTeam->getFullname() : $note->getTeam->getPositionInDraw() }}
-                        </h3>
+                    <div class="se-card se-card-body w-full">
+                        <h4> {{ $comp->show_teams_to_judges || $head ? $note->entity->getName($comp) : $serc->getPositionInDraw($note->entity) }}
+                        </h4>
                         <p>{{ $note->note }}</p>
                     </div>
                 @endforeach

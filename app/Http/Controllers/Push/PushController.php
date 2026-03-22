@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Push;
 use App\Http\Controllers\Controller;
 use App\Jobs\WebPush;
 use App\Models\Competition;
-use App\Notifications\BrandBasePushNotification;
 use App\Notifications\GenericPush;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -31,14 +30,7 @@ class PushController extends Controller
         return response()->json(['success' => true], 200);
     }
 
-    public function push()
-    {
 
-
-        $n = new BrandBasePushNotification(Competition::find(53), "BrandBase", "hello world");
-
-        WebPush::dispatch($n, ['admin'], true);
-    }
 
     public function userSettingsPage(Competition $comp)
     {

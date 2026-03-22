@@ -4,7 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-use App\Models\Brands\Brand;
+use App\Models\Organisation\Organisation;
+use App\Models\Organisation\OrganisationUserAccess;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -50,28 +51,45 @@ class User extends Authenticatable
         return $this->admin;
     }
 
-    public function getCompetition()
-    {
-        return $this->belongsTo(Competition::class, 'competition', 'id');
-    }
 
     public function getWhatIfEditors()
     {
         return $this->hasMany(Competition::class, 'wi_user', 'id');
     }
 
-    public function getBrands()
+    public function getCompetitionsByAccess($access)
     {
-        return $this->belongsToMany(Brand::class, 'brand_users', 'user', 'brand')->withPivot('role');
+        return $this->hasManyThrough(
+            Competition::class,
+            UserCompetitionAccess::class,
+            'user',
+            'id',
+            'id',
+            'competition'
+        )->where('access_to', $access)->distinct('competitions.id')->orderBy('when', 'desc');
     }
 
-    public function hasBrand()
+    public function getCompetitionsWithAccess()
     {
-        return $this->getBrands()->exists();
+        return $this->hasManyThrough(
+            Competition::class,
+            UserCompetitionAccess::class,
+            'user',
+            'id',
+            'id',
+            'competition'
+        )->where('access_to', '!=', 'none')->distinct('competitions.id')->orderBy('when', 'desc');
     }
 
-    public function isAdminOfABrand(): bool
+    public function getOrganisations()
     {
-        return $this->getBrands()->where('brand_users.role', 'admin')->exists();
+        return $this->hasManyThrough(
+            Organisation::class,
+            OrganisationUserAccess::class,
+            'user',
+            'id',
+            'id',
+            'organisation'
+        )->where('access_to', '!=', 'none')->distinct('organisations.id');
     }
 }

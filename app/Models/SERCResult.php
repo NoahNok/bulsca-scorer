@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
-use App\Models\AbstractClasses\Loggable;
+use App\DTO\DQ;
+use App\DTO\Result;
+use App\DTO\SERCResult as DTOSERCResult;
+use App\Models\AbstractClasses\Resultable;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use App\Models\SERC;
 
-class SERCResult extends Loggable
+class SERCResult extends Resultable
 {
     use HasFactory, Cloneable;
 
@@ -16,8 +18,37 @@ class SERCResult extends Loggable
 
     protected $fillable = [
         'marking_point',
-        'team'
+        'entity_type',
+        'entity_id'
     ];
+
+    protected $with = ['getSerc'];
+
+    public function penalties()
+    {
+        return null;
+    }
+
+    public function disqualifications()
+    {
+        return null;
+    }
+
+    public function transformToResult(): Result
+    {
+        return new DTOSERCResult(
+            $this->id,
+            $this->result,
+            $this->getMarkingPoint,
+            $this->entity,
+            $this->getSerc,
+        );
+    }
+
+    public function entity()
+    {
+        return $this->morphTo();
+    }
 
     public function getMarkingPointName()
     {
@@ -30,9 +61,16 @@ class SERCResult extends Loggable
         return $this->belongsTo(SERCMarkingPoint::class, 'marking_point', 'id');
     }
 
-    public function getSerc(): SERC
+    public function getSerc()
     {
-        return SERC::find($this->getMarkingPoint->serc);
+        return $this->hasOneThrough(
+            SERC::class,
+            SERCMarkingPoint::class,
+            'id',           // Foreign key on SERCMarkingPoint
+            'id',           // Foreign key on SERC
+            'marking_point', // Local key on current model
+            'serc'          // Local key on SERCMarkingPoint
+        );
     }
 
     public function getTeam()
@@ -63,5 +101,10 @@ class SERCResult extends Loggable
     public function resolveJudgeLogAssociation()
     {
         return $this->getMarkingPoint->getJudge;
+    }
+
+    public function getCompetition()
+    {
+        return $this->getSerc->getCompetition();
     }
 }

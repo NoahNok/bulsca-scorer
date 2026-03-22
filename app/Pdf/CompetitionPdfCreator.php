@@ -2,7 +2,6 @@
 
 namespace App\Pdf;
 
-use App\Models\Brands\Brand;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\CompetitionTeam;
@@ -15,24 +14,17 @@ class CompetitionPdfCreator
 {
 
     private Competition $comp;
-    private ?Brand $brand = null;
+
     private string $scoringType;
 
     public function __construct(Competition $comp)
     {
         $this->comp = $comp;
-
-
-        if ($comp->getBrand != null) {
-            $this->brand = $comp->getBrand;
-        }
-
-        $this->scoringType = $comp->scoring_type;
     }
 
     public function test()
     {
-        return view("pdfs.heats.chief-timekeeper:$this->scoringType");
+        return view("pdfs.heats.chief-timekeeper");
     }
 
     public function chiefTimekeeper()
@@ -41,81 +33,139 @@ class CompetitionPdfCreator
 
         $poolNames = ['Main Pool - Diving Pit End', 'Main Pool - Scoreboard End'];
         $eventNames = $this->comp->getSpeedEvents->map(fn($event) => $event->getName());
-        $heats = [];
-        foreach ($this->comp->getSpeedEvents as $event) {
-
-            $targetId = null;
-            if ($this->comp->scoring_type == 'rlss-nationals') {
-                $targetId = $event->id;
-            }
+        $heats = $this->comp->getHeats();
 
 
-            $heats[$event->getName()] = $this->comp->getHeats($targetId);
-        }
-
-
-        return view("pdfs.heats.chief-timekeeper:$this->scoringType", ['brand' => $this->brand, 'location' => $this->comp->where, 'poolNames' => $poolNames, 'eventNames' => $eventNames, 'heats' => $heats, 'comp' => $this->comp]);
+        return view("pdfs.heats.chief-timekeeper", ['location' => $this->comp->where, 'poolNames' => $poolNames, 'eventNames' => $eventNames, 'heats' => $heats, 'comp' => $this->comp]);
     }
 
     public function sercMarking()
     {
 
         $events = $this->comp->getSERCs;
-        $tanks = $this->comp->getSercTanks();
-        return view("pdfs.sercs.serc-marking:$this->scoringType", ['brand' => $this->brand, 'location' => $this->comp->where, 'events' => $events, 'tanks' => $tanks, 'comp' => $this->comp]);
+        $tanks = $this->comp->getDraws();
+        return view("pdfs.sercs.serc-marking", ['location' => $this->comp->where, 'events' => $events, 'tanks' => $tanks, 'comp' => $this->comp]);
     }
 
-    public function marshalling(string $type)
+    public function marshalling(string $type, bool $evenOdd = false)
     {
 
         $data = [];
 
         switch ($type) {
             case 'serc':
-                $hd = [];
-                foreach ($this->comp->getSercTanks()->groupBy('serc_tank') as $ind => $tank) {
 
-                    $uniqueBrackets = $tank->unique('league')->pluck('league')->join(', ');
-                    $tank = $tank->map(function ($t) {
+                $use_tanks = $this->comp->getScoringSettings->use_tanks;
 
-                        if ($this->scoringType === 'rlss-nationals') {
+                foreach ($this->comp->getDraws() as $heatevent) {
 
-                            $c = Competitor::find($t->tid);
-                            $name = $c->getFullname();
-                            return "$t->serc_order. $name ($t->region)";
-                        } else {
-                            return  "$t->serc_order. $t->club $t->team";
+                    $hd = [];
+
+                    if ($use_tanks) {
+                        $draws = $heatevent['draws'];
+                        $maxDraws = $draws->map(fn($d) => $d->max('draw'))->max() + 1;
+
+                        for ($i = 1; $i < $maxDraws; $i++) {
+                            $names = [];
+                            foreach ($draws as $tank_no => $tank_draws) {
+
+
+                                $tdraw = $tank_draws->where('draw', $i)->first();
+
+
+                                if ($tdraw) {
+                                    $tank_no += 1;
+                                    $names[] = "Tank {$tank_no}: {$tdraw->entity?->getName($this->comp)}\n";
+                                } else {
+                                    $names[] = "Tank " . ($tank_no + 1) . ": -\n";
+                                }
+                            }
+                            $names[] = "--------------------------";
+
+
+                            $hd[] = ['name' => "Draw {$i}", 'data' => $names, 'number' => $i];
                         }
-                    });
-                    $hd[] = ['name' => "Tank $ind ($uniqueBrackets)", 'data' => $tank, 'number' => $ind];
+                    } else {
+                        foreach ($heatevent['draws'] as $tank_no => $draw) {
+                            $draw_data = $draw->map(function ($lane) use ($heatevent) {
+                                $comp = $this->comp;
+                                return "{$lane->draw}: {$lane->entity?->getName($comp)}";
+                            });
+
+                            $uniqueLeagues = $draw->map(function ($lane) use ($heatevent) {
+                                return $lane->entity?->getLeague()->name;
+                            })->unique()->values()->implode(', ');
+
+
+                            $tank_no += 1;
+
+                            $hd[] = ['name' => "Tank {$tank_no} ($uniqueLeagues)", 'data' => $draw_data, 'number' => $tank_no];
+                        }
+                    }
+
+
+
+
+                    $data[] = ['event' => $heatevent['serc']->getName(), 'heats' => $hd];
                 }
-                $data[] = ['event' => "SERC", 'heats' => $hd];
-                $type = strtoupper($type);
                 break;
             case 'speed':
-                foreach ($this->comp->getSpeedEvents as $event) {
+
+
+                foreach ($this->comp->getHeats() as $heatevent) {
+
                     $hd = [];
-                    $targetId = null;
-                    if ($this->comp->scoring_type == 'rlss-nationals') {
-                        $targetId = $event->id;
-                    }
-                    foreach ($this->comp->getHeats($targetId)->groupBy('heat') as $ind => $heat) {
 
-
-
-                        $uniqueBrackets = $heat->unique('league')->pluck('league')->join(', ');
-                        $heat = $heat->sortBy('lane')->map(function ($l) {
-                            return $this->scoringType === 'rlss-nationals' ?  "Lane $l->lane: $l->team ($l->region)" : "Lane $l->lane: $l->club $l->team";
+                    foreach ($heatevent['heats'] as $heat_no => $lanes) {
+                        $lane_data = $lanes->map(function ($lane) use ($heatevent) {
+                            $comp = $this->comp;
+                            return "Lane {$lane->lane}: {$lane->entity?->getName($comp)}";
                         });
 
-                        $hd[] = ['name' => "Heat $ind ($uniqueBrackets)", 'data' => $heat, 'number' => $ind];
+                        $uniqueLeagues = $lanes->map(function ($lane) use ($heatevent) {
+                            return $lane->entity?->getLeague()->name;
+                        })->unique()->values()->implode(', ');
+
+                        $hd[] = ['name' => "Heat $heat_no ($uniqueLeagues)", 'data' => $lane_data, 'number' => $heat_no];
                     }
 
-                    $data[] = ['event' => $event->getName(), 'heats' => $hd];
+                    if ($evenOdd) {
+                        $perPage = 3;
+                        $oddHeats = array_filter($hd, fn($h) => $h['number'] % 2 !== 0);
+                        $evenHeats = array_filter($hd, fn($h) => $h['number'] % 2 === 0);
+
+                        // Step 2: Sort both groups by heat number
+                        usort($oddHeats, fn($a, $b) => $a['number'] <=> $b['number']);
+                        usort($evenHeats, fn($a, $b) => $a['number'] <=> $b['number']);
+
+                        // Step 3: Calculate buffer heats needed
+                        $remainder = count($oddHeats) % $perPage;
+                        $bufferCount = $remainder === 0 ? 0 : $perPage - $remainder;
+
+                        // Step 4: Create buffer heats
+                        $bufferHeats = array_fill(0, $bufferCount, [
+                            'name' => '',
+                            'data' => [],
+                            'number' => -1
+                        ]);
+
+                        // Step 5: Merge padded odd heats with even heats
+                        $hd = array_merge($oddHeats, $bufferHeats, $evenHeats);
+                    }
+
+                    $eventName = $this->comp->heats_per_event ? $heatevent['event']->getName() : 'Speeds';
+
+                    $data[] = ['event' => $eventName, 'heats' => $hd];
+
+                    if (!$this->comp->heats_per_event) {
+                        break;
+                    }
                 }
         }
 
+        $type = strtoupper($type);
+
         $poolNames = ['Main Pool - Diving Pit End', 'Main Pool - Scoreboard End'];
-        return view("pdfs.marshalling:$this->scoringType", ['brand' => $this->brand, 'location' => $this->comp->where, 'data' => $data, 'poolNames' => $poolNames, 'comp' => $this->comp, 'type' => $type]);
+        return view("pdfs.marshalling", ['location' => $this->comp->where, 'data' => $data, 'poolNames' => $poolNames, 'comp' => $this->comp, 'type' => $type]);
     }
 }

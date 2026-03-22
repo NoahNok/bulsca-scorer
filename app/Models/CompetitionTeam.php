@@ -3,21 +3,33 @@
 namespace App\Models;
 
 use App\Data\TeamAdditionalDetailsData;
+use App\DTO\EntityGrouping;
 use App\Helpers\ClassHelpers;
+use App\Models\AbstractClasses\Entity;
 use App\Traits\Cloneable;
+use App\Traits\MorphableModel;
 use Carbon\CarbonInterval;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CompetitionTeam extends Model
+class CompetitionTeam extends Entity
 {
-    use HasFactory, Cloneable;
+    use HasFactory, Cloneable, MorphableModel;
 
-    protected $fillable = ['club', 'team'];
+    protected $fillable = ['club', 'team', 'league', 'competition'];
+
+    protected $with = ['getClub', 'leagues'];
+
+    public function getFormattedName(?Competition $comp): string
+    {
+
+
+        return $this->formatName($comp?->team_format);
+    }
 
     public function getClubName()
     {
-        return $this->hasOne(Club::class, 'id', 'club')->first()->name;
+        return $this->hasOne(Club::class, 'id', 'club')->first()?->name ?? '';
     }
 
     public function getClub()
@@ -26,10 +38,6 @@ class CompetitionTeam extends Model
     }
 
 
-    public function getLeague()
-    {
-        return $this->hasOne(League::class, 'id', 'league');
-    }
 
     public function getSwimTowTime()
     {
@@ -46,14 +54,29 @@ class CompetitionTeam extends Model
         return $this->getClubName() . " " . $this->team;
     }
 
-    public function formatName($format = ':C :N (:S)')
+    public function formatName($format = ':C - :N - (:S)')
     {
+        $targets = [':C', ':L', ':N', ':R', ':S'];
+        $search = [];
+        $replace = [];
 
-        if ($this->getCompetition->scoring_type == 'rlss-nationals' && $format == ':C :N (:S)') {
-            $format = ":N - :C (:R) - :L";
+        foreach ($targets as $target) {
+            if (str_contains($format, $target)) {
+                $search[] = $target;
+
+                $value = match ($target) {
+                    ':C' => fn() => $this->getClub?->name ?? '-',
+                    ':L' => fn() => $this->leagues->pluck('name')->join(', ') ?? '-',
+                    ':N' => fn() => $this->team ?? '-',
+                    ':R' => fn() => $this->getClub?->region ?? '-',
+                    ':S' => fn() => $this->getCompetitors->pluck('name')->implode(', ')
+                };
+
+                $replace[] = $value();
+            }
         }
 
-        return str_replace([":C", ":L", ":N", ":S", ":R"], [$this->getClub->name, $this->getLeague->name, $this->team, $this->getSwimTowTimeForDefault(), $this->getClub->region], $format);
+        return str_replace($search, $replace, $format);
     }
 
     public function getCompetition()
@@ -74,8 +97,13 @@ class CompetitionTeam extends Model
         return $position;
     }
 
-    public function asCompetitior()
+    public function getGrouping(): EntityGrouping
     {
-        return ClassHelpers::castToClass($this, Competitor::class);
+        return new EntityGrouping($this->getClub?->id ?? -1, $this->id, null, $this->leagues()->orderBy('id')->first()?->id);
+    }
+
+    public function getCompetitors()
+    {
+        return $this->hasMany(Competitor::class, 'team');
     }
 }

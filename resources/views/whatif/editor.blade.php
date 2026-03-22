@@ -15,7 +15,7 @@
 <body>
     <div class="w-screen h-screen p-3 flex flex-col overflow-x-hidden" x-data="start()">
         <div class="w-full flex space-x-3 py-2 px-4  items-center">
-            <h1 class=" text-[2rem] text-transparent bg-clip-text bg-gradient-to-r from-bulsca via-purple-500 to-bulsca_red"
+            <h1 class=" text-[2rem] text-transparent bg-clip-text bg-linear-to-r from-bulsca via-purple-500 to-bulsca_red"
                 style="margin-bottom: 0 !important">
                 WhatIf</h1>
 
@@ -24,7 +24,7 @@
                 <span style="width: 3px; height: 3px;" class=" bg-black rounded-full"></span>
                 <a href="{{ route('whatif.logout') }}" class="hover:underline">Leave</a>
             </div>
-            <div class="flex-grow"></div>
+            <div class="grow"></div>
             <h1 class="text-[1.5rem]" style="margin-bottom: 0 !important">{{ $comp->name }}</h1>
         </div>
         <div
@@ -133,7 +133,7 @@
                             }
                         }">
 
-                            <div class="flex-grow  max-w-[80%] overflow-auto">
+                            <div class="grow  max-w-[80%] overflow-auto">
                                 <h2>{{ $serc->getName() }}</h2>
 
                                 <div class="  relative w-full overflow-x-auto max-h-[85vh] ">
@@ -172,7 +172,7 @@
                                                         <td class=" border-r border-b last-of-type:border-r-0 hover:bg-gray-300  p-0 cursor-text hover:text-black"
                                                             x-data="" x-on:click="$refs.i.select()">
                                                             <input
-                                                                class=" w-full text-center bg-inherit  h-full inline-block relative outline-none p-0 m-0 hide-number-arrows focus:text-black"
+                                                                class=" w-full text-center bg-inherit  h-full inline-block relative outline-hidden p-0 m-0 hide-number-arrows focus:text-black"
                                                                 type="number" min="0" max="10"
                                                                 step="1" x-ref="i"
                                                                 x-on:click="$event.target.select()"
@@ -238,8 +238,7 @@
 
 
                 @foreach ($comp->getSpeedEvents as $speed)
-                    <div class="flex-grow  " style="display: none"
-                        x-show="pills['event'] == 'sp:{{ $speed->id }}'">
+                    <div class="grow  " style="display: none" x-show="pills['event'] == 'sp:{{ $speed->id }}'">
 
                         <div class="flex flex-row space-x-5" x-data="{
                             sdata: {{ json_encode($speed->getDataAsJson()) }},
@@ -293,7 +292,7 @@
                         }">
 
 
-                            <div class=" flex-grow">
+                            <div class=" grow">
                                 <h2>{{ $speed->getName() }}</h2>
 
 
@@ -341,7 +340,7 @@
                                                     <td class="py-4  hover:bg-gray-300 border-r cursor-text hover:text-black "
                                                         x-data x-on:click="$refs.i.focus()">
                                                         <input type="text"
-                                                            class=" px-4 text-right w-full bg-inherit outline-none focus:text-black"
+                                                            class=" px-4 text-right w-full bg-inherit outline-hidden focus:text-black"
                                                             x-ref="i" x-mask="99:99.999" x-model="team.result"
                                                             x-on:change.debounce="onChange($event.target.value, team.id)"
                                                             class="w-auto">
@@ -354,7 +353,7 @@
                                                     <td class="py-4  hover:bg-gray-300 border-r last-of-type:border-r-0 cursor-text hover:text-black "
                                                         x-data x-on:click="$refs.i.focus()">
                                                         <input type="text"
-                                                            class="text-right px-4 w-full bg-inherit outline-none focus:text-black"
+                                                            class="text-right px-4 w-full bg-inherit outline-hidden focus:text-black"
                                                             x-ref="i" x-mask="DQ999"
                                                             x-model="team.disqualification"
                                                             x-on:change.debounce="  onDqChange($event.target.value, team.id, index)"
@@ -365,7 +364,7 @@
                                                         <td class="py-4  hover:bg-gray-300 cursor-text hover:text-black"
                                                             x-data x-on:click="$refs.i.focus()">
                                                             <input type="text"
-                                                                class=" text-right px-4 w-full bg-inherit outline-none focus:text-black"
+                                                                class=" text-right px-4 w-full bg-inherit outline-hidden focus:text-black"
                                                                 x-ref="i" x-model="team.penalties"
                                                                 x-on:change.debounce="onChange($event.target.value, team.id, 'pen')"
                                                                 class="w-auto">
@@ -568,7 +567,7 @@
             </div>
         </div>
 
-        <div class="w-full h-full bg-gray-300 bg-opacity-50 flex items-center justify-center z-50 fixed top-0 left-0"
+        <div class="w-full h-full bg-gray-300/50 flex items-center justify-center z-50 fixed top-0 left-0"
             x-show="loader.show" x-transition>
             <div class="card items-center">
                 <x-loader size=12 />
@@ -587,7 +586,7 @@
         class="bg-white z-50 lg:hidden fixed w-screen h-screen top-0 left-0 flex flex-col items-center justify-center">
         <div>
             <h3 class="-mb-6">BULSCA</h3>
-            <h1 class=" text-[7rem] text-transparent bg-clip-text bg-gradient-to-r from-bulsca via-purple-500 to-bulsca_red"
+            <h1 class=" text-[7rem] text-transparent bg-clip-text bg-linear-to-r from-bulsca via-purple-500 to-bulsca_red"
                 style="margin-bottom: 0 !important">
                 WhatIf</h1>
             <p class="text-center">WhatIf is not available on mobile devices!</p>

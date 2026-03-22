@@ -6,7 +6,8 @@
 
 @php
     $backlink = route('dj.home');
-    $icon = '<path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />';
+    $icon =
+        '<path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />';
 @endphp
 
 @section('content')
@@ -20,11 +21,13 @@
 
         <p>Below is a list of each team and their marks for each Judge and Marking Point.</p>
 
+        @php
+            $comp = DigitalJudge::getClientCompetition();
+        @endphp
 
-
-        @foreach ($serc->getTeams() as $team)
+        @foreach ($serc->getScorableEntities() as $team)
             <div class="flex flex-col w-full ">
-                <h3>{{ $team->getFullname() }}</h3>
+                <h3>{{ $team->getName($comp) }}</h3>
 
                 <div class="flex flex-col pb-8">
                     @foreach ($serc->getJudges as $judge)
@@ -40,30 +43,32 @@
                                     <div
                                         class="flex items-center border-b-2 border-x-2 border-gray-200 first-of-type:border-t-2 ">
                                         <div class="w-[60%] bg-gray-300 p-2">{{ $mp->name }}</div>
-                                        <div class="ml-auto text-right pr-6">{{ $mp->getScoreForTeam($team->id) ?: 0 }}
+                                        <div class="ml-auto text-right pr-6">{{ $mp->getScoreForTeam($team) ?: 0 }}
                                         </div>
                                     </div>
                                 @endforeach
                                 @php
-                                    $dq = $serc->getTeamDQ($team);
-                                    $penalties = $serc->getTeamPenalties($team);
+                                    $dq = $serc->getEntityDisqualifications($team);
+                                    $penalties = $serc->getEntityPenalties($team);
                                 @endphp
 
-                                @if ($penalties)
+                                @if ($penalties->count() > 0)
                                     <div
                                         class="flex items-center border-b-2 border-x-2 bg-gray-300 border-gray-200 first-of-type:border-t-2 ">
                                         <div class="w-[60%] bg-gray-300 ">Penalties</div>
                                         <div class="ml-auto text-right pr-6 w-[40%] bg-white break-words ">
-                                            {{ $penalties->codes }}
+                                            @foreach ($penalties as $pen)
+                                                {{ $pen }}
+                                            @endforeach
                                         </div>
                                     </div>
                                 @endif
 
-                                @if ($dq)
+                                @if ($dq->first())
                                     <div
                                         class="flex items-center border-b-2 border-x-2 border-gray-200 first-of-type:border-t-2 ">
                                         <div class="w-[60%] bg-gray-300 p-2">DQ</div>
-                                        <div class="ml-auto text-right pr-6">{{ $dq->code }}
+                                        <div class="ml-auto text-right pr-6">{{ $dq->first()->code }}
                                         </div>
                                     </div>
                                 @endif

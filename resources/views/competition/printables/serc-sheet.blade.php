@@ -55,7 +55,7 @@
 
                                 <td class="py-2 px-2 border text-black text-sm whitespace-nowrap">
 
-                                    <span class="font-semibold">{{ $team->getFullname() }}</span>
+                                    <span class="font-semibold">{{ $team->getName($comp) }}</span>
 
 
                                 </td>

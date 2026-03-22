@@ -30,12 +30,7 @@
 
 
         @php
-            $existingLanes = $comp
-                ->getHeatEntries()
-                ->where('heat', $heat)
-                ->where('event', $comp->scoring_type == 'rlss-nationals' ? $speed->id : null)
-                ->orderBy('lane')
-                ->get();
+            $existingLanes = $speed->getHeats()->where('heat', $heat)->orderBy('lane')->get();
         @endphp
 
         <form action=""
@@ -56,7 +51,7 @@
                                     @php
                                         $pLane = $existingLanes->where('lane', $lane)->first();
 
-                                        $sr = App\Models\SpeedResult::where('competition_team', $pLane->team)
+                                        $sr = App\Models\SpeedResult::whereMorphedTo('entity', $pLane->entity)
                                             ->where('event', $speed->id)
                                             ->first();
 
@@ -69,35 +64,35 @@
 
                                     @endphp
                                     <td
-                                        class="p-2 pr-6 border-r whitespace-nowrap hover:max-w-none bg-white max-w-[200px] overflow-hidden overflow-ellipsis">
+                                        class="p-2 pr-6 border-r whitespace-nowrap hover:max-w-none bg-white max-w-[200px] overflow-hidden text-ellipsis">
 
-                                        {{ $pLane->getTeam->getFullname() }}
+                                        {{ $pLane->entity->getName($comp) }}
 
                                     </td>
 
                                     <td class="">
 
                                         @php
-                                            $code = match ($sr->disqualification) {
-                                                'DQ015' => 'DNF',
-                                                'DQ004' => 'DNS',
-                                                'DQ1001' => 'OOT',
+                                            $code = match ($sr->disqualifications->first()?->code) {
+                                                99915 => 'DNF',
+                                                99904 => 'DNS',
+                                                99901 => 'OOT',
                                                 default => '-',
                                             };
                                         @endphp
 
                                         @if ($speed->getName() == 'Rope Throw')
                                             <input class="p-2 px-4" type="text" placeholder="Ropes In OR 00:00.00"
-                                                name="team-{{ $pLane->team }}-time" id="team-{{ $pLane->team }}-time"
-                                                required x-data
+                                                name="team-{{ $pLane->entity->id }}-time"
+                                                id="team-{{ $pLane->entity->id }}-time" required x-data
                                                 x-mask:dynamic="$input.toUpperCase().startsWith('D') ? 'DNa' : ($input.startsWith('O') ? 'OOT' : '99:99.99')"
-                                                value="{{ in_array($sr->disqualification, ['DQ004', 'DQ015', 'DQ1001']) ? $code : ($sr->result != null ? ($sr->result > 4 ? sprintf('%02d', $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT) : $sr->result) : '') }}">
+                                                value="{{ $sr->disqualifications->first()?->code > 99900 ? $code : ($sr->result != null ? ($sr->result > 4 ? sprintf('%02d', $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT) : $sr->result) : '') }}">
                                         @else
                                             <input class="p-2 px-4" type="text" placeholder="00:00.00"
-                                                name="team-{{ $pLane->team }}-time" id="team-{{ $pLane->team }}-time"
-                                                required x-data
+                                                name="team-{{ $pLane->entity->id }}-time"
+                                                id="team-{{ $pLane->entity->id }}-time" required x-data
                                                 x-mask:dynamic="$input.toUpperCase().startsWith('D') ? 'DNa' : ($input.startsWith('O') ? 'OOT' : '99:99.99')"
-                                                value="{{ in_array($sr->disqualification, ['DQ004', 'DQ015', 'DQ1001']) ? $code : ($sr->result != null ? sprintf('%02d', $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT) : '') }}">
+                                                value="{{ $sr->disqualifications->first()?->code > 99900 ? $code : ($sr->result != null ? sprintf('%02d', $mins) . ':' . str_pad(number_format($secs, 3, '.', ''), 6, '0', STR_PAD_LEFT) : '') }}">
                                         @endif
 
 
@@ -127,7 +122,7 @@
             </div>
             <br>
 
-            <button href="#" class="btn w-full">Save & Next</button>
+            <button href="#" class="se-btn se-btn-success w-full">Save & Next</button>
 
         </form>
 

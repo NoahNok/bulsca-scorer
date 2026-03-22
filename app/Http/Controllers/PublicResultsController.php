@@ -30,21 +30,21 @@ class PublicResultsController extends Controller
         return view('public-results.index');
     }
 
-    public function viewComp(Competition $comp_slug)
+    public function viewComp(Competition $comp)
     {
-        return view("public-results.$comp_slug->scoring_type.view-comp", ['comp' => $comp_slug]);
+        return view("public-results.$comp->scoring_type.view-comp", ['comp' => $comp]);
     }
 
-    public function viewSpeed(Competition $comp_slug, CompetitionSpeedEvent $event, Request $request)
+    public function viewSpeed(Competition $comp, CompetitionSpeedEvent $event, Request $request)
     {
-        if ($request->exists('dlCSV')) return $this->getSpeedAsCSV($event, $comp_slug);
-        else return view("public-results.$comp_slug->scoring_type.view-speed", ['comp' => $comp_slug, 'event' => $event]);
+        if ($request->exists('dlCSV')) return $this->getSpeedAsCSV($event, $comp);
+        else return view("public-results.$comp->scoring_type.view-speed", ['comp' => $comp, 'event' => $event]);
     }
 
-    public function viewSerc(Competition $comp_slug, SERC $event, Request $request)
+    public function viewSerc(Competition $comp, SERC $event, Request $request)
     {
 
-        if ($request->exists('dlCSV')) return $this->getSercAsCSV($event, $comp_slug);
+        if ($request->exists('dlCSV')) return $this->getSercAsCSV($event, $comp);
 
 
         $fasterSercData = $event->getSERCData();
@@ -52,19 +52,19 @@ class PublicResultsController extends Controller
         $overallJudgeNotes = $event->getOverallJudgeNotes();
 
 
-        return view("public-results.$comp_slug->scoring_type.view-serc", ['comp' => $comp_slug, 'event' => $event, 'fsd' => $fasterSercData, 'overallJudgeNotes' => $overallJudgeNotes]);
+        return view("public-results.$comp->scoring_type.view-serc", ['comp' => $comp, 'event' => $event, 'fsd' => $fasterSercData, 'overallJudgeNotes' => $overallJudgeNotes]);
     }
 
-    public function viewResults(Competition $comp_slug, ResultSchema $schema)
+    public function viewResults(Competition $comp, ResultSchema $schema)
     {
 
-        if (!$schema->viewable) return redirect()->route('public.results.comp', ['comp_slug' => $comp_slug->resultsSlug()]);
+        if (!$schema->viewable) return redirect()->route('public.results.comp', ['comp' => $comp->resultsSlug()]);
 
 
         $schema = $schema->autoCast();
         $results = $schema->getResults() ?? [];
 
-        return view("public-results.$comp_slug->scoring_type.view-results", ['comp' => $comp_slug, 'schema' => $schema, 'results' => $results]);
+        return view("public-results.$comp->scoring_type.view-results", ['comp' => $comp, 'schema' => $schema, 'results' => $results]);
     }
 
 
@@ -225,28 +225,25 @@ class PublicResultsController extends Controller
         fclose($fp);
     }
 
-    public function viewTeamSercNotes(Competition $comp_slug, SERC $event, CompetitionTeam $team)
+    public function viewEntitySercNotes(Competition $comp, SERC $event, int $entity_id)
     {
 
-        if ($comp_slug->scoring_type == 'bulsca' || $comp_slug->scoring_type == 'rlss-cs') {
+        $entity = $event->getScorableEntity()::find($entity_id);
 
-            $notes = [];
+        $notes = [];
 
-            foreach ($event->getNotesForTeam($team) as $note) {
-                $notes[] = [
-                    'judge' => $note->getJudge->name,
-                    'note' => $note->note
-                ];
-            }
-
-
-            return [
-                'name' => $team->getFullname(),
-                'notes' => $notes
+        foreach ($event->getNotesForEntity($entity) as $note) {
+            $notes[] = [
+                'judge' => $note->getJudge->name,
+                'note' => $note->note
             ];
         }
 
-        return view("public-results.$comp_slug->scoring_type.view-team-serc-notes", ['comp' => $comp_slug, 'serc' => $event, 'team' => $team]);
+
+        return [
+            'name' => $entity->getName(),
+            'notes' => $notes
+        ];
     }
 
     public function resolve($date, $name)
@@ -256,13 +253,13 @@ class PublicResultsController extends Controller
 
         $comp = Competition::where('when', $d)->firstOrFail();
 
-        return redirect()->route('public.results.comp', ['comp_slug' => $comp->resultsSlug()]);
+        return redirect()->route('public.results.comp', ['comp' => $comp->resultsSlug()]);
     }
 
-    public function viewDqPen(Competition $comp_slug, CompetitionTeam $team, string $code)
+    public function viewDqPen(Competition $comp, CompetitionTeam $team, string $code)
     {
 
-        $judgeSubmission = collect(DB::select("SELECT jds.id FROM judge_dq_submissions jds INNER JOIN heats h ON h.id=jds.heat_lane WHERE jds.competition=? AND h.team=? AND code=?", [$comp_slug->id, $team->id, $code]))->first();
+        $judgeSubmission = collect(DB::select("SELECT jds.id FROM judge_dq_submissions jds INNER JOIN heats h ON h.id=jds.heat_lane WHERE jds.competition=? AND h.team=? AND code=?", [$comp->id, $team->id, $code]))->first();
 
         // $judgeSubmission = JudgeDQSubmission::with('getHeat')->where('competition', $comp->id)->whereHas('getHeat', function ($query) use ($team) {
         //     $query->where('team', $team->id)

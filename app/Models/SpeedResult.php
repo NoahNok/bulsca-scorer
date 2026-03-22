@@ -2,29 +2,54 @@
 
 namespace App\Models;
 
+use App\DTO\DQ;
+use App\DTO\Pen;
+use App\DTO\Result;
+use App\Models\AbstractClasses\Eventable;
 use App\Models\AbstractClasses\Loggable;
+use App\Models\AbstractClasses\Resultable;
 use App\Traits\Cloneable;
+use App\Traits\RecordActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SpeedResult extends Loggable
+class SpeedResult extends Resultable
 {
-    use HasFactory, Cloneable;
+    use HasFactory, Cloneable, RecordActivity;
 
-    public function getTeam()
+
+
+    public function transformToResult(): Result
     {
-        return $this->belongsTo(CompetitionTeam::class, 'competition_team', 'id');
+        return new Result(
+            $this->id,
+            $this->result,
+            $this->entity,
+            $this->getEvent,
+
+        );
     }
 
-    public function getPenalties()
+    public function entity()
     {
-        return $this->hasMany(Penalty::class, 'speed_result', 'id');
+        return $this->morphTo();
     }
 
-    public function getPenaltiesAsString()
+    public function penalties()
     {
-        return $this->getPenalties()->get('code')->implode('code', ', ');
+        return $this->getEvent->penalties()->whereMorphedTo('entity', $this->entity);
     }
+
+    public function disqualifications()
+    {
+        return $this->getEvent->disqualifications()->whereMorphedTo('entity', $this->entity);
+    }
+
+    public function getCompetition()
+    {
+        return $this->getEvent->getCompetition();
+    }
+
 
 
     public function getEvent()
@@ -106,10 +131,10 @@ class SpeedResult extends Loggable
     public static function remapDq($dq)
     {
         return match ($dq) {
-            'DQ015' => 'DNF',
-            'DQ004' => 'DNS',
-            'DQ1001' => 'OOT',
-            default => $dq,
+            99915 => 'DNF',
+            99904 => 'DNS',
+            99901 => 'OOT',
+            default => "DQ$dq",
         };
     }
 }

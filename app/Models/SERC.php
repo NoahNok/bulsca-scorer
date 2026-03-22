@@ -2,39 +2,250 @@
 
 namespace App\Models;
 
+use App\DTO\RankedResult;
+use App\DTO\ResolvedResult;
+use App\DTO\Result;
+use App\DTO\SERCResult as DTOSERCResult;
+use App\Models\AbstractClasses\Entity;
+use App\Models\SERCResult;
+use App\Models\AbstractClasses\Event;
 use App\Models\DigitalJudge\JudgeNote;
+use App\Models\Event\Disqualification;
+use App\Models\Event\Penalty;
+use App\Models\Event\ScoringEngine;
+use App\Models\Event\ScoringSchema;
 use App\Models\Interfaces\IEvent;
 use App\Models\Interfaces\IPenalisable;
+use App\Models\Orders\Draw;
 use App\Models\Scoring\Bulsca\BulscaSercScoring;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
-class SERC extends IEvent implements IPenalisable
+class SERC extends Event
 {
     use HasFactory, Cloneable;
 
     protected $table = 'sercs';
 
+    public function getRankedResults(?League $league = null): array
+    {
+        if (!$this->scoringSchema) {
+            return [];
+        }
+
+        $resolvedResults = collect($this->getResolvedResults(league: $league));
+        $scoringSchema = $this->scoringSchema;
+        $rankHigher = $scoringSchema->schema['rank_higher'] ?? true; // If we are ranking based on highest score or not
+        $rankEquation = $scoringSchema->schema['rank_equation'] ?? null;
+        $allowDisqualifiedToRank = $scoringSchema->schema['allow_disqualified_to_rank'] ?? false;
 
 
+        $rankFunction = null;
+
+        if ($allowDisqualifiedToRank) {
+            $rankFunction = function ($result) use ($rankHigher) {
+                return $result->points * ($rankHigher ? -1 : 1);
+            };
+        } else {
+            $rankFunction = function ($result) use ($rankHigher) {
+                return [
+                    count($result->disqualifications) > 0 ? 1 : 0,
+                    $result->points * ($rankHigher ? -1 : 1)
+                ];
+            };
+        }
+
+
+        $sortedResults = $scoringSchema->applyToResults($resolvedResults)->sortBy(function ($result) use ($rankFunction) {
+            return $rankFunction($result);
+        })->values();
+
+        $rankedResults = collect();
+        $previousScore = null;
+        $previousRank = 0;
+        $position = 1;
+
+        foreach ($sortedResults as $result) {
+            $currentScore = count($result->disqualifications) > 0 ? 'DQ' : $result->points;
+
+            if ($currentScore === $previousScore) {
+                $rank = $previousRank;
+            } else {
+                $rank = $position;
+                $previousScore = $currentScore;
+                $previousRank = $rank;
+            }
+
+            $rankedResults->push(RankedResult::fromResolved($result, $rank));
+            $position++;
+        }
+
+        if ($rankEquation) {
+            $totalResults = count($sortedResults);
+
+            $rankEngine = new ScoringEngine();
+            $rankedResults->each(function ($rankedResult) use ($rankEngine, $totalResults, $rankEquation) {
+                $rankedResult->position = $rankEngine->evaluateInstance($rankEquation, $rankedResult, ['teams' => $totalResults, 'rank' => $rankedResult->position]);
+            });
+        }
+
+
+        return $rankedResults->toArray();
+    }
+
+    public function getResolvedResults(?League $league = null): array
+    {
+
+        if (!$this->scoringSchema) {
+            return [];
+        }
+
+        /**
+         * @param ResolvedResult[] $resolvedResults
+         */
+        $resolvedResults = collect([]);
+        $results = collect($this->getRawResults(league: $league));
+
+        $penalties = $this->penalties()->get();
+        $disqualifications = $this->disqualifications()->get();
+
+
+
+        foreach ($results->groupBy(fn($result) => $result->entity->id) as $id => $entityResults) {
+            $totalItems = $entityResults->count();
+            $resultTotal = $entityResults->reduce(fn($acc, $result) => $acc += $result->result * $result->markingPoint->weight, 0);
+
+            $resultData = $entityResults->first();
+
+            $r = new Result(
+                $resultData->id,
+                $resultTotal,
+                $resultData->entity,
+                $resultData->event,
+                $disqualifications->where('entity_id', $id),
+                $penalties->where('entity_id', $resultData->entity->id)
+            );
+
+            $r->total_marking_points = $totalItems;
+
+
+            $resolvedResults[] = $r;
+        }
+
+        $resolvedResults = $this->scoringSchema->applyViolations($resolvedResults);
+
+        return $this->applyGrouping($resolvedResults)->toArray();
+    }
+
+    public function getRawResults(bool $withEmpty = false, ?League $league = null): array
+    {
+        $query = $this->results();
+
+        if ($league !== null) {
+
+            $query = $query->whereHas('entity', function ($q) use ($league) {
+
+                $q->whereHas('leagues', function ($qq) use ($league) {
+                    $qq->where('leagues.id', $league->id);
+                });
+            });
+            // $query = $query->whereHas('entity', function ($q) use ($league) {
+            //     $q->where('league', $league->id);
+            // });
+        }
+
+        $query = $query->with(['entity', 'getMarkingPoint', 'getMarkingPoint.getJudge']);
+
+        $results = $query->get();
+
+        if ($this->scorable_entity == 'team') {
+
+            $entityIds = $results->pluck('entity')->filter()->unique('id')->pluck('id');
+
+            $loadedEntities = CompetitionTeam::whereIn('id', $entityIds)->with('getCompetitors')->get();
+
+            $teamMap = $loadedEntities->keyBy('id');
+
+
+            $results->each(function ($draw) use ($teamMap) {
+
+                $draw->entity = $teamMap[$draw->entity->id];
+            });
+        }
+
+
+
+        return $results->map(function ($result) {
+            return $result->transformToResult();
+        })->toArray();
+    }
+
+    public function results()
+    {
+        return $this->hasManyThrough(SERCResult::class, SERCMarkingPoint::class, 'serc', 'marking_point', 'id', 'id');
+    }
+
+    public function draw()
+    {
+        // if using seperate draws per SERC, this is where that would be handled
+        return $this->hasMany(Draw::class, 'serc');
+    }
+
+    public function getDraw()
+    {
+        // if using seperate draws per SERC, this is where that would be handled
+
+        // OTHERWISE USE DRAW ROM SERC WITH LOWEST ID
+        return SERC::where('competition', $this->competition)->orderBy('id')->first()->draw()->with('entity')->orderBy('draw');
+    }
+
+    public function getPositionInDraw(Entity $entity)
+    {
+        $draw = $this->getDraw()->whereMorphedTo('entity', $entity)->first();
+
+        $use_tanks = $this->getCompetition->getScoringSettings->use_tanks;
+
+        if (!$draw) {
+            return -1;
+        }
+
+        if ($use_tanks) {
+            return "Tank {$draw->tank}-{$draw->draw}";
+        }
+
+        return $draw->draw;
+    }
+
+
+
+    public function getTankDraw()
+    {
+        $comp = $this->getCompetition;
+
+        return $this->draw()->with('entity')->orderBy('tank')->orderBy('draw')->get()->map(function ($draw) use ($comp) {
+            return [
+                'id' => $draw->id,
+                'tank' => $draw->tank,
+                'draw' => $draw->draw,
+                'entity_name' => $draw?->entity?->getName($comp) ?? 'No Entity',
+            ];
+        })->groupBy('tank');
+    }
 
     public function getJudges()
     {
         return $this->hasMany(SERCJudge::class, 'serc', 'id');
     }
 
-    public function getTeams()
+    public function getMarkingPoints()
     {
-
-
-
-        return match ($this->getCompetition->scoring_type) {
-            'bulsca', 'rlss-cs' => CompetitionTeam::where('competition', $this->competition)->orderBy('serc_order')->get(),
-            'rlss-nationals' => Competitor::where('competition', $this->competition)->orderBy('serc_order')->get()->unique('club'),
-        };
+        return $this->hasManyThrough(SERCMarkingPoint::class, SERCJudge::class, 'serc', 'judge', 'id', 'id');
     }
+
 
     public function getName(): string
     {
@@ -42,16 +253,6 @@ class SERC extends IEvent implements IPenalisable
     }
 
 
-
-    public function getTeamDQ(CompetitionTeam $team)
-    {
-        return SERCDisqualification::where(['team' => $team->id, 'serc' => $this->id])->first();
-    }
-
-    public function getTeamPenalties(CompetitionTeam $team)
-    {
-        return SERCPenalty::where(['team' => $team->id, 'serc' => $this->id])->first();
-    }
 
 
     public function getType(): string
@@ -113,11 +314,11 @@ class SERC extends IEvent implements IPenalisable
         ];
     }
 
-    public function getNotesForTeam(CompetitionTeam $team)
+    public function getNotesForEntity(Entity $entity)
     {
         $allJudgeIds = $this->getJudges()->pluck('id')->toArray();
 
-        return JudgeNote::whereIn('judge', $allJudgeIds)->where('team', $team->id)->get();
+        return JudgeNote::whereIn('judge', $allJudgeIds)->whereMorphedTo('entity', $entity)->get();
     }
 
     public function hasTeamFinished($team)
@@ -133,7 +334,7 @@ class SERC extends IEvent implements IPenalisable
 
         // This new query takes into account larger outliers in seconds above the below threshold
         $outlierThreshold = 541; // Query use <, so this means any team time diff > 12m is an outlier
-        $res = DB::select('WITH base AS (SELECT team, sr.created_at, serc, ROW_NUMBER() OVER (PARTITION BY smp.id) AS rn FROM serc_results sr INNER JOIN serc_marking_points smp ON sr.marking_point=smp.id WHERE serc=?) (SELECT SUM(IF(btw<?,btw,0))/GREATEST(COUNT(IF(btw<?,1,NULL)),1) AS avg_time FROM (SELECT TIMESTAMPDIFF(SECOND, b1.created_at, b2.created_at) AS btw FROM base b1 INNER JOIN base b2 ON b1.rn=b2.rn-1) AS t);', [$this->id, $outlierThreshold, $outlierThreshold]);
+        $res = DB::select('WITH base AS (SELECT entity_id, sr.created_at, serc, ROW_NUMBER() OVER (PARTITION BY smp.id) AS rn FROM serc_results sr INNER JOIN serc_marking_points smp ON sr.marking_point=smp.id WHERE serc=?) (SELECT SUM(IF(btw<?,btw,0))/GREATEST(COUNT(IF(btw<?,1,NULL)),1) AS avg_time FROM (SELECT TIMESTAMPDIFF(SECOND, b1.created_at, b2.created_at) AS btw FROM base b1 INNER JOIN base b2 ON b1.rn=b2.rn-1) AS t);', [$this->id, $outlierThreshold, $outlierThreshold]);
 
 
         $avgTime = $res[0]->avg_time;
@@ -141,7 +342,7 @@ class SERC extends IEvent implements IPenalisable
 
         if ($avgTime <= 0) {
             // Try again with a bigger outlier thresh
-            $res = DB::select('WITH base AS (SELECT team, sr.created_at, serc, ROW_NUMBER() OVER (PARTITION BY smp.id) AS rn FROM serc_results sr INNER JOIN serc_marking_points smp ON sr.marking_point=smp.id WHERE serc=?) (SELECT SUM(IF(btw<?,btw,0))/GREATEST(COUNT(IF(btw<?,1,NULL)),1) AS avg_time FROM (SELECT TIMESTAMPDIFF(SECOND, b1.created_at, b2.created_at) AS btw FROM base b1 INNER JOIN base b2 ON b1.rn=b2.rn-1) AS t);', [$this->id, $outlierThreshold * 2, $outlierThreshold * 2]);
+            $res = DB::select('WITH base AS (SELECT entity_id, sr.created_at, serc, ROW_NUMBER() OVER (PARTITION BY smp.id) AS rn FROM serc_results sr INNER JOIN serc_marking_points smp ON sr.marking_point=smp.id WHERE serc=?) (SELECT SUM(IF(btw<?,btw,0))/GREATEST(COUNT(IF(btw<?,1,NULL)),1) AS avg_time FROM (SELECT TIMESTAMPDIFF(SECOND, b1.created_at, b2.created_at) AS btw FROM base b1 INNER JOIN base b2 ON b1.rn=b2.rn-1) AS t);', [$this->id, $outlierThreshold * 2, $outlierThreshold * 2]);
             $avgTime = $res[0]->avg_time;
 
             if ($avgTime < 0) {
@@ -194,29 +395,12 @@ class SERC extends IEvent implements IPenalisable
         return ['judges' => $judges, 'teams' => $teams, 'data' => $data];
     }
 
-
-    public function addTeamPenalty($teamId, $code)
-    {
-        $penalty = SERCPenalty::firstOrNew(['team' => $teamId, 'serc' => $this->id]);
-
-        $codes = explode(",", $penalty->codes);
-        $codes[] = $code;
-        $penalty->codes = implode(",", $codes);
-
-        $penalty->save();
-    }
-
-    public function addTeamDQ($teamId, $code)
-    {
-        $dq = SERCDisqualification::firstOrNew(['team' => $teamId, 'serc' => $this->id]);
-        $dq->code = $code;
-        $dq->save();
-    }
-
     public function getSERCData()
     {
 
-        $dbData = DB::select('SELECT j.name AS judge_name, smp.name AS mp_name, smp.weight AS mp_weight , sr.marking_point AS mp_id, sr.team, result FROM serc_results sr INNER JOIN serc_marking_points smp ON smp.id=sr.marking_point INNER JOIN serc_judges j ON j.id=smp.judge WHERE smp.serc=? ORDER BY j.id,smp.id;', [$this->id]);
+        $comp = $this->getCompetition;
+
+        $dbData = DB::select('SELECT j.name AS judge_name, smp.name AS mp_name, smp.weight AS mp_weight , sr.marking_point AS mp_id, sr.entity_type, sr.entity_id, result FROM serc_results sr INNER JOIN serc_marking_points smp ON smp.id=sr.marking_point INNER JOIN serc_judges j ON j.id=smp.judge WHERE smp.serc=? ORDER BY j.id,smp.id;', [$this->id]);
 
 
         $judges = [];
@@ -231,20 +415,23 @@ class SERC extends IEvent implements IPenalisable
                 $judges[$row->judge_name][$row->mp_id]['weight'] = $row->mp_weight;
             }
 
-            $results[$row->team]['results'][$row->mp_id] = $row->result;
+            $results[$row->entity_id]['results'][$row->mp_id] = $row->result;
         }
 
-        $placeResults = $this->getResults();
+        $placeResults = $this->getRankedResults();
 
 
         foreach ($placeResults as $placeResult) {
-            $results[$placeResult->tid]['place'] = $placeResult->place;
-            $results[$placeResult->tid]['points'] = $placeResult->points;
+            $results[$placeResult->entity->id]['place'] = $placeResult->position;
+            $results[$placeResult->entity->id]['points'] = $placeResult->points;
 
-            $results[$placeResult->tid]['team'] = $placeResult->team;
-            $results[$placeResult->tid]['raw'] = $placeResult->score;
-            $results[$placeResult->tid]['tid'] = $placeResult->tid;
-            $results[$placeResult->tid]['disqualification'] = $placeResult->disqualification;
+
+
+
+            $results[$placeResult->entity->id]['team'] = $placeResult->entity->getName($comp);
+            $results[$placeResult->entity->id]['raw'] = $placeResult->resolvedResult;
+            $results[$placeResult->entity->id]['tid'] = $placeResult->entity->id;
+            $results[$placeResult->entity->id]['disqualification'] = "{$placeResult->disqualifications->first()}";
         }
 
 
@@ -269,5 +456,16 @@ class SERC extends IEvent implements IPenalisable
         $notes = DB::select('SELECT ojn.note AS note, j.name AS judge FROM overall_judge_notes ojn INNER JOIN serc_judges j ON j.id=ojn.judge WHERE j.serc=?;', [$this->id]);
 
         return $notes;
+    }
+
+    public function checkCompletion(): bool
+    {
+        $markingPoints = $this->getMarkingPoints;
+        $totalMPs = $markingPoints->count();
+
+        $totalPossibleResults = $totalMPs * $this->getScorableEntities()->count();
+        $totalResults = SERCResult::whereIn('marking_point', $markingPoints->pluck('id'))->count('entity_id');
+
+        return $totalResults >= $totalPossibleResults;
     }
 }

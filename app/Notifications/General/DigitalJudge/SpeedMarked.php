@@ -6,13 +6,13 @@ use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\CompetitionTeam;
 use App\Models\SERC;
-use App\Notifications\BrandBasePushNotification;
+use App\Notifications\GenericPush;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class SpeedMarked extends BrandBasePushNotification
+class SpeedMarked extends GenericPush
 {
     use Queueable;
 
@@ -24,6 +24,6 @@ class SpeedMarked extends BrandBasePushNotification
         $speedName = $speed->getName();
         $competition = $speed->getCompetition;
 
-        parent::__construct($competition, "$speedName Marked", "Heat $heatNo has been marked.");
+        parent::__construct("$speedName Marked", "Heat $heatNo has been marked.");
     }
 }

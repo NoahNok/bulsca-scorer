@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('layouts.admin')
 
 @section('title')
     {{ $comp->name }} | Competitions | Admin
@@ -26,19 +26,10 @@
     <small>
         <a href="{{ route('comps.view', $comp) }}" class="link">View</a>
     </small>
-    <p>
-        <strong>User email:</strong> {{ $comp->getUser?->email ?: 'N/A' }}
-    </p>
 
-    <br>
 
-    @if ($comp->getUser)
-        <form action="{{ route('admin.comp.update.userPassword', $comp) }}" method="post"
-            onsubmit="return confirm('Are you sure you want to reset this accounts password?')">
-            @csrf
-            <button class="btn btn-danger">Reset account password</button>
-        </form>
-    @endif
+
+
 
 
     <br></br>
@@ -83,26 +74,16 @@
             <x-form-select id="season" title="Season" :options="\App\Models\Season::all()"
                 defaultValue="{{ $comp->season }}"></x-form-select>
 
-
-            <x-form-select id="brand" title="Brand" :options="\App\Models\Brands\Brand::all()" defaultValue="{{ $comp->brand }}">
-                <option value="none">No brand</option>
+            <x-form-select id="organisation" title="Organisation" :options="\App\Models\Organisation\Organisation::all()"
+                defaultValue="{{ $comp->organisation }}">
+                <option value="none">No organisation</option>
             </x-form-select>
 
-            <div class="form-input ">
-                <label for="scoring_type" class="">Scoring Type</label>
-                <select required id="scoring_type" name="scoring_type" class="input "
-                    style="padding-top: 0.65em; padding-bottom: 0.75em;">
-                    @foreach (\App\Helpers\ScoringHelper::$availableTypes as $key => $data)
-                        <option value="{{ $key }}" @if ($comp->scoring_type == $key) selected @endif>
-                            {{ $data['name'] }}</option>
-                    @endforeach
 
 
 
 
-                </select>
 
-            </div>
 
         </div>
         <button type="submit" class="btn">Save</button>
@@ -112,7 +93,7 @@
     <h3 class="mb-0">Delete Competition</h3>
     <br>
     <form action="{{ route('admin.comp.delete', $comp) }}"
-        onsubmit="return confirm('This action cannot be undone! Are you sure?')" method="post">
+        @submit="doConfirm($event, 'Are you sure you want to delete this Competition!')" method="post">
         @csrf
         @method('DELETE')
         <div class="grid-4">

@@ -23,12 +23,7 @@
 
 
         @php
-            $existingLanes = $comp
-                ->getHeatEntries()
-                ->where('heat', $heat)
-                ->where('event', $comp->scoring_type == 'rlss-nationals' ? $speed->id : null)
-                ->orderBy('lane')
-                ->get();
+            $existingLanes = $speed->getHeats()->where('heat', $heat)->orderBy('lane')->get();
 
             $lanes = [];
             $maxLanes = 0;
@@ -38,17 +33,20 @@
                 if ($existingLanes->contains('lane', $lane)) {
                     $pLane = $existingLanes->where('lane', $lane)->first();
 
-                    $sr = App\Models\SpeedResult::where('competition_team', $pLane->team)
+                    $sr = App\Models\SpeedResult::whereMorphedTo('entity', $pLane->entity)
                         ->where('event', $speed->id)
                         ->first();
 
-                    $mins = floor($sr->result / 60000);
-                    $secs = ($sr->result - $mins * 60000) / 1000;
+                    $lanes[$lane] = [
+                        'number' => $lane,
+                        'name' => $pLane->entity->getName($comp),
+                        'id' => $pLane->entity->id,
+                    ];
 
-                    $lanes[$lane] = ['number' => $lane, 'name' => $pLane->getTeam->getFullname(), 'id' => $pLane->team];
+                    $hasOof = $pLane->getOOF($speed->id);
 
-                    if ($pLane->getOOF($speed->id) != null) {
-                        $lanes[$lane]['place'] = $pLane->getOOF($speed->id)->oof;
+                    if ($hasOof != null) {
+                        $lanes[$lane]['place'] = $hasOof->oof;
                         $hasAssigned = true;
                     }
 
@@ -59,7 +57,7 @@
             }
 
             $targetUrl = route('dj.speeds.oof.judge', [$speed, $heat + 1]);
-            if ($heat + 1 > DigitalJudge::getClientCompetition()->getMaxHeats()) {
+            if ($heat + 1 > $speed->getMaxHeats()) {
                 $targetUrl = route('dj.speeds.oof.index', $speed);
             }
 
@@ -148,11 +146,11 @@
             <template x-for="lane in lanes">
 
                 <div class="flex space-x-2">
-                    <div class="btn btn-white" @click="clickOrder(lane)">
+                    <div class="se-btn " @click="clickOrder(lane)">
                         <span x-text="lane.place == null ? '-' : lane.place"></span>
                     </div>
-                    <button class="btn w-full" @click="clickOrder(lane)"
-                        :class="lane.id ? (lane.place ? 'btn-success' : 'btn-primary') : 'btn-white'">
+                    <button class="se-btn w-full" @click="clickOrder(lane)"
+                        :class="lane.id ? (lane.place ? 'se-btn-success' : 'se-btn') : 'btn-white'">
                         Lane <span x-text="lane.number"></span>: <span x-text="lane.name"></span>
                     </button>
                 </div>
@@ -161,7 +159,7 @@
             </template>
 
 
-            <button class="btn btn-danger" x-show="canReassign" @click="startReassign()">Re-assign</button>
+            <button class="se-btn se-btn-danger" x-show="canReassign" @click="startReassign()">Re-assign</button>
 
             <br>
 
@@ -176,7 +174,7 @@
                     id="confirm">
             </div>
 
-            <button @click="save()" class="btn w-full btn-success ">Save &
+            <button @click="save()" class="se-btn se-btn-success w-full btn-success ">Save &
                 Next</button>
 
         </div>

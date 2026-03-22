@@ -15,27 +15,26 @@ class CompetitionPolicy
         //
     }
 
-    public function access(User $user, Competition $comp, $allowedRoles = ['admin'])
+    public function access(User $user, Competition $comp, $access_to = [])
     {
-
-
-
         if ($user->admin) return true; // Allow global admins
 
-
-        if (is_string($allowedRoles)) {
-            $allowedRoles = explode('|', $allowedRoles);
+        if (is_string($access_to)) {
+            $access_to = explode('|', $access_to);
         }
 
 
-        if ($comp->getBrand && $comp->getBrand->isBrandRole($user, 'serc')) {
-            return in_array('serc', $allowedRoles) && $user->competition && $user->competition == $comp->id;
+        if ($comp->canUser($user, $access_to)) {
+            return true;
         }
 
-        if ($user->competition && $user->competition == $comp->id) return true; // Allow competition owner to access
 
+        $organisation = $comp->getOrganisation;
 
+        if (!$organisation) {
+            return false; // No organisation - so no access
+        }
 
-        return $comp->getBrand->isBrandRole($user, $allowedRoles);
+        return $organisation->canUser($user, $access_to);
     }
 }

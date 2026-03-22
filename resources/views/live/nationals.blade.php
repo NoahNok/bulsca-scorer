@@ -6,14 +6,15 @@
     <meta charset="UTF-8">
 
 
-    <link rel="icon" type="image/png" href="{{ $comp->getBrand->getLogo() }}" />
+
     <title>{{ $comp->name }} | Live | RLSS</title>
 
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
+    @vite('resources/js/app.js')
+    @vite('resources/css/app.css')
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
     <style>
@@ -40,8 +41,8 @@
                 <p class=" font-ariel text-rlss-yellow font-semibold">{{ $comp->where }}</p>
             </div>
 
-            <div class="!ml-auto   ">
-                <img src="{{ $comp->getBrand->getLogo() }}" class=" w-20 h-20 min-w-20" alt="">
+            <div class="ml-auto!   ">
+                <img src="{{ asset('blogo.png') }}" class=" w-20 h-20 min-w-20" alt="">
             </div>
         </div>
 
@@ -69,7 +70,7 @@
         </div>
 
         <div class="w-full max-w-full flex  px-2">
-            <a href="#tanks" class="btn !bg-rlss-blue mx-2 grow  ">Click for Initiative Orders</a>
+            <a href="#tanks" class="btn bg-rlss-blue! mx-2 grow  ">Click for Initiative Orders</a>
         </div>
 
 
@@ -81,7 +82,7 @@
             <h2 class="font-astoria text-rlss-blue font-extrabold hidden md:block hmb-0 ">Heats for:</h2>
             @foreach ($comp->getSpeedEvents as $event)
                 <button class="btn  mx-2  btn-white"
-                    x-bind:class="activeEvent == {{ $event->id }} ? '!bg-rlss-blue ' : ''"
+                    x-bind:class="activeEvent == {{ $event->id }} ? 'bg-rlss-blue! ' : ''"
                     x-bind:style="activeEvent == {{ $event->id }} ? 'color:white !important; ' : ''"
                     @click="activeEvent = {{ $event->id }}">{{ $event->getName() }}</button>
             @endforeach

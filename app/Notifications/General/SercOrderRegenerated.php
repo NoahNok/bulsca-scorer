@@ -3,13 +3,9 @@
 namespace App\Notifications\General;
 
 use App\Models\Competition;
-use App\Notifications\BrandBasePushNotification;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
+use App\Notifications\GenericPush;
 
-class SercOrderRegenerated extends BrandBasePushNotification
+class SercOrderRegenerated extends GenericPush
 {
 
 
@@ -18,6 +14,6 @@ class SercOrderRegenerated extends BrandBasePushNotification
      */
     public function __construct(Competition $competition)
     {
-        parent::__construct($competition, "SERC Order Regenerated", "The SERC Order for $competition->name has been regenerated");
+        parent::__construct("SERC Order Regenerated", "The SERC Order for $competition->name has been regenerated");
     }
 }

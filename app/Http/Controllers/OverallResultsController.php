@@ -2,53 +2,69 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\ScoringException;
 use App\Helpers\ScoringHelper;
 use App\Models\Competition;
+use App\Models\League;
 use App\Models\ResultSchema;
 use App\Models\ResultSchemaEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class OverallResultsController extends Controller
 {
 
 
-    public function computeResults(ResultSchema $schema)
+    public function computeResults(ResultSchema $schema, Request $request)
     {
 
-        $schema = $schema->autoCast();
+        $refreshCache = $request->query('refresh_cache', false) == 'true' && auth()->user()->isAdmin();
+        $error = null;
 
-        $results = $schema->getResults() ?? [];
-        // if ($final != null) {
-        //     $results = DB::select($final);
-        // }
+        try {
+            $results = $schema->getResults($refreshCache) ?? [];
+        } catch (ScoringException $e) {
+            // Log the exception context for debugging
+            Log::error("ScoringException in computeResults: " . $e->getMessage(), $e->getContext());
+            $error = [
+                'message' => $e->getMessage(),
+                'context' => $e->getContext()
+            ];
+            $results = [];
+
+            // set error into nati9ve larvel error for use on blade
 
 
-        return view('competition.results.view', ['results' => $results, 'schema' => $schema, 'comp' => $schema->getCompetition]);
+        }
+
+
+
+        return view('competition.results.view', ['results' => $results, 'schema' => $schema, 'comp' => $schema->getCompetition, 'error' => $error]);
     }
 
     public function viewForPrintBasic(ResultSchema $schema)
     {
-        $schema = $schema->autoCast();
+
         $results = $schema->getResults() ?? [];
         $comp = $schema->getCompetition;
-        return view("competition.results.print.$comp->scoring_type.view-for-print-basic", ['results' => $results, 'schema' => $schema, 'comp' => $comp]);
+        return view("competition.results.print.view-for-print-basic", ['results' => $results, 'schema' => $schema, 'comp' => $comp]);
     }
 
     public function viewForPrint(ResultSchema $schema)
     {
-        $schema = $schema->autoCast();
+
         $results = $schema->getResults() ?? [];
         $comp = $schema->getCompetition;
-        return view("competition.results.print.$comp->scoring_type.view-for-print", ['results' => $results, 'schema' => $schema, 'comp' => $comp]);
+        return view("competition.results.print.view-for-print", ['results' => $results, 'schema' => $schema, 'comp' => $comp]);
     }
 
     public function printAll(Competition $comp)
     {
         $data = [];
         foreach ($comp->getResultSchemas as $schema) {
-            $schema = $schema->autoCast();
+
             $results = $schema->getResults() ?? [];
             array_push($data, ['results' => $results, 'schema' => $schema]);
         }
@@ -70,74 +86,107 @@ class OverallResultsController extends Controller
     public function addPost(Competition $comp, Request $request)
     {
 
-        $json = json_decode($request->input('data'));
 
-        $errors = [];
+        function createForLeague($name, ?League $league, string $group_on, array $events, bool $rank_higher, bool $ignore_disqualified, array $break_ties, string $equation, array $global_vars, Competition $comp): ResultSchema
+        {
+            $rs = new ResultSchema();
+            $rs->name = $name == '' || !$name ? $league->name : $name;
+            $rs->competition = $comp->id;
+            $rs->schema = [
+                'equation' => $equation,
+                'global_variables' => $global_vars,
+                'league' => $league?->id ?? null,
+                'ignore_dq' => $ignore_disqualified,
+                'group_on' => $group_on,
+                'rank_higher' => $rank_higher,
+                'break_ties' => $break_ties,
+            ];
 
+            $rs->save();
 
-
-        $schema_name = null;
-        $schema_league = null;
-
-        foreach ($json as $event) {
-
-            if ($event->id == "name") {
-
-                if ($event->values->name == '') {
-                    array_push($errors, ['id' => "name", "option" => "name"]);
-                    continue;
-                }
-
-                $schema_name = $event->values->name;
-                continue;
+            foreach ($events as $event) {
+                $rse = new ResultSchemaEvent();
+                $rse->schema = $rs->id;
+                $rse->event_id = $event['id'];
+                $rse->event_type = $event['type'] == "serc" ? "\App\Models\SERC" : "\App\Models\CompetitionSpeedEvent";
+                $rse->weight = $event['weight'];
+                $rse->save();
             }
 
-            if ($event->id == "league") {
-                if ($event->values->league == '') {
-                    array_push($errors, ['id' => "league", "option" => "league"]);
-                    continue;
-                }
-                $schema_league = $event->values->league;
-                continue;
-            }
-
-            if ($event->values->weight == '') {
-                array_push($errors, ['id' => $event->id, "option" => "weight"]);
-                continue;
-            }
+            return $rs;
         }
 
-        if (!empty($errors)) {
-            return response()->json($errors, 500);
+        $name = $request->input('name', '');
+
+        $league = $request->input('league');
+        $group_on = $request->input('group_on');
+        $events = $request->input('events');
+        $rank_higher = $request->input('rank_higher');
+        $ignore_disqualified = $request->input('ignore_disqualified');
+        $repeat_for_all_leagues = $request->input('repeat_for_all_leagues');
+        $equation = $request->input('equation', 'item.points');
+        $global_vars = $request->input('global_variables', []);
+
+        $break_ties = collect($events)->filter(fn($event) => $event['break_ties'])->sortBy('break_ties')->pluck('id')->all();
+
+
+        $league = League::find($league);
+
+        $repeat_for = collect([$league]);
+        $created = [];
+
+        if ($repeat_for_all_leagues) {
+            $repeat_for = $comp->getLeagues;
         }
 
-
-        $rs = new ResultSchema();
-        $rs->name = $schema_name;
-        $rs->competition = $comp->id;
-        $rs->league = $schema_league;
-        $rs->save();
-
-        foreach ($json as $event) {
-            if ($event->id == "name" || $event->id == "league") continue;
-            if ($event->values->weight == 0) continue;
-            $rse = new ResultSchemaEvent();
-            $rse->schema = $rs->id;
-            $rse->event_id = $event->id;
-            $rse->event_type = $event->values->type == "serc" ? "\App\Models\SERC" : "\App\Models\CompetitionSpeedEvent";
-            $rse->weight = $event->values->weight;
-            $rse->save();
+        foreach ($repeat_for as $league) {
+            $created[] = createForLeague($name, $league, $group_on, $events, $rank_higher, $ignore_disqualified, $break_ties, $equation, $global_vars, $comp);
         }
 
-        return response()->json(['url' => route('comps.results.view-schema', $rs->id)]);
+        // $rs->schema = [
+        //     "equation" => "(item.points - minPoints) * multFac + minScore",
+        //     "global_variables" => [
+        //         [
+        //             "name" => "valid_teams",
+        //             "order" => 1,
+        //             "expression" => "FILTER(results, '!item.isDisqualified()')",
+        //         ],
+        //         [
+        //             "name" => "minPoints",
+        //             "order" => 2,
+        //             "expression" => "MINIMUM(valid_teams, 'points')",
+        //         ],
+        //         [
+        //             "name" => "maxPoints",
+        //             "order" => 3,
+        //             "expression" => "MAXIMUM(valid_teams, 'points')",
+        //         ],
+        //         [
+        //             "name" => "minScore",
+        //             "order" => 4,
+        //             "expression" => "100",
+        //         ],
+        //         [
+        //             "name" => "spread",
+        //             "order" => 5,
+        //             "expression" => "1000 - minScore",
+        //         ],
+        //         [
+        //             "name" => "multFac",
+        //             "order" => 6,
+        //             "expression" => "spread / (maxPoints - minPoints)",
+        //         ],
+        //     ],
+        //     "league" => $schema_league,
+        // ];
+
+        if (count($created) == 1) {
+            return response()->json(['url' => route('comps.results.view-schema', $created[0]->id)]);
+        } else {
+            return response()->json(['url' => route('comps.results', $comp)]);
+        }
     }
 
-    public function quickGen(Competition $comp)
-    {
-        ScoringHelper::generateDefaultResultSheets($comp);
-
-        return redirect()->route('comps.view.results', $comp);
-    }
 
     public function publishToggle(Competition $comp)
     {
@@ -152,10 +201,10 @@ class OverallResultsController extends Controller
         $comp->results_provisional = !$comp->results_provisional;
         $comp->save();
 
-        if (!$comp->results_provisional && $comp->isLeague) { // Only generate stats for league comps
-            $comp->generateStats();
-            return redirect()->back()->with("success", "Generated stats");
-        }
+        // if (!$comp->results_provisional && $comp->isLeague) { // Only generate stats for league comps
+        //     $comp->generateStats();
+        //     return redirect()->back()->with("success", "Generated stats");
+        // }
 
         return redirect()->back();
     }
@@ -163,7 +212,7 @@ class OverallResultsController extends Controller
     public function delete(Competition $comp, ResultSchema $schema)
     {
         $schema->delete();
-        return redirect()->route('comps.view.results', $comp);
+        return redirect()->route('comps.results', $comp);
     }
 
     public function hide(Competition $comp, ResultSchema $schema)

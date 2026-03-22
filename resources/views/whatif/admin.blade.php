@@ -15,11 +15,11 @@
 <body>
     <div class="w-screen h-screen p-3 flex flex-col overflow-x-hidden" x-data="start()">
         <div class="w-full flex  py-2 px-4   items-baseline">
-            <h1 class=" text-transparent bg-clip-text bg-gradient-to-r from-bulsca via-purple-500 to-bulsca_red"
+            <h1 class=" text-transparent bg-clip-text bg-linear-to-r from-bulsca via-purple-500 to-bulsca_red"
                 style="margin-bottom: 0 !important">
                 WhatIf</h1>
             <h3 style="margin-bottom: 0 !important"
-                class="text-transparent bg-clip-text bg-gradient-to-r from-bulsca_red to-purple-800">Admin</h3>
+                class="text-transparent bg-clip-text bg-linear-to-r from-bulsca_red to-purple-800">Admin</h3>
 
 
         </div>
@@ -45,7 +45,7 @@
 
         </div>
 
-        <div class="w-full h-full bg-gray-300 bg-opacity-50 flex items-center justify-center z-50 fixed top-0 left-0"
+        <div class="w-full h-full bg-gray-300/50 flex items-center justify-center z-50 fixed top-0 left-0"
             x-show="loader.show" x-transition>
             <div class="card items-center">
                 <x-loader size=12 />

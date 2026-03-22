@@ -2,11 +2,13 @@
 
 namespace App\DigitalJudge;
 
+use App\Models\AbstractClasses\Entity;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\CompetitionTeam;
 use App\Models\SERC;
 use App\Models\SERCJudge;
+use App\Models\SERCResult;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
@@ -98,17 +100,16 @@ class DigitalJudge
         return Session::get('digitalJudgeClientHeadJudge', false);
     }
 
-    public static function hasTeamBeenJudgedAlready(CompetitionTeam $team)
+    public static function hasTeamBeenJudgedAlready(Entity $entity)
     {
         // SELECT COUNT(*) FROM serc_results WHERE team=? AND marking_point IN (SELECT id FROM serc_marking_points WHERE judge=?)
 
         $judge = DigitalJudge::getClientJudges()[0];
+        $serc = $judge->getSERC;
 
-        $result = DB::select('SELECT COUNT(*) AS c FROM serc_results WHERE team=? AND marking_point IN (SELECT id FROM serc_marking_points WHERE judge=?);', [$team->id, $judge->id]);
-
-        $count = $result[0]->c;
-
-        return $count > 0;
+        return SERCResult::whereMorphedTo('entity', $entity)->whereHas('getMarkingPoint', function ($query) use ($serc, $judge) {
+            $query->where('serc', $serc->id)->where('judge', $judge->id);
+        })->exists();
     }
 
     public static function hasTeamBeenJudgedAlreadyForJudge(CompetitionTeam $team, SERCJudge $judge)
@@ -163,8 +164,14 @@ class DigitalJudge
         Session::put('digitalJudgeJudgeTank', $tank);
     }
 
-    public static function getTank(): int
+    public static function getTank(): ?int
     {
-        return (int) Session::get('digitalJudgeJudgeTank');
+        $value = Session::get('digitalJudgeJudgeTank');
+
+        if (!$value) {
+            return null;
+        }
+
+        return (int) $value;
     }
 }

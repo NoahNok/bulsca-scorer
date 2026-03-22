@@ -2,27 +2,61 @@
 
 namespace App\Models;
 
+use App\DTO\EntityGrouping;
+use App\Models\AbstractClasses\Entity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Competitor extends CompetitionTeam
+class Competitor extends Entity
 {
-    protected $table = 'competition_teams';
+    use HasFactory;
 
 
-    public function getFullname()
+    protected $fillable = ['team', 'league', 'competition', 'name'];
+
+    protected $with = ['getTeam', 'leagues'];
+
+    public function getFormattedName(?Competition $comp): string
+    {
+        // Implement the logic to return the competitor's name
+        // For example, if there is a 'name' property:
+        return $this->formatName($comp?->competitor_format);
+    }
+
+    public function formatName($format = ':C - :N - (:L)')
     {
 
-        $names = $this->team;
+        $targets = [':C', ':L', ':N', ':T', ':S'];
+        $search = [];
+        $replace = [];
 
-        $swimmers = Competitor::where('club', $this->club)->get();
+        foreach ($targets as $target) {
+            if (str_contains($format, $target)) {
+                $search[] = $target;
 
-        if (count($swimmers) > 1) {
-            $pair = $swimmers->where('id', "!=", $this->id)->first(); // get the other swimmer by finding the other swimmer with not the current id
-            $names .= " & " . $pair->team;
+                $value = match ($target) {
+                    ':C' => $this->getTeam->getClub?->name ?? '-',
+                    ':L' => $this->leagues->pluck('name')->join(', ') ?? '-',
+                    ':T' => $this->getTeam->team ?? '-',
+                    ':N' => $this->name
+                };
+
+                $replace[] = $value;
+            }
         }
 
+        return str_replace($search, $replace, $format);
+    }
 
-        return $names . " - " . $this->getClub->name . " (" . $this->getClub->region . ")" . " - " . $this->getLeague->name;
+    public function getTeam()
+    {
+        return $this->belongsTo(CompetitionTeam::class, 'team');
+    }
+
+    public function getGrouping(): EntityGrouping
+    {
+
+        $team = $this->getTeam;
+        return new EntityGrouping($team->club, $team->id, $this->id, $this->leagues()->orderBy('id')->first()?->id);
     }
 }

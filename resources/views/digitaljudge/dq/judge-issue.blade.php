@@ -309,12 +309,15 @@
                             style="padding-top: 0.65em; padding-bottom: 0.65em;">
                             <option value="">Please select a heat and lane</option>
 
-                            @foreach ($comp->getHeatEntries->sortBy('heat')->groupBy('heat') as $heat)
-                                <optgroup label="Heat {{ $heat[0]->heat }}">
-                                    @foreach ($heat->sortBy('lane') as $lane)
+                            @foreach ($comp->getHeats()[0]['heats'] as $heat_no => $lanes)
+                                <optgroup label="Heat {{ $heat_no }}">
+                                    @foreach ($lanes->sortBy('lane') as $lane)
+                                        @if ($lane->entity == null)
+                                            @continue
+                                        @endif
                                         <option value="{{ $lane->id }}">
                                             {{ $lane->heat }}-{{ $lane->lane }}:
-                                            {{ $lane->getTeam->getFullname() }}
+                                            {{ $lane->entity?->getName($comp) ?? '-' }}
                                         </option>
                                     @endforeach
                                 </optgroup>
@@ -362,7 +365,7 @@
 
                         <label for="">Aditional Details</label>
                         <textarea name="" id=""
-                            class="w-full border hover:border-gray-400 p-3 h-max focus:border-gray-400 outline-none rounded-md"
+                            class="w-full border hover:border-gray-400 p-3 h-max focus:border-gray-400 outline-hidden rounded-md"
                             placeholder="..." x-model="submission.details"></textarea>
 
                     </div>
@@ -569,7 +572,7 @@
                 shouldDisplayGroup(type, codes) {
             
                     for (let code of codes) {
-                        if (this.shouldDisplaySelf(type + code.id, type + code.id.toString().padStart(3, '0'), code.description)) {
+                        if (this.shouldDisplaySelf(type + code.code, type + code.code.toString().padStart(3, '0'), code.description)) {
                             return true;
                         }
                     }
@@ -670,14 +673,14 @@
 
 
                 <div class="flex flex-col space-y-3">
-                    @foreach ($comp->getHeatEntries->sortBy('heat')->groupBy('heat') as $heat)
-                        <h4>Heat {{ $heat[0]->heat }}</h4>
+                    @foreach ($comp->getHeats()[0]['heats'] as $heat_no => $lanes)
+                        <h4>Heat {{ $heat_no }}</h4>
 
-                        @foreach ($heat->sortBy('lane') as $lane)
+                        @foreach ($lanes->sortBy('lane') as $lane)
                             <button class="btn btn-primary" style="text-align: left"
-                                @click="setTeam({{ $lane->id }}, 'Heat {{ $lane->heat }}, Lane {{ $lane->lane }}, {{ $lane->getTeam->getFullname() }}')">
+                                @click="setTeam({{ $lane->id }}, 'Heat {{ $lane->heat }}, Lane {{ $lane->lane }}, {{ $lane->entity->getName($comp) }}')">
                                 Lane {{ $lane->lane }}:
-                                {{ $lane->getTeam->getFullname() }}
+                                {{ $lane->entity->getName($comp) }}
                             </button>
                         @endforeach
                     @endforeach
@@ -728,9 +731,9 @@
                                 <div class="flex flex-col space-y-2">
                                     <template x-for="dq in dqs">
                                         <div class="card cursor-pointer"
-                                            @click="setCode(`DQ${dq.id.toString().padStart(3, '0')}`, dq.description)"
-                                            x-show="shouldDisplaySelf(`dq${dq.id}`, `dq${dq.id.toString().padStart(3, '0')}`, dq.description)">
-                                            <strong>DQ<span x-text="dq.id.toString().padStart(3, '0')"></span></strong>
+                                            @click="setCode(`DQ${dq.code.toString().padStart(3, '0')}`, dq.description)"
+                                            x-show="shouldDisplaySelf(`dq${dq.code}`, `dq${dq.code.toString().padStart(3, '0')}`, dq.description)">
+                                            <strong>DQ<span x-text="dq.code.toString().padStart(3, '0')"></span></strong>
                                             <p x-text="dq.description"></p>
                                         </div>
                                     </template>
@@ -746,9 +749,9 @@
                                 <div class="flex flex-col space-y-2">
                                     <template x-for="dq in dqs">
                                         <div class="card cursor-pointer"
-                                            @click="setCode(`DQ${dq.id.toString().padStart(3, '0')}`, dq.description)"
-                                            x-show="shouldDisplaySelf(`dq${dq.id}`, `dq${dq.id.toString().padStart(3, '0')}`, dq.description)">
-                                            <strong>DQ<span x-text="dq.id.toString().padStart(3, '0')"></span></strong>
+                                            @click="setCode(`DQ${dq.code.toString().padStart(3, '0')}`, dq.description)"
+                                            x-show="shouldDisplaySelf(`dq${dq.code}`, `dq${dq.code.toString().padStart(3, '0')}`, dq.description)">
+                                            <strong>DQ<span x-text="dq.code.toString().padStart(3, '0')"></span></strong>
                                             <p x-text="dq.description"></p>
                                         </div>
                                     </template>
@@ -780,9 +783,9 @@
                                 <div class="flex flex-col space-y-2">
                                     <template x-for="pen in pens">
                                         <div class="card cursor-pointer"
-                                            @click="setCode(`P${pen.id.toString().padStart(3, '0')}`, pen.description)"
-                                            x-show="shouldDisplaySelf(`p${pen.id}`, `p${pen.id.toString().padStart(3, '0')}`, pen.description)">
-                                            <strong>P<span x-text="pen.id.toString().padStart(3, '0')"></span></strong>
+                                            @click="setCode(`P${pen.code.toString().padStart(3, '0')}`, pen.description)"
+                                            x-show="shouldDisplaySelf(`p${pen.code}`, `p${pen.code.toString().padStart(3, '0')}`, pen.description)">
+                                            <strong>P<span x-text="pen.code.toString().padStart(3, '0')"></span></strong>
                                             <p x-text="pen.description"></p>
                                         </div>
                                     </template>
@@ -799,9 +802,9 @@
                                 <div class="flex flex-col space-y-2">
                                     <template x-for="pen in pens">
                                         <div class="card cursor-pointer"
-                                            @click="setCode(`P${pen.id.toString().padStart(3, '0')}`, pen.description)"
-                                            x-show="shouldDisplaySelf(`p${pen.id}`, `p${pen.id.toString().padStart(3, '0')}`, pen.description)">
-                                            <strong>P<span x-text="pen.id.toString().padStart(3, '0')"></span></strong>
+                                            @click="setCode(`P${pen.code.toString().padStart(3, '0')}`, pen.description)"
+                                            x-show="shouldDisplaySelf(`p${pen.code}`, `p${pen.code.toString().padStart(3, '0')}`, pen.description)">
+                                            <strong>P<span x-text="pen.code.toString().padStart(3, '0')"></span></strong>
                                             <p x-text="pen.description"></p>
                                         </div>
                                     </template>
@@ -847,7 +850,7 @@
 
                 <label for="">Aditional Details</label>
                 <textarea name="" id=""
-                    class="w-full border hover:border-gray-400 p-3 h-max focus:border-gray-400 outline-none rounded-md"
+                    class="w-full border hover:border-gray-400 p-3 h-max focus:border-gray-400 outline-hidden rounded-md"
                     placeholder="..." x-model="submission.details"></textarea>
 
 

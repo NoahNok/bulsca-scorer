@@ -40,18 +40,18 @@
                 @endphp
 
                 <textarea name="judge-overall-{{ $judge->id }}" rows="5" placeholder="Type overall feedback here."
-                    class="w-full border hover:border-gray-400 p-3 h-max focus:border-gray-400 outline-none rounded-md" id="">{{ $note }}</textarea>
+                    class="w-full border hover:border-gray-400 p-3 h-max focus:border-gray-400 outline-hidden rounded-md" id="">{{ $note }}</textarea>
             @endforeach
 
             <br>
 
             <br>
             <div class="flex space-y-3 flex-col">
-                <button type="submit" class="btn w-full">Submit</button>
+                <button type="submit" class="se-btn se-btn-success w-full">Submit</button>
 
 
 
-                <a href="{{ route('dj.judging.home') }}" class="btn btn-white w-full">Skip</a>
+                <a href="{{ route('dj.judging.home') }}" class="se-btn  w-full">Skip</a>
             </div>
 
 

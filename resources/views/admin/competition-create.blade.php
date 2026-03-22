@@ -1,7 +1,7 @@
-@extends('layout')
+@extends('layouts.admin')
 
 @section('title')
-    Create Competition | Admin
+    Create Competition
 @endsection
 
 @section('breadcrumbs')
@@ -25,13 +25,28 @@
     <form action="{{ route('admin.comp.create.post') }}" method="post">
         @csrf
         <div class="grid-4">
-            <x-form-input id="name" title="Name" required placeholder="Uni Year (e.g. Warwick 2023)"></x-form-input>
-            <x-form-input id="when" title="When" required type="datetime-local"></x-form-input>
-            <x-form-input id="where" title="Where" required></x-form-input>
-            <div class="form-input ">
-                <label for="isLeague" class="">League Competition</label>
-                <select required id="isLeague" name="isLeague" class="input "
-                    style="padding-top: 0.65em; padding-bottom: 0.75em;">
+
+
+            <div class="se-form-input">
+                <label for="name">Name</label>
+                <input type="text" name="name" id="name" placeholder="Name" value="{{ old('name') }}" required>
+            </div>
+
+            <div class="se-form-input">
+                <label for="when">Date</label>
+                <input type="datetime-local" name="when" id="when" placeholder="When" value="{{ old('when') }}"
+                    required>
+            </div>
+
+            <div class="se-form-input">
+                <label for="where">Location</label>
+                <input type="text" name="where" id="where" placeholder="Where" value="{{ old('where') }}"
+                    required>
+            </div>
+
+            <div class="se-form-input ">
+                <label for="isLeague">League</label>
+                <select required id="isLeague" name="isLeague">
 
                     <option value="1">Yes</option>
                     <option value="0" @if (request()->get('isLeague') == 'false') selected @endif>No</option>
@@ -40,11 +55,16 @@
 
             </div>
 
-            <x-form-input id="lanes" title="Lanes" required type="number"></x-form-input>
-            <div class="form-input ">
-                <label for="anytimepin" class="">Anytime Pin</label>
-                <select required id="anytimepin" name="anytimepin" class="input "
-                    style="padding-top: 0.65em; padding-bottom: 0.75em;">
+            <div class="se-form-input">
+                <label for="lanes">Lane</label>
+                <input type="number" name="lanes" id="lanes" placeholder="Lanes" value="{{ old('lanes') }}"
+                    required>
+            </div>
+
+
+            <div class="se-form-input ">
+                <label for="anytimepin">Any-time Pin</label>
+                <select required id="anytimepin" name="anytimepin">
                     <option value="0">No</option>
                     <option value="1">Yes</option>
 
@@ -54,25 +74,7 @@
             </div>
 
 
-            <x-form-select id="brand" title="Brand" :options="\App\Models\Brands\Brand::all()">
-                <option value="none">No brand</option>
-            </x-form-select>
-
-            <div class="form-input ">
-                <label for="scoring_type" class="">Scoring Type</label>
-                <select required id="scoring_type" name="scoring_type" class="input "
-                    style="padding-top: 0.65em; padding-bottom: 0.75em;">
-                    @foreach (\App\Helpers\ScoringHelper::$availableTypes as $key => $data)
-                        <option value="{{ $key }}">{{ $data['name'] }}</option>
-                    @endforeach
-
-
-
-
-                </select>
-
-            </div>
         </div>
-        <button type="submit" class="btn">Add</button>
+        <button type="submit" class="se-btn se-btn-success">Add</button>
     </form>
 @endsection

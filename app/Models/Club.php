@@ -2,17 +2,25 @@
 
 namespace App\Models;
 
+use App\DTO\EntityGrouping;
+use App\Models\AbstractClasses\Entity;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
-class Club extends Model
+class Club extends Entity
 {
     use HasFactory, Cloneable;
 
-    protected $fillable = ['name', 'region'];
+    protected $fillable = ['name', 'region', 'competition', 'league'];
+
+
+    public function getFormattedName(?Competition $comp): string
+    {
+        return $this->name;
+    }
 
     public function getTeams()
     {
@@ -145,5 +153,11 @@ class Club extends Model
             return $placings;
         });
         return $placings;
+    }
+
+
+    public function getGrouping(): EntityGrouping
+    {
+        return new EntityGrouping($this->id, null, null, $this->leagues()->orderBy('id')->first()?->id);
     }
 }

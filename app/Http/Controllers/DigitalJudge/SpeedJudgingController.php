@@ -8,7 +8,7 @@ use App\Jobs\WebPush;
 use App\Models\CompetitionSpeedEvent;
 
 use App\Models\EventOOF;
-use App\Models\Heat;
+use App\Models\Orders\Heat;
 use App\Models\Penalty;
 use App\Models\SpeedEvent;
 use App\Models\SpeedResult;
@@ -30,23 +30,21 @@ class SpeedJudgingController extends Controller
         $comp = DigitalJudge::getClientCompetition();
 
 
-        if ($heat > $comp->getMaxHeats()) {
+
+        if ($heat > $speed->getMaxHeats()) {
             return redirect()->route('dj.speeds.times.index', $speed)->with('alert-error', 'Heat ' . $heat . ' does not exist');
         }
 
-        $heatTeams = $comp
-            ->getHeatEntries()
+        $lanes = $speed->getHeats()
             ->where('heat', $heat)
-            ->where('event', $comp->scoring_type == 'rlss-nationals' ? $speed->id : null)
             ->get();
+
 
         $missingResult = false;
 
         // Code that checks if each team has a reuslt for the event
-        foreach ($heatTeams as $team) {
-            $sr = SpeedResult::where('competition_team', $team->team)
-                ->where('event', $speed->id)
-                ->first();
+        foreach ($lanes as $lane) {
+            $sr = SpeedResult::whereMorphedTo('entity', $lane->entity)->where('event', $speed->id)->first();
 
             if ($sr->result == null) {
                 $missingResult = true;
@@ -69,7 +67,6 @@ class SpeedJudgingController extends Controller
 
         $teams = [];
 
-        //dump($request->all());
         foreach ($request->all() as $key => $value) {
             if (!str_starts_with($key, "team-")) continue;
             $splt = explode("-", $key);
@@ -78,22 +75,25 @@ class SpeedJudgingController extends Controller
             $teams[$splt[1]][$splt[2]] = $value;
         }
 
-        //dump($teams);
-
         foreach ($teams as $team => $values) {
 
-            $sr = SpeedResult::where('competition_team', $team)->where('event', $speed->id)->first();
+            $entity = $speed->getScorableEntity()::find($team);
+
+            $sr = SpeedResult::whereMorphedTo('entity', $entity)->where('event', $speed->id)->first();
 
             if (str_starts_with($values['time'], "DN")) {
-                $sr->result = 0;
-                $sr->disqualification = str_starts_with($values['time'], 'DNS') ? 'DQ004' : 'DQ015';
+                $speed->clearEntityDisqualifications($entity);
+                $code = str_starts_with($values['time'], 'DNS') ? 99904 : 99915;
+                $speed->addEntityDisqualification($sr->entity, $code);
+                $sr->result = 3599000;
                 $sr->save();
                 continue;
             }
 
             if (str_starts_with($values['time'], "OOT")) {
-                $sr->result = 0;
-                $sr->disqualification = 'DQ1001';
+                $speed->clearEntityDisqualifications($entity);
+                $speed->addEntityDisqualification($sr->entity, 99901);
+                $sr->result = 3599000;
                 $sr->save();
                 continue;
             }
@@ -140,17 +140,31 @@ class SpeedJudgingController extends Controller
 
 
             $sr->save();
-            $toResult = $sr->getResultAsString();
 
-            $from = "Result: " . $fromResult;
-            $to = "Result: " . $toResult;
+            $changed = [
+                'result' => [
+                    'old' => $fromResult,
+                    'new' => $sr->getResultAsString(),
+                ],
+            ];
+
+            if ($changed['result']['old'] == $changed['result']['new']) {
+                continue;
+            }
+
+            $comp = DigitalJudge::getClientCompetition();
+            $clientName = DigitalJudge::getClientName();
+
+            $sr->recordActivity('SPEED_RESULT_MARKED', "{$clientName} marked {$sr->entity->getName($comp)}. Result: " . $changed['result']['old'] . " → " . $changed['result']['new'], context: [
+                'changes' => $changed,
+            ], related: [$speed, $sr->entity, $comp]);
         }
 
 
         WebPush::dispatch(new SpeedMarked($speed, $heat));
 
 
-        if ($heat + 1 > DigitalJudge::getClientCompetition()->getMaxHeats()) {
+        if ($heat + 1 > $speed->getMaxHeats()) {
             return redirect()->route('dj.speeds.times.index', $speed);
         }
 
@@ -170,18 +184,12 @@ class SpeedJudgingController extends Controller
     public function oofJudge(CompetitionSpeedEvent $speed, int $heat)
     {
 
-
-        $comp = DigitalJudge::getClientCompetition();
-
-
-        if ($heat > $comp->getMaxHeats()) {
+        if ($heat > $speed->getMaxHeats()) {
             return redirect()->route('dj.speeds.oof.index', $speed)->with('alert-error', 'Heat ' . $heat . ' does not exist');
         }
 
-        $heatlanes = $comp
-            ->getHeatEntries()
+        $heatlanes = $speed->getHeats()
             ->where('heat', $heat)
-            ->where('event', $comp->scoring_type == 'rlss-nationals' ? $speed->id : null)
             ->get();
 
         $missingResult = false;
@@ -193,7 +201,7 @@ class SpeedJudgingController extends Controller
             }
         }
 
-        $isHead = $isHead = DigitalJudge::isClientHeadJudge();;
+        $isHead = DigitalJudge::isClientHeadJudge();;
 
         if (!$missingResult && !$isHead) {
             return redirect()->route('dj.speeds.oof.index', $speed)->with('alert-error', 'All teams have a result for Heat ' . $heat);
@@ -216,9 +224,9 @@ class SpeedJudgingController extends Controller
 
 
 
-
+            $entity = $speed->getScorableEntity()::find($res['team']);
             // Pull the heat for the team
-            $heatlane = Heat::where('lane', $res['lane'])->where('heat', $heat)->where('competition', DigitalJudge::getClientCompetition()->id)->first();
+            $heatlane = $speed->getHeats()->whereMorphedTo('entity', $entity)->first();
 
             if ($res['place'] == null) {
                 EventOOF::where(['heat_lane' => $heatlane->id, 'event' => $speed->id])->delete();
@@ -231,6 +239,8 @@ class SpeedJudgingController extends Controller
             $eOof = EventOOF::firstOrNew(['heat_lane' => $heatlane->id, 'event' => $speed->id]);
 
             $eOof->oof = $res['place'];
+
+
 
 
 

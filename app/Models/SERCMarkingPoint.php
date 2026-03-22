@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\AbstractClasses\Entity;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,16 +15,22 @@ class SERCMarkingPoint extends Model
     protected $table = "serc_marking_points";
 
 
+    public function serc()
+    {
+        return $this->belongsTo(SERC::class, 'serc', 'id');
+    }
 
 
-    public function getScoreForTeam($team)
+    public function getScoreForTeam(Entity $entity)
     {
 
         $mpId = $this->id;
 
-        return Cache::rememberForever('mp.' . $mpId . '.team.' . $team, function () use ($team, $mpId) {
-            return SERCResult::where('marking_point', $mpId)->where('team', $team)->first()?->result ?: null;
-        });
+
+
+        //return Cache::rememberForever('mp.' . $mpId . '.team.' . $team->id, function () use ($team, $mpId) {
+        return SERCResult::where('marking_point', $mpId)->forEntity($entity)->first()?->result ?: null;
+        //});
     }
 
     public function getJudge()

@@ -26,6 +26,7 @@ class AddSpeedEventRequest extends FormRequest
     {
         return [
             'event' => ['required', Rule::notIn(['null'])],
+            'target_entity' => 'required|in:club,team,competitor',
             'weight' => 'required|numeric',
             'record' => 'regex:/[0-9]{1,2}:[0-9]{1,2}.[0-9]{3}/'
 
