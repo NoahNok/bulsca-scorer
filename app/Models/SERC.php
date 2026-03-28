@@ -475,4 +475,35 @@ class SERC extends Event
 
         return $totalResults >= $totalPossibleResults;
     }
+
+    public function getSERCConfiguration()
+    {
+        $judges = $this->getJudges()->with('getMarkingPoints')->get();
+
+        $config = [];
+
+        foreach ($judges as $judge) {
+            $mpConfig = [];
+
+            foreach ($judge->getMarkingPoints as $mp) {
+
+                $mpConfig[] = [
+                    'id' => $mp->id,
+                    'description' => $mp->name,
+                    'weight' => $mp->weight,
+                    'hints' => $mp->hints,
+                    'template_id' => $mp->marking_point_template_id
+                ];
+            }
+
+            $config[] = [
+                'id' => $judge->id,
+                'name' => $judge->name,
+                'hint' => $judge->description,
+                'marking_points' => $mpConfig
+            ];
+        }
+
+        return $config;
+    }
 }

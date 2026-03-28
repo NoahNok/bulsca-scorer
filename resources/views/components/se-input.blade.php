@@ -30,10 +30,10 @@
 
     @if ($type == 'checkbox')
         <div>
-            <input type="checkbox" x-model="self.data" :name="name"
+            <input type="checkbox" x-model="self.data" :name="name" {{ $attributes->merge() }}
                 @if ($default) checked @endif id="checkbox-{{ $name }}"
                 @input="checkError($el)">
-            <input type="hidden" :name="name" value="0">
+            <input type="hidden" {{ $attributes->merge() }} :name="name" value="0">
             <label for="checkbox-{{ $name }}">{{ $label }}</label>
         </div>
         <p>{{ $description }}</p>
@@ -48,7 +48,7 @@
 
 
         <select :name="name" x-model="self.data" x-ref="input" {{ $attributes->merge() }}
-            @input="checkError($el)">
+            :class="{ 'border-red-500! border-dashed': self.error }" @input="checkError($el)">
             {{ $slot }}
         </select>
     @else
@@ -61,7 +61,8 @@
         @endif
 
         <input type="{{ $type }}" :name="name" x-model="self.data" x-ref="input"
-            value="{{ $default ?? '' }}" {{ $attributes->merge() }} @input="checkError($el)">
+            :class="{ 'border-red-500! border-dashed': self.error }" value="{{ $default ?? '' }}"
+            {{ $attributes->merge() }} @input="checkError($el)">
     @endif
 
 

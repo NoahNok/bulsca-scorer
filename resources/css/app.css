@@ -1297,3 +1297,27 @@ aside {
   }
 }
 
+
+.se-alert-box {
+  @apply flex flex-col border-red-500 border-l-2 border-dashed p-4;
+
+  > h1 {
+    @apply text-red-500 text-xl flex items-center fill-red-500;
+  }
+
+  &.alert-info {
+    @apply border-blue-500;
+
+    > h1 {
+      @apply text-blue-500 fill-blue-500;
+    }
+  }
+
+  &.alert-thin {
+    @apply py-2;
+
+    > h1 {
+      @apply text-lg;
+    }
+  }
+}
