@@ -5,8 +5,10 @@ namespace App\Providers;
 use App\Models\Club;
 use App\Models\CompetitionTeam;
 use App\Models\Competitor;
+use App\View\Components\SERC\SERCEditor;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -45,5 +47,7 @@ class AppServiceProvider extends ServiceProvider
                 return;
             }
         });
+
+        Blade::component('serc-editor', SERCEditor::class);
     }
 }

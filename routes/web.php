@@ -34,6 +34,7 @@ use App\Http\Controllers\PrintableController;
 use App\Http\Controllers\PublicResultsController;
 use App\Http\Controllers\Push\PushController;
 use App\Http\Controllers\Result\MasterSchemaController;
+use App\Http\Controllers\SERC\MarkingPointTemplateController;
 use App\Http\Controllers\SpeedsEventController;
 use App\Http\Controllers\TeamsController;
 use App\Http\Controllers\SERCController;
@@ -197,7 +198,7 @@ Route::middleware('auth')->group(function () {
 
                     Route::get('', [SERCController::class, 'view'])->name('comps.events.sercs.view');
                     Route::get('/edit', [SERCController::class, 'edit'])->name('comps.events.sercs.edit');
-                    Route::post('/edit', [SERCController::class, 'editPost'])->name('comps.view.events.sercs.editPost');
+                    Route::post('/edit', [SERCController::class, 'editPost'])->name('comps.events.sercs.editPost');
                     Route::get('/print-results', [SERCController::class, 'printResults'])->name('comps.view.events.sercs.printResults');
 
 
@@ -394,6 +395,15 @@ Route::prefix('/admin')->middleware('isAdmin')->group(function () {
     Route::delete('/competition/{comp}/delete', [AdminController::class, 'deleteCompPost'])->name('admin.comp.delete');
 
     Route::get('/activity', [ActivityController::class, 'admin'])->name('admin.activity');
+
+    Route::resource('serc/marking-points', MarkingPointTemplateController::class)->except(['show'])->names([
+        'index' => 'admin.serc.marking-point-template.index',
+        'create' => 'admin.serc.marking-point-template.create',
+        'store' => 'admin.serc.marking-point-template.store',
+        'edit' => 'admin.serc.marking-point-template.edit',
+        'update' => 'admin.serc.marking-point-template.update',
+        'destroy' => 'admin.serc.marking-point-template.destroy',
+    ]);
 });
 
 

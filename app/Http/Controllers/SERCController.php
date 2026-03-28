@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ClassHelpers;
 use App\Http\Requests\Event\UpdateScoringSettings;
+use App\Http\Requests\SERC\SaveSERCSetupRequest;
 use App\Models\Competition;
 use App\Models\CompetitionTeam;
 use App\Models\Competitor;
@@ -28,44 +29,13 @@ class SERCController extends Controller
         return view('competition.events.sercs.add', ['comp' => $comp]);
     }
 
-    public function addPost(Competition $comp, Request $request)
+    public function addPost(Competition $comp, SaveSERCSetupRequest $request)
     {
 
-        $json = json_decode($request->input('data'));
-
-
-
-
-
         $serc = new SERC();
-        $serc->name = $json->serc_name;
         $serc->competition = $comp->id;
-        $serc->type = $json->serc_type;
-        $serc->scorable_entity = $json->serc_target;
-        $serc->save();
 
-        foreach ($json->judges as $judge) {
-
-
-            $j = new SERCJudge();
-            $j->name = $judge->name;
-            $j->serc = $serc->id;
-            $j->description = $judge->description;
-            $j->save();
-
-            foreach ($judge->marking_points as $marking_point) {
-                $mp = new SERCMarkingPoint();
-                $mp->name = $marking_point->description;
-                $mp->weight = $marking_point->weight;
-                $mp->judge = $j->id;
-                $mp->serc = $serc->id;
-                $mp->save();
-            }
-        }
-
-        $request->session()->flash('success', "SERC created!");
-
-        return response()->json(['sid' => $serc->id]);
+        return $this->editPost($comp, $serc, $request);
     }
 
     public function view(Competition $comp, SERC $serc)
@@ -95,60 +65,59 @@ class SERCController extends Controller
         return view('competition.events.sercs.edit', ['comp' => $comp, 'serc' => $serc]);
     }
 
-    public function editPost(Competition $comp, SERC $serc, Request $request)
+    public function editPost(Competition $comp, SERC $serc, SaveSERCSetupRequest $request)
     {
-        $json = json_decode($request->input('data'));
 
+        // Validate the request data
+        $validated = $request->validated();
 
+        // Delete any judges or marking points that were removed in the frontend
+        SERCJudge::destroy($validated['deleted']['judges']);
+        SERCMarkingPoint::destroy($validated['deleted']['marking_points']);
 
-        // Process deletions first
-        SERCJudge::destroy($json->deleted->judges);
-        SERCMarkingPoint::destroy($json->deleted->marking_points);
-
-
-
-        $serc = SERC::find($json->serc_id);
-
-        $serc->name = $json->serc_name;
-        $serc->type = $json->serc_type;
-        $serc->scorable_entity = $json->serc_target;
+        $serc->name = $validated['name'];
+        $serc->type = $validated['type'];
+        $serc->scorable_entity = $validated['target_entity'];
 
         $serc->save();
 
-        foreach ($json->judges as $judge) {
+        // Update or create judges and marking points
+        foreach ($validated['judges'] as $judge) {
 
             $j = null;
-            if ($judge->id == "null") {
+            if ($judge['id'] == null) {
                 $j = new SERCJudge();
             } else {
-                $j = SERCJudge::find($judge->id);
+                $j = SERCJudge::find($judge['id']);
             }
 
-            $j->name = $judge->name;
-            $j->description = $judge->description;
+            $j->name = $judge['name'];
+            $j->description = $judge['hint'] ?? '';
             $j->serc = $serc->id;
             $j->save();
 
-            foreach ($judge->marking_points as $marking_point) {
+            foreach ($judge['marking_points'] as $marking_point) {
 
                 $mp = null;
-                if ($marking_point->id == "null") {
+                if ($marking_point['id'] == null) {
                     $mp = new SERCMarkingPoint();
                 } else {
-                    $mp = SERCMarkingPoint::find($marking_point->id);
+                    $mp = SERCMarkingPoint::find($marking_point['id']);
                 }
 
-                $mp->name = $marking_point->description;
-                $mp->weight = $marking_point->weight;
+                $mp->name = $marking_point['description'];
+                $mp->weight = $marking_point['weight'];
                 $mp->judge = $j->id;
                 $mp->serc = $serc->id;
+                $mp->marking_point_template_id = $marking_point['template_id'] ?? null;
                 $mp->save();
             }
         }
 
-        $request->session()->flash('success', "SERC updated!");
 
-        return response()->json(['sid' => $serc->id]);
+        $request->session()->flash('success', $serc->wasRecentlyCreated ? "SERC created!" : "SERC updated!");
+
+        return response()->json(['id' => $serc->id]);
     }
 
     public function delete(Competition $comp, SERC $serc, Request $request)

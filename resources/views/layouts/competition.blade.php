@@ -4,6 +4,12 @@
     @yield('title') | {{ $comp->name }}
 @endsection
 
+@section('core-meta')
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
+
+    <script defer src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+@endsection
+
 @section('core-content')
     <div class="flex flex-col-reverse md:flex-row md:items-center justify-between gap-2 md:gap-0">
         <div class="flex space-x-3 items-center justify-center -mb-2">
