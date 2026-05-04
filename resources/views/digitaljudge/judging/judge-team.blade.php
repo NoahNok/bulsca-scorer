@@ -339,6 +339,9 @@
 
             <div class="flex flex-col items-start w-full space-y-2 ">
                 @foreach ($judges[0]->getNotes as $note)
+                    @continue(!$note->entity)
+
+
                     <div class="se-card se-card-body w-full">
                         <h4> {{ $comp->show_teams_to_judges || $head ? $note->entity->getName($comp) : $serc->getPositionInDraw($note->entity) }}
                         </h4>

@@ -56,7 +56,7 @@
                             this.code.description = this.code.cache[code];
                             return;
                         }
-                        fetch('{{ route('dj.dq.resolveCode', '') }}/' + code)
+                        fetch('{{ route('dj.dq.resolveCode', ['code' => ':code']) }}/'.replace(':code', code))
                             .then(response => response.json())
                             .then(data => {
                 
@@ -122,7 +122,7 @@
                     startWaitingForResult(id, updateNow = false) {
                 
                         let doo = () => {
-                            fetch('{{ route('dj.dq.submission.status', 'X') }}'.replace('X', id))
+                            fetch('{{ route('dj.dq.submission.status', ['submission' => ':sub']) }}'.replace(':sub', id))
                                 .then(response => response.json())
                                 .then(data => {
                                     if (data.result != null) {
@@ -190,7 +190,7 @@
                             this.status = 'WAITING'
                             this.showContent = false
                 
-                            fetch('{{ route('dj.dq.submission.info', 'X') }}'.replace('X', frm))
+                            fetch('{{ route('dj.dq.submission.info', ['submission' => ':sub']) }}'.replace(':sub', frm))
                                 .then(response => response.json())
                                 .then(data => {
                                     if (data.result != null) {
@@ -465,7 +465,7 @@
             
                 loadCodes() {
                     this.loadingCodes = true;
-                    fetch('{{ route('dj.dq.event-codes', 'X') }}'.replace('X', this.submission.event))
+                    fetch('{{ route('dj.dq.event-codes', ['event' => ':event']) }}'.replace(':event', this.submission.event))
                         .then(response => response.json())
                         .then(data => {
                             this.codes = data;

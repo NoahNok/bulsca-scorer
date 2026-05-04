@@ -93,7 +93,7 @@
                         this.code.description = this.code.cache[code];
                         return;
                     }
-                    fetch('{{ route('dj.dq.resolveCode', '') }}/' + code)
+                    fetch('{{ route('dj.dq.resolveCode', ['code' => ':code']) }}/'.replace(':code', code))
                         .then(response => response.json())
                         .then(data => {
             
@@ -123,7 +123,7 @@
             
                     var toPush = this.submission;
             
-                    fetch('{{ route('dj.dq.submission.resolve', '') }}/' + this.submission.id, { method: 'POST', body: fd })
+                    fetch('{{ route('dj.dq.submission.resolve', ['submission' => ':sub']) }}/'.replace(':sub', this.submission.id), { method: 'POST', body: fd })
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
@@ -355,7 +355,7 @@
                                 
                                             fd.append('_token', '{{ csrf_token() }}');
                                 
-                                            fetch('{{ route('dj.dq.remove', 'X') }}'.replace('X', submission.id), {
+                                            fetch('{{ route('dj.dq.remove', ['submission' => ':sub']) }}'.replace(':sub', submission.id), {
                                                 method: 'POST',
                                                 body: fd
                                             }).then(resp => resp.json()).then(data => {
@@ -376,7 +376,7 @@
                                 
                                             fd.append('_token', '{{ csrf_token() }}');
                                 
-                                            fetch('{{ route('dj.dq.appeal', 'X') }}'.replace('X', submission.id), {
+                                            fetch('{{ route('dj.dq.appeal', ['submission' => ':sub']) }}'.replace(':sub', submission.id), {
                                                 method: 'POST',
                                                 body: fd
                                             }).then(resp => resp.json()).then(data => {
