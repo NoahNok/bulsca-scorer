@@ -3,14 +3,20 @@
 namespace App\Models\Orders;
 
 use App\Models\CompetitionSpeedEvent;
+use App\Models\DigitalJudge\JudgeDQSubmission;
 use App\Models\EventOOF;
 use App\Models\SpeedResult;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use ShiftOneLabs\LaravelCascadeDeletes\CascadesDeletes;
 
 class Heat extends Model
 {
-    use HasFactory;
+    use HasFactory, CascadesDeletes;
+
+    protected $cascadeDeletes = [
+        'judgeDQSubmissions'
+    ];
 
     public function entity()
     {
@@ -39,5 +45,10 @@ class Heat extends Model
     public function getResult(): ?SpeedResult
     {
         return $this->speedEvent->results()->whereMorphedTo('entity', $this->entity)->first();
+    }
+
+    public function judgeDQSubmissions()
+    {
+        return $this->hasMany(JudgeDQSubmission::class, 'heat_lane');
     }
 }
