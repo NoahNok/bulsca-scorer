@@ -223,8 +223,8 @@ class DJJudgingController extends Controller
             ], related: [$serc, $team, $comp]);
         }
 
-
-        $this->dispatchTeamMarkedNotification($serc, $team);
+        // re-enable once support re-added
+        // $this->dispatchTeamMarkedNotification($serc, $team);
 
 
         if ($request->input('a', 'next') == 'back') {
