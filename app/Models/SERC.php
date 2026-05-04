@@ -210,14 +210,16 @@ class SERC extends Event
         $use_tanks = $this->getCompetition->getScoringSettings->use_tanks;
 
         if (!$draw) {
-            return -1;
+            return ["text" => -1, "percent" => 100, "percent_unit" => 50];
         }
 
         if ($use_tanks) {
-            return "Tank {$draw->tank}-{$draw->draw}";
+            $total = $this->getDraw()->where('tank', $draw->tank)->count();
+            return ["text" => "{$draw->draw} / {$total} - Tank {$draw->tank}", "percent" => $draw->draw / $total * 100, "percent_unit" => 100 / $total];
         }
 
-        return $draw->draw;
+        $total = $this->getDraw()->count();
+        return ["text" => "$draw->draw / $total", "percent" => $draw->draw / $total * 100, "percent_unit" => 100 / $total];
     }
 
 

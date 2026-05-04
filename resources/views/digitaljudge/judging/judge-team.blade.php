@@ -51,7 +51,9 @@
                 </strong></p>
             <br>
             @php
-                $draw_text = $serc->getPositionInDraw($team);
+                $draw_info = $serc->getPositionInDraw($team);
+                $draw_text = $draw_info['text'];
+                $draw_percent = $draw_info['percent'];
             @endphp
             <p class="text-xl">
 
@@ -71,9 +73,22 @@
             </p>
 
 
+            <div class="w-full bg-gray-100 rounded-full">
+                <div class="bg-se p-0.5 rounded-full h-2 transition-all ease-in-out " id="bar"
+                    style="width: {{ $draw_percent - $draw_info['percent_unit'] }}%"></div>
+            </div>
+            <script>
+                requestAnimationFrame(() => {
+                    setTimeout(() => {
+                        document.getElementById('bar').style.width = "{{ $draw_percent }}%"
+                    }, 50);;
+                });
+            </script>
 
 
-            <hr>
+
+
+
             @if ($serc->image)
                 <div class="flex items-center justify-center">
                     <img src="{{ asset('storage/' . $serc->image) }}" alt="SERC Image" class=" w-full ">
