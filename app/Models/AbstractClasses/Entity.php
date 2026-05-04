@@ -6,6 +6,7 @@ use App\DigitalJudge\DigitalJudge;
 use App\DTO\EntityGrouping;
 use App\Models\Club;
 use App\Models\Competition;
+use App\Models\DigitalJudge\JudgeNote;
 use App\Models\EntityData;
 use App\Models\Event\Disqualification;
 use App\Models\Event\Penalty;
@@ -34,7 +35,8 @@ abstract class Entity extends Model
         'disqualifications',
         'penalties',
         'heats',
-        'draws'
+        'draws',
+        'sercNotes'
     ];
 
     protected static function booted()
@@ -175,4 +177,9 @@ abstract class Entity extends Model
     public abstract function getFormattedName(?Competition $comp): string;
 
     public abstract function getGrouping(): EntityGrouping;
+
+    public function sercNotes()
+    {
+        return $this->morphMany(JudgeNote::class, 'entity');
+    }
 }
