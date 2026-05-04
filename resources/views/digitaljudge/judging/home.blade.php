@@ -104,13 +104,13 @@
 
                             <div class="flex justify-between">
 
-                                <p>{{ $loop->index + 1 }}. {{ $draw->entity->getName($comp) }}</p> <a
+                                <p>{{ $draw->draw }}. {{ $draw->entity->getName($comp) }}</p> <a
                                     href="{{ route('dj.judging.judge-team', [$draw->entity]) }}"
                                     class="link col-start-5">Edit</a>
                             </div>
                         </li>
                     @else
-                        <li>{{ $loop->index + 1 }}. {{ $draw->entity->getName($comp) }}</li>
+                        <li>{{ $draw->draw }}. {{ $draw->entity->getName($comp) }}</li>
                     @endif
                 @endforeach
             </ul>
