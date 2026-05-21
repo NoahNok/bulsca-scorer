@@ -287,7 +287,7 @@
             let data = {
                 id: null,
                 name: name,
-                league: [this.add.competitor.league],
+                league: this.add.competitor.league,
                 seeds: this.add.competitor.seeds
             }
     
