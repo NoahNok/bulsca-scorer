@@ -7,6 +7,7 @@ use App\Mail\CompetitionAccountInvite;
 use App\Models\Activity\Activity;
 use App\Models\Competition\CompetitionScoringSettings;
 use App\Models\Competition\CompetitionStatusMessage;
+use App\Models\DigitalJudge\JudgeDQSubmission;
 use App\Models\DigitalJudge\JudgeLog;
 use App\Models\Interfaces\IInvitable;
 use App\Models\Orders\Draw;
@@ -23,10 +24,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use ShiftOneLabs\LaravelCascadeDeletes\CascadesDeletes;
 
 class Competition extends Model implements IInvitable
 {
-    use HasFactory, Cloneable, RecordActivity;
+    use HasFactory, Cloneable, RecordActivity, CascadesDeletes;
 
     public static $accessTypes = [
         'admin' => 'Admin',
@@ -45,6 +47,11 @@ class Competition extends Model implements IInvitable
         'serc_start_time' => 'datetime',
         'data' => 'array'
     ];
+
+    protected $cascadeDeletes = [
+        'getJudgeDQSubmissions',
+    ];
+
 
 
     public function getSlug()
@@ -238,6 +245,11 @@ class Competition extends Model implements IInvitable
     public function getHeatEntries()
     {
         return $this->hasMany(Heat::class, 'competition', 'id');
+    }
+
+    public function getJudgeDQSubmissions()
+    {
+        return $this->hasMany(JudgeDQSubmission::class, 'competition', 'id');
     }
 
 

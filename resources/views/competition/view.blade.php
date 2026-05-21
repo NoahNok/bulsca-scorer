@@ -1117,11 +1117,20 @@
                         },
                         body: fd,
                         method: 'POST'
-                    }).then(resp => resp.json()).then(data => {
+                    }).then(resp => {
+                        if (!resp.ok) {
+                            showAlert('Something went wrong, unable to delete competition')
+                            return
+                        }
+            
+                        return resp.json()
+                    }).then(data => {
                         if (data.error) {
                             showAlert(data.error)
                             return
                         }
+            
+            
             
                         window.location.href = '/'
                     })
