@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\AbstractClasses\Entity;
+use App\Models\SERC\MarkingPointTemplate;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -36,5 +37,20 @@ class SERCMarkingPoint extends Model
     public function getJudge()
     {
         return $this->belongsTo(SERCJudge::class, 'judge', 'id');
+    }
+
+    public function template()
+    {
+        return $this->belongsTo(MarkingPointTemplate::class, 'marking_point_template_id');
+    }
+
+    public function minMaxAvg()
+    {
+        return SERCResult::query()->where('marking_point', $this->id)
+            ->selectRaw('
+                COALESCE(ROUND(MIN(result), 0), 0) as min_result,
+                COALESCE(ROUND(AVG(result), 0), 0) as avg_result,
+                COALESCE(ROUND(MAX(result), 0), 0) as max_result
+            ')->first();
     }
 }

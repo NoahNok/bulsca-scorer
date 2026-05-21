@@ -215,10 +215,10 @@ class SERC extends Event
             $data = ["text" => -1, "percent" => 100, "percent_unit" => 50];
         } else if ($use_tanks) {
             $total = $this->getDraw()->where('tank', $draw->tank)->count();
-            $data = ["text" => "{$draw->draw} / {$total} - Tank {$draw->tank}", "percent" => $draw->draw / $total * 100, "percent_unit" => 100 / $total];
+            $data = ["text" => "{$draw->draw} / {$total} - Tank {$draw->tank}", "percent" => ($draw->draw - 1) / $total * 100, "percent_unit" => 100 / $total];
         } else {
             $total = $this->getDraw()->count();
-            $data = ["text" => "$draw->draw / $total", "percent" => $draw->draw / $total * 100, "percent_unit" => 100 / $total];
+            $data = ["text" => "$draw->draw / $total", "percent" => ($draw->draw - 1) / $total * 100, "percent_unit" => 100 / $total];
         }
 
         $data["percent"] = min($data['percent'], 100);
