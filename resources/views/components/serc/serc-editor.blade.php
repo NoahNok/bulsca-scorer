@@ -8,6 +8,7 @@
     judges: {{ json_encode($configuration) }},
 
     marking_point_templates: {{ $templates->toJson() }},
+    default_template_id: '{{ $defaultTemplate?->id ?? 'null' }}',
 
 
     active_marking_point: {
@@ -287,7 +288,7 @@
                         </div>
                     </template>
                     <button class="se-btn se-btn-outline-success w-full"
-                        @click="judge.marking_points.push({ id: null, description: '', weight: 1, template_id: null, sort_id: Date.now() }); openMarkingPointSettings(index, judge.marking_points.length - 1)">Add
+                        @click="judge.marking_points.push({ id: null, description: '', weight: 1, template_id: default_template_id, sort_id: Date.now() }); openMarkingPointSettings(index, judge.marking_points.length - 1)">Add
                         Marking
                         Point</button>
 

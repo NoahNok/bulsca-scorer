@@ -11,6 +11,7 @@ use App\Models\Competitor;
 use App\Models\Event\ScoringSchema;
 use App\Models\League;
 use App\Models\SERC;
+use App\Models\SERC\MarkingPointTemplate;
 use App\Models\SERCDisqualification;
 use App\Models\SERCJudge;
 use App\Models\SERCMarkingPoint;
@@ -31,7 +32,6 @@ class SERCController extends Controller
 
     public function addPost(Competition $comp, SaveSERCSetupRequest $request)
     {
-
         $serc = new SERC();
         $serc->competition = $comp->id;
 
