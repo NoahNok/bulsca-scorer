@@ -4,9 +4,10 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
     server: {
-        cors: true,
-        proxy: {
-            '/storage': 'http://localhost'
+        host: "0.0.0.0",
+        strictPort: true,
+        hmr: {
+            host: "localhost"
         }
     },
     plugins: [
