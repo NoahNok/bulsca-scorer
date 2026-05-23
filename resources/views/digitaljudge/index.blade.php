@@ -9,7 +9,21 @@
 
 
 @section('content')
-    <div class="h-screen w-screen flex flex-col items-center justify-center space-y-4">
+    <div class="h-screen w-screen flex flex-col items-center justify-center space-y-4" x-data="{
+    
+    
+        getName() {
+                return localStorage.getItem('judgeName') || '';
+            },
+    
+            setName(name) {
+                localStorage.setItem('judgeName', name);
+            }
+    
+    
+    
+    
+    }">
 
 
 
@@ -27,8 +41,8 @@
                 @enderror
             </div>
             <div class="form-input">
-                <input type="text" required id="jn" name="judgeName" class="text-center"
-                    placeholder="Name or Initials">
+                <input type="text" required id="jn" name="judgeName" class="text-center" :value="getName()"
+                    @input="setName($event.target.value)" placeholder="Name or Initials">
                 @error('judgeName')
                     <small class="ml-auto">{{ $message }}</small>
                 @enderror
