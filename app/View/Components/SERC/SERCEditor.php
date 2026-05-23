@@ -14,6 +14,8 @@ class SERCEditor extends Component
     private ?SERC $serc;
     private bool $edit;
 
+    private MarkingPointTemplate $defaultTemplate;
+
     /**
      * Create a new component instance.
      */
@@ -21,6 +23,7 @@ class SERCEditor extends Component
     {
         $this->serc = $serc;
         $this->edit = $edit;
+        $this->defaultTemplate = MarkingPointTemplate::where('default', true)->first();
     }
 
     /**
@@ -31,6 +34,6 @@ class SERCEditor extends Component
 
         $templates = MarkingPointTemplate::select('id', 'name')->orderBy('default', 'desc')->get();
 
-        return view('components.serc.serc-editor', ['templates' => $templates, 'configuration' => $this->serc?->getSERCConfiguration() ?? [], 'serc' => $this->serc, 'edit' => $this->edit, 'comp' => request()->route('comp')]);
+        return view('components.serc.serc-editor', ['templates' => $templates, 'defaultTemplate' => $this->defaultTemplate, 'configuration' => $this->serc?->getSERCConfiguration() ?? [], 'serc' => $this->serc, 'edit' => $this->edit, 'comp' => request()->route('comp')]);
     }
 }
