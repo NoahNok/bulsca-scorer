@@ -11,10 +11,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use NotificationChannels\WebPush\HasPushSubscriptions;
+use Spatie\OneTimePasswords\Models\Concerns\HasOneTimePasswords;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasPushSubscriptions;
+    use HasApiTokens, HasFactory, Notifiable, HasPushSubscriptions, HasOneTimePasswords;
 
     /**
      * The attributes that are mass assignable.
@@ -91,5 +92,11 @@ class User extends Authenticatable
             'id',
             'organisation'
         )->where('access_to', '!=', 'none')->distinct('organisations.id');
+    }
+
+
+    public function officiating()
+    {
+        return $this->belongsToMany(Competition::class, 'competition_officials', 'user_id', 'competition_id');
     }
 }

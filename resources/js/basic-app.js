@@ -1,13 +1,3 @@
-
-import "./bootstrap";
-
-// import Alpine from 'alpinejs';
-
-// window.Alpine = Alpine;
-
-// Alpine.start();
-
-
 function dynamicInput(input) {
     const mirror = document.createElement('div');
     mirror.style.position = 'absolute';
@@ -35,6 +25,5 @@ function dynamicInput(input) {
     updateWidth(); // Initial sizing
 }
 
+
 window.dynamicInput = dynamicInput
-
-
