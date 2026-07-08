@@ -29,7 +29,7 @@
         rel="stylesheet">
 
 
-    @vite('resources/js/app.js')
+    @vite('resources/js/basic-app.js')
     @vite('resources/css/app.css')
     {{-- <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}"> --}}
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/mask@3.13.3/dist/cdn.min.js"></script>

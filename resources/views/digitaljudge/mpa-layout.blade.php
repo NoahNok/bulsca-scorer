@@ -53,7 +53,7 @@
         <div class="flex justify-between items-center {{ $nopad ?? false ? 'px-4' : '' }}">
             <div>
                 <h2 class="-mb-1 text-se">@yield('title')</h2>
-                <small class="">{{ \App\DigitalJudge\DigitalJudge::getClientCompetition()->name }}</small>
+                <small class="">{{ \App\DigitalJudge\DigitalJudge::getClientCompetition()?->name ??  \App\DigitalJudge\DigitalJudge::getClientName()  }}</small>
             </div>
             <div>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"

@@ -34,7 +34,13 @@ class DigitalJudge
 
     public static function getClientName(): string
     {
-        return Session::get('digitalJudgeClientName', 'UNKNOWN');
+        $name = '';
+        if (auth()->check()) {
+            $name = auth()->user()->name;
+        } else {
+            $name = Session::get('digitalJudgeClientName', 'UNKNOWN');
+        }
+        return $name;
     }
 
     public static function canClientJudge()
@@ -79,6 +85,14 @@ class DigitalJudge
         Session::put('digitalJudgeJudgeId', array_diff(Session::get('digitalJudgeJudgeId', []), [$judgeId]));
     }
 
+    public static function clearClientJudges()
+    {
+        Session::put('digitalJudgeJudgeId', []);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection<int, SERCJudge>
+     */
     public static function getClientJudges()
     {
         return SERCJudge::find(Session::get('digitalJudgeJudgeId', []));
