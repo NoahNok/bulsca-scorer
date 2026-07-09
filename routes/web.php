@@ -4,6 +4,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AccountInviteController;
 use App\Http\Controllers\Activity\ActivityController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ChampionshipController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -116,9 +117,6 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/create', [CompetitionController::class, 'create'])->name('comps.create');
     Route::post('/create', [CompetitionController::class, 'createPost'])->name('comps.create.post');
-
-
-
 
     Route::prefix('/comps/{comp}')->group(function () {
         Route::get('', [CompetitionController::class, 'view'])->middleware('can:access,comp,"view"')->name('comps.view');
@@ -361,6 +359,25 @@ Route::middleware('auth')->group(function () {
                 Route::delete('', [OrganisationController::class, 'deleteScoringSchema'])->name('orgs.scoring.delete');
             });
         });
+
+        Route::prefix('championships')->group(function () {
+
+            Route::get('', [ChampionshipController::class, 'view'])->name('orgs.championships');
+
+            Route::get('/create', [ChampionshipController::class, 'create'])->name('orgs.championship.create');
+            Route::post('/create', [ChampionshipController::class, 'store'])->name('orgs.championship.store');
+
+            Route::prefix('/{championship}')->group(function () {
+                Route::get('', [ChampionshipController::class, 'show'])->name('orgs.championship.view');
+
+                Route::get('/add-competition', [ChampionshipController::class, 'addCompetition'])->name('orgs.championship.add-competition');
+                Route::post('/associate-competition', [ChampionshipController::class, 'associateCompetition'])->name('orgs.championship.associate-competition');
+                Route::post('/deassociate-competition', [ChampionshipController::class, 'deassociateCompetition'])->name('orgs.championship.deassociate-competition');
+                // Route::get('/edit', [ChampionshipController::class, 'edit'])->name('championship.edit');
+                // Route::post('/edit', [ChampionshipController::class, 'editPost'])->name('championship.edit.post');
+                // Route::delete('', [ChampionshipController::class, 'delete'])->name('championship.delete');
+            });
+        });
     });
 
     Route::prefix('accounts')->group(function () {
@@ -464,5 +481,7 @@ Route::prefix('competition/{comp}')->group(function () {
 });
 
 require __DIR__ . '/auth.php';
+
+Route::get('/championship/{championship}', [LandingController::class, 'showChampionship'])->name('landing.championship');
 
 Route::get('/{organisation}', [LandingController::class, 'showOrganisation'])->name('landing.organisation');

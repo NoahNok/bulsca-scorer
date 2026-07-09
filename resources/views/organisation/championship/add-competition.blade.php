@@ -1,28 +1,38 @@
 @extends('layouts.organisation')
 
-
+@section('title')
+    Add Competition to {{ $championship->name }} | Championships
+@endsection
 
 @section('content')
-    <h2 class="mb-0">Competitions</h2>
+    <h2 class="mb-0">Add Competition to {{ $championship->name }}</h2>
+    <p class="font-archivo text-sm! text-gray-700! uppercase -mb-1 ">{{ $championship->start_date->format('d/m/Y') }} - {{ $championship->end_date->format('d/m/Y') }}</p>
     <br>
-    <div>
-        @php
-            $comps = $org->getCompetitions()->paginate(18);
-        @endphp
+    <div x-data="{
+
+        name: '',
+        id: '',
+
+        selectCompetition(name, id) {
+            this.name = name;
+            this.id = id;
+            this.modals.addCompetition = true;
+        }
+    }">
+
+
+
+      
 
         <div class="se-table se-table-thin">
             <table>
 
                 <tbody>
-                    @foreach ($comps as $comp)
-                        <tr class="">
-                            <td class="text-left font-semibold text-black relative">{{ $comp->name }}  @if ($comp->championship_id )
-                                    <span class="">| {{ $comp->championship->name }}</span>
-                                        @endif @if ($comp->canUser(auth()->user(), 'admin'))
-                                   
-                                    
-                                @endif <a href="{{ route('comps.view', $comp) }}"
-                                    class="absolute top-0 left-0 w-full h-full"></a>
+                    @forelse ($comps as $comp)
+                        <tr class="" @click="selectCompetition('{{ $comp->name }}', '{{ $comp->id }}')">
+                            <td class="text-left font-semibold text-black relative">{{ $comp->name }} @if ($comp->canUser(auth()->user(), 'admin'))
+                                    <span class="ml-2 badge badge-info badge-sm">ADMIN</span>
+                                @endif 
                             </td>
 
                             <td class=" flex items-center justify-end gap-6">
@@ -59,13 +69,37 @@
                             </td>
 
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="2" class="text-center text-gray-500">No competitions available to add.</td>
+                        </tr>   
+                    @endforelse
                 </tbody>
             </table>
         </div>
 
+        <x-s-e-modal id="addCompetition" title="Add Competition">
+            <div>
+                <p>Are you sure you want to add <strong x-text="name"></strong> to <strong>{{ $championship->name }}</strong>?</p>
+                <br>
+                <form action="{{ route('orgs.championship.associate-competition', ['organisation' => $org->name, 'championship' => $championship->id]) }}" id="addComp" method="POST">
+                    @csrf
+                    <input type="hidden" name="competition_id" :value="id">
+                   
+                    <x-se-input type="select" name="type" class="capitalize" >
+                        @foreach($types as $type)
+                            <option value="{{ $type }}" class="capitalize!">{{ strtolower($type) }}</option>
+                        @endforeach
+                    </x-se-input>
+                </form>
+            </div>
+             <x-slot name="footer">
+            <button type="submit" form="addComp" class="se-btn se-btn-success ml-auto">Add</button>
+        </x-slot>
+        </x-s-e-modal>
 
-        <x-add-card text="Competition" link="{{ route('comps.create') }}?type=org&org={{ $org->name }}"></x-add-card>
+
+        
 
 
     </div>

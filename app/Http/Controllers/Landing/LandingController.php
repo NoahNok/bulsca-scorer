@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Landing;
 
 use App\Http\Controllers\Controller;
+use App\Models\Championship;
 use App\Models\Competition;
 use App\Models\Organisation\Organisation;
 use Carbon\Carbon;
@@ -25,6 +26,12 @@ class LandingController extends Controller
     public function showOrganisation(Organisation $organisation)
     {
         return view('landing.organisation', ['org' => $organisation, 'ongoing' => $organisation->getOngoingCompetition()]);
+    }
+
+    public function showChampionship(Championship $championship)
+    {
+        $organisation = $championship->organisation;
+        return view('landing.championship', ['org' => $organisation, 'championship' => $championship]);
     }
 
     public function showCompetition(Competition $comp)
@@ -84,8 +91,23 @@ class LandingController extends Controller
             $org['url'] = route('landing.organisation', $org->name);
         }
 
+        $championships = Championship::selectRaw("id, name, organisation_id,
+            CASE
+                WHEN name = ? THEN 3
+                WHEN name LIKE ? THEN 2
+                WHEN name LIKE ? THEN 1
+                ELSE 0
+            END as relevance
+            ", [$search, "$search%", "%$search%"])
+            ->where('name', 'LIKE', "%$search%")
+            ->orderByDesc('relevance')->limit(8)->get();
+
+        foreach ($championships as $champ) {
+            $champ['url'] = route('landing.championship', $champ->slug());
+        }
 
 
-        return response()->json(compact('comps', 'orgs'));
+
+        return response()->json(compact('comps', 'orgs', 'championships'));
     }
 }

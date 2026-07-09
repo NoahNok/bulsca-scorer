@@ -31,6 +31,10 @@
         @endcan
 
         @can('access', [$org, 'admin'])
+            <a href="{{ route('orgs.championships', $org->name) }}"
+                class="@if (Str::startsWith(Route::currentRouteName(), 'orgs.championship')) active @endif">Championships</a>
+
+
             <a href="{{ route('orgs.accounts', $org->name) }}"
                 class="@if (Str::startsWith(Route::currentRouteName(), 'orgs.accounts')) active @endif">Accounts</a>
 

@@ -1,13 +1,16 @@
 @extends('layouts.organisation')
 
-
+@section('title')
+    {{ $championship->name }} | Championships
+@endsection
 
 @section('content')
-    <h2 class="mb-0">Competitions</h2>
+    <h2 class="mb-0">{{ $championship->name }}</h2>
+    <p class="font-archivo text-sm! text-gray-700! uppercase -mb-1 ">{{ $championship->start_date->format('d/m/Y') }} - {{ $championship->end_date->format('d/m/Y') }}</p>
     <br>
     <div>
         @php
-            $comps = $org->getCompetitions()->paginate(18);
+            $comps = $championship->competitions()->paginate(18);
         @endphp
 
         <div class="se-table se-table-thin">
@@ -16,13 +19,14 @@
                 <tbody>
                     @foreach ($comps as $comp)
                         <tr class="">
-                            <td class="text-left font-semibold text-black relative">{{ $comp->name }}  @if ($comp->championship_id )
-                                    <span class="">| {{ $comp->championship->name }}</span>
-                                        @endif @if ($comp->canUser(auth()->user(), 'admin'))
-                                   
-                                    
+                            <td class="text-left font-semibold text-black relative">{{ $comp->name }} @if ($comp->canUser(auth()->user(), 'admin'))
+                                    <span class="  capitalize">| {{ strtolower($comp->type) }}</span>
+                                    <span class="ml-2 badge badge-info badge-sm">ADMIN</span>
+
+                                
                                 @endif <a href="{{ route('comps.view', $comp) }}"
                                     class="absolute top-0 left-0 w-full h-full"></a>
+
                             </td>
 
                             <td class=" flex items-center justify-end gap-6">
@@ -55,6 +59,13 @@
                                     </div>
                                 </div>
                                 <div>{{ $comp->when->format('d/m/Y') }}</div>
+                                <div>
+                                    <form onsubmit="return confirm('Are you sure?')" action="{{ route('orgs.championship.deassociate-competition', [$org, $championship]) }}" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="competition_id" value="{{ $comp->id }}">
+                                        <button class="se-btn se-btn-danger">Remove</button>
+                                    </form>
+                                </div>
 
                             </td>
 
@@ -65,7 +76,7 @@
         </div>
 
 
-        <x-add-card text="Competition" link="{{ route('comps.create') }}?type=org&org={{ $org->name }}"></x-add-card>
+        <x-add-card text="Add Competition" link="{{ route('orgs.championship.add-competition', ['organisation' => $org->name, 'championship' => $championship->id]) }}"></x-add-card>
 
 
     </div>
