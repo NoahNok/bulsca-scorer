@@ -15,7 +15,7 @@ class ChampionshipController extends Controller
     public function view(Organisation $organisation)
     {
 
-        $championships = $organisation->championships()->orderBy('start_date', 'DESC')->paginate(10);
+        $championships = $organisation->championships()->paginate(10);
 
         return view('organisation.championship.index', ['org' => $organisation, 'championships' => $championships]);
     }

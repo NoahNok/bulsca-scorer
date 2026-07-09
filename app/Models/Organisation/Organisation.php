@@ -258,7 +258,7 @@ class Organisation extends Model implements IInvitable
 
     public function championships()
     {
-        return $this->hasMany(Championship::class)->orderBy('name', 'asc');
+        return $this->hasMany(Championship::class)->orderBy('start_date', 'desc');
     }
 
     /**
