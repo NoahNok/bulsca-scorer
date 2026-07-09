@@ -47,9 +47,7 @@ class ChampionshipController extends Controller
 
     public function addCompetition(Organisation $organisation, Championship $championship)
     {
-        $competitions = $organisation->getCompetitions()->whereDoesntHave('championship', function ($query) use ($championship) {
-            $query->where('championship_id', $championship->id);
-        })->paginate(10);
+        $competitions = $organisation->getCompetitions()->whereNull('championship_id')->paginate(10);
 
         return view('organisation.championship.add-competition', [
             'org' => $organisation,
