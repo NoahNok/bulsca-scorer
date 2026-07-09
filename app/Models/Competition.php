@@ -28,6 +28,7 @@ class Competition extends Model implements IInvitable
 {
     use HasFactory, Cloneable, RecordActivity;
 
+    public static $types = ['STANDALONE', 'REGIONAL', 'QUALIFIER', 'FINAL'];
     public static $accessTypes = [
         'admin' => 'Admin',
         'view' => 'Overview',
@@ -644,5 +645,10 @@ class Competition extends Model implements IInvitable
     public function activities()
     {
         return $this->morphMany(Activity::class, 'related');
+    }
+
+    public function championship()
+    {
+        return $this->belongsTo(Championship::class);
     }
 }

@@ -14,7 +14,9 @@
 
         <div>
             <h1 class="xl:text-5xl!  ">{{ $comp->name }}</h1>
-            <p class="font-archivo text-sm! text-gray-700! uppercase -mb-1 ">{{ $comp->when->format('M jS Y') }}</p>
+            <p class="font-archivo text-sm! text-gray-700! uppercase -mb-1 ">{{ $comp->when->format('M jS Y') }} @if ($comp->championship_id)
+                | <a href="{{ route('landing.championship', $comp->championship->slug()) }}" class="hover:underline">{{ $comp->championship->name }}</a>
+            @endif</p>
         </div>
 
         @if ($comp->getOrganisation)

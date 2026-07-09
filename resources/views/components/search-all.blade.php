@@ -54,6 +54,7 @@
             <hr class="spacer">
             <br>
         </div>
+
         <div x-show="results?.orgs?.length > 0">
             <h3>Organisations</h3>
             <div class="grid md:grid-cols-4 gap-2">
@@ -66,7 +67,29 @@
                 </template>
             </div>
         </div>
-        <div x-show="results?.comps?.length + results?.orgs?.length == 0">
+
+        <div x-show="(results?.comps?.length > 0 || results?.orgs?.length > 0) && results?.championships?.length > 0">
+            <br>
+            <hr class="spacer">
+            <br>
+        </div>
+
+        <div x-show="results?.championships?.length > 0">
+            <h3>Championships</h3>
+            <div class="grid md:grid-cols-4 gap-2">
+                <template x-for="championship in results?.championships">
+                    <a :href="championship.url"
+                        class="p-2 px-3 hover:bg-gray-100 cursor-pointer transition-colors rounded-md flex items-center justify-between">
+                        <h4 x-text="championship.name"></h4>
+                    </a>
+                </template>
+            </div>
+        </div>
+
+
+        
+
+        <div x-show="results?.comps?.length + results?.orgs?.length + results?.championships?.length == 0">
             <p>You've reached the end of Scoring.Events. Venturing further could be risky!</p>
         </div>
     </div>

@@ -3,6 +3,7 @@
 namespace App\Models\Organisation;
 
 use App\Models\AccountInvite;
+use App\Models\Championship;
 use App\Models\Competition;
 use App\Models\DQCode;
 use App\Models\Event\ScoringSchema;
@@ -253,5 +254,27 @@ class Organisation extends Model implements IInvitable
     public function disqualificationCodes()
     {
         return $this->hasMany(DQCode::class, 'organisation')->orderBy('id', 'asc');
+    }
+
+    public function championships()
+    {
+        return $this->hasMany(Championship::class)->orderBy('name', 'asc');
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection<int, \App\Models\Competition|\App\Models\Championship>
+     */
+
+    public function getCompsAndChampionships()
+    {
+        $competitions = $this->getCompetitions()->whereNull('championship_id')->get();
+        $championships = $this->championships()->get()->each(function ($championship) {
+            $championship->when = $championship->start_date;
+        });
+
+        return $competitions
+            ->merge($championships)
+            ->sortByDesc('date')
+            ->values(); // reset array keys
     }
 }
