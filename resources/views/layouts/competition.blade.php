@@ -7,7 +7,15 @@
 @section('core-content')
     <div class="flex flex-col-reverse md:flex-row md:items-center justify-between gap-2 md:gap-0">
         <div class="flex space-x-3 items-center justify-center -mb-2">
-            <h1 class="" x-text="global_state.competition_name ?? '{{ $comp->name }}'">{{ $comp->name }}</h1>
+            <div>
+                <h1 class="" x-text="global_state.competition_name ?? '{{ $comp->name }}'">{{ $comp->name }}</h1>
+                <p class="font-archivo text-sm! text-gray-700! uppercase -mb-1 ">{{ $comp->when->format('M jS Y') }}
+                    @if ($comp->championship_id)
+                        | <a href="{{ route('orgs.championship.view', [$comp->getOrganisation->name, $comp->championship->slug()]) }}"
+                            class="hover:underline">{{ $comp->championship->name }}</a>
+                    @endif
+                </p>
+            </div>
             @if (!$comp->show_competition)
                 <div title="This competition is private">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
