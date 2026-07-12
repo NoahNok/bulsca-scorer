@@ -653,7 +653,7 @@
                     </div>
 
                     <div class="se-form-input col-span-2 row-start-2">
-                        <select name="" x-model="add.team.league" id="" multiple>
+                        <select name="" x-model="add.team.league" id="" multiple class="min-h-20! resize-y">
 
                             <template x-for="[key, value] in Object.entries(league_map)" :key="key">
                                 <option :value="key" x-text="value"></option>
@@ -719,7 +719,7 @@
 
 
 
-                    <select name="" x-model="edit.team.league" id="team-leagues" multiple>
+                    <select name="" x-model="edit.team.league" id="team-leagues" multiple class="min-h-20! resize-y">
 
                         <template x-for="[key, value] in Object.entries(league_map)" :key="key">
                             <option :value="key" x-text="value"></option>
@@ -769,7 +769,7 @@
                     </div>
 
                     <div class="se-form-input col-span-2 row-start-2">
-                        <select name="" x-model="add.competitor.league" id="" multiple>
+                        <select name="" x-model="add.competitor.league" id="" multiple class="min-h-20! resize-y">
 
                             <template x-for="[key, value] in Object.entries(league_map)" :key="key">
                                 <option :value="key" x-text="value"></option>
@@ -852,7 +852,7 @@
                 </div>
 
                 <div class="se-form-input">
-                    <select name="" x-model="edit.competitor.league" id="" multiple>
+                    <select name="" x-model="edit.competitor.league" id="" multiple class="min-h-20! resize-y">
 
                         <template x-for="[key, value] in Object.entries(league_map)" :key="key">
                             <option :value="key" x-text="value"></option>
