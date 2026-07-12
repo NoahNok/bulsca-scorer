@@ -14,19 +14,22 @@ class League extends Model
     protected $fillable = ['name'];
 
 
-    public function clubs()
-    {
-        return $this->hasMany(Club::class, 'league');
-    }
+
 
     public function teams()
     {
-        return $this->hasMany(CompetitionTeam::class, 'league');
+        return $this->morphedByMany(
+            CompetitionTeam::class,
+            'entity',
+            'leagueables',
+            'league_id',   // League's key on pivot
+            'entity_id'    // Organisation's key on pivot
+        );
     }
 
     public function competitors()
     {
-        return $this->hasMany(Competitor::class, 'league');
+        return $this->morphedByMany(Competitor::class, 'entity', 'leagueables', 'league_id', 'entity_id');
     }
 
     public function entityCount(): array
