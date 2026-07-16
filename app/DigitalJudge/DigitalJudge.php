@@ -2,6 +2,7 @@
 
 namespace App\DigitalJudge;
 
+use App\Events\StatusUpdate\JudgeStatusUpdate;
 use App\Models\AbstractClasses\Entity;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
@@ -12,6 +13,7 @@ use App\Models\SERCResult;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 
 class DigitalJudge
 {
@@ -30,11 +32,17 @@ class DigitalJudge
     public static function setClientName($name)
     {
         Session::put('digitalJudgeClientName', $name);
+        Session::put('digitalJudgeClientId', Str::uuid());
     }
 
     public static function getClientName(): string
     {
         return Session::get('digitalJudgeClientName', 'UNKNOWN');
+    }
+
+    public static function getClientId(): string
+    {
+        return Session::get('digitalJudgeClientId', 'UNKNOWN');
     }
 
     public static function canClientJudge()
@@ -173,5 +181,14 @@ class DigitalJudge
         }
 
         return (int) $value;
+    }
+
+    public static function setStatus(string $status)
+    {
+        try {
+            broadcast(new JudgeStatusUpdate(DigitalJudge::getClientCompetition(), DigitalJudge::getClientId(), $status));
+        } catch (\Throwable $th) {
+            logger()->error('Failed to broadcast judge status update: ' . $th->getMessage());
+        }
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\DigitalJudge\DigitalJudge;
+use App\DTO\JudgeAuthUser;
 use App\Models\Club;
 use App\Models\CompetitionTeam;
 use App\Models\Competitor;
@@ -44,6 +46,20 @@ class AppServiceProvider extends ServiceProvider
             if (!Auth::check()) {
                 return;
             }
+        });
+
+
+        Auth::viaRequest('can-judge', function ($request) {
+
+
+            if (!DigitalJudge::canClientJudge()) {
+                return null;
+            }
+
+            return new JudgeAuthUser(
+                DigitalJudge::getClientId(),
+                DigitalJudge::getClientName()
+            );
         });
     }
 }

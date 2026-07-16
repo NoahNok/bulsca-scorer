@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\DigitalJudge;
 
 use App\DigitalJudge\DigitalJudge;
+use App\Events\StatusUpdate\JudgeMovedPage;
+use App\Events\StatusUpdate\JudgeStatusUpdate;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DigitalJudge\LoginRequest;
 use App\Models\Competition;
@@ -64,6 +66,9 @@ class DigitalJudgeController extends Controller
 
     function home()
     {
+
+        DigitalJudge::setStatus('Competition Home');
+
         return view('digitaljudge.home', ['comp' => DigitalJudge::getClientCompetition(), 'head' => DigitalJudge::isClientHeadJudge()]);
     }
 
@@ -204,5 +209,15 @@ class DigitalJudgeController extends Controller
     public function qrs(Competition $comp)
     {
         return view('digitaljudge.qrs', compact('comp'));
+    }
+
+    public function live()
+    {
+        $comp = DigitalJudge::getClientCompetition();
+        $meId = DigitalJudge::getClientId();
+
+        DigitalJudge::setStatus('Viewing this page');
+
+        return view('digitaljudge.live.index', compact('comp', 'meId'));
     }
 }

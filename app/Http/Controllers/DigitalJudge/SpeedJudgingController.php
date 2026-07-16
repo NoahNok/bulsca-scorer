@@ -21,6 +21,8 @@ class SpeedJudgingController extends Controller
     public function timesIndex(CompetitionSpeedEvent $speed)
     {
 
+        DigitalJudge::setStatus($speed->getName() . ' - Times - Selecting Heat');
+
         return view('digitaljudge.speeds.times.index', ['speed' => $speed, 'comp' => DigitalJudge::getClientCompetition(), 'head' => DigitalJudge::isClientHeadJudge()]);
     }
 
@@ -58,6 +60,7 @@ class SpeedJudgingController extends Controller
             return redirect()->route('dj.speeds.times.index', $speed)->with('alert-error', 'All teams have a result for Heat ' . $heat);
         }
 
+        DigitalJudge::setStatus($speed->getName() . ' - Times - Judging Heat ' . $heat);
 
         return view('digitaljudge.speeds.times.judge', ['speed' => $speed, 'comp' => DigitalJudge::getClientCompetition(), 'heat' => $heat]);
     }
@@ -178,6 +181,8 @@ class SpeedJudgingController extends Controller
     public function oofIndex(CompetitionSpeedEvent $speed)
     {
 
+        DigitalJudge::setStatus($speed->getName() . ' - Order of Finish - Selecting Heat');
+
         return view('digitaljudge.speeds.oof.index', ['speed' => $speed, 'comp' => DigitalJudge::getClientCompetition(), 'head' => DigitalJudge::isClientHeadJudge()]);
     }
 
@@ -207,6 +212,7 @@ class SpeedJudgingController extends Controller
             return redirect()->route('dj.speeds.oof.index', $speed)->with('alert-error', 'All teams have a result for Heat ' . $heat);
         }
 
+        DigitalJudge::setStatus($speed->getName() . ' - Order of Finish - Judging Heat ' . $heat);
 
         return view('digitaljudge.speeds.oof.judge', ['speed' => $speed, 'comp' => DigitalJudge::getClientCompetition(), 'heat' => $heat]);
     }

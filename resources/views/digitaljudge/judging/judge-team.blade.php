@@ -51,7 +51,7 @@
                 </strong></p>
             <br>
             @php
-                $draw_info = $serc->getPositionInDraw($team);
+
                 $draw_text = $draw_info['text'];
                 $draw_percent = $draw_info['percent'];
             @endphp
