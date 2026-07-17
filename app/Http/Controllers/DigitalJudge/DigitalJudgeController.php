@@ -215,9 +215,11 @@ class DigitalJudgeController extends Controller
     {
         $comp = DigitalJudge::getClientCompetition();
         $meId = DigitalJudge::getClientId();
+        $liveCache = DigitalJudge::getLiveCache();
+        $events = DigitalJudge::getClientCompetition()->getAllEvents();
 
         DigitalJudge::setStatus('Viewing this page');
 
-        return view('digitaljudge.live.index', compact('comp', 'meId'));
+        return view('digitaljudge.live.index', compact('comp', 'meId', 'liveCache', 'events'));
     }
 }

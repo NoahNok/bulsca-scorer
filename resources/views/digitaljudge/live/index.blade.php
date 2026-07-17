@@ -11,14 +11,22 @@
 @section('content')
     <div class="flex flex-col space-y-3" x-data="{
         me: '{{ $meId }}',
+        liveCache: {{ json_encode($liveCache) }},
+    
+        priority: {
+            active: 1,
+            idle: 2,
+            offline: 3
+        },
     
         liveListen() {
             this.echo.listen('.judge.status-update', (e) => {
                 // event data has JudgeId and status
-                const user = this.users.find(u => u.id === e.judgeId);
+                const user = this.users.find(u => u.id === e.id);
                 if (user) {
                     user.status = e.status;
                     user.state = 'active';
+                    user.event = e.event
     
                     // set new timeout to set idle after 5s
                     if (user.timeout) {
@@ -37,6 +45,23 @@
     
             });
     
+            let judgeList = []
+    
+            for (const [id, data] of Object.entries(this.liveCache)) {
+                console.log(data)
+                judgeList.push({
+                    id: id,
+                    name: data.name,
+                    status: data.status,
+                    state: 'offline',
+                    event: ('event' in data ? data['event'] : null)
+                })
+    
+    
+            }
+    
+            this.users = judgeList
+    
     
     
         },
@@ -47,6 +72,8 @@
                     return 'bg-green-500';
                 case 'idle':
                     return 'bg-orange-400';
+                case 'offline':
+                    return 'bg-red-500';
                 default:
                     return 'bg-gray-400';
             }
@@ -58,20 +85,24 @@
         <div class="flex justify-between">
             <div class=" flex space-x-2 items-center">
                 <p>Active</p>
-                <div class="size-3  bg-green-500 rounded-full animate-pulse"></div>
+                <div class="size-3  bg-green-500 rounded-full"></div>
             </div>
             <div class=" flex space-x-2 items-center">
                 <p>Idle</p>
-                <div class="size-3  bg-orange-400 rounded-full animate-pulse"></div>
+                <div class="size-3  bg-orange-400 rounded-full"></div>
+            </div>
+            <div class=" flex space-x-2 items-center">
+                <p>Offline</p>
+                <div class="size-3  bg-red-500 rounded-full"></div>
             </div>
             <div class=" flex space-x-2 items-center">
                 <p>Unknown</p>
-                <div class="size-3  bg-gray-400 rounded-full animate-pulse"></div>
+                <div class="size-3  bg-gray-400 rounded-full"></div>
             </div>
         </div>
 
-        <template x-for="user in users.filter(u => u.id != me)">
-            i
+        <template x-for="user in users.filter(u => u.id != me).sort((a, b) => priority[a.state] - priority[b.state])">
+
             <div class="se-card se-card-hover se-card-body">
                 <div class="flex items-center justify-between h-full">
                     <div class="text-left">
@@ -98,16 +129,32 @@
             </div>
         </template>
 
-        <template x-if="users.filter(u => u.id != me).length ==0 ">
+        <template x-if="users.filter(u => u.id != me).length == 0 ">
             <p>No officials active.</p>
         </template>
 
 
+        <hr class="spacer my-5! mb-6!">
 
-
-
+        <div class="space-y-3">
+            @foreach ($events as $event)
+                <div>
+                    <h3>{{ $event->getName() }}</h3>
+                    <div>
+                        <template x-for="user in users.filter(u => u.event?.id == {{ $event->id }})">
+                            <div class="flex justify-between">
+                                <p x-text="user.name"></p>
+                                <p x-text="user.status"></p>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            @endforeach
+        </div>
 
     </div>
+
+
 
     <div class="text-center mt-6">
         <a href="{{ route('dj.logout') }}" class="link">Logout</a>

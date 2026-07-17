@@ -4,12 +4,14 @@ namespace App\DigitalJudge;
 
 use App\Events\StatusUpdate\JudgeStatusUpdate;
 use App\Models\AbstractClasses\Entity;
+use App\Models\AbstractClasses\Event;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\CompetitionTeam;
 use App\Models\SERC;
 use App\Models\SERCJudge;
 use App\Models\SERCResult;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
@@ -183,12 +185,28 @@ class DigitalJudge
         return (int) $value;
     }
 
-    public static function setStatus(string $status)
+    public static function setStatus(string $status, ?Event $event = null)
     {
-        try {
-            broadcast(new JudgeStatusUpdate(DigitalJudge::getClientCompetition(), DigitalJudge::getClientId(), $status));
-        } catch (\Throwable $th) {
-            logger()->error('Failed to broadcast judge status update: ' . $th->getMessage());
-        }
+        $competition = DigitalJudge::getClientCompetition();
+        $clientId = DigitalJudge::getClientId();
+        $data = Cache::get("digitaljudge.live-monitor.{$competition->id}", []);
+
+        $jsu = new JudgeStatusUpdate($competition, $clientId, $status, $event);
+
+        $clientData = isset($data[$clientId]) ? $data[$clientId] : ['name' => DigitalJudge::getClientName()];
+        $clientData['status'] = $jsu->getStatusMessage();
+        $clientData['event'] = $event ? ['id' => $event->id] : null;
+
+
+        $data[$clientId] = $clientData;
+        Cache::forever("digitaljudge.live-monitor.{$competition->id}", $data);
+
+        broadcast($jsu);
+    }
+
+    public static function getLiveCache(): array
+    {
+        $competition = DigitalJudge::getClientCompetition();
+        return Cache::get("digitaljudge.live-monitor.{$competition->id}", []);
     }
 }

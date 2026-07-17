@@ -35,7 +35,7 @@ class DJJudgingController extends Controller
         $serc = $judge->getSERC;
         $comp = $serc->getCompetition;
 
-        DigitalJudge::setStatus('Confirming Judge Selection for ' . $serc->name);
+        DigitalJudge::setStatus('Selecting judge', $serc);
 
 
         return view('digitaljudge.judging.confirm-judge', ['serc' => $serc, 'comp' => $comp, 'judge' => $judge]);
@@ -58,7 +58,7 @@ class DJJudgingController extends Controller
 
         $serc = DigitalJudge::getClientJudges()[0]->getSERC;
 
-        DigitalJudge::setStatus('Ready to judge ' . $serc->name);
+        DigitalJudge::setStatus('Ready', $serc);
 
         return view('digitaljudge.judging.home', array_merge(DigitalJudge::getBladeProps(), ['head' => DigitalJudge::isClientHeadJudge()]));
     }
@@ -72,8 +72,8 @@ class DJJudgingController extends Controller
 
     public function selectTank()
     {
-
-        DigitalJudge::setStatus('Selecting Tank');
+        $serc = DigitalJudge::getClientJudges()[0]->getSERC;
+        DigitalJudge::setStatus('Selecting Tank', $serc);
 
         $tanks = SERC::where('competition', DigitalJudge::getClientCompetition()->id)->first()->draw()->orderBy('tank')->distinct('tank')->get('tank')->pluck('tank')->toArray();
         //$tanks = DB::select("SELECT DISTINCT serc_tank FROM competition_teams WHERE competition=? AND serc_tank > 0 ORDER BY serc_tank ASC", [DigitalJudge::getClientCompetition()->id]);
@@ -155,9 +155,9 @@ class DJJudgingController extends Controller
 
         if (Session::has('success')) $resp = $resp->with('success', Session::get('success'));
 
+        $judgeName = DigitalJudge::getClientJudges()[0]->name;
 
-
-        DigitalJudge::setStatus($serc->name . ' - Marking ' . $team->getName() . ' (' . $draw_info['text'] . ')');
+        DigitalJudge::setStatus($judgeName . ' | Marking ' . $team->getName() . ' (' . $draw_info['text'] . ')', $serc);
 
         return $resp;
     }
@@ -348,7 +348,8 @@ class DJJudgingController extends Controller
 
     public function overallComments()
     {
-        DigitalJudge::setStatus('Giving final feedback');
+        $serc = DigitalJudge::getClientJudges()[0]->getSERC;
+        DigitalJudge::setStatus('Final feedback', $serc);
 
         return view('digitaljudge.judging.overall-comments', array_merge(DigitalJudge::getBladeProps()));
     }

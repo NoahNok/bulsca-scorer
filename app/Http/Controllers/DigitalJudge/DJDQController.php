@@ -144,7 +144,7 @@ class DJDQController extends Controller
     ######################### JUDGE DQ REQUESTS #########################
     public function issue()
     {
-        DigitalJudge::setStatus('Issuing a DQ/Penalty');
+        DigitalJudge::setStatus('DQ/Pen | Issuing');
         return view('digitaljudge.dq.judge-issue', ['comp' => DigitalJudge::getClientCompetition(), 'judge_name' => DigitalJudge::getClientName()]);
     }
 
@@ -202,7 +202,7 @@ class DJDQController extends Controller
         $submission->recordActivity($activity_type, "{$submission->name} ({$submission->position}) submitted a {$submission->code} for {$entity->getName()} in {$event->getName()}", related: [$entity, $event, $event->getCompetition, $submission], context: ['code' => $submission->code]);
 
 
-        DigitalJudge::setStatus('Submitted ' . $submission->code . ' for ' . $entity->getName() . ' in ' . $event->getName());
+        DigitalJudge::setStatus('DQ/Pen | ' . $submission->code . ' for ' . $entity->getName() . ' in ' . $event->getName());
 
         return response()->json(['success' => true, 'result' => $submission->id]);
     }
@@ -220,7 +220,7 @@ class DJDQController extends Controller
     public function resolve()
     {
 
-        DigitalJudge::setStatus('Resolving DQ/Penalty submissions');
+        DigitalJudge::setStatus('DQ/Pen | Resolving submissions');
 
         return view('digitaljudge.dq.head-resolve', ['comp' => DigitalJudge::getClientCompetition()]);
     }
@@ -272,7 +272,7 @@ class DJDQController extends Controller
         $activeSubmissions = array_diff($activeSubmissions, [$submission->id]);
         Session::put('activeSubmissions', $activeSubmissions);
 
-        DigitalJudge::setStatus($result ? 'Approved ' . $submission->code . ' for ' . $entity->getName() . ' in ' . $event->getName() : 'Rejected ' . $submission->code . ' for ' . $entity->getName() . ' in ' . $event->getName());
+        DigitalJudge::setStatus('DQ/Pen | ' . ($result ? 'Approved ' : 'Rejected ') . $submission->code . ' for ' . $entity->getName() . ' in ' . $event->getName());
 
 
         return response()->json(['success' => true]);
@@ -342,7 +342,7 @@ class DJDQController extends Controller
 
             $submission->delete();
 
-            DigitalJudge::setStatus('Removed ' . $submission->code . ' for ' . $submission->getHeat?->entity->getName() . ' in ' . $submission->getEvent?->getName());
+            DigitalJudge::setStatus('DQ/Pen | Removed ' . $submission->code . ' for ' . $submission->getHeat?->entity->getName() . ' in ' . $submission->getEvent?->getName());
 
             return response()->json(['success' => true]);
         } catch (\Throwable $th) {
@@ -365,7 +365,7 @@ class DJDQController extends Controller
 
             $submission->save();
 
-            DigitalJudge::setStatus('Appealed ' . $submission->code . ' for ' . $submission->getHeat?->entity->getName() . ' in ' . $submission->getEvent?->getName());
+            DigitalJudge::setStatus('DQ/Pen | Appealed ' . $submission->code . ' for ' . $submission->getHeat?->entity->getName() . ' in ' . $submission->getEvent?->getName());
 
             return response()->json(['success' => true]);
         } catch (\Throwable $th) {
