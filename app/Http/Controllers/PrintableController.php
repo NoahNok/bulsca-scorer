@@ -15,9 +15,15 @@ class PrintableController extends Controller
         return view('competition.printables.index', ['comp' => $comp]);
     }
 
-    public function printCTP(Competition $comp)
+    public function printCTP(Competition $comp, Request $request)
     {
         $pdfCreator = new CompetitionPdfCreator($comp);
+
+        $poolNames = $request->input('poolNames');
+
+        if ($poolNames) {
+            return $pdfCreator->chiefTimekeeper(explode(",", $poolNames));
+        }
 
         return $pdfCreator->chiefTimekeeper();
     }
