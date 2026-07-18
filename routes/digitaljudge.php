@@ -114,6 +114,10 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
             Route::get('speed/{speed}', [DigitalJudgeController::class, 'confirmSpeedResults'])->name('dj.confirm-results.speed');
             Route::post('speed/{speed}', [DigitalJudgeController::class, 'confirmSpeedResultsPost'])->name('dj.confirm-results.speed.post');
         });
+
+        Route::prefix('live')->group(function () {
+            Route::get('', [DigitalJudgeController::class, 'live'])->name('dj.live');
+        });
     });
 
 

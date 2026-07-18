@@ -27,13 +27,30 @@ class CompetitionPdfCreator
         return view("pdfs.heats.chief-timekeeper");
     }
 
-    public function chiefTimekeeper()
+    public function chiefTimekeeper(array $poolNames = ['Main Pool - Diving Pit End', 'Main Pool - Scoreboard End'])
     {
 
 
-        $poolNames = ['Main Pool - Diving Pit End', 'Main Pool - Scoreboard End'];
+
         $eventNames = $this->comp->getSpeedEvents->map(fn($event) => $event->getName());
         $heats = $this->comp->getHeats();
+
+
+        // create cloned heat entry if not heats per event
+        if (!$this->comp->heats_per_event) {
+            $initialHeatEventId = $heats[0]['event']->id;
+
+            foreach ($this->comp->getSpeedEvents as $event) {
+                if ($event->id == $initialHeatEventId) {
+                    continue;
+                }
+
+                array_push($heats, [
+                    'event' => $event,
+                    'heats' => $heats[0]['heats']
+                ]);
+            }
+        }
 
 
         return view("pdfs.heats.chief-timekeeper", ['location' => $this->comp->where, 'poolNames' => $poolNames, 'eventNames' => $eventNames, 'heats' => $heats, 'comp' => $this->comp]);

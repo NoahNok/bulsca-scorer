@@ -32,6 +32,9 @@
 
 <body class="w-screen h-screen  flex flex-col space-y-12 print:space-y-0 items-center overflow-x-hidden ">
 
+    @php
+        $drawevent = $tanks[0];
+    @endphp
 
     <div class="min-h-[297mm] min-w-[210mm] bg-white p-5 flex flex-col  items-center justify-center text-center">
         <h1>SERC Marking Pack</h1>
@@ -40,13 +43,16 @@
         <br>
         <br>
         <ol class="list ">
-            @foreach ($tanks as $drawevent)
+
+         
+
+            @foreach ($events as $serc)
                 <li>{{ 
                     $drawevent['draws']->reduce(function ($carry, $item) {
                         return $carry + count($item);
                     }, 0),
              }}x
-                    {{ $drawevent['serc']->getName() }} Marking Sheets (Over
+                    {{ $serc->getName() }} Marking Sheets (Over
                     {{ count($drawevent['draws']) }} tanks)</li>
             @endforeach
         </ol>
@@ -57,7 +63,7 @@
     </div>
 
 
-    @foreach ($tanks as $drawevent)
+    @foreach ($events as $serc)
         @forelse ($drawevent['draws'] as $key => $tank)
             @foreach ($tank as $draw_no => $draw)
                 <div class="min-h-[297mm] min-w-[210mm] max-w-[210mm] bg-white p-5 flex flex-col grow-0 relative">
@@ -66,7 +72,7 @@
                     @endif
 
                     <div class="flex w-full justify-between items-center">
-                        <h2 class="hmb-0">{{ $drawevent['serc']->getName() }}</h2>
+                        <h2 class="hmb-0">{{ $serc->getName() }}</h2>
                         <p class=" font-semibold text-right">{{ $comp->name }} -
                             {{ $comp->when->format('jS F') }}<br><small>{{ $location }}</small></p>
                     </div>
@@ -85,9 +91,9 @@
                         </p>
                     </div>
 
-                    @if ($drawevent['serc']->image)
+                    @if ($serc->image)
                         <div class="flex items-center justify-center">
-                            <img src="{{ asset('storage/' . $drawevent['serc']->image) }}" alt="SERC Image"
+                            <img src="{{ asset('storage/' . $serc->image) }}" alt="SERC Image"
                                 class=" w-[70%] ">
 
                         </div>
@@ -106,7 +112,7 @@
                         </thead>
                         <tbody class="">
 
-                            @foreach ($drawevent['serc']->getJudges as $judge)
+                            @foreach ($serc->getJudges as $judge)
                                 <tr class="border-b border-black">
                                     <td class="py-1 bg-gray-200 " colspan="2">{{ $judge->name }}
                                         <br>
@@ -151,7 +157,7 @@
 
                     <div class="mt-auto">
                         @php
-                            preg_match_all('/\b\w/', $drawevent['serc']->getName(), $matches);
+                            preg_match_all('/\b\w/', $serc->getName(), $matches);
                             $firstLetters = implode('', $matches[0]);
 
                         @endphp

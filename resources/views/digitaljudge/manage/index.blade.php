@@ -27,6 +27,10 @@
     </div>
 
     <br>
+    <h4>Live Monitor</h4>
+    <div class="flex "><a href="{{ route('dj.live') }}" class="btn btn-purple btn-thin w-full">Start</a></div>
+
+    <br>
     <h4>Live DQ/Penalty Review</h4>
     <div class="flex "><a href="{{ route('dj.dq.resolve') }}" class="btn btn-purple btn-thin w-full">Start</a></div>
 @endsection

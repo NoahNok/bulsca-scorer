@@ -40,6 +40,10 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'canJudge' => [
+            'driver' => 'can-judge'
+        ]
     ],
 
     /*
