@@ -74,7 +74,7 @@ confirmJudge.head = (args: { judge: number | { id: number } } | [judge: number |
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::confirm
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:42
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:44
 * @route '//judge.localhost/judging/{judge}/confirm-judge'
 */
 export const confirm = (args: { judge: number | { id: number } } | [judge: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -89,7 +89,7 @@ confirm.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::confirm
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:42
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:44
 * @route '//judge.localhost/judging/{judge}/confirm-judge'
 */
 confirm.url = (args: { judge: number | { id: number } } | [judge: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -122,7 +122,7 @@ confirm.url = (args: { judge: number | { id: number } } | [judge: number | { id:
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::confirm
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:42
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:44
 * @route '//judge.localhost/judging/{judge}/confirm-judge'
 */
 confirm.post = (args: { judge: number | { id: number } } | [judge: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -132,7 +132,7 @@ confirm.post = (args: { judge: number | { id: number } } | [judge: number | { id
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::tank
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:66
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:73
 * @route '//judge.localhost/judging/tank'
 */
 export const tank = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -147,7 +147,7 @@ tank.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::tank
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:66
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:73
 * @route '//judge.localhost/judging/tank'
 */
 tank.url = (options?: RouteQueryOptions) => {
@@ -156,7 +156,7 @@ tank.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::tank
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:66
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:73
 * @route '//judge.localhost/judging/tank'
 */
 tank.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -166,7 +166,7 @@ tank.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::tank
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:66
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:73
 * @route '//judge.localhost/judging/tank'
 */
 tank.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -176,7 +176,7 @@ tank.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::home
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:54
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:56
 * @route '//judge.localhost/judging/home'
 */
 export const home = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -191,7 +191,7 @@ home.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::home
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:54
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:56
 * @route '//judge.localhost/judging/home'
 */
 home.url = (options?: RouteQueryOptions) => {
@@ -200,7 +200,7 @@ home.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::home
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:54
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:56
 * @route '//judge.localhost/judging/home'
 */
 home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -210,7 +210,7 @@ home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::home
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:54
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:56
 * @route '//judge.localhost/judging/home'
 */
 home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -220,7 +220,7 @@ home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::addJudge
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:240
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:254
 * @route '//judge.localhost/judging/add-judge'
 */
 export const addJudge = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -235,7 +235,7 @@ addJudge.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::addJudge
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:240
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:254
 * @route '//judge.localhost/judging/add-judge'
 */
 addJudge.url = (options?: RouteQueryOptions) => {
@@ -244,7 +244,7 @@ addJudge.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::addJudge
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:240
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:254
 * @route '//judge.localhost/judging/add-judge'
 */
 addJudge.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -254,7 +254,7 @@ addJudge.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::addJudge
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:240
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:254
 * @route '//judge.localhost/judging/add-judge'
 */
 addJudge.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -264,7 +264,7 @@ addJudge.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::removeJudge
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:254
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:268
 * @route '//judge.localhost/judging/remove-judge'
 */
 export const removeJudge = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -279,7 +279,7 @@ removeJudge.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::removeJudge
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:254
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:268
 * @route '//judge.localhost/judging/remove-judge'
 */
 removeJudge.url = (options?: RouteQueryOptions) => {
@@ -288,7 +288,7 @@ removeJudge.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::removeJudge
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:254
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:268
 * @route '//judge.localhost/judging/remove-judge'
 */
 removeJudge.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -298,7 +298,7 @@ removeJudge.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::removeJudge
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:254
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:268
 * @route '//judge.localhost/judging/remove-judge'
 */
 removeJudge.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -308,7 +308,7 @@ removeJudge.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::nextTeam
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:94
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:101
 * @route '//judge.localhost/judging/team/next'
 */
 export const nextTeam = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -323,7 +323,7 @@ nextTeam.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::nextTeam
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:94
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:101
 * @route '//judge.localhost/judging/team/next'
 */
 nextTeam.url = (options?: RouteQueryOptions) => {
@@ -332,7 +332,7 @@ nextTeam.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::nextTeam
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:94
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:101
 * @route '//judge.localhost/judging/team/next'
 */
 nextTeam.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -342,7 +342,7 @@ nextTeam.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::nextTeam
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:94
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:101
 * @route '//judge.localhost/judging/team/next'
 */
 nextTeam.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -352,7 +352,7 @@ nextTeam.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::judgeTeam
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:133
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:140
 * @route '//judge.localhost/judging/team/{entity_id}'
 */
 export const judgeTeam = (args: { entity_id: string | number } | [entity_id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -367,7 +367,7 @@ judgeTeam.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::judgeTeam
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:133
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:140
 * @route '//judge.localhost/judging/team/{entity_id}'
 */
 judgeTeam.url = (args: { entity_id: string | number } | [entity_id: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -394,7 +394,7 @@ judgeTeam.url = (args: { entity_id: string | number } | [entity_id: string | num
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::judgeTeam
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:133
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:140
 * @route '//judge.localhost/judging/team/{entity_id}'
 */
 judgeTeam.get = (args: { entity_id: string | number } | [entity_id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -404,7 +404,7 @@ judgeTeam.get = (args: { entity_id: string | number } | [entity_id: string | num
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::judgeTeam
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:133
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:140
 * @route '//judge.localhost/judging/team/{entity_id}'
 */
 judgeTeam.head = (args: { entity_id: string | number } | [entity_id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -414,7 +414,7 @@ judgeTeam.head = (args: { entity_id: string | number } | [entity_id: string | nu
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::saveTeamScores
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:151
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:165
 * @route '//judge.localhost/judging/team/{team}'
 */
 export const saveTeamScores = (args: { team: string | number } | [team: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -429,7 +429,7 @@ saveTeamScores.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::saveTeamScores
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:151
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:165
 * @route '//judge.localhost/judging/team/{team}'
 */
 saveTeamScores.url = (args: { team: string | number } | [team: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -456,7 +456,7 @@ saveTeamScores.url = (args: { team: string | number } | [team: string | number ]
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::saveTeamScores
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:151
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:165
 * @route '//judge.localhost/judging/team/{team}'
 */
 saveTeamScores.post = (args: { team: string | number } | [team: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -466,7 +466,7 @@ saveTeamScores.post = (args: { team: string | number } | [team: string | number 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::tutorial
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:307
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:321
 * @route '//judge.localhost/judging/tutorial'
 */
 export const tutorial = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -481,7 +481,7 @@ tutorial.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::tutorial
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:307
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:321
 * @route '//judge.localhost/judging/tutorial'
 */
 tutorial.url = (options?: RouteQueryOptions) => {
@@ -490,7 +490,7 @@ tutorial.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::tutorial
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:307
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:321
 * @route '//judge.localhost/judging/tutorial'
 */
 tutorial.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -500,7 +500,7 @@ tutorial.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::tutorial
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:307
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:321
 * @route '//judge.localhost/judging/tutorial'
 */
 tutorial.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -510,7 +510,7 @@ tutorial.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::previousMarks
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:268
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:282
 * @route '//judge.localhost/judging/previous-marks'
 */
 export const previousMarks = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -525,7 +525,7 @@ previousMarks.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::previousMarks
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:268
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:282
 * @route '//judge.localhost/judging/previous-marks'
 */
 previousMarks.url = (options?: RouteQueryOptions) => {
@@ -534,7 +534,7 @@ previousMarks.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::previousMarks
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:268
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:282
 * @route '//judge.localhost/judging/previous-marks'
 */
 previousMarks.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -544,7 +544,7 @@ previousMarks.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::previousMarks
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:268
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:282
 * @route '//judge.localhost/judging/previous-marks'
 */
 previousMarks.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -554,7 +554,7 @@ previousMarks.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => (
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::overallComments
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:333
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:349
 * @route '//judge.localhost/judging/overall-comments'
 */
 export const overallComments = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -569,7 +569,7 @@ overallComments.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::overallComments
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:333
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:349
 * @route '//judge.localhost/judging/overall-comments'
 */
 overallComments.url = (options?: RouteQueryOptions) => {
@@ -578,7 +578,7 @@ overallComments.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::overallComments
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:333
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:349
 * @route '//judge.localhost/judging/overall-comments'
 */
 overallComments.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -588,7 +588,7 @@ overallComments.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => (
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::overallComments
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:333
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:349
 * @route '//judge.localhost/judging/overall-comments'
 */
 overallComments.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({

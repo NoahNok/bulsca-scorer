@@ -2,8 +2,15 @@
 import { writable } from 'svelte/store';
 import type { Competition } from '@/types/base';
 
+
+export enum AccessRole {
+    Official = 'official',
+    Referee = 'referee',
+}
+
 export type AppState = {
     activeCompetition?: Competition;
+    activeRole: AccessRole;
 };
 
 
@@ -11,9 +18,9 @@ export type AppState = {
 function loadInitial(): AppState {
     try {
         const raw = localStorage.getItem('appState');
-        return raw ? JSON.parse(raw) : { activeCompetition: undefined } as AppState;
+        return raw ? JSON.parse(raw) : { activeCompetition: undefined, activeRole: AccessRole.Official } as AppState;
     } catch {
-        return {} as AppState;
+        return { activeCompetition: undefined, activeRole: AccessRole.Official } as AppState;
     }
 }
 

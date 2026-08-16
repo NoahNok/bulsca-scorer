@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::post
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:245
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:259
 * @route '//judge.localhost/judging/add-judge'
 */
 export const post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -16,7 +16,7 @@ post.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::post
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:245
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:259
 * @route '//judge.localhost/judging/add-judge'
 */
 post.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ post.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::post
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:245
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:259
 * @route '//judge.localhost/judging/add-judge'
 */
 post.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({

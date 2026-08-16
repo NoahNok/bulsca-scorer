@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefa
 import speedCb6cfd from './speed'
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::post
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:113
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:118
 * @route '//judge.localhost/confirm/serc/{serc}'
 */
 export const post = (args: { serc: number | { id: number } } | [serc: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -17,7 +17,7 @@ post.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::post
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:113
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:118
 * @route '//judge.localhost/confirm/serc/{serc}'
 */
 post.url = (args: { serc: number | { id: number } } | [serc: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -50,7 +50,7 @@ post.url = (args: { serc: number | { id: number } } | [serc: number | { id: numb
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::post
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:113
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:118
 * @route '//judge.localhost/confirm/serc/{serc}'
 */
 post.post = (args: { serc: number | { id: number } } | [serc: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -60,7 +60,7 @@ post.post = (args: { serc: number | { id: number } } | [serc: number | { id: num
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::speed
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:123
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:128
 * @route '//judge.localhost/confirm/speed/{speed}'
 */
 export const speed = (args: { speed: number | { id: number } } | [speed: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -75,7 +75,7 @@ speed.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::speed
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:123
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:128
 * @route '//judge.localhost/confirm/speed/{speed}'
 */
 speed.url = (args: { speed: number | { id: number } } | [speed: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -108,7 +108,7 @@ speed.url = (args: { speed: number | { id: number } } | [speed: number | { id: n
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::speed
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:123
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:128
 * @route '//judge.localhost/confirm/speed/{speed}'
 */
 speed.get = (args: { speed: number | { id: number } } | [speed: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -118,7 +118,7 @@ speed.get = (args: { speed: number | { id: number } } | [speed: number | { id: n
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::speed
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:123
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:128
 * @route '//judge.localhost/confirm/speed/{speed}'
 */
 speed.head = (args: { speed: number | { id: number } } | [speed: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({

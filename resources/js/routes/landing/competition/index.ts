@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefa
 import results8ded7a from './results'
 /**
 * @see \App\Http\Controllers\Landing\LandingController::heatsDraws
-* @see app/Http/Controllers/Landing/LandingController.php:35
+* @see app/Http/Controllers/Landing/LandingController.php:42
 * @route '/competition/{comp}/heats-and-draws'
 */
 export const heatsDraws = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -17,7 +17,7 @@ heatsDraws.definition = {
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::heatsDraws
-* @see app/Http/Controllers/Landing/LandingController.php:35
+* @see app/Http/Controllers/Landing/LandingController.php:42
 * @route '/competition/{comp}/heats-and-draws'
 */
 heatsDraws.url = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -50,7 +50,7 @@ heatsDraws.url = (args: { comp: number | { id: number } } | [comp: number | { id
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::heatsDraws
-* @see app/Http/Controllers/Landing/LandingController.php:35
+* @see app/Http/Controllers/Landing/LandingController.php:42
 * @route '/competition/{comp}/heats-and-draws'
 */
 heatsDraws.get = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -60,7 +60,7 @@ heatsDraws.get = (args: { comp: number | { id: number } } | [comp: number | { id
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::heatsDraws
-* @see app/Http/Controllers/Landing/LandingController.php:35
+* @see app/Http/Controllers/Landing/LandingController.php:42
 * @route '/competition/{comp}/heats-and-draws'
 */
 heatsDraws.head = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -70,7 +70,7 @@ heatsDraws.head = (args: { comp: number | { id: number } } | [comp: number | { i
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::results
-* @see app/Http/Controllers/Landing/LandingController.php:40
+* @see app/Http/Controllers/Landing/LandingController.php:47
 * @route '/competition/{comp}/results'
 */
 export const results = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -85,7 +85,7 @@ results.definition = {
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::results
-* @see app/Http/Controllers/Landing/LandingController.php:40
+* @see app/Http/Controllers/Landing/LandingController.php:47
 * @route '/competition/{comp}/results'
 */
 results.url = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -118,7 +118,7 @@ results.url = (args: { comp: number | { id: number } } | [comp: number | { id: n
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::results
-* @see app/Http/Controllers/Landing/LandingController.php:40
+* @see app/Http/Controllers/Landing/LandingController.php:47
 * @route '/competition/{comp}/results'
 */
 results.get = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -128,7 +128,7 @@ results.get = (args: { comp: number | { id: number } } | [comp: number | { id: n
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::results
-* @see app/Http/Controllers/Landing/LandingController.php:40
+* @see app/Http/Controllers/Landing/LandingController.php:47
 * @route '/competition/{comp}/results'
 */
 results.head = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({

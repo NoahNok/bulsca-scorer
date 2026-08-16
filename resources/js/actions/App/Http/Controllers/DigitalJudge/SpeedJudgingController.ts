@@ -69,7 +69,7 @@ timesIndex.head = (args: { speed: number | { id: number } } | [speed: number | {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SpeedJudgingController::timesJudge
-* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:27
+* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:29
 * @route '//judge.localhost/speeds/{speed}/times/h/{heat}'
 */
 export const timesJudge = (args: { speed: number | { id: number }, heat: string | number } | [speed: number | { id: number }, heat: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -84,7 +84,7 @@ timesJudge.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SpeedJudgingController::timesJudge
-* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:27
+* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:29
 * @route '//judge.localhost/speeds/{speed}/times/h/{heat}'
 */
 timesJudge.url = (args: { speed: number | { id: number }, heat: string | number } | [speed: number | { id: number }, heat: string | number ], options?: RouteQueryOptions) => {
@@ -112,7 +112,7 @@ timesJudge.url = (args: { speed: number | { id: number }, heat: string | number 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SpeedJudgingController::timesJudge
-* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:27
+* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:29
 * @route '//judge.localhost/speeds/{speed}/times/h/{heat}'
 */
 timesJudge.get = (args: { speed: number | { id: number }, heat: string | number } | [speed: number | { id: number }, heat: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -122,7 +122,7 @@ timesJudge.get = (args: { speed: number | { id: number }, heat: string | number 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SpeedJudgingController::timesJudge
-* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:27
+* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:29
 * @route '//judge.localhost/speeds/{speed}/times/h/{heat}'
 */
 timesJudge.head = (args: { speed: number | { id: number }, heat: string | number } | [speed: number | { id: number }, heat: string | number ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -132,7 +132,7 @@ timesJudge.head = (args: { speed: number | { id: number }, heat: string | number
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SpeedJudgingController::saveHeatTimes
-* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:65
+* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:68
 * @route '//judge.localhost/speeds/{speed}/times/h/{heat}'
 */
 export const saveHeatTimes = (args: { speed: number | { id: number }, heat: string | number } | [speed: number | { id: number }, heat: string | number ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -147,7 +147,7 @@ saveHeatTimes.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SpeedJudgingController::saveHeatTimes
-* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:65
+* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:68
 * @route '//judge.localhost/speeds/{speed}/times/h/{heat}'
 */
 saveHeatTimes.url = (args: { speed: number | { id: number }, heat: string | number } | [speed: number | { id: number }, heat: string | number ], options?: RouteQueryOptions) => {
@@ -175,7 +175,7 @@ saveHeatTimes.url = (args: { speed: number | { id: number }, heat: string | numb
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SpeedJudgingController::saveHeatTimes
-* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:65
+* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:68
 * @route '//judge.localhost/speeds/{speed}/times/h/{heat}'
 */
 saveHeatTimes.post = (args: { speed: number | { id: number }, heat: string | number } | [speed: number | { id: number }, heat: string | number ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -185,7 +185,7 @@ saveHeatTimes.post = (args: { speed: number | { id: number }, heat: string | num
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SpeedJudgingController::oofIndex
-* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:178
+* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:181
 * @route '//judge.localhost/speeds/{speed}/oof'
 */
 export const oofIndex = (args: { speed: number | { id: number } } | [speed: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -200,7 +200,7 @@ oofIndex.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SpeedJudgingController::oofIndex
-* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:178
+* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:181
 * @route '//judge.localhost/speeds/{speed}/oof'
 */
 oofIndex.url = (args: { speed: number | { id: number } } | [speed: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -233,7 +233,7 @@ oofIndex.url = (args: { speed: number | { id: number } } | [speed: number | { id
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SpeedJudgingController::oofIndex
-* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:178
+* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:181
 * @route '//judge.localhost/speeds/{speed}/oof'
 */
 oofIndex.get = (args: { speed: number | { id: number } } | [speed: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -243,7 +243,7 @@ oofIndex.get = (args: { speed: number | { id: number } } | [speed: number | { id
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SpeedJudgingController::oofIndex
-* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:178
+* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:181
 * @route '//judge.localhost/speeds/{speed}/oof'
 */
 oofIndex.head = (args: { speed: number | { id: number } } | [speed: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -253,7 +253,7 @@ oofIndex.head = (args: { speed: number | { id: number } } | [speed: number | { i
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SpeedJudgingController::oofJudge
-* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:184
+* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:189
 * @route '//judge.localhost/speeds/{speed}/oof/h/{heat}'
 */
 export const oofJudge = (args: { speed: number | { id: number }, heat: string | number } | [speed: number | { id: number }, heat: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -268,7 +268,7 @@ oofJudge.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SpeedJudgingController::oofJudge
-* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:184
+* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:189
 * @route '//judge.localhost/speeds/{speed}/oof/h/{heat}'
 */
 oofJudge.url = (args: { speed: number | { id: number }, heat: string | number } | [speed: number | { id: number }, heat: string | number ], options?: RouteQueryOptions) => {
@@ -296,7 +296,7 @@ oofJudge.url = (args: { speed: number | { id: number }, heat: string | number } 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SpeedJudgingController::oofJudge
-* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:184
+* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:189
 * @route '//judge.localhost/speeds/{speed}/oof/h/{heat}'
 */
 oofJudge.get = (args: { speed: number | { id: number }, heat: string | number } | [speed: number | { id: number }, heat: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -306,7 +306,7 @@ oofJudge.get = (args: { speed: number | { id: number }, heat: string | number } 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SpeedJudgingController::oofJudge
-* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:184
+* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:189
 * @route '//judge.localhost/speeds/{speed}/oof/h/{heat}'
 */
 oofJudge.head = (args: { speed: number | { id: number }, heat: string | number } | [speed: number | { id: number }, heat: string | number ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -316,7 +316,7 @@ oofJudge.head = (args: { speed: number | { id: number }, heat: string | number }
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SpeedJudgingController::saveOofTimes
-* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:214
+* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:220
 * @route '//judge.localhost/speeds/{speed}/oof/h/{heat}'
 */
 export const saveOofTimes = (args: { speed: number | { id: number }, heat: string | number } | [speed: number | { id: number }, heat: string | number ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -331,7 +331,7 @@ saveOofTimes.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SpeedJudgingController::saveOofTimes
-* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:214
+* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:220
 * @route '//judge.localhost/speeds/{speed}/oof/h/{heat}'
 */
 saveOofTimes.url = (args: { speed: number | { id: number }, heat: string | number } | [speed: number | { id: number }, heat: string | number ], options?: RouteQueryOptions) => {
@@ -359,7 +359,7 @@ saveOofTimes.url = (args: { speed: number | { id: number }, heat: string | numbe
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SpeedJudgingController::saveOofTimes
-* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:214
+* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:220
 * @route '//judge.localhost/speeds/{speed}/oof/h/{heat}'
 */
 saveOofTimes.post = (args: { speed: number | { id: number }, heat: string | number } | [speed: number | { id: number }, heat: string | number ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({

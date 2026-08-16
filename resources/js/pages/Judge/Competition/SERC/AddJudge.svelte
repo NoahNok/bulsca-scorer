@@ -8,14 +8,16 @@
     import {
         index,
         home,
-        sercHome,
     } from "@/actions/App/Http/Controllers/DigitalJudge/JudgeController";
+    import {
+        attachJudge,
+        home as sercHome,
+    } from "@/actions/App/Http/Controllers/DigitalJudge/SERC/SERCJudgeController";
 
     import AppHead from "@/components/AppHead.svelte";
     import Button from "@/components/Button.svelte";
 
     import { appState } from "@/lib/stores/appState";
-    import { attachJudge } from "@/routes/judge/competition/serc";
 
     import type { Competition, Draw, Judge, SERC } from "@/types/base";
     import { Form, page, Link } from "@inertiajs/svelte";
@@ -52,7 +54,7 @@
 
 <section class="flex flex-col absolute top-0 left-0 w-full p-6 z-10">
     <Link
-        href={sercHome(competition)}
+        href={sercHome({ competition: competition, serc: serc })}
         class="flex w-full justify-between items-center"
     >
         <div class="">
@@ -87,6 +89,7 @@
                     href={attachJudge(
                         {
                             competition: competition,
+                            serc: serc,
                             judge: judge,
                         },
                         {
@@ -126,7 +129,7 @@
             {/each}
         </div>
 
-        <Link href={sercHome(competition)}
+        <Link href={sercHome({ competition: competition, serc: serc })}
             ><Button label="Back" variant="danger" class="w-full py-1!" /></Link
         >
     </div>

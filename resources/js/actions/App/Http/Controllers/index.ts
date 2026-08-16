@@ -16,6 +16,7 @@ import Orders from './Orders'
 import PrintableController from './PrintableController'
 import Push from './Push'
 import Organisation from './Organisation'
+import ChampionshipController from './ChampionshipController'
 import AccountController from './AccountController'
 import AdminController from './AdminController'
 import Activity from './Activity'
@@ -43,6 +44,7 @@ const Controllers = {
     PrintableController: Object.assign(PrintableController, PrintableController),
     Push: Object.assign(Push, Push),
     Organisation: Object.assign(Organisation, Organisation),
+    ChampionshipController: Object.assign(ChampionshipController, ChampionshipController),
     AccountController: Object.assign(AccountController, AccountController),
     AdminController: Object.assign(AdminController, AdminController),
     Activity: Object.assign(Activity, Activity),

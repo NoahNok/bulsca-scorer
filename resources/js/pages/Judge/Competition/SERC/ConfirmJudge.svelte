@@ -8,9 +8,8 @@
     import {
         index,
         home,
-        confirmJudgePost,
-        sercHome,
     } from "@/actions/App/Http/Controllers/DigitalJudge/JudgeController";
+    import { confirmJudgePost } from "@/actions/App/Http/Controllers/DigitalJudge/SERC/SERCJudgeController";
 
     import AppHead from "@/components/AppHead.svelte";
     import Button from "@/components/Button.svelte";
@@ -76,6 +75,7 @@
         <Form
             action={confirmJudgePost({
                 competition: competition,
+                serc: serc,
             })}
         >
             <Button

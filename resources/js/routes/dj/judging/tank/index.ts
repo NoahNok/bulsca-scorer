@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::set
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:77
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:84
 * @route '//judge.localhost/judging/tank/{tank}'
 */
 export const set = (args: { tank: string | number } | [tank: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ set.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::set
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:77
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:84
 * @route '//judge.localhost/judging/tank/{tank}'
 */
 set.url = (args: { tank: string | number } | [tank: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -43,7 +43,7 @@ set.url = (args: { tank: string | number } | [tank: string | number ] | string |
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::set
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:77
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:84
 * @route '//judge.localhost/judging/tank/{tank}'
 */
 set.get = (args: { tank: string | number } | [tank: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -53,7 +53,7 @@ set.get = (args: { tank: string | number } | [tank: string | number ] | string |
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJJudgingController::set
-* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:77
+* @see app/Http/Controllers/DigitalJudge/DJJudgingController.php:84
 * @route '//judge.localhost/judging/tank/{tank}'
 */
 set.head = (args: { tank: string | number } | [tank: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({

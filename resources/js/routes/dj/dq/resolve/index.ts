@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJDQController::list
-* @see app/Http/Controllers/DigitalJudge/DJDQController.php:273
+* @see app/Http/Controllers/DigitalJudge/DJDQController.php:281
 * @route '//judge.localhost/dq/resolve/list'
 */
 export const list = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ list.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJDQController::list
-* @see app/Http/Controllers/DigitalJudge/DJDQController.php:273
+* @see app/Http/Controllers/DigitalJudge/DJDQController.php:281
 * @route '//judge.localhost/dq/resolve/list'
 */
 list.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ list.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJDQController::list
-* @see app/Http/Controllers/DigitalJudge/DJDQController.php:273
+* @see app/Http/Controllers/DigitalJudge/DJDQController.php:281
 * @route '//judge.localhost/dq/resolve/list'
 */
 list.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -35,7 +35,7 @@ list.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJDQController::list
-* @see app/Http/Controllers/DigitalJudge/DJDQController.php:273
+* @see app/Http/Controllers/DigitalJudge/DJDQController.php:281
 * @route '//judge.localhost/dq/resolve/list'
 */
 list.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({

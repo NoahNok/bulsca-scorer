@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\DigitalJudge\SpeedJudgingController::index
-* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:178
+* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:181
 * @route '//judge.localhost/speeds/{speed}/oof'
 */
 export const index = (args: { speed: number | { id: number } } | [speed: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SpeedJudgingController::index
-* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:178
+* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:181
 * @route '//judge.localhost/speeds/{speed}/oof'
 */
 index.url = (args: { speed: number | { id: number } } | [speed: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -49,7 +49,7 @@ index.url = (args: { speed: number | { id: number } } | [speed: number | { id: n
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SpeedJudgingController::index
-* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:178
+* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:181
 * @route '//judge.localhost/speeds/{speed}/oof'
 */
 index.get = (args: { speed: number | { id: number } } | [speed: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -59,7 +59,7 @@ index.get = (args: { speed: number | { id: number } } | [speed: number | { id: n
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SpeedJudgingController::index
-* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:178
+* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:181
 * @route '//judge.localhost/speeds/{speed}/oof'
 */
 index.head = (args: { speed: number | { id: number } } | [speed: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -69,7 +69,7 @@ index.head = (args: { speed: number | { id: number } } | [speed: number | { id: 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SpeedJudgingController::judge
-* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:184
+* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:189
 * @route '//judge.localhost/speeds/{speed}/oof/h/{heat}'
 */
 export const judge = (args: { speed: number | { id: number }, heat: string | number } | [speed: number | { id: number }, heat: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -84,7 +84,7 @@ judge.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SpeedJudgingController::judge
-* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:184
+* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:189
 * @route '//judge.localhost/speeds/{speed}/oof/h/{heat}'
 */
 judge.url = (args: { speed: number | { id: number }, heat: string | number } | [speed: number | { id: number }, heat: string | number ], options?: RouteQueryOptions) => {
@@ -112,7 +112,7 @@ judge.url = (args: { speed: number | { id: number }, heat: string | number } | [
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SpeedJudgingController::judge
-* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:184
+* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:189
 * @route '//judge.localhost/speeds/{speed}/oof/h/{heat}'
 */
 judge.get = (args: { speed: number | { id: number }, heat: string | number } | [speed: number | { id: number }, heat: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -122,7 +122,7 @@ judge.get = (args: { speed: number | { id: number }, heat: string | number } | [
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SpeedJudgingController::judge
-* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:184
+* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:189
 * @route '//judge.localhost/speeds/{speed}/oof/h/{heat}'
 */
 judge.head = (args: { speed: number | { id: number }, heat: string | number } | [speed: number | { id: number }, heat: string | number ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -132,7 +132,7 @@ judge.head = (args: { speed: number | { id: number }, heat: string | number } | 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SpeedJudgingController::judgePost
-* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:214
+* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:220
 * @route '//judge.localhost/speeds/{speed}/oof/h/{heat}'
 */
 export const judgePost = (args: { speed: number | { id: number }, heat: string | number } | [speed: number | { id: number }, heat: string | number ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -147,7 +147,7 @@ judgePost.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SpeedJudgingController::judgePost
-* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:214
+* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:220
 * @route '//judge.localhost/speeds/{speed}/oof/h/{heat}'
 */
 judgePost.url = (args: { speed: number | { id: number }, heat: string | number } | [speed: number | { id: number }, heat: string | number ], options?: RouteQueryOptions) => {
@@ -175,7 +175,7 @@ judgePost.url = (args: { speed: number | { id: number }, heat: string | number }
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SpeedJudgingController::judgePost
-* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:214
+* @see app/Http/Controllers/DigitalJudge/SpeedJudgingController.php:220
 * @route '//judge.localhost/speeds/{speed}/oof/h/{heat}'
 */
 judgePost.post = (args: { speed: number | { id: number }, heat: string | number } | [speed: number | { id: number }, heat: string | number ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({

@@ -69,7 +69,7 @@ index.head = (args: { comp: number | { id: number } } | [comp: number | { id: nu
 
 /**
 * @see \App\Http\Controllers\PrintableController::sercSheets
-* @see app/Http/Controllers/PrintableController.php:32
+* @see app/Http/Controllers/PrintableController.php:38
 * @route '/comps/{comp}/printables/serc-sheets/{serc}'
 */
 export const sercSheets = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -84,7 +84,7 @@ sercSheets.definition = {
 
 /**
 * @see \App\Http\Controllers\PrintableController::sercSheets
-* @see app/Http/Controllers/PrintableController.php:32
+* @see app/Http/Controllers/PrintableController.php:38
 * @route '/comps/{comp}/printables/serc-sheets/{serc}'
 */
 sercSheets.url = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -114,7 +114,7 @@ sercSheets.url = (args: { comp: number | { id: number }, serc: number | { id: nu
 
 /**
 * @see \App\Http\Controllers\PrintableController::sercSheets
-* @see app/Http/Controllers/PrintableController.php:32
+* @see app/Http/Controllers/PrintableController.php:38
 * @route '/comps/{comp}/printables/serc-sheets/{serc}'
 */
 sercSheets.get = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -124,7 +124,7 @@ sercSheets.get = (args: { comp: number | { id: number }, serc: number | { id: nu
 
 /**
 * @see \App\Http\Controllers\PrintableController::sercSheets
-* @see app/Http/Controllers/PrintableController.php:32
+* @see app/Http/Controllers/PrintableController.php:38
 * @route '/comps/{comp}/printables/serc-sheets/{serc}'
 */
 sercSheets.head = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -134,7 +134,7 @@ sercSheets.head = (args: { comp: number | { id: number }, serc: number | { id: n
 
 /**
 * @see \App\Http\Controllers\PrintableController::printSMS
-* @see app/Http/Controllers/PrintableController.php:25
+* @see app/Http/Controllers/PrintableController.php:31
 * @route '/comps/{comp}/printables/serc-marking-pack'
 */
 export const printSMS = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -149,7 +149,7 @@ printSMS.definition = {
 
 /**
 * @see \App\Http\Controllers\PrintableController::printSMS
-* @see app/Http/Controllers/PrintableController.php:25
+* @see app/Http/Controllers/PrintableController.php:31
 * @route '/comps/{comp}/printables/serc-marking-pack'
 */
 printSMS.url = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -182,7 +182,7 @@ printSMS.url = (args: { comp: number | { id: number } } | [comp: number | { id: 
 
 /**
 * @see \App\Http\Controllers\PrintableController::printSMS
-* @see app/Http/Controllers/PrintableController.php:25
+* @see app/Http/Controllers/PrintableController.php:31
 * @route '/comps/{comp}/printables/serc-marking-pack'
 */
 printSMS.get = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -192,7 +192,7 @@ printSMS.get = (args: { comp: number | { id: number } } | [comp: number | { id: 
 
 /**
 * @see \App\Http\Controllers\PrintableController::printSMS
-* @see app/Http/Controllers/PrintableController.php:25
+* @see app/Http/Controllers/PrintableController.php:31
 * @route '/comps/{comp}/printables/serc-marking-pack'
 */
 printSMS.head = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -270,7 +270,7 @@ printCTP.head = (args: { comp: number | { id: number } } | [comp: number | { id:
 
 /**
 * @see \App\Http\Controllers\PrintableController::printMarshalling
-* @see app/Http/Controllers/PrintableController.php:37
+* @see app/Http/Controllers/PrintableController.php:43
 * @route '/comps/{comp}/printables/marshalling'
 */
 export const printMarshalling = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -285,7 +285,7 @@ printMarshalling.definition = {
 
 /**
 * @see \App\Http\Controllers\PrintableController::printMarshalling
-* @see app/Http/Controllers/PrintableController.php:37
+* @see app/Http/Controllers/PrintableController.php:43
 * @route '/comps/{comp}/printables/marshalling'
 */
 printMarshalling.url = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -318,7 +318,7 @@ printMarshalling.url = (args: { comp: number | { id: number } } | [comp: number 
 
 /**
 * @see \App\Http\Controllers\PrintableController::printMarshalling
-* @see app/Http/Controllers/PrintableController.php:37
+* @see app/Http/Controllers/PrintableController.php:43
 * @route '/comps/{comp}/printables/marshalling'
 */
 printMarshalling.get = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -328,7 +328,7 @@ printMarshalling.get = (args: { comp: number | { id: number } } | [comp: number 
 
 /**
 * @see \App\Http\Controllers\PrintableController::printMarshalling
-* @see app/Http/Controllers/PrintableController.php:37
+* @see app/Http/Controllers/PrintableController.php:43
 * @route '/comps/{comp}/printables/marshalling'
 */
 printMarshalling.head = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({

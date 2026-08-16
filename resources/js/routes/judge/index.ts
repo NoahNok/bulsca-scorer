@@ -4,7 +4,7 @@ import competition633808 from './competition'
 /**
 * @see \App\Http\Controllers\DigitalJudge\JudgeController::login
 * @see app/Http/Controllers/DigitalJudge/JudgeController.php:33
-* @route '//judge.localhost/new/login'
+* @route '//judge.localhost/v2/login'
 */
 export const login = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: login.url(options),
@@ -13,13 +13,13 @@ export const login = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 login.definition = {
     methods: ["get","head"],
-    url: '//judge.localhost/new/login',
+    url: '//judge.localhost/v2/login',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\JudgeController::login
 * @see app/Http/Controllers/DigitalJudge/JudgeController.php:33
-* @route '//judge.localhost/new/login'
+* @route '//judge.localhost/v2/login'
 */
 login.url = (options?: RouteQueryOptions) => {
     return login.definition.url + queryParams(options)
@@ -28,7 +28,7 @@ login.url = (options?: RouteQueryOptions) => {
 /**
 * @see \App\Http\Controllers\DigitalJudge\JudgeController::login
 * @see app/Http/Controllers/DigitalJudge/JudgeController.php:33
-* @route '//judge.localhost/new/login'
+* @route '//judge.localhost/v2/login'
 */
 login.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: login.url(options),
@@ -38,7 +38,7 @@ login.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 /**
 * @see \App\Http\Controllers\DigitalJudge\JudgeController::login
 * @see app/Http/Controllers/DigitalJudge/JudgeController.php:33
-* @route '//judge.localhost/new/login'
+* @route '//judge.localhost/v2/login'
 */
 login.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: login.url(options),
@@ -48,7 +48,7 @@ login.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 /**
 * @see \App\Http\Controllers\DigitalJudge\JudgeController::index
 * @see app/Http/Controllers/DigitalJudge/JudgeController.php:22
-* @route '//judge.localhost/new'
+* @route '//judge.localhost/v2'
 */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -57,13 +57,13 @@ export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 index.definition = {
     methods: ["get","head"],
-    url: '//judge.localhost/new',
+    url: '//judge.localhost/v2',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\JudgeController::index
 * @see app/Http/Controllers/DigitalJudge/JudgeController.php:22
-* @route '//judge.localhost/new'
+* @route '//judge.localhost/v2'
 */
 index.url = (options?: RouteQueryOptions) => {
     return index.definition.url + queryParams(options)
@@ -72,7 +72,7 @@ index.url = (options?: RouteQueryOptions) => {
 /**
 * @see \App\Http\Controllers\DigitalJudge\JudgeController::index
 * @see app/Http/Controllers/DigitalJudge/JudgeController.php:22
-* @route '//judge.localhost/new'
+* @route '//judge.localhost/v2'
 */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -82,7 +82,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 /**
 * @see \App\Http\Controllers\DigitalJudge\JudgeController::index
 * @see app/Http/Controllers/DigitalJudge/JudgeController.php:22
-* @route '//judge.localhost/new'
+* @route '//judge.localhost/v2'
 */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: index.url(options),
@@ -92,7 +92,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 /**
 * @see \App\Http\Controllers\DigitalJudge\JudgeController::joinCompetition
 * @see app/Http/Controllers/DigitalJudge/JudgeController.php:102
-* @route '//judge.localhost/new/join'
+* @route '//judge.localhost/v2/join'
 */
 export const joinCompetition = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: joinCompetition.url(options),
@@ -101,13 +101,13 @@ export const joinCompetition = (options?: RouteQueryOptions): RouteDefinition<'p
 
 joinCompetition.definition = {
     methods: ["post"],
-    url: '//judge.localhost/new/join',
+    url: '//judge.localhost/v2/join',
 } satisfies RouteDefinition<["post"]>
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\JudgeController::joinCompetition
 * @see app/Http/Controllers/DigitalJudge/JudgeController.php:102
-* @route '//judge.localhost/new/join'
+* @route '//judge.localhost/v2/join'
 */
 joinCompetition.url = (options?: RouteQueryOptions) => {
     return joinCompetition.definition.url + queryParams(options)
@@ -116,7 +116,7 @@ joinCompetition.url = (options?: RouteQueryOptions) => {
 /**
 * @see \App\Http\Controllers\DigitalJudge\JudgeController::joinCompetition
 * @see app/Http/Controllers/DigitalJudge/JudgeController.php:102
-* @route '//judge.localhost/new/join'
+* @route '//judge.localhost/v2/join'
 */
 joinCompetition.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: joinCompetition.url(options),
@@ -126,7 +126,7 @@ joinCompetition.post = (options?: RouteQueryOptions): RouteDefinition<'post'> =>
 /**
 * @see \App\Http\Controllers\DigitalJudge\JudgeController::competition
 * @see app/Http/Controllers/DigitalJudge/JudgeController.php:116
-* @route '//judge.localhost/new/{competition}'
+* @route '//judge.localhost/v2/{competition}'
 */
 export const competition = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: competition.url(args, options),
@@ -135,13 +135,13 @@ export const competition = (args: { competition: number | { id: number } } | [co
 
 competition.definition = {
     methods: ["get","head"],
-    url: '//judge.localhost/new/{competition}',
+    url: '//judge.localhost/v2/{competition}',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\JudgeController::competition
 * @see app/Http/Controllers/DigitalJudge/JudgeController.php:116
-* @route '//judge.localhost/new/{competition}'
+* @route '//judge.localhost/v2/{competition}'
 */
 competition.url = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -174,7 +174,7 @@ competition.url = (args: { competition: number | { id: number } } | [competition
 /**
 * @see \App\Http\Controllers\DigitalJudge\JudgeController::competition
 * @see app/Http/Controllers/DigitalJudge/JudgeController.php:116
-* @route '//judge.localhost/new/{competition}'
+* @route '//judge.localhost/v2/{competition}'
 */
 competition.get = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: competition.url(args, options),
@@ -184,7 +184,7 @@ competition.get = (args: { competition: number | { id: number } } | [competition
 /**
 * @see \App\Http\Controllers\DigitalJudge\JudgeController::competition
 * @see app/Http/Controllers/DigitalJudge/JudgeController.php:116
-* @route '//judge.localhost/new/{competition}'
+* @route '//judge.localhost/v2/{competition}'
 */
 competition.head = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: competition.url(args, options),

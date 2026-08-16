@@ -6,15 +6,10 @@
 
 <script lang="ts">
     import {
-        sercHome,
-        setTank,
-    } from "@/actions/App/Http/Controllers/DigitalJudge/JudgeController";
-
-    import {
         index,
         home,
-        confirmJudgePost,
     } from "@/actions/App/Http/Controllers/DigitalJudge/JudgeController";
+    import { setTank } from "@/actions/App/Http/Controllers/DigitalJudge/SERC/SERCJudgeController";
 
     import AppHead from "@/components/AppHead.svelte";
     import Button from "@/components/Button.svelte";
@@ -23,15 +18,23 @@
 
     import type { Competition, Judge, SERC } from "@/types/base";
     import { Form, page, Link } from "@inertiajs/svelte";
-    import { ArrowRight, Check, Clipboard, LifeBuoy } from "@lucide/svelte";
+    import {
+        ArrowRight,
+        Check,
+        Clipboard,
+        House,
+        LifeBuoy,
+    } from "@lucide/svelte";
 
     const user = $derived(page.props.auth.user);
 
     let {
         competition,
+        serc,
         tanks,
     }: {
         competition: Competition;
+        serc: SERC;
         tanks: number[];
     } = $props();
 </script>
@@ -40,7 +43,7 @@
 
 <section class="flex flex-col absolute top-0 left-0 w-full p-6 z-10">
     <Link
-        href={sercHome(competition)}
+        href={home({ competition: competition })}
         class="flex w-full justify-between items-center"
     >
         <div class="">
@@ -48,10 +51,7 @@
             <h1 class=" indent-6 normal-case! text-se text-xl!">Judge</h1>
         </div>
 
-        <LifeBuoy
-            class="bg-se/20 rounded-full text-se p-2 shadow-md "
-            size={40}
-        />
+        <House class="bg-se/20 rounded-full text-se p-2 shadow-md " size={40} />
     </Link>
 </section>
 
@@ -59,7 +59,7 @@
 
 <section class="flex flex-col h-full">
     <p class="font-archivo -mb-2">{competition.name}</p>
-    <h2 class="">Select Tank</h2>
+    <h2 class="">{serc.name}</h2>
     <br />
 
     <div class="flex flex-col space-y-3">
@@ -69,7 +69,12 @@
 
         <div class="flex flex-col space-y-3 w-full">
             {#each tanks as tank}
-                <Link href={setTank({ competition: competition, tank: tank })}
+                <Link
+                    href={setTank({
+                        competition: competition,
+                        serc: serc,
+                        tank: tank,
+                    })}
                     ><Button
                         label="Tank {tank}"
                         variant="success"

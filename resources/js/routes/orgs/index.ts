@@ -4,6 +4,7 @@ import invite from './invite'
 import account from './account'
 import infractions740e82 from './infractions'
 import scoring109674 from './scoring'
+import championship from './championship'
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::index
 * @see app/Http/Controllers/Organisation/OrganisationController.php:32
@@ -592,6 +593,74 @@ scoring.head = (args: { organisation: number | { id: number } } | [organisation:
     method: 'head',
 })
 
+/**
+* @see \App\Http\Controllers\ChampionshipController::championships
+* @see app/Http/Controllers/ChampionshipController.php:15
+* @route '/organisation/{organisation}/championships'
+*/
+export const championships = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: championships.url(args, options),
+    method: 'get',
+})
+
+championships.definition = {
+    methods: ["get","head"],
+    url: '/organisation/{organisation}/championships',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\ChampionshipController::championships
+* @see app/Http/Controllers/ChampionshipController.php:15
+* @route '/organisation/{organisation}/championships'
+*/
+championships.url = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { organisation: args }
+    }
+
+    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+        args = { organisation: args.id }
+    }
+
+    if (Array.isArray(args)) {
+        args = {
+            organisation: args[0],
+        }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+        organisation: typeof args.organisation === 'object'
+        ? args.organisation.id
+        : args.organisation,
+    }
+
+    return championships.definition.url
+            .replace('{organisation}', parsedArgs.organisation.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\ChampionshipController::championships
+* @see app/Http/Controllers/ChampionshipController.php:15
+* @route '/organisation/{organisation}/championships'
+*/
+championships.get = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: championships.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\ChampionshipController::championships
+* @see app/Http/Controllers/ChampionshipController.php:15
+* @route '/organisation/{organisation}/championships'
+*/
+championships.head = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: championships.url(args, options),
+    method: 'head',
+})
+
 const orgs = {
     index: Object.assign(index, index),
     create: Object.assign(create, create),
@@ -605,6 +674,8 @@ const orgs = {
     account: Object.assign(account, account),
     infractions: Object.assign(infractions, infractions740e82),
     scoring: Object.assign(scoring, scoring109674),
+    championships: Object.assign(championships, championships),
+    championship: Object.assign(championship, championship),
 }
 
 export default orgs

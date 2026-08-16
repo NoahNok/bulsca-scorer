@@ -128,8 +128,21 @@ class DigitalJudge
     {
         // SELECT COUNT(*) FROM serc_results WHERE team=? AND marking_point IN (SELECT id FROM serc_marking_points WHERE judge=?)
 
+
         $judge = DigitalJudge::getClientJudges()[0];
         $serc = $judge->getSERC;
+
+        return SERCResult::whereMorphedTo('entity', $entity)->whereHas('getMarkingPoint', function ($query) use ($serc, $judge) {
+            $query->where('serc', $serc->id)->where('judge', $judge->id);
+        })->exists();
+    }
+
+    public static function hasEntityBeenJudgedAlready(Entity $entity, SERCJudge $judge)
+    {
+        // SELECT COUNT(*) FROM serc_results WHERE team=? AND marking_point IN (SELECT id FROM serc_marking_points WHERE judge=?)
+        $serc = $judge->getSERC;
+
+        dump($judge);
 
         return SERCResult::whereMorphedTo('entity', $entity)->whereHas('getMarkingPoint', function ($query) use ($serc, $judge) {
             $query->where('serc', $serc->id)->where('judge', $judge->id);
@@ -199,9 +212,9 @@ class DigitalJudge
         return (int) $value;
     }
 
-    public static function setStatus(string $status, ?Event $event = null)
+    public static function setStatus(Competition $competition, string $status, ?Event $event = null)
     {
-        $competition = DigitalJudge::getClientCompetition();
+
         $clientId = DigitalJudge::getClientId();
         $data = Cache::get("digitaljudge.live-monitor.{$competition->id}", []);
 

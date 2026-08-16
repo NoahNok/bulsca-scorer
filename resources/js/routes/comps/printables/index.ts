@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\PrintableController::sercSheets
-* @see app/Http/Controllers/PrintableController.php:32
+* @see app/Http/Controllers/PrintableController.php:38
 * @route '/comps/{comp}/printables/serc-sheets/{serc}'
 */
 export const sercSheets = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ sercSheets.definition = {
 
 /**
 * @see \App\Http\Controllers\PrintableController::sercSheets
-* @see app/Http/Controllers/PrintableController.php:32
+* @see app/Http/Controllers/PrintableController.php:38
 * @route '/comps/{comp}/printables/serc-sheets/{serc}'
 */
 sercSheets.url = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -46,7 +46,7 @@ sercSheets.url = (args: { comp: number | { id: number }, serc: number | { id: nu
 
 /**
 * @see \App\Http\Controllers\PrintableController::sercSheets
-* @see app/Http/Controllers/PrintableController.php:32
+* @see app/Http/Controllers/PrintableController.php:38
 * @route '/comps/{comp}/printables/serc-sheets/{serc}'
 */
 sercSheets.get = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -56,7 +56,7 @@ sercSheets.get = (args: { comp: number | { id: number }, serc: number | { id: nu
 
 /**
 * @see \App\Http\Controllers\PrintableController::sercSheets
-* @see app/Http/Controllers/PrintableController.php:32
+* @see app/Http/Controllers/PrintableController.php:38
 * @route '/comps/{comp}/printables/serc-sheets/{serc}'
 */
 sercSheets.head = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -66,7 +66,7 @@ sercSheets.head = (args: { comp: number | { id: number }, serc: number | { id: n
 
 /**
 * @see \App\Http\Controllers\PrintableController::sercMarkingPack
-* @see app/Http/Controllers/PrintableController.php:25
+* @see app/Http/Controllers/PrintableController.php:31
 * @route '/comps/{comp}/printables/serc-marking-pack'
 */
 export const sercMarkingPack = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -81,7 +81,7 @@ sercMarkingPack.definition = {
 
 /**
 * @see \App\Http\Controllers\PrintableController::sercMarkingPack
-* @see app/Http/Controllers/PrintableController.php:25
+* @see app/Http/Controllers/PrintableController.php:31
 * @route '/comps/{comp}/printables/serc-marking-pack'
 */
 sercMarkingPack.url = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -114,7 +114,7 @@ sercMarkingPack.url = (args: { comp: number | { id: number } } | [comp: number |
 
 /**
 * @see \App\Http\Controllers\PrintableController::sercMarkingPack
-* @see app/Http/Controllers/PrintableController.php:25
+* @see app/Http/Controllers/PrintableController.php:31
 * @route '/comps/{comp}/printables/serc-marking-pack'
 */
 sercMarkingPack.get = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -124,7 +124,7 @@ sercMarkingPack.get = (args: { comp: number | { id: number } } | [comp: number |
 
 /**
 * @see \App\Http\Controllers\PrintableController::sercMarkingPack
-* @see app/Http/Controllers/PrintableController.php:25
+* @see app/Http/Controllers/PrintableController.php:31
 * @route '/comps/{comp}/printables/serc-marking-pack'
 */
 sercMarkingPack.head = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -202,7 +202,7 @@ chiefTimekeeperPack.head = (args: { comp: number | { id: number } } | [comp: num
 
 /**
 * @see \App\Http\Controllers\PrintableController::marshalling
-* @see app/Http/Controllers/PrintableController.php:37
+* @see app/Http/Controllers/PrintableController.php:43
 * @route '/comps/{comp}/printables/marshalling'
 */
 export const marshalling = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -217,7 +217,7 @@ marshalling.definition = {
 
 /**
 * @see \App\Http\Controllers\PrintableController::marshalling
-* @see app/Http/Controllers/PrintableController.php:37
+* @see app/Http/Controllers/PrintableController.php:43
 * @route '/comps/{comp}/printables/marshalling'
 */
 marshalling.url = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -250,7 +250,7 @@ marshalling.url = (args: { comp: number | { id: number } } | [comp: number | { i
 
 /**
 * @see \App\Http\Controllers\PrintableController::marshalling
-* @see app/Http/Controllers/PrintableController.php:37
+* @see app/Http/Controllers/PrintableController.php:43
 * @route '/comps/{comp}/printables/marshalling'
 */
 marshalling.get = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -260,7 +260,7 @@ marshalling.get = (args: { comp: number | { id: number } } | [comp: number | { i
 
 /**
 * @see \App\Http\Controllers\PrintableController::marshalling
-* @see app/Http/Controllers/PrintableController.php:37
+* @see app/Http/Controllers/PrintableController.php:43
 * @route '/comps/{comp}/printables/marshalling'
 */
 marshalling.head = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({

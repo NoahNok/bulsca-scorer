@@ -1,36 +1,29 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../../wayfinder'
 /**
-* @see \App\Http\Controllers\DigitalJudge\JudgeController::post
-* @see app/Http/Controllers/DigitalJudge/JudgeController.php:171
-* @route '//judge.localhost/new/{competition}/serc/confirm'
+* @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::post
+* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:45
+* @route '//judge.localhost/v2/{competition}/serc/{serc}/confirm'
 */
-export const post = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const post = (args: { competition: number | { id: number }, serc: number | { id: number } } | [competition: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: post.url(args, options),
     method: 'post',
 })
 
 post.definition = {
     methods: ["post"],
-    url: '//judge.localhost/new/{competition}/serc/confirm',
+    url: '//judge.localhost/v2/{competition}/serc/{serc}/confirm',
 } satisfies RouteDefinition<["post"]>
 
 /**
-* @see \App\Http\Controllers\DigitalJudge\JudgeController::post
-* @see app/Http/Controllers/DigitalJudge/JudgeController.php:171
-* @route '//judge.localhost/new/{competition}/serc/confirm'
+* @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::post
+* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:45
+* @route '//judge.localhost/v2/{competition}/serc/{serc}/confirm'
 */
-post.url = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
-    if (typeof args === 'string' || typeof args === 'number') {
-        args = { competition: args }
-    }
-
-    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
-        args = { competition: args.id }
-    }
-
+post.url = (args: { competition: number | { id: number }, serc: number | { id: number } } | [competition: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             competition: args[0],
+            serc: args[1],
         }
     }
 
@@ -40,19 +33,23 @@ post.url = (args: { competition: number | { id: number } } | [competition: numbe
         competition: typeof args.competition === 'object'
         ? args.competition.id
         : args.competition,
+        serc: typeof args.serc === 'object'
+        ? args.serc.id
+        : args.serc,
     }
 
     return post.definition.url
             .replace('{competition}', parsedArgs.competition.toString())
+            .replace('{serc}', parsedArgs.serc.toString())
             .replace(/\/+$/, '') + queryParams(options)
 }
 
 /**
-* @see \App\Http\Controllers\DigitalJudge\JudgeController::post
-* @see app/Http/Controllers/DigitalJudge/JudgeController.php:171
-* @route '//judge.localhost/new/{competition}/serc/confirm'
+* @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::post
+* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:45
+* @route '//judge.localhost/v2/{competition}/serc/{serc}/confirm'
 */
-post.post = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+post.post = (args: { competition: number | { id: number }, serc: number | { id: number } } | [competition: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: post.url(args, options),
     method: 'post',
 })

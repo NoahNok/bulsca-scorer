@@ -48,7 +48,7 @@ issue.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJDQController::resolveCode
-* @see app/Http/Controllers/DigitalJudge/DJDQController.php:150
+* @see app/Http/Controllers/DigitalJudge/DJDQController.php:151
 * @route '//judge.localhost/dq/resolveCode/{code}'
 */
 export const resolveCode = (args: { code: string | number } | [code: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -63,7 +63,7 @@ resolveCode.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJDQController::resolveCode
-* @see app/Http/Controllers/DigitalJudge/DJDQController.php:150
+* @see app/Http/Controllers/DigitalJudge/DJDQController.php:151
 * @route '//judge.localhost/dq/resolveCode/{code}'
 */
 resolveCode.url = (args: { code: string | number } | [code: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -90,7 +90,7 @@ resolveCode.url = (args: { code: string | number } | [code: string | number ] | 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJDQController::resolveCode
-* @see app/Http/Controllers/DigitalJudge/DJDQController.php:150
+* @see app/Http/Controllers/DigitalJudge/DJDQController.php:151
 * @route '//judge.localhost/dq/resolveCode/{code}'
 */
 resolveCode.get = (args: { code: string | number } | [code: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -100,7 +100,7 @@ resolveCode.get = (args: { code: string | number } | [code: string | number ] | 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJDQController::resolveCode
-* @see app/Http/Controllers/DigitalJudge/DJDQController.php:150
+* @see app/Http/Controllers/DigitalJudge/DJDQController.php:151
 * @route '//judge.localhost/dq/resolveCode/{code}'
 */
 resolveCode.head = (args: { code: string | number } | [code: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -110,7 +110,7 @@ resolveCode.head = (args: { code: string | number } | [code: string | number ] |
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJDQController::submission
-* @see app/Http/Controllers/DigitalJudge/DJDQController.php:166
+* @see app/Http/Controllers/DigitalJudge/DJDQController.php:167
 * @route '//judge.localhost/dq/submission'
 */
 export const submission = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -125,7 +125,7 @@ submission.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJDQController::submission
-* @see app/Http/Controllers/DigitalJudge/DJDQController.php:166
+* @see app/Http/Controllers/DigitalJudge/DJDQController.php:167
 * @route '//judge.localhost/dq/submission'
 */
 submission.url = (options?: RouteQueryOptions) => {
@@ -134,7 +134,7 @@ submission.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJDQController::submission
-* @see app/Http/Controllers/DigitalJudge/DJDQController.php:166
+* @see app/Http/Controllers/DigitalJudge/DJDQController.php:167
 * @route '//judge.localhost/dq/submission'
 */
 submission.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -144,7 +144,7 @@ submission.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJDQController::eventCodes
-* @see app/Http/Controllers/DigitalJudge/DJDQController.php:401
+* @see app/Http/Controllers/DigitalJudge/DJDQController.php:411
 * @route '//judge.localhost/dq/event-codes/{event}'
 */
 export const eventCodes = (args: { event: string | number } | [event: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -159,7 +159,7 @@ eventCodes.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJDQController::eventCodes
-* @see app/Http/Controllers/DigitalJudge/DJDQController.php:401
+* @see app/Http/Controllers/DigitalJudge/DJDQController.php:411
 * @route '//judge.localhost/dq/event-codes/{event}'
 */
 eventCodes.url = (args: { event: string | number } | [event: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -186,7 +186,7 @@ eventCodes.url = (args: { event: string | number } | [event: string | number ] |
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJDQController::eventCodes
-* @see app/Http/Controllers/DigitalJudge/DJDQController.php:401
+* @see app/Http/Controllers/DigitalJudge/DJDQController.php:411
 * @route '//judge.localhost/dq/event-codes/{event}'
 */
 eventCodes.get = (args: { event: string | number } | [event: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -196,7 +196,7 @@ eventCodes.get = (args: { event: string | number } | [event: string | number ] |
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJDQController::eventCodes
-* @see app/Http/Controllers/DigitalJudge/DJDQController.php:401
+* @see app/Http/Controllers/DigitalJudge/DJDQController.php:411
 * @route '//judge.localhost/dq/event-codes/{event}'
 */
 eventCodes.head = (args: { event: string | number } | [event: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -314,7 +314,7 @@ current.head = (args: { event: string | number, team: string | number, type: str
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJDQController::resolve
-* @see app/Http/Controllers/DigitalJudge/DJDQController.php:216
+* @see app/Http/Controllers/DigitalJudge/DJDQController.php:220
 * @route '//judge.localhost/dq/resolve'
 */
 export const resolve = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -329,7 +329,7 @@ resolve.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJDQController::resolve
-* @see app/Http/Controllers/DigitalJudge/DJDQController.php:216
+* @see app/Http/Controllers/DigitalJudge/DJDQController.php:220
 * @route '//judge.localhost/dq/resolve'
 */
 resolve.url = (options?: RouteQueryOptions) => {
@@ -338,7 +338,7 @@ resolve.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJDQController::resolve
-* @see app/Http/Controllers/DigitalJudge/DJDQController.php:216
+* @see app/Http/Controllers/DigitalJudge/DJDQController.php:220
 * @route '//judge.localhost/dq/resolve'
 */
 resolve.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -348,7 +348,7 @@ resolve.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJDQController::resolve
-* @see app/Http/Controllers/DigitalJudge/DJDQController.php:216
+* @see app/Http/Controllers/DigitalJudge/DJDQController.php:220
 * @route '//judge.localhost/dq/resolve'
 */
 resolve.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -358,7 +358,7 @@ resolve.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJDQController::accepted
-* @see app/Http/Controllers/DigitalJudge/DJDQController.php:289
+* @see app/Http/Controllers/DigitalJudge/DJDQController.php:297
 * @route '//judge.localhost/dq/accepted'
 */
 export const accepted = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -373,7 +373,7 @@ accepted.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJDQController::accepted
-* @see app/Http/Controllers/DigitalJudge/DJDQController.php:289
+* @see app/Http/Controllers/DigitalJudge/DJDQController.php:297
 * @route '//judge.localhost/dq/accepted'
 */
 accepted.url = (options?: RouteQueryOptions) => {
@@ -382,7 +382,7 @@ accepted.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJDQController::accepted
-* @see app/Http/Controllers/DigitalJudge/DJDQController.php:289
+* @see app/Http/Controllers/DigitalJudge/DJDQController.php:297
 * @route '//judge.localhost/dq/accepted'
 */
 accepted.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -392,7 +392,7 @@ accepted.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJDQController::accepted
-* @see app/Http/Controllers/DigitalJudge/DJDQController.php:289
+* @see app/Http/Controllers/DigitalJudge/DJDQController.php:297
 * @route '//judge.localhost/dq/accepted'
 */
 accepted.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -402,7 +402,7 @@ accepted.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJDQController::remove
-* @see app/Http/Controllers/DigitalJudge/DJDQController.php:323
+* @see app/Http/Controllers/DigitalJudge/DJDQController.php:331
 * @route '//judge.localhost/dq/remove/{submission}'
 */
 export const remove = (args: { submission: number | { id: number } } | [submission: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -417,7 +417,7 @@ remove.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJDQController::remove
-* @see app/Http/Controllers/DigitalJudge/DJDQController.php:323
+* @see app/Http/Controllers/DigitalJudge/DJDQController.php:331
 * @route '//judge.localhost/dq/remove/{submission}'
 */
 remove.url = (args: { submission: number | { id: number } } | [submission: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -450,7 +450,7 @@ remove.url = (args: { submission: number | { id: number } } | [submission: numbe
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJDQController::remove
-* @see app/Http/Controllers/DigitalJudge/DJDQController.php:323
+* @see app/Http/Controllers/DigitalJudge/DJDQController.php:331
 * @route '//judge.localhost/dq/remove/{submission}'
 */
 remove.post = (args: { submission: number | { id: number } } | [submission: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -460,7 +460,7 @@ remove.post = (args: { submission: number | { id: number } } | [submission: numb
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJDQController::appeal
-* @see app/Http/Controllers/DigitalJudge/DJDQController.php:343
+* @see app/Http/Controllers/DigitalJudge/DJDQController.php:353
 * @route '//judge.localhost/dq/appeal/{submission}'
 */
 export const appeal = (args: { submission: number | { id: number } } | [submission: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -475,7 +475,7 @@ appeal.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJDQController::appeal
-* @see app/Http/Controllers/DigitalJudge/DJDQController.php:343
+* @see app/Http/Controllers/DigitalJudge/DJDQController.php:353
 * @route '//judge.localhost/dq/appeal/{submission}'
 */
 appeal.url = (args: { submission: number | { id: number } } | [submission: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -508,7 +508,7 @@ appeal.url = (args: { submission: number | { id: number } } | [submission: numbe
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJDQController::appeal
-* @see app/Http/Controllers/DigitalJudge/DJDQController.php:343
+* @see app/Http/Controllers/DigitalJudge/DJDQController.php:353
 * @route '//judge.localhost/dq/appeal/{submission}'
 */
 appeal.post = (args: { submission: number | { id: number } } | [submission: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({

@@ -154,7 +154,7 @@ telescope.head = (args?: { view?: string | number } | [view: string | number ] |
 })
 
 /**
-* @see routes/web.php:76
+* @see routes/web.php:77
 * @route '/'
 */
 export const home = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -168,7 +168,7 @@ home.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see routes/web.php:76
+* @see routes/web.php:77
 * @route '/'
 */
 home.url = (options?: RouteQueryOptions) => {
@@ -176,7 +176,7 @@ home.url = (options?: RouteQueryOptions) => {
 }
 
 /**
-* @see routes/web.php:76
+* @see routes/web.php:77
 * @route '/'
 */
 home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -185,7 +185,7 @@ home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 
 /**
-* @see routes/web.php:76
+* @see routes/web.php:77
 * @route '/'
 */
 home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -289,7 +289,7 @@ comps.options = (options?: RouteQueryOptions): RouteDefinition<'options'> => ({
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::explore
-* @see app/Http/Controllers/Landing/LandingController.php:14
+* @see app/Http/Controllers/Landing/LandingController.php:15
 * @route '/explore'
 */
 export const explore = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -304,7 +304,7 @@ explore.definition = {
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::explore
-* @see app/Http/Controllers/Landing/LandingController.php:14
+* @see app/Http/Controllers/Landing/LandingController.php:15
 * @route '/explore'
 */
 explore.url = (options?: RouteQueryOptions) => {
@@ -313,7 +313,7 @@ explore.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::explore
-* @see app/Http/Controllers/Landing/LandingController.php:14
+* @see app/Http/Controllers/Landing/LandingController.php:15
 * @route '/explore'
 */
 explore.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -323,7 +323,7 @@ explore.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::explore
-* @see app/Http/Controllers/Landing/LandingController.php:14
+* @see app/Http/Controllers/Landing/LandingController.php:15
 * @route '/explore'
 */
 explore.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -333,7 +333,7 @@ explore.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::search
-* @see app/Http/Controllers/Landing/LandingController.php:45
+* @see app/Http/Controllers/Landing/LandingController.php:52
 * @route '/search/{search}'
 */
 export const search = (args: { search: string | number } | [search: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -348,7 +348,7 @@ search.definition = {
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::search
-* @see app/Http/Controllers/Landing/LandingController.php:45
+* @see app/Http/Controllers/Landing/LandingController.php:52
 * @route '/search/{search}'
 */
 search.url = (args: { search: string | number } | [search: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -375,7 +375,7 @@ search.url = (args: { search: string | number } | [search: string | number ] | s
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::search
-* @see app/Http/Controllers/Landing/LandingController.php:45
+* @see app/Http/Controllers/Landing/LandingController.php:52
 * @route '/search/{search}'
 */
 search.get = (args: { search: string | number } | [search: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -385,7 +385,7 @@ search.get = (args: { search: string | number } | [search: string | number ] | s
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::search
-* @see app/Http/Controllers/Landing/LandingController.php:45
+* @see app/Http/Controllers/Landing/LandingController.php:52
 * @route '/search/{search}'
 */
 search.head = (args: { search: string | number } | [search: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({

@@ -6,30 +6,18 @@
 </script>
 
 <script lang="ts">
-    import {
-        index,
-        confirmJudge,
-        home,
-    } from "@/actions/App/Http/Controllers/DigitalJudge/JudgeController";
+    import { home } from "@/actions/App/Http/Controllers/DigitalJudge/JudgeController";
+    import { confirmJudge } from "@/actions/App/Http/Controllers/DigitalJudge/SERC/SERCJudgeController";
 
     import AppHead from "@/components/AppHead.svelte";
     import Button from "@/components/Button.svelte";
-    import Input from "@/components/input.svelte";
+
     import { appState } from "@/lib/stores/appState";
     import { toastSuccess } from "@/lib/toast.svelte";
-    import { event } from "@/routes/live/dqs";
+
     import type { Competition, Event, SERC } from "@/types/base";
-    import { Form, page, Link } from "@inertiajs/svelte";
-    import {
-        ArrowRight,
-        Check,
-        Clipboard,
-        FingerprintPattern,
-        Home,
-        House,
-        Plus,
-        PlusCircle,
-    } from "@lucide/svelte";
+    import { page, Link } from "@inertiajs/svelte";
+    import { Check, House } from "@lucide/svelte";
     import { slide } from "svelte/transition";
 
     const user = $derived(page.props.auth.user);
@@ -127,6 +115,7 @@
                     <Link
                         href={confirmJudge({
                             competition: competition,
+                            serc: serc,
                             judge: judge,
                         })}
                         class="flex items-center

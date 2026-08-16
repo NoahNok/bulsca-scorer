@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Landing\LandingController::explore
-* @see app/Http/Controllers/Landing/LandingController.php:14
+* @see app/Http/Controllers/Landing/LandingController.php:15
 * @route '/explore'
 */
 export const explore = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ explore.definition = {
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::explore
-* @see app/Http/Controllers/Landing/LandingController.php:14
+* @see app/Http/Controllers/Landing/LandingController.php:15
 * @route '/explore'
 */
 explore.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ explore.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::explore
-* @see app/Http/Controllers/Landing/LandingController.php:14
+* @see app/Http/Controllers/Landing/LandingController.php:15
 * @route '/explore'
 */
 explore.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -35,7 +35,7 @@ explore.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::explore
-* @see app/Http/Controllers/Landing/LandingController.php:14
+* @see app/Http/Controllers/Landing/LandingController.php:15
 * @route '/explore'
 */
 explore.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -45,7 +45,7 @@ explore.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::search
-* @see app/Http/Controllers/Landing/LandingController.php:45
+* @see app/Http/Controllers/Landing/LandingController.php:52
 * @route '/search/{search}'
 */
 export const search = (args: { search: string | number } | [search: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -60,7 +60,7 @@ search.definition = {
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::search
-* @see app/Http/Controllers/Landing/LandingController.php:45
+* @see app/Http/Controllers/Landing/LandingController.php:52
 * @route '/search/{search}'
 */
 search.url = (args: { search: string | number } | [search: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -87,7 +87,7 @@ search.url = (args: { search: string | number } | [search: string | number ] | s
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::search
-* @see app/Http/Controllers/Landing/LandingController.php:45
+* @see app/Http/Controllers/Landing/LandingController.php:52
 * @route '/search/{search}'
 */
 search.get = (args: { search: string | number } | [search: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -97,7 +97,7 @@ search.get = (args: { search: string | number } | [search: string | number ] | s
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::search
-* @see app/Http/Controllers/Landing/LandingController.php:45
+* @see app/Http/Controllers/Landing/LandingController.php:52
 * @route '/search/{search}'
 */
 search.head = (args: { search: string | number } | [search: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -107,7 +107,7 @@ search.head = (args: { search: string | number } | [search: string | number ] | 
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::showCompetition
-* @see app/Http/Controllers/Landing/LandingController.php:30
+* @see app/Http/Controllers/Landing/LandingController.php:37
 * @route '/competition/{comp}'
 */
 export const showCompetition = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -122,7 +122,7 @@ showCompetition.definition = {
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::showCompetition
-* @see app/Http/Controllers/Landing/LandingController.php:30
+* @see app/Http/Controllers/Landing/LandingController.php:37
 * @route '/competition/{comp}'
 */
 showCompetition.url = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -155,7 +155,7 @@ showCompetition.url = (args: { comp: number | { id: number } } | [comp: number |
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::showCompetition
-* @see app/Http/Controllers/Landing/LandingController.php:30
+* @see app/Http/Controllers/Landing/LandingController.php:37
 * @route '/competition/{comp}'
 */
 showCompetition.get = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -165,7 +165,7 @@ showCompetition.get = (args: { comp: number | { id: number } } | [comp: number |
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::showCompetition
-* @see app/Http/Controllers/Landing/LandingController.php:30
+* @see app/Http/Controllers/Landing/LandingController.php:37
 * @route '/competition/{comp}'
 */
 showCompetition.head = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -175,7 +175,7 @@ showCompetition.head = (args: { comp: number | { id: number } } | [comp: number 
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::showHeatsAndDraws
-* @see app/Http/Controllers/Landing/LandingController.php:35
+* @see app/Http/Controllers/Landing/LandingController.php:42
 * @route '/competition/{comp}/heats-and-draws'
 */
 export const showHeatsAndDraws = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -190,7 +190,7 @@ showHeatsAndDraws.definition = {
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::showHeatsAndDraws
-* @see app/Http/Controllers/Landing/LandingController.php:35
+* @see app/Http/Controllers/Landing/LandingController.php:42
 * @route '/competition/{comp}/heats-and-draws'
 */
 showHeatsAndDraws.url = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -223,7 +223,7 @@ showHeatsAndDraws.url = (args: { comp: number | { id: number } } | [comp: number
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::showHeatsAndDraws
-* @see app/Http/Controllers/Landing/LandingController.php:35
+* @see app/Http/Controllers/Landing/LandingController.php:42
 * @route '/competition/{comp}/heats-and-draws'
 */
 showHeatsAndDraws.get = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -233,7 +233,7 @@ showHeatsAndDraws.get = (args: { comp: number | { id: number } } | [comp: number
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::showHeatsAndDraws
-* @see app/Http/Controllers/Landing/LandingController.php:35
+* @see app/Http/Controllers/Landing/LandingController.php:42
 * @route '/competition/{comp}/heats-and-draws'
 */
 showHeatsAndDraws.head = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -243,7 +243,7 @@ showHeatsAndDraws.head = (args: { comp: number | { id: number } } | [comp: numbe
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::showResults
-* @see app/Http/Controllers/Landing/LandingController.php:40
+* @see app/Http/Controllers/Landing/LandingController.php:47
 * @route '/competition/{comp}/results'
 */
 export const showResults = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -258,7 +258,7 @@ showResults.definition = {
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::showResults
-* @see app/Http/Controllers/Landing/LandingController.php:40
+* @see app/Http/Controllers/Landing/LandingController.php:47
 * @route '/competition/{comp}/results'
 */
 showResults.url = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -291,7 +291,7 @@ showResults.url = (args: { comp: number | { id: number } } | [comp: number | { i
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::showResults
-* @see app/Http/Controllers/Landing/LandingController.php:40
+* @see app/Http/Controllers/Landing/LandingController.php:47
 * @route '/competition/{comp}/results'
 */
 showResults.get = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -301,7 +301,7 @@ showResults.get = (args: { comp: number | { id: number } } | [comp: number | { i
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::showResults
-* @see app/Http/Controllers/Landing/LandingController.php:40
+* @see app/Http/Controllers/Landing/LandingController.php:47
 * @route '/competition/{comp}/results'
 */
 showResults.head = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -310,8 +310,76 @@ showResults.head = (args: { comp: number | { id: number } } | [comp: number | { 
 })
 
 /**
+* @see \App\Http\Controllers\Landing\LandingController::showChampionship
+* @see app/Http/Controllers/Landing/LandingController.php:31
+* @route '/championship/{championship}'
+*/
+export const showChampionship = (args: { championship: number | { id: number } } | [championship: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: showChampionship.url(args, options),
+    method: 'get',
+})
+
+showChampionship.definition = {
+    methods: ["get","head"],
+    url: '/championship/{championship}',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\Landing\LandingController::showChampionship
+* @see app/Http/Controllers/Landing/LandingController.php:31
+* @route '/championship/{championship}'
+*/
+showChampionship.url = (args: { championship: number | { id: number } } | [championship: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { championship: args }
+    }
+
+    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+        args = { championship: args.id }
+    }
+
+    if (Array.isArray(args)) {
+        args = {
+            championship: args[0],
+        }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+        championship: typeof args.championship === 'object'
+        ? args.championship.id
+        : args.championship,
+    }
+
+    return showChampionship.definition.url
+            .replace('{championship}', parsedArgs.championship.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Landing\LandingController::showChampionship
+* @see app/Http/Controllers/Landing/LandingController.php:31
+* @route '/championship/{championship}'
+*/
+showChampionship.get = (args: { championship: number | { id: number } } | [championship: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: showChampionship.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Landing\LandingController::showChampionship
+* @see app/Http/Controllers/Landing/LandingController.php:31
+* @route '/championship/{championship}'
+*/
+showChampionship.head = (args: { championship: number | { id: number } } | [championship: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: showChampionship.url(args, options),
+    method: 'head',
+})
+
+/**
 * @see \App\Http\Controllers\Landing\LandingController::showOrganisation
-* @see app/Http/Controllers/Landing/LandingController.php:25
+* @see app/Http/Controllers/Landing/LandingController.php:26
 * @route '/{organisation}'
 */
 export const showOrganisation = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -326,7 +394,7 @@ showOrganisation.definition = {
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::showOrganisation
-* @see app/Http/Controllers/Landing/LandingController.php:25
+* @see app/Http/Controllers/Landing/LandingController.php:26
 * @route '/{organisation}'
 */
 showOrganisation.url = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -359,7 +427,7 @@ showOrganisation.url = (args: { organisation: number | { id: number } } | [organ
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::showOrganisation
-* @see app/Http/Controllers/Landing/LandingController.php:25
+* @see app/Http/Controllers/Landing/LandingController.php:26
 * @route '/{organisation}'
 */
 showOrganisation.get = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -369,7 +437,7 @@ showOrganisation.get = (args: { organisation: number | { id: number } } | [organ
 
 /**
 * @see \App\Http\Controllers\Landing\LandingController::showOrganisation
-* @see app/Http/Controllers/Landing/LandingController.php:25
+* @see app/Http/Controllers/Landing/LandingController.php:26
 * @route '/{organisation}'
 */
 showOrganisation.head = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -377,6 +445,6 @@ showOrganisation.head = (args: { organisation: number | { id: number } } | [orga
     method: 'head',
 })
 
-const LandingController = { explore, search, showCompetition, showHeatsAndDraws, showResults, showOrganisation }
+const LandingController = { explore, search, showCompetition, showHeatsAndDraws, showResults, showChampionship, showOrganisation }
 
 export default LandingController

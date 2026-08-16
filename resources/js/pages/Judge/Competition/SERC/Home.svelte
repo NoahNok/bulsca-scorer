@@ -6,32 +6,28 @@
 
 <script lang="ts">
     import {
-        index,
-        home,
         addJudge,
-    } from "@/actions/App/Http/Controllers/DigitalJudge/JudgeController";
+        detachJudge,
+        nextEntityToMark,
+        storeOverallNotes,
+    } from "@/actions/App/Http/Controllers/DigitalJudge/SERC/SERCJudgeController";
 
     import AppHead from "@/components/AppHead.svelte";
     import Button from "@/components/Button.svelte";
-
-    import { appState } from "@/lib/stores/appState";
-    import { detachJudge } from "@/routes/judge/competition/serc";
+    import GenericDialog from "@/components/GenericDialog.svelte";
 
     import type { Competition, Draw, Judge, SERC } from "@/types/base";
-    import { Form, page, Link, router } from "@inertiajs/svelte";
+    import { FlashActionType } from "@/types/flash";
+    import { page, Link, Form } from "@inertiajs/svelte";
     import {
         ArrowRight,
-        Check,
-        Clipboard,
-        Cross,
-        Home,
         Info,
         LifeBuoy,
         Plus,
+        Save,
         Shuffle,
         X,
     } from "@lucide/svelte";
-    import { Label } from "bits-ui";
 
     const user = $derived(page.props.auth.user);
 
@@ -51,6 +47,10 @@
 
     const showDraw = false;
     const isHead = false;
+
+    let isOverallNotesModalOpen = $state<boolean>(
+        page.flash.action?.type == FlashActionType.OVERALL_NOTES,
+    );
 </script>
 
 <AppHead title="Dashboard" />
@@ -91,11 +91,14 @@
 
                         {#if judges.length == 1}
                             <Link
-                                href={addJudge(competition, {
-                                    query: {
-                                        swap: true,
+                                href={addJudge(
+                                    { competition: competition, serc: serc },
+                                    {
+                                        query: {
+                                            swap: true,
+                                        },
                                     },
-                                })}
+                                )}
                             >
                                 <Shuffle
                                     size={40}
@@ -107,6 +110,7 @@
                                 only={["judges"]}
                                 href={detachJudge({
                                     competition: competition,
+                                    serc: serc,
                                     judge: judge,
                                 })}
                             >
@@ -121,7 +125,7 @@
             {/each}
         </div>
 
-        <Link href={addJudge(competition)}>
+        <Link href={addJudge({ competition: competition, serc: serc })}>
             <Button
                 label="Add Casualty/Objective"
                 variant="secondary"
@@ -132,12 +136,14 @@
 
         <hr class="spacer mb-4!" />
 
-        <Button
-            variant="success"
-            icon={ArrowRight}
-            label={`Start Judging ${tank ? "Tank " + tank : ""}`}
-            class="w-full"
-        />
+        <Link href={nextEntityToMark({ competition: competition, serc: serc })}>
+            <Button
+                variant="success"
+                icon={ArrowRight}
+                label={`Start Judging ${tank ? "Tank " + tank : ""}`}
+                class="w-full"
+            />
+        </Link>
 
         <Button
             label="Tutorial"
@@ -183,3 +189,32 @@
         {/if}
     </div>
 </section>
+
+<GenericDialog title="Overall Notes" open={isOverallNotesModalOpen}>
+    <Form
+        action={storeOverallNotes({ competition: competition, serc: serc })}
+        disableWhileProcessing={true}
+        id="overall-notes"
+        onFinish={() => {
+            isOverallNotesModalOpen = false;
+        }}
+        options={{
+            only: [],
+        }}
+    >
+        {#snippet children({ errors, processing })}
+            <textarea
+                rows="5"
+                placeholder="Type overall feedback here, or leave it blank..."
+                class="w-full border hover:border-gray-400 p-3 h-max focus:border-gray-400 outline-hidden rounded-md"
+                name="note"
+                id=""
+                value={page.flash.action?.data ?? ""}
+            ></textarea>
+        {/snippet}
+    </Form>
+    {#snippet footer()}
+        <Button label="Save" variant="success" icon={Save} form="overall-notes"
+        ></Button>
+    {/snippet}
+</GenericDialog>

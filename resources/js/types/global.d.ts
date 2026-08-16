@@ -1,4 +1,5 @@
 import type { Auth } from '@/types/auth';
+import { FlashAction, type FlashToast } from '@/types/flash';
 
 // Extend ImportMeta interface for Vite...
 declare module 'vite/client' {
@@ -24,5 +25,10 @@ declare module '@inertiajs/core' {
             sidebarOpen: boolean;
             [key: string]: unknown;
         };
+
+        flashDataType: {
+            action?: FlashAction
+            toast?: FlashToast
+        }
     }
 }
