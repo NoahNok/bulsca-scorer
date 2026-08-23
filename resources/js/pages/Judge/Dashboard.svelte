@@ -91,7 +91,7 @@
                         type="number"
                     />
 
-                    <Button variant="primary" class="" icon={ArrowRight} />
+                    <Button variant="primary" class="mr-0!" icon={ArrowRight} />
                 </div>
                 {#if errors.pin}
                     <small
@@ -107,7 +107,7 @@
     <br />
 
     <h4 class=" capitalize!">Previously</h4>
-    <div>
+    <div class="space-y-2">
         {#each competitions as competition}
             <Link href={home(competition)} class="flex space-x-3 group">
                 <div

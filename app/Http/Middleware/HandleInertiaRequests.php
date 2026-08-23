@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\DigitalJudge\DigitalJudge;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -40,6 +41,10 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user()
             ],
+            'judge' => [
+                'isHeadRef' => DigitalJudge::isClientHeadJudge()
+            ],
+            'env_local' => env('APP_ENV') == 'local'
             //
         ];
     }

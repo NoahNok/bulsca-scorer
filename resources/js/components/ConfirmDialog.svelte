@@ -26,7 +26,12 @@
         cancelLabel?: string;
         confirmVariant?: "primary" | "secondary" | "success" | "danger";
         triggerLabel?: string;
-        triggerVariant?: "primary" | "secondary" | "success" | "danger";
+        triggerVariant?:
+            | "primary"
+            | "secondary"
+            | "success"
+            | "danger"
+            | "white";
         triggerClass?: string;
         triggerType?: "button" | "submit" | "reset";
         triggerIcon?: any;

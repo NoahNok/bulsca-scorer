@@ -6,6 +6,9 @@ export type Competition = {
     where?: string
     when?: string
 
+    show_teams_to_judges?: boolean
+
+
 }
 
 
@@ -60,6 +63,11 @@ export type MarkingPointChoice = {
 
 export type SERC = Event & {
     judges: Judge[]
+
+}
+
+export type SpeedEvent = Event & {
+    max_lanes: number
 }
 
 export type Entity = {
@@ -102,4 +110,23 @@ export type JudgeNotes = {
 export type Note = {
     entity: Entity
     note: string
+}
+
+export type CurrentDraw = {
+    text: string
+    percent: number
+    percent_unit: number
+    index: number
+    total: number
+}
+
+export type Heat = {
+    heat: number
+    complete: boolean
+    lanes?: Lane[]
+}
+
+export type Lane = {
+    lane: number
+    entity: Entity
 }

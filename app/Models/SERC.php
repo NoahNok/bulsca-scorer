@@ -211,6 +211,8 @@ class SERC extends Event
 
         $data = [];
 
+        $total = -1;
+
         if (!$draw) {
             $data = ["text" => -1, "percent" => 100, "percent_unit" => 50];
         } else if ($use_tanks) {
@@ -222,6 +224,9 @@ class SERC extends Event
         }
 
         $data["percent"] = min($data['percent'], 100);
+
+        $data["index"] = $draw->draw;
+        $data["total"] = $total;
 
 
         return $data;

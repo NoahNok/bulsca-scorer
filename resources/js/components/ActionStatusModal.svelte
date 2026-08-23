@@ -27,16 +27,16 @@
 
     let _currentId = 0;
 
-    function showLoading() {
+    export function showLoading() {
         status = "loading";
         open = true;
     }
 
-    function showSuccess() {
+    export function showSuccess() {
         status = "success";
     }
 
-    function showError() {
+    export function showError() {
         status = "error";
     }
 
@@ -67,6 +67,7 @@
             // wait .5s so it doesn't feel like a flash
             await new Promise((resolve) => setTimeout(resolve, 500));
             showError();
+            setMessage("Something went wrong! Click close and try again.");
             return false;
         }
     }
@@ -178,6 +179,15 @@
         </div>
         {#if status === "success" && success}
             {@render success?.()}
+        {/if}
+
+        {#if status === "error"}
+            <Button
+                label="Close"
+                class="w-full"
+                variant="danger"
+                onclick={handleCancel}
+            />
         {/if}
     </div>
 </GenericDialog>

@@ -13,6 +13,7 @@ use App\Models\CompetitionTeam;
 use App\Models\Event\Disqualification;
 use App\Models\Event\Penalty;
 use App\Models\Event\ScoringSchema;
+use App\Models\Interfaces\IJsonable;
 use App\Models\League;
 use App\Models\SERCResult;
 use App\Models\SpeedResult;
@@ -24,9 +25,10 @@ use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
+use Override;
 use ShiftOneLabs\LaravelCascadeDeletes\CascadesDeletes;
 
-abstract class Event extends Model
+abstract class Event extends Model implements IJsonable
 {
 
     use CascadesDeletes, RecordActivity;
@@ -202,5 +204,14 @@ abstract class Event extends Model
     public function getScorableEntities()
     {
         return $this->getScorableEntity()::where('competition', $this->competition)->get();
+    }
+
+    #[Override]
+    public function jsonable(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->getName()
+        ];
     }
 }

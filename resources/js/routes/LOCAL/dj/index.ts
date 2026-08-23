@@ -1,6 +1,6 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition } from './../../../wayfinder'
 /**
-* @see routes/digitaljudge.php:177
+* @see routes/digitaljudge.php:194
 * @route '//judge.localhost/toggle-head-ref'
 */
 export const toggleHeadRef = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -14,7 +14,7 @@ toggleHeadRef.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see routes/digitaljudge.php:177
+* @see routes/digitaljudge.php:194
 * @route '//judge.localhost/toggle-head-ref'
 */
 toggleHeadRef.url = (options?: RouteQueryOptions) => {
@@ -22,7 +22,7 @@ toggleHeadRef.url = (options?: RouteQueryOptions) => {
 }
 
 /**
-* @see routes/digitaljudge.php:177
+* @see routes/digitaljudge.php:194
 * @route '//judge.localhost/toggle-head-ref'
 */
 toggleHeadRef.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -31,7 +31,7 @@ toggleHeadRef.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 
 /**
-* @see routes/digitaljudge.php:177
+* @see routes/digitaljudge.php:194
 * @route '//judge.localhost/toggle-head-ref'
 */
 toggleHeadRef.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({

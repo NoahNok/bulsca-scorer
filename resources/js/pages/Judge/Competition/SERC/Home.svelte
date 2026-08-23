@@ -37,15 +37,16 @@
         judges,
         tank,
         draws,
+        show_team_names,
     }: {
         competition: Competition;
         serc: SERC;
         judges: Judge[];
         tank?: number;
         draws?: Draw[];
+        show_team_names: boolean;
     } = $props();
 
-    const showDraw = false;
     const isHead = false;
 
     let isOverallNotesModalOpen = $state<boolean>(
@@ -160,7 +161,7 @@
             {/if} Order
         </h4>
 
-        {#if showDraw || isHead}
+        {#if show_team_names || page.props.judge.isHeadRef}
             <ul class=" list-none -mt-2 w-full">
                 {#each draws as draw}
                     {#if isHead}

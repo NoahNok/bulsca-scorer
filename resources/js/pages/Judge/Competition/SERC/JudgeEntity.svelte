@@ -40,6 +40,7 @@
         JudgeMarks,
         JudgeNotes,
         PreviousMarks,
+        CurrentDraw,
     } from "@/types/base";
     import {
         Form,
@@ -81,11 +82,15 @@
         serc,
         judges,
         entity,
+        draw,
+        show_team_names,
     }: {
         competition: Competition;
         serc: SERC;
         judges: Judge[];
         entity: Entity;
+        draw: CurrentDraw;
+        show_team_names: boolean;
     } = $props();
 
     $effect(() => {
@@ -258,8 +263,21 @@
     <h2 class="">{serc.name}</h2>
     <br />
 
-    <div class="flex item-center justify-between">
-        <p class="text-bulsca font-bold text-xl">{entity.name}</p>
+    <div class="flex item-center justify-between mb-1">
+        <p class="text-bulsca font-bold text-2xl">
+            {competition.show_teams_to_judges || page.props.judge.isHeadRef
+                ? entity.name
+                : draw.text}
+        </p>
+        {#if competition.show_teams_to_judges || page.props.judge.isHeadRef}
+            <div class="flex items-center">
+                <p
+                    class="text-sm text-gray-500 font-semibold whitespace-nowrap"
+                >
+                    {draw.text}
+                </p>
+            </div>
+        {/if}
     </div>
 
     <div class="flex flex-col space-y-3">

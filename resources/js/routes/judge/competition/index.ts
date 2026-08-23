@@ -1,5 +1,6 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../wayfinder'
 import serc5c2b2c from './serc'
+import event from './event'
 /**
 * @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::serc
 * @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:77
@@ -67,6 +68,7 @@ serc.head = (args: { competition: number | { id: number }, serc: number | { id: 
 
 const competition = {
     serc: Object.assign(serc, serc5c2b2c),
+    event: Object.assign(event, event),
 }
 
 export default competition

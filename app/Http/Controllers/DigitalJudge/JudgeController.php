@@ -140,11 +140,21 @@ class JudgeController extends Controller
                 return [
                     'id' => $serc->id,
                     'name' => $serc->getName(),
-                    'type' => 'serc',
+                    'type' => 'speed',
                     'completed' => $serc->completed || $serc->isComplete(),
                     'confirmed' => $serc->digitalJudgeConfirmed,
                 ];
             })->toArray(),
         ]);
+    }
+
+    public function toggleReferee()
+    {
+
+        $isReferee = DigitalJudge::isClientHeadJudge();
+
+        DigitalJudge::setClientHeadJudge(!$isReferee);
+
+        Inertia::flash('toast', ['variant' => 'success', 'title' => $isReferee ? "You are nolonger a referee" : "You are now a referee"]);
     }
 }

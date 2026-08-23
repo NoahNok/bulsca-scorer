@@ -124,6 +124,50 @@ joinCompetition.post = (options?: RouteQueryOptions): RouteDefinition<'post'> =>
 })
 
 /**
+* @see \App\Http\Controllers\DigitalJudge\JudgeController::refereeToggle
+* @see app/Http/Controllers/DigitalJudge/JudgeController.php:151
+* @route '//judge.localhost/v2/switchreferee'
+*/
+export const refereeToggle = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: refereeToggle.url(options),
+    method: 'get',
+})
+
+refereeToggle.definition = {
+    methods: ["get","head"],
+    url: '//judge.localhost/v2/switchreferee',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\DigitalJudge\JudgeController::refereeToggle
+* @see app/Http/Controllers/DigitalJudge/JudgeController.php:151
+* @route '//judge.localhost/v2/switchreferee'
+*/
+refereeToggle.url = (options?: RouteQueryOptions) => {
+    return refereeToggle.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\DigitalJudge\JudgeController::refereeToggle
+* @see app/Http/Controllers/DigitalJudge/JudgeController.php:151
+* @route '//judge.localhost/v2/switchreferee'
+*/
+refereeToggle.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: refereeToggle.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\DigitalJudge\JudgeController::refereeToggle
+* @see app/Http/Controllers/DigitalJudge/JudgeController.php:151
+* @route '//judge.localhost/v2/switchreferee'
+*/
+refereeToggle.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: refereeToggle.url(options),
+    method: 'head',
+})
+
+/**
 * @see \App\Http\Controllers\DigitalJudge\JudgeController::competition
 * @see app/Http/Controllers/DigitalJudge/JudgeController.php:116
 * @route '//judge.localhost/v2/{competition}'
@@ -195,6 +239,7 @@ const judge = {
     login: Object.assign(login, loginDf2c2a),
     index: Object.assign(index, index),
     joinCompetition: Object.assign(joinCompetition, joinCompetition),
+    refereeToggle: Object.assign(refereeToggle, refereeToggle),
     competition: Object.assign(competition, competition633808),
 }
 

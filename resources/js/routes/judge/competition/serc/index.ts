@@ -73,7 +73,7 @@ confirm.head = (args: { competition: number | { id: number }, serc: number | { i
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::addJudge
-* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:130
+* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:131
 * @route '//judge.localhost/v2/{competition}/serc/{serc}/add-judge'
 */
 export const addJudge = (args: { competition: number | { id: number }, serc: number | { id: number } } | [competition: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -88,7 +88,7 @@ addJudge.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::addJudge
-* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:130
+* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:131
 * @route '//judge.localhost/v2/{competition}/serc/{serc}/add-judge'
 */
 addJudge.url = (args: { competition: number | { id: number }, serc: number | { id: number } } | [competition: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -118,7 +118,7 @@ addJudge.url = (args: { competition: number | { id: number }, serc: number | { i
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::addJudge
-* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:130
+* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:131
 * @route '//judge.localhost/v2/{competition}/serc/{serc}/add-judge'
 */
 addJudge.get = (args: { competition: number | { id: number }, serc: number | { id: number } } | [competition: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -128,7 +128,7 @@ addJudge.get = (args: { competition: number | { id: number }, serc: number | { i
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::addJudge
-* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:130
+* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:131
 * @route '//judge.localhost/v2/{competition}/serc/{serc}/add-judge'
 */
 addJudge.head = (args: { competition: number | { id: number }, serc: number | { id: number } } | [competition: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -138,7 +138,7 @@ addJudge.head = (args: { competition: number | { id: number }, serc: number | { 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::attachJudge
-* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:156
+* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:157
 * @route '//judge.localhost/v2/{competition}/serc/{serc}/attach-judge/{judge}'
 */
 export const attachJudge = (args: { competition: number | { id: number }, serc: number | { id: number }, judge: number | { id: number } } | [competition: number | { id: number }, serc: number | { id: number }, judge: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -153,7 +153,7 @@ attachJudge.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::attachJudge
-* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:156
+* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:157
 * @route '//judge.localhost/v2/{competition}/serc/{serc}/attach-judge/{judge}'
 */
 attachJudge.url = (args: { competition: number | { id: number }, serc: number | { id: number }, judge: number | { id: number } } | [competition: number | { id: number }, serc: number | { id: number }, judge: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -188,7 +188,7 @@ attachJudge.url = (args: { competition: number | { id: number }, serc: number | 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::attachJudge
-* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:156
+* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:157
 * @route '//judge.localhost/v2/{competition}/serc/{serc}/attach-judge/{judge}'
 */
 attachJudge.get = (args: { competition: number | { id: number }, serc: number | { id: number }, judge: number | { id: number } } | [competition: number | { id: number }, serc: number | { id: number }, judge: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -198,7 +198,7 @@ attachJudge.get = (args: { competition: number | { id: number }, serc: number | 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::attachJudge
-* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:156
+* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:157
 * @route '//judge.localhost/v2/{competition}/serc/{serc}/attach-judge/{judge}'
 */
 attachJudge.head = (args: { competition: number | { id: number }, serc: number | { id: number }, judge: number | { id: number } } | [competition: number | { id: number }, serc: number | { id: number }, judge: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -208,7 +208,7 @@ attachJudge.head = (args: { competition: number | { id: number }, serc: number |
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::detachJudge
-* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:168
+* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:169
 * @route '//judge.localhost/v2/{competition}/serc/{serc}/detach-judge/{judge}'
 */
 export const detachJudge = (args: { competition: number | { id: number }, serc: number | { id: number }, judge: number | { id: number } } | [competition: number | { id: number }, serc: number | { id: number }, judge: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -223,7 +223,7 @@ detachJudge.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::detachJudge
-* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:168
+* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:169
 * @route '//judge.localhost/v2/{competition}/serc/{serc}/detach-judge/{judge}'
 */
 detachJudge.url = (args: { competition: number | { id: number }, serc: number | { id: number }, judge: number | { id: number } } | [competition: number | { id: number }, serc: number | { id: number }, judge: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -258,7 +258,7 @@ detachJudge.url = (args: { competition: number | { id: number }, serc: number | 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::detachJudge
-* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:168
+* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:169
 * @route '//judge.localhost/v2/{competition}/serc/{serc}/detach-judge/{judge}'
 */
 detachJudge.get = (args: { competition: number | { id: number }, serc: number | { id: number }, judge: number | { id: number } } | [competition: number | { id: number }, serc: number | { id: number }, judge: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -268,7 +268,7 @@ detachJudge.get = (args: { competition: number | { id: number }, serc: number | 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::detachJudge
-* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:168
+* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:169
 * @route '//judge.localhost/v2/{competition}/serc/{serc}/detach-judge/{judge}'
 */
 detachJudge.head = (args: { competition: number | { id: number }, serc: number | { id: number }, judge: number | { id: number } } | [competition: number | { id: number }, serc: number | { id: number }, judge: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -411,7 +411,7 @@ setTank.head = (args: { competition: number | { id: number }, serc: number | { i
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::previousMarks
-* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:353
+* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:356
 * @route '//judge.localhost/v2/{competition}/serc/{serc}/mark/previous-marks/{judge_id}'
 */
 export const previousMarks = (args: { competition: string | number, serc: string | number, judge_id: string | number } | [competition: string | number, serc: string | number, judge_id: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -426,7 +426,7 @@ previousMarks.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::previousMarks
-* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:353
+* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:356
 * @route '//judge.localhost/v2/{competition}/serc/{serc}/mark/previous-marks/{judge_id}'
 */
 previousMarks.url = (args: { competition: string | number, serc: string | number, judge_id: string | number } | [competition: string | number, serc: string | number, judge_id: string | number ], options?: RouteQueryOptions) => {
@@ -455,7 +455,7 @@ previousMarks.url = (args: { competition: string | number, serc: string | number
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::previousMarks
-* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:353
+* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:356
 * @route '//judge.localhost/v2/{competition}/serc/{serc}/mark/previous-marks/{judge_id}'
 */
 previousMarks.get = (args: { competition: string | number, serc: string | number, judge_id: string | number } | [competition: string | number, serc: string | number, judge_id: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -465,7 +465,7 @@ previousMarks.get = (args: { competition: string | number, serc: string | number
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::previousMarks
-* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:353
+* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:356
 * @route '//judge.localhost/v2/{competition}/serc/{serc}/mark/previous-marks/{judge_id}'
 */
 previousMarks.head = (args: { competition: string | number, serc: string | number, judge_id: string | number } | [competition: string | number, serc: string | number, judge_id: string | number ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({

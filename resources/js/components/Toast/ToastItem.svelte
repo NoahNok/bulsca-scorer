@@ -26,7 +26,7 @@
             return "border-red-200 bg-red-50 text-red-900 ";
         }
 
-        return "border-border bg-card text-card-foreground";
+        return "border-cyan-200 bg-cyan-50 text-cyan-900";
     }
 
     export let toast: ToastItem;

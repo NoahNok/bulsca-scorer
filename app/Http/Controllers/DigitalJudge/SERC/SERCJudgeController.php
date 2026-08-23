@@ -100,7 +100,7 @@ class SERCJudgeController extends Controller
         }
 
         return Inertia::render('Judge/Competition/SERC/Home', [
-            'competition' => $competition->only(['id', 'name']),
+            'competition' => $competition->only(['id', 'name', 'show_teams_to_judges']),
             'serc' => $serc->only(['name', 'id']),
             'judges' => $judges->map(function ($judge) {
                 return [
@@ -123,7 +123,8 @@ class SERCJudgeController extends Controller
                         'name' => $draw->entity->getName($competition)
                     ]
                 ];
-            })->values()
+            })->values(),
+
         ]);
     }
 
@@ -238,7 +239,7 @@ class SERCJudgeController extends Controller
         DigitalJudge::setStatus($competition, $judgeName . ' | Marking ' . $team->getName() . ' (' . $draw_info['text'] . ')', $serc);
 
         return Inertia::render("Judge/Competition/SERC/JudgeEntity", [
-            'competition' => $competition->only(['id', 'name']),
+            'competition' => $competition->only(['id', 'name', 'show_teams_to_judges']),
             'serc' => $serc->only(['id', 'name']),
             'judges' => DigitalJudge::getClientJudges()->map(function ($judge) {
                 return [
@@ -263,7 +264,9 @@ class SERCJudgeController extends Controller
             'entity' => [
                 'id' => $team->id,
                 'name' => $team->getName()
-            ]
+            ],
+            'draw' => $serc->getPositionInDraw($team),
+
         ]);
     }
 

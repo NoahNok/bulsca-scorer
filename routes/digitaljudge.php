@@ -6,9 +6,11 @@ use App\Http\Controllers\DigitalJudge\DigitalJudgeController;
 use App\Http\Controllers\DigitalJudge\DJDQController;
 use App\Http\Controllers\DigitalJudge\DJJudgingController;
 use App\Http\Controllers\DigitalJudge\DJManageController;
+use App\Http\Controllers\DigitalJudge\Event\EventJudgeController;
 use App\Http\Controllers\DigitalJudge\JudgeController;
 use App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController;
 use App\Http\Controllers\DigitalJudge\SpeedJudgingController;
+use App\Http\Middleware\DigitalJudge\SERC\MustHaveJudgeSelected;
 use Illuminate\Support\Facades\Route;
 
 
@@ -26,34 +28,49 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
 
             Route::post('join', [JudgeController::class, 'joinCompetition'])->name('judge.join-competition');
 
+
+            if (env('APP_ENV') == 'local') {
+                Route::get('switchreferee', [JudgeController::class, 'toggleReferee'])->name('judge.referee-toggle');
+            }
+
             Route::prefix('{competition}')->group(function () {
                 Route::get('', [JudgeController::class, 'home'])->name('judge.competition');
                 Route::prefix('serc/{serc}')->group(function () {
 
-
-
                     Route::get('confirm/{judge}', [SERCJudgeController::class, 'confirmJudge'])->name('judge.competition.serc.confirm');
                     Route::post('confirm', [SERCJudgeController::class, 'confirmJudgePost'])->name('judge.competition.serc.confirm.post');
 
-                    Route::get('add-judge', [SERCJudgeController::class, 'addJudge'])->name('judge.competition.serc.add-judge');
-                    Route::get('attach-judge/{judge}', [SERCJudgeController::class, 'attachJudge'])->name('judge.competition.serc.attach-judge');
-                    Route::get('detach-judge/{judge}', [SERCJudgeController::class, 'detachJudge'])->name('judge.competition.serc.detach-judge');
+                    Route::middleware(MustHaveJudgeSelected::class)->group(function () {
+                        Route::get('add-judge', [SERCJudgeController::class, 'addJudge'])->name('judge.competition.serc.add-judge');
+                        Route::get('attach-judge/{judge}', [SERCJudgeController::class, 'attachJudge'])->name('judge.competition.serc.attach-judge');
+                        Route::get('detach-judge/{judge}', [SERCJudgeController::class, 'detachJudge'])->name('judge.competition.serc.detach-judge');
 
-                    Route::get('select-tank', [SERCJudgeController::class, 'selectTank'])->name('judge.competition.serc.select-tank');
-                    Route::get('select-tank/{tank}', [SERCJudgeController::class, 'setTank'])->name('judge.competition.serc.set-tank');
+                        Route::get('select-tank', [SERCJudgeController::class, 'selectTank'])->name('judge.competition.serc.select-tank');
+                        Route::get('select-tank/{tank}', [SERCJudgeController::class, 'setTank'])->name('judge.competition.serc.set-tank');
 
-                    Route::get('', [SERCJudgeController::class, 'home'])->name('judge.competition.serc');
+                        Route::get('', [SERCJudgeController::class, 'home'])->name('judge.competition.serc');
 
-                    Route::prefix('mark')->group(function () {
-                        Route::get('next', [SERCJudgeController::class, 'nextEntityToMark'])->name('judge.competition.serc.mark.next');
-                        Route::get('e/{entity_id}', [SERCJudgeController::class, 'markEntity'])->name('judge.competition.serc.mark.entity');
-                        Route::post('e/{entity_id}', [SERCJudgeController::class, 'storeEntityMarks'])->name('judge.competition.serc.mark.store');
+                        Route::prefix('mark')->group(function () {
+                            Route::get('next', [SERCJudgeController::class, 'nextEntityToMark'])->name('judge.competition.serc.mark.next');
+                            Route::get('e/{entity_id}', [SERCJudgeController::class, 'markEntity'])->name('judge.competition.serc.mark.entity');
+                            Route::post('e/{entity_id}', [SERCJudgeController::class, 'storeEntityMarks'])->name('judge.competition.serc.mark.store');
 
-                        Route::get('notes', [SERCJudgeController::class, 'getJudgeNotes'])->name('judge.competition.serc.mark.notes');
-                        Route::get('previous-marks/{judge_id}', [SERCJudgeController::class, 'getPreviousMarks'])->name('judge.competition.serc.previous-marks');
+                            Route::get('notes', [SERCJudgeController::class, 'getJudgeNotes'])->name('judge.competition.serc.mark.notes');
+                            Route::get('previous-marks/{judge_id}', [SERCJudgeController::class, 'getPreviousMarks'])->name('judge.competition.serc.previous-marks');
+                        });
+
+                        Route::post('overall-notes', [SERCJudgeController::class, 'storeOverallNotes'])->name('judge.competition.serc.overall-notes.store');
                     });
+                });
 
-                    Route::post('overall-notes', [SERCJudgeController::class, 'storeOverallNotes'])->name('judge.competition.serc.overall-notes.store');
+                Route::prefix('event/{event}')->group(function () {
+
+                    Route::prefix('time')->group(function () {
+                        Route::get('select-heat', [EventJudgeController::class, 'selectTimeHeat'])->name('judge.competition.event.time.select-heat');
+
+                        Route::get('mark/{heat}', [EventJudgeController::class, 'markTime'])->name('judge.competition.event.time.mark');
+                        Route::post('mark/{heat}', [EventJudgeController::class, 'storeTime'])->name('judge.competition.event.time.mark.store');
+                    });
                 });
             });
         });

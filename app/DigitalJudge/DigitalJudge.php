@@ -108,6 +108,11 @@ class DigitalJudge
         return SERCJudge::find(Session::get('digitalJudgeJudgeId', []));
     }
 
+    public static function getClientJudgeIds()
+    {
+        return Session::get('digitalJudgeJudgeId', []);
+    }
+
     public static function clientUrlAndSessionJudgeMatch(): bool
     {
 

@@ -1,5 +1,6 @@
 import JudgeController from './JudgeController'
 import SERC from './SERC'
+import Event from './Event'
 import DigitalJudgeController from './DigitalJudgeController'
 import DJJudgingController from './DJJudgingController'
 import SpeedJudgingController from './SpeedJudgingController'
@@ -9,6 +10,7 @@ import DJManageController from './DJManageController'
 const DigitalJudge = {
     JudgeController: Object.assign(JudgeController, JudgeController),
     SERC: Object.assign(SERC, SERC),
+    Event: Object.assign(Event, Event),
     DigitalJudgeController: Object.assign(DigitalJudgeController, DigitalJudgeController),
     DJJudgingController: Object.assign(DJJudgingController, DJJudgingController),
     SpeedJudgingController: Object.assign(SpeedJudgingController, SpeedJudgingController),

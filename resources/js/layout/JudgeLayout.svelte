@@ -1,11 +1,16 @@
 <script lang="ts">
-    import { home } from "@/actions/App/Http/Controllers/DigitalJudge/JudgeController";
+    import {
+        home,
+        toggleReferee,
+    } from "@/actions/App/Http/Controllers/DigitalJudge/JudgeController";
     import Button from "@/components/Button.svelte";
+    import ConfirmDialog from "@/components/ConfirmDialog.svelte";
     import type { DialogControls } from "@/components/GenericDialog.svelte";
     import GenericDialog from "@/components/GenericDialog.svelte";
     import ToastViewport from "@/components/Toast/ToastViewport.svelte";
     import confirmStore from "@/lib/confirm";
     import { toast } from "@/lib/toast.svelte";
+    import { index } from "@/routes/judge";
 
     import { event } from "@/routes/live/dqs";
     import type { Competition, SERC, Event } from "@/types/base";
@@ -45,6 +50,20 @@
     };
 </script>
 
+{#if page.props.judge.isHeadRef}
+    <div
+        class="fixed top-0 left-0 w-screen bg-se text-white font-archivo text-center"
+    >
+        <p>Referee Mode</p>
+    </div>
+{/if}
+
+{#if page.props.env_local}
+    <div class="fixed top-50 -left-13 bg-red-500 p-2 rotate-90">
+        <Link href={toggleReferee()}>TOGGLE REFEREE</Link>
+    </div>
+{/if}
+
 <div
     class=" p-6 sm:max-w-[70%] xl:max-w-[50%] 2xl:max-w-[40%] sm:mx-auto h-screen"
 >
@@ -56,13 +75,18 @@
         {#if nav}
             {@render nav?.()}
         {:else}
-            <Link href={home(competition)} class="mr-auto">
-                <Button
-                    label="Home"
-                    variant="white"
-                    class="w-full py-1 border border-black/10"
+            <div class="mr-auto">
+                <ConfirmDialog
+                    triggerLabel="Exit"
+                    triggerClass=" py-1! border! border-black/10!"
+                    triggerVariant="white"
+                    title="Exit Competition"
+                    description="Exit this competition? You can always come back later."
+                    onConfirm={() => {
+                        router.visit(index());
+                    }}
                 />
-            </Link>
+            </div>
 
             <Link herf="?" class="mx-auto">
                 <Button

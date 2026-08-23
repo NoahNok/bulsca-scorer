@@ -6,6 +6,8 @@
 </script>
 
 <script lang="ts">
+    import { selectTimeHeat } from "@/actions/App/Http/Controllers/DigitalJudge/Event/EventJudgeController";
+
     import { home } from "@/actions/App/Http/Controllers/DigitalJudge/JudgeController";
     import { confirmJudge } from "@/actions/App/Http/Controllers/DigitalJudge/SERC/SERCJudgeController";
 
@@ -252,8 +254,11 @@
                     <h3>{speed.name}</h3>
                 {/if}
 
-                <a
-                    href="#time-entry"
+                <Link
+                    href={selectTimeHeat({
+                        competition: competition,
+                        event: speed,
+                    })}
                     class="flex items-center
                     cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1"
                 >
@@ -273,7 +278,7 @@
                             d="m8.25 4.5 7.5 7.5-7.5 7.5"
                         ></path>
                     </svg>
-                </a>
+                </Link>
 
                 <a
                     href="#oof-entry"

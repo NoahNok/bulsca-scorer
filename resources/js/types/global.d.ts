@@ -23,6 +23,10 @@ declare module '@inertiajs/core' {
             name: string;
             auth: Auth;
             sidebarOpen: boolean;
+            judge: {
+                isHeadRef: boolean
+            }
+            env_local: boolean
             [key: string]: unknown;
         };
 
