@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\DigitalJudge\Event;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\DigitalJudge\Event\StoreHeatOOFRequest;
 use App\Http\Requests\DigitalJudge\Event\StoreHeatTimesRequest;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
+use App\Models\EventOOF;
 use App\Models\SpeedResult;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -23,7 +25,6 @@ class EventJudgeController extends Controller
 
 
             $missingResult = false;
-
             // Code that checks if each team has a reuslt for the event
             foreach ($lanes as $team) {
                 $sr = $team->entity->speedResults->where('event', $event->id)->first();
@@ -39,7 +40,6 @@ class EventJudgeController extends Controller
                 'complete' => !$missingResult
             ];
         }
-
 
         return Inertia::render('Judge/Competition/Speed/Time/SelectHeat', [
             'competition' => $competition->only(['id', 'name']),
@@ -124,6 +124,82 @@ class EventJudgeController extends Controller
 
 
             $sr->save();
+        }
+
+        return response()->json(['hasNextHeat' => $heat < $event->getMaxHeats()]);
+    }
+
+    // ORDER OF FINISH
+    public function selectOOFHeat(Competition $competition, CompetitionSpeedEvent $event)
+    {
+
+        $heats = [];
+
+        foreach (
+            $event->getHeats()->with([
+                'oofs' => function ($query) use ($event) {
+                    $query->where('event', $event->id);
+                },
+            ])->get()->sortBy('heat')->groupBy('heat') as $heat => $lanes
+        ) {
+
+
+            $hasResult = false;
+
+            foreach ($lanes as $lane) {
+                if ($lane->oofs->count() > 0) {
+                    $hasResult = true;
+                    break;
+                }
+            }
+
+            $heats[] = [
+                'heat' => $heat,
+                'complete' => $hasResult
+            ];
+        }
+
+        return Inertia::render('Judge/Competition/Speed/OOF/SelectHeat', [
+            'competition' => $competition->only(['id', 'name']),
+            'event' => $event->jsonable(),
+            'heats' => $heats,
+
+        ]);
+    }
+
+    public function markOOF(Competition $competition, CompetitionSpeedEvent $event, int $heat)
+    {
+        return Inertia::render('Judge/Competition/Speed/OOF/MarkOOF', [
+            'competition' => $competition->only(['id', 'name']),
+            'event' => $event->jsonable(),
+            'heat' => ['heat' => $heat, 'complete' => false, 'lanes' => $event->getHeats()->where('heat', $heat)->orderBy('lane')->get()->map(function ($lane) {
+                return [
+                    'lane' => $lane->lane,
+                    'entity' => $lane->entity->jsonable()
+                ];
+            })]
+        ]);
+    }
+
+    public function storeOOF(Competition $competition, CompetitionSpeedEvent $event, int $heat, StoreHeatOOFRequest $request)
+    {
+        $data = $request->validated();
+
+
+
+        foreach ($data as $res) {
+            if (!array_key_exists('oof', $res)) continue;
+
+            // This will exist as the request validator ensures it will
+            $entity = $event->getScorableEntity()::find($res['entity']['id']);
+
+            $heatlane = $event->getHeats()->whereMorphedTo('entity', $entity)->first();
+
+            $eOof = EventOOF::firstOrNew(['heat_lane' => $heatlane->id, 'event' => $event->id]);
+
+            $eOof->oof = $res['oof'];
+
+            $eOof->save();
         }
 
         return response()->json(['hasNextHeat' => $heat < $event->getMaxHeats()]);

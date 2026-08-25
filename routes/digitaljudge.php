@@ -71,6 +71,13 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
                         Route::get('mark/{heat}', [EventJudgeController::class, 'markTime'])->name('judge.competition.event.time.mark');
                         Route::post('mark/{heat}', [EventJudgeController::class, 'storeTime'])->name('judge.competition.event.time.mark.store');
                     });
+
+                    Route::prefix('oof')->group(function () {
+                        Route::get('select-heat', [EventJudgeController::class, 'selectOOFHeat'])->name('judge.competition.event.oof.select-heat');
+
+                        Route::get('mark/{heat}', [EventJudgeController::class, 'markOOF'])->name('judge.competition.event.oof.mark');
+                        Route::post('mark/{heat}', [EventJudgeController::class, 'storeOOF'])->name('judge.competition.event.oof.mark.store');
+                    });
                 });
             });
         });

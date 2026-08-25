@@ -6,8 +6,11 @@
 
 <script lang="ts">
     import {
+    markOOF,
         markTime,
+        selectOOFHeat,
         selectTimeHeat,
+        storeOOF,
         storeTime,
     } from "@/actions/App/Http/Controllers/DigitalJudge/Event/EventJudgeController";
 
@@ -17,23 +20,28 @@
 
     import AppHead from "@/components/AppHead.svelte";
     import Button from "@/components/Button.svelte";
-    import Lane from "@/components/Judging/Speed/Lane.svelte";
+    import { confirm } from "@/lib/confirm";
+    import { toastInfo, toastSuccess } from "@/lib/toast.svelte";
+    import heats from "@/routes/comps/heats_and_draws/heats";
 
-    import type { Competition, Event, Heat, SpeedEvent } from "@/types/base";
+    import type { Competition, OOFHeat, OOFLane, SpeedEvent } from "@/types/base";
     import { page, Link, useHttp, setLayoutProps } from "@inertiajs/svelte";
-    import { ArrowRight, Check, House } from "@lucide/svelte";
+    import { ArrowRight, Check, House, RefreshCcw } from "@lucide/svelte";
 
     const user = $derived(page.props.auth.user);
 
     let {
         competition,
         event,
-        heat,
+        heat: initialHeat,
     }: {
         competition: Competition;
         event: SpeedEvent;
-        heat: Heat;
+        heat: OOFHeat;
     } = $props();
+
+    let heat = $state(initialHeat);
+
 
     let modalRef: ActionStatusModal | null = null;
 
@@ -41,17 +49,17 @@
 
     let hasNextHeat = $state<boolean>(true);
 
-    const http = useHttp<{}, { hasNextHeat: boolean }>();
+    const http = useHttp<OOFLane[], { hasNextHeat: boolean }>();
 
     async function submit(e) {
         e.preventDefault();
 
-        let data = { mark: times };
+        
 
-        http.data = () => data;
+        http.data = () => heat.lanes ?? [];
 
         let req = http.post(
-            storeTime({
+            storeOOF({
                 competition: competition,
                 event: event,
                 heat: heat.heat,
@@ -83,9 +91,45 @@
             nav: nav,
         });
     });
+
+    let currentPlace = $state<number>(1);
+
+    function setPlace(lane: OOFLane) {
+        if (lane.oof) {
+            toastInfo(`Lane ${lane.lane} has already be assigned.`)
+            return
+            
+        }
+
+        lane.oof = currentPlace;
+        currentPlace++;
+    } 
+
+    async function reassign() {
+
+        let confirmed = await confirm({
+                title: "Reset Order?",
+                description: "Are you sure you want to reset the order of finish?",
+                confirmLabel: "Yes"
+             })
+
+        if (!confirmed) {
+            return
+        }
+
+        heat.lanes?.forEach(lane => {
+            
+            lane.oof = undefined
+        })
+
+        currentPlace = 1;
+        toastSuccess("Order of finish reset.")
+    }
+
+
 </script>
 
-<AppHead title="Heat {heat.heat} - Times - {event.name} - {competition.name}" />
+<AppHead title="Heat {heat.heat} - OOF - {event.name} - {competition.name}" />
 
 <section class="flex flex-col absolute top-0 left-0 w-full p-6 z-10">
     <Link
@@ -105,12 +149,10 @@
 
 <section class="flex flex-col h-full">
     <p class="font-archivo -mb-2">{competition.name}</p>
-    <h2 class="">Time - {event.name}</h2>
+    <h2 class="">Order of Finish - {event.name}</h2>
     <br />
 
     <div class="flex flex-col space-y-3">
-        <p class="font-semibold text-bulsca_red md:hidden">Rotate your phone</p>
-
         <h2 class="font-bold w-full break-words">
             Heat {heat.heat}
         </h2>
@@ -126,51 +168,65 @@
             {/if}
         </p>
 
-        <form onsubmit={submit}>
-            <div class="relative overflow-x-auto w-full">
-                <table class="w-full">
-                    <tbody class="divide-y">
-                        {#each Array.from({ length: event.max_lanes }, (_, i) => i + 1) as lane}
-                            <Lane
-                                lane={heat.lanes?.find(
-                                    (l) => l.lane === lane,
-                                ) ?? lane}
-                                bind:times
-                                allowSingleDigit={event.name === "Rope Throw"}
-                            />
-                        {/each}
-                    </tbody>
-                </table>
-            </div>
-            <br />
+        <div class="flex space-x-2 -mb-1 text-sm font-archivo font-semibold" >
+                    <p class="w-10 text-center!" >OOF</p>
 
-            <div class="flex flex-row space-x-2 md:space-x-4 items-center">
-                <label for="check-conf"
-                    >I acknowledge that the above results are correct and cannot
-                    be changed, and submission of this form acts as signing it
-                    digitally.
-                    <br />
-                    <small class="text-gray-500"
-                        >(Clicking the text will also check the box!)</small
-                    >
-                </label>
-                <input
-                    type="checkbox"
-                    id="check-conf"
-                    name="check_conf"
-                    class="min-w-[20px] min-h-[20px]"
-                    required
+                    <p class="indent-1" >Lane</p>
+                        
+              
+
+
+                 
+                </div>
+
+        {#each Array.from({ length: event.max_lanes }, (_, i) => i + 1) as lane_no}
+            {const lane = heat.lanes?.find((l) => l.lane === lane_no)}     
+                <div class="flex space-x-2" >
+                    <Button label={ lane?.oof ? `${lane?.oof}` : '-' } variant="white" class="w-10 text-center! {!lane && "pointer-events-none!"}" onclick={() => lane && setPlace(lane)} />
+                        
+              
+
+                    <Button label={lane ? `${lane?.lane}: ${lane?.entity.name}` : '-'} variant={lane?.oof ? "success" : "white"} class="w-full {!lane && "pointer-events-none!"}" onclick={() => lane && setPlace(lane)} />
+
+                 
+                </div>
+        {/each}
+
+         <Button label="Reset" variant="danger" class="w-full py-1 mt-1" icon={RefreshCcw} onclick={reassign} />
+
+
+            <form  onsubmit={submit}>
+                <br />
+
+                <div class="flex flex-row space-x-2 md:space-x-4 items-center">
+                    <label for="check-conf"
+                        >I acknowledge that the above results are correct and cannot
+                        be changed, and submission of this form acts as signing it
+                        digitally.
+                        <br />
+                        <small class="text-gray-500"
+                            >(Clicking the text will also check the box!)</small
+                        >
+                    </label>
+                    <input
+                        type="checkbox"
+                        id="check-conf"
+                        name="check_conf"
+                        class="min-w-[20px] min-h-[20px]"
+                        required
+                    />
+                </div>
+                <br />
+
+                <Button
+                    variant="success"
+                    label="Submit "
+                    class="w-full py-2 "
+                    icon={Check}
+                
                 />
-            </div>
-            <br />
-
-            <Button
-                variant="success"
-                label="Submit "
-                class="w-full py-2 "
-                icon={Check}
-            />
-        </form>
+            </form>
+        
     </div>
     <br />
     <br />
@@ -178,13 +234,13 @@
     <br />
     <ActionStatusModal
         bind:this={modalRef}
-        title="Submitting Marks"
-        message="Submitting your marks..."
+        title="Submitting Order of Finish"
+        message="Submitting your order of finish..."
     >
         {#snippet success()}
             {#if hasNextHeat}
                 <Link
-                    href={markTime({
+                    href={markOOF({
                         competition: competition,
                         event: event,
                         heat: heat.heat + 1,
@@ -229,7 +285,7 @@
         />
     </Link>
     <Link
-        href={selectTimeHeat({ competition: competition, event: event })}
+        href={selectOOFHeat({ competition: competition, event: event })}
         class=""
     >
         <Button

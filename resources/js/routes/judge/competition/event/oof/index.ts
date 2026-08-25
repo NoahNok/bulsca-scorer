@@ -2,8 +2,8 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefa
 import mark2a6e27 from './mark'
 /**
 * @see \App\Http\Controllers\DigitalJudge\Event\EventJudgeController::selectHeat
-* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:19
-* @route '//judge.localhost/v2/{competition}/event/{event}/time/select-heat'
+* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:133
+* @route '//judge.localhost/v2/{competition}/event/{event}/oof/select-heat'
 */
 export const selectHeat = (args: { competition: number | { id: number }, event: number | { id: number } } | [competition: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: selectHeat.url(args, options),
@@ -12,13 +12,13 @@ export const selectHeat = (args: { competition: number | { id: number }, event: 
 
 selectHeat.definition = {
     methods: ["get","head"],
-    url: '//judge.localhost/v2/{competition}/event/{event}/time/select-heat',
+    url: '//judge.localhost/v2/{competition}/event/{event}/oof/select-heat',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Event\EventJudgeController::selectHeat
-* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:19
-* @route '//judge.localhost/v2/{competition}/event/{event}/time/select-heat'
+* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:133
+* @route '//judge.localhost/v2/{competition}/event/{event}/oof/select-heat'
 */
 selectHeat.url = (args: { competition: number | { id: number }, event: number | { id: number } } | [competition: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
@@ -47,8 +47,8 @@ selectHeat.url = (args: { competition: number | { id: number }, event: number | 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Event\EventJudgeController::selectHeat
-* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:19
-* @route '//judge.localhost/v2/{competition}/event/{event}/time/select-heat'
+* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:133
+* @route '//judge.localhost/v2/{competition}/event/{event}/oof/select-heat'
 */
 selectHeat.get = (args: { competition: number | { id: number }, event: number | { id: number } } | [competition: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: selectHeat.url(args, options),
@@ -57,8 +57,8 @@ selectHeat.get = (args: { competition: number | { id: number }, event: number | 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Event\EventJudgeController::selectHeat
-* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:19
-* @route '//judge.localhost/v2/{competition}/event/{event}/time/select-heat'
+* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:133
+* @route '//judge.localhost/v2/{competition}/event/{event}/oof/select-heat'
 */
 selectHeat.head = (args: { competition: number | { id: number }, event: number | { id: number } } | [competition: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: selectHeat.url(args, options),
@@ -67,8 +67,8 @@ selectHeat.head = (args: { competition: number | { id: number }, event: number |
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Event\EventJudgeController::mark
-* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:52
-* @route '//judge.localhost/v2/{competition}/event/{event}/time/mark/{heat}'
+* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:170
+* @route '//judge.localhost/v2/{competition}/event/{event}/oof/mark/{heat}'
 */
 export const mark = (args: { competition: number | { id: number }, event: number | { id: number }, heat: string | number } | [competition: number | { id: number }, event: number | { id: number }, heat: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: mark.url(args, options),
@@ -77,13 +77,13 @@ export const mark = (args: { competition: number | { id: number }, event: number
 
 mark.definition = {
     methods: ["get","head"],
-    url: '//judge.localhost/v2/{competition}/event/{event}/time/mark/{heat}',
+    url: '//judge.localhost/v2/{competition}/event/{event}/oof/mark/{heat}',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Event\EventJudgeController::mark
-* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:52
-* @route '//judge.localhost/v2/{competition}/event/{event}/time/mark/{heat}'
+* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:170
+* @route '//judge.localhost/v2/{competition}/event/{event}/oof/mark/{heat}'
 */
 mark.url = (args: { competition: number | { id: number }, event: number | { id: number }, heat: string | number } | [competition: number | { id: number }, event: number | { id: number }, heat: string | number ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
@@ -115,8 +115,8 @@ mark.url = (args: { competition: number | { id: number }, event: number | { id: 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Event\EventJudgeController::mark
-* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:52
-* @route '//judge.localhost/v2/{competition}/event/{event}/time/mark/{heat}'
+* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:170
+* @route '//judge.localhost/v2/{competition}/event/{event}/oof/mark/{heat}'
 */
 mark.get = (args: { competition: number | { id: number }, event: number | { id: number }, heat: string | number } | [competition: number | { id: number }, event: number | { id: number }, heat: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: mark.url(args, options),
@@ -125,17 +125,17 @@ mark.get = (args: { competition: number | { id: number }, event: number | { id: 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Event\EventJudgeController::mark
-* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:52
-* @route '//judge.localhost/v2/{competition}/event/{event}/time/mark/{heat}'
+* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:170
+* @route '//judge.localhost/v2/{competition}/event/{event}/oof/mark/{heat}'
 */
 mark.head = (args: { competition: number | { id: number }, event: number | { id: number }, heat: string | number } | [competition: number | { id: number }, event: number | { id: number }, heat: string | number ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: mark.url(args, options),
     method: 'head',
 })
 
-const time = {
+const oof = {
     selectHeat: Object.assign(selectHeat, selectHeat),
     mark: Object.assign(mark, mark2a6e27),
 }
 
-export default time
+export default oof

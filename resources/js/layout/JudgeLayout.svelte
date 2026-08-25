@@ -75,18 +75,13 @@
         {#if nav}
             {@render nav?.()}
         {:else}
-            <div class="mr-auto">
-                <ConfirmDialog
-                    triggerLabel="Exit"
-                    triggerClass=" py-1! border! border-black/10!"
-                    triggerVariant="white"
-                    title="Exit Competition"
-                    description="Exit this competition? You can always come back later."
-                    onConfirm={() => {
-                        router.visit(index());
-                    }}
+            <Link href={home({ competition: competition })} class="mr-auto">
+                <Button
+                    label="Home"
+                    variant="white"
+                    class="w-full py-1 border border-black/10"
                 />
-            </div>
+            </Link>
 
             <Link herf="?" class="mx-auto">
                 <Button

@@ -5,7 +5,10 @@
 </script>
 
 <script lang="ts">
-    import { markTime } from "@/actions/App/Http/Controllers/DigitalJudge/Event/EventJudgeController";
+    import {
+        markOOF,
+        markTime,
+    } from "@/actions/App/Http/Controllers/DigitalJudge/Event/EventJudgeController";
 
     import {
         index,
@@ -36,7 +39,7 @@
     } = $props();
 </script>
 
-<AppHead title="Select Heat - Times - {event.name} - {competition.name}" />
+<AppHead title="Select Heat - OOF - {event.name} - {competition.name}" />
 
 <section class="flex flex-col absolute top-0 left-0 w-full p-6 z-10">
     <Link
@@ -56,19 +59,20 @@
 
 <section class="flex flex-col h-full">
     <p class="font-archivo -mb-2">{competition.name}</p>
-    <h2 class="">Time - {event.name}</h2>
+    <h2 class="">Order of Finish - {event.name}</h2>
     <br />
 
     <div class="flex flex-col space-y-3">
         <h2 class="font-bold text-center w-full break-words">Select a Heat</h2>
 
         <p class="">
-            Please select a heat to submit, it'll turn green once complete.
+            Please select a heat to submit, it'll turn green once complete
+            (unless no-one finished a heat).
         </p>
 
         <HeatSelector
             {heats}
-            href={markTime}
+            href={markOOF}
             params={{ competition: competition, event: event }}
         />
 

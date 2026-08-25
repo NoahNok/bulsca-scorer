@@ -130,3 +130,11 @@ export type Lane = {
     lane: number
     entity: Entity
 }
+
+export type OOFLane = Lane & {
+    oof?: number
+}
+
+export type OOFHeat = Omit<Heat, 'lanes'> & {
+    lanes?: OOFLane[]
+}

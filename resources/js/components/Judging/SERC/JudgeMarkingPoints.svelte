@@ -50,12 +50,13 @@
 
 <div>
     <h3>{judge.name}</h3>
-    <p
+    <button
+        type="button"
         class="-mt-2 -mb-4 text-sm text-blue-700 hover:underline cursor-pointer"
         onclick={() => loadPreviousMarks(judge)}
     >
         Previous Marks
-    </p>
+    </button>
 </div>
 
 {#if judge.description}
