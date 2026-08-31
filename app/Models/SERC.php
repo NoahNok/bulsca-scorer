@@ -467,6 +467,43 @@ class SERC extends Event
 
     public function checkCompletion(): bool
     {
+
+        if ($this->use_restricted_judges) {
+            $judges = $this->getJudges()->with('restrictedLeagues')->get();
+
+            // Build up a map of league: markingPoints
+            $leagueMarkingPointMap = [];
+
+            foreach ($judges as $judge) {
+                $judgeMarkingPoints = $judge->getMarkingPoints->pluck('id');
+                foreach ($judge->restrictedLeagues as $league) {
+                    $leagueMarkingPointMap[$league->id] = $judgeMarkingPoints;
+                }
+            }
+
+            $totalMarkedEntites = 0;
+            $entities = $this->getScorableEntities();
+
+            // Foreach entity get the marking points for their league and check if the total marked matches expected
+            foreach ($entities as $entity) {
+                $leagueId = $entity->leagues->first()?->id;
+
+                if (!key_exists($leagueId, $leagueMarkingPointMap)) {
+                    continue;
+                }
+
+                $targetMps = $leagueMarkingPointMap[$leagueId];
+                $results = SERCResult::whereIn('marking_point', $targetMps)->where('entity_id', $entity->id)->count();
+
+                if ($results == count($targetMps)) {
+                    $totalMarkedEntites++;
+                }
+            }
+
+            return $totalMarkedEntites >= $entities->count();
+        }
+
+
         $markingPoints = $this->getMarkingPoints;
         $totalMPs = $markingPoints->count();
 

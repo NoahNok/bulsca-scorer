@@ -40,9 +40,17 @@
         <div>
 
             <div class="grid-4">
-                <div class="se-form-input col-span-2">
+                <div class="se-form-input col-span-1">
                     <label for="">Name</label>
                     <input type="text" class="input" placeholder="Name" serc-builder-name value="{{ $serc->name }}">
+                </div>
+
+                <div class="se-form-input">
+                    <label for="">Restricted Judge</label>
+                    <select serc-builder-restricted-judge>
+                        <option value="1" @if ($serc->use_restricted_judges) selected @endif>Yes</option>
+                        <option value="0" @if (!$serc->use_restricted_judges) selected @endif>No</option>
+                    </select>
                 </div>
 
                 <div class="se-form-input">
@@ -151,6 +159,31 @@
                         </div>
                         <button class="se-btn se-btn-outline-success w-full" serc-builder-marking-point-add>Add Marking
                             Point</button>
+
+                        <div serc-builder-judge-restricted-show>
+                            <br>
+                            <br>
+                            @php
+                                $selected = $judge->restrictedLeagues;
+                            @endphp
+                            <div class="se-form-input">
+                                <label for="">League Restriction</label>
+                                <select name="" id="" serc-builder-judge-restricted multiple>
+                                    @foreach ($comp->getLeagues as $league)
+                                        <option value="{{ $league->id }}"
+                                            @if ($selected->contains($league)) selected @endif>{{ $league->name }}</option>
+                                    @endforeach
+
+                                </select>
+                                <small>Hold <kbd>CTRL</kbd> or <kbd>⌘</kbd> whilst selecting/deseecting options.
+                                    <strong>Select
+                                        nothing for
+                                        no restriction</strong></small>
+                            </div>
+                        </div>
+
+
+
                     </div>
                 @endforeach
 

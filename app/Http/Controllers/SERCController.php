@@ -89,6 +89,49 @@ class SERCController extends Controller
         return view('competition.events.sercs.view', ['comp' => $comp, 'serc' => $serc, 'eventResults' => $eventResults, 'activeLeague' => $league, 'totalMPs' => $totalMPs, 'totalResults' => $totalResults, 'totalPossibleResults' => $totalPossibleResults]);
     }
 
+    public function restrictionMap(Competition $comp, SERC $serc)
+    {
+        $judges = $serc->getJudges()->with('restrictedLeagues')->get();
+        $entities = $serc->getScorableEntities();
+
+        $restrictionMap = [];
+
+        foreach ($entities as $entity) {
+            $leagueId = $entity->getLeague()?->id;
+            $leagueName = $entity->getLeague()?->name;
+
+            $visibleJudges = [];
+
+            if ($serc->use_restricted_judges && $leagueId) {
+                // If restrictions are enabled, find judges restricted to this league
+                foreach ($judges as $judge) {
+                    if ($judge->restrictedLeagues->isEmpty()) {
+                        // Judges with no restrictions can see all entities
+                        $visibleJudges[] = $judge->name;
+                    } elseif ($judge->restrictedLeagues->contains('id', $leagueId)) {
+                        // Judge is restricted to this league
+                        $visibleJudges[] = $judge->name;
+                    }
+                }
+            } else {
+                // No restrictions enabled, all judges see all entities
+                $visibleJudges = $judges->pluck('name')->toArray();
+            }
+
+            $restrictionMap[] = [
+                'entity_name' => $entity->getName($comp),
+                'league_name' => $leagueName,
+                'judges' => $visibleJudges,
+            ];
+        }
+
+        return view('competition.events.sercs.restriction-map', [
+            'comp' => $comp,
+            'serc' => $serc,
+            'restrictionMap' => $restrictionMap,
+            'totalEntities' => $entities->count()
+        ]);
+    }
 
     public function edit(Competition $comp, SERC $serc)
     {
@@ -112,6 +155,7 @@ class SERCController extends Controller
         $serc->name = $json->serc_name;
         $serc->type = $json->serc_type;
         $serc->scorable_entity = $json->serc_target;
+        $serc->use_restricted_judges = $json->use_restricted_judges;
 
         $serc->save();
 
@@ -128,6 +172,8 @@ class SERCController extends Controller
             $j->description = $judge->description;
             $j->serc = $serc->id;
             $j->save();
+
+            $j->restrictedLeagues()->sync($judge->restricted_leagues);
 
             foreach ($judge->marking_points as $marking_point) {
 
