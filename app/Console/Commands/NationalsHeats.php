@@ -15,7 +15,7 @@ class NationalsHeats extends Command
      *
      * @var string
      */
-    protected $signature = 'heats-and-draws:nationals-heats {competition_id}';
+    protected $signature = 'heats-and-draws:nationals-heats {competition_id} {--confirm : Confirm removing existing heats}';
 
     /**
      * The console command description.
@@ -41,7 +41,14 @@ class NationalsHeats extends Command
 
         $this->info("Using: {$comp->name}");
 
-        $continue = $this->confirm("Continuing will remove any existing heats");
+        if ($this->option('confirm')) {
+            $continue = true;
+        } elseif (app()->runningInConsole()) {
+            $continue = $this->confirm("Continuing will remove any existing heats");
+        } else {
+            $this->error('Pass --confirm when running this command from the web console.');
+            return Command::FAILURE;
+        }
 
         if (!$continue) {
             $this->error('aborting');

@@ -14,7 +14,7 @@ class CompetitionImport extends Command
      *
      * @var string
      */
-    protected $signature = 'competition:import';
+    protected $signature = 'competition:import {filePath?} {name?} {when?}';
 
     /**
      * The console command description.
@@ -30,7 +30,7 @@ class CompetitionImport extends Command
      */
     public function handle()
     {
-        $filePath = text('What is the path to the score sheet?');
+        $filePath = $this->argument('filePath') ?: text('What is the path to the score sheet?');
 
         $loader = new \App\Importer\Loader($this);
         $data = $loader->load($filePath);
@@ -38,8 +38,8 @@ class CompetitionImport extends Command
         info("All events loaded. Starting import");
 
         $competitionDetails = [
-            'name' => text('What is the name of the competition?'),
-            'when' => text('When was the competition?')
+            'name' => $this->argument('name') ?: text('What is the name of the competition?'),
+            'when' => $this->argument('when') ?: text('When was the competition?')
         ];
 
         $importer = new \App\Importer\Importer();

@@ -4,6 +4,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AccountInviteController;
 use App\Http\Controllers\Activity\ActivityController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminCommandController;
 use App\Http\Controllers\ChampionshipController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -396,6 +397,10 @@ Route::middleware('auth')->group(function () {
 
 Route::prefix('/admin')->middleware('isAdmin')->group(function () {
     Route::get('', [AdminController::class, 'index'])->name('admin.index');
+    Route::get('/commands', [AdminCommandController::class, 'index'])->name('admin.commands');
+    Route::post('/commands/authenticate', [AdminCommandController::class, 'authenticate'])->name('admin.commands.authenticate');
+    Route::get('/commands/search-model', [AdminCommandController::class, 'searchModel'])->name('admin.commands.search-model');
+    Route::post('/commands/execute', [AdminCommandController::class, 'execute'])->name('admin.commands.execute');
     Route::get('/competition/create', [AdminController::class, 'createComp'])->name('admin.comp.create');
     Route::get('/competition/{comp}', [AdminController::class, 'viewComp'])->name('admin.comp.view');
     Route::post('/competition/create', [AdminController::class, 'createCompPost'])->name('admin.comp.create.post');

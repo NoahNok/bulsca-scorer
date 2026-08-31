@@ -123,6 +123,8 @@ return [
 
     'key' => env('APP_KEY'),
 
+    'artisan_gui_password' => env('ARTISAN_GUI_PASSWORD'),
+
     'cipher' => 'AES-256-CBC',
 
     /*
