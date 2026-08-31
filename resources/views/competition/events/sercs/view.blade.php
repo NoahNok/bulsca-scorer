@@ -327,6 +327,24 @@
 
                 </a>
 
+                @if ($serc->use_restricted_judges)
+                    <a href="{{ route('comps.events.sercs.restriction-map', [$comp, $serc]) }}"
+                        class="flex items-center
+                    cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
+                        <p class="font-archivo">Judge/Marking Restrictions</p>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor"
+                            class="ml-auto size-4 group-hover:text-se transition-all group-hover:stroke-3">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                        </svg>
+
+
+                    </a>
+                @endif
+
                 @if ($serc->viewable)
                     <a href="{{ route('comps.view.sercs.hide', [$comp, $serc]) }}"
                         class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">

@@ -110,16 +110,22 @@ class DigitalJudge
         return Session::get('digitalJudgeClientHeadJudge', false);
     }
 
-    public static function hasTeamBeenJudgedAlready(Entity $entity)
+    public static function hasTeamBeenJudgedAlready(Entity $entity, bool $allowAnyJudge = false)
     {
         // SELECT COUNT(*) FROM serc_results WHERE team=? AND marking_point IN (SELECT id FROM serc_marking_points WHERE judge=?)
 
         $judge = DigitalJudge::getClientJudges()[0];
         $serc = $judge->getSERC;
 
-        return SERCResult::whereMorphedTo('entity', $entity)->whereHas('getMarkingPoint', function ($query) use ($serc, $judge) {
-            $query->where('serc', $serc->id)->where('judge', $judge->id);
-        })->exists();
+        if ($serc->use_restricted_judges) {
+            return SERCResult::whereMorphedTo('entity', $entity)->whereHas('getMarkingPoint', function ($query) use ($serc, $judge) {
+                $query->where('serc', $serc->id)->whereIn('judge', $serc->getJudges->pluck('id'));
+            })->exists();
+        } else {
+            return SERCResult::whereMorphedTo('entity', $entity)->whereHas('getMarkingPoint', function ($query) use ($serc, $judge) {
+                $query->where('serc', $serc->id)->where('judge', $judge->id);
+            })->exists();
+        }
     }
 
     public static function hasTeamBeenJudgedAlreadyForJudge(CompetitionTeam $team, SERCJudge $judge)

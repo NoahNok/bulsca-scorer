@@ -14,36 +14,52 @@
     <div class="flex flex-col space-y-3  ">
 
         <div class="space-y-2 w-full">
-            @foreach ($judges as $judge)
+
+            @if ($serc->use_restricted_judges)
                 <div class="se-card se-card-hover se-card-body">
                     <div class="flex items-center justify-between h-full">
                         <div class="text-left">
-                            <h2>{{ $judge->name }}</h3>
-                                <p>{{ $judge->getMarkingPoints->count() }} marking points</p>
+                            <h2>Auto Switch</h3>
+                                <p>Judge will auto-switch per team</p>
                         </div>
-
-                        @if ($loop->first != $loop->last)
-                            <form action="{{ route('dj.judging.remove-judge.post') }}" method="POST" class="flex">
-                                <input type="hidden" name="removeJudgeId" value="{{ $judge->id }}">
-                                @csrf
-                                <button class="self-center justify-self-center"><svg xmlns="http://www.w3.org/2000/svg"
-                                        fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                        class="size-8 self-center justify-self-center text-red-500 cursor-pointer">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                    </svg></button>
-                            </form>
-                        @endif
-
-
-
 
                     </div>
                 </div>
-            @endforeach
+            @else
+                @foreach ($judges as $judge)
+                    <div class="se-card se-card-hover se-card-body">
+                        <div class="flex items-center justify-between h-full">
+                            <div class="text-left">
+                                <h2>{{ $judge->name }}</h3>
+                                    <p>{{ $judge->getMarkingPoints->count() }} marking points</p>
+                            </div>
+
+                            @if ($loop->first != $loop->last)
+                                <form action="{{ route('dj.judging.remove-judge.post') }}" method="POST" class="flex">
+                                    <input type="hidden" name="removeJudgeId" value="{{ $judge->id }}">
+                                    @csrf
+                                    <button class="self-center justify-self-center"><svg xmlns="http://www.w3.org/2000/svg"
+                                            fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                            class="size-8 self-center justify-self-center text-red-500 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        </svg></button>
+                                </form>
+                            @endif
+
+
+
+
+                        </div>
+                    </div>
+                @endforeach
+            @endif
 
         </div>
-        <a href="{{ route('dj.judging.add-judge') }}" class="se-btn w-full!">Add Casualty/Objective</a>
+        @if (!$serc->use_restricted_judges)
+            <a href="{{ route('dj.judging.add-judge') }}" class="se-btn w-full!">Add Casualty/Objective</a>
+        @endif
+
 
         @if (App\DigitalJudge\DigitalJudge::getTank())
             <p class="font-bold">Marking Tank {{ App\DigitalJudge\DigitalJudge::getTank() }}</p>

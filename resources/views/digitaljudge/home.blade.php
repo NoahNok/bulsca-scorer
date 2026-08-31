@@ -44,11 +44,12 @@
                     <h3>{{ $serc->getName() }}</h3>
                 @endif
 
-                @foreach ($serc->getJudges as $judge)
-                    <a href="{{ route('dj.judging.confirm-judge', $judge) }}"
+
+                @if ($serc->use_restricted_judges)
+                    <a href="{{ route('dj.judging.confirm-restricted', $serc) }}"
                         class="flex items-center
                     cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
-                        <p class="font-archivo">{{ $judge->name }}</p>
+                        <p class="font-archivo">Start Judging</p>
 
 
 
@@ -60,7 +61,25 @@
 
 
                     </a>
-                @endforeach
+                @else
+                    @foreach ($serc->getJudges as $judge)
+                        <a href="{{ route('dj.judging.confirm-judge', $judge) }}"
+                            class="flex items-center
+                    cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
+                            <p class="font-archivo">{{ $judge->name }}</p>
+
+
+
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor"
+                                class="ml-auto size-4 group-hover:text-se transition-all group-hover:stroke-3">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"></path>
+                            </svg>
+
+
+                        </a>
+                    @endforeach
+                @endif
 
                 <a href="{{ route('dj.dq.issue') }}?event=se:{{ $serc->id }}"
                     class="flex items-center

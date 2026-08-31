@@ -27,6 +27,9 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
 
         Route::prefix('judging')->group(function () {
 
+            Route::get('confirm-restricted/{serc}', [DJJudgingController::class, 'confirmRestricted'])->name('dj.judging.confirm-restricted');
+            Route::post('confirm-restricted/{serc}', [DJJudgingController::class, 'confirmRestrictedPost'])->name('dj.judging.confirm-restricted.post');
+
             Route::get('tank', [DJJudgingController::class, 'selectTank'])->name('dj.judging.tank');
             Route::get('tank/{tank}', [DJJudgingController::class, 'setTank'])->name('dj.judging.tank.set');
 

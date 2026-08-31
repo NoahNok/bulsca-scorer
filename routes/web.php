@@ -218,6 +218,8 @@ Route::middleware('auth')->group(function () {
 
                         Route::get('/mark-splits', [SERCController::class, 'markSplits'])->name('comps.events.sercs.mark-splits');
                         Route::get('/mark-splits/{judge}', [SERCController::class, 'loadMarkSplit'])->name('comps.events.sercs.mark-splits.judge');
+
+                        Route::get('/restriction-map', [SERCController::class, 'restrictionMap'])->name('comps.events.sercs.restriction-map');
                     });
                 });
             });

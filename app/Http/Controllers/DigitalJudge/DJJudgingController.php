@@ -41,6 +41,26 @@ class DJJudgingController extends Controller
         return view('digitaljudge.judging.confirm-judge', ['serc' => $serc, 'comp' => $comp, 'judge' => $judge]);
     }
 
+    public function confirmRestricted(SERC $serc)
+    {
+
+
+
+        return view('digitaljudge.judging.confirm-restricted', ['serc' => $serc, 'comp' => $serc->getCompetition,]);
+    }
+
+    public function confirmRestrictedPost(SERC $serc)
+    {
+        DigitalJudge::setClientJudge($serc->getJudges->first());
+
+        if (DigitalJudge::getClientCompetition()->getScoringSettings->use_tanks) {
+            return redirect()->route('dj.judging.tank');
+        }
+        DigitalJudge::setTank(null);
+
+        return redirect()->route('dj.judging.home');
+    }
+
     public function confirmJudgePost(SERCJudge $judge)
     {
         DigitalJudge::setClientJudge($judge);
@@ -98,12 +118,13 @@ class DJJudgingController extends Controller
 
 
 
-    public function nextTeamForJudge(SERCJudge $judge)
+    public function nextTeamForJudge()
     {
         // For each team, determine if any marking points for the judge have been filled, get the first team with 0 filled
         // SELECT id FROM (SELECT id, (SELECT COUNT(*) FROM serc_results WHERE team=competition_teams.id AND marking_point IN (SELECT id FROM serc_marking_points WHERE judge=1)) AS markedPoints FROM competition_teams WHERE competition=3) AS b WHERE b.markedPoints = 0 LIMIT 1;
 
         $j = DigitalJudge::getClientJudges()[0];
+
 
         $nextTeamId = null;
 
@@ -119,7 +140,7 @@ class DJJudgingController extends Controller
         $draw = $draw->sortBy('draw');
 
         foreach ($draw as $allocation) {
-            $marked = DigitalJudge::hasTeamBeenJudgedAlready($allocation->entity);
+            $marked = DigitalJudge::hasTeamBeenJudgedAlready($allocation->entity, $serc->use_restricted_judges);
             if (!$marked) {
 
                 $nextTeamId = $allocation->entity->id;
@@ -128,9 +149,24 @@ class DJJudgingController extends Controller
         }
 
 
-        if ($nextTeamId == null) return redirect()->route('dj.judging.overall-comments', [$judge])->with('alert-error', 'No more teams left to judge!');
 
-        $nextTeam = CompetitionTeam::find($nextTeamId);
+
+        if ($nextTeamId == null) return redirect()->route('dj.judging.overall-comments')->with('alert-error', 'No more teams left to judge!');
+
+        $nextTeam = $serc->getScorableEntity()::find($nextTeamId);
+
+        if ($serc->use_restricted_judges) {
+            $targetLeague = $nextTeam->leagues->first();
+            $targetJudge = SERCJudge::whereHas('restrictedLeagues', fn($q) => $q->where('league_id', $targetLeague->id))->first();
+
+            if (!$targetJudge) {
+                $teamName = $nextTeam->getName();
+
+                return view('digitaljudge.errors.500', ['message' => "No judging objectives have been assigned to league '{$targetLeague->name}' for '{$teamName}'. Please have your organiser correct this, then refresh this page!"]);
+            }
+
+            DigitalJudge::setClientJudge($targetJudge);
+        }
 
         $resp = redirect()->route('dj.judging.judge-team', [$nextTeam]);
         if (Session::has('success')) $resp = $resp->with('success', Session::get('success'));
@@ -145,10 +181,10 @@ class DJJudgingController extends Controller
 
         // Check team are part of this competition to avoid any dangerous behaviour
         if ($team->competition != DigitalJudge::getClientCompetition()->id) return redirect()->route('dj.judging.home');
-
-        if (!DigitalJudge::isClientHeadJudge() && DigitalJudge::hasTeamBeenJudgedAlready($team)) return redirect()->route('dj.judging.next-team');
-
         $serc = DigitalJudge::getClientJudges()[0]->getSERC;
+        if (!DigitalJudge::isClientHeadJudge() && DigitalJudge::hasTeamBeenJudgedAlready($team, $serc->use_restricted_judges)) return redirect()->route('dj.judging.next-team');
+
+
         $draw_info = $serc->getPositionInDraw($team);
 
         $resp = view('digitaljudge.judging.judge-team', array_merge(DigitalJudge::getBladeProps(), ['team' => $team, 'head' => DigitalJudge::isClientHeadJudge(), 'draw_info' => $draw_info]));
