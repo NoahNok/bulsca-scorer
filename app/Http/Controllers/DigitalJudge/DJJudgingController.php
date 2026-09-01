@@ -155,19 +155,6 @@ class DJJudgingController extends Controller
 
         $nextTeam = $serc->getScorableEntity()::find($nextTeamId);
 
-        if ($serc->use_restricted_judges) {
-            $targetLeague = $nextTeam->leagues->first();
-            $targetJudge = SERCJudge::whereHas('restrictedLeagues', fn($q) => $q->where('league_id', $targetLeague->id))->first();
-
-            if (!$targetJudge) {
-                $teamName = $nextTeam->getName();
-
-                return view('digitaljudge.errors.500', ['message' => "No judging objectives have been assigned to league '{$targetLeague->name}' for '{$teamName}'. Please have your organiser correct this, then refresh this page!"]);
-            }
-
-            DigitalJudge::setClientJudge($targetJudge);
-        }
-
         $resp = redirect()->route('dj.judging.judge-team', [$nextTeam]);
         if (Session::has('success')) $resp = $resp->with('success', Session::get('success'));
         return $resp;
@@ -175,14 +162,28 @@ class DJJudgingController extends Controller
 
     public function judgeTeam(int $entity_id, Request $request)
     {
+        $serc = DigitalJudge::getClientJudges()[0]->getSERC;
+        $team = $serc->getScorableEntity()->findOrFail($entity_id);
+        if ($serc->use_restricted_judges) {
+            $targetLeague = $team->leagues->first();
+            $targetJudge = SERCJudge::whereHas('restrictedLeagues', fn($q) => $q->where('league_id', $targetLeague->id))->first();
+
+            if (!$targetJudge) {
+                $teamName = $team->getName();
+
+                return view('digitaljudge.errors.500', ['message' => "No judging objectives have been assigned to league '{$targetLeague->name}' for '{$teamName}'. Please have your organiser correct this, then refresh this page!"]);
+            }
+
+            DigitalJudge::setClientJudge($targetJudge);
+        }
 
 
-        $team = DigitalJudge::getClientJudges()[0]->getSERC->getScorableEntity()->findOrFail($entity_id);
 
         // Check team are part of this competition to avoid any dangerous behaviour
         if ($team->competition != DigitalJudge::getClientCompetition()->id) return redirect()->route('dj.judging.home');
-        $serc = DigitalJudge::getClientJudges()[0]->getSERC;
+
         if (!DigitalJudge::isClientHeadJudge() && DigitalJudge::hasTeamBeenJudgedAlready($team, $serc->use_restricted_judges)) return redirect()->route('dj.judging.next-team');
+
 
 
         $draw_info = $serc->getPositionInDraw($team);
