@@ -49,13 +49,18 @@
         method="post"
         class="flex flex-col w-[90%] items-center space-y-3!"
     >
-        {#snippet children({ errors, processing })}
+        {#snippet children({ errors, processing, submit })}
             {#if stage === "email"}
                 <Input
                     placeholder="judge@scoring.events"
                     type="email"
                     name="email"
                     class="  "
+                    onkeydown={(e) => {
+                        if (e.key === "Enter") {
+                            submit();
+                        }
+                    }}
                 />
                 {#if errors.email}
                     <small
@@ -70,6 +75,7 @@
                     >Sign-in <ArrowRight
                         size={16}
                         class="group-hover:translate-x-1 transition-transform mt-0.5"
+                        type="submit"
                     />
                 </button>
             {:else if stage === "pin"}

@@ -91,6 +91,38 @@ class SpeedResult extends Resultable
         }
     }
 
+    /**
+     * Returns the result as either the time string (XX:XX.XX) or respective DNx or OOT code as required
+     * @return void
+     */
+    public function getJudgeFormattedResult(): string
+    {
+        $finalResult = $this->result;
+
+        $dq = $this->disqualifications()->first();
+
+        if ($dq) {
+
+            $code = $dq->code;
+
+            $finalResult = match ($code) {
+                99915 => 'DNF',
+                99904 => 'DNS',
+                99901 => 'OOT',
+                null => '-',
+                default => $code,
+            };
+        } else {
+            $mins = floor($finalResult / 60000);
+            $secs = ($finalResult - $mins * 60000) / 1000;
+
+            $finalResult = $finalResult < 4 ? $finalResult : (sprintf('%02d', $mins) . ':' . str_pad(number_format($secs, 2, '.', ''), 5, '0', STR_PAD_LEFT));
+        }
+
+        return $finalResult;
+    }
+
+
     public function getJudgeLogTitle()
     {
         return "Speed: {judge} marked {team} for {event}";

@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\DigitalJudge\Event\EventJudgeController::store
-* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:184
+* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:200
 * @route '//judge.localhost/v2/{competition}/event/{event}/oof/mark/{heat}'
 */
 export const store = (args: { competition: number | { id: number }, event: number | { id: number }, heat: string | number } | [competition: number | { id: number }, event: number | { id: number }, heat: string | number ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -16,7 +16,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Event\EventJudgeController::store
-* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:184
+* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:200
 * @route '//judge.localhost/v2/{competition}/event/{event}/oof/mark/{heat}'
 */
 store.url = (args: { competition: number | { id: number }, event: number | { id: number }, heat: string | number } | [competition: number | { id: number }, event: number | { id: number }, heat: string | number ], options?: RouteQueryOptions) => {
@@ -49,7 +49,7 @@ store.url = (args: { competition: number | { id: number }, event: number | { id:
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Event\EventJudgeController::store
-* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:184
+* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:200
 * @route '//judge.localhost/v2/{competition}/event/{event}/oof/mark/{heat}'
 */
 store.post = (args: { competition: number | { id: number }, event: number | { id: number }, heat: string | number } | [competition: number | { id: number }, event: number | { id: number }, heat: string | number ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({

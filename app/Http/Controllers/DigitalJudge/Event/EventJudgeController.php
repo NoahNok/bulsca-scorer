@@ -51,15 +51,31 @@ class EventJudgeController extends Controller
 
     public function markTime(Competition $competition, CompetitionSpeedEvent $event, int $heat)
     {
+
+        $laneData = [];
+        $existingTimes = []; // This will literally be the entity_id => value
+
+        $event->getHeats()->where('heat', $heat)->orderBy('lane')->get()->each(function ($lane) use (&$existingTimes, &$laneData, $event) {
+            $sr = SpeedResult::whereMorphedTo('entity', $lane->entity)->where('event', $event->id)->first();
+
+            if ($sr != null && $sr->result != null) {
+                $existingTimes[$lane->entity->id] = $sr->getJudgeFormattedResult();
+            }
+
+            $laneData[] = [
+                'lane' => $lane->lane,
+                'entity' => $lane->entity->jsonable()
+            ];
+        });
+
+
+
+
         return Inertia::render('Judge/Competition/Speed/Time/MarkTime', [
             'competition' => $competition->only(['id', 'name']),
             'event' => $event->jsonable(),
-            'heat' => ['heat' => $heat, 'complete' => false, 'lanes' => $event->getHeats()->where('heat', $heat)->orderBy('lane')->get()->map(function ($lane) {
-                return [
-                    'lane' => $lane->lane,
-                    'entity' => $lane->entity->jsonable()
-                ];
-            })]
+            'heat' => ['heat' => $heat, 'complete' => false, 'lanes' => $laneData],
+            'existingTimes' => $existingTimes
         ]);
     }
 

@@ -21,8 +21,10 @@
         const isDigit = /^\d$/.test(v);
         const isDNF = v === "DNF";
         const isDNS = v === "DNS";
+        const isOOT = v === "OOT";
 
-        const ok = isTime || (isDigit && allowSingleDigit) || isDNF || isDNS;
+        const ok =
+            isTime || (isDigit && allowSingleDigit) || isDNF || isDNS || isOOT;
 
         el.setCustomValidity(ok ? "" : "Invalid result format");
     }

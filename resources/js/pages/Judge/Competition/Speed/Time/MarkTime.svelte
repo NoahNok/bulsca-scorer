@@ -29,15 +29,17 @@
         competition,
         event,
         heat,
+        existingTimes = {},
     }: {
         competition: Competition;
         event: SpeedEvent;
         heat: Heat;
+        existingTimes?: Record<number, any>;
     } = $props();
 
     let modalRef: ActionStatusModal | null = null;
 
-    let times = $state<Record<number, any>>({});
+    let times = $derived.by<Record<number, any>>(() => existingTimes);
 
     let hasNextHeat = $state<boolean>(true);
 

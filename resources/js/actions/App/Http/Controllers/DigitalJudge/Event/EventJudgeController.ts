@@ -134,7 +134,7 @@ markTime.head = (args: { competition: number | { id: number }, event: number | {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Event\EventJudgeController::storeTime
-* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:66
+* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:82
 * @route '//judge.localhost/v2/{competition}/event/{event}/time/mark/{heat}'
 */
 export const storeTime = (args: { competition: number | { id: number }, event: number | { id: number }, heat: string | number } | [competition: number | { id: number }, event: number | { id: number }, heat: string | number ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -149,7 +149,7 @@ storeTime.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Event\EventJudgeController::storeTime
-* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:66
+* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:82
 * @route '//judge.localhost/v2/{competition}/event/{event}/time/mark/{heat}'
 */
 storeTime.url = (args: { competition: number | { id: number }, event: number | { id: number }, heat: string | number } | [competition: number | { id: number }, event: number | { id: number }, heat: string | number ], options?: RouteQueryOptions) => {
@@ -182,7 +182,7 @@ storeTime.url = (args: { competition: number | { id: number }, event: number | {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Event\EventJudgeController::storeTime
-* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:66
+* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:82
 * @route '//judge.localhost/v2/{competition}/event/{event}/time/mark/{heat}'
 */
 storeTime.post = (args: { competition: number | { id: number }, event: number | { id: number }, heat: string | number } | [competition: number | { id: number }, event: number | { id: number }, heat: string | number ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -192,7 +192,7 @@ storeTime.post = (args: { competition: number | { id: number }, event: number | 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Event\EventJudgeController::selectOOFHeat
-* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:133
+* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:149
 * @route '//judge.localhost/v2/{competition}/event/{event}/oof/select-heat'
 */
 export const selectOOFHeat = (args: { competition: number | { id: number }, event: number | { id: number } } | [competition: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -207,7 +207,7 @@ selectOOFHeat.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Event\EventJudgeController::selectOOFHeat
-* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:133
+* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:149
 * @route '//judge.localhost/v2/{competition}/event/{event}/oof/select-heat'
 */
 selectOOFHeat.url = (args: { competition: number | { id: number }, event: number | { id: number } } | [competition: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -237,7 +237,7 @@ selectOOFHeat.url = (args: { competition: number | { id: number }, event: number
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Event\EventJudgeController::selectOOFHeat
-* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:133
+* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:149
 * @route '//judge.localhost/v2/{competition}/event/{event}/oof/select-heat'
 */
 selectOOFHeat.get = (args: { competition: number | { id: number }, event: number | { id: number } } | [competition: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -247,7 +247,7 @@ selectOOFHeat.get = (args: { competition: number | { id: number }, event: number
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Event\EventJudgeController::selectOOFHeat
-* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:133
+* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:149
 * @route '//judge.localhost/v2/{competition}/event/{event}/oof/select-heat'
 */
 selectOOFHeat.head = (args: { competition: number | { id: number }, event: number | { id: number } } | [competition: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -257,7 +257,7 @@ selectOOFHeat.head = (args: { competition: number | { id: number }, event: numbe
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Event\EventJudgeController::markOOF
-* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:170
+* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:186
 * @route '//judge.localhost/v2/{competition}/event/{event}/oof/mark/{heat}'
 */
 export const markOOF = (args: { competition: number | { id: number }, event: number | { id: number }, heat: string | number } | [competition: number | { id: number }, event: number | { id: number }, heat: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -272,7 +272,7 @@ markOOF.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Event\EventJudgeController::markOOF
-* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:170
+* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:186
 * @route '//judge.localhost/v2/{competition}/event/{event}/oof/mark/{heat}'
 */
 markOOF.url = (args: { competition: number | { id: number }, event: number | { id: number }, heat: string | number } | [competition: number | { id: number }, event: number | { id: number }, heat: string | number ], options?: RouteQueryOptions) => {
@@ -305,7 +305,7 @@ markOOF.url = (args: { competition: number | { id: number }, event: number | { i
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Event\EventJudgeController::markOOF
-* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:170
+* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:186
 * @route '//judge.localhost/v2/{competition}/event/{event}/oof/mark/{heat}'
 */
 markOOF.get = (args: { competition: number | { id: number }, event: number | { id: number }, heat: string | number } | [competition: number | { id: number }, event: number | { id: number }, heat: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -315,7 +315,7 @@ markOOF.get = (args: { competition: number | { id: number }, event: number | { i
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Event\EventJudgeController::markOOF
-* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:170
+* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:186
 * @route '//judge.localhost/v2/{competition}/event/{event}/oof/mark/{heat}'
 */
 markOOF.head = (args: { competition: number | { id: number }, event: number | { id: number }, heat: string | number } | [competition: number | { id: number }, event: number | { id: number }, heat: string | number ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -325,7 +325,7 @@ markOOF.head = (args: { competition: number | { id: number }, event: number | { 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Event\EventJudgeController::storeOOF
-* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:184
+* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:200
 * @route '//judge.localhost/v2/{competition}/event/{event}/oof/mark/{heat}'
 */
 export const storeOOF = (args: { competition: number | { id: number }, event: number | { id: number }, heat: string | number } | [competition: number | { id: number }, event: number | { id: number }, heat: string | number ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -340,7 +340,7 @@ storeOOF.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Event\EventJudgeController::storeOOF
-* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:184
+* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:200
 * @route '//judge.localhost/v2/{competition}/event/{event}/oof/mark/{heat}'
 */
 storeOOF.url = (args: { competition: number | { id: number }, event: number | { id: number }, heat: string | number } | [competition: number | { id: number }, event: number | { id: number }, heat: string | number ], options?: RouteQueryOptions) => {
@@ -373,7 +373,7 @@ storeOOF.url = (args: { competition: number | { id: number }, event: number | { 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Event\EventJudgeController::storeOOF
-* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:184
+* @see app/Http/Controllers/DigitalJudge/Event/EventJudgeController.php:200
 * @route '//judge.localhost/v2/{competition}/event/{event}/oof/mark/{heat}'
 */
 storeOOF.post = (args: { competition: number | { id: number }, event: number | { id: number }, heat: string | number } | [competition: number | { id: number }, event: number | { id: number }, heat: string | number ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
