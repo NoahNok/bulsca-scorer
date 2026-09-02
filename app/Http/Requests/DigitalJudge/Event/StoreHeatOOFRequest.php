@@ -25,7 +25,7 @@ class StoreHeatOOFRequest extends FormRequest
         return [
 
             '*.entity.id' => 'required|numeric',
-            '*.oof' => 'sometimes|numeric'
+            '*.oof' => 'nullable|numeric'
         ];
     }
 }

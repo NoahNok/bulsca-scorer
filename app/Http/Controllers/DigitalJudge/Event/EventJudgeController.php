@@ -151,23 +151,19 @@ class EventJudgeController extends Controller
 
         $heats = [];
 
+        $raw = $event->getHeats()->with([
+            'oofs' => fn($q) => $q->where('event', $event->id)
+        ])->orderBy('heat')->orderBy('lane')->get()->groupBy('heat');
+
         foreach (
-            $event->getHeats()->with([
-                'oofs' => function ($query) use ($event) {
-                    $query->where('event', $event->id);
-                },
-            ])->get()->sortBy('heat')->groupBy('heat') as $heat => $lanes
+            $raw as $heat => $lanes
         ) {
 
 
-            $hasResult = false;
-
-            foreach ($lanes as $lane) {
-                if ($lane->oofs->count() > 0) {
-                    $hasResult = true;
-                    break;
-                }
-            }
+            $hasResult = $lanes->contains(
+                fn($lane) =>
+                $lane->oofs->first()?->oof !== null
+            );
 
             $heats[] = [
                 'heat' => $heat,
@@ -185,13 +181,16 @@ class EventJudgeController extends Controller
 
     public function markOOF(Competition $competition, CompetitionSpeedEvent $event, int $heat)
     {
+
         return Inertia::render('Judge/Competition/Speed/OOF/MarkOOF', [
             'competition' => $competition->only(['id', 'name']),
             'event' => $event->jsonable(),
-            'heat' => ['heat' => $heat, 'complete' => false, 'lanes' => $event->getHeats()->where('heat', $heat)->orderBy('lane')->get()->map(function ($lane) {
+            'heat' => ['heat' => $heat, 'complete' => false, 'lanes' => $event->getHeats()->with(['oofs' => fn($q) => $q->where('event', $event->id)])->where('heat', $heat)->orderBy('lane')->get()->map(function ($lane) {
+
                 return [
                     'lane' => $lane->lane,
-                    'entity' => $lane->entity->jsonable()
+                    'entity' => $lane->entity->jsonable(),
+                    'oof' => $lane->oofs->first()?->oof
                 ];
             })]
         ]);
@@ -204,7 +203,9 @@ class EventJudgeController extends Controller
 
 
         foreach ($data as $res) {
-            if (!array_key_exists('oof', $res)) continue;
+            if (!array_key_exists('oof', $res) || !is_numeric($res['oof'])) continue;
+
+
 
             // This will exist as the request validator ensures it will
             $entity = $event->getScorableEntity()::find($res['entity']['id']);
