@@ -166,7 +166,7 @@ class DJJudgingController extends Controller
         $team = $serc->getScorableEntity()->findOrFail($entity_id);
         if ($serc->use_restricted_judges) {
             $targetLeague = $team->leagues->first();
-            $targetJudge = SERCJudge::whereHas('restrictedLeagues', fn($q) => $q->where('league_id', $targetLeague->id))->first();
+            $targetJudge = SERCJudge::whereHas('restrictedLeagues', fn($q) => $q->where('league_id', $targetLeague->id))->where('serc', $serc->id)->first();
 
             if (!$targetJudge) {
                 $teamName = $team->getName();
