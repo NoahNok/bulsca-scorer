@@ -26,7 +26,7 @@
     import { confirm } from "@/lib/confirm";
 
     import { appState } from "@/lib/stores/appState";
-    import { judgeMarks } from "@/lib/stores/judgeMarks";
+
     import { toastError } from "@/lib/toast.svelte";
     import markSplits from "@/routes/comps/events/sercs/mark-splits";
     import judge from "@/routes/judge";
@@ -41,6 +41,8 @@
         JudgeNotes,
         PreviousMarks,
         CurrentDraw,
+        ExisitingMarks,
+        ExistingNotes,
     } from "@/types/base";
     import {
         Form,
@@ -60,16 +62,7 @@
     import { onMount } from "svelte";
     import { writable } from "svelte/store";
 
-    const http = useHttp<
-        {
-            judge_id: number;
-            marks: {
-                marking_point_id: number;
-                mark: number;
-            }[];
-            notes?: string;
-        }[]
-    >();
+    const http = useHttp<{ marks: ExisitingMarks; notes: ExistingNotes }>();
 
     const user = $derived(page.props.auth.user);
 
@@ -84,6 +77,8 @@
         entity,
         draw,
         show_team_names,
+        existingMarks,
+        existingNotes,
     }: {
         competition: Competition;
         serc: SERC;
@@ -91,17 +86,13 @@
         entity: Entity;
         draw: CurrentDraw;
         show_team_names: boolean;
+        existingMarks: ExisitingMarks;
+        existingNotes: ExistingNotes;
     } = $props();
 
-    $effect(() => {
-        $judgeMarks = judges.map((judge) => ({
-            judge: judge,
-            marks: judge.marking_points.map((mp) => ({
-                marking_point: mp,
-                mark: null,
-            })),
-        }));
-    });
+    // this is a store that holds the marks for each judge and marking point
+    let marks = $derived<ExisitingMarks>(existingMarks);
+    let notes = $derived<ExistingNotes>(existingNotes);
 
     let hasSubmitted = $state(false);
 
@@ -110,9 +101,15 @@
 
         hasSubmitted = true;
         // work out if any marks are null
-        let hasNullMarks = $judgeMarks.some((jm) =>
-            jm.marks.some((m) => m.mark === null),
-        );
+        let hasNullMarks = false;
+        for (const judge of judges) {
+            for (const marking_point of judge.marking_points) {
+                if (marks[judge.id][marking_point.id] === null) {
+                    hasNullMarks = true;
+                    break;
+                }
+            }
+        }
 
         if (hasNullMarks) {
             console.info("Cannot submit marks, some marks are null");
@@ -131,26 +128,7 @@
             return;
         }
 
-        console.log("Submitting marks:", $judgeMarks);
-
-        // lets condense marks down to a simpler structure for submission
-        const marksToSubmit: {
-            judge_id: number;
-            marks: {
-                marking_point_id: number;
-                mark: number;
-            }[];
-            notes?: string;
-        }[] = $judgeMarks.map((jm) => ({
-            judge_id: jm.judge.id,
-            marks: jm.marks.map((m) => ({
-                marking_point_id: m.marking_point.id,
-                mark: m.mark!,
-            })),
-            notes: jm.notes,
-        }));
-
-        http.data = () => marksToSubmit;
+        http.data = () => ({ marks, notes });
 
         const req = http.post(
             storeEntityMarks({
@@ -283,12 +261,13 @@
     <div class="flex flex-col space-y-3">
         <form onsubmit={submit} novalidate>
             <div class="flex flex-col space-y-6">
-                {#each $judgeMarks as jm, j (jm.judge.id)}
+                {#each judges as judge (judge.id)}
                     <JudgeMarkingPoints
-                        judge={jm.judge}
+                        {judge}
                         bind:hasSubmitted
-                        judge_index={j}
                         {loadPreviousMarks}
+                        bind:marks={marks[judge.id]}
+                        bind:note={notes[judge.id]}
                     />
                     <br />
                 {/each}
@@ -381,18 +360,6 @@
                             <h4>{note.entity.name}</h4>
                             <p class="indent-4">{note.note}</p>
                         </div>
-                        {#each judgeNotes.notes as note}
-                            <div>
-                                <h4>{note.entity.name}</h4>
-                                <p class="indent-4">{note.note}</p>
-                            </div>
-                            {#each judgeNotes.notes as note}
-                                <div>
-                                    <h4>{note.entity.name}</h4>
-                                    <p class="indent-4">{note.note}</p>
-                                </div>
-                            {/each}
-                        {/each}
                     {/each}
                 </div>
             {/each}

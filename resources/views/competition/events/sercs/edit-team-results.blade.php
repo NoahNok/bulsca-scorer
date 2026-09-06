@@ -92,7 +92,7 @@
 
                                             <input class="table-input" table-cell table-cell-name="score" min="0"
                                                 max="10" step=1 placeholder="0-10" type="number"
-                                                value="{{ $mp->getScoreForTeam($team) ?: '' }}">
+                                                value="{{ $mp->getScoreForTeam($team) ?? '' }}">
 
                                         </td>
 

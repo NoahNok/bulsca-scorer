@@ -22,7 +22,7 @@ class SERCMarkingPoint extends Model
     }
 
 
-    public function getScoreForTeam(Entity $entity)
+    public function getScoreForTeam(Entity $entity): ?float
     {
 
         $mpId = $this->id;
@@ -30,7 +30,7 @@ class SERCMarkingPoint extends Model
 
 
         //return Cache::rememberForever('mp.' . $mpId . '.team.' . $team->id, function () use ($team, $mpId) {
-        return SERCResult::where('marking_point', $mpId)->forEntity($entity)->first()?->result ?: null;
+        return SERCResult::where('marking_point', $mpId)->forEntity($entity)->value('result');
         //});
     }
 

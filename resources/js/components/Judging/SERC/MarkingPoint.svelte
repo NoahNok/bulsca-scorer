@@ -1,25 +1,37 @@
 <script lang="ts">
-    import type { Mark } from "@/types/base";
-    import { Exception } from "sass";
+    import type { MarkingPoint } from "@/types/base";
 
     let {
-        mark,
+        marking_point,
         hasSubmitted = $bindable<boolean>(),
         value = $bindable<number | null>(),
-    }: { mark: Mark; hasSubmitted: boolean; value?: number | null } = $props();
+    }: {
+        marking_point: MarkingPoint;
+        hasSubmitted: boolean;
+        value?: number | null;
+    } = $props();
 
     let half_open = $state(false);
 
     const settings = $derived.by(() => {
-        if (!mark.marking_point.template) {
+        if (!marking_point.template) {
             throw new Error("Marking point template required, but not given");
         }
 
-        return mark.marking_point.template;
+        return marking_point.template;
+    });
+
+    $effect(() => {
+        if (value) {
+            // if value is half, then set half_open to true
+            if (value % 1 !== 0) {
+                half_open = true;
+            }
+        }
     });
 
     const markOptions = $derived.by(() => {
-        if (!mark.marking_point.template) {
+        if (!marking_point.template) {
             throw new Error("Marking point template required, but not given");
         }
 
@@ -76,7 +88,7 @@
         : ''}"
 >
     <div class="flex justify-between items-center">
-        <p>{mark.marking_point.description}</p>
+        <p>{marking_point.description}</p>
 
         {#if settings.mode == "default" && settings.min <= 0 && settings.max >= 0}
             <input
@@ -84,12 +96,12 @@
                 required
                 class="w-0 h-0 peer"
                 value={0}
-                id="mp-{mark.marking_point.id}-0"
-                name="mp-{mark.marking_point.id}"
+                id="mp-{marking_point.id}-0"
+                name="mp-{marking_point.id}"
                 bind:group={value}
             />
             <label
-                for="mp-{mark.marking_point.id}-0"
+                for="mp-{marking_point.id}-0"
                 class="  flex items-center justify-center px-4 py-0.5 font-semibold rounded-xs bg-gray-200 text-xs peer-checked:bg-bulsca_red peer-checked:text-white"
             >
                 ZERO
@@ -105,12 +117,12 @@
                         required
                         class="w-0 h-0 peer"
                         value={markOption}
-                        name="mp-{mark.marking_point.id}"
+                        name="mp-{marking_point.id}"
                         bind:group={value}
-                        id="mp-{mark.marking_point.id}-{markOption}"
+                        id="mp-{marking_point.id}-{markOption}"
                     />
                     <label
-                        for="mp-{mark.marking_point.id}-{markOption}"
+                        for="mp-{marking_point.id}-{markOption}"
                         class="w-6 h-6 flex items-center justify-center p-4 font-semibold font-mono rounded-md bg-gray-200 text-sm peer-checked:bg-bulsca peer-checked:text-white"
                     >
                         {markOption}
@@ -133,13 +145,13 @@
             </div>
         {/if}
 
-        {#if mark.marking_point.stats}
+        {#if marking_point.stats}
             <div class="text-gray-500 pt-2 flex justify-between">
-                <small>Min: {mark.marking_point.stats.min}</small><small
-                    >Avg: {mark.marking_point.stats.avg}</small
+                <small>Min: {marking_point.stats.min}</small><small
+                    >Avg: {marking_point.stats.avg}</small
                 ><small
                     >Max:
-                    {mark.marking_point.stats.max}</small
+                    {marking_point.stats.max}</small
                 >
             </div>
         {/if}
@@ -155,12 +167,12 @@
                             required
                             class="w-0 h-0 peer"
                             value={choice.value}
-                            name="mp-{mark.marking_point.id}"
+                            name="mp-{marking_point.id}"
                             bind:group={value}
-                            id="mp-{mark.marking_point.id}-choice-{index}"
+                            id="mp-{marking_point.id}-choice-{index}"
                         />
                         <label
-                            for="mp-{mark.marking_point.id}-choice-{index}"
+                            for="mp-{marking_point.id}-choice-{index}"
                             class=" h-6 flex items-center justify-center p-4 font-semibold font-mono rounded-md bg-gray-200 text-sm peer-checked:bg-bulsca peer-checked:text-white"
                         >
                             {choice.label}

@@ -32,12 +32,16 @@ class StoreEntityMarksRequest extends FormRequest
      */
     public function rules(): array
     {
+
+        // judge_id => marking_point_id => mark
+
         return [
-            '*.judge_id' => ['required', 'integer', 'exists:serc_judges,id'],
-            '*.marks' => ['required', 'array'],
-            '*.marks.*.marking_point_id' => ['required', 'integer', 'exists:serc_marking_points,id'],
-            '*.marks.*.mark' => ['required', 'numeric', 'min:0', 'max:10'],
-            '*.notes' => ['nullable', 'string'],
+            'marks' => 'array',
+            'marks.*' => 'array',
+            'marks.*.*' => 'numeric',
+            'notes' => 'array',
+            'notes.*' => 'string|nullable',
+
         ];
     }
 }

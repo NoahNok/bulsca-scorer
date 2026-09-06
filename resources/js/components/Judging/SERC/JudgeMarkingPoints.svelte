@@ -1,50 +1,37 @@
 <script lang="ts">
-    import Button from "@/components/Button.svelte";
     import Collapse from "@/components/Collapse.svelte";
     import ConfirmDialog from "@/components/ConfirmDialog.svelte";
     import MarkingPoint from "./MarkingPoint.svelte";
     import type { Judge } from "@/types/base";
-    import { judgeMarks } from "@/lib/stores/judgeMarks";
+
     import { CircleSlash2 } from "@lucide/svelte";
 
     let {
         judge,
-        judge_index,
         hasSubmitted = $bindable<boolean>(),
         loadPreviousMarks,
+        marks = $bindable<Record<number, number | null>>(),
+        note = $bindable<string | null>(),
     }: {
         judge: Judge;
-        judge_index: number;
         hasSubmitted: boolean;
         loadPreviousMarks: (judge: Judge) => void;
+        marks: Record<number, number | null>;
+        note: string | null;
     } = $props();
 
     const zeroAllMarks = () => {
-        $judgeMarks = $judgeMarks.map((judgeMark, index) => {
-            if (index !== judge_index) {
-                return judgeMark;
+        for (const marking_point of judge.marking_points) {
+            // Set to 0, unless tempalte is choice, the nuse the lowest choice value
+            if (marking_point.template?.mode === "choice") {
+                const lowestChoice = Math.min(
+                    ...marking_point.template.choice.map((c) => c.value),
+                );
+                marks[marking_point.id] = lowestChoice;
+            } else {
+                marks[marking_point.id] = 0;
             }
-
-            return {
-                ...judgeMark,
-                marks: judgeMark.marks.map((mark) => {
-                    const template = mark.marking_point.template;
-                    const fallbackValue =
-                        template?.mode === "choice"
-                            ? Math.min(
-                                  ...(template.choice?.map(
-                                      (choice) => choice.value,
-                                  ) ?? [0]),
-                              )
-                            : 0;
-
-                    return {
-                        ...mark,
-                        mark: fallbackValue,
-                    };
-                }),
-            };
-        });
+        }
     };
 </script>
 
@@ -80,11 +67,11 @@
     onConfirm={zeroAllMarks}
 />
 
-{#each $judgeMarks[judge_index].marks as mark, i (mark.marking_point.id)}
+{#each judge.marking_points as marking_point (marking_point.id)}
     <MarkingPoint
-        {mark}
+        {marking_point}
         bind:hasSubmitted
-        bind:value={$judgeMarks[judge_index].marks[i].mark}
+        bind:value={marks[marking_point.id]}
     />
 {/each}
 
@@ -97,6 +84,6 @@
         placeholder="Type your notes for this team here..."
         class="w-full border hover:border-gray-400 p-3 h-max focus:border-gray-400 outline-hidden rounded-md"
         id=""
-        bind:value={$judgeMarks[judge_index].notes}
+        bind:value={note}
     ></textarea>
 </div>

@@ -6,6 +6,7 @@ use App\Models\AbstractClasses\Loggable;
 use App\Models\Competition;
 use App\Models\CompetitionTeam;
 use App\Models\Orders\Heat;
+use App\Models\User;
 use App\Traits\RecordActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -61,5 +62,10 @@ class JudgeDQSubmission extends Model
     public function violation()
     {
         return $this->morphTo();
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

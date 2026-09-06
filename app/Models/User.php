@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Models\DigitalJudge\JudgeDQSubmission;
 use App\Models\Organisation\Organisation;
 use App\Models\Organisation\OrganisationUserAccess;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -98,5 +99,16 @@ class User extends Authenticatable
     public function officiating()
     {
         return $this->belongsToMany(Competition::class, 'competition_officials', 'user_id', 'competition_id');
+    }
+
+    public function violations(?Competition $competition = null)
+    {
+        $query = $this->hasMany(JudgeDQSubmission::class, 'user_id', 'id');
+
+        if ($competition) {
+            $query->where('competition', $competition->id);
+        }
+
+        return $query;
     }
 }

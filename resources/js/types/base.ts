@@ -138,3 +138,6 @@ export type OOFLane = Lane & {
 export type OOFHeat = Omit<Heat, 'lanes'> & {
     lanes?: OOFLane[]
 }
+
+export type ExisitingMarks = Record<number, Record<number, number | null>>
+export type ExistingNotes = Record<number, string | null>

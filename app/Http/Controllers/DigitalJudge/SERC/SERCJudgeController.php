@@ -234,14 +234,16 @@ class SERCJudgeController extends Controller
 
         $draw_info = $serc->getPositionInDraw($team);
 
-        $judgeName = DigitalJudge::getClientJudges()[0]->name;
+        $judges = DigitalJudge::getClientJudges();
+
+        $judgeName = $judges[0]->name;
 
         DigitalJudge::setStatus($competition, $judgeName . ' | Marking ' . $team->getName() . ' (' . $draw_info['text'] . ')', $serc);
 
         return Inertia::render("Judge/Competition/SERC/JudgeEntity", [
             'competition' => $competition->only(['id', 'name', 'show_teams_to_judges']),
             'serc' => $serc->only(['id', 'name']),
-            'judges' => DigitalJudge::getClientJudges()->map(function ($judge) {
+            'judges' => $judges->map(function ($judge) {
                 return [
                     'id' => $judge->id,
                     'name' => $judge->name,
@@ -261,11 +263,19 @@ class SERCJudgeController extends Controller
                     })
                 ];
             }),
-            'entity' => [
-                'id' => $team->id,
-                'name' => $team->getName()
-            ],
+            'entity' => $team->jsonable(),
             'draw' => $serc->getPositionInDraw($team),
+            'existingMarks' => $judges->mapWithKeys(function ($judge) use ($team) {
+                $marks = $judge->getMarkingPoints->mapWithKeys(function ($mp) use ($team) {
+                    $result = $mp->getScoreForTeam($team);
+                    return [$mp->id => $result];
+                });
+                return [$judge->id => $marks];
+            }),
+            'existingNotes' => $judges->mapWithKeys(function ($judge) use ($team) {
+                $note = $judge->getNotes()->whereMorphedTo('entity', $team)->first();
+                return [$judge->id => $note?->note];
+            })
 
         ]);
     }
@@ -273,44 +283,48 @@ class SERCJudgeController extends Controller
     public function storeEntityMarks(Competition $competition, SERC $serc, int $entity_id, StoreEntityMarksRequest $request)
     {
 
-        $judges = $request->validated();
+        $data = $request->validated();
         $entity = $serc->getScorableEntity()->findOrFail($entity_id);
 
-        // fake 5s delay to simulate network latency for testing
+        $judges = $data['marks'];
+        $notes = $data['notes'];
+
 
 
 
         // validated payload from 
-        // {
-        //     judge_id: number;
-        //     marks: {
-        //         marking_point_id: number;
-        //         mark: number;
-        //     }[];
-        //     notes?: string;
-        // }[]
+        // judge_id => marking_point_id => mark
 
-        foreach ($judges as $judge) {
-            $judge_id = $judge['judge_id'];
-            $marks = $judge['marks'];
-            $notes = $judge['notes'] ?? null;
+        foreach ($judges as $judge_id => $marking_points) {
 
-            foreach ($marks as $mark) {
-                $marking_point_id = $mark['marking_point_id'];
-                $mark_value = $mark['mark'];
+
+            foreach ($marking_points as $marking_point_id => $mark) {
+
 
                 $result = SERCResult::firstOrNew(['marking_point' => $marking_point_id, 'entity_type' => $entity->getMorphClass(), 'entity_id' => $entity->id]);
-                $result->result = $mark_value;
+                $result->result = $mark;
                 $result->save();
             }
 
+            // $judgeNote = JudgeNote::firstOrNew(['judge' => $judge_id, 'entity_type' => $entity->getMorphClass(), 'entity_id' => $entity->id]);
+
+            // if ($notes === null || $notes === '') {
+            //     if ($judgeNote->id) $judgeNote->delete();
+            //     continue;
+            // } else {
+            //     $judgeNote->note = $notes;
+            //     $judgeNote->save();
+            // }
+        }
+
+        foreach ($notes as $judge_id => $note) {
             $judgeNote = JudgeNote::firstOrNew(['judge' => $judge_id, 'entity_type' => $entity->getMorphClass(), 'entity_id' => $entity->id]);
 
-            if ($notes === null || $notes === '') {
+            if ($note === null || $note === '') {
                 if ($judgeNote->id) $judgeNote->delete();
                 continue;
             } else {
-                $judgeNote->note = $notes;
+                $judgeNote->note = $note;
                 $judgeNote->save();
             }
         }

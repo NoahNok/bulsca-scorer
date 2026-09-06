@@ -10,6 +10,7 @@ use App\Http\Controllers\DigitalJudge\Event\EventJudgeController;
 use App\Http\Controllers\DigitalJudge\JudgeController;
 use App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController;
 use App\Http\Controllers\DigitalJudge\SpeedJudgingController;
+use App\Http\Controllers\DigitalJudge\Violation\ViolationController;
 use App\Http\Middleware\DigitalJudge\SERC\MustHaveJudgeSelected;
 use Illuminate\Support\Facades\Route;
 
@@ -78,6 +79,10 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
                         Route::get('mark/{heat}', [EventJudgeController::class, 'markOOF'])->name('judge.competition.event.oof.mark');
                         Route::post('mark/{heat}', [EventJudgeController::class, 'storeOOF'])->name('judge.competition.event.oof.mark.store');
                     });
+                });
+
+                Route::prefix('violation')->group(function () {
+                    Route::get('submissions', [ViolationController::class, 'submissions'])->name('judge.competition.violation.submissions');
                 });
             });
         });

@@ -8,6 +8,7 @@
     import {
         addJudge,
         detachJudge,
+        markEntity,
         nextEntityToMark,
         storeOverallNotes,
     } from "@/actions/App/Http/Controllers/DigitalJudge/SERC/SERCJudgeController";
@@ -46,8 +47,6 @@
         draws?: Draw[];
         show_team_names: boolean;
     } = $props();
-
-    const isHead = false;
 
     let isOverallNotesModalOpen = $state<boolean>(
         page.flash.action?.type == FlashActionType.OVERALL_NOTES,
@@ -164,15 +163,23 @@
         {#if show_team_names || page.props.judge.isHeadRef}
             <ul class=" list-none -mt-2 w-full">
                 {#each draws as draw}
-                    {#if isHead}
+                    {#if page.props.judge.isHeadRef}
                         <li class=" ">
-                            <div class="flex justify-between">
-                                <p>{draw.draw}. {draw.entity.name}</p>
-                                <a
-                                    href="#judge-entity-id"
-                                    class="link col-start-5">Edit</a
-                                >
-                            </div>
+                            <Link
+                                href={markEntity({
+                                    competition: competition,
+                                    serc: serc,
+                                    entity_id: draw.entity.id,
+                                })}
+                            >
+                                <div class="flex justify-between">
+                                    <p>{draw.draw}. {draw.entity.name}</p>
+                                    <a
+                                        href="#judge-entity-id"
+                                        class="link col-start-5">Edit</a
+                                    >
+                                </div>
+                            </Link>
                         </li>
                     {:else}
                         <li>{draw.draw}. {draw.entity.name}</li>
