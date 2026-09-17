@@ -106,6 +106,8 @@
         data: {}
     },
 
+    watchReset: false,
+
     customConfirm(message) {
         return new Promise((resolve) => {
             this.modals.confirmDialog = true;
@@ -113,11 +115,22 @@
 
 
             $watch('modals.data.confirmDialog.action', (newVal) => {
-                console.log('watched', newVal);
+                if (this.watchReset) {
+                    return
+                }
+
+                // Have to reset the wath action otherwise the next confirm fails as true -> true wont trigger is
+                this.watchReset = true
+                this.modals.data.confirmDialog.action = null
+                this.watchReset = false
+
+
+                this.modals.confirmDialog = false;
+
                 if (!newVal) {
                     resolve(false);
                 }
-                this.modals.confirmDialog = false;
+
 
                 resolve(true)
             });
