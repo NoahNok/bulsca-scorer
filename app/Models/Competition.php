@@ -10,9 +10,11 @@ use App\Models\Competition\CompetitionStatusMessage;
 use App\Models\DigitalJudge\JudgeDQSubmission;
 use App\Models\DigitalJudge\JudgeLog;
 use App\Models\Interfaces\IInvitable;
+use App\Models\Interfaces\IJsonable;
 use App\Models\Orders\Draw;
 use App\Models\Orders\Heat;
 use App\Models\Organisation\Organisation;
+use App\Models\Pivots\CompetitionOfficial;
 use App\Stats\StatsManager;
 use App\Traits\Cloneable;
 use App\Traits\RecordActivity;
@@ -24,9 +26,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Override;
 use ShiftOneLabs\LaravelCascadeDeletes\CascadesDeletes;
 
-class Competition extends Model implements IInvitable
+class Competition extends Model implements IInvitable, IJsonable
 {
     use HasFactory, Cloneable, RecordActivity, CascadesDeletes;
 
@@ -662,5 +665,31 @@ class Competition extends Model implements IInvitable
     public function championship()
     {
         return $this->belongsTo(Championship::class);
+    }
+
+    public function officials()
+    {
+        return $this->belongsToMany(User::class, 'competition_officials')
+            ->using(CompetitionOfficial::class)
+            ->withPivot('role')
+            ->withTimestamps();
+    }
+
+    public function userHasRole(User $user, string $role): bool
+    {
+        $pivot = $this->officials()
+            ->where('user_id', $user->id)
+            ->first()?->pivot;
+
+        return $pivot?->isOfficialRole($role) ?? false;
+    }
+
+    #[Override]
+    public function jsonable(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name
+        ];
     }
 }

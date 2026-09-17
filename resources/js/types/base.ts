@@ -81,6 +81,13 @@ export type Draw = {
     entity: Entity
 }
 
+export type Tank = {
+    tank: number
+    draw: Draw[]
+}
+
+
+
 export type Mark = {
     marking_point: MarkingPoint
     mark: number | null
@@ -137,6 +144,16 @@ export type OOFLane = Lane & {
 
 export type OOFHeat = Omit<Heat, 'lanes'> & {
     lanes?: OOFLane[]
+}
+
+export type HeatLane = {
+    heat: number
+    lane: number
+}
+
+export type TankDraw = {
+    tank?: number
+    draw: number
 }
 
 export type ExisitingMarks = Record<number, Record<number, number | null>>

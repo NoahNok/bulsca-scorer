@@ -11,6 +11,7 @@ use App\Http\Controllers\DigitalJudge\JudgeController;
 use App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController;
 use App\Http\Controllers\DigitalJudge\SpeedJudgingController;
 use App\Http\Controllers\DigitalJudge\Violation\ViolationController;
+use App\Http\Controllers\DigitalJudge\Violation\ViolationStateController;
 use App\Http\Middleware\DigitalJudge\SERC\MustHaveJudgeSelected;
 use Illuminate\Support\Facades\Route;
 
@@ -83,6 +84,19 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
 
                 Route::prefix('violation')->group(function () {
                     Route::get('submissions', [ViolationController::class, 'submissions'])->name('judge.competition.violation.submissions');
+                    Route::get('issue', [ViolationController::class, 'issue'])->name('judge.competition.violation.issue');
+                    Route::post('issue', [ViolationController::class, 'submit'])->name('judge.competition.violation.submit');
+
+                    Route::get('heats/{event}', [ViolationController::class, 'getHeatsFor'])->name('judge.competition.violation.issue.getHeats');
+                    Route::get('draw/{serc}', [ViolationController::class, 'getDrawFor'])->name('judge.competition.violation.issue.getDraw');
+
+                    Route::get('event-codes/{eventName}', [ViolationController::class, 'getEventRelatedCodes'])->name('judge.competition.violation.issue.getCodes');
+
+                    // Add a middleware to check for head ref, then remove check from request models
+                    Route::prefix('submission/{submission}')->group(function () {
+                        Route::get('', [ViolationController::class, 'view'])->name('judge.competition.violation.submission.view');
+                        Route::post('update-state', [ViolationStateController::class, 'updateState'])->name('judge.competition.violation.submission.update-state');
+                    });
                 });
             });
         });

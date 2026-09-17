@@ -1,5 +1,6 @@
 <script lang="ts">
     import { cn } from "@/utils/utils";
+    import type { Snippet } from "svelte";
     import type { HTMLButtonAttributes } from "svelte/elements";
 
     let {
@@ -8,12 +9,18 @@
         icon: Icon = null,
 
         class: className = "",
+        iconClass: iconClass = "",
+        before,
+        ref,
         ...restProps
     }: {
         label?: string;
         variant?: "primary" | "secondary" | "success" | "danger" | "white";
         icon?: any;
         class?: string;
+        iconClass?: string;
+        before?: Snippet;
+        ref?: any;
     } & HTMLButtonAttributes = $props();
 
     // get variant classes based on the variant prop
@@ -40,12 +47,16 @@
     });
 </script>
 
-<button {...restProps} class={cn(variantClasses, className)}>
+<button {...restProps} class={cn(variantClasses, className)} bind:this={ref}>
+    {#if before}
+        {@render before()}
+    {/if}
+
     {#if label}
         {label}
     {/if}
 
     {#if Icon}
-        <Icon size={16} />
+        <Icon size={16} class={iconClass} />
     {/if}
 </button>

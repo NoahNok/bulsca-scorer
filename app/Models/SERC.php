@@ -234,18 +234,33 @@ class SERC extends Event
 
 
 
-    public function getTankDraw()
+    public function getTankDraw($jsonable = false)
     {
         $comp = $this->getCompetition;
-
-        return $this->draw()->with('entity')->orderBy('tank')->orderBy('draw')->get()->map(function ($draw) use ($comp) {
-            return [
-                'id' => $draw->id,
-                'tank' => $draw->tank,
-                'draw' => $draw->draw,
-                'entity_name' => $draw?->entity?->getName($comp) ?? 'No Entity',
-            ];
-        })->groupBy('tank');
+        if ($jsonable) {
+            return $this->draw()->with('entity')->orderBy('tank')->orderBy('draw')->get()->map(function ($draw) use ($comp) {
+                return [
+                    'tank' => $draw->tank,
+                    'draw' => $draw->draw,
+                    'entity' => $draw?->entity?->jsonable() ?? null,
+                ];
+            })->groupBy('tank')->map(function ($items, $tank) {
+                return [
+                    'tank'  => $tank,
+                    'draw' => $items->values(), // ensure numeric array
+                ];
+            })
+                ->values(); // optional: remove tank keys
+        } else {
+            return $this->draw()->with('entity')->orderBy('tank')->orderBy('draw')->get()->map(function ($draw) use ($comp) {
+                return [
+                    'id' => $draw->id,
+                    'tank' => $draw->tank,
+                    'draw' => $draw->draw,
+                    'entity_name' => $draw?->entity?->getName($comp) ?? 'No Entity',
+                ];
+            })->groupBy('tank');
+        }
     }
 
     public function getJudges()

@@ -11,6 +11,7 @@ use App\Models\CompetitionTeam;
 use App\Models\SERC;
 use App\Models\SERCJudge;
 use App\Models\SERCResult;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request;
@@ -124,8 +125,14 @@ class DigitalJudge
         Session::put('digitalJudgeClientHeadJudge', $isHeadJudge);
     }
 
-    public static function isClientHeadJudge(): bool
+    public static function isClientHeadJudge(?Competition $competition = null): bool
     {
+
+        $user = Auth::user();
+        if ($user && $competition) {
+            return $competition->userHasRole($user, 'referee');
+        }
+
         return Session::get('digitalJudgeClientHeadJudge', false);
     }
 

@@ -211,7 +211,8 @@ abstract class Event extends Model implements IJsonable
     {
         return [
             'id' => $this->id,
-            'name' => $this->getName()
+            'name' => $this->getName(),
+            'type' => $this->getType()
         ];
     }
 }

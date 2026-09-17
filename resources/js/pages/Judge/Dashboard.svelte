@@ -84,7 +84,6 @@
             {#snippet children({ errors, processing })}
                 <div class="flex space-x-3">
                     <Input
-                        label="Competition Code"
                         placeholder="Enter competition PIN"
                         class="w-full"
                         name="pin"

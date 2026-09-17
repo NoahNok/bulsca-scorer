@@ -1,7 +1,9 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../wayfinder'
+import issue588807 from './issue'
+import submission from './submission'
 /**
 * @see \App\Http\Controllers\DigitalJudge\Violation\ViolationController::submissions
-* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:12
+* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:23
 * @route '//judge.localhost/v2/{competition}/violation/submissions'
 */
 export const submissions = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +18,7 @@ submissions.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Violation\ViolationController::submissions
-* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:12
+* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:23
 * @route '//judge.localhost/v2/{competition}/violation/submissions'
 */
 submissions.url = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -49,7 +51,7 @@ submissions.url = (args: { competition: number | { id: number } } | [competition
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Violation\ViolationController::submissions
-* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:12
+* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:23
 * @route '//judge.localhost/v2/{competition}/violation/submissions'
 */
 submissions.get = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -59,7 +61,7 @@ submissions.get = (args: { competition: number | { id: number } } | [competition
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Violation\ViolationController::submissions
-* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:12
+* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:23
 * @route '//judge.localhost/v2/{competition}/violation/submissions'
 */
 submissions.head = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -67,8 +69,137 @@ submissions.head = (args: { competition: number | { id: number } } | [competitio
     method: 'head',
 })
 
+/**
+* @see \App\Http\Controllers\DigitalJudge\Violation\ViolationController::issue
+* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:37
+* @route '//judge.localhost/v2/{competition}/violation/issue'
+*/
+export const issue = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: issue.url(args, options),
+    method: 'get',
+})
+
+issue.definition = {
+    methods: ["get","head"],
+    url: '//judge.localhost/v2/{competition}/violation/issue',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\DigitalJudge\Violation\ViolationController::issue
+* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:37
+* @route '//judge.localhost/v2/{competition}/violation/issue'
+*/
+issue.url = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { competition: args }
+    }
+
+    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+        args = { competition: args.id }
+    }
+
+    if (Array.isArray(args)) {
+        args = {
+            competition: args[0],
+        }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+        competition: typeof args.competition === 'object'
+        ? args.competition.id
+        : args.competition,
+    }
+
+    return issue.definition.url
+            .replace('{competition}', parsedArgs.competition.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\DigitalJudge\Violation\ViolationController::issue
+* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:37
+* @route '//judge.localhost/v2/{competition}/violation/issue'
+*/
+issue.get = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: issue.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\DigitalJudge\Violation\ViolationController::issue
+* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:37
+* @route '//judge.localhost/v2/{competition}/violation/issue'
+*/
+issue.head = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: issue.url(args, options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\DigitalJudge\Violation\ViolationController::submit
+* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:50
+* @route '//judge.localhost/v2/{competition}/violation/issue'
+*/
+export const submit = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: submit.url(args, options),
+    method: 'post',
+})
+
+submit.definition = {
+    methods: ["post"],
+    url: '//judge.localhost/v2/{competition}/violation/issue',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\DigitalJudge\Violation\ViolationController::submit
+* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:50
+* @route '//judge.localhost/v2/{competition}/violation/issue'
+*/
+submit.url = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { competition: args }
+    }
+
+    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+        args = { competition: args.id }
+    }
+
+    if (Array.isArray(args)) {
+        args = {
+            competition: args[0],
+        }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+        competition: typeof args.competition === 'object'
+        ? args.competition.id
+        : args.competition,
+    }
+
+    return submit.definition.url
+            .replace('{competition}', parsedArgs.competition.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\DigitalJudge\Violation\ViolationController::submit
+* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:50
+* @route '//judge.localhost/v2/{competition}/violation/issue'
+*/
+submit.post = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: submit.url(args, options),
+    method: 'post',
+})
+
 const violation = {
     submissions: Object.assign(submissions, submissions),
+    issue: Object.assign(issue, issue588807),
+    submit: Object.assign(submit, submit),
+    submission: Object.assign(submission, submission),
 }
 
 export default violation
