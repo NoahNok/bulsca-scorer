@@ -6,10 +6,10 @@ use App\Exceptions\HeatException;
 use App\Http\Controllers\Controller;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
-use App\Models\Orders\Heat;
 use App\Services\HeatService;
 use App\Traits\RecordActivity;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Nette\NotImplementedException;
 
 class HeatController extends Controller
@@ -57,55 +57,64 @@ class HeatController extends Controller
 
     public function edit(Competition $comp, CompetitionSpeedEvent $event)
     {
+        $this->ensureEventBelongsToCompetition($comp, $event);
+
         return view('competition.heats-and-orders.heats.edit', ['comp' => $comp, 'event' => $event]);
     }
 
     public function swap(Competition $comp, CompetitionSpeedEvent $event, Request $request)
     {
-        $currentAllocation = Heat::find($request->input('team'));
-        $targetAllocation = Heat::find($request->input('target-heat'));
+        $this->ensureEventBelongsToCompetition($comp, $event);
 
-        // If target is a blank space
-        if ($targetAllocation == null) {
-            $heatLaneSplit = explode(':', $request->input('target-heatlane'));
-            $currentAllocation->heat = $heatLaneSplit[0];
-            $currentAllocation->lane = $heatLaneSplit[1];
+        $currentAllocation = $event->heats()->findOrFail($request->input('team'));
+        $targetAllocation = $event->heats()->find($request->input('target-heat'));
+        $activityDescription = $targetAllocation
+            ? "Swapped heats: " . $currentAllocation->entity->getName($comp) . " (Heat {$currentAllocation->heat}, Lane {$currentAllocation->lane}) <-> " . $targetAllocation->entity->getName($comp) . " (Heat {$targetAllocation->heat}, Lane {$targetAllocation->lane})"
+            : null;
+
+        DB::transaction(function () use ($currentAllocation, $targetAllocation, $request) {
+            // If target is a blank space
+            if ($targetAllocation == null) {
+                $heatLaneSplit = explode(':', $request->input('target-heatlane'));
+                $currentAllocation->heat = $heatLaneSplit[0];
+                $currentAllocation->lane = $heatLaneSplit[1];
+                $currentAllocation->save();
+
+                return;
+            }
+
+            $currentHeat = $currentAllocation->heat;
+            $currentLane = $currentAllocation->lane;
+
+            $currentAllocation->heat = -1;
+            $currentAllocation->lane = -1;
             $currentAllocation->save();
 
-            $comp->clearHeatCache();
+            $currentAllocation->heat = $targetAllocation->heat;
+            $currentAllocation->lane = $targetAllocation->lane;
 
-            $this->recordActivity('HEAT_SWAP', "Moved " . $currentAllocation->entity->getName($comp) . " to Heat {$currentAllocation->heat}, Lane {$currentAllocation->lane}", context: ['current_allocation' => $currentAllocation->id], related: [$comp, $currentAllocation->entity]);
+            $targetAllocation->heat = $currentHeat;
+            $targetAllocation->lane = $currentLane;
 
-            return redirect()->back();
-        }
-
-        $activityDescription = "Swapped heats: " . $currentAllocation->entity->getName($comp) . " (Heat {$currentAllocation->heat}, Lane {$currentAllocation->lane}) <-> " . $targetAllocation->entity->getName($comp) . " (Heat {$targetAllocation->heat}, Lane {$targetAllocation->lane})";
-
-        $currentHeat = $currentAllocation->heat;
-        $currentLane = $currentAllocation->lane;
-
-        $currentAllocation->heat = -1;
-        $currentAllocation->lane = -1;
-        $currentAllocation->save();
-
-        $currentAllocation->heat = $targetAllocation->heat;
-        $currentAllocation->lane = $targetAllocation->lane;
-
-        $targetAllocation->heat = $currentHeat;
-        $targetAllocation->lane = $currentLane;
-
-        $currentAllocation->save();
-        $targetAllocation->save();
+            $currentAllocation->save();
+            $targetAllocation->save();
+        });
 
         $comp->clearHeatCache();
 
-        $this->recordActivity('HEAT_SWAP', $activityDescription, context: ['current_allocation' => $currentAllocation->id, 'target_allocation' => $targetAllocation->id], related: [$comp, $currentAllocation->entity, $targetAllocation->entity]);
+        if ($targetAllocation == null) {
+            $this->recordActivity('HEAT_SWAP', "Moved " . $currentAllocation->entity->getName($comp) . " to Heat {$currentAllocation->heat}, Lane {$currentAllocation->lane}", context: ['current_allocation' => $currentAllocation->id], related: [$comp, $currentAllocation->entity]);
+        } else {
+            $this->recordActivity('HEAT_SWAP', $activityDescription, context: ['current_allocation' => $currentAllocation->id, 'target_allocation' => $targetAllocation->id], related: [$comp, $currentAllocation->entity, $targetAllocation->entity]);
+        }
 
         return redirect()->back();
     }
 
     public function swapHeats(Competition $comp, CompetitionSpeedEvent $event, Request $request)
     {
+        $this->ensureEventBelongsToCompetition($comp, $event);
+
         $first = $request->input('first');
         $second = $request->input('second');
 
@@ -113,20 +122,21 @@ class HeatController extends Controller
         $firstLanes = $event->heats()->where('heat', $first)->get();
         $secondLanes = $event->heats()->where('heat', $second)->get();
 
-        $firstLanes->each(function ($lane) {
-            $lane->heat = -3;
-            $lane->save();
-        });
+        DB::transaction(function () use ($firstLanes, $secondLanes, $first, $second) {
+            $firstLanes->each(function ($lane) {
+                $lane->heat = -3;
+                $lane->save();
+            });
 
-        $secondLanes->each(function ($lane) use ($first) {
-            $lane->heat = $first;
-            $lane->save();
-        });
+            $secondLanes->each(function ($lane) use ($first) {
+                $lane->heat = $first;
+                $lane->save();
+            });
 
-
-        $firstLanes->each(function ($lane) use ($second) {
-            $lane->heat = $second;
-            $lane->save();
+            $firstLanes->each(function ($lane) use ($second) {
+                $lane->heat = $second;
+                $lane->save();
+            });
         });
 
         $comp->clearHeatCache();
@@ -138,6 +148,8 @@ class HeatController extends Controller
 
     public function reset(Competition $comp, CompetitionSpeedEvent $event, HeatService $heatService)
     {
+
+        $this->ensureEventBelongsToCompetition($comp, $event);
 
         try {
             $heatService->generateHeatsForEvent($event);
@@ -154,10 +166,83 @@ class HeatController extends Controller
 
     public function deleteHeat(Competition $comp, CompetitionSpeedEvent $event, Request $request)
     {
-        $event->heats()->where('heat', $request->input('heat'))->delete();
+        $this->ensureEventBelongsToCompetition($comp, $event);
+
+        $heat = (int) $request->validate(['heat' => ['required', 'integer', 'min:1']])['heat'];
+
+        DB::transaction(function () use ($event, $heat) {
+            $event->heats()->where('heat', $heat)->delete();
+            $event->heats()->where('heat', '>', $heat)->decrement('heat');
+        });
 
         $comp->clearHeatCache();
 
         return response()->json(['result' => 'ok']);
+    }
+
+    public function assign(Competition $comp, CompetitionSpeedEvent $event, Request $request)
+    {
+        $this->ensureEventBelongsToCompetition($comp, $event);
+
+        $data = $request->validate([
+            'entity' => ['required', 'integer'],
+            'heat' => ['required', 'integer', 'min:1'],
+            'lane' => ['required', 'integer', 'min:1'],
+        ]);
+
+        $entityClass = $event->getScorableEntity();
+        $entity = $entityClass::where('competition', $comp->id)->findOrFail($data['entity']);
+
+        if ($event->heats()->where('heat', $data['heat'])->where('lane', $data['lane'])->exists()) {
+            return response()->json(['message' => 'That lane is already occupied.'], 422);
+        }
+
+        $event->heats()->whereMorphedTo('entity', $entity)->delete();
+        $allocation = $event->heats()->create([
+            'entity_id' => $entity->id,
+            'entity_type' => $entity->getMorphClass(),
+            'heat' => $data['heat'],
+            'lane' => $data['lane'],
+        ]);
+
+        $comp->clearHeatCache();
+
+        return response()->json(['result' => 'ok', 'allocation_id' => $allocation->id]);
+    }
+
+    public function insertHeat(Competition $comp, CompetitionSpeedEvent $event, Request $request)
+    {
+        $this->ensureEventBelongsToCompetition($comp, $event);
+
+        $position = (int) $request->validate([
+            'position' => ['required', 'integer', 'min:1'],
+        ])['position'];
+
+        $event->heats()->where('heat', '>=', $position)->increment('heat');
+        $comp->clearHeatCache();
+
+        return response()->json(['result' => 'ok']);
+    }
+
+    public function unassign(Competition $comp, CompetitionSpeedEvent $event, Request $request)
+    {
+        $this->ensureEventBelongsToCompetition($comp, $event);
+
+        $entityId = $request->validate([
+            'entity' => ['required', 'integer'],
+        ])['entity'];
+
+        $entityClass = $event->getScorableEntity();
+        $entity = $entityClass::where('competition', $comp->id)->findOrFail($entityId);
+
+        $event->heats()->whereMorphedTo('entity', $entity)->delete();
+        $comp->clearHeatCache();
+
+        return response()->json(['result' => 'ok']);
+    }
+
+    private function ensureEventBelongsToCompetition(Competition $comp, CompetitionSpeedEvent $event): void
+    {
+        abort_unless((int) $event->competition === (int) $comp->id, 404);
     }
 }
