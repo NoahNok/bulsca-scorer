@@ -281,6 +281,9 @@ Route::middleware('auth')->group(function () {
                 Route::get('{event}/reset', [HeatController::class, 'reset'])->name('comps.heats_and_draws.heats.reset');
                 Route::post('{event}/swap', [HeatController::class, 'swap'])->name('comps.heats_and_draws.heats.swap');
                 Route::post('{event}/swapHeats', [HeatController::class, 'swapHeats'])->name('comps.heats_and_draws.heats.swapHeats');
+                Route::post('{event}/assign', [HeatController::class, 'assign'])->name('comps.heats_and_draws.heats.assign');
+                Route::post('{event}/unassign', [HeatController::class, 'unassign'])->name('comps.heats_and_draws.heats.unassign');
+                Route::post('{event}/insertHeat', [HeatController::class, 'insertHeat'])->name('comps.heats_and_draws.heats.insertHeat');
                 Route::post('{event}/deleteHeat', [HeatController::class, 'deleteHeat'])->name('comps.heats_and_draws.heats.deleteHeats');
             });
 
