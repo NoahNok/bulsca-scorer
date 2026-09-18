@@ -15,12 +15,12 @@
                 <h2 class="mb-0">Edit - {{ $event->getName() }}</h2>
 
             </div>
-            <p>Be aware of milliseconds! If your stopwatch only displays a two digit milliseconds then make sure to multiply
-                the value by 10 before entering!
-                <br>
-                <br>
+            <p>
+                Enter
+                <strong>DNF/DNS</strong> as required!
 
                 @if ($event->getName() == 'Rope Throw')
+                    <br>
                     <strong>Rope Throw:</strong> Enter a time for all in (00:00.000), otherwise a number between 0-3 for how
                     many.
                 @endif
@@ -78,15 +78,21 @@
                                         {{ $result->entity->getName($comp) }}
                                     </th>
                                     <td class="table-input">
+                                        @php
+                                            $initialDqStr = $result->getDisqualificationsString();
+                                            $dqStr = $initialDqStr;
+                                            $hasSpecialDq = false;
 
-                                        @if (in_array($result->getDisqualificationsString(), ['DQ99915', 'DQ99904', 'DQ99901']))
+                                            if ($dqStr == 'OOT' || $dqStr == 'DNF' || $dqStr == 'DNS') {
+                                                $dqStr = null;
+                                                $hasSpecialDq = true;
+                                            }
+
+                                        @endphp
+                                        @if ($hasSpecialDq)
                                             @php
 
-                                                $code = match ($result->disqualification) {
-                                                    'DQ99915' => 'DNF',
-                                                    'DQ99904' => 'DNS',
-                                                    'DQ99901' => 'OOT',
-                                                };
+                                                $code = $initialDqStr;
 
                                             @endphp
 
@@ -134,7 +140,7 @@
                                         <input class="table-input" ts table-cell table-cell-name="disqualification"
                                             table-cell-optional placeholder="DQ###" type="text" x-data
                                             x-mask:dynamic="$input.startsWith('DQ100') ? 'DQ9999' : 'DQ999'"
-                                            value="{{ $result->getDisqualificationsString() }}">
+                                            value="{{ $dqStr }}">
 
                                     </td>
 
