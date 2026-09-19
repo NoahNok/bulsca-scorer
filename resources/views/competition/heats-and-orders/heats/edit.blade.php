@@ -106,7 +106,7 @@
                             <tr class="bg-gray-900 text-left text-xs uppercase tracking-wider text-white">
                                 <th class="sticky left-0 z-10 w-16 min-w-16 max-w-16 bg-gray-900 px-4 py-3">Lane</th>
                                 <template x-for="heat in heats" :key="heat.number">
-                                    <th class="w-72 min-w-[18rem] border-l border-gray-700 px-4 py-3"
+                                    <th class="max-w-100 min-w-[20rem]! border-l border-gray-700 px-4 py-3"
                                         style="width: 18rem; min-width: 18rem;" :data-heat-number="heat.number">
                                         <div class="flex items-center justify-between gap-3">
                                             <button type="button" class="font-semibold hover:text-se-accent"
@@ -137,9 +137,9 @@
                                     <th class="sticky left-0 z-10 w-16 min-w-16 max-w-16 bg-gray-50 px-4 py-4 text-left text-sm font-bold text-gray-500"
                                         x-text="lane"></th>
                                     <template x-for="heat in heats" :key="heat.number">
-                                        <td class="border-l border-gray-200 p-2 align-top">
+                                        <td class="h-px border-l border-gray-200 p-2">
                                             <button type="button"
-                                                class="flex min-h-16 w-full flex-col justify-center rounded-md border-2 p-3 text-left transition"
+                                                class="flex h-full min-h-16 w-full flex-col justify-center rounded-md border-2 p-3 text-left transition"
                                                 :class="cellClass(heat, lane)" @click="selectCell(heat, lane)">
                                                 <template x-if="cell(heat, lane)"><span><span class="block font-semibold"
                                                             x-text="cell(heat, lane).name"></span><span
