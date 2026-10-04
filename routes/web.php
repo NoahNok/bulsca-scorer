@@ -294,7 +294,13 @@ Route::middleware('auth')->group(function () {
                 Route::post('tank-setup', [DrawController::class, 'tankSetupPost'])->name('comps.heats_and_draws.draws.tank_setup.post');
                 Route::get('{serc}/edit', [DrawController::class, 'edit'])->name('comps.heats_and_draws.draws.edit');
                 Route::post('{serc}/edit', [DrawController::class, 'swap'])->name('comps.heats_and_draws.draws.swap');
-                Route::get('{serc}/reset', [DrawController::class, 'reset'])->name('comps.heats_and_draws.draws.reset');
+                Route::post('{serc}/remove', [DrawController::class, 'remove'])->name('comps.heats_and_draws.draws.remove');
+                Route::post('{serc}/move', [DrawController::class, 'move'])->name('comps.heats_and_draws.draws.move');
+                Route::post('{serc}/assign', [DrawController::class, 'assign'])->name('comps.heats_and_draws.draws.assign');
+                Route::post('{serc}/add-tank', [DrawController::class, 'addTank'])->name('comps.heats_and_draws.draws.addTank');
+                Route::post('{serc}/compact-tanks', [DrawController::class, 'compactTanks'])->name('comps.heats_and_draws.draws.compactTanks');
+                Route::post('{serc}/remove-tank', [DrawController::class, 'removeTank'])->name('comps.heats_and_draws.draws.removeTank');
+                Route::post('{serc}/reset', [DrawController::class, 'reset'])->name('comps.heats_and_draws.draws.reset');
             });
         });
 

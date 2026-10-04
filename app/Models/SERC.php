@@ -17,6 +17,7 @@ use App\Models\Event\ScoringSchema;
 use App\Models\Interfaces\IEvent;
 use App\Models\Interfaces\IPenalisable;
 use App\Models\Orders\Draw;
+use App\Models\Orders\DrawTank;
 use App\Models\Scoring\Bulsca\BulscaSercScoring;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -195,6 +196,11 @@ class SERC extends Event
         return $this->hasMany(Draw::class, 'serc');
     }
 
+    public function drawTanks()
+    {
+        return $this->hasMany(DrawTank::class, 'serc');
+    }
+
     public function getDraw()
     {
         // if using seperate draws per SERC, this is where that would be handled
@@ -232,15 +238,24 @@ class SERC extends Event
     public function getTankDraw()
     {
         $comp = $this->getCompetition;
+        $draws = $this->draw()->with('entity')->orderBy('tank')->orderBy('draw')->get();
+        $tankNumbers = $this->drawTanks()->pluck('tank')
+            ->merge($draws->pluck('tank'))
+            ->unique()
+            ->sort()
+            ->values();
 
-        return $this->draw()->with('entity')->orderBy('tank')->orderBy('draw')->get()->map(function ($draw) use ($comp) {
-            return [
-                'id' => $draw->id,
-                'tank' => $draw->tank,
-                'draw' => $draw->draw,
-                'entity_name' => $draw?->entity?->getName($comp) ?? 'No Entity',
-            ];
-        })->groupBy('tank');
+        return $tankNumbers->mapWithKeys(function ($tankNumber) use ($draws, $comp) {
+            return [$tankNumber => $draws->where('tank', $tankNumber)->map(function ($draw) use ($comp) {
+                return [
+                    'id' => $draw->id,
+                    'entity_id' => $draw->entity_id,
+                    'tank' => $draw->tank,
+                    'draw' => $draw->draw,
+                    'entity_name' => $draw->entity?->getName($comp) ?? 'No Entity',
+                ];
+            })->values()];
+        });
     }
 
     public function getJudges()
