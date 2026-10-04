@@ -190,50 +190,6 @@ joinCompetition.post = (options?: RouteQueryOptions): RouteDefinition<'post'> =>
 })
 
 /**
-* @see \App\Http\Controllers\DigitalJudge\JudgeController::toggleReferee
-* @see app/Http/Controllers/DigitalJudge/JudgeController.php:151
-* @route '//judge.localhost/v2/switchreferee'
-*/
-export const toggleReferee = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: toggleReferee.url(options),
-    method: 'get',
-})
-
-toggleReferee.definition = {
-    methods: ["get","head"],
-    url: '//judge.localhost/v2/switchreferee',
-} satisfies RouteDefinition<["get","head"]>
-
-/**
-* @see \App\Http\Controllers\DigitalJudge\JudgeController::toggleReferee
-* @see app/Http/Controllers/DigitalJudge/JudgeController.php:151
-* @route '//judge.localhost/v2/switchreferee'
-*/
-toggleReferee.url = (options?: RouteQueryOptions) => {
-    return toggleReferee.definition.url + queryParams(options)
-}
-
-/**
-* @see \App\Http\Controllers\DigitalJudge\JudgeController::toggleReferee
-* @see app/Http/Controllers/DigitalJudge/JudgeController.php:151
-* @route '//judge.localhost/v2/switchreferee'
-*/
-toggleReferee.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: toggleReferee.url(options),
-    method: 'get',
-})
-
-/**
-* @see \App\Http\Controllers\DigitalJudge\JudgeController::toggleReferee
-* @see app/Http/Controllers/DigitalJudge/JudgeController.php:151
-* @route '//judge.localhost/v2/switchreferee'
-*/
-toggleReferee.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: toggleReferee.url(options),
-    method: 'head',
-})
-
-/**
 * @see \App\Http\Controllers\DigitalJudge\JudgeController::home
 * @see app/Http/Controllers/DigitalJudge/JudgeController.php:116
 * @route '//judge.localhost/v2/{competition}'
@@ -301,6 +257,74 @@ home.head = (args: { competition: number | { id: number } } | [competition: numb
     method: 'head',
 })
 
-const JudgeController = { login, loginPost, resendPin, index, joinCompetition, toggleReferee, home }
+/**
+* @see \App\Http\Controllers\DigitalJudge\JudgeController::toggleReferee
+* @see app/Http/Controllers/DigitalJudge/JudgeController.php:151
+* @route '//judge.localhost/v2/switchreferee/{competition}'
+*/
+export const toggleReferee = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: toggleReferee.url(args, options),
+    method: 'get',
+})
+
+toggleReferee.definition = {
+    methods: ["get","head"],
+    url: '//judge.localhost/v2/switchreferee/{competition}',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\DigitalJudge\JudgeController::toggleReferee
+* @see app/Http/Controllers/DigitalJudge/JudgeController.php:151
+* @route '//judge.localhost/v2/switchreferee/{competition}'
+*/
+toggleReferee.url = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { competition: args }
+    }
+
+    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+        args = { competition: args.id }
+    }
+
+    if (Array.isArray(args)) {
+        args = {
+            competition: args[0],
+        }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+        competition: typeof args.competition === 'object'
+        ? args.competition.id
+        : args.competition,
+    }
+
+    return toggleReferee.definition.url
+            .replace('{competition}', parsedArgs.competition.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\DigitalJudge\JudgeController::toggleReferee
+* @see app/Http/Controllers/DigitalJudge/JudgeController.php:151
+* @route '//judge.localhost/v2/switchreferee/{competition}'
+*/
+toggleReferee.get = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: toggleReferee.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\DigitalJudge\JudgeController::toggleReferee
+* @see app/Http/Controllers/DigitalJudge/JudgeController.php:151
+* @route '//judge.localhost/v2/switchreferee/{competition}'
+*/
+toggleReferee.head = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: toggleReferee.url(args, options),
+    method: 'head',
+})
+
+const JudgeController = { login, loginPost, resendPin, index, joinCompetition, home, toggleReferee }
 
 export default JudgeController

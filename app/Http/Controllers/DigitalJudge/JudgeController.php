@@ -148,12 +148,16 @@ class JudgeController extends Controller
         ]);
     }
 
-    public function toggleReferee()
+    public function toggleReferee(Competition $competition)
     {
 
-        $isReferee = DigitalJudge::isClientHeadJudge();
+        $isReferee = DigitalJudge::isClientHeadJudge($competition);
 
-        DigitalJudge::setClientHeadJudge(!$isReferee);
+
+
+        // Lets also set the value in hte pivot role
+        $competition->setOfficialRole(Auth::user(), $isReferee ? 'official' : 'referee');
+
 
         Inertia::flash('toast', ['variant' => 'success', 'title' => $isReferee ? "You are nolonger a referee" : "You are now a referee"]);
     }

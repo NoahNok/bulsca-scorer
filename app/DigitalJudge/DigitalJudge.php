@@ -130,7 +130,7 @@ class DigitalJudge
 
         $user = Auth::user();
         if ($user && $competition) {
-            return $competition->userHasRole($user, 'referee');
+            return $competition->officialHasRole($user, 'referee');
         }
 
         return Session::get('digitalJudgeClientHeadJudge', false);

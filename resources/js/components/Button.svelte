@@ -2,6 +2,8 @@
     import { cn } from "@/utils/utils";
     import type { Snippet } from "svelte";
     import type { HTMLButtonAttributes } from "svelte/elements";
+    import Spinner from "./Spinner.svelte";
+    import { LoaderCircle } from "@lucide/svelte";
 
     let {
         label,
@@ -12,6 +14,7 @@
         iconClass: iconClass = "",
         before,
         ref,
+        loading = false,
         ...restProps
     }: {
         label?: string;
@@ -21,6 +24,7 @@
         iconClass?: string;
         before?: Snippet;
         ref?: any;
+        loading?: boolean;
     } & HTMLButtonAttributes = $props();
 
     // get variant classes based on the variant prop
@@ -47,7 +51,13 @@
     });
 </script>
 
-<button {...restProps} class={cn(variantClasses, className)} bind:this={ref}>
+<button
+    {...restProps}
+    class={cn(variantClasses, className)}
+    class:pointer-events-none={loading}
+    bind:this={ref}
+    disabled={loading}
+>
     {#if before}
         {@render before()}
     {/if}
@@ -56,7 +66,11 @@
         {label}
     {/if}
 
-    {#if Icon}
+    {#if Icon && !loading}
         <Icon size={16} class={iconClass} />
+    {/if}
+
+    {#if loading}
+        <LoaderCircle size={16} class={cn(iconClass, "animate-spin")} />
     {/if}
 </button>

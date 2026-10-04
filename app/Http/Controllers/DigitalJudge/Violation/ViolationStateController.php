@@ -15,12 +15,8 @@ class ViolationStateController extends Controller
     {
         $validated = $updateViolationStateRequest->validated();
 
+        $submission->updateStatus($validated['state']);
 
-
-        $submission->status = $validated['state'];
-
-
-        $submission->save();
 
         return response()->json(['state' => $submission->status]);
     }

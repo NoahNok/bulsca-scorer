@@ -2,9 +2,12 @@
     import { home } from "@/actions/App/Http/Controllers/DigitalJudge/JudgeController";
     import { updateState } from "@/actions/App/Http/Controllers/DigitalJudge/Violation/ViolationStateController";
     import AppHead from "@/components/AppHead.svelte";
+    import Button from "@/components/Button.svelte";
     import ConfirmDialog from "@/components/ConfirmDialog.svelte";
-    import { toastError } from "@/lib/toast.svelte";
+    import Spinner from "@/components/Spinner.svelte";
+    import { toastError, toastSuccess } from "@/lib/toast.svelte";
     import event from "@/routes/judge/competition/event";
+    import { submissions } from "@/routes/judge/competition/violation";
     import type { Competition } from "@/types/base";
     import {
         stateColor,
@@ -13,26 +16,36 @@
         type ViolationSubmission,
     } from "@/types/violation";
     import { Link, page, router, useHttp } from "@inertiajs/svelte";
-    import { Check, CircleDashed, Gavel, House, X } from "@lucide/svelte";
+    import {
+        ArrowLeft,
+        Check,
+        CircleCheck,
+        CircleDashed,
+        CircleMinus,
+        CircleOff,
+        CircleX,
+        Gavel,
+        House,
+        X,
+    } from "@lucide/svelte";
 
     let {
-        submission,
+        submission: rawSubmission,
         competition,
     }: {
         submission: ViolationSubmission;
         competition: Competition;
     } = $props();
-    let updating = $state<boolean>(false);
+
+    let submission = $derived<ViolationSubmission>(rawSubmission);
 
     let http = useHttp<{ state: string }>({ state: "" });
 
     function updateStatus(status: ViolationStatus) {
-        if (updating) {
+        if (http.processing) {
             toastError("This submission is updating, please wait.");
             return;
         }
-        console.log(status);
-        updating = true;
 
         http.data = () => {
             return {
@@ -48,6 +61,12 @@
             {
                 onSuccess(response, httpResponse) {
                     submission.status = status;
+                    toastSuccess("Submission updated");
+                },
+                onError() {
+                    toastError(
+                        "Failed to update submission. Please try again.",
+                    );
                 },
             },
         );
@@ -90,11 +109,18 @@
 
 <div class="h-16"></div>
 
-<section class="flex flex-col h-full">
+<section class="flex flex-col">
     <p class="font-archivo -mb-2">{competition.name}</p>
     <h2 class="">DQ/Penalty Submission</h2>
     <br />
+    <Link
+        href={submissions({ competition: competition })}
+        class="text-sm text-gray-600 inline-flex items-center gap-1 group-hover:font-bold mb-1"
+        ><ArrowLeft size={14} /> Back</Link
+    >
+</section>
 
+<section class="flex flex-col relative">
     <p class="font-archivo {stateColor(submission.status)}">
         {submission.status}
     </p>
@@ -107,7 +133,15 @@
     <div class="flex items-center justify-between mb-1">
         <h1 class="text-red-500">{code}</h1>
 
-        <CircleDashed />
+        {#if submission.status === "SUBMITTED"}
+            <CircleDashed class="animate-pulse" />
+        {:else if submission.status === "ACCEPTED"}
+            <CircleCheck class="text-green-500" />
+        {:else if submission.status === "APPEALED"}
+            <CircleMinus class="text-orange-500" />
+        {:else}
+            <CircleX class="text-red-500" />
+        {/if}
     </div>
     <p class="text-sm text-gray-600">{submission.violation.description}</p>
 
@@ -138,7 +172,7 @@
             >
         </p>
 
-        <div class="mt-2">
+        <div class="my-2">
             <p class="text-sm font-medium">Details:</p>
             <p>
                 {submission.details.details !== ""
@@ -163,6 +197,7 @@
                     confirmVariant="success"
                     confirmLabel="Approve"
                     onConfirm={() => updateStatus("ACCEPTED")}
+                    loading={http.processing}
                 />
 
                 <ConfirmDialog
@@ -175,6 +210,39 @@
                     triggerIcon={X}
                     confirmLabel="Reject"
                     onConfirm={() => updateStatus("REJECTED")}
+                    loading={http.processing}
+                />
+            </div>
+        {:else if submission.status === "ACCEPTED"}
+            <hr class="spacer mb-4!" />
+            <div class="flex space-x-2 mb-1">
+                <ConfirmDialog
+                    title="Appeal {code}"
+                    description="Are you sure you want to appeal this submission for {submission
+                        .entity.name} in {submission.event
+                        .name}? (You should only do this if the appeal was successful)"
+                    triggerLabel="Appealed"
+                    triggerClass="w-full py-1"
+                    triggerVariant="success"
+                    triggerIcon={Check}
+                    confirmVariant="success"
+                    confirmLabel="Appeal"
+                    onConfirm={() => updateStatus("APPEALED")}
+                    loading={http.processing}
+                />
+
+                <ConfirmDialog
+                    title="Remove {code}"
+                    description="Are you sure you want to remove this submission for {submission
+                        .entity.name} in {submission.event
+                        .name}? (It will appear as if it never existed)"
+                    triggerLabel="Remove"
+                    triggerClass="w-full py-1"
+                    triggerVariant="danger"
+                    triggerIcon={X}
+                    confirmLabel="Remove"
+                    onConfirm={() => updateStatus("REMOVED")}
+                    loading={http.processing}
                 />
             </div>
         {/if}

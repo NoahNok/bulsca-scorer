@@ -16,6 +16,7 @@
         triggerClass = "",
         triggerType = "button",
         triggerIcon,
+        loading = false,
         onConfirm,
         onCancel,
     }: {
@@ -35,6 +36,7 @@
         triggerClass?: string;
         triggerType?: "button" | "submit" | "reset";
         triggerIcon?: any;
+        loading?: boolean;
         onConfirm?: () => void;
         onCancel?: () => void;
     } = $props();
@@ -53,6 +55,7 @@
     {triggerClass}
     {triggerType}
     {triggerIcon}
+    {loading}
 >
     <p>{description}</p>
     {#snippet footer(dialog)}

@@ -427,7 +427,7 @@
                                         <div class="text-left max-w-[80%]">
                                             <h3>DQ{dq.code}</h3>
                                             <p class="">
-                                                {dq.description} marking points
+                                                {dq.description}
                                             </p>
                                         </div>
 
@@ -454,7 +454,7 @@
                                         <div class="text-left max-w-[80%]">
                                             <h3>P{pen.code}</h3>
                                             <p class="">
-                                                {pen.description} marking points
+                                                {pen.description}
                                             </p>
                                         </div>
 
@@ -518,7 +518,7 @@
 
                 <div class="col-span-2">
                     <Input
-                        label="You're Role"
+                        label="Your Role"
                         placeholder="Turn/Lane/SERC/etc..."
                         bind:value={form.submitter.position}
                         required

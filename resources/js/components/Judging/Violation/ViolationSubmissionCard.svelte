@@ -37,7 +37,7 @@
 </script>
 
 <div
-    class="border rounded-xl shadow-sm px-4 py-2 transition-all w-full relative overflow-hidden hover:border-se"
+    class="border rounded-xl shadow-sm px-4 py-2 transition-all w-full relative overflow-hidden hover:border-se group"
 >
     <Link
         href={view({ competition: competition, submission: submission.id })}
@@ -70,7 +70,7 @@
                     {submission.status}
                 </p>
                 <span
-                    class="text-sm text-gray-600 inline-flex items-center gap-1"
+                    class="text-sm text-gray-600 inline-flex items-center gap-1 group-hover:font-bold"
                     >More <ArrowRight size={16} /></span
                 >
             </div>

@@ -33,9 +33,12 @@
     } = $props();
 
     usePoll(
-        2000,
+        5000,
         () => ({
             only: ["submissions"],
+            onSuccess: () => {
+                secondsSincePoll = 1;
+            },
         }),
         {
             mode: "rest",
@@ -52,6 +55,16 @@
             },
             {} as Record<ViolationStatus, ViolationSubmission[]>,
         );
+    });
+
+    let secondsSincePoll = $state<number>(1);
+
+    $effect(() => {
+        let interval = setInterval(() => {
+            secondsSincePoll++;
+        }, 1000);
+
+        return () => clearInterval(interval);
     });
 </script>
 
@@ -92,6 +105,8 @@
     </Link>
 
     <hr class="spacer my-4!" />
+
+    <p class="text-sm text-gray-600">Last updated: {secondsSincePoll}s ago</p>
     <div class="">
         {#each violationStatuses as status (status)}
             {#if groups[status]}

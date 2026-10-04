@@ -36,13 +36,18 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+
+        $competition = $request->route('competition');
+
+
+
         return [
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user()
             ],
             'judge' => [
-                'isHeadRef' => DigitalJudge::isClientHeadJudge()
+                'isHeadRef' => $competition ? DigitalJudge::isClientHeadJudge($competition) : false
             ],
             'env_local' => env('APP_ENV') == 'local'
             //

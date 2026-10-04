@@ -675,13 +675,20 @@ class Competition extends Model implements IInvitable, IJsonable
             ->withTimestamps();
     }
 
-    public function userHasRole(User $user, string $role): bool
+    public function officialHasRole(User $user, string $role): bool
     {
         $pivot = $this->officials()
             ->where('user_id', $user->id)
             ->first()?->pivot;
 
         return $pivot?->isOfficialRole($role) ?? false;
+    }
+
+    public function setOfficialRole(User $user, string $role): void
+    {
+        $this->officials()->syncWithoutDetaching([
+            $user->id => ['role' => $role],
+        ]);
     }
 
     #[Override]

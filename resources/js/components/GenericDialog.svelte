@@ -22,6 +22,7 @@
         triggerIcon,
         allowManualClose = true,
         withX = false,
+        loading = false,
         onCancel,
         children,
         footer,
@@ -36,11 +37,17 @@
             | "danger"
             | "white";
         triggerLabel?: string;
-        triggerVariant?: "primary" | "secondary" | "success" | "danger";
+        triggerVariant?:
+            | "primary"
+            | "secondary"
+            | "success"
+            | "danger"
+            | "white";
         triggerClass?: string;
         triggerType?: "button" | "submit" | "reset";
         triggerIcon?: any;
         allowManualClose?: boolean;
+        loading?: boolean;
         withX?: boolean;
         onCancel?: () => void;
         children?: Snippet;
@@ -69,6 +76,7 @@
             class={triggerClass}
             type={triggerType}
             icon={triggerIcon}
+            {loading}
             onclick={(event) => {
                 event.preventDefault();
                 event.stopPropagation();

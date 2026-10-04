@@ -59,8 +59,10 @@
 {/if}
 
 {#if page.props.env_local}
-    <div class="fixed top-50 -left-13 bg-red-500 p-2 rotate-90">
-        <Link href={toggleReferee()}>TOGGLE REFEREE</Link>
+    <div class="fixed top-60 -left-12 bg-red-500 p-1 rotate-90 text-sm">
+        <Link href={toggleReferee({ competition: competition ?? -1 })}
+            >TOGGLE REFEREE</Link
+        >
     </div>
 {/if}
 

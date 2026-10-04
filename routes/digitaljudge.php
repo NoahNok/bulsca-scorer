@@ -31,11 +31,13 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
             Route::post('join', [JudgeController::class, 'joinCompetition'])->name('judge.join-competition');
 
 
-            if (env('APP_ENV') == 'local') {
-                Route::get('switchreferee', [JudgeController::class, 'toggleReferee'])->name('judge.referee-toggle');
-            }
+
 
             Route::prefix('{competition}')->group(function () {
+
+
+
+
                 Route::get('', [JudgeController::class, 'home'])->name('judge.competition');
                 Route::prefix('serc/{serc}')->group(function () {
 
@@ -99,6 +101,10 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
                     });
                 });
             });
+
+            if (env('APP_ENV') == 'local') {
+                Route::get('switchreferee/{competition}', [JudgeController::class, 'toggleReferee'])->name('judge.referee-toggle');
+            }
         });
     });
 

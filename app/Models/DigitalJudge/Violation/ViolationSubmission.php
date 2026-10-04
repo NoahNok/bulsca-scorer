@@ -2,6 +2,8 @@
 
 namespace App\Models\DigitalJudge\Violation;
 
+use App\Models\AbstractClasses\Event;
+use App\Models\AbstractClasses\Violation;
 use App\Models\Competition;
 use App\Models\DQCode;
 use App\Models\Interfaces\IJsonable;
@@ -55,6 +57,11 @@ class ViolationSubmission extends Model implements IJsonable
         return $this->belongsTo(User::class, 'submitter_id');
     }
 
+    private function isDq(): bool
+    {
+        return $this->submitted instanceof (DQCode::class);
+    }
+
     #[Override]
     public function jsonable(): array
     {
@@ -73,7 +80,7 @@ class ViolationSubmission extends Model implements IJsonable
                 'code' => $violation->code,
                 'description' => $violation->description,
                 'type' => null,
-                'vtype' => $violation instanceof (DQCode::class) ? "DQ" : "PEN"
+                'vtype' => $this->isDq() ? "DQ" : "PEN"
             ],
             'details' => [
                 'turn' => $this->turn,
@@ -121,5 +128,73 @@ class ViolationSubmission extends Model implements IJsonable
         }
 
         return $draw;
+    }
+
+
+
+    // SUBMISSION MANAGEMENT
+
+    public function updateStatus(string $status)
+    {
+        $this->status = $status;
+
+        switch ($status) {
+            case "ACCEPTED":
+                $this->applyToEntity();
+                break;
+            case "APPEALED":
+            case "REMOVED":
+                $this->removeFromEntity();
+        }
+
+        $this->save();
+    }
+
+    public function applyToEntity()
+    {
+        /**
+         * @var Event
+         */
+        $event = $this->event;
+
+        $applied = null;
+        if ($this->isDq()) {
+            $event->clearEntityDisqualifications($this->entity);
+            $applied = $event->addEntityDisqualification($this->entity, $this->submitted->code);
+        } else {
+            $applied = $event->addEntityPenalty($this->entity, $this->submitted->code);
+        }
+
+        $this->applied()->associate($applied);
+    }
+
+    public function removeFromEntity()
+    {
+        /**
+         * @var Event
+         */
+        $event = $this->event;
+
+        if ($this->isDq()) {
+            /**
+             * @var Violation
+             */
+            $disqualifications = $event->getEntityDisqualifications($this->entity)->where('code', $this->submitted->code)->first();
+
+            if ($disqualifications) {
+                $disqualifications->delete();
+            }
+        } else {
+            /**
+             * @var Violation
+             */
+            $penalty = $event->getEntityPenalties($this->entity)->where('code', $this->submitted->code)->first();
+
+            if ($penalty) {
+                $penalty->delete();
+            }
+        }
+
+        $this->applied()->dissociate();
     }
 }
