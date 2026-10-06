@@ -4,6 +4,9 @@
     {{ $serc->name }}
 @endsection
 
+@php
+    $entityStatus = [];
+@endphp
 
 
 @section('content')
@@ -124,17 +127,18 @@
                                         </td>
                                         <td class="flex justify-end items-center space-x-2">
 
-                                            @if ($result->total_marking_points < $totalMPs)
-                                                <span class="mt-1 tooltip" data-tooltip="test"
-                                                    title="Incomplete marking - {{ $result->total_marking_points }} / {{ $totalMPs }}">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                        class="size-6 text-yellow-500 ">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
-                                                    </svg>
-                                                </span>
-                                            @endif
+
+                                            @php
+                                                if ($result->total_marking_points < $totalMPs) {
+                                                    $entityStatus[$result->entity->id] =
+                                                        $result->total_marking_points == 0 ? 'unknown' : 'incomplete';
+                                                } else {
+                                                    $entityStatus[$result->entity->id] = 'complete';
+                                                }
+                                            @endphp
+
+                                            <x-se.serc-entity-marking-status :status="$entityStatus[$result->entity->id] ?? null"
+                                                marked="{{ $result->total_marking_points }}" :total="$totalMPs" />
 
                                             <a href="{{ route('comps.events.sercs.editResults', [$comp, $serc, $result->entity->id]) }}"
                                                 class="se-btn text-black">
@@ -231,13 +235,24 @@
                                         $name = $draw->entity->getName($comp);
                                     @endphp
                                     <tr x-data="{ name: `{{ $name }}` }" x-show="name.toLowerCase().includes(search.toLowerCase())">
+
+
+
+
+
+
                                         <th scope="row">
                                             {{ ($use_tanks ? "Tank $draw->tank-" : '') . $draw->draw }}.
 
                                             {{ $name }}
                                         </th>
 
-                                        <td>
+                                        <td class="flex justify-end items-center space-x-2">
+
+                                            <x-se.serc-entity-marking-status :status="$entityStatus[$draw->entity->id] ?? null" :total="$totalMPs" />
+
+
+
                                             <a href="{{ route('comps.events.sercs.editResults', [$comp, $serc, $draw->entity]) }}"
                                                 class="se-btn text-black0">
                                                 Edit
@@ -262,7 +277,10 @@
                                             {{ $name }}
                                         </th>
 
-                                        <td>
+                                        <td class="flex justify-end items-center space-x-2">
+
+                                            <x-se.serc-entity-marking-status :status="$entityStatus[$entity->id] ?? null" :total="$totalMPs" />
+
                                             <a href="{{ route('comps.events.sercs.editResults', [$comp, $serc, $entity]) }}"
                                                 class="se-btn text-black0">
                                                 Edit
