@@ -9,6 +9,13 @@ class Draw extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'entity_id',
+        'entity_type',
+        'tank',
+        'draw',
+    ];
+
     public function entity()
     {
         return $this->morphTo();
