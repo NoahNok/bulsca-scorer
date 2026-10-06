@@ -38,8 +38,8 @@
             <header class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                 <div>
                     <h2 class="mb-1">SERC order</h2>
-                    <p class="text-sm text-gray-600">Select two entries to swap. Select an entry and choose before or
-                        after to reorder it, or select an unassigned entity to place it in the draw.</p>
+                    <p class="text-sm text-gray-600">Select two entries to directly swap, or click before/after to insert.
+                    </p>
                 </div>
                 <a href="{{ route('comps.heats_and_draws', $comp) }}" class="se-btn">Back to heats</a>
             </header>
@@ -97,18 +97,20 @@
                         <div class="flex min-w-0 items-center gap-1" @mouseenter="hoveredDrawId = draw.id"
                             @mouseleave="if (hoveredDrawId === draw.id) hoveredDrawId = null">
                             <button type="button"
-                                class="shrink-0 cursor-pointer rounded border border-gray-300 bg-white px-2 py-1 text-xs font-semibold text-gray-600 transition hover:border-se disabled:cursor-not-allowed disabled:opacity-40"
+                                class="shrink-0 cursor-pointer rounded border border-gray-300 bg-white z-10 px-2 py-1 text-xs font-semibold text-gray-600 transition hover:border-se disabled:cursor-not-allowed disabled:opacity-40"
                                 x-show="showMoveControls(draw)" x-transition.opacity :disabled="busy"
                                 title="Move selected entry before this draw"
                                 @click.stop="moveTo(draw.id, 'before')">Before</button>
-                            <div class="se-card se-card-body se-card-hover flex min-w-0 flex-1 flex-row! items-center justify-between gap-2 text-sm transition-all duration-200"
-                                @click="selectDraw(draw, $event)"
+                            <div class="se-card se-card-body se-card-hover flex min-w-0 flex-1 flex-row! items-center justify-between gap-2 text-sm transition-all duration-200 "
+                                title="Swap entry with this draw" @click="selectDraw(draw, $event)"
                                 :class="{
                                     'se-card-active': selection.type === 'draw' && selection.value === draw.id,
-                                    'border-se!': selection.type === 'draw' && selection.value !== draw.id &&
+                                    'border-se! tooltip-left': selection.type === 'draw' && selection.value !== draw
+                                        .id &&
                                         hoveredDrawId === draw.id
                                 }">
-                                <button type="button" class="min-w-0 flex-1 cursor-pointer truncate text-left">
+                                <button type="button"
+                                    class="min-w-0 flex-1 cursor-pointer truncate text-left tooltip-left">
                                     <strong x-text="`${draw.draw}.`"></strong> <span
                                         x-text="draw.entity_name"></span></button>
                                 <button type="button"
@@ -124,7 +126,7 @@
                                 </button>
                             </div>
                             <button type="button"
-                                class="shrink-0 cursor-pointer rounded border border-gray-300 bg-white px-2 py-1 text-xs font-semibold text-gray-600 transition hover:border-se disabled:cursor-not-allowed disabled:opacity-40"
+                                class="shrink-0 cursor-pointer rounded border border-gray-300 bg-white px-2 z-10 py-1 text-xs font-semibold text-gray-600 transition hover:border-se disabled:cursor-not-allowed disabled:opacity-40"
                                 x-show="showMoveControls(draw)" x-transition.opacity :disabled="busy"
                                 title="Move selected entry after this draw"
                                 @click.stop="moveTo(draw.id, 'after')">After</button>
