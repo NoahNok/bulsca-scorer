@@ -76,11 +76,21 @@ class DrawController extends Controller
     {
         $this->ensureSercBelongsToCompetition($comp, $serc);
         $drawId = $request->validate(['draw' => ['required', 'integer']])['draw'];
-        DB::transaction(function () use ($serc, $drawId, $drawService) {
+        $draw = DB::transaction(function () use ($serc, $drawId, $drawService) {
             $drawService->lockSercForDrawMutation($serc);
-            $serc->draw()->whereKey($drawId)->delete();
+            $draw = $serc->draw()->with('entity')->lockForUpdate()->findOrFail($drawId);
+            $draw->delete();
+
+            return $draw;
         });
         $comp->clearDrawCache();
+        $entity = $draw->entity;
+        $this->recordActivity(
+            'DRAW_ENTRY_REMOVED',
+            "Removed {$entity?->getName($comp)} from Tank {$draw->tank}, Draw {$draw->draw}",
+            context: ['draw_id' => $draw->id, 'entity_id' => $draw->entity_id, 'tank' => $draw->tank, 'draw' => $draw->draw],
+            related: $entity ? [$comp, $entity] : $comp
+        );
 
         return $this->drawEditorResponse($comp, $serc);
     }
@@ -95,9 +105,31 @@ class DrawController extends Controller
             'target_tank' => ['nullable', 'required_without:target', 'integer'],
             'placement' => ['nullable', 'required_with:target', 'in:before,after,end'],
         ]);
+        $source = $data['source_type'] === 'draw'
+            ? $serc->draw()->with('entity')->findOrFail($data['source'])
+            : $serc->getScorableEntity()::where('competition', $comp->id)->findOrFail($data['source']);
+        $entity = $data['source_type'] === 'draw' ? $source->entity : $source;
+        $target = isset($data['target'])
+            ? $serc->draw()->with('entity')->findOrFail($data['target'])
+            : null;
         $drawService->moveDraw($comp, $serc, $data);
 
         $comp->clearDrawCache();
+        $destination = isset($data['target_tank'])
+            ? (($data['placement'] ?? null) === 'end' ? "the end of Tank {$data['target_tank']}" : "Tank {$data['target_tank']}")
+            : "{$data['placement']} {$target->entity?->getName($comp)} in Tank {$target->tank}";
+        $this->recordActivity(
+            $data['source_type'] === 'entity' ? 'DRAW_ENTRY_ADDED' : 'DRAW_ENTRY_MOVED',
+            "Moved {$entity?->getName($comp)} to {$destination}",
+            context: [
+                'source_type' => $data['source_type'],
+                'source' => (int) $data['source'],
+                'target' => isset($data['target']) ? (int) $data['target'] : null,
+                'target_tank' => isset($data['target_tank']) ? (int) $data['target_tank'] : null,
+                'placement' => $data['placement'] ?? null,
+            ],
+            related: $entity ? [$comp, $entity] : $comp
+        );
 
         return $this->drawEditorResponse($comp, $serc);
     }
@@ -109,7 +141,7 @@ class DrawController extends Controller
             'entity' => ['required', 'integer'],
             'tank' => ['required', 'integer'],
         ]);
-        DB::transaction(function () use ($comp, $serc, $data, $drawService) {
+        $entity = DB::transaction(function () use ($comp, $serc, $data, $drawService) {
             $drawService->lockSercForDrawMutation($serc);
             $entity = $serc->getScorableEntity()::where('competition', $comp->id)->findOrFail($data['entity']);
             $tankExists = $serc->drawTanks()->where('tank', $data['tank'])->exists();
@@ -122,8 +154,16 @@ class DrawController extends Controller
                 'tank' => $data['tank'],
                 'draw' => (int) $serc->draw()->where('tank', $data['tank'])->max('draw') + 1,
             ]);
+
+            return $entity;
         });
         $comp->clearDrawCache();
+        $this->recordActivity(
+            'DRAW_ENTRY_ADDED',
+            "Added {$entity->getName($comp)} to Tank {$data['tank']}",
+            context: ['entity_id' => $entity->id, 'tank' => (int) $data['tank']],
+            related: [$comp, $entity]
+        );
 
         return $this->drawEditorResponse($comp, $serc);
     }
@@ -132,12 +172,15 @@ class DrawController extends Controller
     {
         $this->ensureSercBelongsToCompetition($comp, $serc);
         abort_unless($comp->getScoringSettings->use_tanks, 422, 'Tanks are not enabled for this competition.');
-        DB::transaction(function () use ($serc, $drawService) {
+        $tank = DB::transaction(function () use ($serc, $drawService) {
             $drawService->lockSercForDrawMutation($serc);
             $tank = max((int) $serc->drawTanks()->max('tank') + 1, 1);
             $serc->drawTanks()->create(['tank' => $tank]);
+
+            return $tank;
         });
         $comp->clearDrawCache();
+        $this->recordActivity('DRAW_TANK_ADDED', "Added Tank {$tank}", context: ['tank' => $tank], related: $comp);
 
         return $this->drawEditorResponse($comp, $serc);
     }
@@ -214,17 +257,26 @@ class DrawController extends Controller
         $tank = $request->validate(['tank' => ['required', 'integer', 'min:1']])['tank'];
         abort_unless($serc->drawTanks()->where('tank', $tank)->exists(), 404);
 
-        DB::transaction(function () use ($serc, $tank, $drawService) {
+        $removedEntryCount = DB::transaction(function () use ($serc, $tank, $drawService) {
             $drawService->lockSercForDrawMutation($serc);
             abort_unless($serc->drawTanks()->where('tank', $tank)->exists(), 404);
+            $removedEntryCount = $serc->draw()->where('tank', $tank)->count();
             $serc->draw()->where('tank', $tank)->delete();
             $serc->drawTanks()->where('tank', $tank)->delete();
             $serc->drawTanks()->where('tank', '>', $tank)->update(['tank' => DB::raw('tank + 1000000')]);
             $serc->draw()->where('tank', '>', $tank)->update(['tank' => DB::raw('tank + 1000000')]);
             $serc->drawTanks()->where('tank', '>', 1000000)->update(['tank' => DB::raw('tank - 1000001')]);
             $serc->draw()->where('tank', '>', 1000000)->update(['tank' => DB::raw('tank - 1000001')]);
+
+            return $removedEntryCount;
         });
         $comp->clearDrawCache();
+        $this->recordActivity(
+            'DRAW_TANK_REMOVED',
+            "Removed Tank {$tank} and unassigned {$removedEntryCount} entr" . ($removedEntryCount === 1 ? 'y' : 'ies'),
+            context: ['tank' => (int) $tank, 'entries_unassigned' => $removedEntryCount],
+            related: $comp
+        );
 
         return $this->drawEditorResponse($comp, $serc);
     }
