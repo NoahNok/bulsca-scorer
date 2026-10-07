@@ -14,7 +14,7 @@ class SERCEditor extends Component
     private ?SERC $serc;
     private bool $edit;
 
-    private MarkingPointTemplate $defaultTemplate;
+    private ?MarkingPointTemplate $defaultTemplate;
 
     /**
      * Create a new component instance.

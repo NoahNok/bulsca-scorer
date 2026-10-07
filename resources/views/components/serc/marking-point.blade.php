@@ -99,7 +99,7 @@
         <div class="flex items-center justify-center"
             x-show="settings.mode == 'default' && settings.min <= 0 && settings.max >= 0">
             <input type="radio" required class="w-0 h-0 peer" value="0" name="mp-{{ $containerId }}"
-                x-model="value" id="mp-{{ $containerId }}-0" mp-zero-judge="mp-j-{{ $mp->getJudge->id }}">
+                x-model="value" id="mp-{{ $containerId }}-0" mp-zero-judge="mp-j-{{ $mp?->getJudge->id }}">
             <label for="mp-{{ $containerId }}-0"
                 class="  flex items-center justify-center px-4 py-0.5 font-semibold  rounded-xs bg-gray-200 text-xs peer-checked:bg-bulsca_red peer-checked:text-white ">
                 ZERO

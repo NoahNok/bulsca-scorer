@@ -80,7 +80,7 @@ class JudgeController extends Controller
                 $request->session()->regenerate();
 
 
-                return Inertia::render("Judge/Dashboard");
+                return redirect()->intended(route('judge.index'));
             } else {
                 return Inertia::render("Judge/Auth/Login", [
                     'stage'  => 'pin',

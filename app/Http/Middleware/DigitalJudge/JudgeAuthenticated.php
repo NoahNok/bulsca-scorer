@@ -18,7 +18,7 @@ class JudgeAuthenticated
     {
 
         if (!Auth::check()) {
-            return redirect()->route('judge.login')->with('intended_url', $request->url());
+            return redirect()->guest(route('judge.login'));
         }
 
 

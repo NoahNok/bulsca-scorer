@@ -8,7 +8,7 @@
     judges: {{ json_encode($configuration) }},
 
     marking_point_templates: {{ $templates->toJson() }},
-    default_template_id: '{{ $defaultTemplate?->id ?? 'null' }}',
+    default_template_id: {{ json_encode($defaultTemplate?->id) }},
 
 
     active_marking_point: {

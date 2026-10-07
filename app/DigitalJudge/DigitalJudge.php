@@ -154,8 +154,6 @@ class DigitalJudge
         // SELECT COUNT(*) FROM serc_results WHERE team=? AND marking_point IN (SELECT id FROM serc_marking_points WHERE judge=?)
         $serc = $judge->getSERC;
 
-        dump($judge);
-
         return SERCResult::whereMorphedTo('entity', $entity)->whereHas('getMarkingPoint', function ($query) use ($serc, $judge) {
             $query->where('serc', $serc->id)->where('judge', $judge->id);
         })->exists();
