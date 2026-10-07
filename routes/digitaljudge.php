@@ -33,7 +33,7 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
 
 
 
-            Route::prefix('{competition}')->group(function () {
+            Route::prefix('{competition}')->middleware('judge.officiates')->group(function () {
 
 
 

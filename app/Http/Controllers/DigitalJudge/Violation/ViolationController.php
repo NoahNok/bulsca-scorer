@@ -59,9 +59,13 @@ class ViolationController extends Controller
             default => SERC::findOrFail($eventId),
         };
 
+        if ($event->competition != $competition->id) {
+            abort(404);
+        }
+
         $entity = $event->getScorableEntity()::find($validated['entity_id']);
 
-        if (!$entity) {
+        if (!$entity || $entity->competition != $competition->id) {
             abort(422, 'Unknown entity for violation submission.');
         }
 

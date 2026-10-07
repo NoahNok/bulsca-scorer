@@ -4,6 +4,7 @@ namespace App\Http\Requests\DigitalJudge;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ConfirmJudgeRequest extends FormRequest
 {
@@ -23,7 +24,8 @@ class ConfirmJudgeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'judge' => 'required|exists:serc_judges,id'
+            // Judge must belong to the SERC in the route
+            'judge' => ['required', Rule::exists('serc_judges', 'id')->where('serc', $this->route('serc')?->id)]
         ];
     }
 }

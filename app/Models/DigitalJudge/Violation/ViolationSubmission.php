@@ -138,13 +138,13 @@ class ViolationSubmission extends Model implements IJsonable
     {
         $this->status = $status;
 
-        switch ($status) {
-            case "ACCEPTED":
+        // Only ACCEPTED submissions should have a violation applied to the entity
+        if ($status == "ACCEPTED") {
+            if (!$this->applied_id) {
                 $this->applyToEntity();
-                break;
-            case "APPEALED":
-            case "REMOVED":
-                $this->removeFromEntity();
+            }
+        } else if ($this->applied_id) {
+            $this->removeFromEntity();
         }
 
         $this->save();
@@ -170,30 +170,8 @@ class ViolationSubmission extends Model implements IJsonable
 
     public function removeFromEntity()
     {
-        /**
-         * @var Event
-         */
-        $event = $this->event;
-
-        if ($this->isDq()) {
-            /**
-             * @var Violation
-             */
-            $disqualifications = $event->getEntityDisqualifications($this->entity)->where('code', $this->submitted->code)->first();
-
-            if ($disqualifications) {
-                $disqualifications->delete();
-            }
-        } else {
-            /**
-             * @var Violation
-             */
-            $penalty = $event->getEntityPenalties($this->entity)->where('code', $this->submitted->code)->first();
-
-            if ($penalty) {
-                $penalty->delete();
-            }
-        }
+        // Delete the exact record this submission applied, not just any violation with a matching code
+        $this->applied?->delete();
 
         $this->applied()->dissociate();
     }

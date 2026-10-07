@@ -225,7 +225,7 @@ class SERC extends Event
 
         $data["percent"] = min($data['percent'], 100);
 
-        $data["index"] = $draw->draw;
+        $data["index"] = $draw?->draw ?? -1;
         $data["total"] = $total;
 
 

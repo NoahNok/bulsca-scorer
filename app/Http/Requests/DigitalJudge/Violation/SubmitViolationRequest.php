@@ -35,7 +35,7 @@ class SubmitViolationRequest extends FormRequest
 
             'details' => ['required', 'array'],
             'details.turn' => ['nullable', 'integer'],
-            'details.lane' => ['nullable', 'integer'],
+            'details.length' => ['nullable', 'integer'],
             'details.details' => ['nullable', 'string'],
 
             'submitter' => ['required', 'array'],

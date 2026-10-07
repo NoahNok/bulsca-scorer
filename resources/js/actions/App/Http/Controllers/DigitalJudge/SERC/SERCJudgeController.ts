@@ -720,7 +720,7 @@ storeEntityMarks.post = (args: { competition: number | { id: number }, serc: num
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::getJudgeNotes
-* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:351
+* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:368
 * @route '//judge.localhost/v2/{competition}/serc/{serc}/mark/notes'
 */
 export const getJudgeNotes = (args: { competition: string | number, serc: string | number } | [competition: string | number, serc: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -735,7 +735,7 @@ getJudgeNotes.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::getJudgeNotes
-* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:351
+* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:368
 * @route '//judge.localhost/v2/{competition}/serc/{serc}/mark/notes'
 */
 getJudgeNotes.url = (args: { competition: string | number, serc: string | number } | [competition: string | number, serc: string | number ], options?: RouteQueryOptions) => {
@@ -761,7 +761,7 @@ getJudgeNotes.url = (args: { competition: string | number, serc: string | number
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::getJudgeNotes
-* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:351
+* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:368
 * @route '//judge.localhost/v2/{competition}/serc/{serc}/mark/notes'
 */
 getJudgeNotes.get = (args: { competition: string | number, serc: string | number } | [competition: string | number, serc: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -771,7 +771,7 @@ getJudgeNotes.get = (args: { competition: string | number, serc: string | number
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::getJudgeNotes
-* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:351
+* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:368
 * @route '//judge.localhost/v2/{competition}/serc/{serc}/mark/notes'
 */
 getJudgeNotes.head = (args: { competition: string | number, serc: string | number } | [competition: string | number, serc: string | number ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -781,7 +781,7 @@ getJudgeNotes.head = (args: { competition: string | number, serc: string | numbe
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::getPreviousMarks
-* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:370
+* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:387
 * @route '//judge.localhost/v2/{competition}/serc/{serc}/mark/previous-marks/{judge_id}'
 */
 export const getPreviousMarks = (args: { competition: string | number, serc: string | number, judge_id: string | number } | [competition: string | number, serc: string | number, judge_id: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -796,7 +796,7 @@ getPreviousMarks.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::getPreviousMarks
-* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:370
+* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:387
 * @route '//judge.localhost/v2/{competition}/serc/{serc}/mark/previous-marks/{judge_id}'
 */
 getPreviousMarks.url = (args: { competition: string | number, serc: string | number, judge_id: string | number } | [competition: string | number, serc: string | number, judge_id: string | number ], options?: RouteQueryOptions) => {
@@ -825,7 +825,7 @@ getPreviousMarks.url = (args: { competition: string | number, serc: string | num
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::getPreviousMarks
-* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:370
+* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:387
 * @route '//judge.localhost/v2/{competition}/serc/{serc}/mark/previous-marks/{judge_id}'
 */
 getPreviousMarks.get = (args: { competition: string | number, serc: string | number, judge_id: string | number } | [competition: string | number, serc: string | number, judge_id: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -835,7 +835,7 @@ getPreviousMarks.get = (args: { competition: string | number, serc: string | num
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::getPreviousMarks
-* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:370
+* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:387
 * @route '//judge.localhost/v2/{competition}/serc/{serc}/mark/previous-marks/{judge_id}'
 */
 getPreviousMarks.head = (args: { competition: string | number, serc: string | number, judge_id: string | number } | [competition: string | number, serc: string | number, judge_id: string | number ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -845,7 +845,7 @@ getPreviousMarks.head = (args: { competition: string | number, serc: string | nu
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::storeOverallNotes
-* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:333
+* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:350
 * @route '//judge.localhost/v2/{competition}/serc/{serc}/overall-notes'
 */
 export const storeOverallNotes = (args: { competition: number | { id: number }, serc: number | { id: number } } | [competition: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -860,7 +860,7 @@ storeOverallNotes.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::storeOverallNotes
-* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:333
+* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:350
 * @route '//judge.localhost/v2/{competition}/serc/{serc}/overall-notes'
 */
 storeOverallNotes.url = (args: { competition: number | { id: number }, serc: number | { id: number } } | [competition: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -890,7 +890,7 @@ storeOverallNotes.url = (args: { competition: number | { id: number }, serc: num
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::storeOverallNotes
-* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:333
+* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:350
 * @route '//judge.localhost/v2/{competition}/serc/{serc}/overall-notes'
 */
 storeOverallNotes.post = (args: { competition: number | { id: number }, serc: number | { id: number } } | [competition: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({

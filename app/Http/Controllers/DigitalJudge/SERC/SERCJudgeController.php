@@ -230,7 +230,7 @@ class SERCJudgeController extends Controller
         // Check team are part of this competition to avoid any dangerous behaviour
         if ($team->competition != $competition->id) return to_route("judge.competition.serc", compact('competition', 'serc'));
 
-        if (!DigitalJudge::isClientHeadJudge() && DigitalJudge::hasTeamBeenJudgedAlready($team)) return to_route("judge.competition.serc.mark.next", compact('competition', 'serc'));
+        if (!DigitalJudge::isClientHeadJudge($competition) &&DigitalJudge::hasTeamBeenJudgedAlready($team)) return to_route("judge.competition.serc.mark.next", compact('competition', 'serc'));
 
         $draw_info = $serc->getPositionInDraw($team);
 
@@ -286,20 +286,37 @@ class SERCJudgeController extends Controller
         $data = $request->validated();
         $entity = $serc->getScorableEntity()->findOrFail($entity_id);
 
-        $judges = $data['marks'];
-        $notes = $data['notes'];
+        if ($entity->competition != $competition->id) abort(404);
+
+        $judges = $data['marks'] ?? [];
+        $notes = $data['notes'] ?? [];
+
+        // Only allow writing marks/notes for the judges selected in this session, and only their own marking points
+        $allowedMarkingPoints = DigitalJudge::getClientJudges()
+            ->where('serc', $serc->id)
+            ->mapWithKeys(fn($judge) => [$judge->id => $judge->getMarkingPoints->pluck('id')->all()]);
 
 
-
-
-        // validated payload from 
+        // validated payload from
         // judge_id => marking_point_id => mark
+
+        // Check the whole payload before writing anything so a bad request can't partially save
+        foreach ($judges as $judge_id => $marking_points) {
+            if (!$allowedMarkingPoints->has($judge_id)) abort(403);
+
+            foreach (array_keys($marking_points) as $marking_point_id) {
+                if (!in_array($marking_point_id, $allowedMarkingPoints[$judge_id])) abort(403);
+            }
+        }
+
+        foreach (array_keys($notes) as $judge_id) {
+            if (!$allowedMarkingPoints->has($judge_id)) abort(403);
+        }
 
         foreach ($judges as $judge_id => $marking_points) {
 
 
             foreach ($marking_points as $marking_point_id => $mark) {
-
 
                 $result = SERCResult::firstOrNew(['marking_point' => $marking_point_id, 'entity_type' => $entity->getMorphClass(), 'entity_id' => $entity->id]);
                 $result->result = $mark;
