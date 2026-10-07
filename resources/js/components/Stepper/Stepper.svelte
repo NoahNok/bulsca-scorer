@@ -9,8 +9,7 @@
         type StepperContext,
         type StepperApi,
     } from "./context";
-    import Button from "../Button.svelte";
-    import { Check, ChevronDown, Shuffle } from "@lucide/svelte";
+    import { Check, ChevronDown } from "@lucide/svelte";
 
     let {
         children,
@@ -22,6 +21,11 @@
     let activeStep = $state("0");
     let registeredSteps = $state<RegisteredStep[]>([]);
     let nextStepId = 0;
+
+    // A step can only be opened once every step before it is complete
+    function isReachable(index: number): boolean {
+        return registeredSteps.slice(0, index).every((step) => step.completed);
+    }
 
     export function setActiveStep(index: number): void {
         if (registeredSteps.length === 0) {
@@ -70,6 +74,7 @@
             const registeredStepId = nextStepId++;
             const registeredStep = {
                 ...step,
+                label: step.title,
                 id: registeredStepId,
                 completed: false,
             } as RegisteredStep;
@@ -131,38 +136,63 @@
     {...restProps as any}
     type="single"
     collapsible
+    class="flex flex-col gap-3"
 >
     {@render children()}
 
     {#each registeredSteps as step, index}
-        <Accordion.Item value={`${index}`} class="group-data mb-3">
+        {@const open = activeStep === `${index}`}
+        {@const locked = !isReachable(index)}
+        <Accordion.Item
+            value={`${index}`}
+            disabled={locked}
+            class="overflow-hidden rounded-xl border bg-white shadow-sm transition-all {open
+                ? 'border-se'
+                : ''} {locked ? 'opacity-50' : ''}"
+        >
             <Accordion.Header>
-                <Accordion.Trigger class="flex w-full transition-all">
-                    <Button
-                        label={step.title}
-                        variant={step.completed ? "success" : "white"}
-                        class="w-full text-left"
-                        icon={step.completed ? Shuffle : ChevronDown}
-                        iconClass="ml-auto transition-transform duration-300 {activeStep ===
-                        `${index}`
+                <Accordion.Trigger
+                    class="flex w-full cursor-pointer items-center gap-3 p-3 text-left disabled:cursor-not-allowed"
+                    id={`step-${step.id}`}
+                >
+                    <span
+                        class="flex size-7 shrink-0 items-center justify-center rounded-full text-sm font-semibold transition-colors {step.completed
+                            ? 'bg-green-500 text-white'
+                            : open
+                              ? 'bg-se text-white'
+                              : 'bg-gray-100 text-gray-500'}"
+                    >
+                        {#if step.completed}
+                            <Check size={16} strokeWidth={3} />
+                            <span class="sr-only">Completed</span>
+                        {:else}
+                            {index + 1}
+                        {/if}
+                    </span>
+
+                    <span class="min-w-0 flex-1">
+                        {#if step.completed && step.title !== step.label}
+                            <span class="block text-xs text-gray-500"
+                                >{step.label}</span
+                            >
+                        {/if}
+                        <span class="block truncate font-semibold"
+                            >{step.title}</span
+                        >
+                    </span>
+
+                    <ChevronDown
+                        size={18}
+                        class="shrink-0 text-gray-400 transition-transform duration-300 {open
                             ? 'rotate-180'
                             : ''}"
-                        id={`step-${step.id}`}
-                    >
-                        {#snippet before()}
-                            <p class="pr-3 border-r mr-1">{index + 1}</p>
-                        {/snippet}
-                    </Button>
-
-                    {#if step.completed}
-                        <span class="sr-only">Completed</span>
-                    {/if}
+                    />
                 </Accordion.Trigger>
             </Accordion.Header>
             <Accordion.Content
-                class="  data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down overflow-hidden text-sm tracking-[-0.01em]"
+                class="data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down overflow-hidden"
             >
-                <div class="px-4 py-2" bind:this={step.tab}>
+                <div class="border-t p-3" bind:this={step.tab}>
                     {@render step.content(step.controls)}
                 </div>
             </Accordion.Content>

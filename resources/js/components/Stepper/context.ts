@@ -18,6 +18,8 @@ export type StepperApi = {
 
 export type RegisteredStep = {
     title: string;
+    // the original title, kept as a caption once setTitle() replaces it
+    label: string;
     content: Snippet<[StepControls]>;
     controls: StepControls;
     id: number;
@@ -27,7 +29,7 @@ export type RegisteredStep = {
 
 export type StepperContext = {
     register: (
-        step: Omit<RegisteredStep, "controls" | "id" | "completed" | "tab">,
+        step: Omit<RegisteredStep, "controls" | "id" | "completed" | "tab" | "label">,
     ) => {
         controls: StepControls;
         destroy: () => void;

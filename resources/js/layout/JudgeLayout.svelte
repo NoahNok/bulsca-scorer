@@ -66,8 +66,15 @@
     </div>
 {/if}
 
+<!--
+    With the bottom nav showing, the page grows with its content and gets
+    extra bottom padding so nothing ends up hidden behind the nav. Without it
+    (e.g. login) keep the fixed height so pages can centre themselves.
+-->
 <div
-    class=" p-6 sm:max-w-[70%] xl:max-w-[50%] 2xl:max-w-[40%] sm:mx-auto h-screen"
+    class="p-6 sm:max-w-[70%] xl:max-w-[50%] 2xl:max-w-[40%] sm:mx-auto {competition
+        ? 'min-h-screen pb-28'
+        : 'h-screen'}"
 >
     {@render children?.()}
 </div>

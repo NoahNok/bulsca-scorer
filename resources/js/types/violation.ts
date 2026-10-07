@@ -11,21 +11,61 @@ export const violationStatuses: ViolationStatus[] = [
     "REMOVED"
 ]
 
-export function stateColor(state: ViolationStatus) {
+export function stateColor(submission: ViolationSubmission) {
+    if (isVoided(submission.status)) return "text-gray-400";
+
+    return submission.violation.vtype === "DQ"
+        ? "text-red-700"
+        : "text-orange-700";
+}
+
+export function statusTileClass(submission: ViolationSubmission) {
+    if (isVoided(submission.status)) return "bg-gray-100 text-gray-400";
+
+    return submission.violation.vtype === "DQ"
+        ? "bg-red-100 text-red-700"
+        : "bg-orange-100 text-orange-700";
+}
+
+export const statusLabels: Record<ViolationStatus, string> = {
+    SUBMITTED: "Pending",
+    ACCEPTED: "Accepted",
+    REJECTED: "Rejected",
+    APPEALED: "Appealed",
+    REMOVED: "Removed",
+}
+
+export function statusBadgeClass(state: ViolationStatus) {
     switch (state) {
         case "SUBMITTED":
-            return "text-se";
+            return "bg-se/15 text-teal-700 ring-se/40";
         case "ACCEPTED":
-            return "text-green-500";
+            return "bg-green-100 text-green-700 ring-green-300";
         case "REJECTED":
-            return "text-red-500";
+            return "bg-gray-100 text-gray-600 ring-gray-300";
         case "APPEALED":
-            return "text-orange-500";
+            return "bg-amber-100 text-amber-700 ring-amber-300";
         case "REMOVED":
-            return "text-red-500";
+            return "bg-gray-100 text-gray-500 ring-gray-200";
         default:
             return "";
     }
+}
+
+// Rejected/removed submissions no longer count against the entity
+export function isVoided(state: ViolationStatus) {
+    return state === "REJECTED" || state === "REMOVED";
+}
+
+export function formatOrder(submission: ViolationSubmission) {
+    if ("heat" in submission.order) {
+        return `Heat ${submission.order.heat} · Lane ${submission.order.lane}`;
+    }
+
+    const tank = submission.order.tank ? `Tank ${submission.order.tank}` : "";
+    const draw = `Draw ${submission.order.draw}`;
+
+    return [tank, draw].filter(Boolean).join(" · ");
 }
 
 export function submissionCode(submission: ViolationSubmission) {

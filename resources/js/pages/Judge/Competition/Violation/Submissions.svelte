@@ -1,6 +1,6 @@
 <script module lang="ts">
     export const layout = {
-        title: "Confirm Judge",
+        title: "DQ/Penalty Submissions",
     };
 </script>
 
@@ -10,19 +10,20 @@
     import AppHead from "@/components/AppHead.svelte";
     import Button from "@/components/Button.svelte";
 
-    import GenericCollapse from "@/components/GenericCollapse.svelte";
     import ViolationSubmissionCard from "@/components/Judging/Violation/ViolationSubmissionCard.svelte";
     import { issue } from "@/routes/judge/competition/violation";
 
     import type { Competition } from "@/types/base";
     import {
+        statusLabels,
         violationStatuses,
         type ViolationStatus,
         type ViolationSubmission,
     } from "@/types/violation";
     import { page, Link, usePoll } from "@inertiajs/svelte";
-    import { ArrowRight, House } from "@lucide/svelte";
-    import { slide } from "svelte/transition";
+    import { House, Inbox, Plus } from "@lucide/svelte";
+    import { flip } from "svelte/animate";
+    import { fade } from "svelte/transition";
 
     let {
         competition,
@@ -37,7 +38,7 @@
         () => ({
             only: ["submissions"],
             onSuccess: () => {
-                secondsSincePoll = 1;
+                secondsSincePoll = 0;
             },
         }),
         {
@@ -45,19 +46,31 @@
         },
     );
 
-    let groups = $derived.by(() => {
-        return submissions.reduce(
-            (acc, sub) => {
-                const key = sub.status;
-                if (!acc[key]) acc[key] = [];
-                acc[key].push(sub);
-                return acc;
-            },
-            {} as Record<ViolationStatus, ViolationSubmission[]>,
+    let filter = $state<ViolationStatus | "ALL">("ALL");
+
+    let counts = $derived.by(() => {
+        const acc = {} as Record<ViolationStatus, number>;
+        for (const sub of submissions) {
+            acc[sub.status] = (acc[sub.status] ?? 0) + 1;
+        }
+        return acc;
+    });
+
+    // Pending first, then the rest in workflow order
+    let visible = $derived.by(() => {
+        const filtered =
+            filter === "ALL"
+                ? submissions
+                : submissions.filter((s) => s.status === filter);
+
+        return [...filtered].sort(
+            (a, b) =>
+                violationStatuses.indexOf(a.status) -
+                violationStatuses.indexOf(b.status),
         );
     });
 
-    let secondsSincePoll = $state<number>(1);
+    let secondsSincePoll = $state<number>(0);
 
     $effect(() => {
         let interval = setInterval(() => {
@@ -88,45 +101,75 @@
 
 <section class="flex flex-col h-full">
     <p class="font-archivo -mb-2">{competition.name}</p>
-    <h2 class="">DQ/Penalty</h2>
-    <br />
+    <div class="flex items-end justify-between">
+        <h2 class="">DQ/Penalty</h2>
+        <span
+            class="mb-1 inline-flex items-center gap-1.5 text-xs text-gray-500"
+            title="Updates automatically"
+        >
+            <span class="relative flex size-2">
+                <span
+                    class="absolute inline-flex size-full animate-ping rounded-full bg-se opacity-60"
+                ></span>
+                <span class="relative inline-flex size-2 rounded-full bg-se"
+                ></span>
+            </span>
+            Live · {secondsSincePoll}s
+        </span>
+    </div>
+
     <Link
         href={issue(competition, {
             query: Object.fromEntries(new URLSearchParams(page.url)),
         })}
-        class="w-full"
+        class="w-full mt-4"
     >
-        <Button
-            label="New DQ/Penalty Submission"
-            variant="success"
-            class="w-full"
-            icon={ArrowRight}
-        />
+        <Button label="New Submission" class="w-full" icon={Plus} />
     </Link>
 
-    <hr class="spacer my-4!" />
-
-    <p class="text-sm text-gray-600">Last updated: {secondsSincePoll}s ago</p>
-    <div class="">
+    <div class="-mx-1 mt-5 mb-3 flex gap-2 overflow-x-auto px-1 pb-1">
+        {@render chip("ALL", "All", submissions.length)}
         {#each violationStatuses as status (status)}
-            {#if groups[status]}
-                <GenericCollapse open={true}>
-                    {#snippet header()}
-                        <h3 class="mb-1">{status}</h3>
-                    {/snippet}
-
-                    <div class="space-y-3 my-2 mb-4" transition:slide>
-                        {#each groups[status] as submission (submission.id)}
-                            <ViolationSubmissionCard
-                                {submission}
-                                {competition}
-                            />
-                        {/each}
-                    </div>
-                </GenericCollapse>
+            {#if counts[status] || filter === status}
+                {@render chip(status, statusLabels[status], counts[status] ?? 0)}
             {/if}
         {/each}
-        <br />
-        <br />
     </div>
+
+    {#if visible.length === 0}
+        <div
+            class="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed py-12 text-center text-gray-500"
+            in:fade
+        >
+            <Inbox size={32} class="text-gray-300" />
+            <p class="font-medium">No submissions yet</p>
+            <p class="text-sm">DQs and penalties will show up here.</p>
+        </div>
+    {:else}
+        <div class="flex flex-col gap-2">
+            {#each visible as submission (submission.id)}
+                <div animate:flip={{ duration: 200 }}>
+                    <ViolationSubmissionCard {submission} {competition} />
+                </div>
+            {/each}
+        </div>
+    {/if}
 </section>
+
+{#snippet chip(value: ViolationStatus | "ALL", label: string, count: number)}
+    <button
+        type="button"
+        onclick={() => (filter = value)}
+        class="inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-full border px-3 py-1 text-sm font-medium transition-colors {filter ===
+        value
+            ? 'border-black bg-black text-white'
+            : 'bg-white text-gray-700 hover:border-gray-400'}"
+    >
+        {label}
+        <span
+            class="rounded-full px-1.5 text-xs {filter === value
+                ? 'bg-white/20'
+                : 'bg-gray-100 text-gray-500'}">{count}</span
+        >
+    </button>
+{/snippet}

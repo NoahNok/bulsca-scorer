@@ -1,10 +1,16 @@
 <script lang="ts">
     import { view } from "@/routes/judge/competition/violation/submission";
     import type { Competition } from "@/types/base";
-    import { stateColor, type ViolationSubmission } from "@/types/violation";
+    import {
+        formatOrder,
+        isVoided,
+        statusTileClass,
+        submissionCode,
+        type ViolationSubmission,
+    } from "@/types/violation";
     import { Link } from "@inertiajs/svelte";
-
-    import { ArrowRight, MoveRight } from "@lucide/svelte";
+    import { ChevronRight } from "@lucide/svelte";
+    import ViolationStatusBadge from "./ViolationStatusBadge.svelte";
 
     let {
         submission,
@@ -14,66 +20,40 @@
         competition: Competition;
     } = $props();
 
-    let code = $derived.by(() => {
-        return `${submission.violation.vtype === "DQ" ? "DQ" : "P"}${submission.violation.code}`;
-    });
-
-    let stateClass = $derived.by(() => {
-        return stateColor(submission.status);
-    });
-
-    function formatOrder(submission: ViolationSubmission) {
-        if ("heat" in submission.order) {
-            return `Heat ${submission.order.heat} · Lane ${submission.order.lane}`;
-        }
-
-        const tank = submission.order.tank
-            ? `Tank ${submission.order.tank}`
-            : "";
-        const draw = `Draw ${submission.order.draw}`;
-
-        return [tank, draw].filter(Boolean).join(" · ");
-    }
+    let code = $derived(submissionCode(submission));
+    let voided = $derived(isVoided(submission.status));
 </script>
 
-<div
-    class="border rounded-xl shadow-sm px-4 py-2 transition-all w-full relative overflow-hidden hover:border-se group"
+<Link
+    href={view({ competition: competition, submission: submission.id })}
+    class="group flex items-center gap-3 w-full rounded-xl border bg-white p-3 shadow-sm transition-all hover:border-se hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-se {voided
+        ? 'opacity-60'
+        : ''}"
 >
-    <Link
-        href={view({ competition: competition, submission: submission.id })}
-        class="w-full text-left focus:outline-none"
+    <div
+        class="flex size-14 shrink-0 items-center justify-center rounded-lg font-archivo text-lg font-bold transition-colors {statusTileClass(submission)}"
+        class:line-through={voided}
     >
-        <div class="flex flex-col space-y-2">
-            <div class="flex items-center">
-                <span class=" text-sm text-gray-600">
-                    {submission.event.name}
-                </span>
-                <span class="ml-auto text-sm text-gray-600"
-                    >{formatOrder(submission)}</span
-                >
-            </div>
+        {code}
+    </div>
 
-            <div class="flex items-center">
-                <h2 class=" text-red-500 mr-auto">
-                    {code}
-                </h2>
-                <MoveRight size={16} />
-                <span class="font-medium text-gray-900 ml-auto">
-                    <span class="ml-1">{submission.entity.name}</span>
-                </span>
-            </div>
+    <div class="min-w-0 flex-1">
+        <p class="truncate font-semibold text-gray-900">
+            {submission.entity.name}
+        </p>
+        <p class="truncate text-sm text-gray-500">
+            {submission.event.name}
+        </p>
+        <p class="truncate text-xs text-gray-400">
+            {formatOrder(submission)}
+        </p>
+    </div>
 
-            <hr class="spacer mb-2!" />
-
-            <div class="flex items-center justify-between">
-                <p class="text-sm font-archivo {stateClass}">
-                    {submission.status}
-                </p>
-                <span
-                    class="text-sm text-gray-600 inline-flex items-center gap-1 group-hover:font-bold"
-                    >More <ArrowRight size={16} /></span
-                >
-            </div>
-        </div>
-    </Link>
-</div>
+    <div class="flex shrink-0 flex-col items-end gap-2">
+        <ViolationStatusBadge status={submission.status} />
+        <ChevronRight
+            size={18}
+            class="text-gray-300 transition-all group-hover:translate-x-0.5 group-hover:text-se"
+        />
+    </div>
+</Link>

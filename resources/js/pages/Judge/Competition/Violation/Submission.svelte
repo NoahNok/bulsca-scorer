@@ -4,30 +4,21 @@
     import AppHead from "@/components/AppHead.svelte";
     import Button from "@/components/Button.svelte";
     import ConfirmDialog from "@/components/ConfirmDialog.svelte";
-    import Spinner from "@/components/Spinner.svelte";
+    import ViolationStatusBadge from "@/components/Judging/Violation/ViolationStatusBadge.svelte";
     import { toastError, toastSuccess } from "@/lib/toast.svelte";
-    import event from "@/routes/judge/competition/event";
     import { submissions } from "@/routes/judge/competition/violation";
     import type { Competition } from "@/types/base";
     import {
+        formatOrder,
+        isVoided,
         stateColor,
+        statusTileClass,
         submissionCode,
         type ViolationStatus,
         type ViolationSubmission,
     } from "@/types/violation";
-    import { Link, page, router, useHttp } from "@inertiajs/svelte";
-    import {
-        ArrowLeft,
-        Check,
-        CircleCheck,
-        CircleDashed,
-        CircleMinus,
-        CircleOff,
-        CircleX,
-        Gavel,
-        House,
-        X,
-    } from "@lucide/svelte";
+    import { Link, page, useHttp } from "@inertiajs/svelte";
+    import { ArrowLeft, Check, Gavel, House, Trash2, X } from "@lucide/svelte";
 
     let {
         submission: rawSubmission,
@@ -74,18 +65,8 @@
 
     let code = $derived(submissionCode(submission));
 
-    function formatOrder(submission: ViolationSubmission) {
-        if ("heat" in submission.order) {
-            return `Heat ${submission.order.heat} · Lane ${submission.order.lane}`;
-        }
-
-        const tank = submission.order.tank
-            ? `Tank ${submission.order.tank}`
-            : "";
-        const draw = `Draw ${submission.order.draw}`;
-
-        return [tank, draw].filter(Boolean).join(" · ");
-    }
+    let isDQ = $derived(submission.violation.vtype === "DQ");
+    let voided = $derived(isVoided(submission.status));
 </script>
 
 <AppHead
@@ -110,141 +91,176 @@
 <div class="h-16"></div>
 
 <section class="flex flex-col">
-    <p class="font-archivo -mb-2">{competition.name}</p>
-    <h2 class="">DQ/Penalty Submission</h2>
-    <br />
     <Link
         href={submissions({ competition: competition })}
-        class="text-sm text-gray-600 inline-flex items-center gap-1 group-hover:font-bold mb-1"
-        ><ArrowLeft size={14} /> Back</Link
+        class="mb-3 inline-flex w-fit items-center gap-1 text-sm text-gray-600 hover:text-se"
+        ><ArrowLeft size={14} /> All submissions</Link
     >
-</section>
 
-<section class="flex flex-col relative">
-    <p class="font-archivo {stateColor(submission.status)}">
-        {submission.status}
-    </p>
-
-    <div class="flex items-center justify-between">
-        <p class="font-medium">{submission.entity.name}</p>
-        <p class="font-medium">{submission.event.name}</p>
-    </div>
-
-    <div class="flex items-center justify-between mb-1">
-        <h1 class="text-red-500">{code}</h1>
-
-        {#if submission.status === "SUBMITTED"}
-            <CircleDashed class="animate-pulse" />
-        {:else if submission.status === "ACCEPTED"}
-            <CircleCheck class="text-green-500" />
-        {:else if submission.status === "APPEALED"}
-            <CircleMinus class="text-orange-500" />
-        {:else}
-            <CircleX class="text-red-500" />
-        {/if}
-    </div>
-    <p class="text-sm text-gray-600">{submission.violation.description}</p>
-
-    <div class="flex items-center justify-between my-2">
-        <p class="text-sm font-medium">
-            {formatOrder(submission)}
-        </p>
-        <p class=" text-sm font-medium">
-            Length {submission.details.length ?? "-"} · Turn {submission.details
-                .turn ?? "-"}
-        </p>
-    </div>
-
-    <div>
-        <p>
-            <span class=" text-sm font-medium">Submitter:</span>
+    <!-- Summary -->
+    <div class="rounded-xl border bg-white p-4 shadow-sm">
+        <div class="flex items-center justify-between">
             <span
-                >{submission.submitter.user?.name ??
-                    submission.submitter.name ??
-                    "-"} ({submission.submitter.position ?? "-"})</span
+                class="text-xs font-semibold uppercase tracking-wide {stateColor(submission)}"
             >
-        </p>
-        <p>
-            <span class=" text-sm font-medium">Seconder:</span>
-            <span
-                >{submission.seconder.name ?? "-"} ({submission.seconder
-                    .position ?? "-"})</span
-            >
-        </p>
-
-        <div class="my-2">
-            <p class="text-sm font-medium">Details:</p>
-            <p>
-                {submission.details.details !== ""
-                    ? submission.details.details
-                    : "No details given."}
-            </p>
+                {isDQ ? "Disqualification" : "Penalty"}
+            </span>
+            <ViolationStatusBadge status={submission.status} />
         </div>
+
+        <div class="mt-3 flex items-center gap-3">
+            <div
+                class="flex size-16 shrink-0 items-center justify-center rounded-lg font-archivo text-xl font-bold transition-colors {statusTileClass(submission)}"
+                class:line-through={voided}
+            >
+                {code}
+            </div>
+            <div class="min-w-0">
+                <p class="text-lg font-semibold leading-tight text-gray-900">
+                    {submission.entity.name}
+                </p>
+                <p class="text-sm text-gray-500">{submission.event.name}</p>
+            </div>
+        </div>
+
+        <p
+            class="mt-4 border-l-2 border-gray-200 pl-3 text-sm text-gray-700"
+        >
+            {submission.violation.description}
+        </p>
     </div>
 
-    {#if page.props.judge.isHeadRef}
-        {#if submission.status === "SUBMITTED"}
-            <hr class="spacer mb-4!" />
-            <div class="flex space-x-2 mb-1">
-                <ConfirmDialog
-                    title="Approve {code}"
-                    description="Are you sure you want to approve this submission for {submission
-                        .entity.name} in {submission.event.name}?"
-                    triggerLabel="Approve"
-                    triggerClass="w-full py-1"
-                    triggerVariant="success"
-                    triggerIcon={Check}
-                    confirmVariant="success"
-                    confirmLabel="Approve"
-                    onConfirm={() => updateStatus("ACCEPTED")}
-                    loading={http.processing}
-                />
+    <!-- Where -->
+    <dl class="mt-3 grid grid-cols-3 divide-x rounded-xl border bg-white">
+        <div class="p-3">
+            <dt class="text-xs text-gray-500">Position</dt>
+            <dd class="text-sm font-semibold">{formatOrder(submission)}</dd>
+        </div>
+        <div class="p-3">
+            <dt class="text-xs text-gray-500">Length</dt>
+            <dd class="text-sm font-semibold">
+                {submission.details.length ?? "–"}
+            </dd>
+        </div>
+        <div class="p-3">
+            <dt class="text-xs text-gray-500">Turn</dt>
+            <dd class="text-sm font-semibold">
+                {submission.details.turn ?? "–"}
+            </dd>
+        </div>
+    </dl>
 
-                <ConfirmDialog
-                    title="Reject {code}"
-                    description="Are you sure you want to reject this submission for {submission
-                        .entity.name} in {submission.event.name}?"
-                    triggerLabel="Reject"
-                    triggerClass="w-full py-1"
-                    triggerVariant="danger"
-                    triggerIcon={X}
-                    confirmLabel="Reject"
-                    onConfirm={() => updateStatus("REJECTED")}
-                    loading={http.processing}
-                />
-            </div>
-        {:else if submission.status === "ACCEPTED"}
-            <hr class="spacer mb-4!" />
-            <div class="flex space-x-2 mb-1">
-                <ConfirmDialog
-                    title="Appeal {code}"
-                    description="Are you sure you want to appeal this submission for {submission
-                        .entity.name} in {submission.event
-                        .name}? (You should only do this if the appeal was successful)"
-                    triggerLabel="Appealed"
-                    triggerClass="w-full py-1"
-                    triggerVariant="success"
-                    triggerIcon={Check}
-                    confirmVariant="success"
-                    confirmLabel="Appeal"
-                    onConfirm={() => updateStatus("APPEALED")}
-                    loading={http.processing}
-                />
+    <!-- Who -->
+    <dl class="mt-3 divide-y rounded-xl border bg-white">
+        {@render person(
+            "Submitted by",
+            submission.submitter.user?.name ?? submission.submitter.name,
+            submission.submitter.position,
+        )}
+        {@render person(
+            "Seconded by",
+            submission.seconder.name,
+            submission.seconder.position,
+        )}
+    </dl>
 
-                <ConfirmDialog
-                    title="Remove {code}"
-                    description="Are you sure you want to remove this submission for {submission
-                        .entity.name} in {submission.event
-                        .name}? (It will appear as if it never existed)"
-                    triggerLabel="Remove"
-                    triggerClass="w-full py-1"
-                    triggerVariant="danger"
-                    triggerIcon={X}
-                    confirmLabel="Remove"
-                    onConfirm={() => updateStatus("REMOVED")}
-                    loading={http.processing}
-                />
-            </div>
+    <!-- Notes -->
+    <div class="mt-3 rounded-xl border bg-white p-3">
+        <p class="text-xs text-gray-500">Details</p>
+        {#if submission.details.details}
+            <p class="mt-1 whitespace-pre-line text-sm">
+                {submission.details.details}
+            </p>
+        {:else}
+            <p class="mt-1 text-sm italic text-gray-400">No details given.</p>
         {/if}
+    </div>
+
+    {#if page.props.judge.isHeadRef && (submission.status === "SUBMITTED" || submission.status === "ACCEPTED")}
+        <div class="mt-6 rounded-xl border border-se/40 bg-se/5 p-4">
+            <p
+                class="mb-3 inline-flex items-center gap-2 font-archivo text-sm font-semibold uppercase"
+            >
+                <Gavel size={16} class="text-se" /> Head Referee
+            </p>
+
+            {#if submission.status === "SUBMITTED"}
+                <div class="flex gap-2">
+                    <ConfirmDialog
+                        title="Approve {code}"
+                        description="Are you sure you want to approve this submission for {submission
+                            .entity.name} in {submission.event.name}?"
+                        triggerLabel="Approve"
+                        triggerClass="w-full"
+                        triggerVariant="success"
+                        triggerIcon={Check}
+                        confirmVariant="success"
+                        confirmLabel="Approve"
+                        onConfirm={() => updateStatus("ACCEPTED")}
+                        loading={http.processing}
+                    />
+
+                    <ConfirmDialog
+                        title="Reject {code}"
+                        description="Are you sure you want to reject this submission for {submission
+                            .entity.name} in {submission.event.name}?"
+                        triggerLabel="Reject"
+                        triggerClass="w-full"
+                        triggerVariant="danger"
+                        triggerIcon={X}
+                        confirmLabel="Reject"
+                        onConfirm={() => updateStatus("REJECTED")}
+                        loading={http.processing}
+                    />
+                </div>
+            {:else}
+                <p class="mb-3 text-xs text-gray-600">
+                    Only mark as appealed if the appeal was successful.
+                    Removing makes it as if the submission never existed.
+                </p>
+                <div class="flex gap-2">
+                    <ConfirmDialog
+                        title="Appeal {code}"
+                        description="Are you sure you want to appeal this submission for {submission
+                            .entity.name} in {submission.event
+                            .name}? (You should only do this if the appeal was successful)"
+                        triggerLabel="Appealed"
+                        triggerClass="w-full"
+                        triggerVariant="secondary"
+                        triggerIcon={Check}
+                        confirmVariant="success"
+                        confirmLabel="Appeal"
+                        onConfirm={() => updateStatus("APPEALED")}
+                        loading={http.processing}
+                    />
+
+                    <ConfirmDialog
+                        title="Remove {code}"
+                        description="Are you sure you want to remove this submission for {submission
+                            .entity.name} in {submission.event
+                            .name}? (It will appear as if it never existed)"
+                        triggerLabel="Remove"
+                        triggerClass="w-full"
+                        triggerVariant="danger"
+                        triggerIcon={Trash2}
+                        confirmLabel="Remove"
+                        onConfirm={() => updateStatus("REMOVED")}
+                        loading={http.processing}
+                    />
+                </div>
+            {/if}
+        </div>
     {/if}
 </section>
+
+{#snippet person(label: string, name?: string, position?: string)}
+    <div class="flex items-center justify-between gap-3 p-3">
+        <dt class="text-xs text-gray-500">{label}</dt>
+        <dd class="text-right text-sm">
+            <span class="font-semibold">{name || "–"}</span>
+            {#if position}
+                <span class="text-gray-500"> · {position}</span>
+            {/if}
+        </dd>
+    </div>
+{/snippet}
