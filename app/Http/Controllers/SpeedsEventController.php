@@ -123,7 +123,12 @@ class SpeedsEventController extends Controller
 
     public function editResult(Competition $comp, CompetitionSpeedEvent $event)
     {
-        return view('competition.events.speeds.edit-result', ['comp' => $comp, 'event' => $event]);
+        $heats = $event->getHeats()->get();
+
+        $heatLookup = $heats->keyBy(fn($heat) => $heat->entity_type . ':' . $heat->entity_id);
+        $heatNumbers = $heats->pluck('heat')->unique()->sort()->values();
+
+        return view('competition.events.speeds.edit-result', ['comp' => $comp, 'event' => $event, 'heatLookup' => $heatLookup, 'heatNumbers' => $heatNumbers]);
     }
 
     public function updateResults(Competition $comp, CompetitionSpeedEvent $event, Request $request)

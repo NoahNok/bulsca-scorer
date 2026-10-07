@@ -29,6 +29,19 @@
 
             @php
                 $allResults = $event->getRawResults(true);
+                $hasHeats = $heatNumbers->isNotEmpty();
+                $heatFor = fn($result) => $heatLookup->get($result->entity->getMorphClass() . ':' . $result->entity->id);
+
+                if ($hasHeats) {
+                    // Order by heat then lane, with entities that have no heat at the end
+                    usort($allResults, function ($a, $b) use ($heatFor) {
+                        $ha = $heatFor($a);
+                        $hb = $heatFor($b);
+
+                        return [$ha?->heat ?? PHP_INT_MAX, $ha?->lane ?? PHP_INT_MAX] <=>
+                            [$hb?->heat ?? PHP_INT_MAX, $hb?->lane ?? PHP_INT_MAX];
+                    });
+                }
             @endphp
 
             <div class="  relative w-full  ">
@@ -38,7 +51,19 @@
 
                 <br>
 
-                <p class="font-semibold font-archivo text-sm text-right w-full">{{ count($allResults) }} results</p>
+                @if ($hasHeats)
+                    <div class="flex flex-wrap gap-2 mb-2">
+                        <button type="button" table-heat-filter="scores" data-heat=""
+                            class="se-btn se-btn-selected">All</button>
+                        @foreach ($heatNumbers as $heatNumber)
+                            <button type="button" table-heat-filter="scores" data-heat="{{ $heatNumber }}"
+                                class="se-btn">Heat {{ $heatNumber }}</button>
+                        @endforeach
+                    </div>
+                @endif
+
+                <p class="font-semibold font-archivo text-sm text-right w-full"><span
+                        table-visible-count="scores">{{ count($allResults) }}</span> results</p>
 
                 <div class="se-table ">
                     <table editable-table="scores" table-submit-csrf="{{ csrf_token() }}"
@@ -50,6 +75,11 @@
                                 <th scope="col">
                                     Team
                                 </th>
+                                @if ($hasHeats)
+                                    <th scope="col" class="w-0 whitespace-nowrap">
+                                        H/L
+                                    </th>
+                                @endif
                                 <th scope="col">
                                     @if ($event->getName() == 'Rope Throw')
                                         Ropes/Time
@@ -73,10 +103,19 @@
                         <tbody>
 
                             @forelse ($allResults as $result)
-                                <tr table-row table-row-owner="{{ $result->id }}">
+                                @php
+                                    $heat = $heatFor($result);
+                                @endphp
+                                <tr table-row table-row-owner="{{ $result->id }}" data-heat="{{ $heat?->heat }}"
+                                    data-lane="{{ $heat?->lane }}">
                                     <th scope="row">
                                         {{ $result->entity->getName($comp) }}
                                     </th>
+                                    @if ($hasHeats)
+                                        <td class="whitespace-nowrap">
+                                            {{ $heat ? 'H' . $heat->heat . ' L' . $heat->lane : '-' }}
+                                        </td>
+                                    @endif
                                     <td class="table-input">
                                         @php
                                             $initialDqStr = $result->getDisqualificationsString();
@@ -204,4 +243,41 @@
         }
         //run();
     </script>
+
+    @if ($hasHeats)
+        <script>
+            // Heat filter: hides rows via inline display so it stacks with the table search (which uses the hidden attribute)
+            (() => {
+                const table = document.querySelector("[editable-table='scores']");
+                const rows = [...table.querySelectorAll("[table-row]")];
+                const buttons = [...document.querySelectorAll("[table-heat-filter='scores']")];
+                const counter = document.querySelector("[table-visible-count='scores']");
+                const search = document.querySelector("[table-search]");
+
+                const updateCount = () => {
+                    counter.textContent = rows.filter((row) => !row.hidden && row.style.display !== "none").length;
+                };
+
+                const setHeat = (heat) => {
+                    rows.forEach((row) => {
+                        row.style.display = heat === "" || row.dataset.heat === heat ? "" : "none";
+                    });
+                    buttons.forEach((btn) => btn.classList.toggle("se-btn-selected", btn.dataset.heat === heat));
+                    updateCount();
+                };
+
+                buttons.forEach((btn) => btn.addEventListener("click", () => setHeat(btn.dataset.heat)));
+
+                // Search toggles row.hidden in its own handler, so recount after it has run
+                search?.addEventListener("input", () => setTimeout(updateCount));
+
+                // If a save fails on a row hidden by the heat filter, go back to All so the error is visible
+                new MutationObserver(() => {
+                    if (rows.some((row) => row.style.display === "none" && row.querySelector(".invalid"))) {
+                        setHeat("");
+                    }
+                }).observe(table, { subtree: true, attributes: true, attributeFilter: ["class"] });
+            })();
+        </script>
+    @endif
 @endsection
