@@ -174,7 +174,8 @@ when selected.
 
 `<Link>` wrapping a card: `group flex items-center gap-3 rounded-xl border bg-white p-3 shadow-sm hover:border-se hover:shadow-md`,
 a tile on the left, a text stack (`truncate`) in the middle, a badge and chevron on the right.
-See `ViolationSubmissionCard`.
+See `ViolationSubmissionCard` (pass `showSubmitter` where the list mixes
+judges, e.g. the head ref's "All judges" view).
 
 ### Grouped action cards
 

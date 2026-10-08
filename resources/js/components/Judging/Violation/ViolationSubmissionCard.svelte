@@ -8,7 +8,7 @@
         submissionCode,
         type ViolationSubmission,
     } from "@/types/violation";
-    import { Link } from "@inertiajs/svelte";
+    import { Link, page } from "@inertiajs/svelte";
     import { ChevronRight } from "@lucide/svelte";
     import ViolationCodeTile from "./ViolationCodeTile.svelte";
     import ViolationStatusBadge from "./ViolationStatusBadge.svelte";
@@ -16,13 +16,22 @@
     let {
         submission,
         competition,
+        showSubmitter = false,
     }: {
         submission: ViolationSubmission;
         competition: Competition;
+        // for the head ref's list, where submissions come from every judge
+        showSubmitter?: boolean;
     } = $props();
 
     let code = $derived(submissionCode(submission));
     let voided = $derived(isVoided(submission.status));
+
+    let submitterName = $derived(
+        submission.submitter.user?.id === page.props.auth.user?.id
+            ? "me"
+            : submission.submitter.user?.name,
+    );
 </script>
 
 <Link
@@ -47,6 +56,9 @@
         </p>
         <p class="truncate text-xs text-gray-400">
             {formatOrder(submission)}
+            {#if showSubmitter && submission.submitter.user}
+                · by {submitterName}
+            {/if}
         </p>
     </div>
 

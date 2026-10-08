@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\DigitalJudge\Violation;
 
+use App\DigitalJudge\DigitalJudge;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DigitalJudge\Violation\ResubmitViolationRequest;
 use App\Http\Requests\DigitalJudge\Violation\SubmitViolationRequest;
@@ -24,7 +25,11 @@ class ViolationController extends Controller
     public function submissions(Competition $competition, Request $request)
     {
 
-        $submissions = ViolationSubmission::where('competition_id', $competition->id)->where('submitter_id', $request->user()->id)->orderBy('created_at', 'desc')->get();
+        // The head ref reviews every judge's submissions, everyone else only sees their own
+        $submissions = ViolationSubmission::where('competition_id', $competition->id)
+            ->unless(DigitalJudge::isClientHeadJudge($competition), fn($query) => $query->where('submitter_id', $request->user()->id))
+            ->orderBy('created_at', 'desc')
+            ->get();
 
 
         return Inertia::render('Judge/Competition/Violation/Submissions', [
@@ -137,8 +142,13 @@ class ViolationController extends Controller
         $submission->submitted()->associate($submittedViolation);
     }
 
-    public function view(Competition $competition, ViolationSubmission $submission)
+    public function view(Competition $competition, ViolationSubmission $submission, Request $request)
     {
+        // Only the judge who submitted it and the head ref can see a submission
+        if ($submission->submitter_id != $request->user()->id && !DigitalJudge::isClientHeadJudge($competition)) {
+            abort(403);
+        }
+
         return Inertia::render("Judge/Competition/Violation/Submission", [
             'competition' => $competition->jsonable(),
             'submission' => $submission->jsonable(),

@@ -12,6 +12,7 @@
     import EmptyState from "@/components/EmptyState.svelte";
     import FilterChip from "@/components/FilterChip.svelte";
     import LiveIndicator from "@/components/LiveIndicator.svelte";
+    import SegmentedControl from "@/components/SegmentedControl.svelte";
 
     import ViolationSubmissionCard from "@/components/Judging/Violation/ViolationSubmissionCard.svelte";
     import { issue } from "@/routes/judge/competition/violation";
@@ -48,11 +49,23 @@
         },
     );
 
+    // The head ref gets every judge's submissions and can narrow to their own
+    let isHeadRef = $derived(page.props.judge.isHeadRef);
+    let scope = $state<"everyone" | "mine">("everyone");
+
+    let scoped = $derived(
+        isHeadRef && scope === "mine"
+            ? submissions.filter(
+                  (s) => s.submitter.user?.id === page.props.auth.user?.id,
+              )
+            : submissions,
+    );
+
     let filter = $state<ViolationStatus | "ALL">("ALL");
 
     let counts = $derived.by(() => {
         const acc = {} as Record<ViolationStatus, number>;
-        for (const sub of submissions) {
+        for (const sub of scoped) {
             acc[sub.status] = (acc[sub.status] ?? 0) + 1;
         }
         return acc;
@@ -62,8 +75,8 @@
     let visible = $derived.by(() => {
         const filtered =
             filter === "ALL"
-                ? submissions
-                : submissions.filter((s) => s.status === filter);
+                ? scoped
+                : scoped.filter((s) => s.status === filter);
 
         return [...filtered].sort(
             (a, b) =>
@@ -105,10 +118,21 @@
         <Button label="New Submission" class="w-full" icon={Plus} />
     </Link>
 
+    {#if isHeadRef}
+        <SegmentedControl
+            class="mt-5"
+            options={[
+                { value: "everyone", label: "All judges" },
+                { value: "mine", label: "Mine" },
+            ]}
+            bind:value={scope}
+        />
+    {/if}
+
     <div class="-mx-1 mt-5 mb-3 flex gap-2 overflow-x-auto px-1 pb-1">
         <FilterChip
             label="All"
-            count={submissions.length}
+            count={scoped.length}
             active={filter === "ALL"}
             onclick={() => (filter = "ALL")}
         />
@@ -134,7 +158,11 @@
         <div class="flex flex-col gap-2">
             {#each visible as submission (submission.id)}
                 <div animate:flip={{ duration: 200 }}>
-                    <ViolationSubmissionCard {submission} {competition} />
+                    <ViolationSubmissionCard
+                        {submission}
+                        {competition}
+                        showSubmitter={isHeadRef && scope === "everyone"}
+                    />
                 </div>
             {/each}
         </div>
