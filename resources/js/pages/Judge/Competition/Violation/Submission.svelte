@@ -4,11 +4,12 @@
     import BackLink from "@/components/BackLink.svelte";
     import Button from "@/components/Button.svelte";
     import ConfirmDialog from "@/components/ConfirmDialog.svelte";
+    import LiveIndicator from "@/components/LiveIndicator.svelte";
     import ViolationCodeTile from "@/components/Judging/Violation/ViolationCodeTile.svelte";
     import ViolationStatusBadge from "@/components/Judging/Violation/ViolationStatusBadge.svelte";
     import ViolationTimeline from "@/components/Judging/Violation/ViolationTimeline.svelte";
     import SectionLabel from "@/components/SectionLabel.svelte";
-    import { toastError, toastSuccess } from "@/lib/toast.svelte";
+    import { toast, toastError, toastSuccess } from "@/lib/toast.svelte";
     import { submissions } from "@/routes/judge/competition/violation";
     import { edit } from "@/routes/judge/competition/violation/submission";
     import type { Competition } from "@/types/base";
@@ -22,8 +23,9 @@
         type ViolationSubmission,
         type ViolationTimelineEntry,
     } from "@/types/violation";
-    import { page, router, useHttp } from "@inertiajs/svelte";
+    import { page, router, useHttp, usePoll } from "@inertiajs/svelte";
     import { Check, Gavel, Pencil, Trash2, X } from "@lucide/svelte";
+    import { untrack } from "svelte";
 
     let {
         submission: rawSubmission,
@@ -36,6 +38,50 @@
     } = $props();
 
     let submission = $derived<ViolationSubmission>(rawSubmission);
+
+    // Pick up the referee's decision (or another head ref's) without a refresh
+    usePoll(
+        5000,
+        { only: ["submission", "timeline"] },
+        { mode: "rest" },
+    );
+
+    // The status this page last showed. Changes made from this page update it
+    // first, so only someone else's change (seen via polling) gets announced
+    let seenStatus = untrack(() => rawSubmission.status);
+    let highlight = $state(false);
+
+    const changeMessages: Record<ViolationStatus, string> = {
+        SUBMITTED: "Resubmitted",
+        ACCEPTED: "Accepted by the referee",
+        REJECTED: "Rejected by the referee",
+        APPEALED: "Marked as appealed",
+        REMOVED: "Removed by the referee",
+    };
+
+    $effect(() => {
+        const status = submission.status;
+
+        if (status === seenStatus) {
+            return;
+        }
+
+        seenStatus = status;
+
+        toast({
+            title: changeMessages[status],
+            description: submission.canResubmit
+                ? "You can edit it and resubmit."
+                : `${code} for ${submission.entity.name}`,
+            variant: status === "ACCEPTED" ? "success" : "info",
+            manualClose: true,
+        });
+
+        navigator.vibrate?.(200);
+
+        highlight = true;
+        setTimeout(() => (highlight = false), 3000);
+    });
 
     const http = useHttp<{ state: ViolationStatus | "" }>({ state: "" });
 
@@ -54,6 +100,7 @@
             }).url,
             {
                 onSuccess(response, httpResponse) {
+                    seenStatus = status;
                     submission.status = status;
                     toastSuccess("Submission updated");
                     // refresh from the server so the status, head-ref buttons and timeline all match
@@ -81,7 +128,10 @@
 
 <section class="flex flex-col">
     <p class="font-archivo -mb-2">{competition.name}</p>
-    <h2>DQ/Penalty</h2>
+    <div class="flex items-end justify-between">
+        <h2>DQ/Penalty</h2>
+        <LiveIndicator class="mb-1" />
+    </div>
 
     <BackLink
         href={submissions({ competition: competition })}
@@ -90,7 +140,11 @@
     />
 
     <!-- Summary -->
-    <div class="rounded-xl border bg-white p-4 shadow-sm">
+    <div
+        class="rounded-xl border bg-white p-4 shadow-sm ring-se ring-offset-2 transition-shadow duration-500 {highlight
+            ? 'ring-2'
+            : ''}"
+    >
         <div class="flex items-center justify-between">
             <span
                 class="text-xs font-semibold uppercase tracking-wide {stateColor(

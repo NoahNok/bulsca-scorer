@@ -202,6 +202,11 @@ full-width primary submit `Button`.
   page for a rejected submission: given a `submission` prop it prefills the form
   (`submissionToPost`), walks the stepper to Details, and posts to `resubmit`.
   Prefer this over a separate edit page when the fields are the same.
+- **Live detail pages** poll with `usePoll` (`only` the changing props) and show
+  a `LiveIndicator` by the heading. When polling brings in a change someone else
+  made, announce it: a `manualClose` toast, a brief `ring-2 ring-se` on the
+  summary card and `navigator.vibrate?.(200)`. Track the last seen value so the
+  viewer's own actions aren't announced (see `Violation/Submission`).
 - **Summary card** at the top: type label + status badge, large tile + name/event, description with `border-l-2 pl-3`.
 - **Fact strip:** `<dl class="grid grid-cols-3 divide-x rounded-xl border bg-white">` with `p-3` cells.
 - **Key/value rows:** `<dl class="divide-y rounded-xl border bg-white">`, label left, value right.
