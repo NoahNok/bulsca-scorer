@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\DigitalJudge\Violation\ViolationController::getHeats
-* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:104
+* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:160
 * @route '//judge.localhost/v2/{competition}/violation/heats/{event}'
 */
 export const getHeats = (args: { competition: number | { id: number }, event: number | { id: number } } | [competition: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ getHeats.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Violation\ViolationController::getHeats
-* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:104
+* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:160
 * @route '//judge.localhost/v2/{competition}/violation/heats/{event}'
 */
 getHeats.url = (args: { competition: number | { id: number }, event: number | { id: number } } | [competition: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -46,7 +46,7 @@ getHeats.url = (args: { competition: number | { id: number }, event: number | { 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Violation\ViolationController::getHeats
-* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:104
+* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:160
 * @route '//judge.localhost/v2/{competition}/violation/heats/{event}'
 */
 getHeats.get = (args: { competition: number | { id: number }, event: number | { id: number } } | [competition: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -56,7 +56,7 @@ getHeats.get = (args: { competition: number | { id: number }, event: number | { 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Violation\ViolationController::getHeats
-* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:104
+* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:160
 * @route '//judge.localhost/v2/{competition}/violation/heats/{event}'
 */
 getHeats.head = (args: { competition: number | { id: number }, event: number | { id: number } } | [competition: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -66,7 +66,7 @@ getHeats.head = (args: { competition: number | { id: number }, event: number | {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Violation\ViolationController::getDraw
-* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:119
+* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:175
 * @route '//judge.localhost/v2/{competition}/violation/draw/{serc}'
 */
 export const getDraw = (args: { competition: number | { id: number }, serc: number | { id: number } } | [competition: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -81,7 +81,7 @@ getDraw.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Violation\ViolationController::getDraw
-* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:119
+* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:175
 * @route '//judge.localhost/v2/{competition}/violation/draw/{serc}'
 */
 getDraw.url = (args: { competition: number | { id: number }, serc: number | { id: number } } | [competition: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -111,7 +111,7 @@ getDraw.url = (args: { competition: number | { id: number }, serc: number | { id
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Violation\ViolationController::getDraw
-* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:119
+* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:175
 * @route '//judge.localhost/v2/{competition}/violation/draw/{serc}'
 */
 getDraw.get = (args: { competition: number | { id: number }, serc: number | { id: number } } | [competition: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -121,7 +121,7 @@ getDraw.get = (args: { competition: number | { id: number }, serc: number | { id
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Violation\ViolationController::getDraw
-* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:119
+* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:175
 * @route '//judge.localhost/v2/{competition}/violation/draw/{serc}'
 */
 getDraw.head = (args: { competition: number | { id: number }, serc: number | { id: number } } | [competition: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -131,7 +131,7 @@ getDraw.head = (args: { competition: number | { id: number }, serc: number | { i
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Violation\ViolationController::getCodes
-* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:124
+* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:180
 * @route '//judge.localhost/v2/{competition}/violation/event-codes/{eventName}'
 */
 export const getCodes = (args: { competition: number | { id: number }, eventName: string | number } | [competition: number | { id: number }, eventName: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -146,7 +146,7 @@ getCodes.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Violation\ViolationController::getCodes
-* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:124
+* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:180
 * @route '//judge.localhost/v2/{competition}/violation/event-codes/{eventName}'
 */
 getCodes.url = (args: { competition: number | { id: number }, eventName: string | number } | [competition: number | { id: number }, eventName: string | number ], options?: RouteQueryOptions) => {
@@ -174,7 +174,7 @@ getCodes.url = (args: { competition: number | { id: number }, eventName: string 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Violation\ViolationController::getCodes
-* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:124
+* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:180
 * @route '//judge.localhost/v2/{competition}/violation/event-codes/{eventName}'
 */
 getCodes.get = (args: { competition: number | { id: number }, eventName: string | number } | [competition: number | { id: number }, eventName: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -184,7 +184,7 @@ getCodes.get = (args: { competition: number | { id: number }, eventName: string 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Violation\ViolationController::getCodes
-* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:124
+* @see app/Http/Controllers/DigitalJudge/Violation/ViolationController.php:180
 * @route '//judge.localhost/v2/{competition}/violation/event-codes/{eventName}'
 */
 getCodes.head = (args: { competition: number | { id: number }, eventName: string | number } | [competition: number | { id: number }, eventName: string | number ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({

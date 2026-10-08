@@ -2,6 +2,7 @@
     import { updateState } from "@/actions/App/Http/Controllers/DigitalJudge/Violation/ViolationStateController";
     import AppHead from "@/components/AppHead.svelte";
     import BackLink from "@/components/BackLink.svelte";
+    import Button from "@/components/Button.svelte";
     import ConfirmDialog from "@/components/ConfirmDialog.svelte";
     import ViolationCodeTile from "@/components/Judging/Violation/ViolationCodeTile.svelte";
     import ViolationStatusBadge from "@/components/Judging/Violation/ViolationStatusBadge.svelte";
@@ -9,6 +10,7 @@
     import SectionLabel from "@/components/SectionLabel.svelte";
     import { toastError, toastSuccess } from "@/lib/toast.svelte";
     import { submissions } from "@/routes/judge/competition/violation";
+    import { edit } from "@/routes/judge/competition/violation/submission";
     import type { Competition } from "@/types/base";
     import {
         formatOrder,
@@ -21,7 +23,7 @@
         type ViolationTimelineEntry,
     } from "@/types/violation";
     import { page, router, useHttp } from "@inertiajs/svelte";
-    import { Check, Gavel, Trash2, X } from "@lucide/svelte";
+    import { Check, Gavel, Pencil, Trash2, X } from "@lucide/svelte";
 
     let {
         submission: rawSubmission,
@@ -170,6 +172,27 @@
 
     <SectionLabel class="mt-4 mb-2">Timeline</SectionLabel>
     <ViolationTimeline entries={timeline} />
+
+    {#if submission.canResubmit}
+        <div class="mt-6 rounded-xl border bg-gray-50 p-4">
+            <p class="mb-3 text-sm text-gray-700">
+                This was rejected. You can edit it and resubmit it for the
+                referee to review again.
+            </p>
+            <Button
+                label="Edit & resubmit"
+                class="w-full"
+                icon={Pencil}
+                onclick={() =>
+                    router.visit(
+                        edit({
+                            competition: competition.id,
+                            submission: `${submission.id}`,
+                        }).url,
+                    )}
+            />
+        </div>
+    {/if}
 
     {#if page.props.judge.isHeadRef && (submission.status === "SUBMITTED" || submission.status === "ACCEPTED")}
         <div class="mt-6 rounded-xl border border-se/40 bg-se/5 p-4">

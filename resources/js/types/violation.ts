@@ -117,6 +117,8 @@ export type ViolationSubmission = {
     seconder: ViolationUser
     status: ViolationStatus
     order: HeatLane | TankDraw
+    // the current user submitted it and it was rejected, so they can edit and resubmit it
+    canResubmit?: boolean
 }
 
 type ViolationDetails = {
@@ -163,6 +165,31 @@ export function emptySubmission(): ViolationSubmissionPost {
 }
 
 
+
+// Prefill the issue form from an existing submission, for editing a rejected one
+export function submissionToPost(submission: ViolationSubmission): ViolationSubmissionPost {
+    return {
+        entity_id: submission.entity.id,
+
+        event: { id: submission.event.id, type: submission.event.type },
+        violation: { id: submission.violation.id, vtype: submission.violation.vtype },
+
+        details: {
+            turn: submission.details.turn ?? undefined,
+            length: submission.details.length ?? undefined,
+            details: submission.details.details ?? ""
+        },
+
+        submitter: {
+            position: submission.submitter.position ?? "",
+        },
+
+        seconder: {
+            name: submission.seconder.name ?? "",
+            position: submission.seconder.position ?? ""
+        }
+    }
+}
 
 export type Violation = {
     id: number

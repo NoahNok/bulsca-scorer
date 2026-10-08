@@ -28,6 +28,10 @@
     import Stepper from "@/components/Stepper/Stepper.svelte";
     import { toastError } from "@/lib/toast.svelte";
     import violation from "@/routes/judge/competition/violation";
+    import {
+        resubmit,
+        view as viewSubmission,
+    } from "@/routes/judge/competition/violation/submission";
 
     import {
         type Entity,
@@ -39,14 +43,16 @@
     } from "@/types/base";
     import {
         emptySubmission,
+        submissionToPost,
         violationCode,
         vtypeTileClass,
+        type ViolationSubmission,
         type ViolationSubmissionPost,
         type Violation,
     } from "@/types/violation";
     import { useForm, useHttp } from "@inertiajs/svelte";
     import { Check, ChevronDown } from "@lucide/svelte";
-    import { onMount, tick } from "svelte";
+    import { onMount, tick, untrack } from "svelte";
     import { slide } from "svelte/transition";
 
     type ViolationCollection = {
@@ -60,18 +66,37 @@
         competition,
         sercs,
         speeds,
+        submission,
     }: {
         competition: Competition;
         sercs: Event[];
         speeds: Event[];
+        // set when editing a rejected submission to resubmit it
+        submission?: ViolationSubmission;
     } = $props();
 
-    const form = useForm<ViolationSubmissionPost>(emptySubmission());
+    // The form only takes the submission it opened with
+    const initial = untrack(() => submission);
+    const editing = !!initial;
+
+    const form = useForm<ViolationSubmissionPost>(
+        initial ? submissionToPost(initial) : emptySubmission(),
+    );
 
     let selectedEvent = $state<Event>();
     let selectedViolation = $state<Violation>();
 
     function selectEvent(event: Event, step_controls: StepControls) {
+        // a competitor or code picked for another event no longer applies
+        if (
+            selectedEvent &&
+            (selectedEvent.id !== event.id || selectedEvent.type !== event.type)
+        ) {
+            form.entity_id = -1;
+            form.violation = undefined;
+            selectedViolation = undefined;
+        }
+
         form.event = {
             id: event.id,
             type: event.type,
@@ -119,7 +144,14 @@
             return;
         }
 
-        form.post("");
+        if (submission) {
+            form.post(
+                resubmit({ competition: competition, submission: submission })
+                    .url,
+            );
+        } else {
+            form.post("");
+        }
     }
 
     let heats = $state<Heat[]>([]);
@@ -203,6 +235,11 @@
     onMount(async () => {
         await tick();
 
+        if (submission) {
+            prefillFrom(submission);
+            return;
+        }
+
         const searchParams = new URLSearchParams(window.location.search);
         let specifiedEvent = searchParams.get("event");
 
@@ -226,24 +263,51 @@
         }
     });
 
+    // Walk the steps with the submission's choices, which lands on Details
+    // and loads the heats/draw and codes so any of them can still be changed
+    function prefillFrom(existing: ViolationSubmission) {
+        const steps = [0, 1, 2].map((i) => stepperRef?.getStepControls(i));
+        if (steps.some((s) => !s)) {
+            return;
+        }
+
+        selectEvent(existing.event, steps[0]!);
+        selectEntity(existing.entity, steps[1]!);
+        violationFilter = existing.violation.vtype === "DQ" ? "dq" : "pen";
+        selectViolation(existing.violation, steps[2]!);
+    }
+
     let expanded = $state<boolean>(false);
 
     type EntityRow = { position: number; entity: Entity };
 
 </script>
 
-<AppHead title="Issue - DQ/Penalty - {competition.name}" />
+<AppHead
+    title="{editing ? 'Edit' : 'Issue'} - DQ/Penalty - {competition.name}"
+/>
 
 
 <section class="flex flex-col">
     <p class="font-archivo -mb-2">{competition.name}</p>
-    <h2 class="">New DQ/Penalty</h2>
+    <h2 class="">{editing ? "Edit DQ/Penalty" : "New DQ/Penalty"}</h2>
 
-    <BackLink
-        href={violation.submissions({ competition: competition })}
-        label="All submissions"
-        class="mt-2 mb-4"
-    />
+    {#if submission}
+        <BackLink
+            href={viewSubmission({
+                competition: competition,
+                submission: submission,
+            })}
+            label="Back to submission"
+            class="mt-2 mb-4"
+        />
+    {:else}
+        <BackLink
+            href={violation.submissions({ competition: competition })}
+            label="All submissions"
+            class="mt-2 mb-4"
+        />
+    {/if}
 
     <Stepper bind:this={stepperRef}>
         <Step title="Event">
@@ -436,7 +500,7 @@
                 />
 
                 <Button
-                    label="Submit"
+                    label={editing ? "Resubmit" : "Submit"}
                     class="col-span-2 mt-2 w-full"
                     icon={Check}
                     type="submit"

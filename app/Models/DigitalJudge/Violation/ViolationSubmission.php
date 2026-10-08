@@ -109,7 +109,8 @@ class ViolationSubmission extends Model implements IJsonable
                 'name' => $this->seconder_name,
                 'position' => $this->seconder_position
             ],
-            'order' => $this->event->getType() == "speed" ? $this->getHeatLane() : $this->getTankDraw()
+            'order' => $this->event->getType() == "speed" ? $this->getHeatLane() : $this->getTankDraw(),
+            'canResubmit' => $this->canBeResubmittedBy(auth()->user()),
         ];
     }
 
@@ -147,6 +148,16 @@ class ViolationSubmission extends Model implements IJsonable
 
 
     // SUBMISSION MANAGEMENT
+
+    /**
+     * Rejected submissions can be edited and resubmitted by the judge who made them
+     */
+    public function canBeResubmittedBy(?User $user): bool
+    {
+        return $user !== null
+            && $this->status === 'REJECTED'
+            && $this->submitter_id == $user->id;
+    }
 
     public function updateStatus(string $status)
     {
@@ -207,7 +218,7 @@ class ViolationSubmission extends Model implements IJsonable
         $what = "{$this->code()} for {$this->entity->getName()} in {$this->event->getName()}";
 
         $description = match ($state) {
-            'SUBMITTED' => "{$what} submitted by {$this->submitter?->name} ({$this->submitter_position})",
+            'SUBMITTED' => ($from ? "{$what} resubmitted" : "{$what} submitted") . " by {$this->submitter?->name} ({$this->submitter_position})",
             'ACCEPTED' => "{$what} was accepted by the referee",
             'REJECTED' => "{$what} was rejected by the referee",
             'APPEALED' => "{$what} was marked as appealed",

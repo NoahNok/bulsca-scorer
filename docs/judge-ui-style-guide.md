@@ -142,7 +142,7 @@ navigable row shows a `ChevronRight` that nudges right on hover.
 Components that only make sense for one feature go here, e.g.
 `Judging/Violation/ViolationCodeTile`, `ViolationStatusBadge`,
 `ViolationSubmissionCard`, `ViolationTimeline` (a submission's status history,
-dot colours from `timelineDotClass`), and `Judging/SERC/JudgeMarkingPoints` /
+dot colours from `timelineDotClass`; a SUBMITTED entry coming from REJECTED reads "Resubmitted"), and `Judging/SERC/JudgeMarkingPoints` /
 `MarkingPoint` (the SERC marking card and its mark buttons).
 
 Mark/option buttons are a `peer sr-only` radio (inside a `relative` wrapper; `h-0 w-0` leaves a blank line) plus a `<label>`:
@@ -197,6 +197,10 @@ full-width primary submit `Button`.
 
 ### Detail views
 
+- **Edit pages reuse the create page.** `Violation/Issue` doubles as the edit
+  page for a rejected submission: given a `submission` prop it prefills the form
+  (`submissionToPost`), walks the stepper to Details, and posts to `resubmit`.
+  Prefer this over a separate edit page when the fields are the same.
 - **Summary card** at the top: type label + status badge, large tile + name/event, description with `border-l-2 pl-3`.
 - **Fact strip:** `<dl class="grid grid-cols-3 divide-x rounded-xl border bg-white">` with `p-3` cells.
 - **Key/value rows:** `<dl class="divide-y rounded-xl border bg-white">`, label left, value right.

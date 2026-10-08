@@ -98,6 +98,9 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
                     Route::prefix('submission/{submission}')->group(function () {
                         Route::get('', [ViolationController::class, 'view'])->name('judge.competition.violation.submission.view');
                         Route::post('update-state', [ViolationStateController::class, 'updateState'])->name('judge.competition.violation.submission.update-state');
+
+                        Route::get('edit', [ViolationController::class, 'edit'])->name('judge.competition.violation.submission.edit');
+                        Route::post('resubmit', [ViolationController::class, 'resubmit'])->name('judge.competition.violation.submission.resubmit');
                     });
                 });
             });

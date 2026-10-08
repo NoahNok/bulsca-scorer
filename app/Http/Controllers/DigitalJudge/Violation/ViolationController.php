@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\DigitalJudge\Violation;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\DigitalJudge\Violation\ResubmitViolationRequest;
 use App\Http\Requests\DigitalJudge\Violation\SubmitViolationRequest;
 use App\Models\Club;
 use App\Models\Competition;
@@ -36,7 +37,55 @@ class ViolationController extends Controller
 
     public function issue(Competition $competition)
     {
+        return Inertia::render('Judge/Competition/Violation/Issue', $this->issueProps($competition));
+    }
+
+    public function submit(Competition $competition, SubmitViolationRequest $request)
+    {
+        $submission = new ViolationSubmission();
+        $submission->competition_id = $competition->id;
+        $submission->submitter_id = $request->user()?->id;
+
+        $this->fillSubmission($submission, $competition, $request->validated());
+
+        $submission->status = 'SUBMITTED';
+        $submission->save();
+
+        $submission->logActivity('SUBMITTED');
+
+        return to_route('judge.competition.violation.submissions', ['competition' => $competition, 'id' => $submission->id]);
+    }
+
+    public function edit(Competition $competition, ViolationSubmission $submission, Request $request)
+    {
+        if ($submission->competition_id != $competition->id || !$submission->canBeResubmittedBy($request->user())) {
+            abort(403);
+        }
+
         return Inertia::render('Judge/Competition/Violation/Issue', [
+            ...$this->issueProps($competition),
+            'submission' => $submission->jsonable(),
+        ]);
+    }
+
+    public function resubmit(Competition $competition, ViolationSubmission $submission, ResubmitViolationRequest $request)
+    {
+        $from = $submission->status;
+
+        $this->fillSubmission($submission, $competition, $request->validated());
+
+        // Rejection already removed any applied violation, so it just goes back for review
+        $submission->status = 'SUBMITTED';
+        $submission->save();
+
+        $submission->logActivity('SUBMITTED', $from);
+
+        return to_route('judge.competition.violation.submission.view', ['competition' => $competition, 'submission' => $submission]);
+    }
+
+    private function issueProps(Competition $competition): array
+    {
+        return [
             'competition' => $competition->only(['id', 'name']),
             'sercs' => $competition->getSERCs()->where('digitalJudgeEnabled', true)->get()->map(function ($serc) {
                 return $serc->jsonable();
@@ -44,13 +93,14 @@ class ViolationController extends Controller
             'speeds' => $competition->getSpeedEvents()->where('digitalJudgeEnabled', true)->get()->map(function ($speed) {
                 return $speed->jsonable();
             })
-        ]);
+        ];
     }
 
-    public function submit(Competition $competition, SubmitViolationRequest $request)
+    /**
+     * Set the event, entity, code and details on a submission from a validated (re)submit request
+     */
+    private function fillSubmission(ViolationSubmission $submission, Competition $competition, array $validated): void
     {
-        $validated = $request->validated();
-
         $eventId = $validated['event']['id'];
         $eventType = $validated['event']['type'];
 
@@ -75,26 +125,16 @@ class ViolationController extends Controller
             default => abort(422, 'Unknown violation code (DQCode/PenaltyCode).'),
         };
 
-        $submission = new ViolationSubmission();
-        $submission->competition_id = $competition->id;
         $submission->details = $validated['details']['details'] ?? '';
         $submission->turn = $validated['details']['turn'] ?? null;
         $submission->length = $validated['details']['length'] ?? null;
-        $submission->submitter_id = $request->user()?->id;
         $submission->submitter_position = $validated['submitter']['position'] ?? '';
         $submission->seconder_name = $validated['seconder']['name'] ?? null;
         $submission->seconder_position = $validated['seconder']['position'] ?? null;
-        $submission->status = 'SUBMITTED';
 
         $submission->entity()->associate($entity);
         $submission->event()->associate($event);
         $submission->submitted()->associate($submittedViolation);
-
-        $submission->save();
-
-        $submission->logActivity('SUBMITTED');
-
-        return to_route('judge.competition.violation.submissions', ['competition' => $competition, 'id' => $submission->id]);
     }
 
     public function view(Competition $competition, ViolationSubmission $submission)

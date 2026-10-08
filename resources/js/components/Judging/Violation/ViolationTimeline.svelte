@@ -24,9 +24,11 @@
     });
 
     function label(entry: ViolationTimelineEntry) {
-        return entry.state === "SUBMITTED"
-            ? "Submitted"
-            : statusLabels[entry.state];
+        if (entry.state === "SUBMITTED") {
+            return entry.from === "REJECTED" ? "Resubmitted" : "Submitted";
+        }
+
+        return statusLabels[entry.state];
     }
 </script>
 
