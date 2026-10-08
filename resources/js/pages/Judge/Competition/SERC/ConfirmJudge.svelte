@@ -5,22 +5,19 @@
 </script>
 
 <script lang="ts">
-    import {
-        index,
-        home,
-    } from "@/actions/App/Http/Controllers/DigitalJudge/JudgeController";
+    import { home } from "@/actions/App/Http/Controllers/DigitalJudge/JudgeController";
     import { confirmJudgePost } from "@/actions/App/Http/Controllers/DigitalJudge/SERC/SERCJudgeController";
 
     import AppHead from "@/components/AppHead.svelte";
+    import BackLink from "@/components/BackLink.svelte";
     import Button from "@/components/Button.svelte";
-
-    import { appState } from "@/lib/stores/appState";
+    import NumberedList from "@/components/NumberedList/NumberedList.svelte";
+    import NumberedListItem from "@/components/NumberedList/NumberedListItem.svelte";
+    import SectionLabel from "@/components/SectionLabel.svelte";
 
     import type { Competition, Judge, SERC } from "@/types/base";
-    import { Form, page, Link } from "@inertiajs/svelte";
-    import { Check, Clipboard, House } from "@lucide/svelte";
-
-    const user = $derived(page.props.auth.user);
+    import { Form } from "@inertiajs/svelte";
+    import { ArrowRight, ClipboardList } from "@lucide/svelte";
 
     let {
         competition,
@@ -33,67 +30,58 @@
     } = $props();
 </script>
 
-<AppHead title="Dashboard" />
+<AppHead title="Confirm Judge - {serc.name} - {competition.name}" />
 
-<section class="flex flex-col absolute top-0 left-0 w-full p-6 z-10">
-    <Link
-        href={home(competition)}
-        class="flex w-full justify-between items-center"
-    >
-        <div class="">
-            <h1 class="  -mb-3 normal-case! text-black! text-base!">Digital</h1>
-            <h1 class=" indent-6 normal-case! text-se text-xl!">Judge</h1>
-        </div>
-
-        <House class="bg-se/20 rounded-full text-se p-2 shadow-md " size={40} />
-    </Link>
-</section>
-
-<div class="h-16"></div>
-
-<section class="flex flex-col h-full">
+<section class="flex flex-col">
     <p class="font-archivo -mb-2">{competition.name}</p>
-    <h2 class="">{serc.name}</h2>
-    <br />
+    <h2>{serc.name}</h2>
 
-    <div class="flex flex-col space-y-3">
-        <h2 class="font-bold text-center w-full break-words">{judge.name}</h2>
+    <BackLink href={home(competition)} label="All events" class="mt-2 mb-4" />
 
-        <p class="">
-            Please check the judging criteria below matches your brief and then
-            click "Continue".
-        </p>
-
-        <h4>Criteria</h4>
-        <ul class=" list-disc list-inside">
-            {#each judge.marking_points as marking_point}
-                <li>{marking_point.description}</li>
-            {/each}
-        </ul>
-        <br />
-
-        <Form
-            action={confirmJudgePost({
-                competition: competition,
-                serc: serc,
-            })}
+    <div class="flex items-center gap-3 rounded-xl border bg-white p-4 shadow-sm">
+        <span
+            class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-se/20 text-teal-700"
         >
+            <ClipboardList size={20} />
+        </span>
+        <div class="min-w-0">
+            <p class="text-xs text-gray-500">Judging as</p>
+            <p class="font-archivo truncate text-lg font-semibold">
+                {judge.name}
+            </p>
+        </div>
+    </div>
+
+    <p class="mt-3 text-sm text-gray-500">
+        Check the criteria below match your brief, then continue.
+    </p>
+
+    <SectionLabel class="mt-4 mb-2">
+        Criteria · {judge.marking_points.length}
+    </SectionLabel>
+
+    {#if judge.marking_points.length === 0}
+        <p class="text-sm text-gray-400 italic">No marking points set.</p>
+    {:else}
+        <NumberedList>
+            {#each judge.marking_points as marking_point, i (marking_point.id)}
+                <NumberedListItem number={i + 1}>
+                    {marking_point.description}
+                </NumberedListItem>
+            {/each}
+        </NumberedList>
+    {/if}
+
+    <Form action={confirmJudgePost({ competition, serc })} class="mt-6">
+        {#snippet children({ processing })}
+            <input type="hidden" name="judge" value={judge.id} />
             <Button
+                type="submit"
                 label="Continue"
-                variant="success"
-                icon={Check}
+                icon={ArrowRight}
+                loading={processing}
                 class="w-full"
             />
-
-            <input type="hidden" name="judge" value={judge.id} />
-        </Form>
-
-        <!-- <form action="{{ route('dj.judging.confirm', $judge) }}" method="post" class="w-full ">
-            @csrf
-            <button type="submit" class="se-btn se-btn-success w-full">Continue</button>
-        </form> -->
-        <Link href={home(competition)}
-            ><Button label="Back" variant="danger" class="w-full py-1!" /></Link
-        >
-    </div>
+        {/snippet}
+    </Form>
 </section>

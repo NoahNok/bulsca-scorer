@@ -1,14 +1,19 @@
 <script module lang="ts">
-    export const layout = {
-        title: "Select Tank",
-    };
+    import { home as sercHome } from "@/actions/App/Http/Controllers/DigitalJudge/SERC/SERCJudgeController";
+    import { LifeBuoy } from "@lucide/svelte";
+
+    export const layout = (props: Record<string, any>) => ({
+        title: "Mark",
+        header: {
+            icon: LifeBuoy,
+            href: sercHome({ competition: props.competition, serc: props.serc }),
+        },
+    });
 </script>
 
 <script lang="ts">
-    import { index } from "@/actions/App/Http/Controllers/DigitalJudge/JudgeController";
     import {
         nextEntityToMark,
-        setTank,
         storeEntityMarks,
         home,
         getJudgeNotes,
@@ -17,27 +22,23 @@
     import ActionStatusModal from "@/components/ActionStatusModal.svelte";
 
     import AppHead from "@/components/AppHead.svelte";
+    import BackLink from "@/components/BackLink.svelte";
     import Button from "@/components/Button.svelte";
-    import Collapse from "@/components/Collapse.svelte";
+    import EmptyState from "@/components/EmptyState.svelte";
     import GenericDialog from "@/components/GenericDialog.svelte";
     import JudgeMarkingPoints from "@/components/Judging/SERC/JudgeMarkingPoints.svelte";
-    import MarkingPoint from "@/components/Judging/SERC/MarkingPoint.svelte";
+    import SignOffCheckbox from "@/components/Judging/SignOffCheckbox.svelte";
+    import SectionLabel from "@/components/SectionLabel.svelte";
     import Spinner from "@/components/Spinner.svelte";
     import { confirm } from "@/lib/confirm";
 
-    import { appState } from "@/lib/stores/appState";
-
     import { toastError } from "@/lib/toast.svelte";
-    import markSplits from "@/routes/comps/events/sercs/mark-splits";
-    import judge from "@/routes/judge";
 
     import type {
-        Mark,
         Competition,
         Entity,
         Judge,
         SERC,
-        JudgeMarks,
         JudgeNotes,
         PreviousMarks,
         CurrentDraw,
@@ -45,26 +46,16 @@
         ExistingNotes,
     } from "@/types/base";
     import {
-        Form,
         page,
         Link,
         router,
         useHttp,
         setLayoutProps,
     } from "@inertiajs/svelte";
-    import {
-        ArrowRight,
-        Check,
-        Clipboard,
-        House,
-        LifeBuoy,
-    } from "@lucide/svelte";
-    import { onMount } from "svelte";
-    import { writable } from "svelte/store";
+    import { ArrowRight, Check, House, NotebookText } from "@lucide/svelte";
 
-    const http = useHttp<{ marks: ExisitingMarks; notes: ExistingNotes }>();
-
-    const user = $derived(page.props.auth.user);
+    // marks/notes stay as page state (derived from props), sent via transform
+    const http = useHttp().transform(() => ({ marks, notes }));
 
     let canLeaveWithoutConfirming = $state<boolean>(false);
 
@@ -76,7 +67,6 @@
         judges,
         entity,
         draw,
-        show_team_names,
         existingMarks,
         existingNotes,
     }: {
@@ -85,7 +75,6 @@
         judges: Judge[];
         entity: Entity;
         draw: CurrentDraw;
-        show_team_names: boolean;
         existingMarks: ExisitingMarks;
         existingNotes: ExistingNotes;
     } = $props();
@@ -95,6 +84,10 @@
     let notes = $derived<ExistingNotes>(existingNotes);
 
     let hasSubmitted = $state(false);
+
+    const showTeamNames = $derived(
+        competition.show_teams_to_judges || page.props.judge.isHeadRef,
+    );
 
     async function submit(e: SubmitEvent) {
         e.preventDefault();
@@ -127,8 +120,6 @@
             );
             return;
         }
-
-        http.data = () => ({ marks, notes });
 
         const req = http.post(
             storeEntityMarks({
@@ -220,93 +211,54 @@
 
 <AppHead title="{entity.name} ({serc.name})" />
 
-<section class="flex flex-col absolute top-0 left-0 w-full p-6 z-10">
-    <Link
-        href={home({ competition: competition, serc: serc })}
-        class="flex w-full justify-between items-center"
-    >
-        <div class="">
-            <h1 class="  -mb-3 normal-case! text-black! text-base!">Digital</h1>
-            <h1 class=" indent-6 normal-case! text-se text-xl!">Judge</h1>
-        </div>
-
-        <House class="bg-se/20 rounded-full text-se p-2 shadow-md " size={40} />
-    </Link>
-</section>
-
-<div class="h-16"></div>
-
-<section class="flex flex-col h-full">
+<section class="flex flex-col">
     <p class="font-archivo -mb-2">{competition.name}</p>
-    <h2 class="">{serc.name}</h2>
-    <br />
+    <h2>{serc.name}</h2>
 
-    <div class="flex item-center justify-between mb-1">
-        <p class="text-bulsca font-bold text-2xl">
-            {competition.show_teams_to_judges || page.props.judge.isHeadRef
-                ? entity.name
-                : draw.text}
-        </p>
-        {#if competition.show_teams_to_judges || page.props.judge.isHeadRef}
-            <div class="flex items-center">
-                <p
-                    class="text-sm text-gray-500 font-semibold whitespace-nowrap"
-                >
-                    {draw.text}
-                </p>
-            </div>
+    <BackLink
+        href={home({ competition, serc })}
+        label="Back to {serc.name}"
+        class="mt-2 mb-4"
+    />
+
+    <div class="flex items-end justify-between gap-3">
+        <div class="min-w-0">
+            <SectionLabel>Marking</SectionLabel>
+            <p class="font-archivo truncate text-xl font-semibold">
+                {showTeamNames ? entity.name : draw.text}
+            </p>
+        </div>
+        {#if showTeamNames}
+            <span
+                class="mb-1 shrink-0 rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-semibold whitespace-nowrap text-gray-600"
+            >
+                {draw.text}
+            </span>
         {/if}
     </div>
-
-    <div class="flex flex-col space-y-3">
-        <form onsubmit={submit} novalidate>
-            <div class="flex flex-col space-y-6">
-                {#each judges as judge (judge.id)}
-                    <JudgeMarkingPoints
-                        {judge}
-                        bind:hasSubmitted
-                        {loadPreviousMarks}
-                        bind:marks={marks[judge.id]}
-                        bind:note={notes[judge.id]}
-                    />
-                    <br />
-                {/each}
-            </div>
-
-            <br />
-
-            <div class="flex flex-row space-x-2 md:space-x-4 items-center">
-                <label for="confirm"
-                    >I acknowledge that the above results are correct and cannot
-                    be changed, and submission of this form acts as signing it
-                    digitally.
-                    <br />
-                    <small class="text-gray-500"
-                        >(Clicking the text will also check the box!)</small
-                    >
-                </label>
-                <input
-                    type="checkbox"
-                    required
-                    name=""
-                    class="min-w-5 min-h-5"
-                    id="confirm"
-                />
-            </div>
-            <br />
-
-            <Button
-                variant="success"
-                label="Submit Marks"
-                class="w-full py-2 "
-                icon={Check}
-            />
-        </form>
+    <div class="mt-2 h-1.5 overflow-hidden rounded-full bg-gray-100">
+        <div
+            class="h-full rounded-full bg-se transition-all"
+            style:width="{draw.percent}%"
+        ></div>
     </div>
-    <br />
-    <br />
-    <br />
-    <br />
+
+    <form onsubmit={submit} novalidate class="mt-4 flex flex-col gap-4">
+        {#each judges as judge (judge.id)}
+            <JudgeMarkingPoints
+                {judge}
+                bind:hasSubmitted
+                {loadPreviousMarks}
+                bind:marks={marks[judge.id]}
+                bind:note={notes[judge.id]}
+            />
+        {/each}
+
+        <SignOffCheckbox id="confirm" class="mt-2" />
+
+        <Button type="submit" label="Submit Marks" class="w-full" icon={Check} />
+    </form>
+
     <ActionStatusModal
         bind:this={modalRef}
         title="Submitting Marks"
@@ -322,8 +274,7 @@
                 class="w-full"
             >
                 <Button
-                    variant="success"
-                    class="w-full mb-0! "
+                    class="mb-0! w-full"
                     label="Continue"
                     type="button"
                     icon={ArrowRight}
@@ -339,7 +290,7 @@
             >
                 <Button
                     variant="secondary"
-                    class="w-full mb-0! py-1 "
+                    class="mb-0! w-full py-1.5"
                     label="SERC Home"
                     type="button"
                     icon={House}
@@ -350,18 +301,30 @@
 
     <GenericDialog title="Notes" bind:open={notesOpen} withX={true}>
         {#if nHttp.processing}
-            <Spinner />
+            <div class="flex justify-center py-6"><Spinner /></div>
         {:else if nHttp.response}
             {#each nHttp.response as judgeNotes}
-                <h3 class="text-black! mb-1">Notes for {judgeNotes.name}</h3>
-                <div class="space-y-2">
-                    {#each judgeNotes.notes as note}
-                        <div>
-                            <h4>{note.entity.name}</h4>
-                            <p class="indent-4">{note.note}</p>
-                        </div>
-                    {/each}
-                </div>
+                <SectionLabel class="mt-2 mb-2">
+                    Notes for {judgeNotes.name}
+                </SectionLabel>
+                {#if judgeNotes.notes.length === 0}
+                    <p class="text-sm text-gray-400 italic">No notes yet.</p>
+                {:else}
+                    <dl class="divide-y rounded-xl border bg-white">
+                        {#each judgeNotes.notes as note}
+                            <div class="p-3">
+                                <dt class="font-archivo text-sm">
+                                    {note.entity.name}
+                                </dt>
+                                <dd class="mt-0.5 text-sm text-gray-700">
+                                    {note.note}
+                                </dd>
+                            </div>
+                        {/each}
+                    </dl>
+                {/if}
+            {:else}
+                <EmptyState icon={NotebookText} title="No notes yet" />
             {/each}
         {/if}
     </GenericDialog>
@@ -372,40 +335,46 @@
         withX={true}
     >
         {#if pmHttp.processing}
-            <Spinner />
+            <div class="flex justify-center py-6"><Spinner /></div>
         {:else}
-            <div class="se-table">
-                <table>
+            <div class="max-h-[60vh] overflow-auto rounded-xl border">
+                <table class="w-full text-sm">
                     <thead>
                         <tr>
-                            <th scope="col" class="sticky top-0 left-0 bg-black"
-                                >Entry</th
+                            <th
+                                scope="col"
+                                class="sticky top-0 left-0 z-20 border-b bg-gray-50 px-3 py-2 text-left text-xs font-semibold text-gray-500"
                             >
+                                Entry
+                            </th>
                             {#each pmHttp.response as previousMarks}
-                                <th scope="col"
-                                    >{previousMarks.marking_point
-                                        .description}</th
+                                <th
+                                    scope="col"
+                                    class="sticky top-0 z-10 border-b bg-gray-50 px-3 py-2 text-left text-xs font-semibold text-gray-500"
                                 >
+                                    {previousMarks.marking_point.description}
+                                </th>
                             {/each}
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="divide-y">
                         {#each pmHttp.response?.at(0)?.marks as entityMark}
                             <tr>
                                 <th
                                     scope="row"
-                                    class="sticky top-0 left-0 bg-white"
-                                    >{entityMark.entity.name}</th
+                                    class="sticky left-0 bg-white px-3 py-2 text-left font-medium whitespace-nowrap"
                                 >
+                                    {entityMark.entity.name}
+                                </th>
 
                                 {#each pmHttp.response as previousMarks}
-                                    <td
-                                        >{previousMarks.marks.find(
+                                    <td class="px-3 py-2 font-mono">
+                                        {previousMarks.marks.find(
                                             (mark) =>
                                                 mark.entity.id ===
                                                 entityMark.entity.id,
-                                        )?.mark ?? "-"}</td
-                                    >
+                                        )?.mark ?? "–"}
+                                    </td>
                                 {/each}
                             </tr>
                         {/each}

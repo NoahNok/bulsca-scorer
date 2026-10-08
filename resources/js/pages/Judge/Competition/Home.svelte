@@ -1,7 +1,6 @@
 <script module lang="ts">
     export const layout = {
-        title: "Sign in to your account",
-        description: "Enter your email and password below to sign in",
+        title: "Competition",
     };
 </script>
 
@@ -11,24 +10,32 @@
         selectTimeHeat,
     } from "@/actions/App/Http/Controllers/DigitalJudge/Event/EventJudgeController";
 
-    import { home } from "@/actions/App/Http/Controllers/DigitalJudge/JudgeController";
     import { confirmJudge } from "@/actions/App/Http/Controllers/DigitalJudge/SERC/SERCJudgeController";
 
     import AppHead from "@/components/AppHead.svelte";
     import Button from "@/components/Button.svelte";
     import ConfirmDialog from "@/components/ConfirmDialog.svelte";
+    import EmptyState from "@/components/EmptyState.svelte";
+    import SectionLabel from "@/components/SectionLabel.svelte";
 
     import { appState } from "@/lib/stores/appState";
-    import { toastSuccess } from "@/lib/toast.svelte";
     import { index } from "@/routes/judge";
     import { submissions } from "@/routes/judge/competition/violation";
 
     import type { Competition, Event, SERC } from "@/types/base";
     import { page, Link, router, setLayoutProps } from "@inertiajs/svelte";
-    import { Check, House } from "@lucide/svelte";
-    import { slide } from "svelte/transition";
-
-    const user = $derived(page.props.auth.user);
+    import {
+        CalendarX,
+        Check,
+        ChevronRight,
+        CircleCheck,
+        CircleX,
+        ClipboardList,
+        Flag,
+        ListOrdered,
+        ShieldCheck,
+        Timer,
+    } from "@lucide/svelte";
 
     let {
         competition,
@@ -48,338 +55,148 @@
         setLayoutProps({ nav: nav });
     });
 
-    const isHead = !false;
+    const isHead = $derived(page.props.judge.isHeadRef);
+
+    type EventLink = { href: string; icon: any; label: string };
+
+    function sercLinks(serc: SERC): EventLink[] {
+        return [
+            ...serc.judges.map((judge) => ({
+                href: confirmJudge({ competition, serc, judge }).url,
+                icon: ClipboardList,
+                label: judge.name,
+            })),
+            {
+                href: submissions(competition, {
+                    query: { event: `se-${serc.id}` },
+                }).url,
+                icon: Flag,
+                label: "Issue DQ/Penalty",
+            },
+        ];
+    }
+
+    function speedLinks(speed: Event): EventLink[] {
+        return [
+            {
+                href: selectTimeHeat({ competition, event: speed }).url,
+                icon: Timer,
+                label: "Times",
+            },
+            {
+                href: selectOOFHeat({ competition, event: speed }).url,
+                icon: ListOrdered,
+                label: "Order of Finish",
+            },
+            {
+                href: submissions(competition, {
+                    query: { event: `sp-${speed.id}` },
+                }).url,
+                icon: Flag,
+                label: "Issue DQ/Penalty",
+            },
+        ];
+    }
 </script>
 
-<AppHead title="Dashboard" />
+<AppHead title={competition.name} />
 
-<section class="flex flex-col absolute top-0 left-0 w-full p-6 z-10">
-    <Link
-        href={home(competition)}
-        class="flex w-full justify-between items-center"
-    >
-        <div class="">
-            <h1 class="  -mb-3 normal-case! text-black! text-base!">Digital</h1>
-            <h1 class=" indent-6 normal-case! text-se text-xl!">Judge</h1>
+<section class="flex flex-col">
+    <p class="font-archivo -mb-2">Welcome to,</p>
+    <h2>{competition.name}</h2>
+
+    {#if sercs.length === 0 && speeds.length === 0}
+        <EmptyState
+            icon={CalendarX}
+            title="No events yet"
+            description="Events will show up here once they've been set up."
+            class="mt-4"
+        />
+    {/if}
+
+    {#if sercs.length > 0}
+        <SectionLabel class="mt-4 mb-2">SERCs</SectionLabel>
+        <div class="flex flex-col gap-5">
+            {#each sercs as serc (serc.id)}
+                {@render eventCard(serc, sercLinks(serc))}
+            {/each}
+        </div>
+    {/if}
+
+    {#if speeds.length > 0}
+        <SectionLabel class="mt-6 mb-2">Speed events</SectionLabel>
+        <div class="flex flex-col gap-5">
+            {#each speeds as speed (speed.id)}
+                {@render eventCard(speed, speedLinks(speed))}
+            {/each}
+        </div>
+    {/if}
+</section>
+
+{#snippet eventCard(event: Event, links: EventLink[])}
+    <div>
+        <div class="mb-2 flex items-center justify-between gap-3">
+            <h3 class="min-w-0 truncate text-base!">{event.name}</h3>
+            {#if isHead}
+                {#if event.completed}
+                    <span title="Event complete">
+                        <CircleCheck size={20} class="shrink-0 text-green-500" />
+                    </span>
+                {:else}
+                    <span title="Event incomplete">
+                        <CircleX size={20} class="shrink-0 text-red-500" />
+                    </span>
+                {/if}
+            {/if}
         </div>
 
-        <House class="bg-se/20 rounded-full text-se p-2 shadow-md " size={40} />
-    </Link>
-</section>
+        <div class="divide-y overflow-hidden rounded-xl border bg-white shadow-sm">
+            {#each links as link (link.href)}
+                {@render row(link)}
+            {/each}
 
-<div class="h-16"></div>
-
-<section class="flex flex-col h-full">
-    <p class="font-archivo -mb-2">Welcome to,</p>
-    <h2 class="">{competition.name}</h2>
-    <br />
-
-    <div class="flex flex-col space-y-3">
-        {#each sercs as serc}
-            <div class="mb-5">
-                {#if isHead}
-                    <div class="flex items-center justify-between space-x-3">
-                        <h3>{serc.name}</h3>
-
-                        {#if serc.completed}
-                            <span
-                                class="tooltip-left mr-1"
-                                title="Event Complete"
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="currentColor"
-                                    class="size-6 text-green-500"
-                                >
-                                    <path
-                                        fill-rule="evenodd"
-                                        d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
-                                        clip-rule="evenodd"
-                                    />
-                                </svg>
-                            </span>
-                        {:else}
-                            <span
-                                class="tooltip-left mr-1"
-                                title="Event Incomplete"
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="currentColor"
-                                    class="size-6 text-red-500"
-                                >
-                                    <path
-                                        fill-rule="evenodd"
-                                        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z"
-                                        clip-rule="evenodd"
-                                    />
-                                </svg>
-                            </span>
-                        {/if}
-                    </div>
-                {:else}
-                    <h3>{serc.name}</h3>
-                {/if}
-
-                {#each serc.judges as judge}
-                    <Link
-                        href={confirmJudge({
-                            competition: competition,
-                            serc: serc,
-                            judge: judge,
-                        })}
-                        class="flex items-center
-                    cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1"
+            {#if isHead && !event.confirmed}
+                <!-- TODO: wire up result confirmation -->
+                <div class="flex items-center gap-3 bg-se/5 px-3 py-2">
+                    <span
+                        class="flex size-8 shrink-0 items-center justify-center rounded-md bg-se/20 text-teal-700"
                     >
-                        <p class="font-archivo">{judge.name}</p>
+                        <ShieldCheck size={16} />
+                    </span>
+                    <span class="font-archivo flex-1 text-sm">Confirm Results</span>
+                    <span class="text-xs text-gray-400">Coming soon</span>
+                </div>
+            {/if}
+        </div>
 
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke-width="1.5"
-                            stroke="currentColor"
-                            class="ml-auto size-4 group-hover:text-se transition-all group-hover:stroke-3"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="m8.25 4.5 7.5 7.5-7.5 7.5"
-                            ></path>
-                        </svg>
-                    </Link>
-                {/each}
-
-                <Link
-                    href={submissions(competition, {
-                        query: { event: `se-${serc.id}` },
-                    })}
-                    class="flex items-center
-                    cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1"
-                >
-                    <p class="font-archivo">Issue DQ/Penalty</p>
-
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke-width="1.5"
-                        stroke="currentColor"
-                        class="ml-auto size-4 group-hover:text-se transition-all group-hover:stroke-3"
-                    >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M10.05 4.575a1.575 1.575 0 1 0-3.15 0v3m3.15-3v-1.5a1.575 1.575 0 0 1 3.15 0v1.5m-3.15 0 .075 5.925m3.075.75V4.575m0 0a1.575 1.575 0 0 1 3.15 0V15M6.9 7.575a1.575 1.575 0 1 0-3.15 0v8.175a6.75 6.75 0 0 0 6.75 6.75h2.018a5.25 5.25 0 0 0 3.712-1.538l1.732-1.732a5.25 5.25 0 0 0 1.538-3.712l.003-2.024a.668.668 0 0 1 .198-.471 1.575 1.575 0 1 0-2.228-2.228 3.818 3.818 0 0 0-1.12 2.687M6.9 7.575V12m6.27 4.318A4.49 4.49 0 0 1 16.35 15m.002 0h-.002"
-                        />
-                    </svg>
-                </Link>
-
-                {#if isHead}
-                    <hr class="spacer" />
-                    {#if serc.confirmed}
-                        <Button
-                            label="Confirmed"
-                            variant="success"
-                            icon={Check}
-                            class="w-full py-1 px-2 pointer-events-none"
-                        />
-                    {:else}
-                        <a
-                            href="#confirm-route"
-                            onclick={() => toastSuccess("test")}
-                            class="flex items-center
-                    cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1"
-                        >
-                            <p class="font-archivo">Confirm Results</p>
-
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke-width="1.5"
-                                stroke="currentColor"
-                                class="ml-auto size-4 group-hover:text-se transition-all group-hover:stroke-3"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-                                />
-                            </svg>
-                        </a>
-                    {/if}
-                {/if}
-            </div>
-        {/each}
-
-        <hr class="spacer !mt-2" />
-        <br />
-
-        {#each speeds as speed}
-            <div class="mb-5">
-                {#if isHead}
-                    <div class="flex items-center justify-between space-x-3">
-                        <h3>{speed.name}</h3>
-
-                        {#if speed.completed}
-                            <span
-                                class="tooltip-left pr-1"
-                                title="Event Complete"
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="currentColor"
-                                    class="size-6 text-green-500"
-                                >
-                                    <path
-                                        fill-rule="evenodd"
-                                        d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
-                                        clip-rule="evenodd"
-                                    />
-                                </svg>
-                            </span>
-                        {:else}
-                            <span
-                                class="tooltip-left pr-1"
-                                title="Event Incomplete"
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="currentColor"
-                                    class="size-6 text-red-500"
-                                >
-                                    <path
-                                        fill-rule="evenodd"
-                                        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z"
-                                        clip-rule="evenodd"
-                                    />
-                                </svg>
-                            </span>
-                        {/if}
-                    </div>
-                {:else}
-                    <h3>{speed.name}</h3>
-                {/if}
-
-                <Link
-                    href={selectTimeHeat({
-                        competition: competition,
-                        event: speed,
-                    })}
-                    class="flex items-center
-                    cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1"
-                >
-                    <p class="font-archivo">Times</p>
-
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke-width="1.5"
-                        stroke="currentColor"
-                        class="ml-auto size-4 group-hover:text-se transition-all group-hover:stroke-3"
-                    >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="m8.25 4.5 7.5 7.5-7.5 7.5"
-                        ></path>
-                    </svg>
-                </Link>
-
-                <Link
-                    href={selectOOFHeat({
-                        competition: competition,
-                        event: speed,
-                    })}
-                    class="flex items-center
-                    cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1"
-                >
-                    <p class="font-archivo">Order of Finish</p>
-
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke-width="1.5"
-                        stroke="currentColor"
-                        class="ml-auto size-4 group-hover:text-se transition-all group-hover:stroke-3"
-                    >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="m8.25 4.5 7.5 7.5-7.5 7.5"
-                        ></path>
-                    </svg>
-                </Link>
-
-                <Link
-                    href={submissions(competition, {
-                        query: { event: `sp-${speed.id}` },
-                    })}
-                    class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1"
-                >
-                    <p class="font-archivo">Issue DQ/Penalty</p>
-
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke-width="1.5"
-                        stroke="currentColor"
-                        class="ml-auto size-4 group-hover:text-se transition-all group-hover:stroke-3"
-                    >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M10.05 4.575a1.575 1.575 0 1 0-3.15 0v3m3.15-3v-1.5a1.575 1.575 0 0 1 3.15 0v1.5m-3.15 0 .075 5.925m3.075.75V4.575m0 0a1.575 1.575 0 0 1 3.15 0V15M6.9 7.575a1.575 1.575 0 1 0-3.15 0v8.175a6.75 6.75 0 0 0 6.75 6.75h2.018a5.25 5.25 0 0 0 3.712-1.538l1.732-1.732a5.25 5.25 0 0 0 1.538-3.712l.003-2.024a.668.668 0 0 1 .198-.471 1.575 1.575 0 1 0-2.228-2.228 3.818 3.818 0 0 0-1.12 2.687M6.9 7.575V12m6.27 4.318A4.49 4.49 0 0 1 16.35 15m.002 0h-.002"
-                        />
-                    </svg>
-                </Link>
-
-                {#if isHead}
-                    <hr class="spacer" />
-                    {#if speed.confirmed}
-                        <Button
-                            label="Confirmed"
-                            variant="success"
-                            icon={Check}
-                            class="w-full py-1 px-2 pointer-events-none"
-                        />
-                    {:else}
-                        <a
-                            href="#confirm-speed"
-                            class="flex items-center
-                    cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1"
-                        >
-                            <p class="font-archivo">Confirm Results</p>
-
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke-width="1.5"
-                                stroke="currentColor"
-                                class="ml-auto size-4 group-hover:text-se transition-all group-hover:stroke-3"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-                                />
-                            </svg>
-                        </a>
-                    {/if}
-                {/if}
-            </div>
-        {/each}
+        {#if isHead && event.confirmed}
+            <Button
+                label="Confirmed"
+                variant="success"
+                icon={Check}
+                class="pointer-events-none mt-2 w-full px-2 py-1"
+            />
+        {/if}
     </div>
-</section>
+{/snippet}
+
+{#snippet row({ href, icon: Icon, label }: EventLink)}
+    <Link
+        {href}
+        class="group flex w-full items-center gap-3 px-3 py-2 text-left transition-colors hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-se focus-visible:ring-inset"
+    >
+        <span
+            class="flex size-8 shrink-0 items-center justify-center rounded-md bg-gray-100 text-gray-600 transition-colors group-hover:bg-se/20 group-hover:text-teal-700"
+        >
+            <Icon size={16} />
+        </span>
+        <span class="font-archivo min-w-0 flex-1 truncate text-sm">{label}</span>
+        <ChevronRight
+            size={18}
+            class="shrink-0 text-gray-300 transition-all group-hover:translate-x-0.5 group-hover:text-se"
+        />
+    </Link>
+{/snippet}
 
 {#snippet nav()}
     <div class="mr-auto">

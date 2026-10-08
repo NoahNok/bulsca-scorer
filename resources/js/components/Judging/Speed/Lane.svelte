@@ -1,8 +1,6 @@
 <script lang="ts">
-    import type { Lane, Mark } from "@/types/base";
-    import { useFormContext } from "@inertiajs/svelte";
+    import type { Lane } from "@/types/base";
     import { maska } from "maska/svelte";
-    import { Exception } from "sass";
 
     let {
         lane,
@@ -30,43 +28,45 @@
     }
 </script>
 
-<tr class=" ">
+<div class="flex items-center gap-3 px-3 py-2">
+    <span
+        class="flex size-7 shrink-0 items-center justify-center rounded-md bg-gray-100 text-xs font-semibold text-gray-600"
+    >
+        {typeof lane === "number" ? lane : lane.lane}
+    </span>
+
     {#if typeof lane === "number"}
-        <td class="p-2 sticky left-0 bg-white">
-            {lane}
-        </td>
-        <td class="border-r p-2 pr-8 bg-white"></td>
+        <span class="flex-1 text-sm text-gray-400 italic">Empty lane</span>
     {:else}
-        <td class="p-2 sticky left-0 bg-white">
-            {lane.lane}
-        </td>
-        <td
-            class="p-2 pr-6 border-r whitespace-nowrap hover:max-w-none bg-white max-w-[200px] overflow-hidden text-ellipsis"
-        >
+        <span class="min-w-0 flex-1 truncate text-sm font-medium text-gray-900">
             {lane.entity.name}
-        </td>
-        <td>
-            <input
-                class="p-2 px-4"
-                type="text"
-                placeholder="Ropes In OR 00:00.00"
-                bind:value={times[lane.entity.id]}
-                name={`mark[${lane.entity.id}]`}
-                use:maska={{
-                    mask: (input: string) => {
-                        const upper = input.toUpperCase();
+        </span>
+        <input
+            class="w-32 shrink-0 rounded-lg border border-gray-300 bg-white px-3 py-2 text-right font-mono text-sm text-gray-900 shadow-xs transition-all placeholder:text-gray-400 hover:border-gray-400 focus:border-se focus:ring-2 focus:ring-se/20 focus:outline-none user-invalid:border-red-400"
+            type="text"
+            aria-label="Result for lane {lane.lane}"
+            placeholder={allowSingleDigit ? "0–3 / time" : "00:00.00"}
+            bind:value={times[lane.entity.id]}
+            name={`mark[${lane.entity.id}]`}
+            use:maska={{
+                mask: (input: string) => {
+                    const upper = input.toUpperCase();
 
-                        if (upper.startsWith("D")) return "DNF";
-                        if (upper.startsWith("O")) return "OOT";
+                    if (upper.startsWith("D")) return "DNF";
+                    if (upper.startsWith("O")) return "OOT";
 
-                        return "99:59.99";
-                    },
-                    eager: true,
-                }}
-                data-maska-tokens="5:[0-5]|9:[0-9]|F:[S,F]"
-                oninput={(e) => validate(e.target as HTMLInputElement)}
-                required
-            />
-        </td>
+                    return "99:59.99";
+                },
+                tokens: {
+                    "5": { pattern: /[0-5]/ },
+                    "9": { pattern: /[0-9]/ },
+                    // last letter of DNF/DNS, upper-cased so it can be typed in lower case
+                    F: { pattern: /[SF]/i, transform: (c) => c.toUpperCase() },
+                },
+                eager: true,
+            }}
+            oninput={(e) => validate(e.target as HTMLInputElement)}
+            required
+        />
     {/if}
-</tr>
+</div>

@@ -80,21 +80,26 @@
 
         return value === null || value === undefined;
     });
+
+    const optionClass =
+        "flex h-10 w-full cursor-pointer items-center justify-center rounded-lg border bg-white font-mono text-sm font-semibold text-gray-700 transition-colors hover:border-gray-400 peer-checked:border-se peer-checked:bg-se peer-checked:text-white peer-focus-visible:ring-2 peer-focus-visible:ring-se/40";
 </script>
 
 <div
-    class="flex flex-col space-y-2 border-b pb-4 {isInvalid
-        ? 'outline-2 outline-offset-4 outline-red-500 rounded-md'
+    class="flex flex-col gap-2 py-3 {isInvalid
+        ? '-mx-2 rounded-lg bg-red-50 px-2 outline-2 outline-red-400'
         : ''}"
 >
-    <div class="flex justify-between items-center">
-        <p>{marking_point.description}</p>
+    <div class="relative flex items-center justify-between gap-3">
+        <p class="text-sm font-medium text-gray-900">
+            {marking_point.description}
+        </p>
 
         {#if settings.mode == "default" && settings.min <= 0 && settings.max >= 0}
             <input
                 type="radio"
                 required
-                class="w-0 h-0 peer"
+                class="peer sr-only"
                 value={0}
                 id="mp-{marking_point.id}-0"
                 name="mp-{marking_point.id}"
@@ -102,20 +107,21 @@
             />
             <label
                 for="mp-{marking_point.id}-0"
-                class="  flex items-center justify-center px-4 py-0.5 font-semibold rounded-xs bg-gray-200 text-xs peer-checked:bg-bulsca_red peer-checked:text-white"
+                class="shrink-0 cursor-pointer rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600 transition-colors peer-checked:bg-red-600 peer-checked:text-white peer-focus-visible:ring-2 peer-focus-visible:ring-red-300"
             >
                 ZERO
             </label>
         {/if}
     </div>
+
     {#if settings.mode === "default"}
-        <div class="grid grid-cols-5 gap-2 gap-y-4">
+        <div class="grid grid-cols-5 gap-x-2 gap-y-1.5">
             {#each markOptions as markOption}
-                <div class="flex items-center justify-center">
+                <div class="relative">
                     <input
                         type="radio"
                         required
-                        class="w-0 h-0 peer"
+                        class="peer sr-only"
                         value={markOption}
                         name="mp-{marking_point.id}"
                         bind:group={value}
@@ -123,7 +129,7 @@
                     />
                     <label
                         for="mp-{marking_point.id}-{markOption}"
-                        class="w-6 h-6 flex items-center justify-center p-4 font-semibold font-mono rounded-md bg-gray-200 text-sm peer-checked:bg-bulsca peer-checked:text-white"
+                        class={optionClass}
                     >
                         {markOption}
                     </label>
@@ -132,52 +138,48 @@
         </div>
 
         {#if settings.use_toggle_for_half}
-            <div class="flex items-center justify-center mt-2">
+            <div class="flex justify-center">
                 <button
                     type="button"
-                    class="badge font-mono! text-black! {half_open
-                        ? 'bg-bulsca! text-white!'
-                        : 'bg-gray-200!'}"
+                    aria-pressed={half_open}
+                    class="cursor-pointer rounded-full px-3 py-1 font-mono text-xs font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-se {half_open
+                        ? 'bg-black text-white'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}"
                     onclick={() => (half_open = !half_open)}
                 >
-                    Toggle Half Marks</button
-                >
+                    Half marks
+                </button>
             </div>
         {/if}
 
         {#if marking_point.stats}
-            <div class="text-gray-500 pt-2 flex justify-between">
-                <small>Min: {marking_point.stats.min}</small><small
-                    >Avg: {marking_point.stats.avg}</small
-                ><small
-                    >Max:
-                    {marking_point.stats.max}</small
-                >
+            <div class="flex justify-between text-xs text-gray-400">
+                <span>Min: {marking_point.stats.min}</span>
+                <span>Avg: {marking_point.stats.avg}</span>
+                <span>Max: {marking_point.stats.max}</span>
             </div>
         {/if}
     {/if}
 
     {#if settings.mode === "choice"}
-        <div class="grid gap-2 gap-y-4 {choiceColsClass}">
+        <div class="grid gap-x-2 gap-y-1.5 {choiceColsClass}">
             {#each settings.choice as choice, index}
-                <div class="flex items-center justify-center">
-                    <div class="flex items-center justify-center">
-                        <input
-                            type="radio"
-                            required
-                            class="w-0 h-0 peer"
-                            value={choice.value}
-                            name="mp-{marking_point.id}"
-                            bind:group={value}
-                            id="mp-{marking_point.id}-choice-{index}"
-                        />
-                        <label
-                            for="mp-{marking_point.id}-choice-{index}"
-                            class=" h-6 flex items-center justify-center p-4 font-semibold font-mono rounded-md bg-gray-200 text-sm peer-checked:bg-bulsca peer-checked:text-white"
-                        >
-                            {choice.label}
-                        </label>
-                    </div>
+                <div class="relative">
+                    <input
+                        type="radio"
+                        required
+                        class="peer sr-only"
+                        value={choice.value}
+                        name="mp-{marking_point.id}"
+                        bind:group={value}
+                        id="mp-{marking_point.id}-choice-{index}"
+                    />
+                    <label
+                        for="mp-{marking_point.id}-choice-{index}"
+                        class="{optionClass} px-3"
+                    >
+                        {choice.label}
+                    </label>
                 </div>
             {/each}
         </div>

@@ -1,5 +1,6 @@
 
 import { createInertiaApp } from "@inertiajs/svelte";
+import JudgeHeaderLayout from "./layout/JudgeHeaderLayout.svelte";
 import JudgeLayout from "./layout/JudgeLayout.svelte";
 //import "./bootstrap";
 
@@ -14,7 +15,11 @@ const appName = "DigitalJudge";
 createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
     layout: (name) => {
-        return [JudgeLayout]
+        if (name.startsWith("Judge/")) {
+            return [JudgeLayout, JudgeHeaderLayout];
+        }
+
+        return [JudgeLayout];
     },
 })
 

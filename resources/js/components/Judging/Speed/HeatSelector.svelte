@@ -2,25 +2,14 @@
     lang="ts"
     generics="THref extends (...args: any[]) => { url: string; method: 'get' }"
 >
-    import { markTime } from "@/actions/App/Http/Controllers/DigitalJudge/Event/EventJudgeController";
-
-    import {
-        index,
-        home,
-    } from "@/actions/App/Http/Controllers/DigitalJudge/JudgeController";
-    import { setTank } from "@/actions/App/Http/Controllers/DigitalJudge/SERC/SERCJudgeController";
-
-    import AppHead from "@/components/AppHead.svelte";
-    import Button from "@/components/Button.svelte";
-    import ConditionalLink from "@/components/ConditionalLink.svelte";
-
-    import { appState } from "@/lib/stores/appState";
+    import NumberedList from "@/components/NumberedList/NumberedList.svelte";
+    import NumberedListItem from "@/components/NumberedList/NumberedListItem.svelte";
     import { toastInfo } from "@/lib/toast.svelte";
 
-    import type { Competition, Event, Heat } from "@/types/base";
+    import type { Heat } from "@/types/base";
 
-    import { page, Link } from "@inertiajs/svelte";
-    import { ArrowRight, Check, House } from "@lucide/svelte";
+    import { page } from "@inertiajs/svelte";
+    import { Check } from "@lucide/svelte";
 
     type HeatRouteParams = Extract<
         Parameters<THref>[0],
@@ -42,22 +31,26 @@
     }
 </script>
 
-<div class="flex flex-col space-y-3 w-full">
-    {#each heats as heat}
-        <ConditionalLink
-            condition={canHeatBeSelected(heat)}
-            href={href({ ...params, heat: heat.heat })}
-            ><Button
-                label="Heat {heat.heat}"
-                variant={!canHeatBeSelected(heat) ? "success" : "primary"}
-                icon={!canHeatBeSelected(heat) ? Check : ArrowRight}
-                class="w-full {!canHeatBeSelected(heat) &&
-                    'cursor-not-allowed!'} "
-                onclick={() => {
-                    !canHeatBeSelected(heat) &&
-                        toastInfo("This heat is already complete");
-                }}
-            />
-        </ConditionalLink>
+<NumberedList>
+    {#each heats as heat (heat.heat)}
+        <NumberedListItem
+            number={heat.heat}
+            href={canHeatBeSelected(heat)
+                ? href({ ...params, heat: heat.heat })
+                : undefined}
+            onclick={() => toastInfo("This heat is already complete")}
+            class={canHeatBeSelected(heat) ? "" : "opacity-60"}
+        >
+            <span class="font-medium text-gray-900">Heat {heat.heat}</span>
+            {#snippet trailing()}
+                {#if heat.complete}
+                    <span
+                        class="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-700 ring-1 ring-green-300 ring-inset"
+                    >
+                        <Check size={12} strokeWidth={3} /> Complete
+                    </span>
+                {/if}
+            {/snippet}
+        </NumberedListItem>
     {/each}
-</div>
+</NumberedList>

@@ -203,14 +203,17 @@ class EventJudgeController extends Controller
 
 
         foreach ($data as $res) {
-            if (!array_key_exists('oof', $res) || !is_numeric($res['oof'])) continue;
-
-
-
             // This will exist as the request validator ensures it will
             $entity = $event->getScorableEntity()::find($res['entity']['id']);
 
             $heatlane = $event->getHeats()->whereMorphedTo('entity', $entity)->first();
+
+            // A lane sent without a place has been cleared, so drop any place
+            // saved previously rather than keeping it alongside the new ones
+            if (!isset($res['oof']) || !is_numeric($res['oof'])) {
+                EventOOF::where(['heat_lane' => $heatlane->id, 'event' => $event->id])->delete();
+                continue;
+            }
 
             $eOof = EventOOF::firstOrNew(['heat_lane' => $heatlane->id, 'event' => $event->id]);
 

@@ -1,9 +1,17 @@
+<script module lang="ts">
+    import { FingerprintPattern } from "@lucide/svelte";
+
+    export const layout = {
+        header: { icon: FingerprintPattern, overlay: true },
+    };
+</script>
+
 <script lang="ts">
     import { loginPost } from "@/actions/App/Http/Controllers/DigitalJudge/JudgeController";
     import AppHead from "@/components/AppHead.svelte";
     import Input from "@/components/input.svelte";
     import { Form } from "@inertiajs/svelte";
-    import { ArrowRight, FingerprintPattern } from "@lucide/svelte";
+    import { ArrowRight } from "@lucide/svelte";
     import { fade, slide } from "svelte/transition";
 
     type LoginStage = "email" | "pin";
@@ -20,20 +28,6 @@
 </script>
 
 <AppHead title="Sign in" />
-
-<section class="flex flex-col fixed top-0 left-0 w-full p-6 z-10">
-    <div class="flex w-full justify-between items-center">
-        <div class="">
-            <h1 class="  -mb-3 normal-case! text-black! text-base!">Digital</h1>
-            <h1 class=" indent-6 normal-case! text-se text-xl!">Judge</h1>
-        </div>
-
-        <FingerprintPattern
-            class="bg-se/20 rounded-full text-se p-1.5  shadow-md "
-            size={40}
-        />
-    </div>
-</section>
 
 <section class="flex flex-col items-center h-full justify-center -mt-6!">
     <div class="my-12! flex flex-col items-center space-y-3 relative">

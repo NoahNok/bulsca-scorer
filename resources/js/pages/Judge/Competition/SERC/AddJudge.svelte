@@ -1,38 +1,27 @@
 <script module lang="ts">
-    export const layout = {
-        title: "Confirm Judge",
-    };
+    import { home as sercHome } from "@/actions/App/Http/Controllers/DigitalJudge/SERC/SERCJudgeController";
+    import { LifeBuoy } from "@lucide/svelte";
+
+    export const layout = (props: Record<string, any>) => ({
+        title: "Add Judge",
+        header: {
+            icon: LifeBuoy,
+            href: sercHome({ competition: props.competition, serc: props.serc }),
+        },
+    });
 </script>
 
 <script lang="ts">
-    import {
-        index,
-        home,
-    } from "@/actions/App/Http/Controllers/DigitalJudge/JudgeController";
-    import {
-        attachJudge,
-        home as sercHome,
-    } from "@/actions/App/Http/Controllers/DigitalJudge/SERC/SERCJudgeController";
+    import { attachJudge } from "@/actions/App/Http/Controllers/DigitalJudge/SERC/SERCJudgeController";
 
     import AppHead from "@/components/AppHead.svelte";
-    import Button from "@/components/Button.svelte";
+    import BackLink from "@/components/BackLink.svelte";
+    import EmptyState from "@/components/EmptyState.svelte";
+    import SectionLabel from "@/components/SectionLabel.svelte";
 
-    import { appState } from "@/lib/stores/appState";
-
-    import type { Competition, Draw, Judge, SERC } from "@/types/base";
-    import { Form, page, Link } from "@inertiajs/svelte";
-    import {
-        ArrowRight,
-        Check,
-        Clipboard,
-        Info,
-        LifeBuoy,
-        Plus,
-        Shuffle,
-    } from "@lucide/svelte";
-    import { Label } from "bits-ui";
-
-    const user = $derived(page.props.auth.user);
+    import type { Competition, Judge, SERC } from "@/types/base";
+    import { Link } from "@inertiajs/svelte";
+    import { ClipboardList, Plus, Shuffle } from "@lucide/svelte";
 
     let {
         competition,
@@ -46,91 +35,66 @@
         swap: boolean;
     } = $props();
 
-    const showDraw = false;
-    const isHead = false;
+    const ActionIcon = $derived(swap ? Shuffle : Plus);
 </script>
 
-<AppHead title="Dashboard" />
+<AppHead
+    title="{swap ? 'Swap' : 'Add'} Judge - {serc.name} - {competition.name}"
+/>
 
-<section class="flex flex-col absolute top-0 left-0 w-full p-6 z-10">
-    <Link
-        href={sercHome({ competition: competition, serc: serc })}
-        class="flex w-full justify-between items-center"
-    >
-        <div class="">
-            <h1 class="  -mb-3 normal-case! text-black! text-base!">Digital</h1>
-            <h1 class=" indent-6 normal-case! text-se text-xl!">Judge</h1>
-        </div>
-
-        <LifeBuoy
-            class="bg-se/20 rounded-full text-se p-2 shadow-md "
-            size={40}
-        />
-    </Link>
-</section>
-
-<div class="h-16"></div>
-
-<section class="flex flex-col h-full">
+<section class="flex flex-col">
     <p class="font-archivo -mb-2">{competition.name}</p>
-    <h2 class="">{serc.name}</h2>
+    <h2>{serc.name}</h2>
 
-    <br />
+    <BackLink
+        href={sercHome({ competition, serc })}
+        label="Back to {serc.name}"
+        class="mt-2 mb-4"
+    />
 
-    <div class="flex flex-col space-y-3">
-        <p class="font-archivo -mb-2">
-            {swap ? "Swap" : "Add"} Casualty/Objective
-        </p>
+    <SectionLabel class="mb-1">
+        {swap ? "Swap" : "Add"} casualty/objective
+    </SectionLabel>
+    <p class="mb-3 text-sm text-gray-500">
+        {swap
+            ? "Pick the casualty or objective to judge instead."
+            : "Pick another casualty or objective to judge alongside yours."}
+    </p>
 
-        <br />
-        <div class="space-y-2 w-full">
-            {#each judges as judge}
+    {#if judges.length === 0}
+        <EmptyState
+            icon={ClipboardList}
+            title="Nothing else to add"
+            description="You're already judging every casualty and objective."
+        />
+    {:else}
+        <div class="flex flex-col gap-2">
+            {#each judges as judge (judge.id)}
                 <Link
                     href={attachJudge(
-                        {
-                            competition: competition,
-                            serc: serc,
-                            judge: judge,
-                        },
-                        {
-                            query: swap
-                                ? {
-                                      swap: true,
-                                  }
-                                : undefined,
-                        },
+                        { competition, serc, judge },
+                        { query: swap ? { swap: true } : undefined },
                     )}
+                    class="group flex items-center gap-3 rounded-xl border bg-white p-3 shadow-sm transition-all hover:border-se hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-se"
                 >
-                    <div
-                        class="border rounded-lg shadow-md p-4 group-hover:border-se focus:ring-1 focus:outline-none transition-all w-full"
+                    <span
+                        class="flex size-8 shrink-0 items-center justify-center rounded-md bg-gray-100 text-gray-600"
                     >
-                        <div class="flex items-center justify-between">
-                            <div class="text-left">
-                                <h3>{judge.name}</h3>
-                                <p>{judge.no_marking_points} marking points</p>
-                            </div>
-
-                            {#if swap}
-                                <Shuffle
-                                    size={40}
-                                    class="bg-se/20 rounded-md text-se p-2 shadow-md"
-                                />
-                            {:else}
-                                <Plus
-                                    size={40}
-                                    class="bg-se/20 rounded-md text-se p-2 shadow-md"
-                                />
-                            {/if}
-                        </div>
+                        <ClipboardList size={16} />
+                    </span>
+                    <div class="min-w-0 flex-1">
+                        <p class="font-archivo truncate text-sm">{judge.name}</p>
+                        <p class="text-xs text-gray-500">
+                            {judge.no_marking_points} marking points
+                        </p>
                     </div>
+                    <span
+                        class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-se/10 text-teal-700 transition-colors group-hover:bg-se group-hover:text-white"
+                    >
+                        <ActionIcon size={16} />
+                    </span>
                 </Link>
-            {:else}
-                <p>No other casualties/objectives to add.</p>
             {/each}
         </div>
-
-        <Link href={sercHome({ competition: competition, serc: serc })}
-            ><Button label="Back" variant="danger" class="w-full py-1!" /></Link
-        >
-    </div>
+    {/if}
 </section>

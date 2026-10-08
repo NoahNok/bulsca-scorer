@@ -139,7 +139,7 @@ export type Lane = {
 }
 
 export type OOFLane = Lane & {
-    oof?: number
+    oof?: number | null
 }
 
 export type OOFHeat = Omit<Heat, 'lanes'> & {

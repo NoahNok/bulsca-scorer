@@ -1,36 +1,45 @@
 <script module lang="ts">
+    import { LifeBuoy } from "@lucide/svelte";
+
     export const layout = {
-        title: "Confirm Judge",
+        title: "SERC",
+        header: { icon: LifeBuoy, href: null },
     };
 </script>
 
 <script lang="ts">
+    import { home } from "@/actions/App/Http/Controllers/DigitalJudge/JudgeController";
     import {
         addJudge,
         detachJudge,
         markEntity,
         nextEntityToMark,
+        selectTank,
         storeOverallNotes,
     } from "@/actions/App/Http/Controllers/DigitalJudge/SERC/SERCJudgeController";
 
     import AppHead from "@/components/AppHead.svelte";
+    import BackLink from "@/components/BackLink.svelte";
     import Button from "@/components/Button.svelte";
     import GenericDialog from "@/components/GenericDialog.svelte";
+    import Input from "@/components/input.svelte";
+    import NumberedList from "@/components/NumberedList/NumberedList.svelte";
+    import NumberedListItem from "@/components/NumberedList/NumberedListItem.svelte";
+    import SectionLabel from "@/components/SectionLabel.svelte";
 
     import type { Competition, Draw, Judge, SERC } from "@/types/base";
     import { FlashActionType } from "@/types/flash";
     import { page, Link, Form } from "@inertiajs/svelte";
     import {
         ArrowRight,
+        ClipboardList,
+        EyeOff,
         Info,
-        LifeBuoy,
         Plus,
         Save,
         Shuffle,
         X,
     } from "@lucide/svelte";
-
-    const user = $derived(page.props.auth.user);
 
     let {
         competition,
@@ -38,169 +47,153 @@
         judges,
         tank,
         draws,
-        show_team_names,
     }: {
         competition: Competition;
         serc: SERC;
         judges: Judge[];
         tank?: number;
         draws?: Draw[];
-        show_team_names: boolean;
     } = $props();
+
+    const isHead = $derived(page.props.judge.isHeadRef);
+    const showTeamNames = $derived(
+        competition.show_teams_to_judges || isHead,
+    );
 
     let isOverallNotesModalOpen = $state<boolean>(
         page.flash.action?.type == FlashActionType.OVERALL_NOTES,
     );
+    let overallNote = $state<string>(page.flash.action?.data ?? "");
 </script>
 
-<AppHead title="Dashboard" />
+<AppHead title="{serc.name} - {competition.name}" />
 
-<section class="flex flex-col absolute top-0 left-0 w-full p-6 z-10">
-    <span class="flex w-full justify-between items-center">
-        <div class="">
-            <h1 class="  -mb-3 normal-case! text-black! text-base!">Digital</h1>
-            <h1 class=" indent-6 normal-case! text-se text-xl!">Judge</h1>
-        </div>
-
-        <LifeBuoy
-            class="bg-se/20 rounded-full text-se p-2 shadow-md "
-            size={40}
-        />
-    </span>
-</section>
-
-<div class="h-16"></div>
-
-<section class="flex flex-col h-full">
+<section class="flex flex-col">
     <p class="font-archivo -mb-2">{competition.name}</p>
-    <h2 class="">{serc.name}</h2>
+    <h2>{serc.name}</h2>
 
-    <br />
-
-    <div class="flex flex-col space-y-3">
-        <div class="space-y-2 w-full">
-            {#each judges as judge, index}
-                <div
-                    class="border rounded-lg shadow-md p-4 group-hover:border-se focus:ring-1 focus:outline-none transition-all w-full"
-                >
-                    <div class="flex items-center justify-between">
-                        <div class="text-left">
-                            <h3>{judge.name}</h3>
-                            <p>{judge.marking_points?.length} marking points</p>
-                        </div>
-
-                        {#if judges.length == 1}
-                            <Link
-                                href={addJudge(
-                                    { competition: competition, serc: serc },
-                                    {
-                                        query: {
-                                            swap: true,
-                                        },
-                                    },
-                                )}
-                            >
-                                <Shuffle
-                                    size={40}
-                                    class="bg-se/20 rounded-md text-se p-2 shadow-md"
-                                />
-                            </Link>
-                        {:else}
-                            <Link
-                                only={["judges"]}
-                                href={detachJudge({
-                                    competition: competition,
-                                    serc: serc,
-                                    judge: judge,
-                                })}
-                            >
-                                <X
-                                    size={40}
-                                    class="bg-red-500/20 rounded-md text-red-500 p-2 shadow-md"
-                                />
-                            </Link>
-                        {/if}
-                    </div>
-                </div>
-            {/each}
-        </div>
-
-        <Link href={addJudge({ competition: competition, serc: serc })}>
-            <Button
-                label="Add Casualty/Objective"
-                variant="secondary"
-                icon={Plus}
-                class="w-full"
-            />
-        </Link>
-
-        <hr class="spacer mb-4!" />
-
-        <Link href={nextEntityToMark({ competition: competition, serc: serc })}>
-            <Button
-                variant="success"
-                icon={ArrowRight}
-                label={`Start Judging ${tank ? "Tank " + tank : ""}`}
-                class="w-full"
-            />
-        </Link>
-
-        <Button
-            label="Tutorial"
-            icon={Info}
-            variant="secondary"
-            class="w-full py-1"
+    {#if tank}
+        <BackLink
+            href={selectTank({ competition, serc })}
+            label="Change tank"
+            class="mt-2 mb-4"
         />
+    {:else}
+        <BackLink href={home(competition)} label="All events" class="mt-2 mb-4" />
+    {/if}
 
-        <hr class="spacer mb-3!" />
+    <SectionLabel class="mb-2">Judging · {judges.length}</SectionLabel>
+    <div class="divide-y overflow-hidden rounded-xl border bg-white shadow-sm">
+        {#each judges as judge (judge.id)}
+            <div class="flex items-center gap-3 px-3 py-2.5">
+                <span
+                    class="flex size-8 shrink-0 items-center justify-center rounded-md bg-gray-100 text-gray-600"
+                >
+                    <ClipboardList size={16} />
+                </span>
+                <div class="min-w-0 flex-1">
+                    <p class="font-archivo truncate text-sm">{judge.name}</p>
+                    <p class="text-xs text-gray-500">
+                        {judge.marking_points?.length} marking points
+                    </p>
+                </div>
 
-        <h4>
-            {#if tank}
-                Tank {tank}
-            {/if} Order
-        </h4>
-
-        {#if show_team_names || page.props.judge.isHeadRef}
-            <ul class=" list-none -mt-2 w-full">
-                {#each draws as draw}
-                    {#if page.props.judge.isHeadRef}
-                        <li class=" ">
-                            <Link
-                                href={markEntity({
-                                    competition: competition,
-                                    serc: serc,
-                                    entity_id: draw.entity.id,
-                                })}
-                            >
-                                <div class="flex justify-between">
-                                    <p>{draw.draw}. {draw.entity.name}</p>
-                                    <a
-                                        href="#judge-entity-id"
-                                        class="link col-start-5">Edit</a
-                                    >
-                                </div>
-                            </Link>
-                        </li>
-                    {:else}
-                        <li>{draw.draw}. {draw.entity.name}</li>
-                    {/if}
-                {/each}
-            </ul>
-        {:else}
-            <div>
-                <p class="mb-0">
-                    There are <strong>{draws?.length}</strong> SERCs to mark.
-                    You
-                    <strong>are not</strong> permitted to view team names.
-                </p>
+                {#if judges.length == 1}
+                    <Link
+                        href={addJudge(
+                            { competition, serc },
+                            { query: { swap: true } },
+                        )}
+                        aria-label="Swap {judge.name}"
+                        class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-se/10 text-teal-700 transition-colors hover:bg-se/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-se"
+                    >
+                        <Shuffle size={16} />
+                    </Link>
+                {:else}
+                    <Link
+                        only={["judges"]}
+                        href={detachJudge({ competition, serc, judge })}
+                        aria-label="Remove {judge.name}"
+                        class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-red-100 text-red-700 transition-colors hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+                    >
+                        <X size={16} />
+                    </Link>
+                {/if}
             </div>
-        {/if}
+        {/each}
+
+        <Link
+            href={addJudge({ competition, serc })}
+            class="group flex items-center gap-3 px-3 py-2.5 text-teal-700 transition-colors hover:bg-se/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-se focus-visible:ring-inset"
+        >
+            <span
+                class="flex size-8 shrink-0 items-center justify-center rounded-md border border-dashed border-se/60"
+            >
+                <Plus size={16} />
+            </span>
+            <span class="font-archivo flex-1 text-sm">Add casualty/objective</span>
+        </Link>
     </div>
+
+    <Link href={nextEntityToMark({ competition, serc })} class="mt-6">
+        <Button
+            icon={ArrowRight}
+            label="Start Judging{tank ? ` Tank ${tank}` : ''}"
+            class="w-full"
+        />
+    </Link>
+
+    <Button
+        label="Tutorial"
+        icon={Info}
+        variant="secondary"
+        class="mt-2 w-full py-1.5"
+    />
+
+    <SectionLabel class="mt-6 mb-2">
+        {tank ? `Tank ${tank} order` : "Order"} · {draws?.length ?? 0}
+    </SectionLabel>
+
+    {#if showTeamNames}
+        <NumberedList>
+            {#each draws ?? [] as draw (draw.entity.id)}
+                <NumberedListItem
+                    number={draw.draw}
+                    href={isHead
+                        ? markEntity({
+                              competition,
+                              serc,
+                              entity_id: draw.entity.id,
+                          })
+                        : undefined}
+                >
+                    <span class="block truncate font-medium text-gray-900">
+                        {draw.entity.name}
+                    </span>
+                    {#snippet trailing()}
+                        {#if isHead}
+                            <span class="text-xs text-gray-400">Edit</span>
+                        {/if}
+                    {/snippet}
+                </NumberedListItem>
+            {/each}
+        </NumberedList>
+    {:else}
+        <div
+            class="flex items-start gap-3 rounded-xl bg-gray-50 p-4 text-sm text-gray-700"
+        >
+            <EyeOff size={16} class="mt-0.5 shrink-0 text-gray-400" />
+            <p>
+                There are <strong>{draws?.length ?? 0}</strong> SERCs to mark.
+                Team names are hidden from judges at this competition.
+            </p>
+        </div>
+    {/if}
 </section>
 
-<GenericDialog title="Overall Notes" open={isOverallNotesModalOpen}>
+<GenericDialog title="Overall Notes" bind:open={isOverallNotesModalOpen}>
     <Form
-        action={storeOverallNotes({ competition: competition, serc: serc })}
+        action={storeOverallNotes({ competition, serc })}
         disableWhileProcessing={true}
         id="overall-notes"
         onFinish={() => {
@@ -210,19 +203,16 @@
             only: [],
         }}
     >
-        {#snippet children({ errors, processing })}
-            <textarea
-                rows="5"
-                placeholder="Type overall feedback here, or leave it blank..."
-                class="w-full border hover:border-gray-400 p-3 h-max focus:border-gray-400 outline-hidden rounded-md"
-                name="note"
-                id=""
-                value={page.flash.action?.data ?? ""}
-            ></textarea>
-        {/snippet}
+        <Input
+            type="textarea"
+            variant="soft"
+            rows={5}
+            name="note"
+            placeholder="Type overall feedback here, or leave it blank..."
+            bind:value={overallNote}
+        />
     </Form>
     {#snippet footer()}
-        <Button label="Save" variant="success" icon={Save} form="overall-notes"
-        ></Button>
+        <Button label="Save" icon={Save} type="submit" form="overall-notes" />
     {/snippet}
 </GenericDialog>

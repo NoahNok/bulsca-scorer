@@ -1,6 +1,6 @@
 <script module lang="ts">
     export const layout = {
-        title: "Select Tank",
+        title: "Times",
     };
 </script>
 
@@ -16,14 +16,15 @@
     import ActionStatusModal from "@/components/ActionStatusModal.svelte";
 
     import AppHead from "@/components/AppHead.svelte";
+    import BackLink from "@/components/BackLink.svelte";
     import Button from "@/components/Button.svelte";
     import Lane from "@/components/Judging/Speed/Lane.svelte";
+    import SignOffCheckbox from "@/components/Judging/SignOffCheckbox.svelte";
+    import SectionLabel from "@/components/SectionLabel.svelte";
 
-    import type { Competition, Event, Heat, SpeedEvent } from "@/types/base";
-    import { page, Link, useHttp, setLayoutProps } from "@inertiajs/svelte";
-    import { ArrowRight, Check, House } from "@lucide/svelte";
-
-    const user = $derived(page.props.auth.user);
+    import type { Competition, Heat, SpeedEvent } from "@/types/base";
+    import { Link, useHttp, setLayoutProps } from "@inertiajs/svelte";
+    import { ArrowRight, Check, House, Info } from "@lucide/svelte";
 
     let {
         competition,
@@ -39,18 +40,18 @@
 
     let modalRef: ActionStatusModal | null = null;
 
-    let times = $derived.by<Record<number, any>>(() => existingTimes);
+    // keyed by entity id. PHP sends an empty array as [] rather than {}, and
+    // setting times[entityId] on an array pads it with nulls when serialised
+    let times = $derived.by<Record<number, any>>(() => ({ ...existingTimes }));
 
     let hasNextHeat = $state<boolean>(true);
 
-    const http = useHttp<{}, { hasNextHeat: boolean }>();
+    const http = useHttp<{}, { hasNextHeat: boolean }>().transform(() => ({
+        mark: times,
+    }));
 
-    async function submit(e) {
+    async function submit(e: SubmitEvent) {
         e.preventDefault();
-
-        let data = { mark: times };
-
-        http.data = () => data;
 
         let req = http.post(
             storeTime({
@@ -65,8 +66,6 @@
             },
         );
 
-        modalRef?.showFor(req);
-
         const success = await modalRef?.showFor(req);
 
         if (success) {
@@ -76,7 +75,6 @@
                     ? "Your times have been submitted successfully."
                     : "You've finished marking all times for this event.",
             );
-        } else {
         }
     }
 
@@ -89,99 +87,54 @@
 
 <AppHead title="Heat {heat.heat} - Times - {event.name} - {competition.name}" />
 
-<section class="flex flex-col absolute top-0 left-0 w-full p-6 z-10">
-    <Link
-        href={home({ competition: competition })}
-        class="flex w-full justify-between items-center"
-    >
-        <div class="">
-            <h1 class="  -mb-3 normal-case! text-black! text-base!">Digital</h1>
-            <h1 class=" indent-6 normal-case! text-se text-xl!">Judge</h1>
-        </div>
 
-        <House class="bg-se/20 rounded-full text-se p-2 shadow-md " size={40} />
-    </Link>
-</section>
-
-<div class="h-16"></div>
-
-<section class="flex flex-col h-full">
+<section class="flex flex-col">
     <p class="font-archivo -mb-2">{competition.name}</p>
-    <h2 class="">Time - {event.name}</h2>
-    <br />
+    <h2>{event.name}</h2>
 
-    <div class="flex flex-col space-y-3">
-        <p class="font-semibold text-bulsca_red md:hidden">Rotate your phone</p>
+    <BackLink
+        href={selectTimeHeat({ competition, event })}
+        label="Change heat"
+        class="mt-2 mb-4"
+    />
 
-        <h2 class="font-bold w-full break-words">
-            Heat {heat.heat}
-        </h2>
+    <SectionLabel>Times</SectionLabel>
+    <p class="font-archivo text-xl font-semibold">Heat {heat.heat}</p>
+
+    <div
+        class="mt-3 flex items-start gap-3 rounded-xl bg-gray-50 p-3 text-sm text-gray-700"
+    >
+        <Info size={16} class="mt-0.5 shrink-0 text-gray-400" />
         <p>
-            Times must match the format <strong>XX:XX.XX</strong> exactly!
-            (include leading/trailing 0).<br /> Enter
-            <strong>DNF or DNS</strong> as required!
-            <br />
-
+            Enter times as <strong class="font-mono">00:00.00</strong>, including
+            leading zeros, or <strong>DNF</strong> / <strong>DNS</strong>.
             {#if event.name == "Rope Throw"}
-                <strong>OR</strong> enter the total amount of people pulled in from
-                0-3
+                For Rope Throw you can instead enter how many people were pulled
+                in (0–3).
             {/if}
         </p>
-
-        <form onsubmit={submit}>
-            <div class="relative overflow-x-auto w-full">
-                <table class="w-full">
-                    <tbody class="divide-y">
-                        {#each Array.from({ length: event.max_lanes }, (_, i) => i + 1) as lane}
-                            <Lane
-                                lane={heat.lanes?.find(
-                                    (l) => l.lane === lane,
-                                ) ?? lane}
-                                bind:times
-                                allowSingleDigit={event.name === "Rope Throw"}
-                            />
-                        {/each}
-                    </tbody>
-                </table>
-            </div>
-            <br />
-
-            <div class="flex flex-row space-x-2 md:space-x-4 items-center">
-                <label for="check-conf"
-                    >I acknowledge that the above results are correct and cannot
-                    be changed, and submission of this form acts as signing it
-                    digitally.
-                    <br />
-                    <small class="text-gray-500"
-                        >(Clicking the text will also check the box!)</small
-                    >
-                </label>
-                <input
-                    type="checkbox"
-                    id="check-conf"
-                    name="check_conf"
-                    class="min-w-[20px] min-h-[20px]"
-                    required
-                />
-            </div>
-            <br />
-
-            <Button
-                variant="success"
-                label="Submit "
-                class="w-full py-2 "
-                icon={Check}
-            />
-        </form>
     </div>
-    <br />
-    <br />
-    <br />
-    <br />
+
+    <form onsubmit={submit} class="mt-4 flex flex-col gap-4">
+        <div class="divide-y overflow-hidden rounded-xl border bg-white shadow-sm">
+            {#each Array.from({ length: event.max_lanes }, (_, i) => i + 1) as lane}
+                <Lane
+                    lane={heat.lanes?.find((l) => l.lane === lane) ?? lane}
+                    bind:times
+                    allowSingleDigit={event.name === "Rope Throw"}
+                />
+            {/each}
+        </div>
+
+        <SignOffCheckbox id="check-conf" name="check_conf" class="mt-2" />
+
+        <Button type="submit" label="Submit Times" class="w-full" icon={Check} />
+    </form>
+
     <ActionStatusModal
         bind:this={modalRef}
-        title="Submitting Marks"
-        message="Submitting your marks..."
+        title="Submitting Times"
+        message="Submitting your times..."
     >
         {#snippet success()}
             {#if hasNextHeat}
@@ -195,8 +148,7 @@
                     class="w-full"
                 >
                     <Button
-                        variant="success"
-                        class="w-full mb-0! "
+                        class="mb-0! w-full"
                         label="Next heat"
                         type="button"
                         icon={ArrowRight}
@@ -212,7 +164,7 @@
             >
                 <Button
                     variant="secondary"
-                    class="w-full mb-0! py-1 "
+                    class="mb-0! w-full py-1.5"
                     label="Home"
                     type="button"
                     icon={House}
