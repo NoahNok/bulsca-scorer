@@ -11,9 +11,12 @@
     } from "@/actions/App/Http/Controllers/DigitalJudge/Event/EventJudgeController";
 
     import { confirmJudge } from "@/actions/App/Http/Controllers/DigitalJudge/SERC/SERCJudgeController";
+    import {
+        event as confirmEventResults,
+        serc as confirmSercResults,
+    } from "@/actions/App/Http/Controllers/DigitalJudge/ConfirmResultsController";
 
     import AppHead from "@/components/AppHead.svelte";
-    import Button from "@/components/Button.svelte";
     import ConfirmDialog from "@/components/ConfirmDialog.svelte";
     import EmptyState from "@/components/EmptyState.svelte";
     import SectionLabel from "@/components/SectionLabel.svelte";
@@ -22,7 +25,7 @@
     import { index } from "@/routes/judge";
     import { submissions } from "@/routes/judge/competition/violation";
 
-    import type { Competition, Event, SERC } from "@/types/base";
+    import { EventType, type Competition, type Event, type SERC } from "@/types/base";
     import { page, Link, router, setLayoutProps } from "@inertiajs/svelte";
     import {
         CalendarX,
@@ -33,6 +36,7 @@
         ClipboardList,
         Flag,
         ListOrdered,
+        Shield,
         ShieldCheck,
         Timer,
     } from "@lucide/svelte";
@@ -155,28 +159,14 @@
                 {@render row(link)}
             {/each}
 
-            {#if isHead && !event.confirmed}
-                <!-- TODO: wire up result confirmation -->
-                <div class="flex items-center gap-3 bg-se/5 px-3 py-2">
-                    <span
-                        class="flex size-8 shrink-0 items-center justify-center rounded-md bg-se/20 text-teal-700"
-                    >
-                        <ShieldCheck size={16} />
-                    </span>
-                    <span class="font-archivo flex-1 text-sm">Confirm Results</span>
-                    <span class="text-xs text-gray-400">Coming soon</span>
-                </div>
+            {#if isHead}
+                {#if event.confirmed}
+                    {@render confirmedRow()}
+                {:else}
+                    {@render confirmRow(event)}
+                {/if}
             {/if}
         </div>
-
-        {#if isHead && event.confirmed}
-            <Button
-                label="Confirmed"
-                variant="success"
-                icon={Check}
-                class="pointer-events-none mt-2 w-full px-2 py-1"
-            />
-        {/if}
     </div>
 {/snippet}
 
@@ -196,6 +186,40 @@
             class="shrink-0 text-gray-300 transition-all group-hover:translate-x-0.5 group-hover:text-se"
         />
     </Link>
+{/snippet}
+
+{#snippet confirmRow(event: Event)}
+    <Link
+        href={event.type === EventType.SERC
+            ? confirmSercResults({ competition, serc: event })
+            : confirmEventResults({ competition, event })}
+        class="group flex w-full items-center gap-3 bg-se/5 px-3 py-2 text-left transition-colors hover:bg-se/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-se focus-visible:ring-inset"
+    >
+        <span
+            class="flex size-8 shrink-0 items-center justify-center rounded-md bg-se/20 text-teal-700"
+        >
+            <Shield size={16} />
+        </span>
+        <span class="font-archivo min-w-0 flex-1 truncate text-sm">Confirm Results</span>
+        <ChevronRight
+            size={18}
+            class="shrink-0 text-gray-300 transition-all group-hover:translate-x-0.5 group-hover:text-se"
+        />
+    </Link>
+{/snippet}
+
+{#snippet confirmedRow()}
+    <div class="flex items-center gap-3 bg-green-50 px-3 py-2">
+        <span
+            class="flex size-8 shrink-0 items-center justify-center rounded-md bg-green-100 text-green-700"
+        >
+            <ShieldCheck size={16} />
+        </span>
+        <span class="font-archivo min-w-0 flex-1 truncate text-sm text-green-800">
+            Results Confirmed
+        </span>
+        <Check size={18} class="shrink-0 text-green-600" />
+    </div>
 {/snippet}
 
 {#snippet nav()}

@@ -1,14 +1,20 @@
 <script lang="ts">
     import { cn } from "@/utils/utils";
     import { Check } from "@lucide/svelte";
+    import type { Snippet } from "svelte";
 
     let {
         id = "sign-off",
         name,
+        checked = $bindable(false),
+        children,
         class: className = "",
     }: {
         id?: string;
         name?: string;
+        checked?: boolean;
+        // Replaces the default sign-off wording
+        children?: Snippet;
         class?: string;
     } = $props();
 </script>
@@ -26,6 +32,7 @@
             required
             {id}
             {name}
+            bind:checked
             class="peer size-5 cursor-pointer appearance-none rounded border border-gray-300 bg-white transition-colors checked:border-se checked:bg-se focus:outline-none focus-visible:ring-2 focus-visible:ring-se/40"
         />
         <Check
@@ -35,7 +42,11 @@
         />
     </span>
     <span class="text-sm text-gray-700">
-        I acknowledge that the above results are correct and cannot be changed,
-        and submission of this form acts as signing it digitally.
+        {#if children}
+            {@render children()}
+        {:else}
+            I acknowledge that the above results are correct and cannot be
+            changed, and submission of this form acts as signing it digitally.
+        {/if}
     </span>
 </label>

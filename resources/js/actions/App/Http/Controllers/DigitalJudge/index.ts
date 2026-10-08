@@ -1,5 +1,6 @@
 import JudgeController from './JudgeController'
 import SERC from './SERC'
+import ConfirmResultsController from './ConfirmResultsController'
 import Event from './Event'
 import Violation from './Violation'
 import DigitalJudgeController from './DigitalJudgeController'
@@ -11,6 +12,7 @@ import DJManageController from './DJManageController'
 const DigitalJudge = {
     JudgeController: Object.assign(JudgeController, JudgeController),
     SERC: Object.assign(SERC, SERC),
+    ConfirmResultsController: Object.assign(ConfirmResultsController, ConfirmResultsController),
     Event: Object.assign(Event, Event),
     Violation: Object.assign(Violation, Violation),
     DigitalJudgeController: Object.assign(DigitalJudgeController, DigitalJudgeController),

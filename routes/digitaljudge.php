@@ -2,6 +2,7 @@
 
 use App\DigitalJudge\DigitalJudge;
 use App\Helpers\RouteHelpers;
+use App\Http\Controllers\DigitalJudge\ConfirmResultsController;
 use App\Http\Controllers\DigitalJudge\DigitalJudgeController;
 use App\Http\Controllers\DigitalJudge\DJDQController;
 use App\Http\Controllers\DigitalJudge\DJJudgingController;
@@ -44,6 +45,11 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
                     Route::get('confirm/{judge}', [SERCJudgeController::class, 'confirmJudge'])->name('judge.competition.serc.confirm');
                     Route::post('confirm', [SERCJudgeController::class, 'confirmJudgePost'])->name('judge.competition.serc.confirm.post');
 
+                    Route::middleware('judge.referee')->group(function () {
+                        Route::get('confirm-results', [ConfirmResultsController::class, 'serc'])->name('judge.competition.serc.confirm-results');
+                        Route::post('confirm-results', [ConfirmResultsController::class, 'storeSerc'])->name('judge.competition.serc.confirm-results.store');
+                    });
+
                     Route::middleware(MustHaveJudgeSelected::class)->group(function () {
                         Route::get('add-judge', [SERCJudgeController::class, 'addJudge'])->name('judge.competition.serc.add-judge');
                         Route::get('attach-judge/{judge}', [SERCJudgeController::class, 'attachJudge'])->name('judge.competition.serc.attach-judge');
@@ -68,6 +74,11 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
                 });
 
                 Route::prefix('event/{event}')->group(function () {
+
+                    Route::middleware('judge.referee')->group(function () {
+                        Route::get('confirm-results', [ConfirmResultsController::class, 'event'])->name('judge.competition.event.confirm-results');
+                        Route::post('confirm-results', [ConfirmResultsController::class, 'storeEvent'])->name('judge.competition.event.confirm-results.store');
+                    });
 
                     Route::prefix('time')->group(function () {
                         Route::get('select-heat', [EventJudgeController::class, 'selectTimeHeat'])->name('judge.competition.event.time.select-heat');

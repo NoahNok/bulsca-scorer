@@ -60,6 +60,7 @@ class Kernel extends HttpKernel
         'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
         'auth.judge' => \App\Http\Middleware\DigitalJudge\JudgeAuthenticated::class,
         'judge.officiates' => \App\Http\Middleware\DigitalJudge\OfficiatesCompetition::class,
+        'judge.referee' => \App\Http\Middleware\DigitalJudge\RefereeOnly::class,
 
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,

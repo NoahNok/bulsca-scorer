@@ -123,6 +123,26 @@ class SpeedResult extends Resultable
     }
 
 
+    /**
+     * Format a raw result the way judges enter it (XX:XX.XX, or a count for Rope Throw),
+     * without swapping it for any DQ code. Null when there's no result yet.
+     */
+    public static function confirmFormattedResult(?int $result, bool $isRopeThrow): ?string
+    {
+        if ($result === null) {
+            return null;
+        }
+
+        if ($isRopeThrow && $result < 4) {
+            return (string) $result;
+        }
+
+        $mins = floor($result / 60000);
+        $secs = ($result - $mins * 60000) / 1000;
+
+        return sprintf('%02d', $mins) . ':' . str_pad(number_format($secs, 2, '.', ''), 5, '0', STR_PAD_LEFT);
+    }
+
     public function getJudgeLogTitle()
     {
         return "Speed: {judge} marked {team} for {event}";

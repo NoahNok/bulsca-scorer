@@ -128,7 +128,7 @@ navigable row shows a `ChevronRight` that nudges right on hover.
 | `FilterChip` | Status/category filters with optional count. You own the state (`active`, `onclick`). |
 | `SegmentedControl` | Switching between 2–4 views of the same list (DQs / Penalties). `bind:value`, typed by option values. |
 | `NumberedList` / `NumberedListItem` | Numbered rows in a bordered list (criteria, tanks, running order). Give an item `href` to make the whole row a link with a chevron; `trailing` adds a hint or badge on the right; `onclick` (without `href`) makes it a button. |
-| `Judging/SignOffCheckbox` | The required "I acknowledge…" sign-off panel before submitting marks, times or OOF. Pass `id` (and `name` if the form needs it). |
+| `Judging/SignOffCheckbox` | The required "I acknowledge…" sign-off panel before submitting marks, times or OOF. Pass `id` (and `name` if the form needs it). Children replace the default wording; `bind:checked` if you need the state. |
 | `SectionLabel` | Small uppercase heading above a group of rows or a form section. |
 | `EmptyState` | "Nothing here yet" with an icon, title, description, and optional children for an action. |
 | `LiveIndicator` | Pulsing dot for data that refreshes via `usePoll`. |
@@ -143,7 +143,13 @@ Components that only make sense for one feature go here, e.g.
 `Judging/Violation/ViolationCodeTile`, `ViolationStatusBadge`,
 `ViolationSubmissionCard`, `ViolationTimeline` (a submission's status history,
 dot colours from `timelineDotClass`; a SUBMITTED entry coming from REJECTED reads "Resubmitted"), and `Judging/SERC/JudgeMarkingPoints` /
-`MarkingPoint` (the SERC marking card and its mark buttons).
+`MarkingPoint` (the SERC marking card and its mark buttons), and
+`Judging/ConfirmResults/*` for the head ref's Confirm Results pages:
+`ConfirmResultsSummary` (fact strip + amber warning panel), `HeatResultsCard`
+(a speed heat: lane, OOF, time, violations), `SERCEntityResultsCard` (one team's
+marks per judge, totals, violations, notes), `ViolationList` (applied DQs/penalties
+and pending submissions with their descriptions) and `ConfirmResultsPanel` (sign-off,
+submit and `ActionStatusModal`).
 
 Mark/option buttons are a `peer sr-only` radio (inside a `relative` wrapper; `h-0 w-0` leaves a blank line) plus a `<label>`:
 `h-10 rounded-lg border bg-white font-mono`, selected
@@ -184,7 +190,10 @@ For items with several destinations (an event and its judging pages; see
 right if needed), then a `divide-y overflow-hidden rounded-xl border bg-white shadow-sm`
 card of whole-row `<Link>`s (`px-3 py-2`). Each row has a `size-8 rounded-md bg-gray-100`
 icon tile (tinting `bg-se/20` on hover), a `font-archivo` label and a
-`ChevronRight`. A head-ref-only row at the bottom uses the `bg-se/5` tint.
+`ChevronRight`. A head-ref-only row at the bottom uses the `bg-se/5` tint. When
+that row's action is done it becomes a static (non-link) row in the success hue:
+`bg-green-50`, a `bg-green-100 text-green-700` tile with the same icon, `text-green-800`
+label and a trailing `Check` instead of the chevron (e.g. "Results Confirmed").
 Space items `gap-5`.
 
 ### Marking pages
@@ -212,6 +221,18 @@ full-width primary submit `Button`.
 - **Key/value rows:** `<dl class="divide-y rounded-xl border bg-white">`, label left, value right.
 - **Missing values:** show `–`, or an italic `text-gray-400` sentence ("No details given.").
 
+### Confirm Results pages
+
+`ConfirmResults/SERC` and `ConfirmResults/Event` (head ref only, `judge.referee`
+middleware) show results in draw/heat order for checking, then confirm the event.
+Shape: title + `BackLink`, `SectionLabel`, `ConfirmResultsSummary`, an `Info` panel,
+then an `<InfiniteScroll>` of result cards. The `next` snippet shows a `Spinner`
+while `hasMore`, and only reveals `ConfirmResultsPanel` once every page has loaded,
+so the head ref has to scroll past every result before confirming. Missing results
+and pending submissions warn (amber) but don't block confirmation.
+
+Missing values in results use an amber `–` rather than gray, since they need attention.
+
 ### Privileged actions
 
 Group role-specific actions (e.g. head referee) in their own panel at the
@@ -230,6 +251,11 @@ title, a sentence of guidance if needed, then side-by-side `ConfirmDialog`s with
 - Success and error toasts: `toastSuccess` / `toastError` from `lib/toast.svelte`.
   Server flashes with a `toast` key are shown automatically by the layout.
 - Polling lists: `usePoll(5000, { only: [...] })` plus a `LiveIndicator` next to the title.
+- **Long lists** (results for a whole event): page them on the server with
+  `Inertia::scroll($paginator)` and render with `<InfiniteScroll data="prop" preserveUrl>`
+  from `@inertiajs/svelte`. Put other props in closures so scroll requests (partial
+  reloads of just that prop) don't recompute them. Batch-load each page's related rows
+  (`whereIn`) instead of querying per row. See `ConfirmResultsController`.
 - Animate list reordering with `animate:flip={{ duration: 200 }}` and reveal async sections with `transition:slide`.
 
 ### Requests
