@@ -414,7 +414,7 @@ setTank.head = (args: { competition: number | { id: number }, serc: number | { i
 * @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:387
 * @route '//judge.localhost/v2/{competition}/serc/{serc}/mark/previous-marks/{judge_id}'
 */
-export const previousMarks = (args: { competition: string | number, serc: string | number, judge_id: string | number } | [competition: string | number, serc: string | number, judge_id: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const previousMarks = (args: { competition: number | { id: number }, serc: number | { id: number }, judge_id: string | number } | [competition: number | { id: number }, serc: number | { id: number }, judge_id: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: previousMarks.url(args, options),
     method: 'get',
 })
@@ -429,7 +429,7 @@ previousMarks.definition = {
 * @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:387
 * @route '//judge.localhost/v2/{competition}/serc/{serc}/mark/previous-marks/{judge_id}'
 */
-previousMarks.url = (args: { competition: string | number, serc: string | number, judge_id: string | number } | [competition: string | number, serc: string | number, judge_id: string | number ], options?: RouteQueryOptions) => {
+previousMarks.url = (args: { competition: number | { id: number }, serc: number | { id: number }, judge_id: string | number } | [competition: number | { id: number }, serc: number | { id: number }, judge_id: string | number ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             competition: args[0],
@@ -441,8 +441,12 @@ previousMarks.url = (args: { competition: string | number, serc: string | number
     args = applyUrlDefaults(args)
 
     const parsedArgs = {
-        competition: args.competition,
-        serc: args.serc,
+        competition: typeof args.competition === 'object'
+        ? args.competition.id
+        : args.competition,
+        serc: typeof args.serc === 'object'
+        ? args.serc.id
+        : args.serc,
         judge_id: args.judge_id,
     }
 
@@ -458,7 +462,7 @@ previousMarks.url = (args: { competition: string | number, serc: string | number
 * @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:387
 * @route '//judge.localhost/v2/{competition}/serc/{serc}/mark/previous-marks/{judge_id}'
 */
-previousMarks.get = (args: { competition: string | number, serc: string | number, judge_id: string | number } | [competition: string | number, serc: string | number, judge_id: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+previousMarks.get = (args: { competition: number | { id: number }, serc: number | { id: number }, judge_id: string | number } | [competition: number | { id: number }, serc: number | { id: number }, judge_id: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: previousMarks.url(args, options),
     method: 'get',
 })
@@ -468,7 +472,7 @@ previousMarks.get = (args: { competition: string | number, serc: string | number
 * @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:387
 * @route '//judge.localhost/v2/{competition}/serc/{serc}/mark/previous-marks/{judge_id}'
 */
-previousMarks.head = (args: { competition: string | number, serc: string | number, judge_id: string | number } | [competition: string | number, serc: string | number, judge_id: string | number ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+previousMarks.head = (args: { competition: number | { id: number }, serc: number | { id: number }, judge_id: string | number } | [competition: number | { id: number }, serc: number | { id: number }, judge_id: string | number ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: previousMarks.url(args, options),
     method: 'head',
 })

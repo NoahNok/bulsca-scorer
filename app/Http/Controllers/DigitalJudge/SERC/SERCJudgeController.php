@@ -365,7 +365,7 @@ class SERCJudgeController extends Controller
         Inertia::flash('toast', ['variant' => 'success', 'title' => "Overall note saved"]);
     }
 
-    public function getJudgeNotes(int $competition, int $serc)
+    public function getJudgeNotes(Competition $competition, SERC $serc)
     {
         $judges = DigitalJudge::getClientJudges();
 
@@ -384,7 +384,7 @@ class SERCJudgeController extends Controller
         return response()->json($notes);
     }
 
-    public function getPreviousMarks(int $competition, int $serc, int $judge_id)
+    public function getPreviousMarks(Competition $competition, SERC $serc, int $judge_id)
     {
         $judge = DigitalJudge::getClientJudges()->firstWhere('id', $judge_id);
 

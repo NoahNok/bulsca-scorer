@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\DigitalJudge\DigitalJudge;
+use App\Models\Competition;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -47,7 +48,7 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user()
             ],
             'judge' => [
-                'isHeadRef' => $competition ? DigitalJudge::isClientHeadJudge($competition) : false
+                'isHeadRef' => $competition instanceof Competition ? DigitalJudge::isClientHeadJudge($competition) : false
             ],
             'env_local' => env('APP_ENV') == 'local'
             //

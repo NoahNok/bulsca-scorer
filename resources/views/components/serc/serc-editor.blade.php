@@ -43,7 +43,9 @@
         }
 
         quill.on('text-change', () => {
-            this.judges[judge_index].hint = quill.root.innerHTML;
+            // An empty editor still holds an empty paragraph, so save it as blank
+            const isEmpty = quill.getText().trim() === '' && !quill.root.querySelector('img');
+            this.judges[judge_index].hint = isEmpty ? '' : quill.root.innerHTML;
             //this.has_changes = true;
         });
 
