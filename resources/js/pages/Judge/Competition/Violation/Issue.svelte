@@ -1,11 +1,10 @@
 <script module lang="ts">
     export const layout = {
-        title: "Confirm Judge",
+        title: "New DQ/Penalty",
     };
 </script>
 
 <script lang="ts">
-    import { home } from "@/actions/App/Http/Controllers/DigitalJudge/JudgeController";
     import {
         getDrawFor,
         getEventRelatedCodes,
@@ -13,8 +12,13 @@
     } from "@/actions/App/Http/Controllers/DigitalJudge/Violation/ViolationController";
 
     import AppHead from "@/components/AppHead.svelte";
+    import BackLink from "@/components/BackLink.svelte";
     import Button from "@/components/Button.svelte";
     import Input from "@/components/input.svelte";
+    import ViolationCodeTile from "@/components/Judging/Violation/ViolationCodeTile.svelte";
+    import SearchInput from "@/components/SearchInput.svelte";
+    import SectionLabel from "@/components/SectionLabel.svelte";
+    import SegmentedControl from "@/components/SegmentedControl.svelte";
     import Spinner from "@/components/Spinner.svelte";
     import type {
         StepControls,
@@ -35,19 +39,13 @@
     } from "@/types/base";
     import {
         emptySubmission,
+        violationCode,
+        vtypeTileClass,
         type ViolationSubmissionPost,
         type Violation,
-        type ViolationSubmission,
     } from "@/types/violation";
-    import {
-        page,
-        Link,
-        useForm,
-        useHttp,
-        Form,
-        router,
-    } from "@inertiajs/svelte";
-    import { ArrowLeft, Check, House, Search } from "@lucide/svelte";
+    import { useForm, useHttp } from "@inertiajs/svelte";
+    import { Check, ChevronDown } from "@lucide/svelte";
     import { onMount, tick } from "svelte";
     import { slide } from "svelte/transition";
 
@@ -55,8 +53,6 @@
         dqs: Violation[];
         pens: Violation[];
     };
-
-    const user = $derived(page.props.auth.user);
 
     let stepperRef: StepperApi | undefined;
 
@@ -105,12 +101,11 @@
     ) {
         form.violation = violation;
         selectedViolation = violation;
-        let prefix = violation.vtype === "DQ" ? "DQ" : "P";
-        step_controls.setTitle(`${prefix}${violation.code}`);
+        step_controls.setTitle(violationCode(violation));
         step_controls.complete();
     }
 
-    function submit(e) {
+    function submit(e: SubmitEvent) {
         e.preventDefault();
 
         if (!form.entity_id) {
@@ -226,17 +221,6 @@
                 let stepControls = stepperRef?.getStepControls(0);
                 if (stepControls) {
                     selectEvent(event, stepControls);
-
-                    // for testing only
-                    setTimeout(() => {
-                        let stepControls = stepperRef?.getStepControls(1);
-                        let entity =
-                            heats[0].lanes?.at(0)?.entity ||
-                            tanks[0].draw[0].entity;
-                        if (entity && stepControls) {
-                            selectEntity(entity, stepControls);
-                        }
-                    }, 100);
                 }
             }
         }
@@ -246,40 +230,20 @@
 
     type EntityRow = { position: number; entity: Entity };
 
-    function codeTileClass(vtype: Violation["vtype"] | undefined) {
-        return vtype === "DQ"
-            ? "bg-red-100 text-red-700"
-            : "bg-orange-100 text-orange-700";
-    }
 </script>
 
 <AppHead title="Issue - DQ/Penalty - {competition.name}" />
 
-<section class="flex flex-col absolute top-0 left-0 w-full p-6 z-10">
-    <Link
-        href={home(competition)}
-        class="flex w-full justify-between items-center"
-    >
-        <div class="">
-            <h1 class="  -mb-3 normal-case! text-black! text-base!">Digital</h1>
-            <h1 class=" indent-6 normal-case! text-se text-xl!">Judge</h1>
-        </div>
 
-        <House class="bg-se/20 rounded-full text-se p-2 shadow-md " size={40} />
-    </Link>
-</section>
-
-<div class="h-16"></div>
-
-<section class="flex flex-col h-full">
+<section class="flex flex-col">
     <p class="font-archivo -mb-2">{competition.name}</p>
     <h2 class="">New DQ/Penalty</h2>
 
-    <Link
+    <BackLink
         href={violation.submissions({ competition: competition })}
-        class="mt-2 mb-4 inline-flex w-fit items-center gap-1 text-sm text-gray-600 hover:text-se"
-        ><ArrowLeft size={14} /> All submissions</Link
-    >
+        label="All submissions"
+        class="mt-2 mb-4"
+    />
 
     <Stepper bind:this={stepperRef}>
         <Step title="Event">
@@ -291,11 +255,11 @@
 
         <Step title="Competitor">
             {#snippet children(step_controls)}
-                {@render searchInput(
-                    "Search teams...",
-                    () => entitySearchTerm,
-                    (v) => (entitySearchTerm = v),
-                )}
+                <SearchInput
+                    class="mb-3"
+                    placeholder="Search teams..."
+                    bind:value={entitySearchTerm}
+                />
 
                 {#if heatsHttp.processing || drawHttp.processing}
                     <div class="flex justify-center py-6"><Spinner /></div>
@@ -337,26 +301,20 @@
 
         <Step title="Code">
             {#snippet children(step_controls)}
-                <div class="mb-3 grid grid-cols-2 gap-1 rounded-lg bg-gray-100 p-1">
-                    {#each [{ value: "dq", label: "DQs" }, { value: "pen", label: "Penalties" }] as const as option}
-                        <button
-                            type="button"
-                            class="cursor-pointer rounded-md py-1.5 text-sm font-semibold transition-all {violationFilter ===
-                            option.value
-                                ? 'bg-white shadow-sm'
-                                : 'text-gray-500 hover:text-gray-800'}"
-                            onclick={() => (violationFilter = option.value)}
-                        >
-                            {option.label}
-                        </button>
-                    {/each}
-                </div>
+                <SegmentedControl
+                    class="mb-3"
+                    options={[
+                        { value: "dq", label: "DQs" },
+                        { value: "pen", label: "Penalties" },
+                    ]}
+                    bind:value={violationFilter}
+                />
 
-                {@render searchInput(
-                    "Search code or description...",
-                    () => violationSearchTerm,
-                    (v) => (violationSearchTerm = v),
-                )}
+                <SearchInput
+                    class="mb-3"
+                    placeholder="Search code or description..."
+                    bind:value={violationSearchTerm}
+                />
 
                 {#if violationsHttp.processing}
                     <div class="flex justify-center py-6"><Spinner /></div>
@@ -376,13 +334,10 @@
                                 onclick={() => selectViolation(v, step_controls)}
                                 hidden={!searchMatchesViolation(v)}
                             >
-                                <span
-                                    class="flex size-12 shrink-0 items-center justify-center rounded-lg font-archivo font-bold {codeTileClass(
-                                        v.vtype,
-                                    )}"
-                                >
-                                    {v.vtype === "DQ" ? "DQ" : "P"}{v.code}
-                                </span>
+                                <ViolationCodeTile
+                                    code={violationCode(v)}
+                                    class={vtypeTileClass(v.vtype)}
+                                />
                                 <span class="flex-1 text-sm text-gray-700">
                                     {v.description}
                                 </span>
@@ -399,32 +354,33 @@
         <Step title="Details">
             <form onsubmit={submit} class="grid grid-cols-2 gap-x-3 gap-y-3">
                 {#if selectedViolation}
-                    <!-- svelte-ignore a11y_click_events_have_key_events -->
-                    <!-- svelte-ignore a11y_no_static_element_interactions -->
-                    <div
-                        class="col-span-2 flex cursor-pointer items-start gap-3 rounded-xl bg-gray-50 p-3"
+                    <button
+                        type="button"
+                        aria-expanded={expanded}
+                        class="col-span-2 flex cursor-pointer items-start gap-3 rounded-xl bg-gray-50 p-3 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-se"
                         onclick={() => (expanded = !expanded)}
                     >
+                        <ViolationCodeTile
+                            code={violationCode(selectedViolation)}
+                            class={vtypeTileClass(selectedViolation.vtype)}
+                        />
                         <span
-                            class="flex size-12 shrink-0 items-center justify-center rounded-lg font-archivo font-bold {codeTileClass(
-                                selectedViolation.vtype,
-                            )}"
-                        >
-                            {selectedViolation.vtype === "DQ"
-                                ? "DQ"
-                                : "P"}{selectedViolation.code}
-                        </span>
-                        <p
-                            class="text-sm text-gray-700"
+                            class="flex-1 text-sm text-gray-700"
                             class:line-clamp-3={!expanded}
                         >
                             {selectedViolation.description}
-                        </p>
-                    </div>
+                        </span>
+                        <ChevronDown
+                            size={16}
+                            class="mt-0.5 shrink-0 text-gray-400 transition-transform {expanded
+                                ? 'rotate-180'
+                                : ''}"
+                        />
+                    </button>
                 {/if}
 
                 {#if selectedEvent?.type === EventType.SPEED}
-                    {@render formHeading("Where")}
+                    <SectionLabel class="col-span-2 -mb-1 mt-2">Where</SectionLabel>
                     <Input
                         variant="soft"
                         label="Length"
@@ -443,7 +399,7 @@
                     />
                 {/if}
 
-                {@render formHeading("What happened")}
+                <SectionLabel class="col-span-2 -mb-1 mt-2">What happened</SectionLabel>
                 <div class="col-span-2">
                     <Input
                         variant="soft"
@@ -454,7 +410,7 @@
                     />
                 </div>
 
-                {@render formHeading("Submitted by")}
+                <SectionLabel class="col-span-2 -mb-1 mt-2">Submitted by</SectionLabel>
                 <div class="col-span-2">
                     <Input
                         variant="soft"
@@ -465,7 +421,7 @@
                     />
                 </div>
 
-                {@render formHeading("Seconded by")}
+                <SectionLabel class="col-span-2 -mb-1 mt-2">Seconded by</SectionLabel>
                 <Input
                     variant="soft"
                     label="Name"
@@ -481,7 +437,6 @@
 
                 <Button
                     label="Submit"
-                    variant="success"
                     class="col-span-2 mt-2 w-full"
                     icon={Check}
                     type="submit"
@@ -492,25 +447,13 @@
     </Stepper>
 </section>
 
-{#snippet formHeading(text: string)}
-    <p
-        class="col-span-2 -mb-1 mt-2 text-xs font-semibold uppercase tracking-wide text-gray-500"
-    >
-        {text}
-    </p>
-{/snippet}
-
 {#snippet eventGroup(
     heading: string,
     events: Event[],
     step_controls: StepControls,
 )}
     {#if events.length}
-        <p
-            class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500"
-        >
-            {heading}
-        </p>
+        <SectionLabel class="mb-2">{heading}</SectionLabel>
         <div class="mb-4 grid grid-cols-2 gap-2 last:mb-0">
             {#each events as event}
                 {@const selected =
@@ -518,7 +461,7 @@
                     selectedEvent?.type === event.type}
                 <button
                     type="button"
-                    class="flex cursor-pointer items-center justify-between gap-2 rounded-lg border bg-white px-3 py-2.5 text-left text-sm font-semibold transition-all hover:border-se {selected
+                    class="flex cursor-pointer items-center justify-between gap-2 rounded-lg border bg-white px-3 py-2.5 text-left text-sm font-semibold transition-all hover:border-se focus:outline-none focus-visible:ring-2 focus-visible:ring-se {selected
                         ? 'border-se bg-se/5'
                         : ''}"
                     onclick={() => selectEvent(event, step_controls)}
@@ -541,17 +484,13 @@
 )}
     {@const matching = rows.filter((r) => searchMatchesEntity(r.entity))}
     {#if matching.length}
-        <p
-            class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500"
-        >
-            {heading}
-        </p>
-        <div class="mb-4 divide-y overflow-hidden rounded-lg border">
+        <SectionLabel class="mb-2">{heading}</SectionLabel>
+        <div class="mb-4 divide-y overflow-hidden rounded-xl border bg-white">
             {#each matching as row (row.entity.id)}
                 {@const selected = form.entity_id === row.entity.id}
                 <button
                     type="button"
-                    class="flex w-full cursor-pointer items-center gap-3 px-3 py-2 text-left transition-colors hover:bg-gray-50 {selected
+                    class="flex w-full cursor-pointer items-center gap-3 px-3 py-2 text-left transition-colors hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-se focus-visible:ring-inset {selected
                         ? 'bg-se/5'
                         : 'bg-white'}"
                     onclick={() => selectEntity(row.entity, step_controls)}
@@ -574,21 +513,3 @@
     {/if}
 {/snippet}
 
-{#snippet searchInput(
-    placeholder: string,
-    get: () => string,
-    set: (v: string) => void,
-)}
-    <div class="relative mb-3">
-        <Search
-            size={16}
-            class="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-gray-400"
-        />
-        <input
-            type="search"
-            {placeholder}
-            class="w-full rounded-lg border py-2 pr-3 pl-9 text-sm transition-all focus:border-se focus:ring-1 focus:ring-se/10 focus:outline-none"
-            bind:value={get, set}
-        />
-    </div>
-{/snippet}

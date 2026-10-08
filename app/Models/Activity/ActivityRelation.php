@@ -8,6 +8,7 @@ use App\Models\AbstractClasses\Violation;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\DigitalJudge\JudgeDQSubmission;
+use App\Models\DigitalJudge\Violation\ViolationSubmission;
 use App\Models\Event\Disqualification;
 use App\Models\Event\Penalty;
 use App\Models\SERC;
@@ -46,6 +47,7 @@ class ActivityRelation extends Model
             CompetitionSpeedEvent::class => view('components.activity-log.null', ['name' => 'Speed Event Deleted', 'description' => 'This speed event has been deleted.']),
             SERC::class => view('components.activity-log.null', ['name' => 'SERC Deleted', 'description' => 'This SERC has been deleted.']),
             JudgeDQSubmission::class => view('components.activity-log.null', ['name' => 'Submission Removed', 'description' => 'This submission has been deleted.']),
+            ViolationSubmission::class => view('components.activity-log.null', ['name' => 'Submission Removed', 'description' => 'This submission has been deleted.']),
 
 
 
@@ -65,6 +67,7 @@ class ActivityRelation extends Model
             $related instanceof Entity => view('components.activity-log.entity', ['name' => $related->getName(), 'type' => class_basename($related)]),
             $related instanceof Violation => view('components.activity-log.violation', ['name' => "{$related}", 'description' => $related->getMessage()]),
             $related instanceof JudgeDQSubmission => view('components.activity-log.violation-submission', ['name' => "{$related->name} ({$related->position})", 'appealed' => $related->appealed]),
+            $related instanceof ViolationSubmission => view('components.activity-log.violation-submission', ['name' => "{$related->code()} for {$related->entity->getName()}", 'appealed' => $related->status === 'APPEALED']),
             $related === null => $this->renderNullRelated($activity),
 
 

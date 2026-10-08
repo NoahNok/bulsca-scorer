@@ -10,6 +10,7 @@
     } from "@/types/violation";
     import { Link } from "@inertiajs/svelte";
     import { ChevronRight } from "@lucide/svelte";
+    import ViolationCodeTile from "./ViolationCodeTile.svelte";
     import ViolationStatusBadge from "./ViolationStatusBadge.svelte";
 
     let {
@@ -30,12 +31,12 @@
         ? 'opacity-60'
         : ''}"
 >
-    <div
-        class="flex size-14 shrink-0 items-center justify-center rounded-lg font-archivo text-lg font-bold transition-colors {statusTileClass(submission)}"
-        class:line-through={voided}
-    >
+    <ViolationCodeTile
         {code}
-    </div>
+        size="md"
+        {voided}
+        class={statusTileClass(submission)}
+    />
 
     <div class="min-w-0 flex-1">
         <p class="truncate font-semibold text-gray-900">

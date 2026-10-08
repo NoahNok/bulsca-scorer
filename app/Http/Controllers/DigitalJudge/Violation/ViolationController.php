@@ -92,12 +92,18 @@ class ViolationController extends Controller
 
         $submission->save();
 
+        $submission->logActivity('SUBMITTED');
+
         return to_route('judge.competition.violation.submissions', ['competition' => $competition, 'id' => $submission->id]);
     }
 
     public function view(Competition $competition, ViolationSubmission $submission)
     {
-        return Inertia::render("Judge/Competition/Violation/Submission", ['competition' => $competition->jsonable(), 'submission' => $submission->jsonable()]);
+        return Inertia::render("Judge/Competition/Violation/Submission", [
+            'competition' => $competition->jsonable(),
+            'submission' => $submission->jsonable(),
+            'timeline' => $submission->jsonableTimeline(),
+        ]);
     }
 
     // Issue Context Handlers - heats/draws/codes/etc

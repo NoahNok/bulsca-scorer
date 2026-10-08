@@ -3,11 +3,12 @@ import { Entity, Event, HeatLane, TankDraw } from "./base"
 
 export type ViolationStatus = "SUBMITTED" | "ACCEPTED" | "REJECTED" | "APPEALED" | "REMOVED"
 
+// Display order: live states first, voided (rejected/removed) last
 export const violationStatuses: ViolationStatus[] = [
     "SUBMITTED",
     "ACCEPTED",
-    "REJECTED",
     "APPEALED",
+    "REJECTED",
     "REMOVED"
 ]
 
@@ -19,12 +20,16 @@ export function stateColor(submission: ViolationSubmission) {
         : "text-orange-700";
 }
 
+export function vtypeTileClass(vtype: Violation["vtype"] | undefined) {
+    return vtype === "DQ"
+        ? "bg-red-100 text-red-700"
+        : "bg-orange-100 text-orange-700";
+}
+
 export function statusTileClass(submission: ViolationSubmission) {
     if (isVoided(submission.status)) return "bg-gray-100 text-gray-400";
 
-    return submission.violation.vtype === "DQ"
-        ? "bg-red-100 text-red-700"
-        : "bg-orange-100 text-orange-700";
+    return vtypeTileClass(submission.violation.vtype);
 }
 
 export const statusLabels: Record<ViolationStatus, string> = {
@@ -52,6 +57,32 @@ export function statusBadgeClass(state: ViolationStatus) {
     }
 }
 
+export function timelineDotClass(state: ViolationStatus) {
+    switch (state) {
+        case "SUBMITTED":
+            return "bg-se";
+        case "ACCEPTED":
+            return "bg-green-500";
+        case "REJECTED":
+            return "bg-gray-400";
+        case "APPEALED":
+            return "bg-amber-500";
+        case "REMOVED":
+            return "bg-gray-300";
+        default:
+            return "bg-gray-300";
+    }
+}
+
+export type ViolationTimelineEntry = {
+    id: string
+    state: ViolationStatus
+    from: ViolationStatus | null
+    // ISO 8601
+    at: string | null
+    user: { name: string } | null
+}
+
 // Rejected/removed submissions no longer count against the entity
 export function isVoided(state: ViolationStatus) {
     return state === "REJECTED" || state === "REMOVED";
@@ -68,8 +99,12 @@ export function formatOrder(submission: ViolationSubmission) {
     return [tank, draw].filter(Boolean).join(" · ");
 }
 
+export function violationCode(violation: Violation) {
+    return `${violation.vtype === "DQ" ? "DQ" : "P"}${violation.code}`
+}
+
 export function submissionCode(submission: ViolationSubmission) {
-    return `${submission.violation.vtype === "DQ" ? "DQ" : "P"}${submission.violation.code}`
+    return violationCode(submission.violation)
 }
 
 export type ViolationSubmission = {
