@@ -24,7 +24,7 @@
     import { toastInfo, toastSuccess } from "@/lib/toast.svelte";
 
     import type { Competition, OOFHeat, OOFLane, SpeedEvent } from "@/types/base";
-    import { Link, useHttp, setLayoutProps } from "@inertiajs/svelte";
+    import { Link, useHttp } from "@inertiajs/svelte";
     import { ArrowRight, Check, House, Info, RefreshCcw } from "@lucide/svelte";
 
     let {
@@ -77,11 +77,6 @@
         }
     }
 
-    $effect(() => {
-        setLayoutProps({
-            nav: nav,
-        });
-    });
 
     // carry on after any places already saved for this heat
     let currentPlace = $state<number>(
@@ -263,23 +258,3 @@
         {/snippet}
     </ActionStatusModal>
 </section>
-
-{#snippet nav()}
-    <Link href={home({ competition: competition })} class="mr-auto">
-        <Button
-            label="Home"
-            variant="white"
-            class="w-full py-1 border border-black/10"
-        />
-    </Link>
-    <Link
-        href={selectOOFHeat({ competition: competition, event: event })}
-        class=""
-    >
-        <Button
-            label="Change Heat"
-            variant="white"
-            class="w-full py-1 border border-black/10"
-        />
-    </Link>
-{/snippet}

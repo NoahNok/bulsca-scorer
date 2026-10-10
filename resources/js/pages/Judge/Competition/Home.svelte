@@ -17,16 +17,16 @@
     } from "@/actions/App/Http/Controllers/DigitalJudge/ConfirmResultsController";
 
     import AppHead from "@/components/AppHead.svelte";
-    import ConfirmDialog from "@/components/ConfirmDialog.svelte";
     import EmptyState from "@/components/EmptyState.svelte";
     import SectionLabel from "@/components/SectionLabel.svelte";
 
+    import { confirm } from "@/lib/confirm";
     import { appState } from "@/lib/stores/appState";
     import { index } from "@/routes/judge";
     import { submissions } from "@/routes/judge/competition/violation";
 
     import { EventType, type Competition, type Event, type SERC } from "@/types/base";
-    import { page, Link, router, setLayoutProps } from "@inertiajs/svelte";
+    import { page, Link, router } from "@inertiajs/svelte";
     import {
         CalendarX,
         Check,
@@ -55,11 +55,18 @@
         $appState.activeCompetition = competition;
     });
 
-    $effect(() => {
-        setLayoutProps({ nav: nav });
-    });
-
     const isHead = $derived(page.props.judge.isHeadRef);
+
+    async function leaveCompetition() {
+        const ok = await confirm({
+            title: "Leave Competition",
+            description:
+                "Leave this competition? You can always come back later.",
+            confirmLabel: "Leave",
+        });
+
+        if (ok) router.visit(index());
+    }
 
     type EventLink = { href: string; icon: any; label: string };
 
@@ -135,6 +142,14 @@
             {/each}
         </div>
     {/if}
+
+    <button
+        type="button"
+        class="mt-8 cursor-pointer self-center text-sm text-gray-500 underline hover:text-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-se"
+        onclick={leaveCompetition}
+    >
+        Leave competition
+    </button>
 </section>
 
 {#snippet eventCard(event: Event, links: EventLink[])}
@@ -219,20 +234,5 @@
             Results Confirmed
         </span>
         <Check size={18} class="shrink-0 text-green-600" />
-    </div>
-{/snippet}
-
-{#snippet nav()}
-    <div class="mr-auto">
-        <ConfirmDialog
-            triggerLabel="Exit"
-            triggerClass=" py-1! border! border-black/10!"
-            triggerVariant="white"
-            title="Exit Competition"
-            description="Exit this competition? You can always come back later."
-            onConfirm={() => {
-                router.visit(index());
-            }}
-        />
     </div>
 {/snippet}

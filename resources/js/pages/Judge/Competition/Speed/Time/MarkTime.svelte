@@ -23,7 +23,7 @@
     import SectionLabel from "@/components/SectionLabel.svelte";
 
     import type { Competition, Heat, SpeedEvent } from "@/types/base";
-    import { Link, useHttp, setLayoutProps } from "@inertiajs/svelte";
+    import { Link, useHttp } from "@inertiajs/svelte";
     import { ArrowRight, Check, House, Info } from "@lucide/svelte";
 
     let {
@@ -78,11 +78,6 @@
         }
     }
 
-    $effect(() => {
-        setLayoutProps({
-            nav: nav,
-        });
-    });
 </script>
 
 <AppHead title="Heat {heat.heat} - Times - {event.name} - {competition.name}" />
@@ -173,23 +168,3 @@
         {/snippet}
     </ActionStatusModal>
 </section>
-
-{#snippet nav()}
-    <Link href={home({ competition: competition })} class="mr-auto">
-        <Button
-            label="Home"
-            variant="white"
-            class="w-full py-1 border border-black/10"
-        />
-    </Link>
-    <Link
-        href={selectTimeHeat({ competition: competition, event: event })}
-        class=""
-    >
-        <Button
-            label="Change Heat"
-            variant="white"
-            class="w-full py-1 border border-black/10"
-        />
-    </Link>
-{/snippet}

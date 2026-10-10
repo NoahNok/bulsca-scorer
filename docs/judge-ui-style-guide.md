@@ -24,7 +24,7 @@ The layouts provide the chrome, so pages don't add it themselves:
 
 | Layer | File | Provides |
 |---|---|---|
-| Shell | `layout/JudgeLayout.svelte` | Padded, centred column, bottom nav, referee banner, toasts, confirm dialog |
+| Shell | `layout/JudgeLayout.svelte` | Padded, centred column, bottom tab bar (`JudgeTabBar`: Home, DQ/Penalty, plus the "Referee mode" band for the head ref), toasts, confirm dialog |
 | Header | `layout/JudgeHeaderLayout.svelte` | "Digital Judge" header + icon and the space under it (all `Judge/*` pages) |
 
 The header defaults to the House icon linking to the competition home. Override
@@ -47,6 +47,21 @@ it from the page's `layout` export:
 Keep components (icons) inside the `header` object. If a component is a
 top-level value of the `layout` export, Inertia may read the export as a
 layout instead of props.
+
+### Navigation
+
+The bottom tab bar is the same on every competition page: **Home** (competition
+home) and **DQ/Penalty** (submissions list), with the current area highlighted.
+For the head ref, a "Referee mode" band sits along the top of the bar, so the
+role is always visible without covering the page header.
+On the dashboard (no competition joined) the bar has a single **Log out** tab
+instead; it confirms first and clears the remembered "Rejoin" competition.
+Keep it to a few large, labelled tabs; some judges aren't confident with phones.
+Pages don't add their own bottom navigation or floating buttons. Put
+page-specific actions in the page: `BackLink` for going up a level (e.g.
+"Change heat"), and a quiet text button (`text-sm text-gray-600 hover:text-se`
+with a 14px icon) beside the relevant heading for secondary actions (e.g.
+"Notes" on SERC marking, "Leave competition" at the bottom of the competition home).
 
 A page itself then follows this skeleton:
 
@@ -122,7 +137,7 @@ navigable row shows a `ChevronRight` that nudges right on hover.
 
 | Component | Use for |
 |---|---|
-| `Button` | All buttons. Variants: `primary` (main action), `secondary`, `success`, `danger`, `white` (bottom nav). Has `icon`, `loading`. Note it has `ml-auto` baked in, so pass `w-full` when stacking. |
+| `Button` | All buttons. Variants: `primary` (main action), `secondary`, `success`, `danger`, `white`. Has `icon`, `loading`. Note it has `ml-auto` baked in, so pass `w-full` when stacking. |
 | `Input` | Text, number and textarea fields. Use `variant="soft"` for new forms; it supports `label`, `hint`, and a required asterisk. |
 | `SearchInput` | Filtering a list in place. `bind:value`. |
 | `FilterChip` | Status/category filters with optional count. You own the state (`active`, `onclick`). |
@@ -133,6 +148,7 @@ navigable row shows a `ChevronRight` that nudges right on hover.
 | `EmptyState` | "Nothing here yet" with an icon, title, description, and optional children for an action. |
 | `LiveIndicator` | Pulsing dot for data that refreshes via `usePoll`. |
 | `BackLink` | "← Back to X" text link under the page title. |
+| `JudgeTabBar` | The fixed bottom tab bar (Home, DQ/Penalty). For the head ref it shows a teal "Referee mode" band along its top edge. Without a `competition` it shows only a "Log out" tab (the dashboard). Rendered by `JudgeLayout` on every competition page and the dashboard; pages never render it. |
 | `Spinner` | Loading. Centre it: `<div class="flex justify-center py-6"><Spinner /></div>`. |
 | `Stepper` / `Step` | Multi-step flows. Steps stay locked until previous ones complete; call `setTitle()` with the chosen value and `complete()` from the step's `step_controls`. |
 | `ConfirmDialog` | Any destructive or state-changing action (approve, reject, remove). Or `confirm()` from `lib/confirm` when imperative. |
@@ -233,6 +249,18 @@ and pending submissions warn (amber) but don't block confirmation.
 
 Missing values in results use an amber `–` rather than gray, since they need attention.
 
+### Centred pages (sign-in)
+
+Pages with no tab bar (`Auth/Login`) set `header: { overlay: true }` and centre a
+`mx-auto w-full max-w-sm` column in the viewport (`flex h-full flex-col justify-center`).
+Same title skeleton (`font-archivo` kicker + `h2`), a `text-sm text-gray-500`
+sentence, then the form directly below (`mt-6 grid gap-3`, no card around it).
+Code/PIN fields: `type="text" inputmode="numeric" autocomplete="one-time-code"`
+(not `type="number"`, which drops leading zeros and shows spinners), centred `font-mono`.
+Strip non-digits on input and `submit()` once the code is complete; keep the submit button as a fallback.
+An alternate sign-in method (password instead of PIN) is a quiet text button under the
+form that swaps the fields and `action`, not a second primary button.
+
 ### Privileged actions
 
 Group role-specific actions (e.g. head referee) in their own panel at the
@@ -305,8 +333,7 @@ title, a sentence of guidance if needed, then side-by-side `ConfirmDialog`s with
 
 ## Migrating an older page
 
-Some judge pages (Dashboard, Login) predate this guide. When you
-touch one:
+Some judge pages predate this guide. When you touch one:
 
 1. Remove anything the layouts now provide. The header is already done; check
    for leftover spacers.

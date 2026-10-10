@@ -50,7 +50,6 @@
         Link,
         router,
         useHttp,
-        setLayoutProps,
     } from "@inertiajs/svelte";
     import { ArrowRight, Check, House, NotebookText } from "@lucide/svelte";
 
@@ -175,10 +174,6 @@
     }
 
     $effect(() => {
-        setLayoutProps({
-            nav: nav,
-        });
-
         const originalVisit = router.visit.bind(router);
 
         const wrappedVisit = async function (
@@ -221,13 +216,20 @@
         class="mt-2 mb-4"
     />
 
+    <div class="flex items-center justify-between gap-3">
+        <SectionLabel>Marking</SectionLabel>
+        <button
+            type="button"
+            class="inline-flex shrink-0 cursor-pointer items-center gap-1 text-sm text-gray-600 hover:text-se focus:outline-none focus-visible:ring-2 focus-visible:ring-se"
+            onclick={loadNotes}
+        >
+            <NotebookText size={14} /> Notes
+        </button>
+    </div>
     <div class="flex items-end justify-between gap-3">
-        <div class="min-w-0">
-            <SectionLabel>Marking</SectionLabel>
-            <p class="font-archivo truncate text-xl font-semibold">
-                {showTeamNames ? entity.name : draw.text}
-            </p>
-        </div>
+        <p class="font-archivo min-w-0 truncate text-xl font-semibold">
+            {showTeamNames ? entity.name : draw.text}
+        </p>
         {#if showTeamNames}
             <span
                 class="mb-1 shrink-0 rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-semibold whitespace-nowrap text-gray-600"
@@ -384,14 +386,3 @@
         {/if}
     </GenericDialog>
 </section>
-
-{#snippet nav()}
-    <Link href={home({ competition: competition, serc: serc })} class="mr-auto">
-        <Button
-            label="SERC Home"
-            variant="white"
-            class="w-full py-1 border border-black/10"
-        />
-    </Link>
-    <Button label="Notes" onclick={() => loadNotes()} class=" py-1"></Button>
-{/snippet}

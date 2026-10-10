@@ -7,12 +7,19 @@
 </script>
 
 <script lang="ts">
-    import { loginPost } from "@/actions/App/Http/Controllers/DigitalJudge/JudgeController";
+    import {
+        login,
+        loginPassword,
+        loginPost,
+    } from "@/actions/App/Http/Controllers/DigitalJudge/JudgeController";
     import AppHead from "@/components/AppHead.svelte";
+    import Button from "@/components/Button.svelte";
     import Input from "@/components/input.svelte";
-    import { Form } from "@inertiajs/svelte";
-    import { ArrowRight } from "@lucide/svelte";
-    import { fade, slide } from "svelte/transition";
+    import { toastError, toastSuccess } from "@/lib/toast.svelte";
+    import { Form, Link, router } from "@inertiajs/svelte";
+    import { ArrowRight, KeyRound, Mail, RotateCw } from "@lucide/svelte";
+    import { untrack } from "svelte";
+    import { slide } from "svelte/transition";
 
     type LoginStage = "email" | "pin";
 
@@ -24,79 +31,199 @@
         email?: string;
     } = $props();
 
-    let pin = $state("");
+    let resending = $state(false);
+
+    // officials can skip the emailed PIN if they know their password
+    let method = $state<"pin" | "password">("pin");
+    // kept in state so it survives switching method
+    let emailInput = $state(untrack(() => email) ?? "");
+
+    // posting just the email sends a fresh PIN and re-renders this stage
+    function resendPin() {
+        router.post(
+            loginPost(),
+            { email, resend: 1 },
+            {
+                preserveScroll: true,
+                onStart: () => (resending = true),
+                onFinish: () => (resending = false),
+                onSuccess: () =>
+                    toastSuccess("New PIN sent", `Check your email`),
+                onError: (errors) =>
+                    toastError("Couldn't send a new PIN", errors.pin),
+            },
+        );
+    }
 </script>
 
 <AppHead title="Sign in" />
 
-<section class="flex flex-col items-center h-full justify-center -mt-6!">
-    <div class="my-12! flex flex-col items-center space-y-3 relative">
-        <FingerprintPattern
-            class="bg-se/20 rounded-full text-se p-3  shadow-md  "
-            size={64}
-        />
-        <h3 class=" capitalize!">Sign-in</h3>
-    </div>
+<section class="flex h-full flex-col justify-center">
+    <div class="mx-auto flex w-full max-w-sm flex-col">
+        <p class="font-archivo -mb-2">Officials</p>
+        <h2>{stage === "pin" ? "Enter your PIN" : "Sign in"}</h2>
 
-    <Form
-        {loginPost}
-        method="post"
-        class="flex flex-col w-[90%] items-center space-y-3!"
-    >
-        {#snippet children({ errors, processing, submit })}
-            {#if stage === "email"}
-                <Input
-                    placeholder="judge@scoring.events"
-                    type="email"
-                    name="email"
-                    class="  "
-                    onkeydown={(e) => {
-                        if (e.key === "Enter") {
-                            submit();
-                        }
-                    }}
-                />
-                {#if errors.email}
-                    <small
-                        transition:slide={{ duration: 100, y: 6 }}
-                        class="text-red-500 self-end! -mt-2!"
-                        >{errors.email}</small
-                    >
+        {#if stage === "email"}
+            <p class="mt-1 text-sm text-gray-500">
+                {#if method === "pin"}
+                    Use the email address you were registered with. We'll email
+                    you a 6-digit PIN.
+                {:else}
+                    Sign in with your email and password.
                 {/if}
+            </p>
 
-                <button
-                    class="bg-se/10 text-se py-2 px-4 rounded-lg font-semibold inline-flex items-center gap-2 ml-auto hover:bg-se hover:text-white transition-all group cursor-pointer shadow-md"
-                    >Sign-in <ArrowRight
-                        size={16}
-                        class="group-hover:translate-x-1 transition-transform mt-0.5"
+            <Form
+                action={method === "pin" ? loginPost() : loginPassword()}
+                class="mt-6 grid gap-3"
+            >
+                {#snippet children({ errors, processing })}
+                    <div>
+                        <Input
+                            variant="soft"
+                            label="Email"
+                            type="email"
+                            name="email"
+                            bind:value={emailInput}
+                            placeholder="judge@scoring.events"
+                            autocomplete="email"
+                            required
+                        />
+                        {#if errors.email}
+                            <p
+                                transition:slide={{ duration: 100 }}
+                                class="mt-1 text-xs text-red-600"
+                            >
+                                {errors.email}
+                            </p>
+                        {/if}
+                    </div>
+
+                    {#if method === "password"}
+                        <div transition:slide={{ duration: 150 }}>
+                            <input type="hidden" name="remember" value="1" />
+                            <Input
+                                variant="soft"
+                                label="Password"
+                                type="password"
+                                name="password"
+                                autocomplete="current-password"
+                                required
+                            />
+                            {#if errors.password}
+                                <p
+                                    transition:slide={{ duration: 100 }}
+                                    class="mt-1 text-xs text-red-600"
+                                >
+                                    {errors.password}
+                                </p>
+                            {/if}
+                        </div>
+                    {/if}
+
+                    <Button
                         type="submit"
+                        variant="primary"
+                        label={method === "pin" ? "Send PIN" : "Sign in"}
+                        icon={ArrowRight}
+                        iconClass="transition-transform group-hover:translate-x-0.5"
+                        loading={processing}
+                        class="mt-1 w-full"
                     />
-                </button>
-            {:else if stage === "pin"}
-                <small>Enter the 6-digit PIN sent to your email</small>
-                <input type="hidden" name="email" value={email} />
-                <Input
-                    placeholder="Enter your PIN"
-                    type="number"
-                    name="pin"
-                    class="  "
-                />
-                {#if errors.pin}
-                    <small
-                        transition:slide={{ duration: 100, y: 6 }}
-                        class="text-red-500 self-end! -mt-2!"
-                        >{errors.pin}</small
-                    >
-                {/if}
+                {/snippet}
+            </Form>
 
-                <button
-                    class="bg-se/10 text-se py-2 px-4 rounded-lg font-semibold inline-flex items-center gap-2 ml-auto hover:bg-se hover:text-white transition-all group cursor-pointer shadow-md"
-                    >Continue <ArrowRight
-                        size={16}
-                        class="group-hover:translate-x-1 transition-transform mt-0.5"
+            <button
+                type="button"
+                class="mt-3 inline-flex cursor-pointer items-center gap-1.5 self-center text-sm text-gray-600 hover:text-se focus:outline-none focus-visible:ring-2 focus-visible:ring-se"
+                onclick={() => (method = method === "pin" ? "password" : "pin")}
+            >
+                {#if method === "pin"}
+                    <KeyRound size={14} />
+                    Sign in with a password instead
+                {:else}
+                    <Mail size={14} />
+                    Email me a PIN instead
+                {/if}
+            </button>
+        {:else}
+            <div class="mt-3 flex items-center gap-3 rounded-xl bg-gray-50 p-3">
+                <span
+                    class="flex size-8 shrink-0 items-center justify-center rounded-md bg-se/20 text-teal-700"
+                >
+                    <Mail size={16} />
+                </span>
+                <div class="min-w-0 flex-1">
+                    <p class="text-xs text-gray-500">PIN sent to</p>
+                    <p class="truncate text-sm font-semibold text-gray-900">
+                        {email}
+                    </p>
+                </div>
+                <Link
+                    href={login()}
+                    class="shrink-0 text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-se"
+                >
+                    Change
+                </Link>
+            </div>
+
+            <Form action={loginPost()} class="mt-6 grid gap-3">
+                {#snippet children({ errors, processing, submit })}
+                    <input type="hidden" name="email" value={email} />
+                    <div>
+                        <Input
+                            variant="soft"
+                            label="6-digit PIN"
+                            type="text"
+                            name="pin"
+                            inputmode="numeric"
+                            autocomplete="one-time-code"
+                            pattern={"\\d{6}"}
+                            maxlength={6}
+                            placeholder="••••••"
+                            required
+                            class="text-center font-mono text-xl! tracking-[0.5em]"
+                            {@attach (el: HTMLElement) => el.focus()}
+                            oninput={(e: Event & { currentTarget: HTMLInputElement }) => {
+                                // digits only, and submit as soon as the PIN is complete
+                                const input = e.currentTarget;
+                                input.value = input.value.replace(/\D/g, "").slice(0, 6);
+                                if (input.value.length === 6 && !processing) {
+                                    submit();
+                                }
+                            }}
+                        />
+                        {#if errors.pin}
+                            <p
+                                transition:slide={{ duration: 100 }}
+                                class="mt-1 text-xs text-red-600"
+                            >
+                                {errors.pin}
+                            </p>
+                        {/if}
+                    </div>
+
+                    <Button
+                        type="submit"
+                        variant="primary"
+                        label="Sign in"
+                        icon={ArrowRight}
+                        iconClass="transition-transform group-hover:translate-x-0.5"
+                        loading={processing}
+                        class="mt-1 w-full"
                     />
-                </button>
-            {/if}
-        {/snippet}
-    </Form>
+                {/snippet}
+            </Form>
+
+            <button
+                type="button"
+                class="mt-3 inline-flex cursor-pointer items-center gap-1.5 self-center text-sm text-gray-600 hover:text-se focus:outline-none focus-visible:ring-2 focus-visible:ring-se disabled:cursor-default disabled:text-gray-400"
+                disabled={resending}
+                onclick={resendPin}
+            >
+                <RotateCw size={14} class={resending ? "animate-spin" : ""} />
+                Didn't get it? Send a new PIN
+            </button>
+        {/if}
+    </div>
 </section>
