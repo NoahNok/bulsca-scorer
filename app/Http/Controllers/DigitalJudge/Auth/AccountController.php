@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\DigitalJudge\Auth;
 
+use App\Http\Controllers\Concerns\ManagesDevices;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,6 +12,8 @@ use Inertia\Inertia;
 
 class AccountController extends Controller
 {
+    use ManagesDevices;
+
     public function account()
     {
         $judge = Auth::user();
@@ -18,6 +21,7 @@ class AccountController extends Controller
         return Inertia::render("Judge/Account", [
             'name'  => $judge->name,
             'email' => $judge->email,
+            'deviceCount' => $judge->logins()->count(),
         ]);
     }
 
@@ -45,8 +49,52 @@ class AccountController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
+        $request->user()->logoutOtherDevices();
+
         Inertia::flash('toast', ['variant' => 'success', 'title' => 'Password changed']);
 
         return back();
+    }
+
+    public function devices(Request $request)
+    {
+        return Inertia::render("Judge/AccountDevices", [
+            'devices' => $this->devicesFor($request->user()),
+        ]);
+    }
+
+    public function signOutDevice(Request $request, int $login)
+    {
+        if (!$this->revokeDevice($request->user(), $login)) {
+            Inertia::flash('toast', ['variant' => 'error', 'title' => 'Use Log out to sign out of this device']);
+
+            return back();
+        }
+
+        Inertia::flash('toast', ['variant' => 'success', 'title' => 'Device signed out']);
+
+        return back();
+    }
+
+    public function signOutOtherDevices(Request $request)
+    {
+        $request->user()->logoutOtherDevices();
+
+        Inertia::flash('toast', ['variant' => 'success', 'title' => 'Other devices signed out']);
+
+        return back();
+    }
+
+    public function signOutEverywhere(Request $request)
+    {
+        $user = $request->user();
+
+        Auth::guard('web')->logout();
+        $user->logoutEverywhere();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('judge.login');
     }
 }

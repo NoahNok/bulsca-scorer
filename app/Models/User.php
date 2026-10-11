@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Models\DigitalJudge\JudgeDQSubmission;
 use App\Models\Organisation\Organisation;
 use App\Models\Organisation\OrganisationUserAccess;
+use ALajusticia\Logins\Traits\HasLogins;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -16,7 +17,7 @@ use Spatie\OneTimePasswords\Models\Concerns\HasOneTimePasswords;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasPushSubscriptions, HasOneTimePasswords;
+    use HasApiTokens, HasFactory, Notifiable, HasPushSubscriptions, HasOneTimePasswords, HasLogins;
 
     /**
      * The attributes that are mass assignable.
@@ -61,6 +62,27 @@ class User extends Authenticatable
     public function isJudgeOnly(): bool
     {
         return (bool) $this->judge_only;
+    }
+
+    /**
+     * Sign out every other device, leaving the one making this request signed in.
+     */
+    public function logoutOtherDevices(): void
+    {
+        $this->logoutOthers();
+
+        // revoke() skips logins without a session id, which would leave their remember token working
+        $this->logins()->whereNull('session_id')->delete();
+    }
+
+    /**
+     * Sign out every device, including this one.
+     */
+    public function logoutEverywhere(): void
+    {
+        $this->logoutAll();
+
+        $this->logins()->delete();
     }
 
 

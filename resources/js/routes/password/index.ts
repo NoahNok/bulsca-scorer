@@ -79,7 +79,7 @@ email.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\Auth\NewPasswordController::reset
-* @see app/Http/Controllers/Auth/NewPasswordController.php:20
+* @see app/Http/Controllers/Auth/NewPasswordController.php:19
 * @route '/reset-password/{token}'
 */
 export const reset = (args: { token: string | number } | [token: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -94,7 +94,7 @@ reset.definition = {
 
 /**
 * @see \App\Http\Controllers\Auth\NewPasswordController::reset
-* @see app/Http/Controllers/Auth/NewPasswordController.php:20
+* @see app/Http/Controllers/Auth/NewPasswordController.php:19
 * @route '/reset-password/{token}'
 */
 reset.url = (args: { token: string | number } | [token: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -121,7 +121,7 @@ reset.url = (args: { token: string | number } | [token: string | number ] | stri
 
 /**
 * @see \App\Http\Controllers\Auth\NewPasswordController::reset
-* @see app/Http/Controllers/Auth/NewPasswordController.php:20
+* @see app/Http/Controllers/Auth/NewPasswordController.php:19
 * @route '/reset-password/{token}'
 */
 reset.get = (args: { token: string | number } | [token: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -131,7 +131,7 @@ reset.get = (args: { token: string | number } | [token: string | number ] | stri
 
 /**
 * @see \App\Http\Controllers\Auth\NewPasswordController::reset
-* @see app/Http/Controllers/Auth/NewPasswordController.php:20
+* @see app/Http/Controllers/Auth/NewPasswordController.php:19
 * @route '/reset-password/{token}'
 */
 reset.head = (args: { token: string | number } | [token: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -141,7 +141,7 @@ reset.head = (args: { token: string | number } | [token: string | number ] | str
 
 /**
 * @see \App\Http\Controllers\Auth\NewPasswordController::store
-* @see app/Http/Controllers/Auth/NewPasswordController.php:30
+* @see app/Http/Controllers/Auth/NewPasswordController.php:29
 * @route '/reset-password'
 */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -156,7 +156,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\Auth\NewPasswordController::store
-* @see app/Http/Controllers/Auth/NewPasswordController.php:30
+* @see app/Http/Controllers/Auth/NewPasswordController.php:29
 * @route '/reset-password'
 */
 store.url = (options?: RouteQueryOptions) => {
@@ -165,7 +165,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Auth\NewPasswordController::store
-* @see app/Http/Controllers/Auth/NewPasswordController.php:30
+* @see app/Http/Controllers/Auth/NewPasswordController.php:29
 * @route '/reset-password'
 */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({

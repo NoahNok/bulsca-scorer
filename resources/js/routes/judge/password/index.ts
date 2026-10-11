@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition } from './../
 import forgot05cbb4 from './forgot'
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\ForgotPasswordController::forgot
-* @see app/Http/Controllers/DigitalJudge/Auth/ForgotPasswordController.php:21
+* @see app/Http/Controllers/DigitalJudge/Auth/ForgotPasswordController.php:20
 * @route '//judge.localhost/v2/forgot-password'
 */
 export const forgot = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -17,7 +17,7 @@ forgot.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\ForgotPasswordController::forgot
-* @see app/Http/Controllers/DigitalJudge/Auth/ForgotPasswordController.php:21
+* @see app/Http/Controllers/DigitalJudge/Auth/ForgotPasswordController.php:20
 * @route '//judge.localhost/v2/forgot-password'
 */
 forgot.url = (options?: RouteQueryOptions) => {
@@ -26,7 +26,7 @@ forgot.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\ForgotPasswordController::forgot
-* @see app/Http/Controllers/DigitalJudge/Auth/ForgotPasswordController.php:21
+* @see app/Http/Controllers/DigitalJudge/Auth/ForgotPasswordController.php:20
 * @route '//judge.localhost/v2/forgot-password'
 */
 forgot.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -36,7 +36,7 @@ forgot.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\ForgotPasswordController::forgot
-* @see app/Http/Controllers/DigitalJudge/Auth/ForgotPasswordController.php:21
+* @see app/Http/Controllers/DigitalJudge/Auth/ForgotPasswordController.php:20
 * @route '//judge.localhost/v2/forgot-password'
 */
 forgot.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({

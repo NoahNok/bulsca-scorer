@@ -24,6 +24,8 @@ class PasswordController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
+        $request->user()->logoutOtherDevices();
+
         return back()->with('status', 'password-updated');
     }
 }

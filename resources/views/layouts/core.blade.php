@@ -236,6 +236,8 @@
                     <a href="{{ route('admin.index') }}"
                         class="text-sm/6 font-semibold text-gray-900 hover:text-se transition-colors">Admin</a>
                 @endif
+                <a href="{{ route('account') }}"
+                    class="text-sm/6 font-semibold text-gray-900 hover:text-se transition-colors">Account</a>
                 <a href="{{ route('logout') }}"
                     class="text-sm/6 font-semibold text-gray-900 hover:text-se transition-colors">Sign out <span
                         aria-hidden="true">&rarr;</span></a>
@@ -344,6 +346,9 @@
                             <a href="{{ route('admin.index') }}"
                                 class="-mx-3 block rounded-lg px-3 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Admin</a>
                         @endif
+
+                        <a href="{{ route('account') }}"
+                            class="-mx-3 block rounded-lg px-3 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Account</a>
 
                         <hr class="spacer my-4!">
 

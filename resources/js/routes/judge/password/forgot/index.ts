@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\ForgotPasswordController::post
-* @see app/Http/Controllers/DigitalJudge/Auth/ForgotPasswordController.php:28
+* @see app/Http/Controllers/DigitalJudge/Auth/ForgotPasswordController.php:27
 * @route '//judge.localhost/v2/forgot-password'
 */
 export const post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -16,7 +16,7 @@ post.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\ForgotPasswordController::post
-* @see app/Http/Controllers/DigitalJudge/Auth/ForgotPasswordController.php:28
+* @see app/Http/Controllers/DigitalJudge/Auth/ForgotPasswordController.php:27
 * @route '//judge.localhost/v2/forgot-password'
 */
 post.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ post.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\ForgotPasswordController::post
-* @see app/Http/Controllers/DigitalJudge/Auth/ForgotPasswordController.php:28
+* @see app/Http/Controllers/DigitalJudge/Auth/ForgotPasswordController.php:27
 * @route '//judge.localhost/v2/forgot-password'
 */
 post.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({

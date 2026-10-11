@@ -206,7 +206,7 @@ logout.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::account
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:14
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:17
 * @route '//judge.localhost/v2/account'
 */
 export const account = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -221,7 +221,7 @@ account.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::account
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:14
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:17
 * @route '//judge.localhost/v2/account'
 */
 account.url = (options?: RouteQueryOptions) => {
@@ -230,7 +230,7 @@ account.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::account
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:14
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:17
 * @route '//judge.localhost/v2/account'
 */
 account.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -240,7 +240,7 @@ account.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::account
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:14
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:17
 * @route '//judge.localhost/v2/account'
 */
 account.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({

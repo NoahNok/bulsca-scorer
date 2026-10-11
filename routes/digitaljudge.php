@@ -45,6 +45,10 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
             Route::get('account', [AccountController::class, 'account'])->name('judge.account');
             Route::post('account', [AccountController::class, 'updateAccount'])->name('judge.account.update');
             Route::post('account/password', [AccountController::class, 'updatePassword'])->name('judge.account.password');
+            Route::get('account/devices', [AccountController::class, 'devices'])->name('judge.account.devices');
+            Route::delete('account/devices/{login}', [AccountController::class, 'signOutDevice'])->whereNumber('login')->name('judge.account.devices.destroy');
+            Route::delete('account/devices', [AccountController::class, 'signOutOtherDevices'])->name('judge.account.devices.destroy-others');
+            Route::post('account/devices/sign-out-everywhere', [AccountController::class, 'signOutEverywhere'])->name('judge.account.devices.sign-out-everywhere');
 
 
 

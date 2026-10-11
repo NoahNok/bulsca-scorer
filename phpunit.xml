@@ -21,8 +21,9 @@
         <env name="APP_ENV" value="testing"/>
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="CACHE_DRIVER" value="array"/>
-        <!-- <env name="DB_CONNECTION" value="sqlite"/> -->
-        <!-- <env name="DB_DATABASE" value=":memory:"/> -->
+        <!-- RefreshDatabase drops every table, so tests get their own databases (see CreatesApplication) -->
+        <env name="DB_DATABASE" value="scoring_test" force="true"/>
+        <env name="WHAT_IF_DB_DATABASE" value="bulsca_whatif_test" force="true"/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>

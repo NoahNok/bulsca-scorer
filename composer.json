@@ -9,6 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
+        "alajusticia/laravel-logins": "^1.10",
         "doctrine/dbal": "^3.10",
         "guzzlehttp/guzzle": "^7.2",
         "inertiajs/inertia-laravel": "^3.1",
@@ -26,7 +27,8 @@
         "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-data": "^4.7",
         "spatie/laravel-one-time-passwords": "^1.1",
-        "symfony/expression-language": "^7.3"
+        "symfony/expression-language": "^7.3",
+        "whichbrowser/parser": "^2.1"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

@@ -288,6 +288,50 @@ comps.options = (options?: RouteQueryOptions): RouteDefinition<'options'> => ({
 })
 
 /**
+* @see \App\Http\Controllers\AccountController::account
+* @see app/Http/Controllers/AccountController.php:29
+* @route '/account'
+*/
+export const account = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: account.url(options),
+    method: 'get',
+})
+
+account.definition = {
+    methods: ["get","head"],
+    url: '/account',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\AccountController::account
+* @see app/Http/Controllers/AccountController.php:29
+* @route '/account'
+*/
+account.url = (options?: RouteQueryOptions) => {
+    return account.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\AccountController::account
+* @see app/Http/Controllers/AccountController.php:29
+* @route '/account'
+*/
+account.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: account.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\AccountController::account
+* @see app/Http/Controllers/AccountController.php:29
+* @route '/account'
+*/
+account.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: account.url(options),
+    method: 'head',
+})
+
+/**
 * @see \App\Http\Controllers\Landing\LandingController::explore
 * @see app/Http/Controllers/Landing/LandingController.php:15
 * @route '/explore'

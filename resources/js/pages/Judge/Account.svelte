@@ -9,6 +9,7 @@
 
 <script lang="ts">
     import {
+        devices,
         updateAccount,
         updatePassword,
     } from "@/actions/App/Http/Controllers/DigitalJudge/Auth/AccountController";
@@ -17,16 +18,18 @@
     import Button from "@/components/Button.svelte";
     import Input from "@/components/input.svelte";
     import SectionLabel from "@/components/SectionLabel.svelte";
-    import { Form } from "@inertiajs/svelte";
-    import { Check, KeyRound } from "@lucide/svelte";
+    import { Form, Link } from "@inertiajs/svelte";
+    import { Check, ChevronRight, KeyRound, MonitorSmartphone } from "@lucide/svelte";
     import { slide } from "svelte/transition";
 
     let {
         name,
         email,
+        deviceCount,
     }: {
         name: string;
         email: string;
+        deviceCount: number;
     } = $props();
 </script>
 
@@ -52,6 +55,24 @@
             <dd class="min-w-0 truncate text-sm font-semibold">{email}</dd>
         </div>
     </dl>
+
+    <Link
+        href={devices()}
+        class="group mt-3 flex items-center gap-3 rounded-xl border bg-white p-3 shadow-sm hover:border-se hover:shadow-md"
+    >
+        <span
+            class="flex size-8 shrink-0 items-center justify-center rounded-md bg-gray-100 text-gray-600 group-hover:bg-se/20"
+        >
+            <MonitorSmartphone size={16} />
+        </span>
+        <span class="flex-1">
+            <span class="font-archivo block text-sm">Signed-in devices</span>
+            <span class="block text-xs text-gray-500">
+                {deviceCount === 1 ? "1 device" : `${deviceCount} devices`}
+            </span>
+        </span>
+        <ChevronRight size={16} class="text-gray-400" />
+    </Link>
 
     <Form
         action={updateAccount()}

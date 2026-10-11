@@ -1,7 +1,8 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition } from './../../../wayfinder'
+import devices95ecd0 from './devices'
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::update
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:24
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:28
 * @route '//judge.localhost/v2/account'
 */
 export const update = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -16,7 +17,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::update
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:24
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:28
 * @route '//judge.localhost/v2/account'
 */
 update.url = (options?: RouteQueryOptions) => {
@@ -25,7 +26,7 @@ update.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::update
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:24
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:28
 * @route '//judge.localhost/v2/account'
 */
 update.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -35,7 +36,7 @@ update.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::password
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:37
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:41
 * @route '//judge.localhost/v2/account/password'
 */
 export const password = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -50,7 +51,7 @@ password.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::password
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:37
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:41
 * @route '//judge.localhost/v2/account/password'
 */
 password.url = (options?: RouteQueryOptions) => {
@@ -59,7 +60,7 @@ password.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::password
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:37
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:41
 * @route '//judge.localhost/v2/account/password'
 */
 password.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -67,9 +68,54 @@ password.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     method: 'post',
 })
 
+/**
+* @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::devices
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:59
+* @route '//judge.localhost/v2/account/devices'
+*/
+export const devices = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: devices.url(options),
+    method: 'get',
+})
+
+devices.definition = {
+    methods: ["get","head"],
+    url: '//judge.localhost/v2/account/devices',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::devices
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:59
+* @route '//judge.localhost/v2/account/devices'
+*/
+devices.url = (options?: RouteQueryOptions) => {
+    return devices.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::devices
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:59
+* @route '//judge.localhost/v2/account/devices'
+*/
+devices.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: devices.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::devices
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:59
+* @route '//judge.localhost/v2/account/devices'
+*/
+devices.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: devices.url(options),
+    method: 'head',
+})
+
 const account = {
     update: Object.assign(update, update),
     password: Object.assign(password, password),
+    devices: Object.assign(devices, devices95ecd0),
 }
 
 export default account

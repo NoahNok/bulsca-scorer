@@ -4,8 +4,163 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5a7b9160f57d16434d738bb8c611c434",
+    "content-hash": "801b4b8d99556f442ec26613730ee4f8",
     "packages": [
+        {
+            "name": "alajusticia/laravel-expirable",
+            "version": "v2.5.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alajusticia/laravel-expirable.git",
+                "reference": "64736dd2706f836c66220cfa839dd06e9e4837c7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alajusticia/laravel-expirable/zipball/64736dd2706f836c66220cfa839dd06e9e4837c7",
+                "reference": "64736dd2706f836c66220cfa839dd06e9e4837c7",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/console": "^10.0|^11.0|^12.0|^13.0",
+                "illuminate/database": "^10.0|^11.0|^12.0|^13.0",
+                "illuminate/support": "^10.0|^11.0|^12.0|^13.0",
+                "nesbot/carbon": "^2.67|^3.0",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.6",
+                "orchestra/testbench": "^10.0|^11.0",
+                "phpunit/phpunit": "^11.5.55|^12.5.23"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "ALajusticia\\Expirable\\ExpirableServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "ALajusticia\\Expirable\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anthony Lajusticia",
+                    "email": "anthonylajusticia@gmail.com",
+                    "homepage": "https://anthonylajusticia.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Make Eloquent models expirable",
+            "support": {
+                "issues": "https://github.com/alajusticia/laravel-expirable/issues",
+                "source": "https://github.com/alajusticia/laravel-expirable/tree/v2.5.1"
+            },
+            "funding": [
+                {
+                    "url": "https://ko-fi.com/alajusticia",
+                    "type": "ko_fi"
+                }
+            ],
+            "time": "2026-04-19T18:00:21+00:00"
+        },
+        {
+            "name": "alajusticia/laravel-logins",
+            "version": "v1.10.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alajusticia/laravel-logins.git",
+                "reference": "1b28af565e3aff3427ca7ec063bb2c0bfe301932"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alajusticia/laravel-logins/zipball/1b28af565e3aff3427ca7ec063bb2c0bfe301932",
+                "reference": "1b28af565e3aff3427ca7ec063bb2c0bfe301932",
+                "shasum": ""
+            },
+            "require": {
+                "alajusticia/laravel-expirable": "^2.5",
+                "illuminate/auth": "^10.0|^11.0|^12.0|^13.0",
+                "illuminate/collections": "^10.0|^11.0|^12.0|^13.0",
+                "illuminate/contracts": "^10.0|^11.0|^12.0|^13.0",
+                "illuminate/database": "^10.0|^11.0|^12.0|^13.0",
+                "illuminate/http": "^10.0|^11.0|^12.0|^13.0",
+                "illuminate/queue": "^10.0|^11.0|^12.0|^13.0",
+                "illuminate/session": "^10.0|^11.0|^12.0|^13.0",
+                "illuminate/support": "^10.0|^11.0|^12.0|^13.0",
+                "laravel/prompts": "^0.3",
+                "nesbot/carbon": "^2.67|^3.0",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "buggregator/trap": "^1.4",
+                "jenssegers/agent": "^2.6",
+                "laravel/fortify": "^1.21",
+                "laravel/sanctum": "^4.0",
+                "livewire/livewire": "^3.4|^4.2",
+                "mockery/mockery": "^1.6",
+                "orchestra/testbench": "^10.0|^11.0",
+                "phpunit/phpunit": "^11.5.55|^12.5.23",
+                "stevebauman/location": "^7.1",
+                "whichbrowser/parser": "^2.1"
+            },
+            "suggest": {
+                "ext-mbstring": "You must enable the PHP mbstring extension. If the extension is not available, you must install symfony/polyfill-mbstring."
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "ALajusticia\\Logins\\LoginsServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "ALajusticia\\Logins\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anthony Lajusticia",
+                    "email": "anthonylajusticia@gmail.com",
+                    "homepage": "https://anthonylajusticia.com"
+                }
+            ],
+            "description": "Session management in Laravel apps, user notifications on new access, support for multiple separate remember tokens, IP geolocation, User-Agent parser",
+            "keywords": [
+                "Authentication",
+                "IP",
+                "guard",
+                "laravel",
+                "login",
+                "remember",
+                "security",
+                "session",
+                "user-agent"
+            ],
+            "support": {
+                "issues": "https://github.com/alajusticia/laravel-logins/issues",
+                "source": "https://github.com/alajusticia/laravel-logins/tree/v1.10.0"
+            },
+            "funding": [
+                {
+                    "url": "https://ko-fi.com/alajusticia",
+                    "type": "ko_fi"
+                }
+            ],
+            "time": "2026-10-09T10:38:38+00:00"
+        },
         {
             "name": "bacon/bacon-qr-code",
             "version": "2.0.8",
@@ -9495,6 +9650,69 @@
                 "source": "https://github.com/webmozarts/assert/tree/2.4.0"
             },
             "time": "2026-05-20T13:07:01+00:00"
+        },
+        {
+            "name": "whichbrowser/parser",
+            "version": "v2.1.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/WhichBrowser/Parser-PHP.git",
+                "reference": "581d614d686bfbec3529ad60562a5213ac5d8d72"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/WhichBrowser/Parser-PHP/zipball/581d614d686bfbec3529ad60562a5213ac5d8d72",
+                "reference": "581d614d686bfbec3529ad60562a5213ac5d8d72",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0",
+                "psr/cache": "^1.0 || ^2.0 || ^3.0"
+            },
+            "require-dev": {
+                "cache/array-adapter": "^1.1",
+                "icomefromthenet/reverse-regex": "0.0.6.3",
+                "php-coveralls/php-coveralls": "^2.0",
+                "phpunit/php-code-coverage": "^5.0 || ^7.0",
+                "phpunit/phpunit": "^6.0 || ^8.0",
+                "squizlabs/php_codesniffer": "^3.5",
+                "symfony/yaml": "~3.4 || ~4.0"
+            },
+            "suggest": {
+                "cache/array-adapter": "Allows testing of the caching functionality"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "WhichBrowser\\": [
+                        "src/"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Niels Leenheer",
+                    "email": "niels@leenheer.nl",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Useragent sniffing library for PHP",
+            "homepage": "http://whichbrowser.net",
+            "keywords": [
+                "browser",
+                "sniffing",
+                "ua",
+                "useragent"
+            ],
+            "support": {
+                "issues": "https://github.com/WhichBrowser/Parser-PHP/issues",
+                "source": "https://github.com/WhichBrowser/Parser-PHP/tree/v2.1.8"
+            },
+            "time": "2024-04-17T12:47:41+00:00"
         }
     ],
     "packages-dev": [

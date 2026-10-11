@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../wayfinder'
 /**
 * @see \App\Http\Controllers\AccountController::search
-* @see app/Http/Controllers/AccountController.php:10
+* @see app/Http/Controllers/AccountController.php:13
 * @route '/accounts/search/{email}'
 */
 export const search = (args: { email: string | number } | [email: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ search.definition = {
 
 /**
 * @see \App\Http\Controllers\AccountController::search
-* @see app/Http/Controllers/AccountController.php:10
+* @see app/Http/Controllers/AccountController.php:13
 * @route '/accounts/search/{email}'
 */
 search.url = (args: { email: string | number } | [email: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -43,7 +43,7 @@ search.url = (args: { email: string | number } | [email: string | number ] | str
 
 /**
 * @see \App\Http\Controllers\AccountController::search
-* @see app/Http/Controllers/AccountController.php:10
+* @see app/Http/Controllers/AccountController.php:13
 * @route '/accounts/search/{email}'
 */
 search.get = (args: { email: string | number } | [email: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -53,7 +53,7 @@ search.get = (args: { email: string | number } | [email: string | number ] | str
 
 /**
 * @see \App\Http\Controllers\AccountController::search
-* @see app/Http/Controllers/AccountController.php:10
+* @see app/Http/Controllers/AccountController.php:13
 * @route '/accounts/search/{email}'
 */
 search.head = (args: { email: string | number } | [email: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({

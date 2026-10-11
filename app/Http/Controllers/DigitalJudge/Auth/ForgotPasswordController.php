@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
 use Spatie\OneTimePasswords\Enums\ConsumeOneTimePasswordResult;
 use Inertia\Inertia;
@@ -81,8 +80,10 @@ class ForgotPasswordController extends Controller
 
         $judge->forceFill([
             'password' => Hash::make($request->password),
-            'remember_token' => Str::random(60),
         ])->save();
+
+        // whoever knew the old password shouldn't stay signed in anywhere
+        $judge->logoutEverywhere();
 
         if (!$judge->hasVerifiedEmail()) {
             $judge->markEmailAsVerified();
