@@ -50,7 +50,7 @@ login.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\RegisterController::register
-* @see app/Http/Controllers/DigitalJudge/Auth/RegisterController.php:16
+* @see app/Http/Controllers/DigitalJudge/Auth/RegisterController.php:17
 * @route '//judge.localhost/v2/register'
 */
 export const register = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -65,7 +65,7 @@ register.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\RegisterController::register
-* @see app/Http/Controllers/DigitalJudge/Auth/RegisterController.php:16
+* @see app/Http/Controllers/DigitalJudge/Auth/RegisterController.php:17
 * @route '//judge.localhost/v2/register'
 */
 register.url = (options?: RouteQueryOptions) => {
@@ -74,7 +74,7 @@ register.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\RegisterController::register
-* @see app/Http/Controllers/DigitalJudge/Auth/RegisterController.php:16
+* @see app/Http/Controllers/DigitalJudge/Auth/RegisterController.php:17
 * @route '//judge.localhost/v2/register'
 */
 register.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -84,7 +84,7 @@ register.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\RegisterController::register
-* @see app/Http/Controllers/DigitalJudge/Auth/RegisterController.php:16
+* @see app/Http/Controllers/DigitalJudge/Auth/RegisterController.php:17
 * @route '//judge.localhost/v2/register'
 */
 register.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({

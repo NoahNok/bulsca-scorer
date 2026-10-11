@@ -46,6 +46,11 @@ class Competition extends Model implements IInvitable, IJsonable
         'serc_writer' => 'SERC Writer',
     ];
 
+    public static $officialRoles = [
+        'official' => 'Official',
+        'referee' => 'Referee',
+    ];
+
     protected $casts = [
         'when' => 'datetime',
         'serc_start_time' => 'datetime',
@@ -689,6 +694,25 @@ class Competition extends Model implements IInvitable, IJsonable
         $this->officials()->syncWithoutDetaching([
             $user->id => ['role' => $role],
         ]);
+    }
+
+    /**
+     * Returns false if the user already officiates this competition (their role is left alone).
+     */
+    public function addOfficial(User $user, string $role = 'official'): bool
+    {
+        if ($this->officials()->whereKey($user->id)->exists()) {
+            return false;
+        }
+
+        $this->officials()->attach($user, ['role' => $role]);
+
+        return true;
+    }
+
+    public function removeOfficial(User $user): void
+    {
+        $this->officials()->detach($user);
     }
 
     #[Override]

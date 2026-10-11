@@ -5,6 +5,13 @@ DQ/Penalty pages (`pages/Judge/Competition/Violation/*`) are the reference
 implementation. Use them as the example when building something new or
 migrating an older page.
 
+**Scope:** this guide covers only the Svelte/Inertia Digital Judge app
+(`resources/js`, served on the `judge.` subdomain). The main site, where
+organisers set up competitions, is Blade + Alpine in `resources/views`, styled
+with the global classes in `resources/css/app.css`. It follows
+[`main-site-ui-style-guide.md`](main-site-ui-style-guide.md) instead. The two
+don't share components, tokens or patterns.
+
 ## Principles
 
 - **Phone first, poolside.** Judges use this one-handed on a phone, often

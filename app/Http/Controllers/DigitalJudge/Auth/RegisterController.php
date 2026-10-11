@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 
@@ -20,9 +21,16 @@ class RegisterController extends Controller
 
     public function registerPost(Request $request)
     {
+        // an account a competition admin made for this email (by adding them as an official) can be
+        // claimed until it's verified. The PIN below still proves they own the email.
+        $unclaimed = User::where('email', $request->email)
+            ->where('judge_only', true)
+            ->whereNull('email_verified_at')
+            ->first();
+
         $request->validate([
             'name'     => ['required', 'string', 'max:255'],
-            'email'    => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
+            'email'    => ['required', 'string', 'email', 'max:255', Rule::unique(User::class)->ignore($unclaimed)],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -30,7 +38,7 @@ class RegisterController extends Controller
             return back()->withErrors(['email' => $error])->withInput();
         }
 
-        $judge = new User();
+        $judge = $unclaimed ?? new User();
         $judge->name = $request->name;
         $judge->email = $request->email;
         $judge->password = Hash::make($request->password);

@@ -3,6 +3,7 @@ import create4f58d6 from './create'
 import view381131 from './view'
 import settings69f00b from './settings'
 import accountsDb024e from './accounts'
+import officialsF4ad44 from './officials'
 import leagues from './leagues'
 import events735790 from './events'
 import teamsE68ab5 from './teams'
@@ -444,6 +445,74 @@ accounts.head = (args: { comp: number | { id: number } } | [comp: number | { id:
 })
 
 /**
+* @see \App\Http\Controllers\CompetitionOfficialsController::officials
+* @see app/Http/Controllers/CompetitionOfficialsController.php:17
+* @route '/comps/{comp}/officials'
+*/
+export const officials = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: officials.url(args, options),
+    method: 'get',
+})
+
+officials.definition = {
+    methods: ["get","head"],
+    url: '/comps/{comp}/officials',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\CompetitionOfficialsController::officials
+* @see app/Http/Controllers/CompetitionOfficialsController.php:17
+* @route '/comps/{comp}/officials'
+*/
+officials.url = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { comp: args }
+    }
+
+    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+        args = { comp: args.id }
+    }
+
+    if (Array.isArray(args)) {
+        args = {
+            comp: args[0],
+        }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+        comp: typeof args.comp === 'object'
+        ? args.comp.id
+        : args.comp,
+    }
+
+    return officials.definition.url
+            .replace('{comp}', parsedArgs.comp.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\CompetitionOfficialsController::officials
+* @see app/Http/Controllers/CompetitionOfficialsController.php:17
+* @route '/comps/{comp}/officials'
+*/
+officials.get = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: officials.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\CompetitionOfficialsController::officials
+* @see app/Http/Controllers/CompetitionOfficialsController.php:17
+* @route '/comps/{comp}/officials'
+*/
+officials.head = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: officials.url(args, options),
+    method: 'head',
+})
+
+/**
 * @see \App\Http\Controllers\CompetitionController::events
 * @see app/Http/Controllers/CompetitionController.php:43
 * @route '/comps/{comp}/events'
@@ -859,6 +928,7 @@ const comps = {
     settings: Object.assign(settings, settings69f00b),
     delete: Object.assign(deleteMethod, deleteMethod),
     accounts: Object.assign(accounts, accountsDb024e),
+    officials: Object.assign(officials, officialsF4ad44),
     leagues: Object.assign(leagues, leagues),
     events: Object.assign(events, events735790),
     teams: Object.assign(teams, teamsE68ab5),

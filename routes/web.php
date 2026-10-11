@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 use App\Http\Controllers\CompetitionController;
+use App\Http\Controllers\CompetitionOfficialsController;
 use App\Http\Controllers\CompetitorController;
 use App\Http\Controllers\DigitalJudge\DigitalJudgeController;
 use App\Http\Controllers\EntityController;
@@ -151,6 +152,12 @@ Route::middleware(['auth', 'not.judge-only'])->group(function () {
             Route::delete('/account/{account}', [CompetitionController::class, 'deleteCompetitionAccount'])->name('comps.accounts.delete');
             Route::post('/accounts/invitee', [CompetitionController::class, 'inviteCompetitionAccount'])->name('comps.accounts.invite');
             Route::post('/account/serc-writer/new-password', [CompetitionController::class, 'resetSercWriterAccountPassword'])->name('comps.accounts.serc-writer.new-password');
+
+            Route::get('/officials', [CompetitionOfficialsController::class, 'index'])->name('comps.officials');
+            Route::post('/officials', [CompetitionOfficialsController::class, 'store'])->name('comps.officials.store');
+            Route::get('/officials/search', [CompetitionOfficialsController::class, 'search'])->name('comps.officials.search');
+            Route::post('/officials/{official}', [CompetitionOfficialsController::class, 'update'])->whereNumber('official')->name('comps.officials.update');
+            Route::delete('/officials/{official}', [CompetitionOfficialsController::class, 'destroy'])->whereNumber('official')->name('comps.officials.destroy');
         });
 
         Route::prefix('/leagues')->middleware('can:access,comp,"teams"')->group(function () {

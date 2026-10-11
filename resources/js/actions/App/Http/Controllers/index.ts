@@ -5,6 +5,7 @@ import WhatIf from './WhatIf'
 import PublicStatsController from './PublicStatsController'
 import ResultsToJSONController from './ResultsToJSONController'
 import CompetitionController from './CompetitionController'
+import CompetitionOfficialsController from './CompetitionOfficialsController'
 import LeagueController from './LeagueController'
 import SpeedsEventController from './SpeedsEventController'
 import SERCController from './SERCController'
@@ -33,6 +34,7 @@ const Controllers = {
     PublicStatsController: Object.assign(PublicStatsController, PublicStatsController),
     ResultsToJSONController: Object.assign(ResultsToJSONController, ResultsToJSONController),
     CompetitionController: Object.assign(CompetitionController, CompetitionController),
+    CompetitionOfficialsController: Object.assign(CompetitionOfficialsController, CompetitionOfficialsController),
     LeagueController: Object.assign(LeagueController, LeagueController),
     SpeedsEventController: Object.assign(SpeedsEventController, SpeedsEventController),
     SERCController: Object.assign(SERCController, SERCController),

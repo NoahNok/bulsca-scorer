@@ -81,6 +81,11 @@
             <a href="{{ route('comps.results', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.results')) active @endif">Results</a>
         @endcan
 
+        @can('access', [$comp, 'admin'])
+            <a href="{{ route('comps.officials', $comp) }}"
+                class="@if (Str::startsWith(Route::currentRouteName(), 'comps.officials')) active @endif">Officials</a>
+        @endcan
+
     </div>
 
     @if ($comp->statusMessages)
