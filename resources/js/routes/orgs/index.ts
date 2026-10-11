@@ -458,8 +458,76 @@ accounts.head = (args: { organisation: number | { id: number } } | [organisation
 })
 
 /**
+* @see \App\Http\Controllers\Organisation\OrganisationController::officials
+* @see app/Http/Controllers/Organisation/OrganisationController.php:131
+* @route '/organisation/{organisation}/officials'
+*/
+export const officials = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: officials.url(args, options),
+    method: 'get',
+})
+
+officials.definition = {
+    methods: ["get","head"],
+    url: '/organisation/{organisation}/officials',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\Organisation\OrganisationController::officials
+* @see app/Http/Controllers/Organisation/OrganisationController.php:131
+* @route '/organisation/{organisation}/officials'
+*/
+officials.url = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { organisation: args }
+    }
+
+    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+        args = { organisation: args.id }
+    }
+
+    if (Array.isArray(args)) {
+        args = {
+            organisation: args[0],
+        }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+        organisation: typeof args.organisation === 'object'
+        ? args.organisation.id
+        : args.organisation,
+    }
+
+    return officials.definition.url
+            .replace('{organisation}', parsedArgs.organisation.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Organisation\OrganisationController::officials
+* @see app/Http/Controllers/Organisation/OrganisationController.php:131
+* @route '/organisation/{organisation}/officials'
+*/
+officials.get = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: officials.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Organisation\OrganisationController::officials
+* @see app/Http/Controllers/Organisation/OrganisationController.php:131
+* @route '/organisation/{organisation}/officials'
+*/
+officials.head = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: officials.url(args, options),
+    method: 'head',
+})
+
+/**
 * @see \App\Http\Controllers\Organisation\OrganisationController::infractions
-* @see app/Http/Controllers/Organisation/OrganisationController.php:295
+* @see app/Http/Controllers/Organisation/OrganisationController.php:305
 * @route '/organisation/{organisation}/infractions'
 */
 export const infractions = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -474,7 +542,7 @@ infractions.definition = {
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::infractions
-* @see app/Http/Controllers/Organisation/OrganisationController.php:295
+* @see app/Http/Controllers/Organisation/OrganisationController.php:305
 * @route '/organisation/{organisation}/infractions'
 */
 infractions.url = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -507,7 +575,7 @@ infractions.url = (args: { organisation: number | { id: number } } | [organisati
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::infractions
-* @see app/Http/Controllers/Organisation/OrganisationController.php:295
+* @see app/Http/Controllers/Organisation/OrganisationController.php:305
 * @route '/organisation/{organisation}/infractions'
 */
 infractions.get = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -517,7 +585,7 @@ infractions.get = (args: { organisation: number | { id: number } } | [organisati
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::infractions
-* @see app/Http/Controllers/Organisation/OrganisationController.php:295
+* @see app/Http/Controllers/Organisation/OrganisationController.php:305
 * @route '/organisation/{organisation}/infractions'
 */
 infractions.head = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -527,7 +595,7 @@ infractions.head = (args: { organisation: number | { id: number } } | [organisat
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::scoring
-* @see app/Http/Controllers/Organisation/OrganisationController.php:229
+* @see app/Http/Controllers/Organisation/OrganisationController.php:239
 * @route '/organisation/{organisation}/scoring'
 */
 export const scoring = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -542,7 +610,7 @@ scoring.definition = {
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::scoring
-* @see app/Http/Controllers/Organisation/OrganisationController.php:229
+* @see app/Http/Controllers/Organisation/OrganisationController.php:239
 * @route '/organisation/{organisation}/scoring'
 */
 scoring.url = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -575,7 +643,7 @@ scoring.url = (args: { organisation: number | { id: number } } | [organisation: 
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::scoring
-* @see app/Http/Controllers/Organisation/OrganisationController.php:229
+* @see app/Http/Controllers/Organisation/OrganisationController.php:239
 * @route '/organisation/{organisation}/scoring'
 */
 scoring.get = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -585,7 +653,7 @@ scoring.get = (args: { organisation: number | { id: number } } | [organisation: 
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::scoring
-* @see app/Http/Controllers/Organisation/OrganisationController.php:229
+* @see app/Http/Controllers/Organisation/OrganisationController.php:239
 * @route '/organisation/{organisation}/scoring'
 */
 scoring.head = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -670,6 +738,7 @@ const orgs = {
     update: Object.assign(update, update),
     destroy: Object.assign(destroy, destroy),
     accounts: Object.assign(accounts, accountsDb024e),
+    officials: Object.assign(officials, officials),
     invite: Object.assign(invite, invite),
     account: Object.assign(account, account),
     infractions: Object.assign(infractions, infractions740e82),

@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::post
-* @see app/Http/Controllers/Organisation/OrganisationController.php:131
+* @see app/Http/Controllers/Organisation/OrganisationController.php:141
 * @route '/organisation/{organisation}/accounts'
 */
 export const post = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -16,7 +16,7 @@ post.definition = {
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::post
-* @see app/Http/Controllers/Organisation/OrganisationController.php:131
+* @see app/Http/Controllers/Organisation/OrganisationController.php:141
 * @route '/organisation/{organisation}/accounts'
 */
 post.url = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -49,7 +49,7 @@ post.url = (args: { organisation: number | { id: number } } | [organisation: num
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::post
-* @see app/Http/Controllers/Organisation/OrganisationController.php:131
+* @see app/Http/Controllers/Organisation/OrganisationController.php:141
 * @route '/organisation/{organisation}/accounts'
 */
 post.post = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -59,7 +59,7 @@ post.post = (args: { organisation: number | { id: number } } | [organisation: nu
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::view
-* @see app/Http/Controllers/Organisation/OrganisationController.php:165
+* @see app/Http/Controllers/Organisation/OrganisationController.php:175
 * @route '/organisation/{organisation}/accounts/{account}'
 */
 export const view = (args: { organisation: number | { id: number }, account: number | { id: number } } | [organisation: number | { id: number }, account: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -74,7 +74,7 @@ view.definition = {
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::view
-* @see app/Http/Controllers/Organisation/OrganisationController.php:165
+* @see app/Http/Controllers/Organisation/OrganisationController.php:175
 * @route '/organisation/{organisation}/accounts/{account}'
 */
 view.url = (args: { organisation: number | { id: number }, account: number | { id: number } } | [organisation: number | { id: number }, account: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -104,7 +104,7 @@ view.url = (args: { organisation: number | { id: number }, account: number | { i
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::view
-* @see app/Http/Controllers/Organisation/OrganisationController.php:165
+* @see app/Http/Controllers/Organisation/OrganisationController.php:175
 * @route '/organisation/{organisation}/accounts/{account}'
 */
 view.get = (args: { organisation: number | { id: number }, account: number | { id: number } } | [organisation: number | { id: number }, account: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -114,7 +114,7 @@ view.get = (args: { organisation: number | { id: number }, account: number | { i
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::view
-* @see app/Http/Controllers/Organisation/OrganisationController.php:165
+* @see app/Http/Controllers/Organisation/OrganisationController.php:175
 * @route '/organisation/{organisation}/accounts/{account}'
 */
 view.head = (args: { organisation: number | { id: number }, account: number | { id: number } } | [organisation: number | { id: number }, account: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -124,7 +124,7 @@ view.head = (args: { organisation: number | { id: number }, account: number | { 
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::edit
-* @see app/Http/Controllers/Organisation/OrganisationController.php:185
+* @see app/Http/Controllers/Organisation/OrganisationController.php:195
 * @route '/organisation/{organisation}/accounts/{account}'
 */
 export const edit = (args: { organisation: number | { id: number }, account: number | { id: number } } | [organisation: number | { id: number }, account: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -139,7 +139,7 @@ edit.definition = {
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::edit
-* @see app/Http/Controllers/Organisation/OrganisationController.php:185
+* @see app/Http/Controllers/Organisation/OrganisationController.php:195
 * @route '/organisation/{organisation}/accounts/{account}'
 */
 edit.url = (args: { organisation: number | { id: number }, account: number | { id: number } } | [organisation: number | { id: number }, account: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -169,7 +169,7 @@ edit.url = (args: { organisation: number | { id: number }, account: number | { i
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::edit
-* @see app/Http/Controllers/Organisation/OrganisationController.php:185
+* @see app/Http/Controllers/Organisation/OrganisationController.php:195
 * @route '/organisation/{organisation}/accounts/{account}'
 */
 edit.post = (args: { organisation: number | { id: number }, account: number | { id: number } } | [organisation: number | { id: number }, account: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({

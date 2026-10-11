@@ -128,6 +128,16 @@ class OrganisationController extends Controller
         return view('organisation.accounts', ['org' => $organisation]);
     }
 
+    public function officials(Organisation $organisation)
+    {
+        $this->authorize('access', [$organisation, 'admin']);
+
+        return view('organisation.officials', [
+            'org' => $organisation,
+            'officials' => $organisation->officials(),
+        ]);
+    }
+
     public function accountsPost(InviteAccountToOrganisationRequest $request, Organisation $organisation)
     {
 

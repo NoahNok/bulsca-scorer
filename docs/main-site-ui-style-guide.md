@@ -33,6 +33,12 @@ actions, and an "Add" button that opens a modal form) and `account.blade.php`.
   can show full emails; the masking rule below is for pages any user can reach.
   Reference page: `admin/users/index.blade.php` (a paginated, searchable
   `.se-table`).
+- `layouts.organisation` is for organisation pages under
+  `/organisation/{organisation}` (the view gets `$org`). A new area gets a tab
+  in its `.tabbed-bar`, inside the `@can('access', [$org, 'admin'])` block that
+  matches the route group's middleware, marked `active` with
+  `Str::startsWith(Route::currentRouteName(), 'orgs.<area>')`. Reference page:
+  `organisation/officials.blade.php` (a read-only `.se-card` list with badges).
 - `layouts.guest` is for account pages outside a competition.
 - `layouts.core` is the shell. It loads Alpine, the `modals` state, and the
   `showSuccess()` / `showAlert()` toasts.

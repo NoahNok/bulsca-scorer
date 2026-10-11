@@ -173,6 +173,42 @@ class Organisation extends Model implements IInvitable
         return $accounts;
     }
 
+    /**
+     * Everyone who has officiated at one of this organisation's competitions, with the roles
+     * they've held and their most recent competition.
+     */
+    public function officials()
+    {
+        $roleOrder = array_flip(array_keys(Competition::$officialRoles));
+
+        return User::join('competition_officials', 'competition_officials.user_id', '=', 'users.id')
+            ->join('competitions', 'competitions.id', '=', 'competition_officials.competition_id')
+            ->where('competitions.organisation', $this->id)
+            ->orderBy('users.name')
+            ->orderByDesc('competitions.when')
+            ->get([
+                'users.id',
+                'users.name',
+                'users.email',
+                'competition_officials.role',
+                'competitions.name as comp_name',
+                'competitions.when as comp_when',
+            ])
+            ->groupBy('id')
+            ->map(fn ($rows) => [
+                'id' => $rows[0]->id,
+                'name' => $rows[0]->name,
+                'email' => $rows[0]->email,
+                'roles' => $rows->pluck('role')->unique()->sortBy(fn ($role) => $roleOrder[$role] ?? PHP_INT_MAX)->values(),
+                'count' => $rows->count(),
+                'last' => [
+                    'name' => $rows[0]->comp_name,
+                    'when' => $rows[0]->comp_when ? Carbon::parse($rows[0]->comp_when) : null,
+                ],
+            ])
+            ->values();
+    }
+
     public function editAccount(User $account, array $access_to)
     {
         if (!$this->userBelongsToOrganisation($account)) {

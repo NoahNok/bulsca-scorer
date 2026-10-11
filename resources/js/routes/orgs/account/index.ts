@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::remove
-* @see app/Http/Controllers/Organisation/OrganisationController.php:202
+* @see app/Http/Controllers/Organisation/OrganisationController.php:212
 * @route '/organisation/{organisation}/accounts/remove'
 */
 export const remove = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -16,7 +16,7 @@ remove.definition = {
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::remove
-* @see app/Http/Controllers/Organisation/OrganisationController.php:202
+* @see app/Http/Controllers/Organisation/OrganisationController.php:212
 * @route '/organisation/{organisation}/accounts/remove'
 */
 remove.url = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -49,7 +49,7 @@ remove.url = (args: { organisation: number | { id: number } } | [organisation: n
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::remove
-* @see app/Http/Controllers/Organisation/OrganisationController.php:202
+* @see app/Http/Controllers/Organisation/OrganisationController.php:212
 * @route '/organisation/{organisation}/accounts/remove'
 */
 remove.delete = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({

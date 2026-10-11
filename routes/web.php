@@ -333,6 +333,7 @@ Route::middleware(['auth', 'not.judge-only'])->group(function () {
     Route::prefix('organisation/{organisation}')->middleware('can:access,organisation,"admin"')->group(function () {
         Route::get('/accounts', [OrganisationController::class, 'accounts'])->name('orgs.accounts');
         Route::post('/accounts', [OrganisationController::class, 'accountsPost'])->name('orgs.accounts.post');
+        Route::get('/officials', [OrganisationController::class, 'officials'])->name('orgs.officials');
 
         Route::get('/accounts/{account}', [OrganisationController::class, 'account'])->name('orgs.accounts.view');
         Route::post('/accounts/{account}', [OrganisationController::class, 'accountEditPost'])->name('orgs.accounts.edit');

@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::post
-* @see app/Http/Controllers/Organisation/OrganisationController.php:503
+* @see app/Http/Controllers/Organisation/OrganisationController.php:513
 * @route '/organisation/{organisation}/scoring/result-schemas/{schema}/edit'
 */
 export const post = (args: { organisation: number | { id: number }, schema: number | { id: number } } | [organisation: number | { id: number }, schema: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -16,7 +16,7 @@ post.definition = {
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::post
-* @see app/Http/Controllers/Organisation/OrganisationController.php:503
+* @see app/Http/Controllers/Organisation/OrganisationController.php:513
 * @route '/organisation/{organisation}/scoring/result-schemas/{schema}/edit'
 */
 post.url = (args: { organisation: number | { id: number }, schema: number | { id: number } } | [organisation: number | { id: number }, schema: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -46,7 +46,7 @@ post.url = (args: { organisation: number | { id: number }, schema: number | { id
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::post
-* @see app/Http/Controllers/Organisation/OrganisationController.php:503
+* @see app/Http/Controllers/Organisation/OrganisationController.php:513
 * @route '/organisation/{organisation}/scoring/result-schemas/{schema}/edit'
 */
 post.post = (args: { organisation: number | { id: number }, schema: number | { id: number } } | [organisation: number | { id: number }, schema: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({

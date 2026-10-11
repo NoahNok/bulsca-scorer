@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefa
 import edit055014 from './edit'
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::create
-* @see app/Http/Controllers/Organisation/OrganisationController.php:473
+* @see app/Http/Controllers/Organisation/OrganisationController.php:483
 * @route '/organisation/{organisation}/scoring/result-schemas/create'
 */
 export const create = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -17,7 +17,7 @@ create.definition = {
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::create
-* @see app/Http/Controllers/Organisation/OrganisationController.php:473
+* @see app/Http/Controllers/Organisation/OrganisationController.php:483
 * @route '/organisation/{organisation}/scoring/result-schemas/create'
 */
 create.url = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -50,7 +50,7 @@ create.url = (args: { organisation: number | { id: number } } | [organisation: n
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::create
-* @see app/Http/Controllers/Organisation/OrganisationController.php:473
+* @see app/Http/Controllers/Organisation/OrganisationController.php:483
 * @route '/organisation/{organisation}/scoring/result-schemas/create'
 */
 create.get = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -60,7 +60,7 @@ create.get = (args: { organisation: number | { id: number } } | [organisation: n
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::create
-* @see app/Http/Controllers/Organisation/OrganisationController.php:473
+* @see app/Http/Controllers/Organisation/OrganisationController.php:483
 * @route '/organisation/{organisation}/scoring/result-schemas/create'
 */
 create.head = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -70,7 +70,7 @@ create.head = (args: { organisation: number | { id: number } } | [organisation: 
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::edit
-* @see app/Http/Controllers/Organisation/OrganisationController.php:490
+* @see app/Http/Controllers/Organisation/OrganisationController.php:500
 * @route '/organisation/{organisation}/scoring/result-schemas/{schema}/edit'
 */
 export const edit = (args: { organisation: number | { id: number }, schema: number | { id: number } } | [organisation: number | { id: number }, schema: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -85,7 +85,7 @@ edit.definition = {
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::edit
-* @see app/Http/Controllers/Organisation/OrganisationController.php:490
+* @see app/Http/Controllers/Organisation/OrganisationController.php:500
 * @route '/organisation/{organisation}/scoring/result-schemas/{schema}/edit'
 */
 edit.url = (args: { organisation: number | { id: number }, schema: number | { id: number } } | [organisation: number | { id: number }, schema: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -115,7 +115,7 @@ edit.url = (args: { organisation: number | { id: number }, schema: number | { id
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::edit
-* @see app/Http/Controllers/Organisation/OrganisationController.php:490
+* @see app/Http/Controllers/Organisation/OrganisationController.php:500
 * @route '/organisation/{organisation}/scoring/result-schemas/{schema}/edit'
 */
 edit.get = (args: { organisation: number | { id: number }, schema: number | { id: number } } | [organisation: number | { id: number }, schema: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -125,7 +125,7 @@ edit.get = (args: { organisation: number | { id: number }, schema: number | { id
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::edit
-* @see app/Http/Controllers/Organisation/OrganisationController.php:490
+* @see app/Http/Controllers/Organisation/OrganisationController.php:500
 * @route '/organisation/{organisation}/scoring/result-schemas/{schema}/edit'
 */
 edit.head = (args: { organisation: number | { id: number }, schema: number | { id: number } } | [organisation: number | { id: number }, schema: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
