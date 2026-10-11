@@ -4,6 +4,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AccountInviteController;
 use App\Http\Controllers\Activity\ActivityController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminUsersController;
 use App\Http\Controllers\ChampionshipController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -432,6 +433,9 @@ Route::prefix('/admin')->middleware('isAdmin')->group(function () {
     Route::delete('/competition/{comp}/delete', [AdminController::class, 'deleteCompPost'])->name('admin.comp.delete');
 
     Route::get('/activity', [ActivityController::class, 'admin'])->name('admin.activity');
+
+    Route::get('/users', [AdminUsersController::class, 'index'])->name('admin.users.index');
+    Route::get('/users/{user}', [AdminUsersController::class, 'show'])->name('admin.users.show');
 
     Route::resource('serc/marking-points', MarkingPointTemplateController::class)->except(['show'])->names([
         'index' => 'admin.serc.marking-point-template.index',

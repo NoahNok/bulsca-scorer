@@ -21,6 +21,7 @@ import ChampionshipController from './ChampionshipController'
 import AccountController from './AccountController'
 import AdminController from './AdminController'
 import Activity from './Activity'
+import AdminUsersController from './AdminUsersController'
 import SERC from './SERC'
 import AccountInviteController from './AccountInviteController'
 import Landing from './Landing'
@@ -50,6 +51,7 @@ const Controllers = {
     AccountController: Object.assign(AccountController, AccountController),
     AdminController: Object.assign(AdminController, AdminController),
     Activity: Object.assign(Activity, Activity),
+    AdminUsersController: Object.assign(AdminUsersController, AdminUsersController),
     SERC: Object.assign(SERC, SERC),
     AccountInviteController: Object.assign(AccountInviteController, AccountInviteController),
     Landing: Object.assign(Landing, Landing),

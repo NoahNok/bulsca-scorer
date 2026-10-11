@@ -2,6 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition } from './../
 import comp from './comp'
 import recordsE88d67 from './records'
 import seasons4b53d6 from './seasons'
+import users from './users'
 import serc from './serc'
 /**
 * @see \App\Http\Controllers\AdminController::index
@@ -185,6 +186,7 @@ const admin = {
     records: Object.assign(records, recordsE88d67),
     seasons: Object.assign(seasons, seasons4b53d6),
     activity: Object.assign(activity, activity),
+    users: Object.assign(users, users),
     serc: Object.assign(serc, serc),
 }
 

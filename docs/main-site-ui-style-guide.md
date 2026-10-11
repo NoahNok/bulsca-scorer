@@ -26,6 +26,13 @@ actions, and an "Add" button that opens a modal form) and `account.blade.php`.
   - wrap it in the `@can('access', [$comp, '<access>'])` that matches its route
     middleware;
   - mark it `active` with `Str::startsWith(Route::currentRouteName(), 'comps.<area>')`.
+- `layouts.admin` is for site admin pages under `/admin` (routes in the
+  `isAdmin` middleware group). A new admin area gets a tab in its
+  `.tabbed-bar`, marked `active` with
+  `Str::startsWith(Route::currentRouteName(), 'admin.<area>')`. Admin pages
+  can show full emails; the masking rule below is for pages any user can reach.
+  Reference page: `admin/users/index.blade.php` (a paginated, searchable
+  `.se-table`).
 - `layouts.guest` is for account pages outside a competition.
 - `layouts.core` is the shell. It loads Alpine, the `modals` state, and the
   `showSuccess()` / `showAlert()` toasts.
