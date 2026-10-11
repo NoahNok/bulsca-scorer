@@ -21,7 +21,7 @@ trait CreatesApplication
         foreach (['mysql', 'whatif'] as $connection) {
             $database = $app['config']->get("database.connections.{$connection}.database");
 
-            if (!str_ends_with($database, '_test')) {
+            if (!is_string($database) || !str_ends_with($database, '_test')) {
                 throw new \RuntimeException("Refusing to run tests against the '{$database}' database. Test databases must end in _test.");
             }
         }

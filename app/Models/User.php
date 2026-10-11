@@ -69,10 +69,11 @@ class User extends Authenticatable
      */
     public function logoutOtherDevices(): void
     {
-        $this->logoutOthers();
-
-        // revoke() skips logins without a session id, which would leave their remember token working
-        $this->logins()->whereNull('session_id')->delete();
+        $this->revokeLogins(
+            $this->logins()->where(fn ($query) => $query
+                ->where('session_id', '!=', session()->getId())
+                ->orWhereNull('session_id'))
+        );
     }
 
     /**
@@ -80,9 +81,19 @@ class User extends Authenticatable
      */
     public function logoutEverywhere(): void
     {
-        $this->logoutAll();
+        $this->revokeLogins($this->logins());
+    }
 
-        $this->logins()->delete();
+    /**
+     * Destroy the session behind each login and delete it. Used instead of the package's
+     * revoke(), which deletes nothing when none of the logins has a session id, and with
+     * withExpired() so a login past its expiry whose session is still live isn't missed.
+     */
+    private function revokeLogins($query): void
+    {
+        foreach ($query->withExpired()->get() as $login) {
+            $login->revoke() || $login->delete();
+        }
     }
 
 

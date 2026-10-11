@@ -42,8 +42,13 @@ trait ManagesDevices
      */
     protected function revokeDevice(User $user, int $loginId): bool
     {
-        /** @var Login $login */
-        $login = $user->logins()->findOrFail($loginId);
+        /** @var Login|null $login */
+        $login = $user->logins()->withExpired()->find($loginId);
+
+        // already signed out, e.g. from another tab
+        if (!$login) {
+            return true;
+        }
 
         if ($login->is_current) {
             return false;

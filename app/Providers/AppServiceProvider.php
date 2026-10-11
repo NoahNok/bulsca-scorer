@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use ALajusticia\Logins\Models\Login;
 use App\DigitalJudge\DigitalJudge;
 use App\DTO\JudgeAuthUser;
 use App\Models\Club;
@@ -66,5 +67,17 @@ class AppServiceProvider extends ServiceProvider
             );
         });
         Blade::component('serc-editor', SERCEditor::class);
+
+        // A login without "remember me" gets expires_at = now + session lifetime and the package
+        // never moves it, so a session kept alive past that drops out of logins() and can't be
+        // listed or signed out. Slide it along whenever activity is recorded, like the session.
+        // The activity update interval is added since last_activity_at can lag by that much.
+        Login::updating(function (Login $login) {
+            if ($login->isDirty('last_activity_at') && $login->remember_token === null && $login->session_id !== null) {
+                $login->expiresAt(now()
+                    ->addMinutes((int) config('session.lifetime', 120))
+                    ->addSeconds((int) config('logins.activity_update.interval', 0)));
+            }
+        });
     }
 }
