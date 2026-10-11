@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition } from './../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Auth\AuthenticatedSessionController::create
-* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:18
+* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:19
 * @route '/login'
 */
 export const create = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ create.definition = {
 
 /**
 * @see \App\Http\Controllers\Auth\AuthenticatedSessionController::create
-* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:18
+* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:19
 * @route '/login'
 */
 create.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ create.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Auth\AuthenticatedSessionController::create
-* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:18
+* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:19
 * @route '/login'
 */
 create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -35,7 +35,7 @@ create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\Auth\AuthenticatedSessionController::create
-* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:18
+* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:19
 * @route '/login'
 */
 create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -45,7 +45,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\Auth\AuthenticatedSessionController::store
-* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:26
+* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:27
 * @route '/login'
 */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -60,7 +60,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\Auth\AuthenticatedSessionController::store
-* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:26
+* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:27
 * @route '/login'
 */
 store.url = (options?: RouteQueryOptions) => {
@@ -69,7 +69,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Auth\AuthenticatedSessionController::store
-* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:26
+* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:27
 * @route '/login'
 */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -79,7 +79,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\Auth\AuthenticatedSessionController::destroy
-* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:38
+* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:48
 * @route '/logout'
 */
 export const destroy = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -94,7 +94,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\Auth\AuthenticatedSessionController::destroy
-* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:38
+* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:48
 * @route '/logout'
 */
 destroy.url = (options?: RouteQueryOptions) => {
@@ -103,7 +103,7 @@ destroy.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Auth\AuthenticatedSessionController::destroy
-* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:38
+* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:48
 * @route '/logout'
 */
 destroy.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -113,7 +113,7 @@ destroy.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\Auth\AuthenticatedSessionController::destroy
-* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:38
+* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:48
 * @route '/logout'
 */
 destroy.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({

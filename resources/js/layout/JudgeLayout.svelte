@@ -20,9 +20,12 @@
         children?: Snippet;
     } = $props();
 
-    // competition pages get the full tab bar, the dashboard a "Log out" one
+    // competition pages get the full tab bar, the dashboard and account
+    // pages an "Account" / "Log out" one
     const showTabBar = $derived(
-        !!competition || page.component === "Judge/Dashboard",
+        !!competition ||
+            page.component === "Judge/Dashboard" ||
+            page.component === "Judge/Account",
     );
 
     router.on("flash", (event) => {

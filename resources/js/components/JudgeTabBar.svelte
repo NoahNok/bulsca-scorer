@@ -1,16 +1,16 @@
 <script lang="ts">
-    import {
-        home,
-        logout,
-    } from "@/actions/App/Http/Controllers/DigitalJudge/JudgeController";
+    import { account } from "@/actions/App/Http/Controllers/DigitalJudge/Auth/AccountController";
+    import { logout } from "@/actions/App/Http/Controllers/DigitalJudge/Auth/LoginController";
+    import { home } from "@/actions/App/Http/Controllers/DigitalJudge/JudgeController";
     import { confirm } from "@/lib/confirm";
     import { appState } from "@/lib/stores/appState";
     import { submissions } from "@/routes/judge/competition/violation";
     import type { Competition } from "@/types/base";
     import { Link, page, router } from "@inertiajs/svelte";
-    import { Flag, House, LogOut, Shield } from "@lucide/svelte";
+    import { Flag, House, LogOut, Shield, UserRound } from "@lucide/svelte";
 
-    // without a competition (the dashboard) the bar only offers "Log out"
+    // without a competition (the dashboard and account pages) the bar offers
+    // "Account" and "Log out"
     let { competition }: { competition?: Competition } = $props();
 
     const isHeadRef = $derived(!!competition && page.props.judge.isHeadRef);
@@ -28,7 +28,14 @@
         router.post(logout());
     }
 
-    const tabs = $derived(!competition ? [] : [
+    const tabs = $derived(!competition ? [
+        {
+            label: "Account",
+            icon: UserRound,
+            href: account().url,
+            active: page.component === "Judge/Account",
+        },
+    ] : [
         {
             label: "Home",
             icon: House,
@@ -61,9 +68,7 @@
         </p>
     {/if}
     <div
-        class="grid {competition
-            ? 'grid-cols-2'
-            : 'grid-cols-1'} sm:mx-auto sm:max-w-[70%] xl:max-w-[50%] 2xl:max-w-[40%]"
+        class="grid grid-cols-2 sm:mx-auto sm:max-w-[70%] xl:max-w-[50%] 2xl:max-w-[40%]"
     >
         {#each tabs as { label, icon: Icon, href, active } (label)}
             <Link

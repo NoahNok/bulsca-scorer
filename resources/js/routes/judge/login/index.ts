@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition } from './../../../wayfinder'
 /**
-* @see \App\Http\Controllers\DigitalJudge\JudgeController::post
-* @see app/Http/Controllers/DigitalJudge/JudgeController.php:66
+* @see \App\Http\Controllers\DigitalJudge\Auth\LoginController::post
+* @see app/Http/Controllers/DigitalJudge/Auth/LoginController.php:45
 * @route '//judge.localhost/v2/login'
 */
 export const post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -15,8 +15,8 @@ post.definition = {
 } satisfies RouteDefinition<["post"]>
 
 /**
-* @see \App\Http\Controllers\DigitalJudge\JudgeController::post
-* @see app/Http/Controllers/DigitalJudge/JudgeController.php:66
+* @see \App\Http\Controllers\DigitalJudge\Auth\LoginController::post
+* @see app/Http/Controllers/DigitalJudge/Auth/LoginController.php:45
 * @route '//judge.localhost/v2/login'
 */
 post.url = (options?: RouteQueryOptions) => {
@@ -24,8 +24,8 @@ post.url = (options?: RouteQueryOptions) => {
 }
 
 /**
-* @see \App\Http\Controllers\DigitalJudge\JudgeController::post
-* @see app/Http/Controllers/DigitalJudge/JudgeController.php:66
+* @see \App\Http\Controllers\DigitalJudge\Auth\LoginController::post
+* @see app/Http/Controllers/DigitalJudge/Auth/LoginController.php:45
 * @route '//judge.localhost/v2/login'
 */
 post.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -34,8 +34,8 @@ post.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 })
 
 /**
-* @see \App\Http\Controllers\DigitalJudge\JudgeController::password
-* @see app/Http/Controllers/DigitalJudge/JudgeController.php:145
+* @see \App\Http\Controllers\DigitalJudge\Auth\LoginController::password
+* @see app/Http/Controllers/DigitalJudge/Auth/LoginController.php:108
 * @route '//judge.localhost/v2/login/password'
 */
 export const password = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -49,8 +49,8 @@ password.definition = {
 } satisfies RouteDefinition<["post"]>
 
 /**
-* @see \App\Http\Controllers\DigitalJudge\JudgeController::password
-* @see app/Http/Controllers/DigitalJudge/JudgeController.php:145
+* @see \App\Http\Controllers\DigitalJudge\Auth\LoginController::password
+* @see app/Http/Controllers/DigitalJudge/Auth/LoginController.php:108
 * @route '//judge.localhost/v2/login/password'
 */
 password.url = (options?: RouteQueryOptions) => {
@@ -58,8 +58,8 @@ password.url = (options?: RouteQueryOptions) => {
 }
 
 /**
-* @see \App\Http\Controllers\DigitalJudge\JudgeController::password
-* @see app/Http/Controllers/DigitalJudge/JudgeController.php:145
+* @see \App\Http\Controllers\DigitalJudge\Auth\LoginController::password
+* @see app/Http/Controllers/DigitalJudge/Auth/LoginController.php:108
 * @route '//judge.localhost/v2/login/password'
 */
 password.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -68,8 +68,8 @@ password.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 })
 
 /**
-* @see \App\Http\Controllers\DigitalJudge\JudgeController::resendPin
-* @see app/Http/Controllers/DigitalJudge/JudgeController.php:45
+* @see \App\Http\Controllers\DigitalJudge\Auth\LoginController::resendPin
+* @see app/Http/Controllers/DigitalJudge/Auth/LoginController.php:24
 * @route '//judge.localhost/v2/login/resend-pin'
 */
 export const resendPin = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -83,8 +83,8 @@ resendPin.definition = {
 } satisfies RouteDefinition<["post"]>
 
 /**
-* @see \App\Http\Controllers\DigitalJudge\JudgeController::resendPin
-* @see app/Http/Controllers/DigitalJudge/JudgeController.php:45
+* @see \App\Http\Controllers\DigitalJudge\Auth\LoginController::resendPin
+* @see app/Http/Controllers/DigitalJudge/Auth/LoginController.php:24
 * @route '//judge.localhost/v2/login/resend-pin'
 */
 resendPin.url = (options?: RouteQueryOptions) => {
@@ -92,8 +92,8 @@ resendPin.url = (options?: RouteQueryOptions) => {
 }
 
 /**
-* @see \App\Http\Controllers\DigitalJudge\JudgeController::resendPin
-* @see app/Http/Controllers/DigitalJudge/JudgeController.php:45
+* @see \App\Http\Controllers\DigitalJudge\Auth\LoginController::resendPin
+* @see app/Http/Controllers/DigitalJudge/Auth/LoginController.php:24
 * @route '//judge.localhost/v2/login/resend-pin'
 */
 resendPin.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({

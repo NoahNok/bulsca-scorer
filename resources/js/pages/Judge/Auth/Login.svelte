@@ -7,17 +7,25 @@
 </script>
 
 <script lang="ts">
+    import { forgotPassword } from "@/actions/App/Http/Controllers/DigitalJudge/Auth/ForgotPasswordController";
     import {
         login,
         loginPassword,
         loginPost,
-    } from "@/actions/App/Http/Controllers/DigitalJudge/JudgeController";
+    } from "@/actions/App/Http/Controllers/DigitalJudge/Auth/LoginController";
+    import { register } from "@/actions/App/Http/Controllers/DigitalJudge/Auth/RegisterController";
     import AppHead from "@/components/AppHead.svelte";
     import Button from "@/components/Button.svelte";
     import Input from "@/components/input.svelte";
     import { toastError, toastSuccess } from "@/lib/toast.svelte";
     import { Form, Link, router } from "@inertiajs/svelte";
-    import { ArrowRight, KeyRound, Mail, RotateCw } from "@lucide/svelte";
+    import {
+        ArrowRight,
+        KeyRound,
+        Mail,
+        RotateCw,
+        UserPlus,
+    } from "@lucide/svelte";
     import { untrack } from "svelte";
     import { slide } from "svelte/transition";
 
@@ -26,9 +34,12 @@
     let {
         stage = "email",
         email,
+        registered = false,
     }: {
         stage?: LoginStage;
         email?: string;
+        // just signed up, so the PIN confirms their email
+        registered?: boolean;
     } = $props();
 
     let resending = $state(false);
@@ -42,7 +53,7 @@
     function resendPin() {
         router.post(
             loginPost(),
-            { email, resend: 1 },
+            { email, resend: 1, registered: registered ? 1 : 0 },
             {
                 preserveScroll: true,
                 onStart: () => (resending = true),
@@ -56,12 +67,18 @@
     }
 </script>
 
-<AppHead title="Sign in" />
+<AppHead title={registered ? "Confirm your email" : "Sign in"} />
 
 <section class="flex h-full flex-col justify-center">
     <div class="mx-auto flex w-full max-w-sm flex-col">
         <p class="font-archivo -mb-2">Officials</p>
-        <h2>{stage === "pin" ? "Enter your PIN" : "Sign in"}</h2>
+        <h2>
+            {stage === "pin"
+                ? registered
+                    ? "Confirm your email"
+                    : "Enter your PIN"
+                : "Sign in"}
+        </h2>
 
         {#if stage === "email"}
             <p class="mt-1 text-sm text-gray-500">
@@ -118,6 +135,12 @@
                                     {errors.password}
                                 </p>
                             {/if}
+                            <Link
+                                href={forgotPassword()}
+                                class="mt-1.5 inline-block text-xs text-gray-600 underline hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-se"
+                            >
+                                Forgot password?
+                            </Link>
                         </div>
                     {/if}
 
@@ -146,7 +169,21 @@
                     Email me a PIN instead
                 {/if}
             </button>
+
+            <Link
+                href={register()}
+                class="mt-6 inline-flex items-center gap-1.5 self-center text-sm text-gray-600 hover:text-se focus:outline-none focus-visible:ring-2 focus-visible:ring-se"
+            >
+                <UserPlus size={14} />
+                New official? Create an account
+            </Link>
         {:else}
+            {#if registered}
+                <p class="mt-1 text-sm text-gray-500">
+                    We've emailed you a 6-digit PIN to finish creating your
+                    account.
+                </p>
+            {/if}
             <div class="mt-3 flex items-center gap-3 rounded-xl bg-gray-50 p-3">
                 <span
                     class="flex size-8 shrink-0 items-center justify-center rounded-md bg-se/20 text-teal-700"
@@ -170,6 +207,9 @@
             <Form action={loginPost()} class="mt-6 grid gap-3">
                 {#snippet children({ errors, processing, submit })}
                     <input type="hidden" name="email" value={email} />
+                    {#if registered}
+                        <input type="hidden" name="registered" value="1" />
+                    {/if}
                     <div>
                         <Input
                             variant="soft"

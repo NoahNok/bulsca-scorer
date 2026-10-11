@@ -2,6 +2,10 @@
 
 use App\DigitalJudge\DigitalJudge;
 use App\Helpers\RouteHelpers;
+use App\Http\Controllers\DigitalJudge\Auth\AccountController;
+use App\Http\Controllers\DigitalJudge\Auth\ForgotPasswordController;
+use App\Http\Controllers\DigitalJudge\Auth\LoginController;
+use App\Http\Controllers\DigitalJudge\Auth\RegisterController;
 use App\Http\Controllers\DigitalJudge\ConfirmResultsController;
 use App\Http\Controllers\DigitalJudge\DigitalJudgeController;
 use App\Http\Controllers\DigitalJudge\DJDQController;
@@ -22,16 +26,25 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
 
 
     Route::prefix('v2')->group(function () {
-        Route::get('login', [JudgeController::class, 'login'])->name('judge.login');
-        Route::post('login', [JudgeController::class, 'loginPost'])->name('judge.login.post');
-        Route::post('login/password', [JudgeController::class, 'loginPassword'])->name('judge.login.password');
-        Route::post('login/resend-pin', [JudgeController::class, 'resendPin'])->name('judge.login.resend-pin');
+        Route::get('login', [LoginController::class, 'login'])->name('judge.login');
+        Route::post('login', [LoginController::class, 'loginPost'])->name('judge.login.post');
+        Route::post('login/password', [LoginController::class, 'loginPassword'])->name('judge.login.password');
+        Route::post('login/resend-pin', [LoginController::class, 'resendPin'])->name('judge.login.resend-pin');
+
+        Route::get('register', [RegisterController::class, 'register'])->name('judge.register');
+        Route::post('register', [RegisterController::class, 'registerPost'])->name('judge.register.post');
+        Route::get('forgot-password', [ForgotPasswordController::class, 'forgotPassword'])->name('judge.password.forgot');
+        Route::post('forgot-password', [ForgotPasswordController::class, 'forgotPasswordPost'])->name('judge.password.forgot.post');
 
         Route::middleware('auth.judge')->group(function () {
             Route::get('', [JudgeController::class, 'index'])->name('judge.index');
 
             Route::post('join', [JudgeController::class, 'joinCompetition'])->name('judge.join-competition');
-            Route::post('logout', [JudgeController::class, 'logout'])->name('judge.logout');
+            Route::post('logout', [LoginController::class, 'logout'])->name('judge.logout');
+
+            Route::get('account', [AccountController::class, 'account'])->name('judge.account');
+            Route::post('account', [AccountController::class, 'updateAccount'])->name('judge.account.update');
+            Route::post('account/password', [AccountController::class, 'updatePassword'])->name('judge.account.password');
 
 
 

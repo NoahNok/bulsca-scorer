@@ -44,6 +44,7 @@ use App\Models\DQCode;
 use App\Models\Organisation\Organisation;
 use App\Models\SERC;
 use Carbon\Carbon;
+use App\Helpers\RouteHelpers;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -93,6 +94,11 @@ Route::get('/', function () {
     /** @var User $user */
     $user = Auth::user();
 
+    // self-registered officials only have access to Digital Judge
+    if ($user->isJudgeOnly()) {
+        return redirect()->away(RouteHelpers::externalRoute('judge', 'judge.index'));
+    }
+
 
 
     $comps = [];
@@ -106,7 +112,7 @@ Route::get('/', function () {
 
 
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'not.judge-only'])->group(function () {
 
 
     // Route::get('/comps', [CompetitionController::class, 'index'])->name('comps');

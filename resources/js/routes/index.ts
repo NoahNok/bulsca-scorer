@@ -154,7 +154,7 @@ telescope.head = (args?: { view?: string | number } | [view: string | number ] |
 })
 
 /**
-* @see routes/web.php:77
+* @see routes/web.php:78
 * @route '/'
 */
 export const home = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -168,7 +168,7 @@ home.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see routes/web.php:77
+* @see routes/web.php:78
 * @route '/'
 */
 home.url = (options?: RouteQueryOptions) => {
@@ -176,7 +176,7 @@ home.url = (options?: RouteQueryOptions) => {
 }
 
 /**
-* @see routes/web.php:77
+* @see routes/web.php:78
 * @route '/'
 */
 home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -185,7 +185,7 @@ home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 
 /**
-* @see routes/web.php:77
+* @see routes/web.php:78
 * @route '/'
 */
 home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -439,7 +439,7 @@ register.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\Auth\AuthenticatedSessionController::login
-* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:18
+* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:19
 * @route '/login'
 */
 export const login = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -454,7 +454,7 @@ login.definition = {
 
 /**
 * @see \App\Http\Controllers\Auth\AuthenticatedSessionController::login
-* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:18
+* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:19
 * @route '/login'
 */
 login.url = (options?: RouteQueryOptions) => {
@@ -463,7 +463,7 @@ login.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Auth\AuthenticatedSessionController::login
-* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:18
+* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:19
 * @route '/login'
 */
 login.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -473,7 +473,7 @@ login.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\Auth\AuthenticatedSessionController::login
-* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:18
+* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:19
 * @route '/login'
 */
 login.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -483,7 +483,7 @@ login.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\Auth\AuthenticatedSessionController::logout
-* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:38
+* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:48
 * @route '/logout'
 */
 export const logout = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -498,7 +498,7 @@ logout.definition = {
 
 /**
 * @see \App\Http\Controllers\Auth\AuthenticatedSessionController::logout
-* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:38
+* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:48
 * @route '/logout'
 */
 logout.url = (options?: RouteQueryOptions) => {
@@ -507,7 +507,7 @@ logout.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Auth\AuthenticatedSessionController::logout
-* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:38
+* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:48
 * @route '/logout'
 */
 logout.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -517,7 +517,7 @@ logout.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\Auth\AuthenticatedSessionController::logout
-* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:38
+* @see app/Http/Controllers/Auth/AuthenticatedSessionController.php:48
 * @route '/logout'
 */
 logout.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({

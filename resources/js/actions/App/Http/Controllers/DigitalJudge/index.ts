@@ -1,3 +1,4 @@
+import Auth from './Auth'
 import JudgeController from './JudgeController'
 import SERC from './SERC'
 import ConfirmResultsController from './ConfirmResultsController'
@@ -10,6 +11,7 @@ import DJDQController from './DJDQController'
 import DJManageController from './DJManageController'
 
 const DigitalJudge = {
+    Auth: Object.assign(Auth, Auth),
     JudgeController: Object.assign(JudgeController, JudgeController),
     SERC: Object.assign(SERC, SERC),
     ConfirmResultsController: Object.assign(ConfirmResultsController, ConfirmResultsController),

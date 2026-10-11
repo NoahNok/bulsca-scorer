@@ -37,6 +37,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'judge_only',
     ];
 
     /**
@@ -46,11 +47,20 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'judge_only' => 'boolean',
     ];
 
     public function isAdmin()
     {
         return $this->admin;
+    }
+
+    /**
+     * Self-registered officials, who can only use Digital Judge, not the main site.
+     */
+    public function isJudgeOnly(): bool
+    {
+        return (bool) $this->judge_only;
     }
 
 
