@@ -18,6 +18,7 @@ use App\Models\Event\Penalty;
 use App\Models\PenaltyCode;
 use App\Models\SERC;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class ViolationController extends Controller
@@ -92,7 +93,7 @@ class ViolationController extends Controller
     {
         return [
             'competition' => $competition->only(['id', 'name']),
-            'sercs' => $competition->getSERCs()->where('digitalJudgeEnabled', true)->get()->map(function ($serc) {
+            'sercs' => !$competition->canSeeSercs(Auth::user()) ? [] : $competition->getSERCs()->where('digitalJudgeEnabled', true)->get()->map(function ($serc) {
                 return $serc->jsonable();
             }),
             'speeds' => $competition->getSpeedEvents()->where('digitalJudgeEnabled', true)->get()->map(function ($speed) {
@@ -116,6 +117,10 @@ class ViolationController extends Controller
 
         if ($event->competition != $competition->id) {
             abort(404);
+        }
+
+        if ($event instanceof SERC && !$competition->canSeeSercs(Auth::user())) {
+            abort(403, "SERCs haven't been released yet.");
         }
 
         $entity = $event->getScorableEntity()::find($validated['entity_id']);

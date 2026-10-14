@@ -328,7 +328,7 @@ confirmResults.head = (args: { serc: number | { id: number } } | [serc: number |
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::live
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:214
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:223
 * @route '//judge.localhost/live'
 */
 export const live = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -343,7 +343,7 @@ live.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::live
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:214
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:223
 * @route '//judge.localhost/live'
 */
 live.url = (options?: RouteQueryOptions) => {
@@ -352,7 +352,7 @@ live.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::live
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:214
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:223
 * @route '//judge.localhost/live'
 */
 live.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -362,7 +362,7 @@ live.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::live
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:214
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:223
 * @route '//judge.localhost/live'
 */
 live.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -497,8 +497,66 @@ settings.post = (args: { comp: number | { id: number } } | [comp: number | { id:
 })
 
 /**
-* @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::qrs
+* @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::sercsRelease
 * @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:209
+* @route '/comps/{comp}/digital-judge-sercs-release'
+*/
+export const sercsRelease = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: sercsRelease.url(args, options),
+    method: 'post',
+})
+
+sercsRelease.definition = {
+    methods: ["post"],
+    url: '/comps/{comp}/digital-judge-sercs-release',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::sercsRelease
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:209
+* @route '/comps/{comp}/digital-judge-sercs-release'
+*/
+sercsRelease.url = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { comp: args }
+    }
+
+    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+        args = { comp: args.id }
+    }
+
+    if (Array.isArray(args)) {
+        args = {
+            comp: args[0],
+        }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+        comp: typeof args.comp === 'object'
+        ? args.comp.id
+        : args.comp,
+    }
+
+    return sercsRelease.definition.url
+            .replace('{comp}', parsedArgs.comp.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::sercsRelease
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:209
+* @route '/comps/{comp}/digital-judge-sercs-release'
+*/
+sercsRelease.post = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: sercsRelease.url(args, options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::qrs
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:218
 * @route '/comps/{comp}/digital-judge-qrs'
 */
 export const qrs = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -513,7 +571,7 @@ qrs.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::qrs
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:209
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:218
 * @route '/comps/{comp}/digital-judge-qrs'
 */
 qrs.url = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -546,7 +604,7 @@ qrs.url = (args: { comp: number | { id: number } } | [comp: number | { id: numbe
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::qrs
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:209
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:218
 * @route '/comps/{comp}/digital-judge-qrs'
 */
 qrs.get = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -556,7 +614,7 @@ qrs.get = (args: { comp: number | { id: number } } | [comp: number | { id: numbe
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::qrs
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:209
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:218
 * @route '/comps/{comp}/digital-judge-qrs'
 */
 qrs.head = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -709,6 +767,7 @@ const dj = {
     live: Object.assign(live, live),
     toggle: Object.assign(toggle, toggle),
     settings: Object.assign(settings, settings),
+    sercsRelease: Object.assign(sercsRelease, sercsRelease),
     qrs: Object.assign(qrs, qrs),
     speedToggle: Object.assign(speedToggle, speedToggle),
     sercToggle: Object.assign(sercToggle, sercToggle),

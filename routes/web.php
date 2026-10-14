@@ -136,6 +136,7 @@ Route::middleware(['auth', 'not.judge-only'])->group(function () {
             Route::get('/digital-judge-toggle', [DigitalJudgeController::class, 'toggle'])->name('dj.toggle');
 
             Route::post('/digital-judge-settings', [DigitalJudgeController::class, 'settingsPost'])->name('dj.settings');
+            Route::post('/digital-judge-sercs-release', [DigitalJudgeController::class, 'sercsReleasePost'])->name('dj.sercs-release');
             Route::get('/digital-judge-qrs', [DigitalJudgeController::class, 'qrs'])->name('dj.qrs');
 
 

@@ -59,7 +59,10 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
 
 
                 Route::get('', [JudgeController::class, 'home'])->name('judge.competition');
-                Route::prefix('serc/{serc}')->group(function () {
+
+                Route::post('sercs/release', [JudgeController::class, 'setSercsReleased'])->middleware('judge.referee')->name('judge.competition.sercs.release');
+
+                Route::prefix('serc/{serc}')->middleware('judge.sercs-released')->group(function () {
 
                     Route::get('confirm/{judge}', [SERCJudgeController::class, 'confirmJudge'])->name('judge.competition.serc.confirm');
                     Route::post('confirm', [SERCJudgeController::class, 'confirmJudgePost'])->name('judge.competition.serc.confirm.post');
@@ -120,7 +123,7 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
                     Route::post('issue', [ViolationController::class, 'submit'])->name('judge.competition.violation.submit');
 
                     Route::get('heats/{event}', [ViolationController::class, 'getHeatsFor'])->name('judge.competition.violation.issue.getHeats');
-                    Route::get('draw/{serc}', [ViolationController::class, 'getDrawFor'])->name('judge.competition.violation.issue.getDraw');
+                    Route::get('draw/{serc}', [ViolationController::class, 'getDrawFor'])->middleware('judge.sercs-released')->name('judge.competition.violation.issue.getDraw');
 
                     Route::get('event-codes/{eventName}', [ViolationController::class, 'getEventRelatedCodes'])->name('judge.competition.violation.issue.getCodes');
 

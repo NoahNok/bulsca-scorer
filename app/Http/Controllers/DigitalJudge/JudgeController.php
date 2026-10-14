@@ -12,6 +12,7 @@ use App\Models\CompetitionTeam;
 use App\Models\DigitalJudge\Judge;
 use App\Models\SERC;
 use App\Models\SERCJudge;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
@@ -47,9 +48,22 @@ class JudgeController extends Controller
         DigitalJudge::clearClientJudges();
         DigitalJudge::setTank(null);
 
+        $canSeeSercs = $competition->canSeeSercs(Auth::user());
+
         return Inertia::render("Judge/Competition/Home", [
             'competition' => $competition,
-            'sercs' => $competition->getSERCs()->where('digitalJudgeEnabled', true)->get()->map(function ($serc) {
+            'sercsReleased' => $competition->sercsReleased(),
+            'sercs' => $competition->getSERCs()->where('digitalJudgeEnabled', true)->get()->map(function ($serc) use ($canSeeSercs) {
+
+                // Judge names can describe the casualties, so a locked SERC only gives its name away
+                if (!$canSeeSercs) {
+                    return [
+                        'id' => $serc->id,
+                        'name' => $serc->getName(),
+                        'type' => 'serc',
+                        'locked' => true,
+                    ];
+                }
 
                 return [
                     'id' => $serc->id,
@@ -75,6 +89,17 @@ class JudgeController extends Controller
                 ];
             })->toArray(),
         ]);
+    }
+
+    public function setSercsReleased(Competition $competition, Request $request)
+    {
+        $validated = $request->validate(['released' => 'required|boolean']);
+
+        $competition->setSercsReleased($validated['released']);
+
+        Inertia::flash('toast', ['variant' => 'success', 'title' => $competition->sercsReleased() ? 'SERCs released to officials' : 'SERCs locked']);
+
+        return back();
     }
 
     public function toggleReferee(Competition $competition)

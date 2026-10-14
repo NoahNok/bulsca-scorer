@@ -188,6 +188,26 @@
 
                     </div>
 
+                    <hr class="spacer">
+
+                    <div class="px-2 mb-2">
+                        <p class="font-archivo">SERCs</p>
+                        @if ($comp->sercsReleased())
+                            <small>Released to officials at {{ $comp->sercs_released_at->format('H:i, M jS') }}</small>
+                        @else
+                            <small>Locked. Only referees can see them until they're released.</small>
+                        @endif
+                    </div>
+
+                    <form method="POST" action="{{ route('dj.sercs-release', $comp) }}" class="mb-2"
+                        @if ($comp->sercsReleased()) @submit="doConfirm($event, @js('Lock the SERCs? Officials won\'t be able to see or judge them until they\'re released again.'))" @endif>
+                        @csrf
+                        <input type="hidden" name="released" value="{{ $comp->sercsReleased() ? 0 : 1 }}">
+                        <button type="submit" class="btn w-full @if ($comp->sercsReleased()) btn-danger @endif">
+                            {{ $comp->sercsReleased() ? 'Lock SERCs' : 'Release SERCs' }}
+                        </button>
+                    </form>
+
                     <a href="{{ route('dj.toggle', $comp) }}" class="se-btn se-btn-danger block ">Disable</a>
                 @else
                     <p class="mb-2">DigitalJudge allows officials to enter SERC marks on their own devices.</p>

@@ -54,6 +54,7 @@ class Competition extends Model implements IInvitable, IJsonable
     protected $casts = [
         'when' => 'datetime',
         'serc_start_time' => 'datetime',
+        'sercs_released_at' => 'datetime',
         'data' => 'array'
     ];
 
@@ -694,6 +695,35 @@ class Competition extends Model implements IInvitable, IJsonable
         $this->officials()->syncWithoutDetaching([
             $user->id => ['role' => $role],
         ]);
+    }
+
+    public function sercsReleased(): bool
+    {
+        return $this->sercs_released_at !== null;
+    }
+
+    /**
+     * SERCs stay hidden from officials until they're released on the day. Referees can always see them.
+     */
+    public function canSeeSercs(User $user): bool
+    {
+        return $this->sercsReleased() || $this->officialHasRole($user, 'referee');
+    }
+
+    public function setSercsReleased(bool $released): void
+    {
+        if ($released === $this->sercsReleased()) {
+            return;
+        }
+
+        $this->sercs_released_at = $released ? now() : null;
+        $this->save();
+
+        $this->recordActivity(
+            $released ? 'SERCS_RELEASED' : 'SERCS_LOCKED',
+            $released ? 'SERCs released to officials' : 'SERCs locked from officials',
+            related: $this
+        );
     }
 
     /**

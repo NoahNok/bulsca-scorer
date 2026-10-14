@@ -63,6 +63,8 @@ export type MarkingPointChoice = {
 
 export type SERC = Event & {
     judges: Judge[]
+    // Set when the SERCs haven't been released to this official yet (no judges are sent)
+    locked?: boolean
 
 }
 

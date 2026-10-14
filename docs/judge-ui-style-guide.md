@@ -220,6 +220,15 @@ that row's action is done it becomes a static (non-link) row in the success hue:
 label and a trailing `Check` instead of the chevron (e.g. "Results Confirmed").
 Space items `gap-5`.
 
+A **locked** item (SERCs before the referee releases them; the server sends
+`locked: true` and no links) keeps the `h3` name but replaces the links with one
+static row: a `bg-gray-100 text-gray-400` tile with `Lock` and a `text-gray-500`
+explanation, with no chevron. For the head ref, the group's state change sits with the
+group: while locked, an amber panel (`rounded-xl border border-amber-200 bg-amber-50 p-4`)
+above the cards explains who can see them and holds a full-width primary `Button`
+("Release SERCs"). Once released, a quiet "Lock SERCs" text button sits beside the
+`SectionLabel`. Both confirm first.
+
 ### Marking pages
 
 Marking pages (SERC, Times, OOF) share one shape: title, a "Change heat" /

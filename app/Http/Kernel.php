@@ -61,6 +61,7 @@ class Kernel extends HttpKernel
         'auth.judge' => \App\Http\Middleware\DigitalJudge\JudgeAuthenticated::class,
         'judge.officiates' => \App\Http\Middleware\DigitalJudge\OfficiatesCompetition::class,
         'judge.referee' => \App\Http\Middleware\DigitalJudge\RefereeOnly::class,
+        'judge.sercs-released' => \App\Http\Middleware\DigitalJudge\SercsReleased::class,
         'not.judge-only' => \App\Http\Middleware\NotJudgeOnly::class,
 
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
