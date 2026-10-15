@@ -235,7 +235,7 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
         Route::prefix('dq')->group(function () {
             Route::get('', [DJDQController::class, 'index'])->name('dj.dq.index');
             Route::get('/current/{event}/{team}/{type}', [DJDQController::class, 'current'])->name('dj.dq.current');
-            Route::post('', [DJDQController::class, 'submit'])->name('dj.dq.index.post');
+            Route::post('', [DJDQController::class, 'submit'])->name('dj.dq.submit');
             Route::Get('/resolve', [DJDQController::class, 'resolve'])->name('dj.dq.resolve');
             Route::Get('/resolve/list', [DJDQController::class, 'getNeedingResolving'])->name('dj.dq.resolve.list');
             Route::post('/resolve/{submission}', [DJDQController::class, 'resolveSubmission'])->name('dj.dq.submission.resolve');

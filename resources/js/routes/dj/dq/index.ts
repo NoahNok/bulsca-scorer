@@ -1,6 +1,5 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../wayfinder'
 import submission4910ce from './submission'
-import index801d9f from './index'
 import resolve36a22e from './resolve'
 /**
 * @see \App\Http\Controllers\DigitalJudge\DJDQController::issue
@@ -313,6 +312,40 @@ current.head = (args: { event: string | number, team: string | number, type: str
 })
 
 /**
+* @see \App\Http\Controllers\DigitalJudge\DJDQController::submit
+* @see app/Http/Controllers/DigitalJudge/DJDQController.php:35
+* @route '//judge.localhost/dq'
+*/
+export const submit = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: submit.url(options),
+    method: 'post',
+})
+
+submit.definition = {
+    methods: ["post"],
+    url: '//judge.localhost/dq',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\DigitalJudge\DJDQController::submit
+* @see app/Http/Controllers/DigitalJudge/DJDQController.php:35
+* @route '//judge.localhost/dq'
+*/
+submit.url = (options?: RouteQueryOptions) => {
+    return submit.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\DigitalJudge\DJDQController::submit
+* @see app/Http/Controllers/DigitalJudge/DJDQController.php:35
+* @route '//judge.localhost/dq'
+*/
+submit.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: submit.url(options),
+    method: 'post',
+})
+
+/**
 * @see \App\Http\Controllers\DigitalJudge\DJDQController::resolve
 * @see app/Http/Controllers/DigitalJudge/DJDQController.php:220
 * @route '//judge.localhost/dq/resolve'
@@ -521,8 +554,9 @@ const dq = {
     resolveCode: Object.assign(resolveCode, resolveCode),
     submission: Object.assign(submission, submission4910ce),
     eventCodes: Object.assign(eventCodes, eventCodes),
-    index: Object.assign(index, index801d9f),
+    index: Object.assign(index, index),
     current: Object.assign(current, current),
+    submit: Object.assign(submit, submit),
     resolve: Object.assign(resolve, resolve36a22e),
     accepted: Object.assign(accepted, accepted),
     remove: Object.assign(remove, remove),
