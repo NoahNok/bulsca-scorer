@@ -58,9 +58,17 @@ class SERCJudgeController extends Controller
 
     public function confirmJudgePost(Competition $competition, SERC $serc, ConfirmJudgeRequest $request)
     {
+        // start again if the judges selected so far are for another SERC
+        $selected = DigitalJudge::getClientJudges();
 
+        if ($selected->contains(fn($judge) => $judge->serc != $serc->id)) {
+            DigitalJudge::clearClientJudges();
+            $selected = collect();
+        }
 
-        DigitalJudge::addClientJudge($request->judge);
+        if (!$selected->contains('id', (int) $request->judge)) {
+            DigitalJudge::addClientJudge((int) $request->judge);
+        }
 
 
         if ($competition->getScoringSettings->use_tanks) {
@@ -145,9 +153,6 @@ class SERCJudgeController extends Controller
 
 
         $selectedJudges = DigitalJudge::getClientJudges();
-        $serc = $selectedJudges->first()->getSERC;
-
-
 
         $unselectedJudges = $serc->getJudges()->whereNotIn('id', $selectedJudges->pluck('id'))->get();
 
@@ -167,6 +172,7 @@ class SERCJudgeController extends Controller
 
     public function attachJudge(Competition $competition, SERC $serc, SERCJudge $judge, Request $request)
     {
+        abort_if($judge->serc != $serc->id, 404);
 
         if ($request->has('swap')) {
             DigitalJudge::clearClientJudges();
@@ -198,7 +204,6 @@ class SERCJudgeController extends Controller
 
         $nextTeamId = null;
 
-        $serc = $j->getSERC;
         $draw = $serc->getDraw;
 
         // Check if we are marking a tank

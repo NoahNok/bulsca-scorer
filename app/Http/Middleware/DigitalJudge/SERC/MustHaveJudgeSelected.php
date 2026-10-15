@@ -17,12 +17,17 @@ class MustHaveJudgeSelected
     public function handle(Request $request, Closure $next): Response
     {
 
-        $judges = DigitalJudge::getClientJudgeIds();
+        $judges = DigitalJudge::getClientJudges();
+        $serc = $request->route('serc');
 
-        if (!$judges) {
+        // the judges have to be for the SERC in the url, e.g. not left over from another SERC
+        // opened from a QR code, so the marking points and draw shown match the SERC being marked
+        if ($judges->isEmpty() || $judges->contains(fn($judge) => $judge->serc != $serc?->id)) {
+            DigitalJudge::clearClientJudges();
+
             $competition = $request->route('competition');
 
-            return redirect()->route('judge.competition', ['competition' => $competition]);
+            return redirect()->route('judge.competition', ['competition' => $competition->getSlug()]);
         }
 
         return $next($request);
