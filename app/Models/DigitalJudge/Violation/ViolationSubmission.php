@@ -110,7 +110,8 @@ class ViolationSubmission extends Model implements IJsonable
                 'details' => $this->details,
             ],
             'submitter' => [
-                'user' => ['id' => $user->id, 'name' => $user->name],
+                // null once the submitter's account is deleted
+                'user' => $user ? ['id' => $user->id, 'name' => $user->name] : null,
                 'position' => $this->submitter_position
             ],
             'seconder' => [

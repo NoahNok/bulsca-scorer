@@ -6,6 +6,7 @@ use App\Models\Competition;
 use App\Models\CompetitionTeam;
 use App\Models\DigitalJudge\Violation\ViolationSubmission;
 use App\Models\DQCode;
+use App\Models\Orders\Draw;
 use App\Models\SERC;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -128,5 +129,28 @@ class ViolationSeconderTest extends TestCase
             ->assertSessionHasErrors('seconder.user_id');
 
         $this->assertSame(0, ViolationSubmission::count());
+    }
+
+    public function test_submissions_still_load_after_the_submitter_is_deleted(): void
+    {
+        $this->submit(['user_id' => $this->seconder->id])->assertSessionHasNoErrors();
+
+        $draw = new Draw();
+        $draw->serc = $this->serc->id;
+        $draw->entity()->associate($this->team);
+        $draw->tank = 1;
+        $draw->draw = 1;
+        $draw->save();
+
+        $this->judge->delete();
+        $this->assertNull(ViolationSubmission::sole()->submitter_id);
+
+        $referee = User::factory()->create(['judge_only' => true]);
+        $this->comp->addOfficial($referee, 'referee');
+
+        $this->actingAs($referee)
+            ->get(route('judge.competition.violation.submissions', ['competition' => $this->comp->getSlug()]))
+            ->assertOk()
+            ->assertInertia(fn(AssertableInertia $page) => $page->where('submissions.0.submitter.user', null));
     }
 }
