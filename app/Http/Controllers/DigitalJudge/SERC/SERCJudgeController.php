@@ -20,6 +20,20 @@ use Inertia\Inertia;
 
 class SERCJudgeController extends Controller
 {
+    /**
+     * An entity as judges see it. When the competition hides team names from judges (referees still
+     * see them), the name is replaced with its place in the draw so the real name never reaches the page.
+     */
+    private function entityForJudges(Competition $competition, SERC $serc, $entity, ?int $draw = null): array
+    {
+        if ($competition->show_teams_to_judges || DigitalJudge::isClientHeadJudge($competition)) {
+            return $entity->jsonable();
+        }
+
+        $draw ??= $serc->getPositionInDraw($entity)['index'];
+
+        return ['id' => $entity->id, 'name' => 'Draw ' . $draw];
+    }
 
 
     public function confirmJudge(Competition $competition, SERC $serc, SERCJudge $judge)
@@ -115,13 +129,10 @@ class SERCJudgeController extends Controller
                 ];
             }),
             'tank' => $tank,
-            'draws' => $draws->map(function ($draw) use ($competition) {
+            'draws' => $draws->map(function ($draw) use ($competition, $serc) {
                 return [
                     'draw' => $draw->draw,
-                    'entity' => [
-                        'id' => $draw->entity->id,
-                        'name' => $draw->entity->getName($competition)
-                    ]
+                    'entity' => $this->entityForJudges($competition, $serc, $draw->entity, $draw->draw),
                 ];
             })->values(),
 
@@ -263,7 +274,7 @@ class SERCJudgeController extends Controller
                     })
                 ];
             }),
-            'entity' => $team->jsonable(),
+            'entity' => $this->entityForJudges($competition, $serc, $team),
             'draw' => $serc->getPositionInDraw($team),
             'existingMarks' => $judges->mapWithKeys(function ($judge) use ($team) {
                 $marks = $judge->getMarkingPoints->mapWithKeys(function ($mp) use ($team) {
@@ -369,12 +380,12 @@ class SERCJudgeController extends Controller
     {
         $judges = DigitalJudge::getClientJudges();
 
-        $notes = $judges->map(function ($judge) {
+        $notes = $judges->map(function ($judge) use ($competition, $serc) {
             return [
                 'name' => $judge->name,
-                'notes' => $judge->getNotes()->with('entity')->get(['note', 'entity_id', 'entity_type'])->map(function ($note) {
+                'notes' => $judge->getNotes()->with('entity')->get(['note', 'entity_id', 'entity_type'])->map(function ($note) use ($competition, $serc) {
                     return [
-                        'entity' => $note->entity->jsonable(),
+                        'entity' => $this->entityForJudges($competition, $serc, $note->entity),
                         'note' => $note->note
                     ];
                 })
@@ -401,7 +412,7 @@ class SERCJudgeController extends Controller
 
                 foreach ($draws as $draw) {
                     $entityMarks[] = [
-                        'entity' => $draw->entity->jsonable(),
+                        'entity' => $this->entityForJudges($competition, $serc, $draw->entity, $draw->draw),
                         'mark' => $mp->getScoreForTeam($draw->entity)
                     ];
                 }
