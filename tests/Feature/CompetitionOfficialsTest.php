@@ -247,4 +247,20 @@ class CompetitionOfficialsTest extends TestCase
             'password_confirmation' => 'a-good-password-123',
         ])->assertSessionHasErrors('email');
     }
+
+    public function test_competitions_and_users_with_officials_can_be_deleted(): void
+    {
+        $official = User::factory()->create();
+        $this->comp->addOfficial($official, 'official');
+
+        $other = User::factory()->create();
+        $this->comp->addOfficial($other, 'referee');
+
+        $official->delete();
+        $this->assertFalse($this->comp->officials()->whereKey($official->id)->exists());
+
+        $this->comp->delete();
+        $this->assertNull(Competition::find($this->comp->id));
+        $this->assertNotNull($other->fresh());
+    }
 }
