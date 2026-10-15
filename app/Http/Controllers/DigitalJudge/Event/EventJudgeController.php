@@ -10,6 +10,7 @@ use App\Models\CompetitionSpeedEvent;
 use App\Models\EventOOF;
 use App\Models\SpeedResult;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 
@@ -85,10 +86,34 @@ class EventJudgeController extends Controller
 
         $marks = $data['mark']; // this is a key value array of entity_id -> time
 
-        foreach ($marks as $entity_id => $value) {
-            $entity = $event->getScorableEntity()::find($entity_id);
+        // Check every entity is in this heat and has a result row before writing anything, so a bad
+        // or stale id can't fail partway through and leave the heat half saved
+        $lanes = $event->getHeats()->where('heat', $heat)->with('entity')->get()->keyBy('entity_id');
+        $results = [];
 
-            $sr = SpeedResult::whereMorphedTo('entity', $entity)->where('event', $event->id)->first();
+        foreach (array_keys($marks) as $entity_id) {
+            $entity = $lanes->get($entity_id)?->entity;
+            $sr = $entity ? SpeedResult::whereMorphedTo('entity', $entity)->where('event', $event->id)->first() : null;
+
+            abort_if($sr == null, 422, 'That team isn\'t in this heat.');
+
+            $results[$entity_id] = $sr;
+        }
+
+        DB::transaction(fn() => $this->saveTimes($event, $marks, $results));
+
+        return response()->json(['hasNextHeat' => $heat < $event->getMaxHeats()]);
+    }
+
+    /**
+     * @param array<int, string> $marks entity_id => time entered
+     * @param array<int, SpeedResult> $results entity_id => its result for this event
+     */
+    private function saveTimes(CompetitionSpeedEvent $event, array $marks, array $results): void
+    {
+        foreach ($marks as $entity_id => $value) {
+            $sr = $results[$entity_id];
+            $entity = $sr->entity;
 
             if (str_starts_with($value, "DN")) {
                 $event->clearEntityDisqualifications($entity);
@@ -141,8 +166,6 @@ class EventJudgeController extends Controller
 
             $sr->save();
         }
-
-        return response()->json(['hasNextHeat' => $heat < $event->getMaxHeats()]);
     }
 
     // ORDER OF FINISH
