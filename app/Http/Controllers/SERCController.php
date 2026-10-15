@@ -144,14 +144,14 @@ class SERCController extends Controller
     public function editResultsView(Competition $comp, SERC $serc, int $entity_id)
     {
 
-        $team = $serc->getScorableEntity()->findOrFail($entity_id);
+        $team = $serc->getScorableEntity()::where('competition', $comp->id)->findOrFail($entity_id);
 
         return view('competition.events.sercs.edit-team-results', ['comp' => $comp, 'serc' => $serc, 'team' => $team]);
     }
 
     public function updateTeamResults(Competition $comp, SERC $serc, int $entity_id, Request $request)
     {
-        $team = $serc->getScorableEntity()->findOrFail($entity_id);
+        $team = $serc->getScorableEntity()::where('competition', $comp->id)->findOrFail($entity_id);
 
         $json = json_decode($request->input('data'));
         $sawDQ = false;
@@ -242,7 +242,7 @@ class SERCController extends Controller
 
     private function nextTeamId(Competition $comp, SERC $serc, int $entity_id): ?int
     {
-        $team = $serc->getScorableEntity()->findOrFail($entity_id);
+        $team = $serc->getScorableEntity()::where('competition', $comp->id)->findOrFail($entity_id);
 
         $teamIds = $serc->getScorableEntities()->pluck('id')->toArray();
 

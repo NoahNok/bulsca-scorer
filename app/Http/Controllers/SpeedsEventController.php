@@ -132,9 +132,14 @@ class SpeedsEventController extends Controller
         $errors = [];
 
         $json = json_decode($request->input('data'));
+
+        // only this event's results can be changed
+        $results = $event->results()->whereIn('id', collect($json)->pluck('id'))->get()->keyBy('id');
+        abort_if($results->count() != collect($json)->pluck('id')->unique()->count(), 404);
+
         foreach ($json as $row) {
             $id = $row->id;
-            $sr = SpeedResult::find($id);
+            $sr = $results[$id];
 
             $originalResult = $sr->result;
 

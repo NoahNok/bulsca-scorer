@@ -62,8 +62,9 @@ class HeatController extends Controller
 
     public function swap(Competition $comp, CompetitionSpeedEvent $event, Request $request)
     {
-        $currentAllocation = Heat::find($request->input('team'));
-        $targetAllocation = Heat::find($request->input('target-heat'));
+        // only lanes in this event's heats can be moved
+        $currentAllocation = $event->getHeats()->findOrFail($request->input('team'));
+        $targetAllocation = $event->getHeats()->find($request->input('target-heat'));
 
         // If target is a blank space
         if ($targetAllocation == null) {

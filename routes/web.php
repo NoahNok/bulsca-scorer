@@ -48,6 +48,7 @@ use App\Models\SERC;
 use Carbon\Carbon;
 use App\Helpers\RouteHelpers;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Middleware\CompetitionOwnsRouteModels;
 
 
 
@@ -127,7 +128,7 @@ Route::middleware(['auth', 'not.judge-only'])->group(function () {
     Route::get('/create', [CompetitionController::class, 'create'])->name('comps.create');
     Route::post('/create', [CompetitionController::class, 'createPost'])->name('comps.create.post');
 
-    Route::prefix('/comps/{comp}')->group(function () {
+    Route::prefix('/comps/{comp}')->middleware(CompetitionOwnsRouteModels::class)->group(function () {
         Route::get('', [CompetitionController::class, 'view'])->middleware('can:access,comp,"view"')->name('comps.view');
 
         Route::get('/activity-log', [CompetitionController::class, 'activityLog'])->middleware('can:access,comp,"admin"')->name('comps.activityLog');

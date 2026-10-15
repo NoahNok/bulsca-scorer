@@ -52,12 +52,10 @@ class DrawController extends Controller
     public function swap(Competition $comp, SERC $serc, DrawService $drawService)
     {
 
-        $swap_from = Draw::find(request()->input('swap_from'));
-        $swap_to = Draw::find(request()->input('swap_to'));
-        $activityDescription = "Swapped draw positions: " . ($swap_from->entity ? $swap_from->entity->getName($comp) : 'Empty') . " (Tank {$swap_from->tank}, Draw {$swap_from->draw}) <-> " . ($swap_to->entity ? $swap_to->entity->getName($comp) : 'Empty') . " (Tank {$swap_to->tank}, Draw {$swap_to->draw})";
-
-
-        $drawService->swapInDraw($swap_from, $swap_to);
+        // only draws in this competition's SERCs can be swapped
+        $draws = Draw::whereIn('serc', SERC::where('competition', $comp->id)->select('id'));
+        $swap_from = (clone $draws)->find(request()->input('swap_from'));
+        $swap_to = (clone $draws)->find(request()->input('swap_to'));
 
         if (!$swap_from || !$swap_to) {
             return response()->json([
@@ -65,6 +63,11 @@ class DrawController extends Controller
                 'message' => 'Invalid draw selections',
             ], 400);
         }
+
+        $activityDescription = "Swapped draw positions: " . ($swap_from->entity ? $swap_from->entity->getName($comp) : 'Empty') . " (Tank {$swap_from->tank}, Draw {$swap_from->draw}) <-> " . ($swap_to->entity ? $swap_to->entity->getName($comp) : 'Empty') . " (Tank {$swap_to->tank}, Draw {$swap_to->draw})";
+
+
+        $drawService->swapInDraw($swap_from, $swap_to);
 
         $comp->clearDrawCache();
 
