@@ -96,6 +96,12 @@ class ViolationController extends Controller
             'sercs' => !$competition->canSeeSercs(Auth::user()) ? [] : $competition->getSERCs()->where('digitalJudgeEnabled', true)->get()->map(function ($serc) {
                 return $serc->jsonable();
             }),
+            // Who can be picked as the seconder: every other official on the competition
+            'officials' => $competition->officials()
+                ->whereKeyNot(Auth::id())
+                ->orderBy('name')
+                ->get(['users.id', 'users.name'])
+                ->map(fn($official) => ['id' => $official->id, 'name' => $official->name]),
             'speeds' => $competition->getSpeedEvents()->where('digitalJudgeEnabled', true)->get()->map(function ($speed) {
                 return $speed->jsonable();
             })
@@ -139,7 +145,8 @@ class ViolationController extends Controller
         $submission->turn = $validated['details']['turn'] ?? null;
         $submission->length = $validated['details']['length'] ?? null;
         $submission->submitter_position = $validated['submitter']['position'] ?? '';
-        $submission->seconder_name = $validated['seconder']['name'] ?? null;
+        $submission->seconder_id = $validated['seconder']['user_id'] ?? null;
+        $submission->seconder_name = null;
         $submission->seconder_position = $validated['seconder']['position'] ?? null;
 
         $submission->entity()->associate($entity);

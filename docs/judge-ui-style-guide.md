@@ -148,6 +148,7 @@ navigable row shows a `ChevronRight` that nudges right on hover.
 | `Button` | All buttons. Variants: `primary` (main action), `secondary`, `success`, `danger`, `white`. Has `icon`, `loading`. Note it has `ml-auto` baked in, so pass `w-full` when stacking. |
 | `Input` | Text, number and textarea fields. Use `variant="soft"` for new forms; it supports `label`, `hint`, and a required asterisk. |
 | `SearchInput` | Filtering a list in place. `bind:value`. |
+| `SearchSelect` | Picking one item from a list that may be long (e.g. the seconder from the competition's officials). Looks like a soft `Input` (`label`, `hint`, `required`). `options` are `{ value, label, description? }` with string values; `bind:value`. A search box appears in the dropdown once there are more than `searchThreshold` (8) options. `allowClear` adds a "None" row. Use `SearchInput` instead when the whole list is already on the page. |
 | `FilterChip` | Status/category filters with optional count. You own the state (`active`, `onclick`). |
 | `SegmentedControl` | Switching between 2–4 views of the same list (DQs / Penalties). `bind:value`, typed by option values. |
 | `NumberedList` / `NumberedListItem` | Numbered rows in a bordered list (criteria, tanks, running order). Give an item `href` to make the whole row a link with a chevron; `trailing` adds a hint or badge on the right; `onclick` (without `href`) makes it a button. |

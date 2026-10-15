@@ -128,9 +128,12 @@ type ViolationDetails = {
 }
 
 type ViolationUser = {
-    name?: string
+    // free-text name, only on submissions made before seconders were picked from the officials
+    name?: string | null
     position?: string
-    user?: User
+    user?: User | null
+    // posted when picking the seconder from the competition's officials
+    user_id?: number | null
 }
 
 export type ViolationSubmissionPost = {
@@ -158,7 +161,7 @@ export function emptySubmission(): ViolationSubmissionPost {
         },
 
         seconder: {
-            name: "",
+            user_id: null,
             position: ""
         }
     }
@@ -185,7 +188,7 @@ export function submissionToPost(submission: ViolationSubmission): ViolationSubm
         },
 
         seconder: {
-            name: submission.seconder.name ?? "",
+            user_id: submission.seconder.user?.id ?? null,
             position: submission.seconder.position ?? ""
         }
     }

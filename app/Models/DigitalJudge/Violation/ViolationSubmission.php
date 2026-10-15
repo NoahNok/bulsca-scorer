@@ -61,6 +61,11 @@ class ViolationSubmission extends Model implements IJsonable
         return $this->belongsTo(User::class, 'submitter_id');
     }
 
+    public function seconder(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'seconder_id');
+    }
+
     public function activityRelations(): MorphMany
     {
         return $this->morphMany(ActivityRelation::class, 'related');
@@ -81,6 +86,7 @@ class ViolationSubmission extends Model implements IJsonable
     {
         $violation = $this->submitted;
         $user = $this->submitter;
+        $seconder = $this->seconder;
 
 
 
@@ -106,6 +112,7 @@ class ViolationSubmission extends Model implements IJsonable
                 'position' => $this->submitter_position
             ],
             'seconder' => [
+                'user' => $seconder ? ['id' => $seconder->id, 'name' => $seconder->name] : null,
                 'name' => $this->seconder_name,
                 'position' => $this->seconder_position
             ],

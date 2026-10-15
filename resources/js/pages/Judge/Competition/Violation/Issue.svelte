@@ -17,6 +17,7 @@
     import Input from "@/components/input.svelte";
     import ViolationCodeTile from "@/components/Judging/Violation/ViolationCodeTile.svelte";
     import SearchInput from "@/components/SearchInput.svelte";
+    import SearchSelect from "@/components/SearchSelect.svelte";
     import SectionLabel from "@/components/SectionLabel.svelte";
     import SegmentedControl from "@/components/SegmentedControl.svelte";
     import Spinner from "@/components/Spinner.svelte";
@@ -33,6 +34,7 @@
         view as viewSubmission,
     } from "@/routes/judge/competition/violation/submission";
 
+    import type { User } from "@/types/auth";
     import {
         type Entity,
         EventType,
@@ -66,14 +68,21 @@
         competition,
         sercs,
         speeds,
+        officials,
         submission,
     }: {
         competition: Competition;
         sercs: Event[];
         speeds: Event[];
+        // the other officials on the competition, who can second a violation
+        officials: User[];
         // set when editing a rejected submission to resubmit it
         submission?: ViolationSubmission;
     } = $props();
+
+    const officialOptions = $derived(
+        officials.map((o) => ({ value: String(o.id), label: o.name })),
+    );
 
     // The form only takes the submission it opened with
     const initial = untrack(() => submission);
@@ -280,13 +289,11 @@
     let expanded = $state<boolean>(false);
 
     type EntityRow = { position: number; entity: Entity };
-
 </script>
 
 <AppHead
     title="{editing ? 'Edit' : 'Issue'} - DQ/Penalty - {competition.name}"
 />
-
 
 <section class="flex flex-col">
     <p class="font-archivo -mb-2">{competition.name}</p>
@@ -385,7 +392,9 @@
                 {/if}
 
                 {#if violations && violationsHttp.wasSuccessful}
-                    <div class="flex max-h-100 flex-col gap-2 overflow-y-auto p-0.5">
+                    <div
+                        class="flex max-h-100 flex-col gap-2 overflow-y-auto p-0.5"
+                    >
                         {#each violationFilter === "dq" ? violations.dqs : violations.pens as v (v.id)}
                             {@const selected =
                                 selectedViolation?.id === v.id &&
@@ -395,7 +404,8 @@
                                 class="group flex w-full cursor-pointer items-center gap-3 rounded-xl border bg-white p-3 text-left transition-all hover:border-se focus:outline-none focus-visible:ring-2 focus-visible:ring-se {selected
                                     ? 'border-se bg-se/5'
                                     : ''}"
-                                onclick={() => selectViolation(v, step_controls)}
+                                onclick={() =>
+                                    selectViolation(v, step_controls)}
                                 hidden={!searchMatchesViolation(v)}
                             >
                                 <ViolationCodeTile
@@ -444,7 +454,9 @@
                 {/if}
 
                 {#if selectedEvent?.type === EventType.SPEED}
-                    <SectionLabel class="col-span-2 -mb-1 mt-2">Where</SectionLabel>
+                    <SectionLabel class="col-span-2 -mb-1 mt-2"
+                        >Where</SectionLabel
+                    >
                     <Input
                         variant="soft"
                         label="Length"
@@ -463,7 +475,9 @@
                     />
                 {/if}
 
-                <SectionLabel class="col-span-2 -mb-1 mt-2">What happened</SectionLabel>
+                <SectionLabel class="col-span-2 -mb-1 mt-2"
+                    >What happened</SectionLabel
+                >
                 <div class="col-span-2">
                     <Input
                         variant="soft"
@@ -474,7 +488,9 @@
                     />
                 </div>
 
-                <SectionLabel class="col-span-2 -mb-1 mt-2">Submitted by</SectionLabel>
+                <SectionLabel class="col-span-2 -mb-1 mt-2"
+                    >Submitted by</SectionLabel
+                >
                 <div class="col-span-2">
                     <Input
                         variant="soft"
@@ -485,19 +501,37 @@
                     />
                 </div>
 
-                <SectionLabel class="col-span-2 -mb-1 mt-2">Seconded by</SectionLabel>
-                <Input
-                    variant="soft"
+                <SectionLabel class="col-span-2 -mb-1 mt-2"
+                    >Seconded by</SectionLabel
+                >
+                <SearchSelect
+                    class="col-span-2"
                     label="Name"
-                    placeholder="Their name"
-                    bind:value={form.seconder.name}
+                    placeholder="Choose official"
+                    searchPlaceholder="Search officials..."
+                    options={officialOptions}
+                    bind:value={
+                        // SearchSelect works in strings, the form posts the seconder's user id
+                        () =>
+                            form.seconder.user_id
+                                ? String(form.seconder.user_id)
+                                : "",
+                        (id) => (form.seconder.user_id = id ? Number(id) : null)
+                    }
+                    allowClear
+                    disabled={!officials.length}
+                    hint={officials.length
+                        ? null
+                        : "No other officials on this competition"}
                 />
-                <Input
-                    variant="soft"
-                    label="Role"
-                    placeholder="Their role"
-                    bind:value={form.seconder.position}
-                />
+                <div class="col-span-2">
+                    <Input
+                        variant="soft"
+                        label="Role"
+                        placeholder="Their role"
+                        bind:value={form.seconder.position}
+                    />
+                </div>
 
                 <Button
                     label={editing ? "Resubmit" : "Submit"}
@@ -576,4 +610,3 @@
         </div>
     {/if}
 {/snippet}
-

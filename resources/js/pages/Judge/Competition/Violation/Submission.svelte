@@ -207,7 +207,7 @@
         )}
         {@render person(
             "Seconded by",
-            submission.seconder.name,
+            submission.seconder.user?.name ?? submission.seconder.name,
             submission.seconder.position,
         )}
     </dl>
@@ -325,7 +325,7 @@
     {/if}
 </section>
 
-{#snippet person(label: string, name?: string, position?: string)}
+{#snippet person(label: string, name?: string | null, position?: string)}
     <div class="flex items-center justify-between gap-3 p-3">
         <dt class="text-xs text-gray-500">{label}</dt>
         <dd class="text-right text-sm">
