@@ -68,8 +68,20 @@ class SERCController extends Controller
     public function editPost(Competition $comp, SERC $serc, SaveSERCSetupRequest $request)
     {
 
+        abort_if($serc->exists && $serc->competition != $comp->id, 404);
+
         // Validate the request data
         $validated = $request->validated();
+
+        // every judge and marking point id sent must already belong to this SERC, so one
+        // competition can't delete or take over another's (a new SERC has none yet)
+        $judgeIds = collect($validated['judges'])->pluck('id')
+            ->merge($validated['deleted']['judges'] ?? [])->filter()->unique();
+        $markingPointIds = collect($validated['judges'])->pluck('marking_points')->flatten(1)->pluck('id')
+            ->merge($validated['deleted']['marking_points'] ?? [])->filter()->unique();
+
+        abort_if(SERCJudge::where('serc', $serc->id ?? 0)->whereIn('id', $judgeIds)->count() != $judgeIds->count(), 422, 'Unknown judge for this SERC.');
+        abort_if(SERCMarkingPoint::where('serc', $serc->id ?? 0)->whereIn('id', $markingPointIds)->count() != $markingPointIds->count(), 422, 'Unknown marking point for this SERC.');
 
         // Delete any judges or marking points that were removed in the frontend
         SERCJudge::destroy($validated['deleted']['judges']);
