@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\DigitalJudge\Violation;
 
 use App\DigitalJudge\DigitalJudge;
+use App\Events\Violation\ViolationSubmitted;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DigitalJudge\Violation\ResubmitViolationRequest;
 use App\Http\Requests\DigitalJudge\Violation\SubmitViolationRequest;
@@ -58,6 +59,7 @@ class ViolationController extends Controller
         $submission->save();
 
         $submission->logActivity('SUBMITTED');
+        ViolationSubmitted::dispatch($submission);
 
         return to_route('judge.competition.violation.submissions', ['competition' => $competition, 'id' => $submission->id]);
     }
@@ -85,6 +87,7 @@ class ViolationController extends Controller
         $submission->save();
 
         $submission->logActivity('SUBMITTED', $from);
+        ViolationSubmitted::dispatch($submission, $from);
 
         return to_route('judge.competition.violation.submission.view', ['competition' => $competition, 'submission' => $submission]);
     }

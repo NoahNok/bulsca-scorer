@@ -31,7 +31,7 @@ The layouts provide the chrome, so pages don't add it themselves:
 
 | Layer | File | Provides |
 |---|---|---|
-| Shell | `layout/JudgeLayout.svelte` | Padded, centred column, bottom tab bar (`JudgeTabBar`: Home, DQ/Penalty, plus the "Referee mode" band for the head ref), toasts, confirm dialog |
+| Shell | `layout/JudgeLayout.svelte` | Padded, centred column, bottom tab bar (`JudgeTabBar`: Home, DQ/Penalty, Alerts, Online, plus the "Referee mode" band for the head ref), toasts, confirm dialog, the officials-online sheet and poke animation (joins the competition's presence channel), and the DQ/Penalty alerts sheet (starts `alerts` from `lib/alerts.svelte`) |
 | Header | `layout/JudgeHeaderLayout.svelte` | "Digital Judge" header + icon and the space under it (all `Judge/*` pages) |
 
 The header defaults to the House icon linking to the competition home. Override
@@ -58,7 +58,10 @@ layout instead of props.
 ### Navigation
 
 The bottom tab bar is the same on every competition page: **Home** (competition
-home) and **DQ/Penalty** (submissions list), with the current area highlighted.
+home), **DQ/Penalty** (submissions list), **Alerts** (an unread count, which opens
+`AlertsSheet`) and **Online** (a count of the officials online, which opens
+`OfficialsSheet`), with the current area highlighted. Alerts and Online only show
+when Reverb is configured (`echoEnabled` from `lib/echo`).
 For the head ref, a "Referee mode" band sits along the top of the bar, so the
 role is always visible without covering the page header.
 On the dashboard and account pages (no competition joined) the bar has
@@ -157,7 +160,10 @@ navigable row shows a `ChevronRight` that nudges right on hover.
 | `EmptyState` | "Nothing here yet" with an icon, title, description, and optional children for an action. |
 | `LiveIndicator` | Pulsing dot for data that refreshes via `usePoll`. |
 | `BackLink` | "← Back to X" text link under the page title. |
-| `JudgeTabBar` | The fixed bottom tab bar (Home, DQ/Penalty). For the head ref it shows a teal "Referee mode" band along its top edge. Without a `competition` it shows "Account" and "Log out" tabs (the dashboard and `Judge/Account`). Rendered by `JudgeLayout` on every competition page, the dashboard and the account page; pages never render it. |
+| `JudgeTabBar` | The fixed bottom tab bar (Home, DQ/Penalty, Alerts, Online). For the head ref it shows a teal "Referee mode" band along its top edge. Without a `competition` it shows "Account" and "Log out" tabs (the dashboard and `Judge/Account`). Rendered by `JudgeLayout` on every competition page, the dashboard and the account page; pages never render it. |
+| `OfficialsSheet` | The slide-out from the right listing the competition's officials: an **Online** section (name, role, Active/Idle badge from `presenceStatusBadgeClass`, and a dot on the avatar from `presenceStatusDotClass`; both teal when active, orange when idle after a minute without input or with the tab hidden) and a dimmed **Offline** section for everyone else, fetched from `judge.competition.officials` when it opens. Tapping someone online pokes them. Rendered by `JudgeLayout` and opened by the Online tab via `presence.sheetOpen`; pages never render it. |
+| `AlertsSheet` | The slide-out from the right with the history of live DQ/Penalty alerts, newest first: code tile, a sentence (`alertText`), time ago and status badge; tapping a row opens the submission. Alerts come from `lib/alerts.svelte`: judges get their own submissions' status changes, the referee also gets new and resubmitted ones. Each also pops a toast with a "View" link. The history is per device (localStorage) and only covers alerts received while online. Rendered by `JudgeLayout` and opened by the Alerts tab via `alerts.sheetOpen`; pages never render it. |
+| `PokeAnimation` | The full-screen "{name} says hi! 👋" lifebuoy animation played when someone pokes you (the 👋 waves once the caption is in). Rendered by `JudgeLayout`; caption only under `prefers-reduced-motion`. |
 | `Spinner` | Loading. Centre it: `<div class="flex justify-center py-6"><Spinner /></div>`. |
 | `Stepper` / `Step` | Multi-step flows. Steps stay locked until previous ones complete; call `setTitle()` with the chosen value and `complete()` from the step's `step_controls`. |
 | `ConfirmDialog` | Any destructive or state-changing action (approve, reject, remove). Or `confirm()` from `lib/confirm` when imperative. |
@@ -247,7 +253,7 @@ full-width primary submit `Button`.
   Prefer this over a separate edit page when the fields are the same.
 - **Live detail pages** poll with `usePoll` (`only` the changing props) and show
   a `LiveIndicator` by the heading. When polling brings in a change someone else
-  made, announce it: a `manualClose` toast, a brief `ring-2 ring-se` on the
+  made, announce it: a toast (8s, like a live alert; toasts always auto-dismiss), a brief `ring-2 ring-se` on the
   summary card and `navigator.vibrate?.(200)`. Track the last seen value so the
   viewer's own actions aren't announced (see `Violation/Submission`).
 - **Summary card** at the top: type label + status badge, large tile + name/event, description with `border-l-2 pl-3`.
@@ -300,6 +306,10 @@ title, a sentence of guidance if needed, then side-by-side `ConfirmDialog`s with
 
 - Success and error toasts: `toastSuccess` / `toastError` from `lib/toast.svelte`.
   Server flashes with a `toast` key are shown automatically by the layout.
+  Pass `action: { label, href }` to `toast()` to add a link under the text
+  (e.g. "View" on an alert); following it dismisses the toast. `onClick` runs
+  when the toast is tapped anywhere (body, action or close) and dismisses it;
+  alerts use it to mark themselves read.
 - Polling lists: `usePoll(5000, { only: [...] })` plus a `LiveIndicator` next to the title.
 - **Long lists** (results for a whole event): page them on the server with
   `Inertia::scroll($paginator)` and render with `<InfiniteScroll data="prop" preserveUrl>`
@@ -307,6 +317,13 @@ title, a sentence of guidance if needed, then side-by-side `ConfirmDialog`s with
   reloads of just that prop) don't recompute them. Batch-load each page's related rows
   (`whereIn`) instead of querying per row. See `ConfirmResultsController`.
 - Animate list reordering with `animate:flip={{ duration: 200 }}` and reveal async sections with `transition:slide`.
+- **Presence** (who's online): `presence` from `lib/presence.svelte.ts`, joined by
+  `JudgeLayout` for the current competition (`judge.officials.{id}` presence channel,
+  authorised in `routes/channels.php`). Read `presence.sorted`, `presence.count` and
+  `presence.connected`. Statuses (Active/Idle) and pokes are whispers, so nothing is
+  stored. Get the websocket client from `getEcho()` in `lib/echo.ts` rather than
+  `window.Echo`, which is the legacy Blade app's. Map statuses to colours with
+  `presenceStatusBadgeClass` in `types/presence.ts`.
 
 ### Requests
 

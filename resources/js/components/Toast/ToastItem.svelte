@@ -3,6 +3,7 @@
 
     import { dismissToast } from "@/lib/toast.svelte";
     import type { ToastItem } from "@/lib/toast.svelte";
+    import { Link } from "@inertiajs/svelte";
     import { fly } from "svelte/transition";
 
     function iconFor(toast: ToastItem) {
@@ -43,8 +44,16 @@
     let Icon = iconFor(toast);
 </script>
 
+<!-- the action link and close button are the keyboard routes, tapping
+     anywhere else is a touch convenience -->
+<!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
 <div
-    class={`pointer-events-auto rounded-lg border p-3 shadow-sm ${classesFor(toast)}`}
+    class={`pointer-events-auto rounded-lg border p-3 shadow-sm ${classesFor(toast)} ${toast.onClick ? "cursor-pointer" : ""}`}
+    onclick={() => {
+        if (!toast.onClick) return;
+        toast.onClick();
+        dismissToast(toast.id);
+    }}
     role="status"
     aria-live="polite"
     in:fly={{ x: 100, duration: 300 }}
@@ -59,6 +68,15 @@
                 <p class="mt-1 text-xs opacity-80">
                     {@html html}
                 </p>
+            {/if}
+            {#if toast.action}
+                <Link
+                    href={toast.action.href}
+                    class="mt-2 inline-block text-sm font-semibold underline underline-offset-2"
+                    onclick={() => dismissToast(toast.id)}
+                >
+                    {toast.action.label}
+                </Link>
             {/if}
         </div>
 

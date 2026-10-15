@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\DigitalJudge\JudgeController::release
-* @see app/Http/Controllers/DigitalJudge/JudgeController.php:94
+* @see app/Http/Controllers/DigitalJudge/JudgeController.php:106
 * @route '//judge.localhost/v2/{competition}/sercs/release'
 */
 export const release = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -16,7 +16,7 @@ release.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\JudgeController::release
-* @see app/Http/Controllers/DigitalJudge/JudgeController.php:94
+* @see app/Http/Controllers/DigitalJudge/JudgeController.php:106
 * @route '//judge.localhost/v2/{competition}/sercs/release'
 */
 release.url = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -49,7 +49,7 @@ release.url = (args: { competition: number | { id: number } } | [competition: nu
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\JudgeController::release
-* @see app/Http/Controllers/DigitalJudge/JudgeController.php:94
+* @see app/Http/Controllers/DigitalJudge/JudgeController.php:106
 * @route '//judge.localhost/v2/{competition}/sercs/release'
 */
 release.post = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({

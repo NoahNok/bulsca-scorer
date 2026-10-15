@@ -201,3 +201,24 @@ export type Violation = {
     type: "GENERIC" | "LANE" | "TURN" | "CHANGEOVER" | "CROSSLINE" | "BACKLINE" | "OOF" | "STARTER" | "PICKUP" | null
     vtype: "DQ" | "PEN"
 }
+
+/**
+ * A live alert about a submission: its status changed (to the judge who made
+ * it) or it's waiting for review (to the referees). Built by
+ * `ViolationSubmission::alertPayload`, `kind` and `read` are added client side.
+ */
+export type ViolationAlert = {
+    submission_id: string
+    competition_id: number
+    status: ViolationStatus
+    // the status before; REJECTED on a resubmission
+    from: ViolationStatus | null
+    code: string
+    vtype: Violation["vtype"]
+    entity: string
+    event: string
+    submitter: { id: number, name: string } | null
+    at: string
+    kind: "status-changed" | "submitted"
+    read: boolean
+}

@@ -20,7 +20,7 @@
 
 <div
     class={cn(
-        "flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed py-12 text-center text-gray-500",
+        "flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed px-6 py-12 text-center text-gray-500",
         className,
     )}
     in:fade

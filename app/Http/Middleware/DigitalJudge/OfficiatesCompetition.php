@@ -28,9 +28,7 @@ class OfficiatesCompetition
             abort(404);
         }
 
-        $user = Auth::user();
-
-        if (!$user->isAdmin() && !$competition->officials()->whereKey($user->id)->exists()) {
+        if (!$competition->isOfficiatedBy(Auth::user())) {
             abort(403);
         }
 

@@ -2,6 +2,7 @@
 
 namespace App\Models\DigitalJudge\Violation;
 
+use App\Events\Violation\ViolationStatusChanged;
 use App\Models\AbstractClasses\Event;
 use App\Models\Activity\Activity;
 use App\Models\Activity\ActivityRelation;
@@ -17,6 +18,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Facades\Auth;
 use Override;
 
 class ViolationSubmission extends Model implements IJsonable
@@ -184,6 +186,11 @@ class ViolationSubmission extends Model implements IJsonable
 
         if ($from !== $status) {
             $this->logActivity($status, $from);
+
+            // Let the judge who made it know, unless they changed it themselves
+            if ($this->submitter_id && $this->submitter_id != Auth::id()) {
+                ViolationStatusChanged::dispatch($this, $from);
+            }
         }
     }
 
@@ -211,6 +218,29 @@ class ViolationSubmission extends Model implements IJsonable
         $this->applied?->delete();
 
         $this->applied()->dissociate();
+    }
+
+
+
+    // ALERTS
+
+    /**
+     * What a live alert about this submission carries, for the judge who made it or the referees
+     */
+    public function alertPayload(?string $from = null): array
+    {
+        return [
+            'submission_id' => $this->id,
+            'competition_id' => $this->competition_id,
+            'status' => $this->status,
+            'from' => $from,
+            'code' => $this->code(),
+            'vtype' => $this->isDq() ? 'DQ' : 'PEN',
+            'entity' => $this->entity->getName(),
+            'event' => $this->event->getName(),
+            'submitter' => $this->submitter ? ['id' => $this->submitter->id, 'name' => $this->submitter->name] : null,
+            'at' => now()->toIso8601String(),
+        ];
     }
 
 

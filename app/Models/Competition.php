@@ -681,6 +681,22 @@ class Competition extends Model implements IInvitable, IJsonable
             ->withTimestamps();
     }
 
+    /**
+     * The display name for an official's role, "Admin" for an admin who isn't an official.
+     */
+    public static function officialRoleName(?string $role): string
+    {
+        return $role ? (self::$officialRoles[$role] ?? 'Official') : 'Admin';
+    }
+
+    /**
+     * Whether the user can judge this competition: one of its officials, or an admin.
+     */
+    public function isOfficiatedBy(User $user): bool
+    {
+        return $user->isAdmin() || $this->officials()->whereKey($user->id)->exists();
+    }
+
     public function officialHasRole(User $user, string $role): bool
     {
         $pivot = $this->officials()

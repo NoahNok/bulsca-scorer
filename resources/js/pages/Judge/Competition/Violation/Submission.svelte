@@ -74,7 +74,9 @@
                 ? "You can edit it and resubmit."
                 : `${code} for ${submission.entity.name}`,
             variant: status === "ACCEPTED" ? "success" : "info",
-            manualClose: true,
+            // same as a live DQ/Penalty alert, which this stands in for here
+            durationMs: 8000,
+            manualClose: false,
         });
 
         navigator.vibrate?.(200);

@@ -1,6 +1,8 @@
 <?php
 
 use App\DigitalJudge\DigitalJudge;
+use App\Models\Competition;
+use App\Models\User;
 use Illuminate\Support\Facades\Broadcast;
 
 /*
@@ -35,3 +37,24 @@ Broadcast::channel('judge.competition.{id}', function ($connection, $id) {
 
     ];
 }, ['guards' => ['canJudge']]);
+
+// Officials online in the Svelte judge app. Members are keyed by user id, so an
+// official signed in on two devices shows once.
+Broadcast::channel('judge.officials.{competition}', function (User $user, Competition $competition) {
+    if (!$competition->isOfficiatedBy($user)) {
+        return false;
+    }
+
+    $role = $competition->officials()->whereKey($user->id)->first()?->pivot->role;
+
+    return [
+        'id' => $user->id,
+        'name' => $user->name,
+        'role' => Competition::officialRoleName($role),
+    ];
+});
+
+// New and resubmitted DQs/penalties for the competition's referees to review
+Broadcast::channel('judge.referees.{competition}', function (User $user, Competition $competition) {
+    return $competition->officialHasRole($user, 'referee');
+});

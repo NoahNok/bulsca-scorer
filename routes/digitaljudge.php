@@ -59,6 +59,7 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
 
 
                 Route::get('', [JudgeController::class, 'home'])->name('judge.competition');
+                Route::get('officials', [JudgeController::class, 'officials'])->name('judge.competition.officials');
 
                 Route::post('sercs/release', [JudgeController::class, 'setSercsReleased'])->middleware('judge.referee')->name('judge.competition.sercs.release');
 

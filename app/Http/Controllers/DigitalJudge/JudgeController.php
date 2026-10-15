@@ -43,6 +43,18 @@ class JudgeController extends Controller
         return to_route('judge.competition', ['competition' => $competition->getSlug()]);
     }
 
+    /**
+     * Everyone officiating the competition, for the Online sheet to list who's offline.
+     */
+    public function officials(Competition $competition)
+    {
+        return $competition->officials()->orderBy('name')->get()->map(fn ($official) => [
+            'id' => $official->id,
+            'name' => $official->name,
+            'role' => Competition::officialRoleName($official->pivot->role),
+        ]);
+    }
+
     public function home(Competition $competition)
     {
         DigitalJudge::clearClientJudges();

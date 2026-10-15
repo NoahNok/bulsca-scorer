@@ -1,8 +1,15 @@
 export type ToastVariant = 'success' | 'error' | 'info';
 
+// a link shown on the toast, e.g. "View" on a DQ/Penalty alert
+export type ToastAction = { label: string; href: string };
+
 export type ToastOptions = {
     title: string;
     description?: string;
+    action?: ToastAction;
+    // called when the toast is tapped anywhere (body, action or close), which
+    // also dismisses it, e.g. to mark a DQ/Penalty alert as read
+    onClick?: () => void;
     variant?: ToastVariant;
     durationMs?: number;
     manualClose: Boolean;
@@ -12,6 +19,8 @@ export type ToastItem = {
     id: string;
     title: string;
     description?: string;
+    action?: ToastAction;
+    onClick?: () => void;
     variant: ToastVariant;
 };
 
@@ -46,6 +55,8 @@ export function toast(options: ToastOptions): string {
         id,
         title: options.title,
         description: options.description,
+        action: options.action,
+        onClick: options.onClick,
         variant,
     });
 

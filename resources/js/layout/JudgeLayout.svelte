@@ -1,16 +1,21 @@
 <script lang="ts">
     import { toggleReferee } from "@/actions/App/Http/Controllers/DigitalJudge/JudgeController";
     import Button from "@/components/Button.svelte";
+    import AlertsSheet from "@/components/AlertsSheet.svelte";
     import type { DialogControls } from "@/components/GenericDialog.svelte";
     import GenericDialog from "@/components/GenericDialog.svelte";
     import JudgeTabBar from "@/components/JudgeTabBar.svelte";
+    import OfficialsSheet from "@/components/OfficialsSheet.svelte";
+    import PokeAnimation from "@/components/PokeAnimation.svelte";
     import ToastViewport from "@/components/Toast/ToastViewport.svelte";
+    import { alerts } from "@/lib/alerts.svelte";
     import confirmStore from "@/lib/confirm";
+    import { presence } from "@/lib/presence.svelte";
     import { toast } from "@/lib/toast.svelte";
     import type { Competition } from "@/types/base";
 
     import { Link, page, router } from "@inertiajs/svelte";
-    import type { Snippet } from "svelte";
+    import { untrack, type Snippet } from "svelte";
 
     let {
         competition,
@@ -27,6 +32,32 @@
             page.component === "Judge/Dashboard" ||
             page.component === "Judge/Account",
     );
+
+    // stay in the competition's presence channel while on any of its pages;
+    // the layout persists across visits so this survives navigation
+    // Depend on the id and name, not the user object: every reload (e.g. a
+    // page's usePoll) brings a new object, which would leave and rejoin the
+    // channels and close the sheets
+    const presenceCompetitionId = $derived(competition?.id);
+    const userId = $derived(page.props.auth.user?.id);
+    const userName = $derived(page.props.auth.user?.name);
+    $effect(() => {
+        if (!presenceCompetitionId || !userId || !userName) return;
+        const me = { id: userId, name: userName };
+        untrack(() => presence.join(presenceCompetitionId, me));
+        return () => presence.leave();
+    });
+
+    // DQ/Penalty alerts for the competition: your own submissions changing
+    // status, plus new ones to review if you're the referee
+    const isReferee = $derived(!!page.props.judge?.isHeadRef);
+    $effect(() => {
+        if (!presenceCompetitionId || !userId || !userName) return;
+        const me = { id: userId, name: userName };
+        const referee = isReferee;
+        untrack(() => alerts.start(presenceCompetitionId, me, referee));
+        return () => alerts.stop();
+    });
 
     router.on("flash", (event) => {
         if (event.detail.flash.toast) {
@@ -78,6 +109,12 @@
 {/if}
 
 <ToastViewport />
+
+{#if competition}
+    <OfficialsSheet {competition} />
+    <AlertsSheet {competition} />
+{/if}
+<PokeAnimation />
 
 {#if $confirmStore?.open}
     <GenericDialog
