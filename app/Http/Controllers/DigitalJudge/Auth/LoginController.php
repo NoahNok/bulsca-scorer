@@ -68,6 +68,8 @@ class LoginController extends Controller
                     $judge->markEmailAsVerified();
                 }
 
+                $this->completeRegistration($request, $judge);
+
                 // it is best practice to regenerate the session id after a login
                 $request->session()->regenerate();
 
@@ -103,6 +105,23 @@ class LoginController extends Controller
             'email'      => $request->email,
             'registered' => $request->boolean('registered'),
         ]);
+    }
+
+    /**
+     * Save the name and password from a registration made in this session, now the PIN has
+     * proved they own the email.
+     */
+    private function completeRegistration(Request $request, User $judge): void
+    {
+        $pending = $request->session()->pull(RegisterController::PENDING_SESSION_KEY);
+
+        if (!$pending || $pending['user_id'] !== $judge->id) {
+            return;
+        }
+
+        $judge->name = $pending['name'];
+        $judge->password = $pending['password'];
+        $judge->save();
     }
 
     public function loginPassword(LoginRequest $request)

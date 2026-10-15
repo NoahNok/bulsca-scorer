@@ -223,7 +223,16 @@ class CompetitionOfficialsTest extends TestCase
 
         $official = User::where('email', 'new.official@example.com')->sole();
 
-        $this->assertSame('Real Name', $official->name);
+        // nothing changes until they prove they own the email with the PIN
+        $this->assertSame('Placeholder Name', $official->name);
+
+        $this->post(route('judge.login.post'), [
+            'email' => $official->email,
+            'step' => 'pin',
+            'pin' => $official->createOneTimePassword()->password,
+        ]);
+
+        $this->assertSame('Real Name', $official->refresh()->name);
         $this->assertTrue($this->comp->officials()->whereKey($official->id)->exists());
     }
 
