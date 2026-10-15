@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\SpeedsEventController::save
-* @see app/Http/Controllers/SpeedsEventController.php:313
+* @see app/Http/Controllers/SpeedsEventController.php:318
 * @route '/comps/{comp}/events/speeds/{event}/scoring-settings'
 */
 export const save = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -16,7 +16,7 @@ save.definition = {
 
 /**
 * @see \App\Http\Controllers\SpeedsEventController::save
-* @see app/Http/Controllers/SpeedsEventController.php:313
+* @see app/Http/Controllers/SpeedsEventController.php:318
 * @route '/comps/{comp}/events/speeds/{event}/scoring-settings'
 */
 save.url = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -46,7 +46,7 @@ save.url = (args: { comp: number | { id: number }, event: number | { id: number 
 
 /**
 * @see \App\Http\Controllers\SpeedsEventController::save
-* @see app/Http/Controllers/SpeedsEventController.php:313
+* @see app/Http/Controllers/SpeedsEventController.php:318
 * @route '/comps/{comp}/events/speeds/{event}/scoring-settings'
 */
 save.post = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({

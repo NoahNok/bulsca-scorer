@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Orders\DrawController::post
-* @see app/Http/Controllers/Orders/DrawController.php:95
+* @see app/Http/Controllers/Orders/DrawController.php:98
 * @route '/comps/{comp}/heats-and-draws/draws/tank-setup'
 */
 export const post = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -16,7 +16,7 @@ post.definition = {
 
 /**
 * @see \App\Http\Controllers\Orders\DrawController::post
-* @see app/Http/Controllers/Orders/DrawController.php:95
+* @see app/Http/Controllers/Orders/DrawController.php:98
 * @route '/comps/{comp}/heats-and-draws/draws/tank-setup'
 */
 post.url = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -49,7 +49,7 @@ post.url = (args: { comp: number | { id: number } } | [comp: number | { id: numb
 
 /**
 * @see \App\Http\Controllers\Orders\DrawController::post
-* @see app/Http/Controllers/Orders/DrawController.php:95
+* @see app/Http/Controllers/Orders/DrawController.php:98
 * @route '/comps/{comp}/heats-and-draws/draws/tank-setup'
 */
 post.post = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({

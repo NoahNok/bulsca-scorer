@@ -137,7 +137,7 @@ hide.head = (args: { comp: number | { id: number } } | [comp: number | { id: num
 
 /**
 * @see \App\Http\Controllers\Orders\DrawController::tankSetup
-* @see app/Http/Controllers/Orders/DrawController.php:90
+* @see app/Http/Controllers/Orders/DrawController.php:93
 * @route '/comps/{comp}/heats-and-draws/draws/tank-setup'
 */
 export const tankSetup = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -152,7 +152,7 @@ tankSetup.definition = {
 
 /**
 * @see \App\Http\Controllers\Orders\DrawController::tankSetup
-* @see app/Http/Controllers/Orders/DrawController.php:90
+* @see app/Http/Controllers/Orders/DrawController.php:93
 * @route '/comps/{comp}/heats-and-draws/draws/tank-setup'
 */
 tankSetup.url = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -185,7 +185,7 @@ tankSetup.url = (args: { comp: number | { id: number } } | [comp: number | { id:
 
 /**
 * @see \App\Http\Controllers\Orders\DrawController::tankSetup
-* @see app/Http/Controllers/Orders/DrawController.php:90
+* @see app/Http/Controllers/Orders/DrawController.php:93
 * @route '/comps/{comp}/heats-and-draws/draws/tank-setup'
 */
 tankSetup.get = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -195,7 +195,7 @@ tankSetup.get = (args: { comp: number | { id: number } } | [comp: number | { id:
 
 /**
 * @see \App\Http\Controllers\Orders\DrawController::tankSetup
-* @see app/Http/Controllers/Orders/DrawController.php:90
+* @see app/Http/Controllers/Orders/DrawController.php:93
 * @route '/comps/{comp}/heats-and-draws/draws/tank-setup'
 */
 tankSetup.head = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -205,7 +205,7 @@ tankSetup.head = (args: { comp: number | { id: number } } | [comp: number | { id
 
 /**
 * @see \App\Http\Controllers\Orders\DrawController::tankSetupPost
-* @see app/Http/Controllers/Orders/DrawController.php:95
+* @see app/Http/Controllers/Orders/DrawController.php:98
 * @route '/comps/{comp}/heats-and-draws/draws/tank-setup'
 */
 export const tankSetupPost = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -220,7 +220,7 @@ tankSetupPost.definition = {
 
 /**
 * @see \App\Http\Controllers\Orders\DrawController::tankSetupPost
-* @see app/Http/Controllers/Orders/DrawController.php:95
+* @see app/Http/Controllers/Orders/DrawController.php:98
 * @route '/comps/{comp}/heats-and-draws/draws/tank-setup'
 */
 tankSetupPost.url = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -253,7 +253,7 @@ tankSetupPost.url = (args: { comp: number | { id: number } } | [comp: number | {
 
 /**
 * @see \App\Http\Controllers\Orders\DrawController::tankSetupPost
-* @see app/Http/Controllers/Orders/DrawController.php:95
+* @see app/Http/Controllers/Orders/DrawController.php:98
 * @route '/comps/{comp}/heats-and-draws/draws/tank-setup'
 */
 tankSetupPost.post = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -383,7 +383,7 @@ swap.post = (args: { comp: number | { id: number }, serc: number | { id: number 
 
 /**
 * @see \App\Http\Controllers\Orders\DrawController::reset
-* @see app/Http/Controllers/Orders/DrawController.php:79
+* @see app/Http/Controllers/Orders/DrawController.php:82
 * @route '/comps/{comp}/heats-and-draws/draws/{serc}/reset'
 */
 export const reset = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -398,7 +398,7 @@ reset.definition = {
 
 /**
 * @see \App\Http\Controllers\Orders\DrawController::reset
-* @see app/Http/Controllers/Orders/DrawController.php:79
+* @see app/Http/Controllers/Orders/DrawController.php:82
 * @route '/comps/{comp}/heats-and-draws/draws/{serc}/reset'
 */
 reset.url = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -428,7 +428,7 @@ reset.url = (args: { comp: number | { id: number }, serc: number | { id: number 
 
 /**
 * @see \App\Http\Controllers\Orders\DrawController::reset
-* @see app/Http/Controllers/Orders/DrawController.php:79
+* @see app/Http/Controllers/Orders/DrawController.php:82
 * @route '/comps/{comp}/heats-and-draws/draws/{serc}/reset'
 */
 reset.get = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -438,7 +438,7 @@ reset.get = (args: { comp: number | { id: number }, serc: number | { id: number 
 
 /**
 * @see \App\Http\Controllers\Orders\DrawController::reset
-* @see app/Http/Controllers/Orders/DrawController.php:79
+* @see app/Http/Controllers/Orders/DrawController.php:82
 * @route '/comps/{comp}/heats-and-draws/draws/{serc}/reset'
 */
 reset.head = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({

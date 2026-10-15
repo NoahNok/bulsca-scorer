@@ -138,7 +138,7 @@ hide.head = (args: { comp: number | { id: number } } | [comp: number | { id: num
 
 /**
 * @see \App\Http\Controllers\Orders\DrawController::tank_setup
-* @see app/Http/Controllers/Orders/DrawController.php:90
+* @see app/Http/Controllers/Orders/DrawController.php:93
 * @route '/comps/{comp}/heats-and-draws/draws/tank-setup'
 */
 export const tank_setup = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -153,7 +153,7 @@ tank_setup.definition = {
 
 /**
 * @see \App\Http\Controllers\Orders\DrawController::tank_setup
-* @see app/Http/Controllers/Orders/DrawController.php:90
+* @see app/Http/Controllers/Orders/DrawController.php:93
 * @route '/comps/{comp}/heats-and-draws/draws/tank-setup'
 */
 tank_setup.url = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -186,7 +186,7 @@ tank_setup.url = (args: { comp: number | { id: number } } | [comp: number | { id
 
 /**
 * @see \App\Http\Controllers\Orders\DrawController::tank_setup
-* @see app/Http/Controllers/Orders/DrawController.php:90
+* @see app/Http/Controllers/Orders/DrawController.php:93
 * @route '/comps/{comp}/heats-and-draws/draws/tank-setup'
 */
 tank_setup.get = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -196,7 +196,7 @@ tank_setup.get = (args: { comp: number | { id: number } } | [comp: number | { id
 
 /**
 * @see \App\Http\Controllers\Orders\DrawController::tank_setup
-* @see app/Http/Controllers/Orders/DrawController.php:90
+* @see app/Http/Controllers/Orders/DrawController.php:93
 * @route '/comps/{comp}/heats-and-draws/draws/tank-setup'
 */
 tank_setup.head = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -326,7 +326,7 @@ swap.post = (args: { comp: number | { id: number }, serc: number | { id: number 
 
 /**
 * @see \App\Http\Controllers\Orders\DrawController::reset
-* @see app/Http/Controllers/Orders/DrawController.php:79
+* @see app/Http/Controllers/Orders/DrawController.php:82
 * @route '/comps/{comp}/heats-and-draws/draws/{serc}/reset'
 */
 export const reset = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -341,7 +341,7 @@ reset.definition = {
 
 /**
 * @see \App\Http\Controllers\Orders\DrawController::reset
-* @see app/Http/Controllers/Orders/DrawController.php:79
+* @see app/Http/Controllers/Orders/DrawController.php:82
 * @route '/comps/{comp}/heats-and-draws/draws/{serc}/reset'
 */
 reset.url = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -371,7 +371,7 @@ reset.url = (args: { comp: number | { id: number }, serc: number | { id: number 
 
 /**
 * @see \App\Http\Controllers\Orders\DrawController::reset
-* @see app/Http/Controllers/Orders/DrawController.php:79
+* @see app/Http/Controllers/Orders/DrawController.php:82
 * @route '/comps/{comp}/heats-and-draws/draws/{serc}/reset'
 */
 reset.get = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -381,7 +381,7 @@ reset.get = (args: { comp: number | { id: number }, serc: number | { id: number 
 
 /**
 * @see \App\Http\Controllers\Orders\DrawController::reset
-* @see app/Http/Controllers/Orders/DrawController.php:79
+* @see app/Http/Controllers/Orders/DrawController.php:82
 * @route '/comps/{comp}/heats-and-draws/draws/{serc}/reset'
 */
 reset.head = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
