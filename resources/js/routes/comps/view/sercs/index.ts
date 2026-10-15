@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefa
 import imageE9c754 from './image'
 /**
 * @see \App\Http\Controllers\SERCController::hide
-* @see app/Http/Controllers/SERCController.php:265
+* @see app/Http/Controllers/SERCController.php:277
 * @route '/comps/{comp}/events/sercs/{serc}/hide'
 */
 export const hide = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -17,7 +17,7 @@ hide.definition = {
 
 /**
 * @see \App\Http\Controllers\SERCController::hide
-* @see app/Http/Controllers/SERCController.php:265
+* @see app/Http/Controllers/SERCController.php:277
 * @route '/comps/{comp}/events/sercs/{serc}/hide'
 */
 hide.url = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -47,7 +47,7 @@ hide.url = (args: { comp: number | { id: number }, serc: number | { id: number }
 
 /**
 * @see \App\Http\Controllers\SERCController::hide
-* @see app/Http/Controllers/SERCController.php:265
+* @see app/Http/Controllers/SERCController.php:277
 * @route '/comps/{comp}/events/sercs/{serc}/hide'
 */
 hide.get = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -57,7 +57,7 @@ hide.get = (args: { comp: number | { id: number }, serc: number | { id: number }
 
 /**
 * @see \App\Http\Controllers\SERCController::hide
-* @see app/Http/Controllers/SERCController.php:265
+* @see app/Http/Controllers/SERCController.php:277
 * @route '/comps/{comp}/events/sercs/{serc}/hide'
 */
 hide.head = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -67,7 +67,7 @@ hide.head = (args: { comp: number | { id: number }, serc: number | { id: number 
 
 /**
 * @see \App\Http\Controllers\SERCController::image
-* @see app/Http/Controllers/SERCController.php:271
+* @see app/Http/Controllers/SERCController.php:283
 * @route '/comps/{comp}/events/sercs/{serc}/image'
 */
 export const image = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -82,7 +82,7 @@ image.definition = {
 
 /**
 * @see \App\Http\Controllers\SERCController::image
-* @see app/Http/Controllers/SERCController.php:271
+* @see app/Http/Controllers/SERCController.php:283
 * @route '/comps/{comp}/events/sercs/{serc}/image'
 */
 image.url = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -112,7 +112,7 @@ image.url = (args: { comp: number | { id: number }, serc: number | { id: number 
 
 /**
 * @see \App\Http\Controllers\SERCController::image
-* @see app/Http/Controllers/SERCController.php:271
+* @see app/Http/Controllers/SERCController.php:283
 * @route '/comps/{comp}/events/sercs/{serc}/image'
 */
 image.post = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({

@@ -314,7 +314,7 @@ editPost.post = (args: { comp: number | { id: number }, serc: number | { id: num
 
 /**
 * @see \App\Http\Controllers\SERCController::editResults
-* @see app/Http/Controllers/SERCController.php:132
+* @see app/Http/Controllers/SERCController.php:144
 * @route '/comps/{comp}/events/sercs/{serc}/results/{entity_id}/edit'
 */
 export const editResults = (args: { comp: number | { id: number }, serc: number | { id: number }, entity_id: string | number } | [comp: number | { id: number }, serc: number | { id: number }, entity_id: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -329,7 +329,7 @@ editResults.definition = {
 
 /**
 * @see \App\Http\Controllers\SERCController::editResults
-* @see app/Http/Controllers/SERCController.php:132
+* @see app/Http/Controllers/SERCController.php:144
 * @route '/comps/{comp}/events/sercs/{serc}/results/{entity_id}/edit'
 */
 editResults.url = (args: { comp: number | { id: number }, serc: number | { id: number }, entity_id: string | number } | [comp: number | { id: number }, serc: number | { id: number }, entity_id: string | number ], options?: RouteQueryOptions) => {
@@ -362,7 +362,7 @@ editResults.url = (args: { comp: number | { id: number }, serc: number | { id: n
 
 /**
 * @see \App\Http\Controllers\SERCController::editResults
-* @see app/Http/Controllers/SERCController.php:132
+* @see app/Http/Controllers/SERCController.php:144
 * @route '/comps/{comp}/events/sercs/{serc}/results/{entity_id}/edit'
 */
 editResults.get = (args: { comp: number | { id: number }, serc: number | { id: number }, entity_id: string | number } | [comp: number | { id: number }, serc: number | { id: number }, entity_id: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -372,7 +372,7 @@ editResults.get = (args: { comp: number | { id: number }, serc: number | { id: n
 
 /**
 * @see \App\Http\Controllers\SERCController::editResults
-* @see app/Http/Controllers/SERCController.php:132
+* @see app/Http/Controllers/SERCController.php:144
 * @route '/comps/{comp}/events/sercs/{serc}/results/{entity_id}/edit'
 */
 editResults.head = (args: { comp: number | { id: number }, serc: number | { id: number }, entity_id: string | number } | [comp: number | { id: number }, serc: number | { id: number }, entity_id: string | number ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -382,7 +382,7 @@ editResults.head = (args: { comp: number | { id: number }, serc: number | { id: 
 
 /**
 * @see \App\Http\Controllers\SERCController::scoringSettings
-* @see app/Http/Controllers/SERCController.php:306
+* @see app/Http/Controllers/SERCController.php:318
 * @route '/comps/{comp}/events/sercs/{serc}/scoring-settings'
 */
 export const scoringSettings = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -397,7 +397,7 @@ scoringSettings.definition = {
 
 /**
 * @see \App\Http\Controllers\SERCController::scoringSettings
-* @see app/Http/Controllers/SERCController.php:306
+* @see app/Http/Controllers/SERCController.php:318
 * @route '/comps/{comp}/events/sercs/{serc}/scoring-settings'
 */
 scoringSettings.url = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -427,7 +427,7 @@ scoringSettings.url = (args: { comp: number | { id: number }, serc: number | { i
 
 /**
 * @see \App\Http\Controllers\SERCController::scoringSettings
-* @see app/Http/Controllers/SERCController.php:306
+* @see app/Http/Controllers/SERCController.php:318
 * @route '/comps/{comp}/events/sercs/{serc}/scoring-settings'
 */
 scoringSettings.get = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -437,7 +437,7 @@ scoringSettings.get = (args: { comp: number | { id: number }, serc: number | { i
 
 /**
 * @see \App\Http\Controllers\SERCController::scoringSettings
-* @see app/Http/Controllers/SERCController.php:306
+* @see app/Http/Controllers/SERCController.php:318
 * @route '/comps/{comp}/events/sercs/{serc}/scoring-settings'
 */
 scoringSettings.head = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -447,7 +447,7 @@ scoringSettings.head = (args: { comp: number | { id: number }, serc: number | { 
 
 /**
 * @see \App\Http\Controllers\SERCController::markSplits
-* @see app/Http/Controllers/SERCController.php:377
+* @see app/Http/Controllers/SERCController.php:389
 * @route '/comps/{comp}/events/sercs/{serc}/mark-splits'
 */
 export const markSplits = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -462,7 +462,7 @@ markSplits.definition = {
 
 /**
 * @see \App\Http\Controllers\SERCController::markSplits
-* @see app/Http/Controllers/SERCController.php:377
+* @see app/Http/Controllers/SERCController.php:389
 * @route '/comps/{comp}/events/sercs/{serc}/mark-splits'
 */
 markSplits.url = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -492,7 +492,7 @@ markSplits.url = (args: { comp: number | { id: number }, serc: number | { id: nu
 
 /**
 * @see \App\Http\Controllers\SERCController::markSplits
-* @see app/Http/Controllers/SERCController.php:377
+* @see app/Http/Controllers/SERCController.php:389
 * @route '/comps/{comp}/events/sercs/{serc}/mark-splits'
 */
 markSplits.get = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -502,7 +502,7 @@ markSplits.get = (args: { comp: number | { id: number }, serc: number | { id: nu
 
 /**
 * @see \App\Http\Controllers\SERCController::markSplits
-* @see app/Http/Controllers/SERCController.php:377
+* @see app/Http/Controllers/SERCController.php:389
 * @route '/comps/{comp}/events/sercs/{serc}/mark-splits'
 */
 markSplits.head = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({

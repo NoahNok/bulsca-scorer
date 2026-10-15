@@ -79,7 +79,7 @@ loginPost.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\LoginController::loginPassword
-* @see app/Http/Controllers/DigitalJudge/Auth/LoginController.php:108
+* @see app/Http/Controllers/DigitalJudge/Auth/LoginController.php:127
 * @route '//judge.localhost/v2/login/password'
 */
 export const loginPassword = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -94,7 +94,7 @@ loginPassword.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\LoginController::loginPassword
-* @see app/Http/Controllers/DigitalJudge/Auth/LoginController.php:108
+* @see app/Http/Controllers/DigitalJudge/Auth/LoginController.php:127
 * @route '//judge.localhost/v2/login/password'
 */
 loginPassword.url = (options?: RouteQueryOptions) => {
@@ -103,7 +103,7 @@ loginPassword.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\LoginController::loginPassword
-* @see app/Http/Controllers/DigitalJudge/Auth/LoginController.php:108
+* @see app/Http/Controllers/DigitalJudge/Auth/LoginController.php:127
 * @route '//judge.localhost/v2/login/password'
 */
 loginPassword.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -147,7 +147,7 @@ resendPin.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\LoginController::logout
-* @see app/Http/Controllers/DigitalJudge/Auth/LoginController.php:141
+* @see app/Http/Controllers/DigitalJudge/Auth/LoginController.php:160
 * @route '//judge.localhost/v2/logout'
 */
 export const logout = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -162,7 +162,7 @@ logout.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\LoginController::logout
-* @see app/Http/Controllers/DigitalJudge/Auth/LoginController.php:141
+* @see app/Http/Controllers/DigitalJudge/Auth/LoginController.php:160
 * @route '//judge.localhost/v2/logout'
 */
 logout.url = (options?: RouteQueryOptions) => {
@@ -171,7 +171,7 @@ logout.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\LoginController::logout
-* @see app/Http/Controllers/DigitalJudge/Auth/LoginController.php:141
+* @see app/Http/Controllers/DigitalJudge/Auth/LoginController.php:160
 * @route '//judge.localhost/v2/logout'
 */
 logout.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({

@@ -35,7 +35,7 @@ post.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\LoginController::password
-* @see app/Http/Controllers/DigitalJudge/Auth/LoginController.php:108
+* @see app/Http/Controllers/DigitalJudge/Auth/LoginController.php:127
 * @route '//judge.localhost/v2/login/password'
 */
 export const password = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -50,7 +50,7 @@ password.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\LoginController::password
-* @see app/Http/Controllers/DigitalJudge/Auth/LoginController.php:108
+* @see app/Http/Controllers/DigitalJudge/Auth/LoginController.php:127
 * @route '//judge.localhost/v2/login/password'
 */
 password.url = (options?: RouteQueryOptions) => {
@@ -59,7 +59,7 @@ password.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\LoginController::password
-* @see app/Http/Controllers/DigitalJudge/Auth/LoginController.php:108
+* @see app/Http/Controllers/DigitalJudge/Auth/LoginController.php:127
 * @route '//judge.localhost/v2/login/password'
 */
 password.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
