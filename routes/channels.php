@@ -51,6 +51,7 @@ Broadcast::channel('judge.officials.{competition}', function (User $user, Compet
         'id' => $user->id,
         'name' => $user->name,
         'role' => Competition::officialRoleName($role),
+        'photo' => $user->profilePhotoUrls(),
     ];
 });
 

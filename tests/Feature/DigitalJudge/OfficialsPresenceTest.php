@@ -74,8 +74,21 @@ class OfficialsPresenceTest extends TestCase
                 'id' => $this->official->id,
                 'name' => $this->official->name,
                 'role' => 'Official',
+                'photo' => null,
             ],
         ], $this->channelData($response));
+    }
+
+    public function test_officials_join_with_their_photo(): void
+    {
+        $this->official->forceFill(['profile_photo' => 'avatars/1-abc'])->save();
+
+        $response = $this->actingAs($this->official)->authorise()->assertOk();
+
+        $this->assertSame(
+            $this->official->profilePhotoUrls(),
+            $this->channelData($response)['user_info']['photo'],
+        );
     }
 
     public function test_referees_join_as_referee(): void
@@ -115,6 +128,20 @@ class OfficialsPresenceTest extends TestCase
             ->assertJsonCount(2)
             ->assertJsonFragment(['id' => $this->official->id, 'name' => $this->official->name, 'role' => 'Official'])
             ->assertJsonFragment(['id' => $this->referee->id, 'name' => $this->referee->name, 'role' => 'Referee']);
+    }
+
+    public function test_the_officials_list_includes_photos(): void
+    {
+        $this->referee->forceFill(['profile_photo' => 'avatars/2-abc'])->save();
+
+        $response = $this->actingAs($this->official)
+            ->getJson(route('judge.competition.officials', ['competition' => $this->comp->getSlug()]))
+            ->assertOk();
+
+        $photos = collect($response->json())->pluck('photo', 'id');
+        $this->assertNull($photos[$this->official->id]);
+        $this->assertStringEndsWith('/storage/avatars/2-abc.webp', $photos[$this->referee->id]['webp']);
+        $this->assertStringEndsWith('/storage/avatars/2-abc.jpg', $photos[$this->referee->id]['jpg']);
     }
 
     public function test_other_users_cannot_list_officials(): void

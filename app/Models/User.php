@@ -7,10 +7,12 @@ namespace App\Models;
 use App\Models\DigitalJudge\JudgeDQSubmission;
 use App\Models\Organisation\Organisation;
 use App\Models\Organisation\OrganisationUserAccess;
+use App\Services\ProfilePhotoService;
 use ALajusticia\Logins\Traits\HasLogins;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
 use NotificationChannels\WebPush\HasPushSubscriptions;
 use Spatie\OneTimePasswords\Models\Concerns\HasOneTimePasswords;
@@ -50,6 +52,30 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'judge_only' => 'boolean',
     ];
+
+    protected static function booted(): void
+    {
+        static::deleted(fn (User $user) => app(ProfilePhotoService::class)->deleteFiles($user->profile_photo));
+    }
+
+    /**
+     * Public URLs of the official's profile photo, or null if they haven't uploaded one.
+     *
+     * @return array{webp: string, jpg: string}|null
+     */
+    public function profilePhotoUrls(): ?array
+    {
+        if (!$this->profile_photo) {
+            return null;
+        }
+
+        $disk = Storage::disk(ProfilePhotoService::DISK);
+
+        return [
+            'webp' => $disk->url($this->profile_photo . '.webp'),
+            'jpg' => $disk->url($this->profile_photo . '.jpg'),
+        ];
+    }
 
     public function isAdmin()
     {

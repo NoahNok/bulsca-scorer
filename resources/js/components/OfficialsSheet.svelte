@@ -1,5 +1,6 @@
 <script lang="ts">
     import { officials as officialsRoute } from "@/actions/App/Http/Controllers/DigitalJudge/JudgeController";
+    import Avatar from "@/components/Avatar.svelte";
     import SectionLabel from "@/components/SectionLabel.svelte";
     import { presence } from "@/lib/presence.svelte";
     import type { Competition } from "@/types/base";
@@ -36,15 +37,6 @@
         officials.filter((o) => !presence.members.some((m) => m.id === o.id)),
     );
 
-    function initials(name: string): string {
-        return name
-            .split(/\s+/)
-            .filter(Boolean)
-            .slice(0, 2)
-            .map((part) => part[0].toUpperCase())
-            .join("");
-    }
-
     // the row just poked shows "Sent 👋" in place of its status for a moment
     let pokedId = $state<number | null>(null);
     let pokedTimer: ReturnType<typeof setTimeout> | undefined;
@@ -61,14 +53,11 @@
 </script>
 
 {#snippet row(member: PresenceMember, isMe: boolean)}
-    <span
-        class="relative flex size-9 shrink-0 items-center justify-center rounded-full bg-gray-100 text-sm font-semibold text-gray-600"
-    >
-        {initials(member.name)}
+    <Avatar name={member.name} photo={member.photo}>
         <span
             class="absolute -right-0.5 -bottom-0.5 size-3 rounded-full border-2 border-white transition-colors {presenceStatusDotClass(member.status)}"
         ></span>
-    </span>
+    </Avatar>
     <span class="flex min-w-0 flex-1 flex-col">
         <span class="truncate text-sm font-medium text-gray-900">
             {member.name}
@@ -174,11 +163,11 @@
                                             class="{rowClass} bg-white"
                                             animate:flip={{ duration: 200 }}
                                         >
-                                            <span
-                                                class="flex size-9 shrink-0 items-center justify-center rounded-full bg-gray-100 text-sm font-semibold text-gray-400"
-                                            >
-                                                {initials(official.name)}
-                                            </span>
+                                            <Avatar
+                                                name={official.name}
+                                                photo={official.photo}
+                                                dimmed
+                                            />
                                             <span
                                                 class="flex min-w-0 flex-1 flex-col"
                                             >

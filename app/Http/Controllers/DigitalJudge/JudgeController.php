@@ -69,6 +69,7 @@ class JudgeController extends Controller
             'id' => $official->id,
             'name' => $official->name,
             'role' => Competition::officialRoleName($official->pivot->role),
+            'photo' => $official->profilePhotoUrls(),
         ]);
     }
 

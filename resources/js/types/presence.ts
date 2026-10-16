@@ -1,11 +1,15 @@
 export type PresenceStatus = "active" | "idle";
 
+/** An official's uploaded profile photo, square, as WebP plus a JPEG fallback. */
+export type ProfilePhoto = { webp: string; jpg: string };
+
 /** An official in a competition's presence channel (`judge.officials.{id}`). */
 export type PresenceMember = {
     id: number;
     name: string;
     // "Official", "Referee" or "Admin"
     role: string;
+    photo: ProfilePhoto | null;
     status: PresenceStatus;
 };
 
@@ -14,6 +18,7 @@ export type Official = {
     id: number;
     name: string;
     role: string;
+    photo: ProfilePhoto | null;
 };
 
 export const presenceStatusLabel: Record<PresenceStatus, string> = {

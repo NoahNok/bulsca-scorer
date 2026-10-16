@@ -161,7 +161,8 @@ navigable row shows a `ChevronRight` that nudges right on hover.
 | `LiveIndicator` | Pulsing dot for data that refreshes via `usePoll`. |
 | `BackLink` | "← Back to X" text link under the page title. |
 | `JudgeTabBar` | The fixed bottom tab bar (Home, DQ/Penalty, Alerts, Online). For the head ref it shows a teal "Referee mode" band along its top edge. Without a `competition` it shows "Account" and "Log out" tabs (the dashboard and `Judge/Account`). Rendered by `JudgeLayout` on every competition page, the dashboard and the account page; pages never render it. |
-| `OfficialsSheet` | The slide-out from the right listing the competition's officials: an **Online** section (name, role, Active/Idle badge from `presenceStatusBadgeClass`, and a dot on the avatar from `presenceStatusDotClass`; both teal when active, orange when idle after a minute without input or with the tab hidden) and a dimmed **Offline** section for everyone else, fetched from `judge.competition.officials` when it opens. Tapping someone online pokes them. Rendered by `JudgeLayout` and opened by the Online tab via `presence.sheetOpen`; pages never render it. |
+| `Avatar` | An official's round avatar: their initials, with their profile photo (`ProfilePhoto` from `types/presence`, a 192px `webp` + `jpg` pair) faded in over them once it has downloaded. The photo is a lazy, low-priority `<picture>`, so slow wifi or a failed download only ever shows initials. Defaults to `size-9`; pass size and text classes in `class` (e.g. `size-16 text-xl`), `dimmed` for offline officials, and overlays such as the presence dot as children. Use it anywhere an official is shown with an avatar. |
+| `OfficialsSheet` | The slide-out from the right listing the competition's officials: an **Online** section (name, role, Active/Idle badge from `presenceStatusBadgeClass`, and a dot on the `Avatar` from `presenceStatusDotClass`; both teal when active, orange when idle after a minute without input or with the tab hidden) and a dimmed **Offline** section for everyone else, fetched from `judge.competition.officials` when it opens. Tapping someone online pokes them. Rendered by `JudgeLayout` and opened by the Online tab via `presence.sheetOpen`; pages never render it. |
 | `AlertsSheet` | The slide-out from the right with the history of live DQ/Penalty alerts, newest first: code tile, a sentence (`alertText`), time ago and status badge; tapping a row opens the submission. Alerts come from `lib/alerts.svelte`: judges get their own submissions' status changes, the referee also gets new and resubmitted ones. Each also pops a toast with a "View" link. The history is per device (localStorage) and only covers alerts received while online. Rendered by `JudgeLayout` and opened by the Alerts tab via `alerts.sheetOpen`; pages never render it. |
 | `PokeAnimation` | The full-screen "{name} says hi! 👋" lifebuoy animation played when someone pokes you (the 👋 waves once the caption is in). Rendered by `JudgeLayout`; caption only under `prefers-reduced-motion`. |
 | `Spinner` | Loading. Centre it: `<div class="flex justify-center py-6"><Spinner /></div>`. |
@@ -301,6 +302,9 @@ title, a sentence of guidance if needed, then side-by-side `ConfirmDialog`s with
 - Group fields under `<SectionLabel class="col-span-2 -mb-1 mt-2">`.
 - Submit is a full-width `Button` (`col-span-2 w-full`) with `loading={form.processing}`.
 - Validate client-side with `toastError(...)` before posting.
+- **Image uploads**: shrink the image with `downscaleImage(file)` from `lib/image` before posting
+  (a phone photo becomes a ~60 KB JPEG), then send it with `forceFormData: true`. The server still
+  validates and re-encodes it (see `ProfilePhotoService`). The account page's photo picker is the example.
 
 ### Feedback and live data
 
