@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::account
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:17
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:19
 * @route '//judge.localhost/v2/account'
 */
 export const account = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ account.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::account
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:17
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:19
 * @route '//judge.localhost/v2/account'
 */
 account.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ account.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::account
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:17
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:19
 * @route '//judge.localhost/v2/account'
 */
 account.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -35,7 +35,7 @@ account.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::account
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:17
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:19
 * @route '//judge.localhost/v2/account'
 */
 account.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -45,7 +45,7 @@ account.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::updateAccount
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:28
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:31
 * @route '//judge.localhost/v2/account'
 */
 export const updateAccount = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -60,7 +60,7 @@ updateAccount.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::updateAccount
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:28
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:31
 * @route '//judge.localhost/v2/account'
 */
 updateAccount.url = (options?: RouteQueryOptions) => {
@@ -69,7 +69,7 @@ updateAccount.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::updateAccount
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:28
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:31
 * @route '//judge.localhost/v2/account'
 */
 updateAccount.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -78,8 +78,76 @@ updateAccount.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => (
 })
 
 /**
+* @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::updatePhoto
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:44
+* @route '//judge.localhost/v2/account/photo'
+*/
+export const updatePhoto = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: updatePhoto.url(options),
+    method: 'post',
+})
+
+updatePhoto.definition = {
+    methods: ["post"],
+    url: '//judge.localhost/v2/account/photo',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::updatePhoto
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:44
+* @route '//judge.localhost/v2/account/photo'
+*/
+updatePhoto.url = (options?: RouteQueryOptions) => {
+    return updatePhoto.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::updatePhoto
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:44
+* @route '//judge.localhost/v2/account/photo'
+*/
+updatePhoto.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: updatePhoto.url(options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::destroyPhoto
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:61
+* @route '//judge.localhost/v2/account/photo'
+*/
+export const destroyPhoto = (options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+    url: destroyPhoto.url(options),
+    method: 'delete',
+})
+
+destroyPhoto.definition = {
+    methods: ["delete"],
+    url: '//judge.localhost/v2/account/photo',
+} satisfies RouteDefinition<["delete"]>
+
+/**
+* @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::destroyPhoto
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:61
+* @route '//judge.localhost/v2/account/photo'
+*/
+destroyPhoto.url = (options?: RouteQueryOptions) => {
+    return destroyPhoto.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::destroyPhoto
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:61
+* @route '//judge.localhost/v2/account/photo'
+*/
+destroyPhoto.delete = (options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+    url: destroyPhoto.url(options),
+    method: 'delete',
+})
+
+/**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::updatePassword
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:41
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:70
 * @route '//judge.localhost/v2/account/password'
 */
 export const updatePassword = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -94,7 +162,7 @@ updatePassword.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::updatePassword
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:41
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:70
 * @route '//judge.localhost/v2/account/password'
 */
 updatePassword.url = (options?: RouteQueryOptions) => {
@@ -103,7 +171,7 @@ updatePassword.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::updatePassword
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:41
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:70
 * @route '//judge.localhost/v2/account/password'
 */
 updatePassword.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -113,7 +181,7 @@ updatePassword.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::devices
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:59
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:88
 * @route '//judge.localhost/v2/account/devices'
 */
 export const devices = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -128,7 +196,7 @@ devices.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::devices
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:59
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:88
 * @route '//judge.localhost/v2/account/devices'
 */
 devices.url = (options?: RouteQueryOptions) => {
@@ -137,7 +205,7 @@ devices.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::devices
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:59
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:88
 * @route '//judge.localhost/v2/account/devices'
 */
 devices.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -147,7 +215,7 @@ devices.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::devices
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:59
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:88
 * @route '//judge.localhost/v2/account/devices'
 */
 devices.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -157,7 +225,7 @@ devices.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::signOutDevice
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:66
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:95
 * @route '//judge.localhost/v2/account/devices/{login}'
 */
 export const signOutDevice = (args: { login: string | number } | [login: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -172,7 +240,7 @@ signOutDevice.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::signOutDevice
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:66
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:95
 * @route '//judge.localhost/v2/account/devices/{login}'
 */
 signOutDevice.url = (args: { login: string | number } | [login: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -199,7 +267,7 @@ signOutDevice.url = (args: { login: string | number } | [login: string | number 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::signOutDevice
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:66
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:95
 * @route '//judge.localhost/v2/account/devices/{login}'
 */
 signOutDevice.delete = (args: { login: string | number } | [login: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -209,7 +277,7 @@ signOutDevice.delete = (args: { login: string | number } | [login: string | numb
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::signOutOtherDevices
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:79
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:108
 * @route '//judge.localhost/v2/account/devices'
 */
 export const signOutOtherDevices = (options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -224,7 +292,7 @@ signOutOtherDevices.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::signOutOtherDevices
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:79
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:108
 * @route '//judge.localhost/v2/account/devices'
 */
 signOutOtherDevices.url = (options?: RouteQueryOptions) => {
@@ -233,7 +301,7 @@ signOutOtherDevices.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::signOutOtherDevices
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:79
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:108
 * @route '//judge.localhost/v2/account/devices'
 */
 signOutOtherDevices.delete = (options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -243,7 +311,7 @@ signOutOtherDevices.delete = (options?: RouteQueryOptions): RouteDefinition<'del
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::signOutEverywhere
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:88
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:117
 * @route '//judge.localhost/v2/account/devices/sign-out-everywhere'
 */
 export const signOutEverywhere = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -258,7 +326,7 @@ signOutEverywhere.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::signOutEverywhere
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:88
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:117
 * @route '//judge.localhost/v2/account/devices/sign-out-everywhere'
 */
 signOutEverywhere.url = (options?: RouteQueryOptions) => {
@@ -267,7 +335,7 @@ signOutEverywhere.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::signOutEverywhere
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:88
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:117
 * @route '//judge.localhost/v2/account/devices/sign-out-everywhere'
 */
 signOutEverywhere.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -275,6 +343,6 @@ signOutEverywhere.post = (options?: RouteQueryOptions): RouteDefinition<'post'> 
     method: 'post',
 })
 
-const AccountController = { account, updateAccount, updatePassword, devices, signOutDevice, signOutOtherDevices, signOutEverywhere }
+const AccountController = { account, updateAccount, updatePhoto, destroyPhoto, updatePassword, devices, signOutDevice, signOutOtherDevices, signOutEverywhere }
 
 export default AccountController

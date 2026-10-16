@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::cancel
-* @see app/Http/Controllers/Organisation/OrganisationController.php:225
+* @see app/Http/Controllers/Organisation/OrganisationController.php:346
 * @route '/organisation/{organisation}/invite/{inviteId}/cancel'
 */
 export const cancel = (args: { organisation: number | { id: number }, inviteId: string | number } | [organisation: number | { id: number }, inviteId: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ cancel.definition = {
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::cancel
-* @see app/Http/Controllers/Organisation/OrganisationController.php:225
+* @see app/Http/Controllers/Organisation/OrganisationController.php:346
 * @route '/organisation/{organisation}/invite/{inviteId}/cancel'
 */
 cancel.url = (args: { organisation: number | { id: number }, inviteId: string | number } | [organisation: number | { id: number }, inviteId: string | number ], options?: RouteQueryOptions) => {
@@ -44,7 +44,7 @@ cancel.url = (args: { organisation: number | { id: number }, inviteId: string | 
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::cancel
-* @see app/Http/Controllers/Organisation/OrganisationController.php:225
+* @see app/Http/Controllers/Organisation/OrganisationController.php:346
 * @route '/organisation/{organisation}/invite/{inviteId}/cancel'
 */
 cancel.get = (args: { organisation: number | { id: number }, inviteId: string | number } | [organisation: number | { id: number }, inviteId: string | number ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -54,7 +54,7 @@ cancel.get = (args: { organisation: number | { id: number }, inviteId: string | 
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::cancel
-* @see app/Http/Controllers/Organisation/OrganisationController.php:225
+* @see app/Http/Controllers/Organisation/OrganisationController.php:346
 * @route '/organisation/{organisation}/invite/{inviteId}/cancel'
 */
 cancel.head = (args: { organisation: number | { id: number }, inviteId: string | number } | [organisation: number | { id: number }, inviteId: string | number ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({

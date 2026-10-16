@@ -5,7 +5,7 @@ import event from './event'
 import violation from './violation'
 /**
 * @see \App\Http\Controllers\DigitalJudge\JudgeController::officials
-* @see app/Http/Controllers/DigitalJudge/JudgeController.php:49
+* @see app/Http/Controllers/DigitalJudge/JudgeController.php:66
 * @route '//judge.localhost/v2/{competition}/officials'
 */
 export const officials = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -20,7 +20,7 @@ officials.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\JudgeController::officials
-* @see app/Http/Controllers/DigitalJudge/JudgeController.php:49
+* @see app/Http/Controllers/DigitalJudge/JudgeController.php:66
 * @route '//judge.localhost/v2/{competition}/officials'
 */
 officials.url = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -53,7 +53,7 @@ officials.url = (args: { competition: number | { id: number } } | [competition: 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\JudgeController::officials
-* @see app/Http/Controllers/DigitalJudge/JudgeController.php:49
+* @see app/Http/Controllers/DigitalJudge/JudgeController.php:66
 * @route '//judge.localhost/v2/{competition}/officials'
 */
 officials.get = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -63,7 +63,7 @@ officials.get = (args: { competition: number | { id: number } } | [competition: 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\JudgeController::officials
-* @see app/Http/Controllers/DigitalJudge/JudgeController.php:49
+* @see app/Http/Controllers/DigitalJudge/JudgeController.php:66
 * @route '//judge.localhost/v2/{competition}/officials'
 */
 officials.head = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({

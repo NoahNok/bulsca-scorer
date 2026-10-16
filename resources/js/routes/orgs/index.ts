@@ -1,5 +1,6 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../wayfinder'
 import accountsDb024e from './accounts'
+import officialsF4ad44 from './officials'
 import invite from './invite'
 import account from './account'
 import infractions740e82 from './infractions'
@@ -7,7 +8,7 @@ import scoring109674 from './scoring'
 import championship from './championship'
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::index
-* @see app/Http/Controllers/Organisation/OrganisationController.php:32
+* @see app/Http/Controllers/Organisation/OrganisationController.php:39
 * @route '/organisation'
 */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -22,7 +23,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::index
-* @see app/Http/Controllers/Organisation/OrganisationController.php:32
+* @see app/Http/Controllers/Organisation/OrganisationController.php:39
 * @route '/organisation'
 */
 index.url = (options?: RouteQueryOptions) => {
@@ -31,7 +32,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::index
-* @see app/Http/Controllers/Organisation/OrganisationController.php:32
+* @see app/Http/Controllers/Organisation/OrganisationController.php:39
 * @route '/organisation'
 */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -41,7 +42,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::index
-* @see app/Http/Controllers/Organisation/OrganisationController.php:32
+* @see app/Http/Controllers/Organisation/OrganisationController.php:39
 * @route '/organisation'
 */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -51,7 +52,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::create
-* @see app/Http/Controllers/Organisation/OrganisationController.php:40
+* @see app/Http/Controllers/Organisation/OrganisationController.php:47
 * @route '/organisation/create'
 */
 export const create = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -66,7 +67,7 @@ create.definition = {
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::create
-* @see app/Http/Controllers/Organisation/OrganisationController.php:40
+* @see app/Http/Controllers/Organisation/OrganisationController.php:47
 * @route '/organisation/create'
 */
 create.url = (options?: RouteQueryOptions) => {
@@ -75,7 +76,7 @@ create.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::create
-* @see app/Http/Controllers/Organisation/OrganisationController.php:40
+* @see app/Http/Controllers/Organisation/OrganisationController.php:47
 * @route '/organisation/create'
 */
 create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -85,7 +86,7 @@ create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::create
-* @see app/Http/Controllers/Organisation/OrganisationController.php:40
+* @see app/Http/Controllers/Organisation/OrganisationController.php:47
 * @route '/organisation/create'
 */
 create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -95,7 +96,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::store
-* @see app/Http/Controllers/Organisation/OrganisationController.php:48
+* @see app/Http/Controllers/Organisation/OrganisationController.php:55
 * @route '/organisation'
 */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -110,7 +111,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::store
-* @see app/Http/Controllers/Organisation/OrganisationController.php:48
+* @see app/Http/Controllers/Organisation/OrganisationController.php:55
 * @route '/organisation'
 */
 store.url = (options?: RouteQueryOptions) => {
@@ -119,7 +120,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::store
-* @see app/Http/Controllers/Organisation/OrganisationController.php:48
+* @see app/Http/Controllers/Organisation/OrganisationController.php:55
 * @route '/organisation'
 */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -129,7 +130,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::show
-* @see app/Http/Controllers/Organisation/OrganisationController.php:71
+* @see app/Http/Controllers/Organisation/OrganisationController.php:78
 * @route '/organisation/{organisation}'
 */
 export const show = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -144,7 +145,7 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::show
-* @see app/Http/Controllers/Organisation/OrganisationController.php:71
+* @see app/Http/Controllers/Organisation/OrganisationController.php:78
 * @route '/organisation/{organisation}'
 */
 show.url = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -177,7 +178,7 @@ show.url = (args: { organisation: number | { id: number } } | [organisation: num
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::show
-* @see app/Http/Controllers/Organisation/OrganisationController.php:71
+* @see app/Http/Controllers/Organisation/OrganisationController.php:78
 * @route '/organisation/{organisation}'
 */
 show.get = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -187,7 +188,7 @@ show.get = (args: { organisation: number | { id: number } } | [organisation: num
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::show
-* @see app/Http/Controllers/Organisation/OrganisationController.php:71
+* @see app/Http/Controllers/Organisation/OrganisationController.php:78
 * @route '/organisation/{organisation}'
 */
 show.head = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -197,7 +198,7 @@ show.head = (args: { organisation: number | { id: number } } | [organisation: nu
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::edit
-* @see app/Http/Controllers/Organisation/OrganisationController.php:81
+* @see app/Http/Controllers/Organisation/OrganisationController.php:88
 * @route '/organisation/{organisation}/edit'
 */
 export const edit = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -212,7 +213,7 @@ edit.definition = {
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::edit
-* @see app/Http/Controllers/Organisation/OrganisationController.php:81
+* @see app/Http/Controllers/Organisation/OrganisationController.php:88
 * @route '/organisation/{organisation}/edit'
 */
 edit.url = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -245,7 +246,7 @@ edit.url = (args: { organisation: number | { id: number } } | [organisation: num
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::edit
-* @see app/Http/Controllers/Organisation/OrganisationController.php:81
+* @see app/Http/Controllers/Organisation/OrganisationController.php:88
 * @route '/organisation/{organisation}/edit'
 */
 edit.get = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -255,7 +256,7 @@ edit.get = (args: { organisation: number | { id: number } } | [organisation: num
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::edit
-* @see app/Http/Controllers/Organisation/OrganisationController.php:81
+* @see app/Http/Controllers/Organisation/OrganisationController.php:88
 * @route '/organisation/{organisation}/edit'
 */
 edit.head = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -265,7 +266,7 @@ edit.head = (args: { organisation: number | { id: number } } | [organisation: nu
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::update
-* @see app/Http/Controllers/Organisation/OrganisationController.php:91
+* @see app/Http/Controllers/Organisation/OrganisationController.php:98
 * @route '/organisation/{organisation}'
 */
 export const update = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -280,7 +281,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::update
-* @see app/Http/Controllers/Organisation/OrganisationController.php:91
+* @see app/Http/Controllers/Organisation/OrganisationController.php:98
 * @route '/organisation/{organisation}'
 */
 update.url = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -313,7 +314,7 @@ update.url = (args: { organisation: number | { id: number } } | [organisation: n
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::update
-* @see app/Http/Controllers/Organisation/OrganisationController.php:91
+* @see app/Http/Controllers/Organisation/OrganisationController.php:98
 * @route '/organisation/{organisation}'
 */
 update.put = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -323,7 +324,7 @@ update.put = (args: { organisation: number | { id: number } } | [organisation: n
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::update
-* @see app/Http/Controllers/Organisation/OrganisationController.php:91
+* @see app/Http/Controllers/Organisation/OrganisationController.php:98
 * @route '/organisation/{organisation}'
 */
 update.patch = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -333,7 +334,7 @@ update.patch = (args: { organisation: number | { id: number } } | [organisation:
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::destroy
-* @see app/Http/Controllers/Organisation/OrganisationController.php:118
+* @see app/Http/Controllers/Organisation/OrganisationController.php:125
 * @route '/organisation/{organisation}'
 */
 export const destroy = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -348,7 +349,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::destroy
-* @see app/Http/Controllers/Organisation/OrganisationController.php:118
+* @see app/Http/Controllers/Organisation/OrganisationController.php:125
 * @route '/organisation/{organisation}'
 */
 destroy.url = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -381,7 +382,7 @@ destroy.url = (args: { organisation: number | { id: number } } | [organisation: 
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::destroy
-* @see app/Http/Controllers/Organisation/OrganisationController.php:118
+* @see app/Http/Controllers/Organisation/OrganisationController.php:125
 * @route '/organisation/{organisation}'
 */
 destroy.delete = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -391,7 +392,7 @@ destroy.delete = (args: { organisation: number | { id: number } } | [organisatio
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::accounts
-* @see app/Http/Controllers/Organisation/OrganisationController.php:124
+* @see app/Http/Controllers/Organisation/OrganisationController.php:131
 * @route '/organisation/{organisation}/accounts'
 */
 export const accounts = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -406,7 +407,7 @@ accounts.definition = {
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::accounts
-* @see app/Http/Controllers/Organisation/OrganisationController.php:124
+* @see app/Http/Controllers/Organisation/OrganisationController.php:131
 * @route '/organisation/{organisation}/accounts'
 */
 accounts.url = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -439,7 +440,7 @@ accounts.url = (args: { organisation: number | { id: number } } | [organisation:
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::accounts
-* @see app/Http/Controllers/Organisation/OrganisationController.php:124
+* @see app/Http/Controllers/Organisation/OrganisationController.php:131
 * @route '/organisation/{organisation}/accounts'
 */
 accounts.get = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -449,7 +450,7 @@ accounts.get = (args: { organisation: number | { id: number } } | [organisation:
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::accounts
-* @see app/Http/Controllers/Organisation/OrganisationController.php:124
+* @see app/Http/Controllers/Organisation/OrganisationController.php:131
 * @route '/organisation/{organisation}/accounts'
 */
 accounts.head = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -459,7 +460,7 @@ accounts.head = (args: { organisation: number | { id: number } } | [organisation
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::officials
-* @see app/Http/Controllers/Organisation/OrganisationController.php:131
+* @see app/Http/Controllers/Organisation/OrganisationController.php:138
 * @route '/organisation/{organisation}/officials'
 */
 export const officials = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -474,7 +475,7 @@ officials.definition = {
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::officials
-* @see app/Http/Controllers/Organisation/OrganisationController.php:131
+* @see app/Http/Controllers/Organisation/OrganisationController.php:138
 * @route '/organisation/{organisation}/officials'
 */
 officials.url = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -507,7 +508,7 @@ officials.url = (args: { organisation: number | { id: number } } | [organisation
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::officials
-* @see app/Http/Controllers/Organisation/OrganisationController.php:131
+* @see app/Http/Controllers/Organisation/OrganisationController.php:138
 * @route '/organisation/{organisation}/officials'
 */
 officials.get = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -517,7 +518,7 @@ officials.get = (args: { organisation: number | { id: number } } | [organisation
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::officials
-* @see app/Http/Controllers/Organisation/OrganisationController.php:131
+* @see app/Http/Controllers/Organisation/OrganisationController.php:138
 * @route '/organisation/{organisation}/officials'
 */
 officials.head = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -527,7 +528,7 @@ officials.head = (args: { organisation: number | { id: number } } | [organisatio
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::infractions
-* @see app/Http/Controllers/Organisation/OrganisationController.php:305
+* @see app/Http/Controllers/Organisation/OrganisationController.php:426
 * @route '/organisation/{organisation}/infractions'
 */
 export const infractions = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -542,7 +543,7 @@ infractions.definition = {
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::infractions
-* @see app/Http/Controllers/Organisation/OrganisationController.php:305
+* @see app/Http/Controllers/Organisation/OrganisationController.php:426
 * @route '/organisation/{organisation}/infractions'
 */
 infractions.url = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -575,7 +576,7 @@ infractions.url = (args: { organisation: number | { id: number } } | [organisati
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::infractions
-* @see app/Http/Controllers/Organisation/OrganisationController.php:305
+* @see app/Http/Controllers/Organisation/OrganisationController.php:426
 * @route '/organisation/{organisation}/infractions'
 */
 infractions.get = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -585,7 +586,7 @@ infractions.get = (args: { organisation: number | { id: number } } | [organisati
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::infractions
-* @see app/Http/Controllers/Organisation/OrganisationController.php:305
+* @see app/Http/Controllers/Organisation/OrganisationController.php:426
 * @route '/organisation/{organisation}/infractions'
 */
 infractions.head = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -595,7 +596,7 @@ infractions.head = (args: { organisation: number | { id: number } } | [organisat
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::scoring
-* @see app/Http/Controllers/Organisation/OrganisationController.php:239
+* @see app/Http/Controllers/Organisation/OrganisationController.php:360
 * @route '/organisation/{organisation}/scoring'
 */
 export const scoring = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -610,7 +611,7 @@ scoring.definition = {
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::scoring
-* @see app/Http/Controllers/Organisation/OrganisationController.php:239
+* @see app/Http/Controllers/Organisation/OrganisationController.php:360
 * @route '/organisation/{organisation}/scoring'
 */
 scoring.url = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -643,7 +644,7 @@ scoring.url = (args: { organisation: number | { id: number } } | [organisation: 
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::scoring
-* @see app/Http/Controllers/Organisation/OrganisationController.php:239
+* @see app/Http/Controllers/Organisation/OrganisationController.php:360
 * @route '/organisation/{organisation}/scoring'
 */
 scoring.get = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -653,7 +654,7 @@ scoring.get = (args: { organisation: number | { id: number } } | [organisation: 
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::scoring
-* @see app/Http/Controllers/Organisation/OrganisationController.php:239
+* @see app/Http/Controllers/Organisation/OrganisationController.php:360
 * @route '/organisation/{organisation}/scoring'
 */
 scoring.head = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -738,7 +739,7 @@ const orgs = {
     update: Object.assign(update, update),
     destroy: Object.assign(destroy, destroy),
     accounts: Object.assign(accounts, accountsDb024e),
-    officials: Object.assign(officials, officials),
+    officials: Object.assign(officials, officialsF4ad44),
     invite: Object.assign(invite, invite),
     account: Object.assign(account, account),
     infractions: Object.assign(infractions, infractions740e82),

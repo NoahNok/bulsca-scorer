@@ -463,7 +463,7 @@ confirmSpeedResultsPost.post = (args: { speed: number | { id: number } } | [spee
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::live
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:223
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:226
 * @route '//judge.localhost/live'
 */
 export const live = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -478,7 +478,7 @@ live.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::live
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:223
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:226
 * @route '//judge.localhost/live'
 */
 live.url = (options?: RouteQueryOptions) => {
@@ -487,7 +487,7 @@ live.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::live
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:223
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:226
 * @route '//judge.localhost/live'
 */
 live.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -497,7 +497,7 @@ live.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::live
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:223
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:226
 * @route '//judge.localhost/live'
 */
 live.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({

@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::post
-* @see app/Http/Controllers/Organisation/OrganisationController.php:488
+* @see app/Http/Controllers/Organisation/OrganisationController.php:609
 * @route '/organisation/{organisation}/scoring/result-schemas/create'
 */
 export const post = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -16,7 +16,7 @@ post.definition = {
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::post
-* @see app/Http/Controllers/Organisation/OrganisationController.php:488
+* @see app/Http/Controllers/Organisation/OrganisationController.php:609
 * @route '/organisation/{organisation}/scoring/result-schemas/create'
 */
 post.url = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -49,7 +49,7 @@ post.url = (args: { organisation: number | { id: number } } | [organisation: num
 
 /**
 * @see \App\Http\Controllers\Organisation\OrganisationController::post
-* @see app/Http/Controllers/Organisation/OrganisationController.php:488
+* @see app/Http/Controllers/Organisation/OrganisationController.php:609
 * @route '/organisation/{organisation}/scoring/result-schemas/create'
 */
 post.post = (args: { organisation: number | { id: number } } | [organisation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({

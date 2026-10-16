@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::destroy
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:66
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:95
 * @route '//judge.localhost/v2/account/devices/{login}'
 */
 export const destroy = (args: { login: string | number } | [login: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -16,7 +16,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::destroy
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:66
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:95
 * @route '//judge.localhost/v2/account/devices/{login}'
 */
 destroy.url = (args: { login: string | number } | [login: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -43,7 +43,7 @@ destroy.url = (args: { login: string | number } | [login: string | number ] | st
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::destroy
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:66
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:95
 * @route '//judge.localhost/v2/account/devices/{login}'
 */
 destroy.delete = (args: { login: string | number } | [login: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -53,7 +53,7 @@ destroy.delete = (args: { login: string | number } | [login: string | number ] |
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::destroyOthers
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:79
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:108
 * @route '//judge.localhost/v2/account/devices'
 */
 export const destroyOthers = (options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -68,7 +68,7 @@ destroyOthers.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::destroyOthers
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:79
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:108
 * @route '//judge.localhost/v2/account/devices'
 */
 destroyOthers.url = (options?: RouteQueryOptions) => {
@@ -77,7 +77,7 @@ destroyOthers.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::destroyOthers
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:79
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:108
 * @route '//judge.localhost/v2/account/devices'
 */
 destroyOthers.delete = (options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -87,7 +87,7 @@ destroyOthers.delete = (options?: RouteQueryOptions): RouteDefinition<'delete'> 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::signOutEverywhere
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:88
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:117
 * @route '//judge.localhost/v2/account/devices/sign-out-everywhere'
 */
 export const signOutEverywhere = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -102,7 +102,7 @@ signOutEverywhere.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::signOutEverywhere
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:88
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:117
 * @route '//judge.localhost/v2/account/devices/sign-out-everywhere'
 */
 signOutEverywhere.url = (options?: RouteQueryOptions) => {
@@ -111,7 +111,7 @@ signOutEverywhere.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\Auth\AccountController::signOutEverywhere
-* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:88
+* @see app/Http/Controllers/DigitalJudge/Auth/AccountController.php:117
 * @route '//judge.localhost/v2/account/devices/sign-out-everywhere'
 */
 signOutEverywhere.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({

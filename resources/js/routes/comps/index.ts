@@ -446,7 +446,7 @@ accounts.head = (args: { comp: number | { id: number } } | [comp: number | { id:
 
 /**
 * @see \App\Http\Controllers\CompetitionOfficialsController::officials
-* @see app/Http/Controllers/CompetitionOfficialsController.php:17
+* @see app/Http/Controllers/CompetitionOfficialsController.php:20
 * @route '/comps/{comp}/officials'
 */
 export const officials = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -461,7 +461,7 @@ officials.definition = {
 
 /**
 * @see \App\Http\Controllers\CompetitionOfficialsController::officials
-* @see app/Http/Controllers/CompetitionOfficialsController.php:17
+* @see app/Http/Controllers/CompetitionOfficialsController.php:20
 * @route '/comps/{comp}/officials'
 */
 officials.url = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -494,7 +494,7 @@ officials.url = (args: { comp: number | { id: number } } | [comp: number | { id:
 
 /**
 * @see \App\Http\Controllers\CompetitionOfficialsController::officials
-* @see app/Http/Controllers/CompetitionOfficialsController.php:17
+* @see app/Http/Controllers/CompetitionOfficialsController.php:20
 * @route '/comps/{comp}/officials'
 */
 officials.get = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -504,7 +504,7 @@ officials.get = (args: { comp: number | { id: number } } | [comp: number | { id:
 
 /**
 * @see \App\Http\Controllers\CompetitionOfficialsController::officials
-* @see app/Http/Controllers/CompetitionOfficialsController.php:17
+* @see app/Http/Controllers/CompetitionOfficialsController.php:20
 * @route '/comps/{comp}/officials'
 */
 officials.head = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
