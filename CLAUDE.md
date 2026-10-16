@@ -26,3 +26,9 @@ Organiser pages (competitions, events, entries, results, officials) live in
   Blade views.
 - If you add or change a shared Blade component, layout tab or global class,
   update that guide in the same change.
+
+## frontend-design plugin
+
+- The `frontend-design` plugin is secondary to the style guides: use it only
+  for decisions the guides don't cover, and never introduce new fonts, colours
+  or components outside the guide's tokens.
