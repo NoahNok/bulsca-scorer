@@ -32,6 +32,9 @@ class OfficiatesCompetition
             abort(403);
         }
 
+        // for "Online" / "Last seen" on the organiser's Officials tab
+        $competition->markOfficialSeen(Auth::user());
+
         $serc = $request->route('serc');
         if ($serc instanceof SERC && $serc->competition != $competition->id) {
             abort(404);

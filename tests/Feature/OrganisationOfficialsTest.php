@@ -2,10 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\Mail\CompetitionOfficialAddedMail;
 use App\Models\Competition;
 use App\Models\Organisation\Organisation;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class OrganisationOfficialsTest extends TestCase
@@ -99,5 +101,134 @@ class OrganisationOfficialsTest extends TestCase
 
         $this->actingAs($member)->get(route('orgs.officials', $this->org))->assertForbidden();
         $this->actingAs(User::factory()->create())->get(route('orgs.officials', $this->org))->assertForbidden();
+    }
+
+    public function test_officials_can_be_searched_and_filtered_by_role(): void
+    {
+        $comp = $this->makeComp('Comp', $this->org, now()->subWeek());
+        $comp->addOfficial(User::factory()->create(['name' => 'Jo Referee', 'email' => 'jo@example.com']), 'referee');
+        $comp->addOfficial(User::factory()->create(['name' => 'Sam Official', 'email' => 'sam@club.org']), 'official');
+
+        $this->actingAs($this->admin)
+            ->get(route('orgs.officials', [$this->org, 'q' => 'CLUB.ORG']))
+            ->assertOk()
+            ->assertSee('Sam Official')
+            ->assertDontSee('Jo Referee')
+            ->assertSee('Showing 1 of 2');
+
+        $this->actingAs($this->admin)
+            ->get(route('orgs.officials', [$this->org, 'role' => 'referee']))
+            ->assertSee('Jo Referee')
+            ->assertDontSee('Sam Official');
+
+        $this->actingAs($this->admin)
+            ->get(route('orgs.officials', [$this->org, 'q' => 'nobody']))
+            ->assertSee('No officials match');
+    }
+
+    public function test_the_last_competition_links_to_its_officials_tab(): void
+    {
+        $comp = $this->makeComp('Linked Comp', $this->org, now()->subWeek());
+        $comp->addOfficial(User::factory()->create(), 'official');
+
+        $this->actingAs($this->admin)
+            ->get(route('orgs.officials', $this->org))
+            ->assertSee(route('comps.officials', $comp->id));
+    }
+
+    public function test_the_csv_export_lists_the_filtered_officials(): void
+    {
+        $comp = $this->makeComp('Export Comp', $this->org, now()->setDate(2026, 9, 1));
+        $comp->addOfficial(User::factory()->create(['name' => 'Jo Referee', 'email' => 'jo@example.com']), 'referee');
+        $comp->addOfficial(User::factory()->create(['name' => 'Sam Official']), 'official');
+
+        $response = $this->actingAs($this->admin)
+            ->get(route('orgs.officials.export', [$this->org, 'role' => 'referee']))
+            ->assertOk()
+            ->assertDownload('test-org-officials.csv');
+
+        $csv = $response->streamedContent();
+        $this->assertStringContainsString('Name,Email,Roles,Competitions,"Last competition","Last competition date"', $csv);
+        $this->assertStringContainsString('"Jo Referee",jo@example.com,Referee,1,"Export Comp",2026-09-01', $csv);
+        $this->assertStringNotContainsString('Sam Official', $csv);
+
+        $member = User::factory()->create();
+        $this->org->addAccount($member, 'view');
+        $this->actingAs($member)->get(route('orgs.officials.export', $this->org))->assertForbidden();
+    }
+
+    public function test_admins_can_add_a_past_official_to_an_upcoming_competition(): void
+    {
+        Mail::fake();
+
+        $past = $this->makeComp('Past Comp', $this->org, now()->subMonth());
+        $upcoming = $this->makeComp('Upcoming Comp', $this->org, now()->addWeek());
+        $official = User::factory()->create(['name' => 'Jo Past']);
+        $past->addOfficial($official, 'official');
+
+        $this->actingAs($this->admin)
+            ->get(route('orgs.officials', $this->org))
+            ->assertSee('Add to a competition')
+            ->assertViewHas('upcomingCompetitions', fn ($comps) => $comps->pluck('id')->all() === [$upcoming->id]);
+
+        $this->actingAs($this->admin)
+            ->from(route('orgs.officials', $this->org))
+            ->post(route('orgs.officials.add', $this->org), [
+                'user_id' => $official->id,
+                'competition_id' => $upcoming->id,
+                'role' => 'referee',
+            ])
+            ->assertRedirect(route('orgs.officials', $this->org))
+            ->assertSessionHasNoErrors()
+            ->assertSessionHas('success', 'Jo Past added to Upcoming Comp as a referee');
+
+        $this->assertTrue($upcoming->officialHasRole($official, 'referee'));
+        Mail::assertSent(CompetitionOfficialAddedMail::class, fn ($mail) => $mail->hasTo($official->email));
+
+        // adding them again doesn't send another email
+        $this->actingAs($this->admin)
+            ->post(route('orgs.officials.add', $this->org), [
+                'user_id' => $official->id,
+                'competition_id' => $upcoming->id,
+                'role' => 'official',
+            ])
+            ->assertSessionHasErrorsIn('addToCompetition', 'competition_id');
+        Mail::assertSentCount(1);
+    }
+
+    public function test_only_past_officials_and_upcoming_competitions_of_the_organisation_can_be_picked(): void
+    {
+        Mail::fake();
+
+        $past = $this->makeComp('Past Comp', $this->org, now()->subMonth());
+        $upcoming = $this->makeComp('Upcoming Comp', $this->org, now()->addWeek());
+        $official = User::factory()->create();
+        $past->addOfficial($official, 'official');
+
+        $other = new Organisation();
+        $other->name = 'Other Org';
+        $other->save();
+        $theirs = $this->makeComp('Their Comp', $other, now()->addWeek());
+
+        $post = fn (array $data) => $this->actingAs($this->admin)->post(route('orgs.officials.add', $this->org), $data + ['role' => 'official']);
+
+        $post(['user_id' => User::factory()->create()->id, 'competition_id' => $upcoming->id])
+            ->assertSessionHasErrorsIn('addToCompetition', 'user_id');
+        $post(['user_id' => $official->id, 'competition_id' => $past->id])
+            ->assertSessionHasErrorsIn('addToCompetition', 'competition_id');
+        $post(['user_id' => $official->id, 'competition_id' => $theirs->id])
+            ->assertSessionHasErrorsIn('addToCompetition', 'competition_id');
+
+        $this->assertFalse($theirs->officials()->exists());
+        $this->assertFalse($upcoming->officials()->exists());
+        Mail::assertNothingSent();
+
+        $member = User::factory()->create();
+        $this->org->addAccount($member, 'view');
+        $this->actingAs($member)->post(route('orgs.officials.add', $this->org), [
+            'user_id' => $official->id,
+            'competition_id' => $upcoming->id,
+            'role' => 'official',
+        ])->assertForbidden();
     }
 }

@@ -40,6 +40,7 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
             Route::get('', [JudgeController::class, 'index'])->name('judge.index');
 
             Route::post('join', [JudgeController::class, 'joinCompetition'])->name('judge.join-competition');
+            Route::get('join/{pin}', [JudgeController::class, 'joinCompetitionLink'])->whereNumber('pin')->middleware('throttle:20,1')->name('judge.join-link');
             Route::post('logout', [LoginController::class, 'logout'])->name('judge.logout');
 
             Route::get('account', [AccountController::class, 'account'])->name('judge.account');

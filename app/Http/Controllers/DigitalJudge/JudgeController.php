@@ -32,10 +32,27 @@ class JudgeController extends Controller
     public function joinCompetition(JoinCompetitionRequest $request)
     {
 
-        $competition = Competition::where('digitalJudgePin', $request->pin)->first();
+        $competition = Competition::where('digitalJudgePin', $request->pin)->where('digitalJudgeEnabled', true)->first();
 
         if (!$competition) {
             return back()->withInput()->withErrors(['pin' => 'No competition found.']);
+        }
+
+        $request->user()->officiating()->syncWithoutDetaching($competition);
+
+        return to_route('judge.competition', ['competition' => $competition->getSlug()]);
+    }
+
+    /**
+     * The share link and QR code on the organiser's Officials tab: joins with the PIN in the URL,
+     * so officials don't have to type it. Signed-out officials come back here after signing in.
+     */
+    public function joinCompetitionLink(Request $request, string $pin)
+    {
+        $competition = Competition::where('digitalJudgePin', $pin)->where('digitalJudgeEnabled', true)->first();
+
+        if (!$competition) {
+            return to_route('judge.index')->withErrors(['pin' => 'No competition found.']);
         }
 
         $request->user()->officiating()->syncWithoutDetaching($competition);

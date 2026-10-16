@@ -677,8 +677,23 @@ class Competition extends Model implements IInvitable, IJsonable
     {
         return $this->belongsToMany(User::class, 'competition_officials')
             ->using(CompetitionOfficial::class)
-            ->withPivot('role')
+            ->withPivot('role', 'last_seen_at')
             ->withTimestamps();
+    }
+
+    /**
+     * Note that the official has just used Digital Judge for this competition. Written at most
+     * once a minute, so it's cheap to call on every request.
+     */
+    public function markOfficialSeen(User $user): void
+    {
+        DB::table('competition_officials')
+            ->where('competition_id', $this->id)
+            ->where('user_id', $user->id)
+            ->where(fn ($query) => $query
+                ->whereNull('last_seen_at')
+                ->orWhere('last_seen_at', '<', now()->subMinute()))
+            ->update(['last_seen_at' => now()]);
     }
 
     /**

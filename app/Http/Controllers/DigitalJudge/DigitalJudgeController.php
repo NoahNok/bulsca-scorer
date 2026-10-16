@@ -217,6 +217,9 @@ class DigitalJudgeController extends Controller
 
     public function qrs(Competition $comp)
     {
+        // the PIN's made when Digital Judge is first enabled
+        abort_unless($comp->digitalJudgePin, 404);
+
         return view('digitaljudge.qrs', compact('comp'));
     }
 

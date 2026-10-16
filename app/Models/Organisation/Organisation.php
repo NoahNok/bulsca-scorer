@@ -191,6 +191,7 @@ class Organisation extends Model implements IInvitable
                 'users.name',
                 'users.email',
                 'competition_officials.role',
+                'competitions.id as comp_id',
                 'competitions.name as comp_name',
                 'competitions.when as comp_when',
             ])
@@ -202,6 +203,7 @@ class Organisation extends Model implements IInvitable
                 'roles' => $rows->pluck('role')->unique()->sortBy(fn ($role) => $roleOrder[$role] ?? PHP_INT_MAX)->values(),
                 'count' => $rows->count(),
                 'last' => [
+                    'id' => $rows[0]->comp_id,
                     'name' => $rows[0]->comp_name,
                     'when' => $rows[0]->comp_when ? Carbon::parse($rows[0]->comp_when) : null,
                 ],

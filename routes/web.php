@@ -159,6 +159,8 @@ Route::middleware(['auth', 'not.judge-only'])->group(function () {
             Route::get('/officials', [CompetitionOfficialsController::class, 'index'])->name('comps.officials');
             Route::post('/officials', [CompetitionOfficialsController::class, 'store'])->name('comps.officials.store');
             Route::get('/officials/search', [CompetitionOfficialsController::class, 'search'])->name('comps.officials.search');
+            Route::post('/officials/copy', [CompetitionOfficialsController::class, 'copy'])->name('comps.officials.copy');
+            Route::post('/officials/{official}/resend', [CompetitionOfficialsController::class, 'resend'])->whereNumber('official')->name('comps.officials.resend');
             Route::post('/officials/{official}', [CompetitionOfficialsController::class, 'update'])->whereNumber('official')->name('comps.officials.update');
             Route::delete('/officials/{official}', [CompetitionOfficialsController::class, 'destroy'])->whereNumber('official')->name('comps.officials.destroy');
         });
@@ -336,6 +338,8 @@ Route::middleware(['auth', 'not.judge-only'])->group(function () {
         Route::get('/accounts', [OrganisationController::class, 'accounts'])->name('orgs.accounts');
         Route::post('/accounts', [OrganisationController::class, 'accountsPost'])->name('orgs.accounts.post');
         Route::get('/officials', [OrganisationController::class, 'officials'])->name('orgs.officials');
+        Route::get('/officials/export', [OrganisationController::class, 'officialsExport'])->name('orgs.officials.export');
+        Route::post('/officials/add', [OrganisationController::class, 'officialsAddToCompetition'])->name('orgs.officials.add');
 
         Route::get('/accounts/{account}', [OrganisationController::class, 'account'])->name('orgs.accounts.view');
         Route::post('/accounts/{account}', [OrganisationController::class, 'accountEditPost'])->name('orgs.accounts.edit');
