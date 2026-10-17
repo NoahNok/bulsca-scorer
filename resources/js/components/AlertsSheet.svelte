@@ -1,6 +1,11 @@
 <script lang="ts">
+    import AnnouncementCompose from "@/components/Judging/Announcement/AnnouncementCompose.svelte";
+    import AnnouncementCard from "@/components/Judging/Announcement/AnnouncementCard.svelte";
     import EmptyState from "@/components/EmptyState.svelte";
+    import SectionLabel from "@/components/SectionLabel.svelte";
     import { alertKey, alerts, alertText } from "@/lib/alerts.svelte";
+    import { announcements } from "@/lib/announcements.svelte";
+    import { timeAgo } from "@/lib/timeAgo.svelte";
     import { submissions } from "@/routes/judge/competition/violation";
     import type { Competition } from "@/types/base";
     import {
@@ -9,7 +14,7 @@
         vtypeTileClass,
         type ViolationAlert,
     } from "@/types/violation";
-    import { Link } from "@inertiajs/svelte";
+    import { Link, page } from "@inertiajs/svelte";
     import { Bell, X } from "@lucide/svelte";
     import { Dialog } from "bits-ui";
     import { untrack } from "svelte";
@@ -17,42 +22,43 @@
 
     let { competition }: { competition: Competition } = $props();
 
-    // tick so "2 min ago" stays current while the sheet is open
-    let now = $state(Date.now());
-    $effect(() => {
-        if (!alerts.sheetOpen) return;
-        now = Date.now();
-        const timer = setInterval(() => (now = Date.now()), 30_000);
-        return () => clearInterval(timer);
-    });
+    const isReferee = $derived(!!page.props.judge?.isHeadRef);
 
     // remember what was unread when the sheet opened, so the dots show for
     // this viewing, then mark everything read
     let unreadOnOpen = $state(new Set<ViolationAlert>());
+    let unreadAnnouncementsOnOpen = $state(new Set<number>());
     $effect(() => {
         if (!alerts.sheetOpen) return;
         untrack(() => {
             unreadOnOpen = new Set(alerts.items.filter((a) => !a.read));
+            unreadAnnouncementsOnOpen = new Set(
+                announcements.live
+                    .filter((a) => !announcements.isRead(a))
+                    .map((a) => a.id),
+            );
             alerts.markAllRead();
+            announcements.markAllRead();
         });
     });
 
-    function timeAgo(iso: string): string {
-        const seconds = Math.max(0, (now - new Date(iso).getTime()) / 1000);
-        if (seconds < 60) return "Just now";
-        const minutes = Math.floor(seconds / 60);
-        if (minutes < 60) return `${minutes} min ago`;
-        const hours = Math.floor(minutes / 60);
-        if (hours < 24) return `${hours} hr ago`;
-        return new Date(iso).toLocaleDateString();
-    }
+    // new ones arriving while it's open are read straight away
+    $effect(() => {
+        if (alerts.sheetOpen && announcements.unread) {
+            untrack(() => announcements.markAllRead());
+        }
+    });
 
     function close() {
         alerts.sheetOpen = false;
     }
 </script>
 
-<!-- Slide-out history of DQ/Penalty alerts, newest first, opened from the Alerts tab -->
+<!--
+    Slide-out opened from the Alerts tab: Announcements first (with the
+    compose box for Referees), then the history of DQ/Penalty alerts, newest
+    first
+-->
 <Dialog.Root bind:open={alerts.sheetOpen}>
     <Dialog.Portal>
         {#if alerts.sheetOpen}
@@ -92,6 +98,31 @@
                     </div>
 
                     <div class="min-h-0 flex-1 overflow-y-auto p-4">
+                        {#if isReferee}
+                            <AnnouncementCompose {competition} class="mb-4" />
+                        {/if}
+
+                        {#if announcements.items.length}
+                            <SectionLabel class="mb-2">Announcements</SectionLabel>
+                            <div class="mb-5 flex flex-col gap-2">
+                                {#each announcements.items as announcement (announcement.id)}
+                                    <AnnouncementCard
+                                        {competition}
+                                        {announcement}
+                                        {isReferee}
+                                        unread={unreadAnnouncementsOnOpen.has(
+                                            announcement.id,
+                                        )}
+                                    />
+                                {/each}
+                            </div>
+                        {/if}
+
+                        <!-- split the list from what's above it -->
+                        {#if isReferee || announcements.items.length}
+                            <SectionLabel class="mb-2">DQ/Penalty</SectionLabel>
+                        {/if}
+
                         {#if !alerts.items.length}
                             <EmptyState
                                 icon={Bell}

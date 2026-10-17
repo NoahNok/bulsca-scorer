@@ -9,6 +9,7 @@
     import PokeAnimation from "@/components/PokeAnimation.svelte";
     import ToastViewport from "@/components/Toast/ToastViewport.svelte";
     import { alerts } from "@/lib/alerts.svelte";
+    import { announcements } from "@/lib/announcements.svelte";
     import confirmStore from "@/lib/confirm";
     import { presence } from "@/lib/presence.svelte";
     import { toast } from "@/lib/toast.svelte";
@@ -57,6 +58,16 @@
         const referee = isReferee;
         untrack(() => alerts.start(presenceCompetitionId, me, referee));
         return () => alerts.stop();
+    });
+
+    // Announcements from the referees, on the presence channel. Referees also
+    // keep the withdrawn ones
+    $effect(() => {
+        if (!presenceCompetitionId || !userId || !userName) return;
+        const me = { id: userId, name: userName };
+        const referee = isReferee;
+        untrack(() => announcements.start(presenceCompetitionId, me, referee));
+        return () => announcements.stop();
     });
 
     router.on("flash", (event) => {

@@ -30,6 +30,7 @@
 
 <script lang="ts">
     import { home } from "@/actions/App/Http/Controllers/DigitalJudge/JudgeController";
+    import AnnouncementBanner from "@/components/AnnouncementBanner.svelte";
     import type { Competition } from "@/types/base";
     import { Link } from "@inertiajs/svelte";
     import { House } from "@lucide/svelte";
@@ -78,6 +79,10 @@
 
 {#if !header.overlay}
     <div class="h-16"></div>
+
+    {#if competition}
+        <AnnouncementBanner />
+    {/if}
 {/if}
 
 {@render children?.()}

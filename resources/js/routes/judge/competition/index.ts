@@ -1,5 +1,6 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../wayfinder'
 import sercs from './sercs'
+import announcements606f33 from './announcements'
 import serc5c2b2c from './serc'
 import event from './event'
 import violation from './violation'
@@ -72,6 +73,74 @@ officials.head = (args: { competition: number | { id: number } } | [competition:
 })
 
 /**
+* @see \App\Http\Controllers\DigitalJudge\AnnouncementController::announcements
+* @see app/Http/Controllers/DigitalJudge/AnnouncementController.php:20
+* @route '//judge.localhost/v2/{competition}/announcements'
+*/
+export const announcements = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: announcements.url(args, options),
+    method: 'get',
+})
+
+announcements.definition = {
+    methods: ["get","head"],
+    url: '//judge.localhost/v2/{competition}/announcements',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\DigitalJudge\AnnouncementController::announcements
+* @see app/Http/Controllers/DigitalJudge/AnnouncementController.php:20
+* @route '//judge.localhost/v2/{competition}/announcements'
+*/
+announcements.url = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { competition: args }
+    }
+
+    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+        args = { competition: args.id }
+    }
+
+    if (Array.isArray(args)) {
+        args = {
+            competition: args[0],
+        }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+        competition: typeof args.competition === 'object'
+        ? args.competition.id
+        : args.competition,
+    }
+
+    return announcements.definition.url
+            .replace('{competition}', parsedArgs.competition.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\DigitalJudge\AnnouncementController::announcements
+* @see app/Http/Controllers/DigitalJudge/AnnouncementController.php:20
+* @route '//judge.localhost/v2/{competition}/announcements'
+*/
+announcements.get = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: announcements.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\DigitalJudge\AnnouncementController::announcements
+* @see app/Http/Controllers/DigitalJudge/AnnouncementController.php:20
+* @route '//judge.localhost/v2/{competition}/announcements'
+*/
+announcements.head = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: announcements.url(args, options),
+    method: 'head',
+})
+
+/**
 * @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::serc
 * @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:99
 * @route '//judge.localhost/v2/{competition}/serc/{serc}'
@@ -139,6 +208,7 @@ serc.head = (args: { competition: number | { id: number }, serc: number | { id: 
 const competition = {
     officials: Object.assign(officials, officials),
     sercs: Object.assign(sercs, sercs),
+    announcements: Object.assign(announcements, announcements606f33),
     serc: Object.assign(serc, serc5c2b2c),
     event: Object.assign(event, event),
     violation: Object.assign(violation, violation),

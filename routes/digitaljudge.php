@@ -2,6 +2,7 @@
 
 use App\DigitalJudge\DigitalJudge;
 use App\Helpers\RouteHelpers;
+use App\Http\Controllers\DigitalJudge\AnnouncementController;
 use App\Http\Controllers\DigitalJudge\Auth\AccountController;
 use App\Http\Controllers\DigitalJudge\Auth\ForgotPasswordController;
 use App\Http\Controllers\DigitalJudge\Auth\LoginController;
@@ -65,6 +66,10 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
                 Route::get('officials', [JudgeController::class, 'officials'])->name('judge.competition.officials');
 
                 Route::post('sercs/release', [JudgeController::class, 'setSercsReleased'])->middleware('judge.referee')->name('judge.competition.sercs.release');
+
+                Route::get('announcements', [AnnouncementController::class, 'index'])->name('judge.competition.announcements');
+                Route::post('announcements', [AnnouncementController::class, 'store'])->middleware('judge.referee')->name('judge.competition.announcements.store');
+                Route::post('announcements/{announcement}/withdraw', [AnnouncementController::class, 'withdraw'])->whereNumber('announcement')->middleware('judge.referee')->name('judge.competition.announcements.withdraw');
 
                 Route::prefix('serc/{serc}')->middleware('judge.sercs-released')->group(function () {
 

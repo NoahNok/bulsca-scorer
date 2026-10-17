@@ -1,5 +1,6 @@
 import Auth from './Auth'
 import JudgeController from './JudgeController'
+import AnnouncementController from './AnnouncementController'
 import SERC from './SERC'
 import ConfirmResultsController from './ConfirmResultsController'
 import Event from './Event'
@@ -13,6 +14,7 @@ import DJManageController from './DJManageController'
 const DigitalJudge = {
     Auth: Object.assign(Auth, Auth),
     JudgeController: Object.assign(JudgeController, JudgeController),
+    AnnouncementController: Object.assign(AnnouncementController, AnnouncementController),
     SERC: Object.assign(SERC, SERC),
     ConfirmResultsController: Object.assign(ConfirmResultsController, ConfirmResultsController),
     Event: Object.assign(Event, Event),

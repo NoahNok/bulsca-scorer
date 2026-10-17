@@ -31,8 +31,8 @@ The layouts provide the chrome, so pages don't add it themselves:
 
 | Layer | File | Provides |
 |---|---|---|
-| Shell | `layout/JudgeLayout.svelte` | Padded, centred column, bottom tab bar (`JudgeTabBar`: Home, DQ/Penalty, Alerts, Online, plus the "Referee mode" band for the head ref), toasts, confirm dialog, the officials-online sheet and poke animation (joins the competition's presence channel), and the DQ/Penalty alerts sheet (starts `alerts` from `lib/alerts.svelte`) |
-| Header | `layout/JudgeHeaderLayout.svelte` | "Digital Judge" header + icon and the space under it (all `Judge/*` pages) |
+| Shell | `layout/JudgeLayout.svelte` | Padded, centred column, bottom tab bar (`JudgeTabBar`: Home, DQ/Penalty, Alerts, Online, plus the "Referee mode" band for the head ref), toasts, confirm dialog, the officials-online sheet and poke animation (joins the competition's presence channel), and the Alerts sheet (starts `alerts` from `lib/alerts.svelte` and `announcements` from `lib/announcements.svelte`) |
+| Header | `layout/JudgeHeaderLayout.svelte` | "Digital Judge" header + icon, the space under it, and the `AnnouncementBanner` on competition pages (all `Judge/*` pages) |
 
 The header defaults to the House icon linking to the competition home. Override
 it from the page's `layout` export:
@@ -58,8 +58,8 @@ layout instead of props.
 ### Navigation
 
 The bottom tab bar is the same on every competition page: **Home** (competition
-home), **DQ/Penalty** (submissions list), **Alerts** (an unread count, which opens
-`AlertsSheet`) and **Online** (a count of the officials online, which opens
+home), **DQ/Penalty** (submissions list), **Alerts** (an unread count of DQ/Penalty
+alerts plus Announcements, which opens `AlertsSheet`) and **Online** (a count of the officials online, which opens
 `OfficialsSheet`), with the current area highlighted. Alerts and Online only show
 when Reverb is configured (`echoEnabled` from `lib/echo`).
 For the head ref, a "Referee mode" band sits along the top of the bar, so the
@@ -163,7 +163,8 @@ navigable row shows a `ChevronRight` that nudges right on hover.
 | `JudgeTabBar` | The fixed bottom tab bar (Home, DQ/Penalty, Alerts, Online). For the head ref it shows a teal "Referee mode" band along its top edge. Without a `competition` it shows "Account" and "Log out" tabs (the dashboard and `Judge/Account`). Rendered by `JudgeLayout` on every competition page, the dashboard and the account page; pages never render it. |
 | `Avatar` | An official's round avatar: their initials, with their profile photo (`ProfilePhoto` from `types/presence`, a 192px `webp` + `jpg` pair) faded in over them once it has downloaded. The photo is a lazy, low-priority `<picture>`, so slow wifi or a failed download only ever shows initials. Defaults to `size-9`; pass size and text classes in `class` (e.g. `size-16 text-xl`), `dimmed` for offline officials, and overlays such as the presence dot as children. Use it anywhere an official is shown with an avatar. |
 | `OfficialsSheet` | The slide-out from the right listing the competition's officials: an **Online** section (name, role, Active/Idle badge from `presenceStatusBadgeClass`, and a dot on the `Avatar` from `presenceStatusDotClass`; both teal when active, orange when idle after a minute without input or with the tab hidden) and a dimmed **Offline** section for everyone else, fetched from `judge.competition.officials` when it opens. Tapping someone online pokes them. Rendered by `JudgeLayout` and opened by the Online tab via `presence.sheetOpen`; pages never render it. |
-| `AlertsSheet` | The slide-out from the right with the history of live DQ/Penalty alerts, newest first: code tile, a sentence (`alertText`), time ago and status badge; tapping a row opens the submission. Alerts come from `lib/alerts.svelte`: judges get their own submissions' status changes, the referee also gets new and resubmitted ones. Each also pops a toast with a "View" link. The history is per device (localStorage) and only covers alerts received while online. Rendered by `JudgeLayout` and opened by the Alerts tab via `alerts.sheetOpen`; pages never render it. |
+| `AlertsSheet` | The slide-out from the right, opened by the Alerts tab via `alerts.sheetOpen`. At the top, for Referees, `AnnouncementCompose`; then an **Announcements** `SectionLabel` and an `AnnouncementCard` per Announcement (only shown when there are any); then a **DQ/Penalty** `SectionLabel` and the history of live DQ/Penalty alerts, newest first: code tile, a sentence (`alertText`), time ago and status badge; tapping a row opens the submission. Alerts come from `lib/alerts.svelte`: judges get their own submissions' status changes, the referee also gets new and resubmitted ones. Each also pops a toast with a "View" link. The alert history is per device (localStorage) and only covers alerts received while online. Opening the sheet marks alerts and Announcements read. Rendered by `JudgeLayout`; pages never render it. |
+| `AnnouncementBanner` | The newest Announcement this device hasn't dismissed, pinned (`sticky`) under the header on every competition page: an amber panel (`announcementBannerClass`, `rounded-xl border p-3 shadow-sm`) with a Megaphone, a `font-archivo` "Announcement · Sam · 2 min ago" kicker, the text and an X to dismiss. Tapping it opens the Alerts sheet. `role="status"`; no slide under `prefers-reduced-motion`. Rendered by `JudgeHeaderLayout`; pages never render it. Announcements never toast: toasts auto-dismiss, and an Announcement stays until dismissed. |
 | `PokeAnimation` | The full-screen "{name} says hi! 👋" lifebuoy animation played when someone pokes you (the 👋 waves once the caption is in). Rendered by `JudgeLayout`; caption only under `prefers-reduced-motion`. |
 | `Spinner` | Loading. Centre it: `<div class="flex justify-center py-6"><Spinner /></div>`. |
 | `Stepper` / `Step` | Multi-step flows. Steps stay locked until previous ones complete; call `setTitle()` with the chosen value and `complete()` from the step's `step_controls`. |
@@ -175,7 +176,13 @@ Components that only make sense for one feature go here, e.g.
 `Judging/Violation/ViolationCodeTile`, `ViolationStatusBadge`,
 `ViolationSubmissionCard`, `ViolationTimeline` (a submission's status history,
 dot colours from `timelineDotClass`; a SUBMITTED entry coming from REJECTED reads "Resubmitted"), and `Judging/SERC/JudgeMarkingPoints` /
-`MarkingPoint` (the SERC marking card and its mark buttons), and
+`MarkingPoint` (the SERC marking card and its mark buttons),
+`Judging/Announcement/AnnouncementCompose` (the Referees' compose box: a
+**Privileged actions** panel with a soft textarea, a "n/280" hint and a full-width
+primary `Button`, confirmed first since Announcements can't be edited) and
+`AnnouncementCard` (sender `Avatar`, text, time ago, a new dot; for Referees a quiet
+"Withdraw" button, confirmed, and once withdrawn the **Voided** look with "Withdrawn
+by X · 10:42", from `announcementCardClass` in `types/announcement.ts`), and
 `Judging/ConfirmResults/*` for the head ref's Confirm Results pages:
 `ConfirmResultsSummary` (fact strip + amber warning panel), `HeatResultsCard`
 (a speed heat: lane, OOF, time, violations), `SERCEntityResultsCard` (one team's
@@ -295,6 +302,9 @@ auth pages ("Create an account", "Forgot password?", "Back to sign in") are quie
 Group role-specific actions (e.g. head referee) in their own panel at the
 bottom: `rounded-xl border border-se/40 bg-se/5 p-4`, an icon + `font-archivo uppercase`
 title, a sentence of guidance if needed, then side-by-side `ConfirmDialog`s with `triggerClass="w-full"`.
+The same panel can hold a small form when the role's action is the point of the
+screen (e.g. `AnnouncementCompose` at the top of the Alerts sheet): the field(s), then
+one full-width primary `Button` that asks with `confirm()` before posting.
 
 ### Forms
 
@@ -321,6 +331,15 @@ title, a sentence of guidance if needed, then side-by-side `ConfirmDialog`s with
   reloads of just that prop) don't recompute them. Batch-load each page's related rows
   (`whereIn`) instead of querying per row. See `ConfirmResultsController`.
 - Animate list reordering with `animate:flip={{ duration: 200 }}` and reveal async sections with `transition:slide`.
+- **Relative times** ("Just now", "5 min ago"): `timeAgo()` from `lib/timeAgo.svelte`.
+  It ticks every 30s while something on screen reads it, so don't add your own timer.
+- **Announcements**: `announcements` from `lib/announcements.svelte.ts`, started by
+  `JudgeLayout`. They're stored on the server: the list is fetched on start and each time
+  the presence channel (re)subscribes, and `announcement.sent` / `announcement.withdrawn`
+  arrive live on `judge.officials.{id}`. Read `announcements.live`, `.unread` and
+  `.banner`. Read and dismissed are per device (localStorage); something new buzzes once
+  (`navigator.vibrate?.(200)`), never for your own. Officials don't get withdrawn ones,
+  Referees keep them greyed out.
 - **Presence** (who's online): `presence` from `lib/presence.svelte.ts`, joined by
   `JudgeLayout` for the current competition (`judge.officials.{id}` presence channel,
   authorised in `routes/channels.php`). Read `presence.sorted`, `presence.count` and
@@ -334,6 +353,8 @@ title, a sentence of guidance if needed, then side-by-side `ConfirmDialog`s with
 - **Page navigations and form posts** that should reload props: `useForm` /
   `<Form>`, or `router`.
 - **Background requests** (fetch data, save without leaving the page): `useHttp`.
+  Shared state modules in `lib/` (outside any component) can't use the hook, so they
+  use `fetch` with `Accept: application/json` (see `announcements.refresh()`).
   `processing`, `response` and `wasSuccessful` drive spinners and results.
 - Send data in one of two ways. **Never assign `http.data = ...`.** `data()`
   is the hook's own getter, and overwriting it breaks `isDirty`, `reset()` and

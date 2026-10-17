@@ -3,6 +3,7 @@
     import { logout } from "@/actions/App/Http/Controllers/DigitalJudge/Auth/LoginController";
     import { home } from "@/actions/App/Http/Controllers/DigitalJudge/JudgeController";
     import { alerts } from "@/lib/alerts.svelte";
+    import { announcements } from "@/lib/announcements.svelte";
     import { confirm } from "@/lib/confirm";
     import { echoEnabled } from "@/lib/echo";
     import { presence } from "@/lib/presence.svelte";
@@ -19,6 +20,8 @@
 
     const isHeadRef = $derived(!!competition && page.props.judge.isHeadRef);
     const showOnline = $derived(!!competition && echoEnabled);
+    // DQ/Penalty alerts and Announcements share the tab and its sheet
+    const unread = $derived(alerts.unread + announcements.unread);
 
     async function logOut() {
         const ok = await confirm({
@@ -100,8 +103,8 @@
             <button
                 type="button"
                 aria-haspopup="dialog"
-                aria-label={alerts.unread
-                    ? `Alerts: ${alerts.unread} new`
+                aria-label={unread
+                    ? `Alerts: ${unread} new`
                     : "Alerts"}
                 class="{tabClass} {alerts.sheetOpen
                     ? 'text-teal-700'
@@ -114,11 +117,11 @@
                         : 'group-hover:bg-gray-100'}"
                 >
                     <Bell size={22} />
-                    {#if alerts.unread}
+                    {#if unread}
                         <span
                             class="absolute top-0 right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-se px-1 text-[10px] leading-none font-bold text-white"
                         >
-                            {alerts.unread > 9 ? "9+" : alerts.unread}
+                            {unread > 9 ? "9+" : unread}
                         </span>
                     {/if}
                 </span>

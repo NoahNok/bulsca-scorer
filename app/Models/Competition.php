@@ -7,6 +7,7 @@ use App\Mail\CompetitionAccountInvite;
 use App\Models\Activity\Activity;
 use App\Models\Competition\CompetitionScoringSettings;
 use App\Models\Competition\CompetitionStatusMessage;
+use App\Models\DigitalJudge\Announcement;
 use App\Models\DigitalJudge\JudgeDQSubmission;
 use App\Models\DigitalJudge\JudgeLog;
 use App\Models\Interfaces\IInvitable;
@@ -679,6 +680,11 @@ class Competition extends Model implements IInvitable, IJsonable
             ->using(CompetitionOfficial::class)
             ->withPivot('role', 'last_seen_at')
             ->withTimestamps();
+    }
+
+    public function announcements()
+    {
+        return $this->hasMany(Announcement::class);
     }
 
     /**
