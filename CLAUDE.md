@@ -32,3 +32,17 @@ Organiser pages (competitions, events, entries, results, officials) live in
 - The `frontend-design` plugin is secondary to the style guides: use it only
   for decisions the guides don't cover, and never introduce new fonts, colours
   or components outside the guide's tokens.
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in GitHub Issues on `NoahNok/bulsca-scorer`, managed with the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+The five default triage labels (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: one `GLOSSARY.md` and `docs/adr/` at the repo root. See `docs/agents/domain.md`.
