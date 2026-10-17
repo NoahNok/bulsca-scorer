@@ -20,9 +20,9 @@ _Avoid_: Head ref, head judge
 A message from a Referee to every Official on a competition, e.g. "Heat 4 delayed 10 min".
 _Avoid_: Broadcast, notice, message
 
-**Withdrawn Announcement**:
-An Announcement a Referee has taken back, so Officials no longer see it. Announcements are withdrawn, never edited.
-_Avoid_: Deleted, retracted
+**Withdraw**:
+A Referee taking an Announcement back, so it's gone for everyone. Announcements are withdrawn, never edited.
+_Avoid_: Delete, retract
 
 **Alert**:
 A personal notice to one Official about a DQ or penalty they submitted or need to review.

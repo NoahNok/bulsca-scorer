@@ -9,15 +9,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * A message from a referee to every official on a competition. Never edited,
- * only withdrawn.
+ * only withdrawn, which deletes it.
  */
 class Announcement extends Model
 {
     protected $guarded = [];
-
-    protected $casts = [
-        'withdrawn_at' => 'datetime',
-    ];
 
     public function competition(): BelongsTo
     {
@@ -25,11 +21,6 @@ class Announcement extends Model
     }
 
     public function sender(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function withdrawnBy(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
@@ -48,10 +39,6 @@ class Announcement extends Model
                 'photo' => $this->sender->profilePhotoUrls(),
             ] : null,
             'at' => $this->created_at->toIso8601String(),
-            'withdrawn' => $this->withdrawn_at ? [
-                'by' => $this->withdrawnBy ? ['id' => $this->withdrawnBy->id, 'name' => $this->withdrawnBy->name] : null,
-                'at' => $this->withdrawn_at->toIso8601String(),
-            ] : null,
         ];
     }
 }

@@ -6,7 +6,7 @@
     import { cn } from "@/utils/utils";
     import { Megaphone, X } from "@lucide/svelte";
     import { prefersReducedMotion } from "svelte/motion";
-    import { slide } from "svelte/transition";
+    import { fly, slide } from "svelte/transition";
 
     let { class: className = "" }: { class?: string } = $props();
 
@@ -18,7 +18,11 @@
     {#key banner.id}
         <div
             role="status"
-            transition:slide={{
+            in:fly|global={{
+                y: -12,
+                duration: prefersReducedMotion.current ? 0 : 250,
+            }}
+            out:slide|global={{
                 duration: prefersReducedMotion.current ? 0 : 200,
             }}
             class={cn(

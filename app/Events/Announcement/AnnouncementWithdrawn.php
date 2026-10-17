@@ -11,20 +11,20 @@ use Illuminate\Contracts\Broadcasting\ShouldRescue;
 use Illuminate\Foundation\Events\Dispatchable;
 
 /**
- * Tells every official online in the competition a referee withdrew an
- * announcement, so it disappears. Anyone offline just won't get it in the list.
+ * Tells every official online in the competition a referee withdrew (deleted)
+ * an announcement, so it disappears. Anyone offline just won't get it in the list.
  */
 class AnnouncementWithdrawn implements ShouldBroadcast, ShouldRescue
 {
     use Dispatchable, InteractsWithSockets;
 
     public int $competitionId;
-    public array $announcement;
+    public int $announcementId;
 
     public function __construct(Announcement $announcement)
     {
         $this->competitionId = $announcement->competition_id;
-        $this->announcement = $announcement->payload();
+        $this->announcementId = $announcement->id;
     }
 
     /**
@@ -42,6 +42,6 @@ class AnnouncementWithdrawn implements ShouldBroadcast, ShouldRescue
 
     public function broadcastWith(): array
     {
-        return $this->announcement;
+        return ['id' => $this->announcementId];
     }
 }

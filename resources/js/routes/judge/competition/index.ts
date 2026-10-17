@@ -74,7 +74,7 @@ officials.head = (args: { competition: number | { id: number } } | [competition:
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\AnnouncementController::announcements
-* @see app/Http/Controllers/DigitalJudge/AnnouncementController.php:20
+* @see app/Http/Controllers/DigitalJudge/AnnouncementController.php:18
 * @route '//judge.localhost/v2/{competition}/announcements'
 */
 export const announcements = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -89,7 +89,7 @@ announcements.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\AnnouncementController::announcements
-* @see app/Http/Controllers/DigitalJudge/AnnouncementController.php:20
+* @see app/Http/Controllers/DigitalJudge/AnnouncementController.php:18
 * @route '//judge.localhost/v2/{competition}/announcements'
 */
 announcements.url = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -122,7 +122,7 @@ announcements.url = (args: { competition: number | { id: number } } | [competiti
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\AnnouncementController::announcements
-* @see app/Http/Controllers/DigitalJudge/AnnouncementController.php:20
+* @see app/Http/Controllers/DigitalJudge/AnnouncementController.php:18
 * @route '//judge.localhost/v2/{competition}/announcements'
 */
 announcements.get = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -132,7 +132,7 @@ announcements.get = (args: { competition: number | { id: number } } | [competiti
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\AnnouncementController::announcements
-* @see app/Http/Controllers/DigitalJudge/AnnouncementController.php:20
+* @see app/Http/Controllers/DigitalJudge/AnnouncementController.php:18
 * @route '//judge.localhost/v2/{competition}/announcements'
 */
 announcements.head = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({

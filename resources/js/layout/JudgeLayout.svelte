@@ -60,13 +60,11 @@
         return () => alerts.stop();
     });
 
-    // Announcements from the referees, on the presence channel. Referees also
-    // keep the withdrawn ones
+    // Announcements from the referees, on the presence channel
     $effect(() => {
         if (!presenceCompetitionId || !userId || !userName) return;
         const me = { id: userId, name: userName };
-        const referee = isReferee;
-        untrack(() => announcements.start(presenceCompetitionId, me, referee));
+        untrack(() => announcements.start(presenceCompetitionId, me));
         return () => announcements.stop();
     });
 

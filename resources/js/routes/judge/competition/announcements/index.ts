@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\DigitalJudge\AnnouncementController::store
-* @see app/Http/Controllers/DigitalJudge/AnnouncementController.php:31
+* @see app/Http/Controllers/DigitalJudge/AnnouncementController.php:28
 * @route '//judge.localhost/v2/{competition}/announcements'
 */
 export const store = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -16,7 +16,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\AnnouncementController::store
-* @see app/Http/Controllers/DigitalJudge/AnnouncementController.php:31
+* @see app/Http/Controllers/DigitalJudge/AnnouncementController.php:28
 * @route '//judge.localhost/v2/{competition}/announcements'
 */
 store.url = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -49,7 +49,7 @@ store.url = (args: { competition: number | { id: number } } | [competition: numb
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\AnnouncementController::store
-* @see app/Http/Controllers/DigitalJudge/AnnouncementController.php:31
+* @see app/Http/Controllers/DigitalJudge/AnnouncementController.php:28
 * @route '//judge.localhost/v2/{competition}/announcements'
 */
 store.post = (args: { competition: number | { id: number } } | [competition: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -62,7 +62,7 @@ store.post = (args: { competition: number | { id: number } } | [competition: num
 * @see app/Http/Controllers/DigitalJudge/AnnouncementController.php:47
 * @route '//judge.localhost/v2/{competition}/announcements/{announcement}/withdraw'
 */
-export const withdraw = (args: { competition: number | { id: number }, announcement: string | number | { id: string | number } } | [competition: number | { id: number }, announcement: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const withdraw = (args: { competition: number | { id: number }, announcement: number | { id: number } } | [competition: number | { id: number }, announcement: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: withdraw.url(args, options),
     method: 'post',
 })
@@ -77,7 +77,7 @@ withdraw.definition = {
 * @see app/Http/Controllers/DigitalJudge/AnnouncementController.php:47
 * @route '//judge.localhost/v2/{competition}/announcements/{announcement}/withdraw'
 */
-withdraw.url = (args: { competition: number | { id: number }, announcement: string | number | { id: string | number } } | [competition: number | { id: number }, announcement: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
+withdraw.url = (args: { competition: number | { id: number }, announcement: number | { id: number } } | [competition: number | { id: number }, announcement: number | { id: number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             competition: args[0],
@@ -107,7 +107,7 @@ withdraw.url = (args: { competition: number | { id: number }, announcement: stri
 * @see app/Http/Controllers/DigitalJudge/AnnouncementController.php:47
 * @route '//judge.localhost/v2/{competition}/announcements/{announcement}/withdraw'
 */
-withdraw.post = (args: { competition: number | { id: number }, announcement: string | number | { id: string | number } } | [competition: number | { id: number }, announcement: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+withdraw.post = (args: { competition: number | { id: number }, announcement: number | { id: number } } | [competition: number | { id: number }, announcement: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: withdraw.url(args, options),
     method: 'post',
 })

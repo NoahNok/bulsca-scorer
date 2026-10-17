@@ -15,7 +15,7 @@
         type ViolationAlert,
     } from "@/types/violation";
     import { Link, page } from "@inertiajs/svelte";
-    import { Bell, X } from "@lucide/svelte";
+    import { Bell, Megaphone, X } from "@lucide/svelte";
     import { Dialog } from "bits-ui";
     import { untrack } from "svelte";
     import { fade, fly } from "svelte/transition";
@@ -23,6 +23,7 @@
     let { competition }: { competition: Competition } = $props();
 
     const isReferee = $derived(!!page.props.judge?.isHeadRef);
+    let composeOpen = $state(false);
 
     // remember what was unread when the sheet opened, so the dots show for
     // this viewing, then mark everything read
@@ -33,7 +34,7 @@
         untrack(() => {
             unreadOnOpen = new Set(alerts.items.filter((a) => !a.read));
             unreadAnnouncementsOnOpen = new Set(
-                announcements.live
+                announcements.items
                     .filter((a) => !announcements.isRead(a))
                     .map((a) => a.id),
             );
@@ -98,12 +99,35 @@
                     </div>
 
                     <div class="min-h-0 flex-1 overflow-y-auto p-4">
+                        {#if isReferee || announcements.items.length}
+                            <div class="mb-2 flex items-center justify-between">
+                                <SectionLabel>Announcements</SectionLabel>
+                                {#if isReferee}
+                                    <button
+                                        type="button"
+                                        class="flex cursor-pointer items-center gap-1 text-sm text-gray-600 hover:text-se focus:outline-none focus-visible:ring-2 focus-visible:ring-se"
+                                        onclick={() => (composeOpen = true)}
+                                    >
+                                        <Megaphone size={14} />
+                                        New Announcement
+                                    </button>
+                                {/if}
+                            </div>
+                        {/if}
+
                         {#if isReferee}
-                            <AnnouncementCompose {competition} class="mb-4" />
+                            <AnnouncementCompose
+                                {competition}
+                                bind:open={composeOpen}
+                            />
+                            {#if !announcements.items.length}
+                                <p class="mb-5 text-sm text-gray-400 italic">
+                                    No announcements yet.
+                                </p>
+                            {/if}
                         {/if}
 
                         {#if announcements.items.length}
-                            <SectionLabel class="mb-2">Announcements</SectionLabel>
                             <div class="mb-5 flex flex-col gap-2">
                                 {#each announcements.items as announcement (announcement.id)}
                                     <AnnouncementCard

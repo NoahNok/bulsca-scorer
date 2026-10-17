@@ -20,7 +20,7 @@ type Stored = {
  *
  * They're stored on the server, so the list is fetched on start and every
  * time the presence channel (re)subscribes, which covers anything sent or
- * withdrawn while this device was offline. New and withdrawn ones arrive live
+ * withdrawn (deleted) while this device was offline. New and withdrawn ones arrive live
  * on that same channel. Read and dismissed are per device (localStorage).
  */
 class Announcements {
@@ -30,20 +30,16 @@ class Announcements {
     #read = new SvelteSet<number>();
     #dismissed = new SvelteSet<number>();
 
-    // withdrawn ones only reach Referees, and stay in the sheet greyed out
-    live = $derived(this.items.filter((a) => !a.withdrawn));
+    unread = $derived(this.items.filter((a) => !this.isRead(a)).length);
 
-    unread = $derived(this.live.filter((a) => !this.isRead(a)).length);
-
-    /** The banner: newest one still live that this device hasn't dismissed. */
+    /** The banner: newest one this device hasn't dismissed. */
     banner = $derived(
-        this.live.find(
+        this.items.find(
             (a) => !this.#isMine(a) && !this.#dismissed.has(a.id),
         ) ?? null,
     );
 
     #competitionId: number | null = null;
-    #isReferee = false;
     #channel: Channel | null = null;
     #known = 0;
     // read/dismissed are only pruned against a fetched list, never a partial one
@@ -53,11 +49,10 @@ class Announcements {
     #fetching = false;
     #fetchAgain = false;
 
-    start(competitionId: number, me: Me, isReferee: boolean) {
+    start(competitionId: number, me: Me) {
         this.stop();
         this.#competitionId = competitionId;
         this.#me = me;
-        this.#isReferee = isReferee;
         this.#load();
 
         void this.refresh();
@@ -85,7 +80,6 @@ class Announcements {
         this.#channel = null;
         this.#competitionId = null;
         this.#me = null;
-        this.#isReferee = false;
         this.items = [];
         this.#read.clear();
         this.#dismissed.clear();
@@ -144,7 +138,7 @@ class Announcements {
 
             this.items = items;
             this.#loaded = true;
-            this.#heardAbout(items.filter((a) => !a.withdrawn));
+            this.#heardAbout(items);
             this.#save();
         } catch {
             // offline: keep what we had, the next (re)subscribe tries again
@@ -157,7 +151,7 @@ class Announcements {
 
     markAllRead() {
         if (!this.unread) return;
-        for (const a of this.live) this.#read.add(a.id);
+        for (const a of this.items) this.#read.add(a.id);
         this.#save();
     }
 
@@ -176,18 +170,11 @@ class Announcements {
 
     /**
      * One a Referee withdrew, from the live event or this device's own withdraw
-     * request: Officials lose it, Referees keep it greyed out.
+     * request. It's deleted, so it goes for everyone.
      */
-    withdrawn(announcement: Announcement) {
+    withdrawn(id: number) {
         this.#liveVersion++;
-        const index = this.items.findIndex((a) => a.id === announcement.id);
-        if (index === -1) return;
-
-        if (this.#isReferee) {
-            this.items[index] = announcement;
-        } else {
-            this.items.splice(index, 1);
-        }
+        this.items = this.items.filter((a) => a.id !== id);
     }
 
     #onSubscribed = () => void this.refresh();
@@ -197,7 +184,7 @@ class Announcements {
         this.#heardAbout([announcement]);
     };
 
-    #onWithdrawn = (announcement: Announcement) => this.withdrawn(announcement);
+    #onWithdrawn = (e: { id: number }) => this.withdrawn(e.id);
 
     #add(announcement: Announcement) {
         this.#liveVersion++;

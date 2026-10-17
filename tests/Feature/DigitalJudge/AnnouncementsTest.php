@@ -159,36 +159,25 @@ class AnnouncementsTest extends TestCase
 
         Event::fake([AnnouncementWithdrawn::class]);
 
-        $this->withdraw($this->otherReferee(), $id)->assertOk();
+        $this->withdraw($this->otherReferee(), $id)->assertNoContent();
 
         Event::assertDispatched(AnnouncementWithdrawn::class, function (AnnouncementWithdrawn $event) use ($id) {
             $this->assertSame('presence-judge.officials.' . $this->comp->id, (string) $event->broadcastOn()[0]);
             $this->assertSame('announcement.withdrawn', $event->broadcastAs());
-            $this->assertSame($id, $event->broadcastWith()['id']);
-            $this->assertSame('Other Referee', $event->broadcastWith()['withdrawn']['by']['name']);
+            $this->assertSame(['id' => $id], $event->broadcastWith());
 
             return true;
         });
     }
 
-    public function test_officials_no_longer_see_a_withdrawn_announcement(): void
+    public function test_nobody_sees_a_withdrawn_announcement(): void
     {
         $id = $this->send($this->referee, 'Oops')->json('id');
         $this->send($this->referee, 'Still on');
         $this->withdraw($this->referee, $id);
 
         $this->list($this->official)->assertJsonPath('*.text', ['Still on']);
-    }
-
-    public function test_referees_still_see_who_withdrew_an_announcement(): void
-    {
-        $id = $this->send($this->referee, 'Oops')->json('id');
-        $this->withdraw($this->otherReferee(), $id);
-
-        $this->list($this->referee)
-            ->assertJsonPath('0.text', 'Oops')
-            ->assertJsonPath('0.withdrawn.by.name', 'Other Referee')
-            ->assertJsonStructure([['withdrawn' => ['at']]]);
+        $this->list($this->referee)->assertJsonPath('*.text', ['Still on']);
     }
 
     public function test_an_official_cannot_withdraw_an_announcement(): void
@@ -200,17 +189,16 @@ class AnnouncementsTest extends TestCase
         $this->list($this->official)->assertJsonCount(1);
     }
 
-    public function test_withdrawing_twice_keeps_the_first_withdrawal(): void
+    public function test_an_announcement_can_only_be_withdrawn_once(): void
     {
         $id = $this->send($this->referee)->json('id');
         $this->withdraw($this->referee, $id);
 
         Event::fake([AnnouncementWithdrawn::class]);
 
-        $this->withdraw($this->otherReferee(), $id)->assertOk();
+        $this->withdraw($this->otherReferee(), $id)->assertNotFound();
 
         Event::assertNotDispatched(AnnouncementWithdrawn::class);
-        $this->list($this->referee)->assertJsonPath('0.withdrawn.by.name', 'Referee Person');
     }
 
     public function test_cannot_withdraw_another_competitions_announcement(): void

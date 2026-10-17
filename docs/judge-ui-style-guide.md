@@ -163,8 +163,8 @@ navigable row shows a `ChevronRight` that nudges right on hover.
 | `JudgeTabBar` | The fixed bottom tab bar (Home, DQ/Penalty, Alerts, Online). For the head ref it shows a teal "Referee mode" band along its top edge. Without a `competition` it shows "Account" and "Log out" tabs (the dashboard and `Judge/Account`). Rendered by `JudgeLayout` on every competition page, the dashboard and the account page; pages never render it. |
 | `Avatar` | An official's round avatar: their initials, with their profile photo (`ProfilePhoto` from `types/presence`, a 192px `webp` + `jpg` pair) faded in over them once it has downloaded. The photo is a lazy, low-priority `<picture>`, so slow wifi or a failed download only ever shows initials. Defaults to `size-9`; pass size and text classes in `class` (e.g. `size-16 text-xl`), `dimmed` for offline officials, and overlays such as the presence dot as children. Use it anywhere an official is shown with an avatar. |
 | `OfficialsSheet` | The slide-out from the right listing the competition's officials: an **Online** section (name, role, Active/Idle badge from `presenceStatusBadgeClass`, and a dot on the `Avatar` from `presenceStatusDotClass`; both teal when active, orange when idle after a minute without input or with the tab hidden) and a dimmed **Offline** section for everyone else, fetched from `judge.competition.officials` when it opens. Tapping someone online pokes them. Rendered by `JudgeLayout` and opened by the Online tab via `presence.sheetOpen`; pages never render it. |
-| `AlertsSheet` | The slide-out from the right, opened by the Alerts tab via `alerts.sheetOpen`. At the top, for Referees, `AnnouncementCompose`; then an **Announcements** `SectionLabel` and an `AnnouncementCard` per Announcement (only shown when there are any); then a **DQ/Penalty** `SectionLabel` and the history of live DQ/Penalty alerts, newest first: code tile, a sentence (`alertText`), time ago and status badge; tapping a row opens the submission. Alerts come from `lib/alerts.svelte`: judges get their own submissions' status changes, the referee also gets new and resubmitted ones. Each also pops a toast with a "View" link. The alert history is per device (localStorage) and only covers alerts received while online. Opening the sheet marks alerts and Announcements read. Rendered by `JudgeLayout`; pages never render it. |
-| `AnnouncementBanner` | The newest Announcement this device hasn't dismissed, pinned (`sticky`) under the header on every competition page: an amber panel (`announcementBannerClass`, `rounded-xl border p-3 shadow-sm`) with a Megaphone, a `font-archivo` "Announcement · Sam · 2 min ago" kicker, the text and an X to dismiss. Tapping it opens the Alerts sheet. `role="status"`; no slide under `prefers-reduced-motion`. Rendered by `JudgeHeaderLayout`; pages never render it. Announcements never toast: toasts auto-dismiss, and an Announcement stays until dismissed. |
+| `AlertsSheet` | The slide-out from the right, opened by the Alerts tab via `alerts.sheetOpen`. At the top, an **Announcements** `SectionLabel` (for Referees with a quiet "New Announcement" text button beside it that opens `AnnouncementCompose`, and "No announcements yet." when empty) and an `AnnouncementCard` per Announcement; then a **DQ/Penalty** `SectionLabel` and the history of live DQ/Penalty alerts, newest first: code tile, a sentence (`alertText`), time ago and status badge; tapping a row opens the submission. Alerts come from `lib/alerts.svelte`: judges get their own submissions' status changes, the referee also gets new and resubmitted ones. Each also pops a toast with a "View" link. The alert history is per device (localStorage) and only covers alerts received while online. Opening the sheet marks alerts and Announcements read. Rendered by `JudgeLayout`; pages never render it. |
+| `AnnouncementBanner` | The newest Announcement this device hasn't dismissed, pinned (`sticky`) under the header on every competition page: an amber panel (`announcementBannerClass`, `rounded-xl border p-3 shadow-sm`) with a Megaphone, a `font-archivo` "Announcement · Sam · 2 min ago" kicker, the text and an X to dismiss. Tapping it opens the Alerts sheet. `role="status"`; it flies down into place (`in:fly|global`, `y: -12`) and slides away when dismissed, with no motion under `prefers-reduced-motion`. Rendered by `JudgeHeaderLayout`; pages never render it. Announcements never toast: toasts auto-dismiss, and an Announcement stays until dismissed. |
 | `PokeAnimation` | The full-screen "{name} says hi! 👋" lifebuoy animation played when someone pokes you (the 👋 waves once the caption is in). Rendered by `JudgeLayout`; caption only under `prefers-reduced-motion`. |
 | `Spinner` | Loading. Centre it: `<div class="flex justify-center py-6"><Spinner /></div>`. |
 | `Stepper` / `Step` | Multi-step flows. Steps stay locked until previous ones complete; call `setTitle()` with the chosen value and `complete()` from the step's `step_controls`. |
@@ -177,12 +177,13 @@ Components that only make sense for one feature go here, e.g.
 `ViolationSubmissionCard`, `ViolationTimeline` (a submission's status history,
 dot colours from `timelineDotClass`; a SUBMITTED entry coming from REJECTED reads "Resubmitted"), and `Judging/SERC/JudgeMarkingPoints` /
 `MarkingPoint` (the SERC marking card and its mark buttons),
-`Judging/Announcement/AnnouncementCompose` (the Referees' compose box: a
-**Privileged actions** panel with a soft textarea, a "n/280" hint and a full-width
-primary `Button`, confirmed first since Announcements can't be edited) and
-`AnnouncementCard` (sender `Avatar`, text, time ago, a new dot; for Referees a quiet
-"Withdraw" button, confirmed, and once withdrawn the **Voided** look with "Withdrawn
-by X · 10:42", from `announcementCardClass` in `types/announcement.ts`), and
+`Judging/Announcement/AnnouncementCompose` (the Referees' compose modal, a
+`GenericDialog` with `bind:open`: a soft textarea with a "n/280" hint, a `bg-gray-50`
+`Info` note that everyone sees it and it can be withdrawn but not edited, and a "Send"
+`Button`; the modal is the confirm step, so there's no extra `confirm()`) and
+`AnnouncementCard` (sender `Avatar`, text, time ago, a new dot and `bg-se/5` tint from
+`announcementCardClass` in `types/announcement.ts`; for Referees a quiet "Withdraw"
+button, confirmed, which deletes it for everyone), and
 `Judging/ConfirmResults/*` for the head ref's Confirm Results pages:
 `ConfirmResultsSummary` (fact strip + amber warning panel), `HeatResultsCard`
 (a speed heat: lane, OOF, time, violations), `SERCEntityResultsCard` (one team's
@@ -302,9 +303,6 @@ auth pages ("Create an account", "Forgot password?", "Back to sign in") are quie
 Group role-specific actions (e.g. head referee) in their own panel at the
 bottom: `rounded-xl border border-se/40 bg-se/5 p-4`, an icon + `font-archivo uppercase`
 title, a sentence of guidance if needed, then side-by-side `ConfirmDialog`s with `triggerClass="w-full"`.
-The same panel can hold a small form when the role's action is the point of the
-screen (e.g. `AnnouncementCompose` at the top of the Alerts sheet): the field(s), then
-one full-width primary `Button` that asks with `confirm()` before posting.
 
 ### Forms
 
@@ -338,8 +336,8 @@ one full-width primary `Button` that asks with `confirm()` before posting.
   the presence channel (re)subscribes, and `announcement.sent` / `announcement.withdrawn`
   arrive live on `judge.officials.{id}`. Read `announcements.live`, `.unread` and
   `.banner`. Read and dismissed are per device (localStorage); something new buzzes once
-  (`navigator.vibrate?.(200)`), never for your own. Officials don't get withdrawn ones,
-  Referees keep them greyed out.
+  (`navigator.vibrate?.(200)`), never for your own. Withdrawing deletes it, so it
+  disappears for everyone.
 - **Presence** (who's online): `presence` from `lib/presence.svelte.ts`, joined by
   `JudgeLayout` for the current competition (`judge.officials.{id}` presence channel,
   authorised in `routes/channels.php`). Read `presence.sorted`, `presence.count` and
