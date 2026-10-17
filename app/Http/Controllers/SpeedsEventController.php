@@ -141,7 +141,8 @@ class SpeedsEventController extends Controller
             $id = $row->id;
             $sr = $results[$id];
 
-            $originalResult = $sr->result;
+            // Read before any DQ changes, as DNS, DNF and OOT are entered as DQs
+            $before = $sr->getHistoryTime();
 
 
 
@@ -196,6 +197,7 @@ class SpeedsEventController extends Controller
 
                 $sr->result = null;
                 $sr->save();
+                $this->recordResultChange($comp, $event, $sr, $before);
                 continue;
             }
 
@@ -203,11 +205,13 @@ class SpeedsEventController extends Controller
             if (str_starts_with($row->values->result, 'DN')) {
                 $code = str_starts_with($row->values->result, 'DNS') ? 99904 : 99915;
                 $event->addEntityDisqualification($sr->entity, $code);
+                $this->recordResultChange($comp, $event, $sr, $before);
                 continue;
             }
 
             if (str_starts_with($row->values->result, 'OOT')) {
                 $event->addEntityDisqualification($sr->entity, 99901);
+                $this->recordResultChange($comp, $event, $sr, $before);
                 continue;
             }
 
@@ -259,20 +263,7 @@ class SpeedsEventController extends Controller
                 $sr->save();
             }
 
-            $newResult = $sr->result;
-
-            if ($originalResult != $newResult) {
-                $changed = [
-                    'result' => [
-                        'old' => $originalResult ? SpeedResult::prettyTime($originalResult) : "-",
-                        'new' => SpeedResult::prettyTime($newResult),
-                    ],
-                ];
-
-                $sr->recordActivity('SPEED_RESULT_UPDATED', "Result changed from " . $changed['result']['old'] . " to " . $changed['result']['new'], context: [
-                    'changes' => $changed,
-                ], related: [$event, $sr->entity, $comp]);
-            }
+            $this->recordResultChange($comp, $event, $sr, $before);
         }
 
 
@@ -286,6 +277,17 @@ class SpeedsEventController extends Controller
 
 
         session()->flash('success', 'Results saved');
+    }
+
+    private function recordResultChange(Competition $comp, CompetitionSpeedEvent $event, SpeedResult $sr, string $before): void
+    {
+        $after = $sr->getHistoryTime();
+
+        if ($before === $after) return;
+
+        $sr->recordActivity('SPEED_RESULT_UPDATED', "Time changed from {$before} to {$after}", context: [
+            'changes' => ['result' => ['old' => $before, 'new' => $after]],
+        ], related: [$event, $sr->entity, $comp]);
     }
 
     public function delete(Competition $comp, CompetitionSpeedEvent $event, Request $request)

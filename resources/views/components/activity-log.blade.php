@@ -1,5 +1,18 @@
 <div class="flex-col space-y-3 mb-3">
 
+    @if (count($chips) > 0)
+        <div class="flex flex-wrap items-center gap-2">
+            <p class="font-semibold uppercase text-xs!">Showing activity for</p>
+            @foreach ($chips as $chip)
+                <span class="badge badge-info inline-flex items-center gap-1">
+                    {{ $chip['label'] }}
+                    <a href="{{ $chip['remove_url'] }}" class="hover:opacity-75"
+                        aria-label="Remove filter {{ $chip['label'] }}">&times;</a>
+                </span>
+            @endforeach
+        </div>
+    @endif
+
     <div x-data="{
         filters: {
             activity: '{{ request()->query('activity', '') }}'.split('|'),

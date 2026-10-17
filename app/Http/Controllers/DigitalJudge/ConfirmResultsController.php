@@ -94,6 +94,8 @@ class ConfirmResultsController extends Controller
         $event->digitalJudgeConfirmed = true;
         $event->save();
 
+        $event->recordActivity('RESULTS_CONFIRMED', "{$event->getName()} results confirmed by " . auth()->user()->name, related: [$event, $event->getCompetition]);
+
         return response()->json(['confirmed' => true]);
     }
 

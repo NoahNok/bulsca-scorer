@@ -92,6 +92,25 @@ class SpeedResult extends Resultable
     }
 
     /**
+     * The Time as History shows it: DNF, DNS or OOT when entered in place of a time, otherwise the
+     * full time. Only those three DQs count, so a DQ issued for something else still shows the time.
+     */
+    public function getHistoryTime(): string
+    {
+        $code = $this->disqualifications()->whereIn('code', [99915, 99904, 99901])->value('code');
+
+        if ($code) {
+            return match ($code) {
+                99915 => 'DNF',
+                99904 => 'DNS',
+                99901 => 'OOT',
+            };
+        }
+
+        return $this->result === null ? '—' : (string) self::prettyTime($this->result);
+    }
+
+    /**
      * Returns the result as either the time string (XX:XX.XX) or respective DNx or OOT code as required
      * @return void
      */

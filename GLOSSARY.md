@@ -27,3 +27,21 @@ _Avoid_: Delete, retract
 **Alert**:
 A personal notice to one Official about a DQ or penalty they submitted or need to review.
 _Avoid_: Notification
+
+### Results
+
+**Mark**:
+The score a SERC judge gives one team on one marking point.
+_Avoid_: Result, score
+
+**Time**:
+A team's recorded time in a speed event.
+_Avoid_: Result
+
+**Place**:
+A team's position in a heat's order of finish (OOF).
+_Avoid_: OOF (when meaning the value)
+
+**History**:
+The record of who entered or changed a Mark, Time or Place, and when, used to settle disputes after results go out.
+_Avoid_: Audit trail, timeline, log

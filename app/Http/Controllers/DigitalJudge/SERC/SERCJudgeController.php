@@ -308,9 +308,8 @@ class SERCJudgeController extends Controller
         $notes = $data['notes'] ?? [];
 
         // Only allow writing marks/notes for the judges selected in this session, and only their own marking points
-        $allowedMarkingPoints = DigitalJudge::getClientJudges()
-            ->where('serc', $serc->id)
-            ->mapWithKeys(fn($judge) => [$judge->id => $judge->getMarkingPoints->pluck('id')->all()]);
+        $clientJudges = DigitalJudge::getClientJudges()->where('serc', $serc->id)->keyBy('id');
+        $allowedMarkingPoints = $clientJudges->map(fn($judge) => $judge->getMarkingPoints->pluck('id')->all());
 
 
         // validated payload from
@@ -329,14 +328,23 @@ class SERCJudgeController extends Controller
             if (!$allowedMarkingPoints->has($judge_id)) abort(403);
         }
 
-        foreach ($judges as $judge_id => $marking_points) {
+        $changes = [];
 
+        foreach ($judges as $judge_id => $marking_points) {
+            $judge = $clientJudges[$judge_id];
 
             foreach ($marking_points as $marking_point_id => $mark) {
 
                 $result = SERCResult::firstOrNew(['marking_point' => $marking_point_id, 'entity_type' => $entity->getMorphClass(), 'entity_id' => $entity->id]);
+                $was = $result->result;
                 $result->result = $mark;
                 $result->save();
+
+                // null == 0 in PHP, so a first mark of 0 needs checking for explicitly
+                if ($was === null || (float) $was != (float) $mark) {
+                    $mp = $judge->getMarkingPoints->find($marking_point_id);
+                    $changes[] = ['marking_point' => $mp->id, 'judge' => $judge->id, 'name' => "{$judge->name} - {$mp->name}", 'old' => $was, 'new' => $mark];
+                }
             }
 
             // $judgeNote = JudgeNote::firstOrNew(['judge' => $judge_id, 'entity_type' => $entity->getMorphClass(), 'entity_id' => $entity->id]);
@@ -360,6 +368,15 @@ class SERCJudgeController extends Controller
                 $judgeNote->note = $note;
                 $judgeNote->save();
             }
+        }
+
+        if (count($changes) > 0) {
+            $overridden = collect($changes)->contains(fn($change) => $change['old'] !== null);
+            $verb = $overridden ? 'overridden' : 'marked';
+
+            $serc->recordActivity('SERC_MARKED', "{$entity->getName($competition)}'s marks were {$verb} by {$request->user()->name}", context: [
+                'changes' => $changes,
+            ], related: [$serc, $entity, $competition]);
         }
     }
 

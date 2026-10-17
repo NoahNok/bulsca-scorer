@@ -41,7 +41,8 @@ class Activity extends Model
 
         return match ($this->activity) {
 
-            "SERC_RESULT_UPDATED", "SERC_MARKED" => view('components.activity-log.context.serc', ['context' => $this->context]),
+            "SERC_RESULT_UPDATED", "SERC_MARKED" => view('components.activity-log.context.changes', ['context' => $this->context, 'label' => 'Marking Point', 'value' => 'Mark']),
+            "OOF_MARKED" => view('components.activity-log.context.changes', ['context' => $this->context, 'label' => 'Team', 'value' => 'Place']),
             default => null
         };
     }

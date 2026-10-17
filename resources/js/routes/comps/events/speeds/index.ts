@@ -320,7 +320,7 @@ editPost.post = (args: { comp: number | { id: number }, event: number | { id: nu
 
 /**
 * @see \App\Http\Controllers\SpeedsEventController::scoringSettings
-* @see app/Http/Controllers/SpeedsEventController.php:311
+* @see app/Http/Controllers/SpeedsEventController.php:313
 * @route '/comps/{comp}/events/speeds/{event}/scoring-settings'
 */
 export const scoringSettings = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -335,7 +335,7 @@ scoringSettings.definition = {
 
 /**
 * @see \App\Http\Controllers\SpeedsEventController::scoringSettings
-* @see app/Http/Controllers/SpeedsEventController.php:311
+* @see app/Http/Controllers/SpeedsEventController.php:313
 * @route '/comps/{comp}/events/speeds/{event}/scoring-settings'
 */
 scoringSettings.url = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -365,7 +365,7 @@ scoringSettings.url = (args: { comp: number | { id: number }, event: number | { 
 
 /**
 * @see \App\Http\Controllers\SpeedsEventController::scoringSettings
-* @see app/Http/Controllers/SpeedsEventController.php:311
+* @see app/Http/Controllers/SpeedsEventController.php:313
 * @route '/comps/{comp}/events/speeds/{event}/scoring-settings'
 */
 scoringSettings.get = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -375,7 +375,7 @@ scoringSettings.get = (args: { comp: number | { id: number }, event: number | { 
 
 /**
 * @see \App\Http\Controllers\SpeedsEventController::scoringSettings
-* @see app/Http/Controllers/SpeedsEventController.php:311
+* @see app/Http/Controllers/SpeedsEventController.php:313
 * @route '/comps/{comp}/events/speeds/{event}/scoring-settings'
 */
 scoringSettings.head = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({

@@ -100,7 +100,7 @@ class EventJudgeController extends Controller
             $results[$entity_id] = $sr;
         }
 
-        DB::transaction(fn() => $this->saveTimes($event, $marks, $results));
+        DB::transaction(fn() => $this->saveTimes($competition, $event, $heat, $marks, $results));
 
         return response()->json(['hasNextHeat' => $heat < $event->getMaxHeats()]);
     }
@@ -109,63 +109,80 @@ class EventJudgeController extends Controller
      * @param array<int, string> $marks entity_id => time entered
      * @param array<int, SpeedResult> $results entity_id => its result for this event
      */
-    private function saveTimes(CompetitionSpeedEvent $event, array $marks, array $results): void
+    private function saveTimes(Competition $competition, CompetitionSpeedEvent $event, int $heat, array $marks, array $results): void
     {
         foreach ($marks as $entity_id => $value) {
             $sr = $results[$entity_id];
-            $entity = $sr->entity;
 
-            if (str_starts_with($value, "DN")) {
-                $event->clearEntityDisqualifications($entity);
-                $code = str_starts_with($value, 'DNS') ? 99904 : 99915;
-                $event->addEntityDisqualification($sr->entity, $code);
-                $sr->result = 3599000;
-                $sr->save();
-                continue;
-            }
+            $from = $sr->getHistoryTime();
 
-            if (str_starts_with($value, "OOT")) {
-                $event->clearEntityDisqualifications($entity);
-                $event->addEntityDisqualification($sr->entity, 99901);
-                $sr->result = 3599000;
-                $sr->save();
-                continue;
-            }
+            if (!$this->applyTime($event, $sr, $value)) continue;
 
+            $to = $sr->getHistoryTime();
 
-            $fromResult = $sr->getResultAsString();
-            // See if time value starts with DNF
-            $minSecSplit = explode(":", $value);
+            if ($from === $to) continue;
 
-            if ($event->getName() == "Rope Throw" && count($minSecSplit) == 1) {
-                $sr->result = $minSecSplit[0];
-            } else {
-
-                if (count($minSecSplit) != 2) {
-                    continue;
-                }
-
-                $min = $minSecSplit[0];
-                $secMillisSplit = explode(".", $minSecSplit[1]);
-                if (count($secMillisSplit) != 2) {
-                    continue;
-                }
-
-                # Judge side no uses centiseconds, so multiply by 10 for millis
-                if (strlen($secMillisSplit[1]) == 2) {
-                    $secMillisSplit[1] = $secMillisSplit[1] * 10;
-                }
-
-                $totalMillis = $min * 60000 + $secMillisSplit[0] * 1000 + $secMillisSplit[1];
-
-
-                $sr->result = $totalMillis;
-            }
-
-
-
-            $sr->save();
+            $sr->recordActivity('SPEED_RESULT_MARKED', "{$sr->entity->getName($competition)}: {$from} → {$to}", context: [
+                'heat' => $heat,
+                'changes' => ['result' => ['old' => $from, 'new' => $to]],
+            ], related: [$event, $sr->entity, $competition]);
         }
+    }
+
+    /**
+     * Saves a time, or a DNS, DNF or OOT entered in its place. False when the value can't be read.
+     */
+    private function applyTime(CompetitionSpeedEvent $event, SpeedResult $sr, string $value): bool
+    {
+        $entity = $sr->entity;
+
+        if (str_starts_with($value, "DN")) {
+            $event->clearEntityDisqualifications($entity);
+            $code = str_starts_with($value, 'DNS') ? 99904 : 99915;
+            $event->addEntityDisqualification($sr->entity, $code);
+            $sr->result = 3599000;
+            $sr->save();
+            return true;
+        }
+
+        if (str_starts_with($value, "OOT")) {
+            $event->clearEntityDisqualifications($entity);
+            $event->addEntityDisqualification($sr->entity, 99901);
+            $sr->result = 3599000;
+            $sr->save();
+            return true;
+        }
+
+        $minSecSplit = explode(":", $value);
+
+        if ($event->getName() == "Rope Throw" && count($minSecSplit) == 1) {
+            $sr->result = $minSecSplit[0];
+        } else {
+
+            if (count($minSecSplit) != 2) {
+                return false;
+            }
+
+            $min = $minSecSplit[0];
+            $secMillisSplit = explode(".", $minSecSplit[1]);
+            if (count($secMillisSplit) != 2) {
+                return false;
+            }
+
+            # Judge side no uses centiseconds, so multiply by 10 for millis
+            if (strlen($secMillisSplit[1]) == 2) {
+                $secMillisSplit[1] = $secMillisSplit[1] * 10;
+            }
+
+            $totalMillis = $min * 60000 + $secMillisSplit[0] * 1000 + $secMillisSplit[1];
+
+
+            $sr->result = $totalMillis;
+        }
+
+        $sr->save();
+
+        return true;
     }
 
     // ORDER OF FINISH
@@ -225,24 +242,40 @@ class EventJudgeController extends Controller
 
 
 
+        $changes = [];
+        $changedEntities = [];
+
         foreach ($data as $res) {
             // This will exist as the request validator ensures it will
             $entity = $event->getScorableEntity()::find($res['entity']['id']);
 
             $heatlane = $event->getHeats()->whereMorphedTo('entity', $entity)->first();
 
+            $eOof = EventOOF::firstOrNew(['heat_lane' => $heatlane->id, 'event' => $event->id]);
+            $was = $eOof->oof;
+
             // A lane sent without a place has been cleared, so drop any place
             // saved previously rather than keeping it alongside the new ones
             if (!isset($res['oof']) || !is_numeric($res['oof'])) {
                 EventOOF::where(['heat_lane' => $heatlane->id, 'event' => $event->id])->delete();
-                continue;
+                $now = null;
+            } else {
+                $eOof->oof = $res['oof'];
+                $eOof->save();
+                $now = $eOof->oof;
             }
 
-            $eOof = EventOOF::firstOrNew(['heat_lane' => $heatlane->id, 'event' => $event->id]);
+            if ($was != $now) {
+                $changes[] = ['entity' => $entity->id, 'name' => $entity->getName($competition), 'old' => $was ?? '—', 'new' => $now ?? '—'];
+                $changedEntities[] = $entity;
+            }
+        }
 
-            $eOof->oof = $res['oof'];
-
-            $eOof->save();
+        if (count($changes) > 0) {
+            $event->recordActivity('OOF_MARKED', "Heat {$heat}: " . count($changes) . (count($changes) > 1 ? ' places changed' : ' place changed'), context: [
+                'heat' => $heat,
+                'changes' => $changes,
+            ], related: [$event, ...$changedEntities, $competition]);
         }
 
         return response()->json(['hasNextHeat' => $heat < $event->getMaxHeats()]);

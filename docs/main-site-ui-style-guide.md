@@ -100,6 +100,10 @@ Pages set `@section('title')` and fill `@section('content')`.
   filter that submits `onchange`. Show "Showing X of Y" and a "Clear" link
   while a filter is on, and an empty state for no matches. The controller
   reads both from the query string and ignores unknown filter values.
+- **Show a filter that came from a link** as removable chips above the list: a
+  `badge badge-info` per filter with a `&times;` link that drops it from the
+  query string, under a "Showing activity for" label (see
+  `components/activity-log.blade.php`).
 - **CSV export:** a `se-btn` link next to the page heading to a `…/export`
   route that returns `response()->streamDownload()` with `fputcsv`. Pass the
   page's current filters through so the export matches what's on screen.

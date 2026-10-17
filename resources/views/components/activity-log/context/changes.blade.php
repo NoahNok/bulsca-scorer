@@ -7,9 +7,9 @@
         <table>
             <thead>
                 <tr>
-                    <th>Marking Point</th>
-                    <th>Old Score</th>
-                    <th>New Score</th>
+                    <th>{{ $label }}</th>
+                    <th>Old {{ $value }}</th>
+                    <th>New {{ $value }}</th>
                 </tr>
             </thead>
             <tbody>
