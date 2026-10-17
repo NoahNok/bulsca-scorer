@@ -1,13 +1,4 @@
-@php
-    $link = '#';
-    if ($event instanceof App\Models\SERC) {
-        $link = route('comps.events.sercs.view', [$event->competition, $event->id]);
-    } else {
-        $link = route('comps.events.speeds.view', [$event->competition, $event->id]);
-    }
-@endphp
-
-<a href="{{ $link }}" class="flex items-center space-x-3 tooltip" title="{{ $is_serc ? 'SERC' : 'Speed Event' }}">
+<div class="flex items-center space-x-3 tooltip" title="{{ $is_serc ? 'SERC' : 'Speed Event' }}">
     <h4 class="!mb-0 mt-[2px]">{{ $name }}</h4>
     @if ($is_serc)
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5">
@@ -23,4 +14,4 @@
         </svg>
     @endif
 
-</a>
+</div>

@@ -56,14 +56,29 @@ class ActivityRelation extends Model
         };
     }
 
+    /**
+     * The page for the related item, if it has one, shown as a link next to it in the log
+     */
+    public function link(): ?string
+    {
+        $related = $this->related;
+
+        return match (true) {
+            $related instanceof Competition => route('comps.view', $related),
+            $related instanceof SERC => route('comps.events.sercs.view', [$related->competition, $related->id]),
+            $related instanceof CompetitionSpeedEvent => route('comps.events.speeds.view', [$related->competition, $related->id]),
+            default => null,
+        };
+    }
+
     public function render(Activity $activity)
     {
         $related = $this->related;
 
 
         return match (true) {
-            $related instanceof Competition => view('components.activity-log.competition', ['name' => $related->name, 'org' => $related->getOrganisation, 'link' => route('comps.view', $related)]),
-            $related instanceof Event => view('components.activity-log.event', ['name' => $related->getName(), 'is_serc' => $related instanceof SERC, 'event' => $related]),
+            $related instanceof Competition => view('components.activity-log.competition', ['name' => $related->name, 'org' => $related->getOrganisation]),
+            $related instanceof Event => view('components.activity-log.event', ['name' => $related->getName(), 'is_serc' => $related instanceof SERC]),
             $related instanceof Entity => view('components.activity-log.entity', ['name' => $related->getName(), 'type' => class_basename($related)]),
             $related instanceof Violation => view('components.activity-log.violation', ['name' => "{$related}", 'description' => $related->getMessage()]),
             $related instanceof JudgeDQSubmission => view('components.activity-log.violation-submission', ['name' => "{$related->name} ({$related->position})", 'appealed' => $related->appealed]),

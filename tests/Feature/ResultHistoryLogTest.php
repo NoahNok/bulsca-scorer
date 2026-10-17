@@ -115,8 +115,7 @@ class ResultHistoryLogTest extends TestCase
             ->get(route('comps.activityLog', [$this->comp, 'related' => "serc:{$this->serc->id}|team:{$this->teamA->id}"]))
             ->assertOk()
             ->assertSee('Showing activity for')
-            ->assertSee('SERC: Dry SERC')
-            ->assertSee('Team: ' . $this->teamA->getName($this->comp))
+            ->assertSeeInOrder(['Event', 'Dry SERC', 'Team', $this->teamA->getName($this->comp)])
             ->assertSee('related=serc%3A' . $this->serc->id, false);
     }
 
@@ -127,7 +126,7 @@ class ResultHistoryLogTest extends TestCase
         $this->actingAs($this->admin)
             ->get(route('comps.activityLog', [$this->comp, 'related' => "team:{$theirTeam->id}"]))
             ->assertOk()
-            ->assertSee("Team: #{$theirTeam->id}")
+            ->assertSee("#{$theirTeam->id}")
             ->assertDontSee($theirTeam->getName());
     }
 

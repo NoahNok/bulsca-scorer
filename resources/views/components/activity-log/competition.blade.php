@@ -1,4 +1,4 @@
-<a href="{{ $link }}" class="flex items-center space-x-3 tooltip" title="Competition">
+<div class="flex items-center space-x-3 tooltip" title="Competition">
     <h4 class="!mb-0 mt-[2px]">{{ $name }}</h4>
     @if ($org)
         <div class="size-5 rounded-full flex items-center justify-center relative tooltip z-2"
@@ -16,4 +16,4 @@
             </svg>
         </div>
     @endif
-</a>
+</div>
