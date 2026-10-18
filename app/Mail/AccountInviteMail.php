@@ -34,8 +34,11 @@ class AccountInviteMail extends Mailable
      */
     public function envelope(): Envelope
     {
+        $app = config('app.name');
+        $name = $this->too->name ?? null;
+
         return new Envelope(
-            subject: 'Account Invite Mail',
+            subject: $name ? "You've been invited to join {$name} on {$app}" : "You've been invited to join {$app}",
         );
     }
 

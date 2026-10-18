@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Mail\CompetitionAccountCreated;
-use App\Mail\CompetitionAccountInvite;
 use App\Models\Activity\Activity;
 use App\Models\Competition\CompetitionScoringSettings;
 use App\Models\Competition\CompetitionStatusMessage;

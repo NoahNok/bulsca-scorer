@@ -155,6 +155,26 @@ Pages set `@section('title')` and fill `@section('content')`.
 - Don't modify `public/js/editable-table.js`. Layer page-specific table
   behaviour inline in the Blade view.
 
+## Emails
+
+- Write every email as Markdown mail: `markdown: 'mail.<name>'` in the
+  Mailable, with the view wrapped in `<x-mail::message>`. Don't send raw
+  `view:` emails, because they skip the shared template.
+- The template lives in `resources/views/vendor/mail` and is styled by
+  `html/themes/default.css`. The header shows the logo and the app name on a
+  white card with a teal top bar, and the footer has one generic line naming
+  the sender, which suits every email, including Laravel's password reset.
+- Emails are light only (`color-scheme: light`). Don't add dark-mode styles.
+  Gmail and desktop Outlook may darken the email anyway, and the logo still
+  reads on dark backgrounds.
+- Buttons are near-black (`#111827`) with white text. Links use dark teal
+  (`#00786f`). Teal-400 (`#00d5be`) is only for accents such as the card bar
+  and panel borders, because text on it is too faint.
+- The logo is `public/email-logo.png`, a copy of `apple-touch-icon.png`.
+  Email clients don't render SVG. If the favicon changes, copy it again.
+- Image URLs come from `asset()`, so `APP_URL` must be the public URL in
+  production, or the logo won't load.
+
 ## Checklist for a new page
 
 1. Extend the right layout. If it's a new area, add a tab with the matching

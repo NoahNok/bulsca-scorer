@@ -21,7 +21,7 @@
 {{-- Footer --}}
 <x-slot:footer>
 <x-mail::footer>
-© {{ date('Y') }} {{ config('app.name') }}. @lang('All rights reserved.')
+You're receiving this email from [{{ config('app.name') }}]({{ config('app.url') }}).
 </x-mail::footer>
 </x-slot:footer>
 </x-mail::layout>
