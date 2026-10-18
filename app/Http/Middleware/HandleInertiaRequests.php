@@ -50,7 +50,7 @@ class HandleInertiaRequests extends Middleware
             'judge' => [
                 'isHeadRef' => $competition instanceof Competition ? DigitalJudge::isClientHeadJudge($competition) : false
             ],
-            'env_local' => env('APP_ENV') == 'local'
+            'env_local' => app()->environment('local')
             //
         ];
     }

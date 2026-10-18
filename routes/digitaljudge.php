@@ -147,7 +147,7 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
                 });
             });
 
-            if (env('APP_ENV') == 'local') {
+            if (app()->environment('local')) {
                 Route::get('switchreferee/{competition}', [JudgeController::class, 'toggleReferee'])->name('judge.referee-toggle');
             }
         });
@@ -271,7 +271,7 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
 
 
 
-    if (env('APP_ENV') == 'local') {
+    if (app()->environment('local')) {
         Route::get('toggle-head-ref', function () {
             DigitalJudge::setClientHeadJudge(!DigitalJudge::isClientHeadJudge());
             return redirect()->back();

@@ -56,6 +56,18 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Subdomain Base
+    |--------------------------------------------------------------------------
+    |
+    | The base domain the judge, results, live, stats and whatif subdomains
+    | are mounted on, e.g. "example.com" gives "judge.example.com".
+    |
+    */
+
+    'subdomain_base' => env('APP_SUBDOMAIN_BASE'),
+
     'asset_url' => env('ASSET_URL'),
 
     /*
