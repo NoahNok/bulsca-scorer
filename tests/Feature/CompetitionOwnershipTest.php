@@ -187,7 +187,7 @@ class CompetitionOwnershipTest extends TestCase
                 'swap_from' => $drawA->id,
                 'swap_to' => $drawB->id,
             ])
-            ->assertStatus(400);
+            ->assertNotFound();
 
         $this->assertSame(1, $drawA->fresh()->draw);
     }

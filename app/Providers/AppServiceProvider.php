@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
-use Laravel\Telescope\TelescopeServiceProvider;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,12 +24,7 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
-    {
-        if ($this->app->environment('local')) {
-            $this->app->register(TelescopeServiceProvider::class);
-        }
-    }
+    public function register() {}
 
     /**
      * Bootstrap any application services.

@@ -78,13 +78,15 @@
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}',
-    
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(this.tanks)
-            }).then(resp => resp.json()).then(
-                data => {
-                    window.location.href = '{{ route('comps.heats_and_draws', $comp) }}'
-                })
+                body: JSON.stringify({ tanks: this.tanks })
+            }).then(async response => {
+                const data = await response.json()
+                if (!response.ok) throw new Error(data.message || 'Unable to save tank assignments.')
+                window.location.href = '{{ route('comps.heats_and_draws', $comp) }}'
+            }).catch(error => showAlert(error.message || 'Unable to save tank assignments.'))
         }
     }">
 
@@ -92,7 +94,7 @@
             <h1>Tanks</h1>
             <button class="se-btn se-btn-success" @click="save">Save</button>
         </div>
-        <p>Select one or more brackets and then select a tank to add them to it. Click 'Add Tank' to add aditional tanks!
+        <p>Select one or more brackets and then select a tank to add them to it. Click 'Add Tank' to add additional tanks!
         </p>
 
         <br>
@@ -105,7 +107,7 @@
                     <span x-text="bracket.name"></span>
                     <div class="flex items-center "><span x-text="bracket.count"></span><svg
                             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="size-[0.875rem]">
+                            stroke="currentColor" class="size-3.5">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
                         </svg>
@@ -145,7 +147,7 @@
                                 <p x-text="bracket.name"></p>
                                 <div class="flex items-center "><span x-text="bracket.count"></span><svg
                                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="size-[0.875rem]">
+                                        stroke-width="1.5" stroke="currentColor" class="size-3.5">
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
                                     </svg>

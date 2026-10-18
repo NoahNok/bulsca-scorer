@@ -237,6 +237,8 @@ Route::middleware(['auth', 'not.judge-only'])->group(function () {
 
                         Route::get('/mark-splits', [SERCController::class, 'markSplits'])->name('comps.events.sercs.mark-splits');
                         Route::get('/mark-splits/{judge}', [SERCController::class, 'loadMarkSplit'])->name('comps.events.sercs.mark-splits.judge');
+
+                        Route::get('/restriction-map', [SERCController::class, 'restrictionMap'])->name('comps.events.sercs.restriction-map');
                     });
                 });
             });
@@ -298,6 +300,9 @@ Route::middleware(['auth', 'not.judge-only'])->group(function () {
                 Route::get('{event}/reset', [HeatController::class, 'reset'])->name('comps.heats_and_draws.heats.reset');
                 Route::post('{event}/swap', [HeatController::class, 'swap'])->name('comps.heats_and_draws.heats.swap');
                 Route::post('{event}/swapHeats', [HeatController::class, 'swapHeats'])->name('comps.heats_and_draws.heats.swapHeats');
+                Route::post('{event}/assign', [HeatController::class, 'assign'])->name('comps.heats_and_draws.heats.assign');
+                Route::post('{event}/unassign', [HeatController::class, 'unassign'])->name('comps.heats_and_draws.heats.unassign');
+                Route::post('{event}/insertHeat', [HeatController::class, 'insertHeat'])->name('comps.heats_and_draws.heats.insertHeat');
                 Route::post('{event}/deleteHeat', [HeatController::class, 'deleteHeat'])->name('comps.heats_and_draws.heats.deleteHeats');
             });
 
@@ -308,7 +313,13 @@ Route::middleware(['auth', 'not.judge-only'])->group(function () {
                 Route::post('tank-setup', [DrawController::class, 'tankSetupPost'])->name('comps.heats_and_draws.draws.tank_setup.post');
                 Route::get('{serc}/edit', [DrawController::class, 'edit'])->name('comps.heats_and_draws.draws.edit');
                 Route::post('{serc}/edit', [DrawController::class, 'swap'])->name('comps.heats_and_draws.draws.swap');
-                Route::get('{serc}/reset', [DrawController::class, 'reset'])->name('comps.heats_and_draws.draws.reset');
+                Route::post('{serc}/remove', [DrawController::class, 'remove'])->name('comps.heats_and_draws.draws.remove');
+                Route::post('{serc}/move', [DrawController::class, 'move'])->name('comps.heats_and_draws.draws.move');
+                Route::post('{serc}/assign', [DrawController::class, 'assign'])->name('comps.heats_and_draws.draws.assign');
+                Route::post('{serc}/add-tank', [DrawController::class, 'addTank'])->name('comps.heats_and_draws.draws.addTank');
+                Route::post('{serc}/compact-tanks', [DrawController::class, 'compactTanks'])->name('comps.heats_and_draws.draws.compactTanks');
+                Route::post('{serc}/remove-tank', [DrawController::class, 'removeTank'])->name('comps.heats_and_draws.draws.removeTank');
+                Route::post('{serc}/reset', [DrawController::class, 'reset'])->name('comps.heats_and_draws.draws.reset');
             });
         });
 

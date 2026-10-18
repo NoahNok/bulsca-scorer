@@ -14,6 +14,14 @@ class Heat extends Model
 {
     use HasFactory, CascadesDeletes;
 
+    protected $fillable = [
+        'speed_event',
+        'entity_id',
+        'entity_type',
+        'heat',
+        'lane',
+    ];
+
     protected $cascadeDeletes = [
         'judgeDQSubmissions'
     ];

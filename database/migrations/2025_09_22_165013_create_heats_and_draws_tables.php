@@ -36,7 +36,7 @@ return new class extends Migration
             $table->integer('heat');
             $table->integer('lane');
 
-            $table->unique(['speed_event', 'entity_id', 'entity_type']);
+            $table->unique(['speed_event',  'entity_id', 'entity_type']);
 
             $table->timestamps();
         });

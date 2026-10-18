@@ -27,4 +27,14 @@ class SERCJudge extends Model
     {
         return $this->hasMany(JudgeNote::class, 'judge', 'id');
     }
+
+    public function restrictedLeagues()
+    {
+        return $this->belongsToMany(
+            League::class,
+            'serc_judge_league_restriction',
+            'judge_id',
+            'league_id'
+        );
+    }
 }

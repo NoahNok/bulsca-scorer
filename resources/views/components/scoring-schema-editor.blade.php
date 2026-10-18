@@ -27,6 +27,7 @@
      edit_create: {{ $edit_create ? 'true' : 'false' }},
  
      data: null,
+     new: false,
      errors: {},
      schemas: {{ $availableSchemas }},
  
@@ -69,7 +70,7 @@
      save() {
  
  
-         if (this.data.name.trim() == '') {
+         if (this.data.name.trim() == '' && !this.new) {
              this.errors['name'] = 'Please enter a schema name'
              return
          }
@@ -211,6 +212,7 @@
      },
  
      createNew() {
+         this.new = true
          this.data = {
              name: '',
              equation: '',

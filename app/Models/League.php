@@ -39,4 +39,14 @@ class League extends Model
             'competitors' => $this->competitors()->count()
         ];
     }
+
+    public function restrictedJudges()
+    {
+        return $this->belongsToMany(
+            SERCJudge::class,
+            'serc_judge_league_restriction',
+            'league_id',
+            'judge_id'
+        );
+    }
 }

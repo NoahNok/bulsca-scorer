@@ -1,3 +1,4 @@
+
 class SERCBuilder {
     constructor(target) {
         this.element = target;
@@ -7,6 +8,7 @@ class SERCBuilder {
         this.serc_name = document.querySelector("[serc-builder-name]");
         this.serc_type = document.querySelector("[serc-builder-type]");
         this.serc_target = document.querySelector("[serc-builder-target]");
+        this.serc_restricted_judge = document.querySelector("[serc-builder-restricted-judge]");
         this.url = target.getAttribute("serc-builder-url");
         this.after = target.getAttribute("serc-builder-after-url");
         this.csrf = target.getAttribute("serc-builder-csrf");
@@ -23,6 +25,17 @@ class SERCBuilder {
         target.querySelectorAll("[serc-builder-judge]").forEach((j) => {
             clazz.judges.push(new SERCJudge(j, clazz.judges, clazz.deleted));
         });
+
+        if (this.serc_restricted_judge != null) {
+            this.serc_restricted_judge.onchange = (e) => {
+
+                this.updateRestrictedToggle(e.target.value)
+
+            }
+            this.updateRestrictedToggle(this.serc_restricted_judge.value)
+        }
+
+
 
         this.add_judge = target.querySelector("[serc-builder-judge-add]");
 
@@ -72,6 +85,15 @@ class SERCBuilder {
         };
     }
 
+    updateRestrictedToggle(value) {
+        let hidden = value !== "1"
+
+        document.querySelectorAll("[serc-builder-judge-restricted-show]").forEach(i => {
+            i.hidden = hidden
+        })
+
+    }
+
     save() {
         if (this.serc_name.value == "") {
             this.serc_name.parentElement.classList.add("is-invalid");
@@ -85,6 +107,7 @@ class SERCBuilder {
             serc_target: this.serc_target.value,
             judges: [],
             deleted: this.deleted,
+            use_restricted_judges: this.serc_restricted_judge?.value === "1" ?? false
         };
 
         let index = 1;
@@ -132,6 +155,8 @@ class SERCJudge {
         this.marking_point_container = element.querySelector(
             "[serc-builder-marking-points]"
         );
+
+        this.restricted_leagues = element.querySelector("[serc-builder-judge-restricted]")
 
         let clazz = this;
 
@@ -217,6 +242,7 @@ class SERCJudge {
                     : `Objective ${judgeNo}`,
             description: this.judge_description.getSemanticHTML(),
             marking_points: [],
+            restricted_leagues: this.restricted_leagues ? Array.from(this.restricted_leagues.selectedOptions).map(o => o.value) : []
         };
 
         this.marking_points.forEach((mp) => {
