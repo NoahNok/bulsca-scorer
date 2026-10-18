@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { toggleReferee } from "@/actions/App/Http/Controllers/DigitalJudge/JudgeController";
     import Button from "@/components/Button.svelte";
     import AlertsSheet from "@/components/AlertsSheet.svelte";
     import type { DialogControls } from "@/components/GenericDialog.svelte";
@@ -88,14 +87,6 @@
         confirmStore.set({ open: false });
     };
 </script>
-
-{#if page.props.env_local}
-    <div class="fixed top-60 -left-12 bg-red-500 p-1 rotate-90 text-sm">
-        <Link href={toggleReferee({ competition: competition ?? -1 })}
-            >TOGGLE REFEREE</Link
-        >
-    </div>
-{/if}
 
 <!--
     With the tab bar showing, the page grows with its content and gets
