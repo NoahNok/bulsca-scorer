@@ -47,6 +47,10 @@ actions, and an "Add" button that opens a modal form) and `account.blade.php`.
   what-if, print views) adds `<x-favicon />` after the charset meta, so it
   gets the site's "S." icon (`public/favicon.svg`, `favicon.ico`,
   `apple-touch-icon.png`). `layouts.organisation` keeps the organisation's logo.
+- The maintenance page (`errors/503.blade.php`) is the exception. `deploy.sh`
+  pre-renders it with `artisan down --render` while `vendor/` and
+  `public/build` are being replaced, so it uses inline styles and no `@vite`,
+  and its favicon links are root-relative rather than `<x-favicon />`.
 
 Pages set `@section('title')` and fill `@section('content')`.
 
