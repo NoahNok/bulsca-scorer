@@ -35,6 +35,15 @@ class SERCJudgeController extends Controller
         return ['id' => $entity->id, 'name' => 'Draw ' . $draw];
     }
 
+    /**
+     * Whether any of the given judges already has a Mark for the entity. Once one does, only a
+     * referee can change that entity's marks for the judges in question.
+     */
+    private function alreadyMarked($entity, $judges): bool
+    {
+        return $judges->contains(fn($judge) => DigitalJudge::hasEntityBeenJudgedAlready($entity, $judge));
+    }
+
 
     public function confirmJudge(Competition $competition, SERC $serc, SERCJudge $judge)
     {
@@ -200,7 +209,8 @@ class SERCJudgeController extends Controller
 
 
 
-        $j = DigitalJudge::getClientJudges()[0];
+        $judges = DigitalJudge::getClientJudges();
+        $j = $judges[0];
 
         $nextTeamId = null;
 
@@ -215,7 +225,8 @@ class SERCJudgeController extends Controller
         $draw = $draw->sortBy('draw');
 
         foreach ($draw as $allocation) {
-            $marked = DigitalJudge::hasTeamBeenJudgedAlready($allocation->entity);
+            // same check as markEntity, or a team it turns away would be sent straight back here
+            $marked = $this->alreadyMarked($allocation->entity, $judges);
             if (!$marked) {
 
                 $nextTeamId = $allocation->entity->id;
@@ -246,11 +257,11 @@ class SERCJudgeController extends Controller
         // Check team are part of this competition to avoid any dangerous behaviour
         if ($team->competition != $competition->id) return to_route("judge.competition.serc", compact('competition', 'serc'));
 
-        if (!DigitalJudge::isClientHeadJudge($competition) &&DigitalJudge::hasTeamBeenJudgedAlready($team)) return to_route("judge.competition.serc.mark.next", compact('competition', 'serc'));
+        $judges = DigitalJudge::getClientJudges();
+
+        if (!DigitalJudge::isClientHeadJudge($competition) && $this->alreadyMarked($team, $judges)) return to_route("judge.competition.serc.mark.next", compact('competition', 'serc'));
 
         $draw_info = $serc->getPositionInDraw($team);
-
-        $judges = DigitalJudge::getClientJudges();
 
         $judgeName = $judges[0]->name;
 
@@ -327,6 +338,15 @@ class SERCJudgeController extends Controller
         foreach (array_keys($notes) as $judge_id) {
             if (!$allowedMarkingPoints->has($judge_id)) abort(403);
         }
+
+        // Marks already submitted can only be overridden by a referee
+        $payloadJudges = $clientJudges->only([...array_keys($judges), ...array_keys($notes)]);
+
+        abort_if(
+            !DigitalJudge::isClientHeadJudge($competition) && $this->alreadyMarked($entity, $payloadJudges),
+            409,
+            'Already marked — ask a referee to change it.'
+        );
 
         $changes = [];
 

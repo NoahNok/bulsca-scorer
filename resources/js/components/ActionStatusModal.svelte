@@ -67,9 +67,24 @@
             // wait .5s so it doesn't feel like a flash
             await new Promise((resolve) => setTimeout(resolve, 500));
             showError();
-            setMessage("Something went wrong! Click close and try again.");
+            setMessage(errorMessage(e));
             return false;
         }
+    }
+
+    // A 409 carries a message meant for the judge (e.g. "Already marked — ask a referee to
+    // change it."), anything else gets the generic one
+    function errorMessage(e: unknown): string {
+        const response = (e as { response?: { status: number; data: string } })?.response;
+
+        if (response?.status === 409) {
+            try {
+                const message = JSON.parse(response.data)?.message;
+                if (message) return message;
+            } catch {}
+        }
+
+        return "Something went wrong! Click close and try again.";
     }
 
     // Expose helper to change the message dynamically

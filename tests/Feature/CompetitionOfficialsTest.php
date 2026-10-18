@@ -450,6 +450,51 @@ class CompetitionOfficialsTest extends TestCase
         $this->assertTrue($this->comp->officialHasRole($official, 'official'));
     }
 
+    public function test_too_many_wrong_pins_locks_joining_for_a_minute(): void
+    {
+        $this->comp->digitalJudgePin = 123456;
+        $this->comp->digitalJudgeEnabled = true;
+        $this->comp->save();
+
+        $official = User::factory()->create(['judge_only' => true]);
+
+        foreach (range(1, 5) as $guess) {
+            $this->actingAs($official)->from(route('judge.index'))
+                ->post(route('judge.join-competition'), ['pin' => 100000 + $guess])
+                ->assertSessionHasErrors(['pin' => 'No competition found.']);
+        }
+
+        // even the right PIN, so a guess that lands after the limit doesn't get in
+        $this->actingAs($official)->from(route('judge.index'))
+            ->post(route('judge.join-competition'), ['pin' => 123456])
+            ->assertSessionHasErrors(['pin' => 'Too many attempts, try again in a minute.']);
+
+        $this->actingAs($official)->get(route('judge.join-link', 123456))
+            ->assertRedirect(route('judge.index'))
+            ->assertSessionHasErrors(['pin' => 'Too many attempts, try again in a minute.']);
+
+        $this->assertFalse($this->comp->officials()->whereKey($official->id)->exists());
+
+        $this->travel(61)->seconds();
+
+        $this->actingAs($official)->post(route('judge.join-competition'), ['pin' => 123456])
+            ->assertRedirect(route('judge.competition', ['competition' => $this->comp->getSlug()]));
+    }
+
+    public function test_right_pins_dont_count_towards_the_limit(): void
+    {
+        $this->comp->digitalJudgePin = 123456;
+        $this->comp->digitalJudgeEnabled = true;
+        $this->comp->save();
+
+        $official = User::factory()->create(['judge_only' => true]);
+
+        foreach (range(1, 6) as $attempt) {
+            $this->actingAs($official)->post(route('judge.join-competition'), ['pin' => 123456])
+                ->assertRedirect(route('judge.competition', ['competition' => $this->comp->getSlug()]));
+        }
+    }
+
     public function test_officials_cannot_join_by_pin_or_link_while_digital_judge_is_off(): void
     {
         $this->comp->digitalJudgePin = 123456;

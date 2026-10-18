@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\DigitalJudge\Event;
 
+use App\DigitalJudge\DigitalJudge;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DigitalJudge\Event\StoreHeatOOFRequest;
 use App\Http\Requests\DigitalJudge\Event\StoreHeatTimesRequest;
@@ -69,8 +70,11 @@ class EventJudgeController extends Controller
             ];
         });
 
-
-
+        // Only a referee can change Times, so a fully timed heat has nothing left for anyone else
+        if (!DigitalJudge::isClientHeadJudge($competition) && count($laneData) > 0 && count($existingTimes) == count($laneData)) {
+            Inertia::flash('toast', ['variant' => 'error', 'title' => 'All lanes have a time — ask a referee to change it.']);
+            return to_route('judge.competition.event.time.select-heat', ['competition' => $competition->getSlug(), 'event' => $event]);
+        }
 
         return Inertia::render('Judge/Competition/Speed/Time/MarkTime', [
             'competition' => $competition->only(['id', 'name']),
@@ -89,13 +93,21 @@ class EventJudgeController extends Controller
         // Check every entity is in this heat and has a result row before writing anything, so a bad
         // or stale id can't fail partway through and leave the heat half saved
         $lanes = $event->getHeats()->where('heat', $heat)->with('entity')->get()->keyBy('entity_id');
+        $isReferee = DigitalJudge::isClientHeadJudge($competition);
         $results = [];
 
-        foreach (array_keys($marks) as $entity_id) {
+        foreach ($marks as $entity_id => $value) {
             $entity = $lanes->get($entity_id)?->entity;
             $sr = $entity ? SpeedResult::whereMorphedTo('entity', $entity)->where('event', $event->id)->first() : null;
 
             abort_if($sr == null, 422, 'That team isn\'t in this heat.');
+
+            // The page sends existing Times back as it showed them, so only a different value is a change
+            abort_if(
+                !$isReferee && $sr->result != null && $value !== (string) $sr->getJudgeFormattedResult(),
+                409,
+                'That lane already has a time — ask a referee to change it.'
+            );
 
             $results[$entity_id] = $sr;
         }
@@ -219,13 +231,28 @@ class EventJudgeController extends Controller
         ]);
     }
 
+    /**
+     * Whether the heat's Places have been saved. They're saved together, so once any lane has one
+     * only a referee can change them.
+     */
+    private function hasPlaces($lanes): bool
+    {
+        return $lanes->contains(fn($lane) => $lane->oofs->first()?->oof !== null);
+    }
+
     public function markOOF(Competition $competition, CompetitionSpeedEvent $event, int $heat)
     {
+        $lanes = $event->getHeats()->with(['oofs' => fn($q) => $q->where('event', $event->id)])->where('heat', $heat)->orderBy('lane')->get();
+
+        if (!DigitalJudge::isClientHeadJudge($competition) && $this->hasPlaces($lanes)) {
+            Inertia::flash('toast', ['variant' => 'error', 'title' => 'This heat has places — ask a referee to change them.']);
+            return to_route('judge.competition.event.oof.select-heat', ['competition' => $competition->getSlug(), 'event' => $event]);
+        }
 
         return Inertia::render('Judge/Competition/Speed/OOF/MarkOOF', [
             'competition' => $competition->only(['id', 'name']),
             'event' => $event->jsonable(),
-            'heat' => ['heat' => $heat, 'complete' => false, 'lanes' => $event->getHeats()->with(['oofs' => fn($q) => $q->where('event', $event->id)])->where('heat', $heat)->orderBy('lane')->get()->map(function ($lane) {
+            'heat' => ['heat' => $heat, 'complete' => false, 'lanes' => $lanes->map(function ($lane) {
 
                 return [
                     'lane' => $lane->lane,
@@ -240,16 +267,37 @@ class EventJudgeController extends Controller
     {
         $data = $request->validated();
 
+        // Check every entity is in this heat before writing anything, so a bad or stale id
+        // can't fail partway through and leave the heat half saved
+        $lanes = $event->getHeats()->where('heat', $heat)->with(['entity', 'oofs' => fn($q) => $q->where('event', $event->id)])->get()->keyBy('entity_id');
 
+        foreach ($data as $res) {
+            abort_if($lanes->get($res['entity']['id'])?->entity == null, 422, 'That team isn\'t in this heat.');
+        }
 
+        abort_if(
+            !DigitalJudge::isClientHeadJudge($competition) && $this->hasPlaces($lanes),
+            409,
+            'This heat has places — ask a referee to change them.'
+        );
+
+        DB::transaction(fn() => $this->savePlaces($competition, $event, $heat, $data, $lanes));
+
+        return response()->json(['hasNextHeat' => $heat < $event->getMaxHeats()]);
+    }
+
+    /**
+     * @param array<int, array{entity: array{id: int}, oof?: ?int}> $data the lanes as sent
+     * @param \Illuminate\Support\Collection $lanes this heat's lanes, keyed by entity id
+     */
+    private function savePlaces(Competition $competition, CompetitionSpeedEvent $event, int $heat, array $data, $lanes): void
+    {
         $changes = [];
         $changedEntities = [];
 
         foreach ($data as $res) {
-            // This will exist as the request validator ensures it will
-            $entity = $event->getScorableEntity()::find($res['entity']['id']);
-
-            $heatlane = $event->getHeats()->whereMorphedTo('entity', $entity)->first();
+            $heatlane = $lanes->get($res['entity']['id']);
+            $entity = $heatlane->entity;
 
             $eOof = EventOOF::firstOrNew(['heat_lane' => $heatlane->id, 'event' => $event->id]);
             $was = $eOof->oof;
@@ -277,7 +325,5 @@ class EventJudgeController extends Controller
                 'changes' => $changes,
             ], related: [$event, ...$changedEntities, $competition]);
         }
-
-        return response()->json(['hasNextHeat' => $heat < $event->getMaxHeats()]);
     }
 }

@@ -373,6 +373,9 @@ title, a sentence of guidance if needed, then side-by-side `ConfirmDialog`s with
   (Wayfinder `{ query }`).
 - Show the result with `toastSuccess`/`toastError` in `onSuccess`/`onError`, or
   with `ActionStatusModal.showFor(promise)` for longer submits. Await it once.
+  On a 409 the modal shows the response's `message` (e.g. "Already marked — ask a
+  referee to change it."), so return `abort(409, '...')` for refusals the judge
+  should read; any other error shows the generic "Something went wrong".
 
 ### Accessibility
 

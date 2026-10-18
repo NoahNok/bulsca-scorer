@@ -104,11 +104,11 @@ class ResultHistoryTest extends TestCase
         return [$serc, $judge, $points];
     }
 
-    private function storeMarks(SERC $serc, SERCJudge $judge, CompetitionTeam $team, array $marks)
+    private function storeMarks(SERC $serc, SERCJudge $judge, CompetitionTeam $team, array $marks, ?User $as = null)
     {
         $params = ['competition' => $this->comp->getSlug(), 'serc' => $serc];
 
-        $this->actingAs($this->official)->post(route('judge.competition.serc.confirm.post', $params), ['judge' => $judge->id]);
+        $this->actingAs($as ?? $this->official)->post(route('judge.competition.serc.confirm.post', $params), ['judge' => $judge->id]);
 
         return $this->postJson(route('judge.competition.serc.mark.store', [...$params, 'entity_id' => $team->id]), [
             'marks' => [$judge->id => $marks],
@@ -143,7 +143,7 @@ class ResultHistoryTest extends TestCase
         $team = $this->team('A');
 
         $this->storeMarks($serc, $judge, $team, [$approach->id => 7, $rescue->id => 5]);
-        $this->storeMarks($serc, $judge, $team, [$approach->id => 8, $rescue->id => 5]);
+        $this->storeMarks($serc, $judge, $team, [$approach->id => 8, $rescue->id => 5], as: $this->referee);
 
         $changeCounts = $this->activities('SERC_MARKED')
             ->map(fn($a) => count($a->context['changes']))->sort()->values()->all();
@@ -157,7 +157,7 @@ class ResultHistoryTest extends TestCase
         $team = $this->team('A');
 
         $this->storeMarks($serc, $judge, $team, [$approach->id => 7]);
-        $this->storeMarks($serc, $judge, $team, [$approach->id => 7]);
+        $this->storeMarks($serc, $judge, $team, [$approach->id => 7], as: $this->referee);
 
         $this->assertCount(1, $this->activities('SERC_MARKED'));
     }
@@ -197,18 +197,18 @@ class ResultHistoryTest extends TestCase
         return [$event, $teams];
     }
 
-    private function storeTimes(CompetitionSpeedEvent $event, array $marks)
+    private function storeTimes(CompetitionSpeedEvent $event, array $marks, ?User $as = null)
     {
-        return $this->actingAs($this->official)->postJson(route('judge.competition.event.time.mark.store', [
+        return $this->actingAs($as ?? $this->official)->postJson(route('judge.competition.event.time.mark.store', [
             'competition' => $this->comp->getSlug(),
             'event' => $event,
             'heat' => 1,
         ]), ['mark' => $marks]);
     }
 
-    private function storePlaces(CompetitionSpeedEvent $event, array $places)
+    private function storePlaces(CompetitionSpeedEvent $event, array $places, ?User $as = null)
     {
-        return $this->actingAs($this->official)->postJson(route('judge.competition.event.oof.mark.store', [
+        return $this->actingAs($as ?? $this->official)->postJson(route('judge.competition.event.oof.mark.store', [
             'competition' => $this->comp->getSlug(),
             'event' => $event,
             'heat' => 1,
@@ -237,7 +237,7 @@ class ResultHistoryTest extends TestCase
         [$event, [$a]] = $this->speedEventWithHeat(['A']);
 
         $this->storeTimes($event, [$a->id => '1:02.50']);
-        $this->storeTimes($event, [$a->id => 'DNF']);
+        $this->storeTimes($event, [$a->id => 'DNF'], as: $this->referee);
 
         $dnf = $this->activities('SPEED_RESULT_MARKED')->first(fn($act) => $act->context['changes']['result']['new'] === 'DNF');
 
@@ -279,7 +279,7 @@ class ResultHistoryTest extends TestCase
         [$event, [$a, $b]] = $this->speedEventWithHeat(['A', 'B']);
 
         $this->storePlaces($event, [$a->id => 1, $b->id => 2]);
-        $this->storePlaces($event, [$a->id => 1, $b->id => null]);
+        $this->storePlaces($event, [$a->id => 1, $b->id => null], as: $this->referee);
 
         $this->assertEquals(0, EventOOF::where('event', $event->id)->where('oof', 2)->count());
 

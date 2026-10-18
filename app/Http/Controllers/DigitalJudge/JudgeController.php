@@ -14,6 +14,7 @@ use App\Models\SERC;
 use App\Models\SERCJudge;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
 use Inertia\Inertia;
 
 class JudgeController extends Controller
@@ -29,10 +30,43 @@ class JudgeController extends Controller
         ]);
     }
 
+    /**
+     * Wrong PINs are limited per official and per IP so the 6 digits can't be guessed. Only wrong
+     * ones count, so an official with the right PIN is never held up.
+     */
+    private function wrongPinLimits(Request $request): array
+    {
+        return [
+            'join-pin:user:' . $request->user()->id => 5,
+            'join-pin:ip:' . $request->ip() => 20,
+        ];
+    }
+
+    private function tooManyWrongPins(Request $request): bool
+    {
+        return collect($this->wrongPinLimits($request))->contains(fn($max, $key) => RateLimiter::tooManyAttempts($key, $max));
+    }
+
+    private function competitionForPin(Request $request, $pin): ?Competition
+    {
+        $competition = Competition::where('digitalJudgePin', $pin)->where('digitalJudgeEnabled', true)->first();
+
+        if (!$competition) {
+            foreach (array_keys($this->wrongPinLimits($request)) as $key) {
+                RateLimiter::hit($key, 60);
+            }
+        }
+
+        return $competition;
+    }
+
     public function joinCompetition(JoinCompetitionRequest $request)
     {
+        if ($this->tooManyWrongPins($request)) {
+            return back()->withInput()->withErrors(['pin' => 'Too many attempts, try again in a minute.']);
+        }
 
-        $competition = Competition::where('digitalJudgePin', $request->pin)->where('digitalJudgeEnabled', true)->first();
+        $competition = $this->competitionForPin($request, $request->pin);
 
         if (!$competition) {
             return back()->withInput()->withErrors(['pin' => 'No competition found.']);
@@ -49,7 +83,11 @@ class JudgeController extends Controller
      */
     public function joinCompetitionLink(Request $request, string $pin)
     {
-        $competition = Competition::where('digitalJudgePin', $pin)->where('digitalJudgeEnabled', true)->first();
+        if ($this->tooManyWrongPins($request)) {
+            return to_route('judge.index')->withErrors(['pin' => 'Too many attempts, try again in a minute.']);
+        }
+
+        $competition = $this->competitionForPin($request, $pin);
 
         if (!$competition) {
             return to_route('judge.index')->withErrors(['pin' => 'No competition found.']);
