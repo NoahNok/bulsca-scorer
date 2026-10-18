@@ -21,7 +21,7 @@ class SpeedJudgingController extends Controller
     public function timesIndex(CompetitionSpeedEvent $speed)
     {
 
-        DigitalJudge::setStatus('Times | Selecting Heat', $speed);
+        DigitalJudge::setStatus(DigitalJudge::getClientCompetition(), 'Times | Selecting Heat', $speed);
 
         return view('digitaljudge.speeds.times.index', ['speed' => $speed, 'comp' => DigitalJudge::getClientCompetition(), 'head' => DigitalJudge::isClientHeadJudge()]);
     }
@@ -60,7 +60,7 @@ class SpeedJudgingController extends Controller
             return redirect()->route('dj.speeds.times.index', $speed)->with('alert-error', 'All teams have a result for Heat ' . $heat);
         }
 
-        DigitalJudge::setStatus('Times | Entering Heat ' . $heat, $speed);
+        DigitalJudge::setStatus(DigitalJudge::getClientCompetition(), 'Times | Entering Heat ' . $heat, $speed);
 
         return view('digitaljudge.speeds.times.judge', ['speed' => $speed, 'comp' => DigitalJudge::getClientCompetition(), 'heat' => $heat]);
     }
@@ -181,7 +181,7 @@ class SpeedJudgingController extends Controller
     public function oofIndex(CompetitionSpeedEvent $speed)
     {
 
-        DigitalJudge::setStatus('OOF | Selecting Heat', $speed);
+        DigitalJudge::setStatus(DigitalJudge::getClientCompetition(), 'OOF | Selecting Heat', $speed);
 
         return view('digitaljudge.speeds.oof.index', ['speed' => $speed, 'comp' => DigitalJudge::getClientCompetition(), 'head' => DigitalJudge::isClientHeadJudge()]);
     }
@@ -212,7 +212,7 @@ class SpeedJudgingController extends Controller
             return redirect()->route('dj.speeds.oof.index', $speed)->with('alert-error', 'All teams have a result for Heat ' . $heat);
         }
 
-        DigitalJudge::setStatus('OOF | Entering Heat ' . $heat, $speed);
+        DigitalJudge::setStatus(DigitalJudge::getClientCompetition(), 'OOF | Entering Heat ' . $heat, $speed);
 
         return view('digitaljudge.speeds.oof.judge', ['speed' => $speed, 'comp' => DigitalJudge::getClientCompetition(), 'heat' => $heat]);
     }

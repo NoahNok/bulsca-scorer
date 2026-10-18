@@ -35,7 +35,7 @@ class DJJudgingController extends Controller
         $serc = $judge->getSERC;
         $comp = $serc->getCompetition;
 
-        DigitalJudge::setStatus('Selecting judge', $serc);
+        DigitalJudge::setStatus($comp, 'Selecting judge', $serc);
 
 
         return view('digitaljudge.judging.confirm-judge', ['serc' => $serc, 'comp' => $comp, 'judge' => $judge]);
@@ -78,7 +78,7 @@ class DJJudgingController extends Controller
 
         $serc = DigitalJudge::getClientJudges()[0]->getSERC;
 
-        DigitalJudge::setStatus('Ready', $serc);
+        DigitalJudge::setStatus(DigitalJudge::getClientCompetition(), 'Ready', $serc);
 
         return view('digitaljudge.judging.home', array_merge(DigitalJudge::getBladeProps(), ['head' => DigitalJudge::isClientHeadJudge()]));
     }
@@ -199,7 +199,7 @@ class DJJudgingController extends Controller
 
         $judgeName = DigitalJudge::getClientJudges()[0]->name;
 
-        DigitalJudge::setStatus($judgeName . ' | Marking ' . $team->getName() . ' (' . $draw_info['text'] . ')', $serc);
+        DigitalJudge::setStatus(DigitalJudge::getClientCompetition(), $judgeName . ' | Marking ' . $team->getName() . ' (' . $draw_info['text'] . ')', $serc);
 
         return $resp;
     }
@@ -391,7 +391,7 @@ class DJJudgingController extends Controller
     public function overallComments()
     {
         $serc = DigitalJudge::getClientJudges()[0]->getSERC;
-        DigitalJudge::setStatus('Final feedback', $serc);
+        DigitalJudge::setStatus(DigitalJudge::getClientCompetition(), 'Final feedback', $serc);
 
         return view('digitaljudge.judging.overall-comments', array_merge(DigitalJudge::getBladeProps()));
     }

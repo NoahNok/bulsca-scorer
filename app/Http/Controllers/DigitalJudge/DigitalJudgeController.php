@@ -90,7 +90,10 @@ class DigitalJudgeController extends Controller
     function home()
     {
 
-        DigitalJudge::setStatus('Competition Home');
+        $comp = DigitalJudge::getClientCompetition();
+
+
+        DigitalJudge::setStatus($comp, 'Competition Home');
 
         return view('digitaljudge.home', ['comp' => DigitalJudge::getClientCompetition(), 'head' => DigitalJudge::isClientHeadJudge()]);
     }
