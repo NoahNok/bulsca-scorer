@@ -202,7 +202,7 @@ edit.head = (args: { comp: number | { id: number }, event: number | { id: number
 
 /**
 * @see \App\Http\Controllers\Orders\HeatController::reset
-* @see app/Http/Controllers/Orders/HeatController.php:140
+* @see app/Http/Controllers/Orders/HeatController.php:149
 * @route '/comps/{comp}/heats-and-draws/heats/{event}/reset'
 */
 export const reset = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -217,7 +217,7 @@ reset.definition = {
 
 /**
 * @see \App\Http\Controllers\Orders\HeatController::reset
-* @see app/Http/Controllers/Orders/HeatController.php:140
+* @see app/Http/Controllers/Orders/HeatController.php:149
 * @route '/comps/{comp}/heats-and-draws/heats/{event}/reset'
 */
 reset.url = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -247,7 +247,7 @@ reset.url = (args: { comp: number | { id: number }, event: number | { id: number
 
 /**
 * @see \App\Http\Controllers\Orders\HeatController::reset
-* @see app/Http/Controllers/Orders/HeatController.php:140
+* @see app/Http/Controllers/Orders/HeatController.php:149
 * @route '/comps/{comp}/heats-and-draws/heats/{event}/reset'
 */
 reset.get = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -257,7 +257,7 @@ reset.get = (args: { comp: number | { id: number }, event: number | { id: number
 
 /**
 * @see \App\Http\Controllers\Orders\HeatController::reset
-* @see app/Http/Controllers/Orders/HeatController.php:140
+* @see app/Http/Controllers/Orders/HeatController.php:149
 * @route '/comps/{comp}/heats-and-draws/heats/{event}/reset'
 */
 reset.head = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -267,7 +267,7 @@ reset.head = (args: { comp: number | { id: number }, event: number | { id: numbe
 
 /**
 * @see \App\Http\Controllers\Orders\HeatController::swap
-* @see app/Http/Controllers/Orders/HeatController.php:63
+* @see app/Http/Controllers/Orders/HeatController.php:65
 * @route '/comps/{comp}/heats-and-draws/heats/{event}/swap'
 */
 export const swap = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -282,7 +282,7 @@ swap.definition = {
 
 /**
 * @see \App\Http\Controllers\Orders\HeatController::swap
-* @see app/Http/Controllers/Orders/HeatController.php:63
+* @see app/Http/Controllers/Orders/HeatController.php:65
 * @route '/comps/{comp}/heats-and-draws/heats/{event}/swap'
 */
 swap.url = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -312,7 +312,7 @@ swap.url = (args: { comp: number | { id: number }, event: number | { id: number 
 
 /**
 * @see \App\Http\Controllers\Orders\HeatController::swap
-* @see app/Http/Controllers/Orders/HeatController.php:63
+* @see app/Http/Controllers/Orders/HeatController.php:65
 * @route '/comps/{comp}/heats-and-draws/heats/{event}/swap'
 */
 swap.post = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -322,7 +322,7 @@ swap.post = (args: { comp: number | { id: number }, event: number | { id: number
 
 /**
 * @see \App\Http\Controllers\Orders\HeatController::swapHeats
-* @see app/Http/Controllers/Orders/HeatController.php:108
+* @see app/Http/Controllers/Orders/HeatController.php:114
 * @route '/comps/{comp}/heats-and-draws/heats/{event}/swapHeats'
 */
 export const swapHeats = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -337,7 +337,7 @@ swapHeats.definition = {
 
 /**
 * @see \App\Http\Controllers\Orders\HeatController::swapHeats
-* @see app/Http/Controllers/Orders/HeatController.php:108
+* @see app/Http/Controllers/Orders/HeatController.php:114
 * @route '/comps/{comp}/heats-and-draws/heats/{event}/swapHeats'
 */
 swapHeats.url = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -367,7 +367,7 @@ swapHeats.url = (args: { comp: number | { id: number }, event: number | { id: nu
 
 /**
 * @see \App\Http\Controllers\Orders\HeatController::swapHeats
-* @see app/Http/Controllers/Orders/HeatController.php:108
+* @see app/Http/Controllers/Orders/HeatController.php:114
 * @route '/comps/{comp}/heats-and-draws/heats/{event}/swapHeats'
 */
 swapHeats.post = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -376,8 +376,173 @@ swapHeats.post = (args: { comp: number | { id: number }, event: number | { id: n
 })
 
 /**
+* @see \App\Http\Controllers\Orders\HeatController::assign
+* @see app/Http/Controllers/Orders/HeatController.php:183
+* @route '/comps/{comp}/heats-and-draws/heats/{event}/assign'
+*/
+export const assign = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: assign.url(args, options),
+    method: 'post',
+})
+
+assign.definition = {
+    methods: ["post"],
+    url: '/comps/{comp}/heats-and-draws/heats/{event}/assign',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\Orders\HeatController::assign
+* @see app/Http/Controllers/Orders/HeatController.php:183
+* @route '/comps/{comp}/heats-and-draws/heats/{event}/assign'
+*/
+assign.url = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions) => {
+    if (Array.isArray(args)) {
+        args = {
+            comp: args[0],
+            event: args[1],
+        }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+        comp: typeof args.comp === 'object'
+        ? args.comp.id
+        : args.comp,
+        event: typeof args.event === 'object'
+        ? args.event.id
+        : args.event,
+    }
+
+    return assign.definition.url
+            .replace('{comp}', parsedArgs.comp.toString())
+            .replace('{event}', parsedArgs.event.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Orders\HeatController::assign
+* @see app/Http/Controllers/Orders/HeatController.php:183
+* @route '/comps/{comp}/heats-and-draws/heats/{event}/assign'
+*/
+assign.post = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: assign.url(args, options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\Orders\HeatController::unassign
+* @see app/Http/Controllers/Orders/HeatController.php:227
+* @route '/comps/{comp}/heats-and-draws/heats/{event}/unassign'
+*/
+export const unassign = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: unassign.url(args, options),
+    method: 'post',
+})
+
+unassign.definition = {
+    methods: ["post"],
+    url: '/comps/{comp}/heats-and-draws/heats/{event}/unassign',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\Orders\HeatController::unassign
+* @see app/Http/Controllers/Orders/HeatController.php:227
+* @route '/comps/{comp}/heats-and-draws/heats/{event}/unassign'
+*/
+unassign.url = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions) => {
+    if (Array.isArray(args)) {
+        args = {
+            comp: args[0],
+            event: args[1],
+        }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+        comp: typeof args.comp === 'object'
+        ? args.comp.id
+        : args.comp,
+        event: typeof args.event === 'object'
+        ? args.event.id
+        : args.event,
+    }
+
+    return unassign.definition.url
+            .replace('{comp}', parsedArgs.comp.toString())
+            .replace('{event}', parsedArgs.event.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Orders\HeatController::unassign
+* @see app/Http/Controllers/Orders/HeatController.php:227
+* @route '/comps/{comp}/heats-and-draws/heats/{event}/unassign'
+*/
+unassign.post = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: unassign.url(args, options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\Orders\HeatController::insertHeat
+* @see app/Http/Controllers/Orders/HeatController.php:213
+* @route '/comps/{comp}/heats-and-draws/heats/{event}/insertHeat'
+*/
+export const insertHeat = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: insertHeat.url(args, options),
+    method: 'post',
+})
+
+insertHeat.definition = {
+    methods: ["post"],
+    url: '/comps/{comp}/heats-and-draws/heats/{event}/insertHeat',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\Orders\HeatController::insertHeat
+* @see app/Http/Controllers/Orders/HeatController.php:213
+* @route '/comps/{comp}/heats-and-draws/heats/{event}/insertHeat'
+*/
+insertHeat.url = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions) => {
+    if (Array.isArray(args)) {
+        args = {
+            comp: args[0],
+            event: args[1],
+        }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+        comp: typeof args.comp === 'object'
+        ? args.comp.id
+        : args.comp,
+        event: typeof args.event === 'object'
+        ? args.event.id
+        : args.event,
+    }
+
+    return insertHeat.definition.url
+            .replace('{comp}', parsedArgs.comp.toString())
+            .replace('{event}', parsedArgs.event.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Orders\HeatController::insertHeat
+* @see app/Http/Controllers/Orders/HeatController.php:213
+* @route '/comps/{comp}/heats-and-draws/heats/{event}/insertHeat'
+*/
+insertHeat.post = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: insertHeat.url(args, options),
+    method: 'post',
+})
+
+/**
 * @see \App\Http\Controllers\Orders\HeatController::deleteHeats
-* @see app/Http/Controllers/Orders/HeatController.php:156
+* @see app/Http/Controllers/Orders/HeatController.php:167
 * @route '/comps/{comp}/heats-and-draws/heats/{event}/deleteHeat'
 */
 export const deleteHeats = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -392,7 +557,7 @@ deleteHeats.definition = {
 
 /**
 * @see \App\Http\Controllers\Orders\HeatController::deleteHeats
-* @see app/Http/Controllers/Orders/HeatController.php:156
+* @see app/Http/Controllers/Orders/HeatController.php:167
 * @route '/comps/{comp}/heats-and-draws/heats/{event}/deleteHeat'
 */
 deleteHeats.url = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -422,7 +587,7 @@ deleteHeats.url = (args: { comp: number | { id: number }, event: number | { id: 
 
 /**
 * @see \App\Http\Controllers\Orders\HeatController::deleteHeats
-* @see app/Http/Controllers/Orders/HeatController.php:156
+* @see app/Http/Controllers/Orders/HeatController.php:167
 * @route '/comps/{comp}/heats-and-draws/heats/{event}/deleteHeat'
 */
 deleteHeats.post = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -437,6 +602,9 @@ const heats = {
     reset: Object.assign(reset, reset),
     swap: Object.assign(swap, swap),
     swapHeats: Object.assign(swapHeats, swapHeats),
+    assign: Object.assign(assign, assign),
+    unassign: Object.assign(unassign, unassign),
+    insertHeat: Object.assign(insertHeat, insertHeat),
     deleteHeats: Object.assign(deleteHeats, deleteHeats),
 }
 

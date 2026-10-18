@@ -137,7 +137,7 @@ hide.head = (args: { comp: number | { id: number } } | [comp: number | { id: num
 
 /**
 * @see \App\Http\Controllers\Orders\DrawController::tankSetup
-* @see app/Http/Controllers/Orders/DrawController.php:93
+* @see app/Http/Controllers/Orders/DrawController.php:320
 * @route '/comps/{comp}/heats-and-draws/draws/tank-setup'
 */
 export const tankSetup = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -152,7 +152,7 @@ tankSetup.definition = {
 
 /**
 * @see \App\Http\Controllers\Orders\DrawController::tankSetup
-* @see app/Http/Controllers/Orders/DrawController.php:93
+* @see app/Http/Controllers/Orders/DrawController.php:320
 * @route '/comps/{comp}/heats-and-draws/draws/tank-setup'
 */
 tankSetup.url = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -185,7 +185,7 @@ tankSetup.url = (args: { comp: number | { id: number } } | [comp: number | { id:
 
 /**
 * @see \App\Http\Controllers\Orders\DrawController::tankSetup
-* @see app/Http/Controllers/Orders/DrawController.php:93
+* @see app/Http/Controllers/Orders/DrawController.php:320
 * @route '/comps/{comp}/heats-and-draws/draws/tank-setup'
 */
 tankSetup.get = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -195,7 +195,7 @@ tankSetup.get = (args: { comp: number | { id: number } } | [comp: number | { id:
 
 /**
 * @see \App\Http\Controllers\Orders\DrawController::tankSetup
-* @see app/Http/Controllers/Orders/DrawController.php:93
+* @see app/Http/Controllers/Orders/DrawController.php:320
 * @route '/comps/{comp}/heats-and-draws/draws/tank-setup'
 */
 tankSetup.head = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -205,7 +205,7 @@ tankSetup.head = (args: { comp: number | { id: number } } | [comp: number | { id
 
 /**
 * @see \App\Http\Controllers\Orders\DrawController::tankSetupPost
-* @see app/Http/Controllers/Orders/DrawController.php:98
+* @see app/Http/Controllers/Orders/DrawController.php:325
 * @route '/comps/{comp}/heats-and-draws/draws/tank-setup'
 */
 export const tankSetupPost = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -220,7 +220,7 @@ tankSetupPost.definition = {
 
 /**
 * @see \App\Http\Controllers\Orders\DrawController::tankSetupPost
-* @see app/Http/Controllers/Orders/DrawController.php:98
+* @see app/Http/Controllers/Orders/DrawController.php:325
 * @route '/comps/{comp}/heats-and-draws/draws/tank-setup'
 */
 tankSetupPost.url = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -253,7 +253,7 @@ tankSetupPost.url = (args: { comp: number | { id: number } } | [comp: number | {
 
 /**
 * @see \App\Http\Controllers\Orders\DrawController::tankSetupPost
-* @see app/Http/Controllers/Orders/DrawController.php:98
+* @see app/Http/Controllers/Orders/DrawController.php:325
 * @route '/comps/{comp}/heats-and-draws/draws/tank-setup'
 */
 tankSetupPost.post = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -328,7 +328,7 @@ edit.head = (args: { comp: number | { id: number }, serc: number | { id: number 
 
 /**
 * @see \App\Http\Controllers\Orders\DrawController::swap
-* @see app/Http/Controllers/Orders/DrawController.php:52
+* @see app/Http/Controllers/Orders/DrawController.php:53
 * @route '/comps/{comp}/heats-and-draws/draws/{serc}/edit'
 */
 export const swap = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -343,7 +343,7 @@ swap.definition = {
 
 /**
 * @see \App\Http\Controllers\Orders\DrawController::swap
-* @see app/Http/Controllers/Orders/DrawController.php:52
+* @see app/Http/Controllers/Orders/DrawController.php:53
 * @route '/comps/{comp}/heats-and-draws/draws/{serc}/edit'
 */
 swap.url = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -373,7 +373,7 @@ swap.url = (args: { comp: number | { id: number }, serc: number | { id: number }
 
 /**
 * @see \App\Http\Controllers\Orders\DrawController::swap
-* @see app/Http/Controllers/Orders/DrawController.php:52
+* @see app/Http/Controllers/Orders/DrawController.php:53
 * @route '/comps/{comp}/heats-and-draws/draws/{serc}/edit'
 */
 swap.post = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -382,23 +382,353 @@ swap.post = (args: { comp: number | { id: number }, serc: number | { id: number 
 })
 
 /**
-* @see \App\Http\Controllers\Orders\DrawController::reset
-* @see app/Http/Controllers/Orders/DrawController.php:82
-* @route '/comps/{comp}/heats-and-draws/draws/{serc}/reset'
+* @see \App\Http\Controllers\Orders\DrawController::remove
+* @see app/Http/Controllers/Orders/DrawController.php:75
+* @route '/comps/{comp}/heats-and-draws/draws/{serc}/remove'
 */
-export const reset = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: reset.url(args, options),
-    method: 'get',
+export const remove = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: remove.url(args, options),
+    method: 'post',
 })
 
-reset.definition = {
-    methods: ["get","head"],
-    url: '/comps/{comp}/heats-and-draws/draws/{serc}/reset',
-} satisfies RouteDefinition<["get","head"]>
+remove.definition = {
+    methods: ["post"],
+    url: '/comps/{comp}/heats-and-draws/draws/{serc}/remove',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\Orders\DrawController::remove
+* @see app/Http/Controllers/Orders/DrawController.php:75
+* @route '/comps/{comp}/heats-and-draws/draws/{serc}/remove'
+*/
+remove.url = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions) => {
+    if (Array.isArray(args)) {
+        args = {
+            comp: args[0],
+            serc: args[1],
+        }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+        comp: typeof args.comp === 'object'
+        ? args.comp.id
+        : args.comp,
+        serc: typeof args.serc === 'object'
+        ? args.serc.id
+        : args.serc,
+    }
+
+    return remove.definition.url
+            .replace('{comp}', parsedArgs.comp.toString())
+            .replace('{serc}', parsedArgs.serc.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Orders\DrawController::remove
+* @see app/Http/Controllers/Orders/DrawController.php:75
+* @route '/comps/{comp}/heats-and-draws/draws/{serc}/remove'
+*/
+remove.post = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: remove.url(args, options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\Orders\DrawController::move
+* @see app/Http/Controllers/Orders/DrawController.php:98
+* @route '/comps/{comp}/heats-and-draws/draws/{serc}/move'
+*/
+export const move = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: move.url(args, options),
+    method: 'post',
+})
+
+move.definition = {
+    methods: ["post"],
+    url: '/comps/{comp}/heats-and-draws/draws/{serc}/move',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\Orders\DrawController::move
+* @see app/Http/Controllers/Orders/DrawController.php:98
+* @route '/comps/{comp}/heats-and-draws/draws/{serc}/move'
+*/
+move.url = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions) => {
+    if (Array.isArray(args)) {
+        args = {
+            comp: args[0],
+            serc: args[1],
+        }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+        comp: typeof args.comp === 'object'
+        ? args.comp.id
+        : args.comp,
+        serc: typeof args.serc === 'object'
+        ? args.serc.id
+        : args.serc,
+    }
+
+    return move.definition.url
+            .replace('{comp}', parsedArgs.comp.toString())
+            .replace('{serc}', parsedArgs.serc.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Orders\DrawController::move
+* @see app/Http/Controllers/Orders/DrawController.php:98
+* @route '/comps/{comp}/heats-and-draws/draws/{serc}/move'
+*/
+move.post = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: move.url(args, options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\Orders\DrawController::assign
+* @see app/Http/Controllers/Orders/DrawController.php:137
+* @route '/comps/{comp}/heats-and-draws/draws/{serc}/assign'
+*/
+export const assign = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: assign.url(args, options),
+    method: 'post',
+})
+
+assign.definition = {
+    methods: ["post"],
+    url: '/comps/{comp}/heats-and-draws/draws/{serc}/assign',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\Orders\DrawController::assign
+* @see app/Http/Controllers/Orders/DrawController.php:137
+* @route '/comps/{comp}/heats-and-draws/draws/{serc}/assign'
+*/
+assign.url = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions) => {
+    if (Array.isArray(args)) {
+        args = {
+            comp: args[0],
+            serc: args[1],
+        }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+        comp: typeof args.comp === 'object'
+        ? args.comp.id
+        : args.comp,
+        serc: typeof args.serc === 'object'
+        ? args.serc.id
+        : args.serc,
+    }
+
+    return assign.definition.url
+            .replace('{comp}', parsedArgs.comp.toString())
+            .replace('{serc}', parsedArgs.serc.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Orders\DrawController::assign
+* @see app/Http/Controllers/Orders/DrawController.php:137
+* @route '/comps/{comp}/heats-and-draws/draws/{serc}/assign'
+*/
+assign.post = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: assign.url(args, options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\Orders\DrawController::addTank
+* @see app/Http/Controllers/Orders/DrawController.php:171
+* @route '/comps/{comp}/heats-and-draws/draws/{serc}/add-tank'
+*/
+export const addTank = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: addTank.url(args, options),
+    method: 'post',
+})
+
+addTank.definition = {
+    methods: ["post"],
+    url: '/comps/{comp}/heats-and-draws/draws/{serc}/add-tank',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\Orders\DrawController::addTank
+* @see app/Http/Controllers/Orders/DrawController.php:171
+* @route '/comps/{comp}/heats-and-draws/draws/{serc}/add-tank'
+*/
+addTank.url = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions) => {
+    if (Array.isArray(args)) {
+        args = {
+            comp: args[0],
+            serc: args[1],
+        }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+        comp: typeof args.comp === 'object'
+        ? args.comp.id
+        : args.comp,
+        serc: typeof args.serc === 'object'
+        ? args.serc.id
+        : args.serc,
+    }
+
+    return addTank.definition.url
+            .replace('{comp}', parsedArgs.comp.toString())
+            .replace('{serc}', parsedArgs.serc.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Orders\DrawController::addTank
+* @see app/Http/Controllers/Orders/DrawController.php:171
+* @route '/comps/{comp}/heats-and-draws/draws/{serc}/add-tank'
+*/
+addTank.post = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: addTank.url(args, options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\Orders\DrawController::compactTanks
+* @see app/Http/Controllers/Orders/DrawController.php:188
+* @route '/comps/{comp}/heats-and-draws/draws/{serc}/compact-tanks'
+*/
+export const compactTanks = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: compactTanks.url(args, options),
+    method: 'post',
+})
+
+compactTanks.definition = {
+    methods: ["post"],
+    url: '/comps/{comp}/heats-and-draws/draws/{serc}/compact-tanks',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\Orders\DrawController::compactTanks
+* @see app/Http/Controllers/Orders/DrawController.php:188
+* @route '/comps/{comp}/heats-and-draws/draws/{serc}/compact-tanks'
+*/
+compactTanks.url = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions) => {
+    if (Array.isArray(args)) {
+        args = {
+            comp: args[0],
+            serc: args[1],
+        }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+        comp: typeof args.comp === 'object'
+        ? args.comp.id
+        : args.comp,
+        serc: typeof args.serc === 'object'
+        ? args.serc.id
+        : args.serc,
+    }
+
+    return compactTanks.definition.url
+            .replace('{comp}', parsedArgs.comp.toString())
+            .replace('{serc}', parsedArgs.serc.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Orders\DrawController::compactTanks
+* @see app/Http/Controllers/Orders/DrawController.php:188
+* @route '/comps/{comp}/heats-and-draws/draws/{serc}/compact-tanks'
+*/
+compactTanks.post = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: compactTanks.url(args, options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\Orders\DrawController::removeTank
+* @see app/Http/Controllers/Orders/DrawController.php:253
+* @route '/comps/{comp}/heats-and-draws/draws/{serc}/remove-tank'
+*/
+export const removeTank = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: removeTank.url(args, options),
+    method: 'post',
+})
+
+removeTank.definition = {
+    methods: ["post"],
+    url: '/comps/{comp}/heats-and-draws/draws/{serc}/remove-tank',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\Orders\DrawController::removeTank
+* @see app/Http/Controllers/Orders/DrawController.php:253
+* @route '/comps/{comp}/heats-and-draws/draws/{serc}/remove-tank'
+*/
+removeTank.url = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions) => {
+    if (Array.isArray(args)) {
+        args = {
+            comp: args[0],
+            serc: args[1],
+        }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+        comp: typeof args.comp === 'object'
+        ? args.comp.id
+        : args.comp,
+        serc: typeof args.serc === 'object'
+        ? args.serc.id
+        : args.serc,
+    }
+
+    return removeTank.definition.url
+            .replace('{comp}', parsedArgs.comp.toString())
+            .replace('{serc}', parsedArgs.serc.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Orders\DrawController::removeTank
+* @see app/Http/Controllers/Orders/DrawController.php:253
+* @route '/comps/{comp}/heats-and-draws/draws/{serc}/remove-tank'
+*/
+removeTank.post = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: removeTank.url(args, options),
+    method: 'post',
+})
 
 /**
 * @see \App\Http\Controllers\Orders\DrawController::reset
-* @see app/Http/Controllers/Orders/DrawController.php:82
+* @see app/Http/Controllers/Orders/DrawController.php:303
+* @route '/comps/{comp}/heats-and-draws/draws/{serc}/reset'
+*/
+export const reset = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: reset.url(args, options),
+    method: 'post',
+})
+
+reset.definition = {
+    methods: ["post"],
+    url: '/comps/{comp}/heats-and-draws/draws/{serc}/reset',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\Orders\DrawController::reset
+* @see app/Http/Controllers/Orders/DrawController.php:303
 * @route '/comps/{comp}/heats-and-draws/draws/{serc}/reset'
 */
 reset.url = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -428,24 +758,14 @@ reset.url = (args: { comp: number | { id: number }, serc: number | { id: number 
 
 /**
 * @see \App\Http\Controllers\Orders\DrawController::reset
-* @see app/Http/Controllers/Orders/DrawController.php:82
+* @see app/Http/Controllers/Orders/DrawController.php:303
 * @route '/comps/{comp}/heats-and-draws/draws/{serc}/reset'
 */
-reset.get = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+reset.post = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: reset.url(args, options),
-    method: 'get',
+    method: 'post',
 })
 
-/**
-* @see \App\Http\Controllers\Orders\DrawController::reset
-* @see app/Http/Controllers/Orders/DrawController.php:82
-* @route '/comps/{comp}/heats-and-draws/draws/{serc}/reset'
-*/
-reset.head = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: reset.url(args, options),
-    method: 'head',
-})
-
-const DrawController = { generate, hide, tankSetup, tankSetupPost, edit, swap, reset }
+const DrawController = { generate, hide, tankSetup, tankSetupPost, edit, swap, remove, move, assign, addTank, compactTanks, removeTank, reset }
 
 export default DrawController

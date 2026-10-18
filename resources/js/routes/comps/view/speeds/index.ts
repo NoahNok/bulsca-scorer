@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\SpeedsEventController::hide
-* @see app/Http/Controllers/SpeedsEventController.php:306
+* @see app/Http/Controllers/SpeedsEventController.php:311
 * @route '/comps/{comp}/events/speeds/{event}/hide'
 */
 export const hide = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ hide.definition = {
 
 /**
 * @see \App\Http\Controllers\SpeedsEventController::hide
-* @see app/Http/Controllers/SpeedsEventController.php:306
+* @see app/Http/Controllers/SpeedsEventController.php:311
 * @route '/comps/{comp}/events/speeds/{event}/hide'
 */
 hide.url = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -46,7 +46,7 @@ hide.url = (args: { comp: number | { id: number }, event: number | { id: number 
 
 /**
 * @see \App\Http\Controllers\SpeedsEventController::hide
-* @see app/Http/Controllers/SpeedsEventController.php:306
+* @see app/Http/Controllers/SpeedsEventController.php:311
 * @route '/comps/{comp}/events/speeds/{event}/hide'
 */
 hide.get = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -56,7 +56,7 @@ hide.get = (args: { comp: number | { id: number }, event: number | { id: number 
 
 /**
 * @see \App\Http\Controllers\SpeedsEventController::hide
-* @see app/Http/Controllers/SpeedsEventController.php:306
+* @see app/Http/Controllers/SpeedsEventController.php:311
 * @route '/comps/{comp}/events/speeds/{event}/hide'
 */
 hide.head = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({

@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\SERCController::judge
-* @see app/Http/Controllers/SERCController.php:394
+* @see app/Http/Controllers/SERCController.php:471
 * @route '/comps/{comp}/events/sercs/{serc}/mark-splits/{judge}'
 */
 export const judge = (args: { comp: number | { id: number }, serc: number | { id: number }, judge: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number }, judge: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ judge.definition = {
 
 /**
 * @see \App\Http\Controllers\SERCController::judge
-* @see app/Http/Controllers/SERCController.php:394
+* @see app/Http/Controllers/SERCController.php:471
 * @route '/comps/{comp}/events/sercs/{serc}/mark-splits/{judge}'
 */
 judge.url = (args: { comp: number | { id: number }, serc: number | { id: number }, judge: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number }, judge: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -51,7 +51,7 @@ judge.url = (args: { comp: number | { id: number }, serc: number | { id: number 
 
 /**
 * @see \App\Http\Controllers\SERCController::judge
-* @see app/Http/Controllers/SERCController.php:394
+* @see app/Http/Controllers/SERCController.php:471
 * @route '/comps/{comp}/events/sercs/{serc}/mark-splits/{judge}'
 */
 judge.get = (args: { comp: number | { id: number }, serc: number | { id: number }, judge: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number }, judge: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -61,7 +61,7 @@ judge.get = (args: { comp: number | { id: number }, serc: number | { id: number 
 
 /**
 * @see \App\Http\Controllers\SERCController::judge
-* @see app/Http/Controllers/SERCController.php:394
+* @see app/Http/Controllers/SERCController.php:471
 * @route '/comps/{comp}/events/sercs/{serc}/mark-splits/{judge}'
 */
 judge.head = (args: { comp: number | { id: number }, serc: number | { id: number }, judge: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number }, judge: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({

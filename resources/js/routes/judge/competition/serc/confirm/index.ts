@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::post
-* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:59
+* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:89
 * @route '//judge.localhost/v2/{competition}/serc/{serc}/confirm'
 */
 export const post = (args: { competition: number | { id: number }, serc: number | { id: number } } | [competition: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -16,7 +16,7 @@ post.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::post
-* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:59
+* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:89
 * @route '//judge.localhost/v2/{competition}/serc/{serc}/confirm'
 */
 post.url = (args: { competition: number | { id: number }, serc: number | { id: number } } | [competition: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -46,7 +46,7 @@ post.url = (args: { competition: number | { id: number }, serc: number | { id: n
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController::post
-* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:59
+* @see app/Http/Controllers/DigitalJudge/SERC/SERCJudgeController.php:89
 * @route '//judge.localhost/v2/{competition}/serc/{serc}/confirm'
 */
 post.post = (args: { competition: number | { id: number }, serc: number | { id: number } } | [competition: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({

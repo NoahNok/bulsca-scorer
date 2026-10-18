@@ -59,7 +59,7 @@ addPost.post = (args: { comp: number | { id: number } } | [comp: number | { id: 
 
 /**
 * @see \App\Http\Controllers\SpeedsEventController::deleteMethod
-* @see app/Http/Controllers/SpeedsEventController.php:293
+* @see app/Http/Controllers/SpeedsEventController.php:298
 * @route '/comps/{comp}/events/speeds/{event}/delete'
 */
 export const deleteMethod = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -74,7 +74,7 @@ deleteMethod.definition = {
 
 /**
 * @see \App\Http\Controllers\SpeedsEventController::deleteMethod
-* @see app/Http/Controllers/SpeedsEventController.php:293
+* @see app/Http/Controllers/SpeedsEventController.php:298
 * @route '/comps/{comp}/events/speeds/{event}/delete'
 */
 deleteMethod.url = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -104,7 +104,7 @@ deleteMethod.url = (args: { comp: number | { id: number }, event: number | { id:
 
 /**
 * @see \App\Http\Controllers\SpeedsEventController::deleteMethod
-* @see app/Http/Controllers/SpeedsEventController.php:293
+* @see app/Http/Controllers/SpeedsEventController.php:298
 * @route '/comps/{comp}/events/speeds/{event}/delete'
 */
 deleteMethod.delete = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -114,7 +114,7 @@ deleteMethod.delete = (args: { comp: number | { id: number }, event: number | { 
 
 /**
 * @see \App\Http\Controllers\SpeedsEventController::editResultPost
-* @see app/Http/Controllers/SpeedsEventController.php:129
+* @see app/Http/Controllers/SpeedsEventController.php:134
 * @route '/comps/{comp}/events/speeds/{event}/edit-result'
 */
 export const editResultPost = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -129,7 +129,7 @@ editResultPost.definition = {
 
 /**
 * @see \App\Http\Controllers\SpeedsEventController::editResultPost
-* @see app/Http/Controllers/SpeedsEventController.php:129
+* @see app/Http/Controllers/SpeedsEventController.php:134
 * @route '/comps/{comp}/events/speeds/{event}/edit-result'
 */
 editResultPost.url = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -159,7 +159,7 @@ editResultPost.url = (args: { comp: number | { id: number }, event: number | { i
 
 /**
 * @see \App\Http\Controllers\SpeedsEventController::editResultPost
-* @see app/Http/Controllers/SpeedsEventController.php:129
+* @see app/Http/Controllers/SpeedsEventController.php:134
 * @route '/comps/{comp}/events/speeds/{event}/edit-result'
 */
 editResultPost.post = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -169,7 +169,7 @@ editResultPost.post = (args: { comp: number | { id: number }, event: number | { 
 
 /**
 * @see \App\Http\Controllers\SpeedsEventController::printResults
-* @see app/Http/Controllers/SpeedsEventController.php:340
+* @see app/Http/Controllers/SpeedsEventController.php:345
 * @route '/comps/{comp}/events/speeds/{event}/print-results'
 */
 export const printResults = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -184,7 +184,7 @@ printResults.definition = {
 
 /**
 * @see \App\Http\Controllers\SpeedsEventController::printResults
-* @see app/Http/Controllers/SpeedsEventController.php:340
+* @see app/Http/Controllers/SpeedsEventController.php:345
 * @route '/comps/{comp}/events/speeds/{event}/print-results'
 */
 printResults.url = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -214,7 +214,7 @@ printResults.url = (args: { comp: number | { id: number }, event: number | { id:
 
 /**
 * @see \App\Http\Controllers\SpeedsEventController::printResults
-* @see app/Http/Controllers/SpeedsEventController.php:340
+* @see app/Http/Controllers/SpeedsEventController.php:345
 * @route '/comps/{comp}/events/speeds/{event}/print-results'
 */
 printResults.get = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -224,7 +224,7 @@ printResults.get = (args: { comp: number | { id: number }, event: number | { id:
 
 /**
 * @see \App\Http\Controllers\SpeedsEventController::printResults
-* @see app/Http/Controllers/SpeedsEventController.php:340
+* @see app/Http/Controllers/SpeedsEventController.php:345
 * @route '/comps/{comp}/events/speeds/{event}/print-results'
 */
 printResults.head = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({

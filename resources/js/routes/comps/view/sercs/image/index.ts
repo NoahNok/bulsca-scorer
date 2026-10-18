@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\SERCController::remove
-* @see app/Http/Controllers/SERCController.php:309
+* @see app/Http/Controllers/SERCController.php:386
 * @route '/comps/{comp}/events/sercs/{serc}/image/remove'
 */
 export const remove = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ remove.definition = {
 
 /**
 * @see \App\Http\Controllers\SERCController::remove
-* @see app/Http/Controllers/SERCController.php:309
+* @see app/Http/Controllers/SERCController.php:386
 * @route '/comps/{comp}/events/sercs/{serc}/image/remove'
 */
 remove.url = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -46,7 +46,7 @@ remove.url = (args: { comp: number | { id: number }, serc: number | { id: number
 
 /**
 * @see \App\Http\Controllers\SERCController::remove
-* @see app/Http/Controllers/SERCController.php:309
+* @see app/Http/Controllers/SERCController.php:386
 * @route '/comps/{comp}/events/sercs/{serc}/image/remove'
 */
 remove.get = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -56,7 +56,7 @@ remove.get = (args: { comp: number | { id: number }, serc: number | { id: number
 
 /**
 * @see \App\Http\Controllers\SERCController::remove
-* @see app/Http/Controllers/SERCController.php:309
+* @see app/Http/Controllers/SERCController.php:386
 * @route '/comps/{comp}/events/sercs/{serc}/image/remove'
 */
 remove.head = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
