@@ -176,7 +176,7 @@
 
         <div class="sticky top-4 flex space-x-2 ">
             <a href="#" class="se-btn">Back</a>
-            <button class="se-btn se-btn-success" @click="save">{{ $edit ? 'Update' : 'Create' }}</button>
+            <button class="se-btn se-btn-success" @click="() => save()">{{ $edit ? 'Update' : 'Create' }}</button>
         </div>
     </div>
 
@@ -241,8 +241,7 @@
         <div class="se-form-input" style="margin-bottom: 0 !important">
             <label for="">League Objectives</label>
 
-            <select style="margin-bottom: 0 !important"
-                @change="use_league_objectives = $event.target.value === 'yes'">
+            <select style="margin-bottom: 0 !important" @change="use_league_objectives = $event.target.value === 'yes'">
                 <option value="no" :selected="!use_league_objectives">No</option>
                 <option value="yes" :selected="use_league_objectives">Yes</option>
             </select>

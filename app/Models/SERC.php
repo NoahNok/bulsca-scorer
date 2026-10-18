@@ -244,7 +244,7 @@ class SERC extends Event
     {
         $comp = $this->getCompetition;
         if ($jsonable) {
-            return $this->draw()->with('entity')->orderBy('tank')->orderBy('draw')->get()->map(function ($draw) use ($comp) {
+            return $this->getDraw()->with('entity')->orderBy('tank')->orderBy('draw')->get()->map(function ($draw) use ($comp) {
                 return [
                     'tank' => $draw->tank,
                     'draw' => $draw->draw,
