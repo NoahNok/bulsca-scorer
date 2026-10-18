@@ -61,39 +61,22 @@ class SERCController extends Controller
 
     public function restrictionMap(Competition $comp, SERC $serc)
     {
-        $judges = $serc->getJudges()->with('restrictedLeagues')->get();
         $entities = $serc->getScorableEntities();
 
-        $restrictionMap = [];
+        $restrictionMap = $entities->map(function ($entity) use ($comp, $serc) {
+            $objectives = $serc->leagueObjectivesFor($entity);
 
-        foreach ($entities as $entity) {
-            $leagueId = $entity->getLeague()?->id;
-            $leagueName = $entity->getLeague()?->name;
-
-            $visibleJudges = [];
-
-            if ($serc->use_restricted_judges && $leagueId) {
-                // If restrictions are enabled, find judges restricted to this league
-                foreach ($judges as $judge) {
-                    if ($judge->restrictedLeagues->isEmpty()) {
-                        // Judges with no restrictions can see all entities
-                        $visibleJudges[] = $judge->name;
-                    } elseif ($judge->restrictedLeagues->contains('id', $leagueId)) {
-                        // Judge is restricted to this league
-                        $visibleJudges[] = $judge->name;
-                    }
-                }
-            } else {
-                // No restrictions enabled, all judges see all entities
-                $visibleJudges = $judges->pluck('name')->toArray();
-            }
-
-            $restrictionMap[] = [
+            return [
                 'entity_name' => $entity->getName($comp),
-                'league_name' => $leagueName,
-                'judges' => $visibleJudges,
+                'league_names' => $entity->leagues->pluck('name')->all(),
+                'objective' => $objectives->count() == 1 ? $objectives->first()->name : null,
+                'problem' => match ($objectives->count()) {
+                    0 => 'no_objective',
+                    1 => null,
+                    default => 'several_objectives',
+                },
             ];
-        }
+        })->values()->all();
 
         return view('competition.events.sercs.restriction-map', [
             'comp' => $comp,
@@ -125,6 +108,13 @@ class SERCController extends Controller
 
         abort_if(SERCJudge::where('serc', $serc->id ?? 0)->whereIn('id', $judgeIds)->count() != $judgeIds->count(), 422, 'Unknown judge for this SERC.');
         abort_if(SERCMarkingPoint::where('serc', $serc->id ?? 0)->whereIn('id', $markingPointIds)->count() != $markingPointIds->count(), 422, 'Unknown marking point for this SERC.');
+
+        // changing which objective a league is marked against strands the marks already entered,
+        // so the organiser has to confirm it once they know how many marks are affected
+        $affectedMarks = $this->marksAffectedByLeagueObjectiveChanges($serc, $validated);
+        if ($affectedMarks > 0 && !($validated['confirm_affected_marks'] ?? false)) {
+            return response()->json(['affected_marks' => $affectedMarks], 409);
+        }
 
         // Delete any judges or marking points that were removed in the frontend
         SERCJudge::destroy($validated['deleted']['judges']);
@@ -176,10 +166,47 @@ class SERCController extends Controller
             }
         }
 
+        if ($affectedMarks > 0) {
+            $serc->recordActivity('SERC_LEAGUE_OBJECTIVES_CHANGED', "League Objectives changed for '{$serc->getName()}', affecting {$affectedMarks} " . ($affectedMarks == 1 ? 'mark' : 'marks'), context: ['affected_marks' => $affectedMarks], related: [$serc, $comp]);
+        }
 
         $request->session()->flash('success', $serc->wasRecentlyCreated ? "SERC created!" : "SERC updated!");
 
         return response()->json(['id' => $serc->id]);
+    }
+
+    /**
+     * How many Marks would be marked against a different Objective after this save: all of the
+     * SERC's Marks when League Objectives is switched on or off, otherwise the Marks on each
+     * Objective whose Leagues change while it's on.
+     */
+    private function marksAffectedByLeagueObjectiveChanges(SERC $serc, array $validated): int
+    {
+        if (!$serc->exists) {
+            return 0;
+        }
+
+        $wasOn = (bool) $serc->use_restricted_judges;
+        $isOn = array_key_exists('use_restricted_judges', $validated) ? (bool) $validated['use_restricted_judges'] : $wasOn;
+
+        if ($wasOn != $isOn) {
+            return SERCResult::whereIn('marking_point', $serc->getMarkingPoints()->select('serc_marking_points.id'))->count();
+        }
+
+        if (!$isOn) {
+            return 0;
+        }
+
+        $changedObjectives = collect($validated['judges'])
+            ->filter(fn($judge) => $judge['id'] != null && array_key_exists('restricted_leagues', $judge))
+            ->filter(function ($judge) {
+                $current = SERCJudge::find($judge['id'])->restrictedLeagues()->pluck('leagues.id')->sort()->values()->all();
+
+                return $current != collect($judge['restricted_leagues'])->map(fn($id) => (int) $id)->sort()->values()->all();
+            })
+            ->pluck('id');
+
+        return SERCResult::whereIn('marking_point', SERCMarkingPoint::whereIn('judge', $changedObjectives)->select('id'))->count();
     }
 
     public function delete(Competition $comp, SERC $serc, Request $request)

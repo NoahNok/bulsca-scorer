@@ -4,6 +4,8 @@ namespace App\Http\Requests\SERC;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 class SaveSERCSetupRequest extends FormRequest
 {
@@ -35,10 +37,33 @@ class SaveSERCSetupRequest extends FormRequest
             'judges.*.marking_points.*.description' => ['required', 'string'],
             'judges.*.marking_points.*.weight' => ['required', 'numeric'],
             'judges.*.marking_points.*.template_id' => ['required', 'uuid', 'exists:marking_point_templates,id'],
+            'use_restricted_judges' => ['sometimes', 'boolean'],
+            'confirm_affected_marks' => ['sometimes', 'boolean'],
+            'judges.*.restricted_leagues' => ['sometimes', 'array'],
+            // only this competition's leagues can be assigned to an objective
+            'judges.*.restricted_leagues.*' => ['integer', 'distinct', Rule::exists('leagues', 'id')->where('competition', $this->route('comp')->id)],
             'deleted.judges' => ['array'],
             'deleted.marking_points' => ['array'],
 
 
+        ];
+    }
+
+    public function after(): array
+    {
+        return [
+            function (Validator $validator) {
+                if (!$this->boolean('use_restricted_judges')) {
+                    return;
+                }
+
+                // each league is marked against exactly one objective
+                $leagueIds = collect($this->input('judges', []))->pluck('restricted_leagues')->flatten();
+
+                if ($leagueIds->duplicates()->isNotEmpty()) {
+                    $validator->errors()->add('judges', 'A league can only be assigned to one objective.');
+                }
+            },
         ];
     }
 

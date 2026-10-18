@@ -284,6 +284,18 @@ class SERC extends Event
         return $this->hasMany(SERCJudge::class, 'serc', 'id');
     }
 
+    /**
+     * With League Objectives on, the Objectives assigned to any of the Entity's Leagues. The Entity
+     * is marked against the Objective only when there's exactly one; none or several is an error
+     * for the organiser to fix.
+     */
+    public function leagueObjectivesFor(Entity $entity)
+    {
+        return $this->getJudges()
+            ->whereHas('restrictedLeagues', fn($q) => $q->whereIn('leagues.id', $entity->leagues()->select('leagues.id')))
+            ->get();
+    }
+
     public function getMarkingPoints()
     {
         return $this->hasManyThrough(SERCMarkingPoint::class, SERCJudge::class, 'serc', 'judge', 'id', 'id');
@@ -505,36 +517,20 @@ class SERC extends Event
     {
 
         if ($this->use_restricted_judges) {
-            $judges = $this->getJudges()->with('restrictedLeagues')->get();
-
-            // Build up a map of league: markingPoints
-            $leagueMarkingPointMap = [];
-
-            foreach ($judges as $judge) {
-                $judgeMarkingPoints = $judge->getMarkingPoints->pluck('id');
-                foreach ($judge->restrictedLeagues as $league) {
-                    $leagueMarkingPointMap[$league->id] = $judgeMarkingPoints;
-                }
-            }
-
-            $totalMarkedEntites = 0;
+            // each entity is complete once every marking point on its League's Objective has a Mark
             $entities = $this->getScorableEntities();
 
-            // Foreach entity get the marking points for their league and check if the total marked matches expected
-            foreach ($entities as $entity) {
-                $leagueId = $entity->leagues->first()?->id;
+            $totalMarkedEntites = $entities->filter(function ($entity) {
+                $objectives = $this->leagueObjectivesFor($entity);
 
-                if (!key_exists($leagueId, $leagueMarkingPointMap)) {
-                    continue;
+                if ($objectives->count() != 1) {
+                    return false;
                 }
 
-                $targetMps = $leagueMarkingPointMap[$leagueId];
-                $results = SERCResult::whereIn('marking_point', $targetMps)->where('entity_id', $entity->id)->count();
+                $targetMps = $objectives->first()->getMarkingPoints()->pluck('id');
 
-                if ($results == count($targetMps)) {
-                    $totalMarkedEntites++;
-                }
-            }
+                return SERCResult::whereIn('marking_point', $targetMps)->whereMorphedTo('entity', $entity)->count() == $targetMps->count();
+            })->count();
 
             return $totalMarkedEntites >= $entities->count();
         }
@@ -551,7 +547,7 @@ class SERC extends Event
 
     public function getSERCConfiguration()
     {
-        $judges = $this->getJudges()->with('getMarkingPoints')->get();
+        $judges = $this->getJudges()->with('getMarkingPoints', 'restrictedLeagues')->get();
 
         $config = [];
 
@@ -573,6 +569,7 @@ class SERC extends Event
                 'id' => $judge->id,
                 'name' => $judge->name,
                 'hint' => $judge->description,
+                'restricted_leagues' => $judge->restrictedLeagues->pluck('id')->all(),
                 'marking_points' => $mpConfig
             ];
         }

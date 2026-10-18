@@ -34,6 +34,8 @@ class SERCEditor extends Component
 
         $templates = MarkingPointTemplate::select('id', 'name')->orderBy('default', 'desc')->get();
 
-        return view('components.serc.serc-editor', ['templates' => $templates, 'defaultTemplate' => $this->defaultTemplate, 'configuration' => $this->serc?->getSERCConfiguration() ?? [], 'serc' => $this->serc, 'edit' => $this->edit, 'comp' => request()->route('comp')]);
+        $comp = request()->route('comp');
+
+        return view('components.serc.serc-editor', ['templates' => $templates, 'defaultTemplate' => $this->defaultTemplate, 'configuration' => $this->serc?->getSERCConfiguration() ?? [], 'serc' => $this->serc, 'edit' => $this->edit, 'comp' => $comp, 'leagues' => $comp->getLeagues()->orderBy('name')->get(['id', 'name'])]);
     }
 }

@@ -7,6 +7,9 @@
 
     judges: {{ json_encode($configuration) }},
 
+    use_league_objectives: {{ json_encode((bool) $serc?->use_restricted_judges) }},
+    leagues: {{ $leagues->toJson() }},
+
     marking_point_templates: {{ $templates->toJson() }},
     default_template_id: {{ json_encode($defaultTemplate?->id) }},
 
@@ -79,15 +82,16 @@
 
     errors: null,
 
-    async save() {
+    async save(confirmAffectedMarks = false) {
 
         let payload = {
             name: this.name,
             type: this.type,
             target_entity: this.target,
+            use_restricted_judges: this.use_league_objectives,
             judges: this.judges,
             deleted: this.deleted,
-
+            confirm_affected_marks: confirmAffectedMarks,
         };
 
         let response = await fetch('{{ $edit ? route('comps.events.sercs.editPost', ['comp' => $serc->competition, 'serc' => $serc->id]) : route('comps.events.sercs.addPost', ['comp' => $comp]) }}', {
@@ -114,6 +118,14 @@
 
             window.location.href = '{{ route('comps.events.sercs.view', ['comp' => $comp, 'serc' => '__serc__']) }}'.replace('__serc__', data.id);
 
+        } else if (response.status === 409) {
+            // the change moves Leagues onto different Objectives after marking has started
+            let { affected_marks } = await response.json();
+            let marks = affected_marks === 1 ? '1 mark has' : `${affected_marks} marks have`;
+
+            if (await askConfirm(`${marks} already been entered against the current League Objectives. After this change, the affected entities will show as unmarked against their new Objective. Save anyway?`)) {
+                await this.save(true);
+            }
         } else {
             let errorData = await response.json();
 
@@ -203,7 +215,7 @@
 
 
 
-    <div class="grid-4">
+    <div class="grid-5">
         <div class="se-form-input col-span-2">
             <label for="">Name</label>
             <input type="text" class="input" placeholder="Name" x-model="name" value="{{ $serc?->name ?? '' }}"
@@ -226,6 +238,16 @@
                 <option value="competitor">Competitiors</option>
             </select>
         </div>
+        <div class="se-form-input" style="margin-bottom: 0 !important">
+            <label for="">League Objectives</label>
+
+            <select style="margin-bottom: 0 !important"
+                @change="use_league_objectives = $event.target.value === 'yes'">
+                <option value="no" :selected="!use_league_objectives">No</option>
+                <option value="yes" :selected="use_league_objectives">Yes</option>
+            </select>
+            <small class="info">Mark each entity against the Objective assigned to its League.</small>
+        </div>
     </div>
 
     <h3>Casualties/Objectives</h3>
@@ -247,6 +269,18 @@
 
                 <x-se-input label="Name" name="name" x-model.text="judge.name" placeholder="Casualty/Objective X"
                     required />
+
+                <div class="se-form-input mt-3" x-show="use_league_objectives" x-cloak>
+                    <label for="">Leagues</label>
+                    <select multiple x-model="judge.restricted_leagues">
+                        <template x-for="league in leagues" :key="league.id">
+                            <option :value="league.id" x-text="league.name"
+                                :selected="(judge.restricted_leagues || []).map(Number).includes(league.id)"></option>
+                        </template>
+                    </select>
+                    <small class="info" x-show="!(judge.restricted_leagues || []).length">No Leagues, so no
+                        entities will be marked against this Objective.</small>
+                </div>
 
                 <div class="se-form-input  mt-3" x-init="createQuill($refs.editor, index)">
                     <label for="">Marking Hints</label>
@@ -302,6 +336,7 @@
             @click="judges.push({
             id: null,
             name: '',
+            restricted_leagues: [],
             marking_points: [],
             sort_id: Date.now(),
         })" />
