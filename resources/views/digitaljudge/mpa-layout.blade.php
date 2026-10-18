@@ -17,7 +17,7 @@
     <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
 
 
-    @vite('resources/js/app.js')
+    @vite('resources/js/legacy-app.js')
     @vite('resources/css/app.css')
 
 

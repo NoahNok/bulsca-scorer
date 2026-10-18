@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Unavailable | Live | BULSCA</title>
 
-    @vite('resources/js/app.js')
+    @vite('resources/js/legacy-app.js')
     @vite('resources/css/app.css')
     <style>
 

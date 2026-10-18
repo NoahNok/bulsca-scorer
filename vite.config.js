@@ -15,7 +15,7 @@ export default defineConfig({
     },
     plugins: [
         laravel({
-            input: ["resources/css/app.css", "resources/js/app.js", "resources/js/basic-app.js"],
+            input: ["resources/css/app.css", "resources/js/app.ts", "resources/js/legacy-app.js", "resources/js/basic-app.js"],
             refresh: true,
         }),
         inertia(),
