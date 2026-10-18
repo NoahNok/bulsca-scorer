@@ -12,7 +12,6 @@ use ALajusticia\Logins\Traits\HasLogins;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
 use NotificationChannels\WebPush\HasPushSubscriptions;
 use Spatie\OneTimePasswords\Models\Concerns\HasOneTimePasswords;
@@ -69,11 +68,11 @@ class User extends Authenticatable
             return null;
         }
 
-        $disk = Storage::disk(ProfilePhotoService::DISK);
-
+        // asset() follows the request's scheme and host; the public disk's url() is
+        // built from APP_URL, which gave http:// links on the https site
         return [
-            'webp' => $disk->url($this->profile_photo . '.webp'),
-            'jpg' => $disk->url($this->profile_photo . '.jpg'),
+            'webp' => asset('storage/' . $this->profile_photo . '.webp'),
+            'jpg' => asset('storage/' . $this->profile_photo . '.jpg'),
         ];
     }
 
