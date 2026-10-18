@@ -154,7 +154,8 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
     });
 
 
-    Route::get('', [DigitalJudgeController::class, 'index'])->name('dj.index');
+    Route::get('', [DigitalJudgeController::class, 'landing'])->name('dj.landing');
+    Route::get('legacy', [DigitalJudgeController::class, 'index'])->name('dj.index');
     Route::post('login', [DigitalJudgeController::class, 'login'])->name('dj.login');
     Route::get('logout', [DigitalJudgeController::class, 'logout'])->name('dj.logout');
 

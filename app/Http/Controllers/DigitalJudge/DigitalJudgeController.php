@@ -17,9 +17,32 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use Inertia\Inertia;
 
 class DigitalJudgeController extends Controller
 {
+    /**
+     * The judge site's front door: points officials at Digital Judge, with Legacy Digital Judge
+     * behind a confirmation. Old `?pin=` links go straight on to whichever app takes that PIN.
+     */
+    function landing(Request $request)
+    {
+        if (DigitalJudge::canClientJudge()) return redirect()->route('dj.home');
+
+        $pin = $request->query('pin');
+
+        if (is_string($pin) && ctype_digit($pin)) {
+            // Digital Judge has no head PIN: organisers give the Referee role instead
+            $isHeadPin = Competition::where('digitalJudgeHeadPin', $pin)->where('digitalJudgeEnabled', true)->exists();
+
+            if ($isHeadPin) return redirect()->route('dj.index', ['pin' => $pin]);
+
+            return redirect()->route('judge.join-link', $pin);
+        }
+
+        return Inertia::render('Judge/Landing');
+    }
+
     function index()
     {
         if (DigitalJudge::canClientJudge()) return redirect()->route('dj.home');
@@ -52,7 +75,7 @@ class DigitalJudgeController extends Controller
     function logout()
     {
         DigitalJudge::stopClientFromJudging();
-        return redirect()->route('dj.index');
+        return redirect()->route('dj.landing');
     }
 
     private function startJudging(Competition $comp, bool $isHead, $clientName)

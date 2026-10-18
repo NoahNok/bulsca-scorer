@@ -51,6 +51,7 @@
 
             <button class="btn w-full">Login</button>
         </form>
+        <a href="{{ route('dj.landing') }}" class="link text-sm">Back to Digital Judge</a>
         <small class="text-center" style="
     width: 60%;
 ">Personal devices are used at <strong>your own risk</strong>.

@@ -300,6 +300,12 @@ An alternate sign-in method (password instead of PIN) is a quiet text button und
 form that swaps the fields and `action`, not a second primary button. Links between the
 auth pages ("Create an account", "Forgot password?", "Back to sign in") are quiet text links too.
 
+`Judge/Landing` (the judge site's root) is the same shape with no form: one
+primary "Start judging" `Button` into Digital Judge, then a quiet "Use Legacy
+Digital Judge" text button that `confirm()`s before a full page load to the
+Blade legacy app (not `router.visit`, since it isn't an Inertia page), and the
+personal-device disclaimer in `text-xs text-gray-500` at the bottom.
+
 ### Privileged actions
 
 Group role-specific actions (e.g. head referee) in their own panel at the

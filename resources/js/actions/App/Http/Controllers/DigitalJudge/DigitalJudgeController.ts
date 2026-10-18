@@ -1,8 +1,52 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../../wayfinder'
 /**
-* @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::index
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:23
+* @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::landing
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:28
 * @route '//judge.localhost'
+*/
+export const landing = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: landing.url(options),
+    method: 'get',
+})
+
+landing.definition = {
+    methods: ["get","head"],
+    url: '//judge.localhost',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::landing
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:28
+* @route '//judge.localhost'
+*/
+landing.url = (options?: RouteQueryOptions) => {
+    return landing.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::landing
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:28
+* @route '//judge.localhost'
+*/
+landing.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: landing.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::landing
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:28
+* @route '//judge.localhost'
+*/
+landing.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: landing.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::index
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:46
+* @route '//judge.localhost/legacy'
 */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -11,13 +55,13 @@ export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 index.definition = {
     methods: ["get","head"],
-    url: '//judge.localhost',
+    url: '//judge.localhost/legacy',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::index
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:23
-* @route '//judge.localhost'
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:46
+* @route '//judge.localhost/legacy'
 */
 index.url = (options?: RouteQueryOptions) => {
     return index.definition.url + queryParams(options)
@@ -25,8 +69,8 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::index
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:23
-* @route '//judge.localhost'
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:46
+* @route '//judge.localhost/legacy'
 */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -35,8 +79,8 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::index
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:23
-* @route '//judge.localhost'
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:46
+* @route '//judge.localhost/legacy'
 */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: index.url(options),
@@ -45,7 +89,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::login
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:29
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:52
 * @route '//judge.localhost/login'
 */
 export const login = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -60,7 +104,7 @@ login.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::login
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:29
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:52
 * @route '//judge.localhost/login'
 */
 login.url = (options?: RouteQueryOptions) => {
@@ -69,7 +113,7 @@ login.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::login
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:29
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:52
 * @route '//judge.localhost/login'
 */
 login.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -79,7 +123,7 @@ login.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::logout
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:52
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:75
 * @route '//judge.localhost/logout'
 */
 export const logout = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -94,7 +138,7 @@ logout.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::logout
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:52
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:75
 * @route '//judge.localhost/logout'
 */
 logout.url = (options?: RouteQueryOptions) => {
@@ -103,7 +147,7 @@ logout.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::logout
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:52
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:75
 * @route '//judge.localhost/logout'
 */
 logout.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -113,7 +157,7 @@ logout.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::logout
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:52
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:75
 * @route '//judge.localhost/logout'
 */
 logout.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -123,7 +167,7 @@ logout.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::home
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:67
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:90
 * @route '//judge.localhost/home'
 */
 export const home = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -138,7 +182,7 @@ home.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::home
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:67
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:90
 * @route '//judge.localhost/home'
 */
 home.url = (options?: RouteQueryOptions) => {
@@ -147,7 +191,7 @@ home.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::home
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:67
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:90
 * @route '//judge.localhost/home'
 */
 home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -157,7 +201,7 @@ home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::home
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:67
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:90
 * @route '//judge.localhost/home'
 */
 home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -167,7 +211,7 @@ home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::help
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:182
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:208
 * @route '//judge.localhost/help'
 */
 export const help = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -182,7 +226,7 @@ help.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::help
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:182
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:208
 * @route '//judge.localhost/help'
 */
 help.url = (options?: RouteQueryOptions) => {
@@ -191,7 +235,7 @@ help.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::help
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:182
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:208
 * @route '//judge.localhost/help'
 */
 help.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -201,7 +245,7 @@ help.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::help
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:182
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:208
 * @route '//judge.localhost/help'
 */
 help.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -211,7 +255,7 @@ help.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::confirmResults
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:112
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:138
 * @route '//judge.localhost/confirm/serc/{serc}'
 */
 export const confirmResults = (args: { serc: number | { id: number } } | [serc: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -226,7 +270,7 @@ confirmResults.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::confirmResults
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:112
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:138
 * @route '//judge.localhost/confirm/serc/{serc}'
 */
 confirmResults.url = (args: { serc: number | { id: number } } | [serc: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -259,7 +303,7 @@ confirmResults.url = (args: { serc: number | { id: number } } | [serc: number | 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::confirmResults
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:112
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:138
 * @route '//judge.localhost/confirm/serc/{serc}'
 */
 confirmResults.get = (args: { serc: number | { id: number } } | [serc: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -269,7 +313,7 @@ confirmResults.get = (args: { serc: number | { id: number } } | [serc: number | 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::confirmResults
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:112
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:138
 * @route '//judge.localhost/confirm/serc/{serc}'
 */
 confirmResults.head = (args: { serc: number | { id: number } } | [serc: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -279,7 +323,7 @@ confirmResults.head = (args: { serc: number | { id: number } } | [serc: number |
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::confirmResultsPost
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:118
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:144
 * @route '//judge.localhost/confirm/serc/{serc}'
 */
 export const confirmResultsPost = (args: { serc: number | { id: number } } | [serc: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -294,7 +338,7 @@ confirmResultsPost.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::confirmResultsPost
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:118
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:144
 * @route '//judge.localhost/confirm/serc/{serc}'
 */
 confirmResultsPost.url = (args: { serc: number | { id: number } } | [serc: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -327,7 +371,7 @@ confirmResultsPost.url = (args: { serc: number | { id: number } } | [serc: numbe
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::confirmResultsPost
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:118
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:144
 * @route '//judge.localhost/confirm/serc/{serc}'
 */
 confirmResultsPost.post = (args: { serc: number | { id: number } } | [serc: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -337,7 +381,7 @@ confirmResultsPost.post = (args: { serc: number | { id: number } } | [serc: numb
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::confirmSpeedResults
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:128
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:154
 * @route '//judge.localhost/confirm/speed/{speed}'
 */
 export const confirmSpeedResults = (args: { speed: number | { id: number } } | [speed: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -352,7 +396,7 @@ confirmSpeedResults.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::confirmSpeedResults
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:128
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:154
 * @route '//judge.localhost/confirm/speed/{speed}'
 */
 confirmSpeedResults.url = (args: { speed: number | { id: number } } | [speed: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -385,7 +429,7 @@ confirmSpeedResults.url = (args: { speed: number | { id: number } } | [speed: nu
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::confirmSpeedResults
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:128
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:154
 * @route '//judge.localhost/confirm/speed/{speed}'
 */
 confirmSpeedResults.get = (args: { speed: number | { id: number } } | [speed: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -395,7 +439,7 @@ confirmSpeedResults.get = (args: { speed: number | { id: number } } | [speed: nu
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::confirmSpeedResults
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:128
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:154
 * @route '//judge.localhost/confirm/speed/{speed}'
 */
 confirmSpeedResults.head = (args: { speed: number | { id: number } } | [speed: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -405,7 +449,7 @@ confirmSpeedResults.head = (args: { speed: number | { id: number } } | [speed: n
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::confirmSpeedResultsPost
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:134
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:160
 * @route '//judge.localhost/confirm/speed/{speed}'
 */
 export const confirmSpeedResultsPost = (args: { speed: number | { id: number } } | [speed: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -420,7 +464,7 @@ confirmSpeedResultsPost.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::confirmSpeedResultsPost
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:134
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:160
 * @route '//judge.localhost/confirm/speed/{speed}'
 */
 confirmSpeedResultsPost.url = (args: { speed: number | { id: number } } | [speed: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -453,7 +497,7 @@ confirmSpeedResultsPost.url = (args: { speed: number | { id: number } } | [speed
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::confirmSpeedResultsPost
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:134
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:160
 * @route '//judge.localhost/confirm/speed/{speed}'
 */
 confirmSpeedResultsPost.post = (args: { speed: number | { id: number } } | [speed: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -463,7 +507,7 @@ confirmSpeedResultsPost.post = (args: { speed: number | { id: number } } | [spee
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::live
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:226
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:252
 * @route '//judge.localhost/live'
 */
 export const live = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -478,7 +522,7 @@ live.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::live
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:226
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:252
 * @route '//judge.localhost/live'
 */
 live.url = (options?: RouteQueryOptions) => {
@@ -487,7 +531,7 @@ live.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::live
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:226
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:252
 * @route '//judge.localhost/live'
 */
 live.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -497,7 +541,7 @@ live.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::live
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:226
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:252
 * @route '//judge.localhost/live'
 */
 live.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -507,7 +551,7 @@ live.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::toggle
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:76
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:102
 * @route '/comps/{comp}/digital-judge-toggle'
 */
 export const toggle = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -522,7 +566,7 @@ toggle.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::toggle
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:76
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:102
 * @route '/comps/{comp}/digital-judge-toggle'
 */
 toggle.url = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -555,7 +599,7 @@ toggle.url = (args: { comp: number | { id: number } } | [comp: number | { id: nu
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::toggle
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:76
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:102
 * @route '/comps/{comp}/digital-judge-toggle'
 */
 toggle.get = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -565,7 +609,7 @@ toggle.get = (args: { comp: number | { id: number } } | [comp: number | { id: nu
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::toggle
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:76
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:102
 * @route '/comps/{comp}/digital-judge-toggle'
 */
 toggle.head = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -575,7 +619,7 @@ toggle.head = (args: { comp: number | { id: number } } | [comp: number | { id: n
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::settingsPost
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:188
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:214
 * @route '/comps/{comp}/digital-judge-settings'
 */
 export const settingsPost = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -590,7 +634,7 @@ settingsPost.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::settingsPost
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:188
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:214
 * @route '/comps/{comp}/digital-judge-settings'
 */
 settingsPost.url = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -623,7 +667,7 @@ settingsPost.url = (args: { comp: number | { id: number } } | [comp: number | { 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::settingsPost
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:188
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:214
 * @route '/comps/{comp}/digital-judge-settings'
 */
 settingsPost.post = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -633,7 +677,7 @@ settingsPost.post = (args: { comp: number | { id: number } } | [comp: number | {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::sercsReleasePost
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:209
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:235
 * @route '/comps/{comp}/digital-judge-sercs-release'
 */
 export const sercsReleasePost = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -648,7 +692,7 @@ sercsReleasePost.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::sercsReleasePost
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:209
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:235
 * @route '/comps/{comp}/digital-judge-sercs-release'
 */
 sercsReleasePost.url = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -681,7 +725,7 @@ sercsReleasePost.url = (args: { comp: number | { id: number } } | [comp: number 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::sercsReleasePost
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:209
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:235
 * @route '/comps/{comp}/digital-judge-sercs-release'
 */
 sercsReleasePost.post = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -691,7 +735,7 @@ sercsReleasePost.post = (args: { comp: number | { id: number } } | [comp: number
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::qrs
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:218
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:244
 * @route '/comps/{comp}/digital-judge-qrs'
 */
 export const qrs = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -706,7 +750,7 @@ qrs.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::qrs
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:218
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:244
 * @route '/comps/{comp}/digital-judge-qrs'
 */
 qrs.url = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -739,7 +783,7 @@ qrs.url = (args: { comp: number | { id: number } } | [comp: number | { id: numbe
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::qrs
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:218
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:244
 * @route '/comps/{comp}/digital-judge-qrs'
 */
 qrs.get = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -749,7 +793,7 @@ qrs.get = (args: { comp: number | { id: number } } | [comp: number | { id: numbe
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::qrs
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:218
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:244
 * @route '/comps/{comp}/digital-judge-qrs'
 */
 qrs.head = (args: { comp: number | { id: number } } | [comp: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -759,7 +803,7 @@ qrs.head = (args: { comp: number | { id: number } } | [comp: number | { id: numb
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::speedToggle
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:104
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:130
 * @route '/comps/{comp}/events/speeds/{event}/digital-judge-toggle'
 */
 export const speedToggle = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -774,7 +818,7 @@ speedToggle.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::speedToggle
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:104
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:130
 * @route '/comps/{comp}/events/speeds/{event}/digital-judge-toggle'
 */
 speedToggle.url = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -804,7 +848,7 @@ speedToggle.url = (args: { comp: number | { id: number }, event: number | { id: 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::speedToggle
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:104
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:130
 * @route '/comps/{comp}/events/speeds/{event}/digital-judge-toggle'
 */
 speedToggle.get = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -814,7 +858,7 @@ speedToggle.get = (args: { comp: number | { id: number }, event: number | { id: 
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::speedToggle
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:104
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:130
 * @route '/comps/{comp}/events/speeds/{event}/digital-judge-toggle'
 */
 speedToggle.head = (args: { comp: number | { id: number }, event: number | { id: number } } | [comp: number | { id: number }, event: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -824,7 +868,7 @@ speedToggle.head = (args: { comp: number | { id: number }, event: number | { id:
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::sercToggle
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:96
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:122
 * @route '/comps/{comp}/events/sercs/{serc}/digital-judge-toggle'
 */
 export const sercToggle = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -839,7 +883,7 @@ sercToggle.definition = {
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::sercToggle
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:96
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:122
 * @route '/comps/{comp}/events/sercs/{serc}/digital-judge-toggle'
 */
 sercToggle.url = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions) => {
@@ -869,7 +913,7 @@ sercToggle.url = (args: { comp: number | { id: number }, serc: number | { id: nu
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::sercToggle
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:96
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:122
 * @route '/comps/{comp}/events/sercs/{serc}/digital-judge-toggle'
 */
 sercToggle.get = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -879,7 +923,7 @@ sercToggle.get = (args: { comp: number | { id: number }, serc: number | { id: nu
 
 /**
 * @see \App\Http\Controllers\DigitalJudge\DigitalJudgeController::sercToggle
-* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:96
+* @see app/Http/Controllers/DigitalJudge/DigitalJudgeController.php:122
 * @route '/comps/{comp}/events/sercs/{serc}/digital-judge-toggle'
 */
 sercToggle.head = (args: { comp: number | { id: number }, serc: number | { id: number } } | [comp: number | { id: number }, serc: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -887,6 +931,6 @@ sercToggle.head = (args: { comp: number | { id: number }, serc: number | { id: n
     method: 'head',
 })
 
-const DigitalJudgeController = { index, login, logout, home, help, confirmResults, confirmResultsPost, confirmSpeedResults, confirmSpeedResultsPost, live, toggle, settingsPost, sercsReleasePost, qrs, speedToggle, sercToggle }
+const DigitalJudgeController = { landing, index, login, logout, home, help, confirmResults, confirmResultsPost, confirmSpeedResults, confirmSpeedResultsPost, live, toggle, settingsPost, sercsReleasePost, qrs, speedToggle, sercToggle }
 
 export default DigitalJudgeController

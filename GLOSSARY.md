@@ -32,6 +32,14 @@ _Avoid_: Judge (when meaning any official), user
 An Official with authority to review DQs and penalties and to make Announcements. A competition can have several.
 _Avoid_: Head ref, head judge
 
+**Digital Judge**:
+The app Officials sign in to with their own account to judge, time and referee on the day.
+_Avoid_: v2, new judge app
+
+**Legacy Digital Judge**:
+The older Digital Judge that Officials join with only a PIN and a name. It still works, but it gets no new features.
+_Avoid_: v1, classic, old judge app
+
 ### On the day
 
 **Announcement**:
