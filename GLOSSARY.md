@@ -14,6 +14,14 @@ _Avoid_: Activity (that's a recorded action)
 A Team or Competitor that takes part in an Event and gets results.
 _Avoid_: Participant, entrant
 
+**Objective**:
+A part of a SERC with its own marking points, e.g. a casualty, which an Official marks Entities against.
+_Avoid_: Judge (for the slot), casualty, position
+
+**League Objectives**:
+A SERC setting where each League is assigned exactly one Objective, and every Entity is marked against its League's Objective instead of one the Official picks.
+_Avoid_: Restricted judges, restricted SERC
+
 ### Officials
 
 **Official**:
@@ -41,7 +49,7 @@ _Avoid_: Notification
 ### Results
 
 **Mark**:
-The score a SERC judge gives one team on one marking point.
+The score an Official gives one Entity on one of an Objective's marking points.
 _Avoid_: Result, score
 
 **Time**:
