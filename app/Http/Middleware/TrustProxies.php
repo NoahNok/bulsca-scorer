@@ -12,7 +12,9 @@ class TrustProxies extends Middleware
      *
      * @var array<int, string>|string|null
      */
-    protected $proxies;
+    // nginx only accepts Cloudflare (Authenticated Origin Pulls), so the
+    // forwarded headers can be trusted
+    protected $proxies = '*';
 
     /**
      * The headers that should be used to detect proxies.
