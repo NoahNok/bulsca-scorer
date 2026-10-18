@@ -24,8 +24,9 @@ class ConfirmJudgeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // Judge must belong to the SERC in the route
-            'judge' => ['required', Rule::exists('serc_judges', 'id')->where('serc', $this->route('serc')?->id)]
+            // Judge must belong to the SERC in the route. With League Objectives the Entity's League
+            // picks the Objective, so there's nothing to choose.
+            'judge' => [Rule::requiredIf(!$this->route('serc')?->use_restricted_judges), 'nullable', Rule::exists('serc_judges', 'id')->where('serc', $this->route('serc')?->id)]
         ];
     }
 }

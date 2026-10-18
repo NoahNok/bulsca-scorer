@@ -51,7 +51,13 @@
         router,
         useHttp,
     } from "@inertiajs/svelte";
-    import { ArrowRight, Check, House, NotebookText } from "@lucide/svelte";
+    import {
+        ArrowRight,
+        Check,
+        ClipboardList,
+        House,
+        NotebookText,
+    } from "@lucide/svelte";
 
     // marks/notes stay as page state (derived from props), sent via transform
     const http = useHttp().transform(() => ({ marks, notes }));
@@ -68,6 +74,7 @@
         draw,
         existingMarks,
         existingNotes,
+        league_objective,
     }: {
         competition: Competition;
         serc: SERC;
@@ -76,6 +83,8 @@
         draw: CurrentDraw;
         existingMarks: ExisitingMarks;
         existingNotes: ExistingNotes;
+        // with League Objectives, the Objective the team's league is marked against
+        league_objective: { objective: string; league: string } | null;
     } = $props();
 
     // this is a store that holds the marks for each judge and marking point
@@ -238,6 +247,15 @@
             </span>
         {/if}
     </div>
+    {#if league_objective}
+        <p class="flex items-center gap-1 text-sm text-gray-700">
+            <ClipboardList size={14} class="shrink-0 text-gray-500" />
+            <span class="min-w-0 truncate">
+                <span class="font-semibold">{league_objective.objective}</span>
+                · {league_objective.league}
+            </span>
+        </p>
+    {/if}
     <div class="mt-2 h-1.5 overflow-hidden rounded-full bg-gray-100">
         <div
             class="h-full rounded-full bg-se transition-all"

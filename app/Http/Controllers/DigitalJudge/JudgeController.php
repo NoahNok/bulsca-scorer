@@ -139,6 +139,7 @@ class JudgeController extends Controller
                     'type' => 'serc',
                     'completed' => $serc->completed || $serc->isComplete(),
                     'confirmed' => $serc->digitalJudgeConfirmed,
+                    'league_objectives' => (bool) $serc->use_restricted_judges,
                     'judges' => $serc->getJudges->map(function ($judge) {
                         return [
                             'id' => $judge->id,

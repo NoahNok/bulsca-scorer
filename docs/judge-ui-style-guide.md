@@ -230,7 +230,9 @@ For items with several destinations (an event and its judging pages; see
 right if needed), then a `divide-y overflow-hidden rounded-xl border bg-white shadow-sm`
 card of whole-row `<Link>`s (`px-3 py-2`). Each row has a `size-8 rounded-md bg-gray-100`
 icon tile (tinting `bg-se/20` on hover), a `font-archivo` label and a
-`ChevronRight`. A head-ref-only row at the bottom uses the `bg-se/5` tint. When
+`ChevronRight`. A row that starts something on the server (e.g. "Start judging"
+on a SERC using League Objectives) is the same row as a `<Link method="post" as="button">`.
+A head-ref-only row at the bottom uses the `bg-se/5` tint. When
 that row's action is done it becomes a static (non-link) row in the success hue:
 `bg-green-50`, a `bg-green-100 text-green-700` tile with the same icon, `text-green-800`
 label and a trailing `Check` instead of the chevron (e.g. "Results Confirmed").

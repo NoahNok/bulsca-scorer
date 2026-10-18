@@ -165,16 +165,21 @@ class DJJudgingController extends Controller
         $serc = DigitalJudge::getClientJudges()[0]->getSERC;
         $team = $serc->getScorableEntity()->findOrFail($entity_id);
         if ($serc->use_restricted_judges) {
-            $targetLeague = $team->leagues->first();
-            $targetJudge = SERCJudge::whereHas('restrictedLeagues', fn($q) => $q->where('league_id', $targetLeague->id))->where('serc', $serc->id)->first();
+            $objectives = $serc->leagueObjectivesFor($team);
 
-            if (!$targetJudge) {
+            if ($objectives->count() != 1) {
                 $teamName = $team->getName();
+                $leagues = $team->leagues->pluck('name')->join(', ');
+                $problem = match (true) {
+                    $leagues == '' => "'{$teamName}' isn't in a league, so has no judging objective",
+                    $objectives->isEmpty() => "No judging objectives have been assigned to league '{$leagues}' for '{$teamName}'",
+                    default => "'{$teamName}' is in leagues ({$leagues}) assigned to more than one judging objective",
+                };
 
-                return view('digitaljudge.errors.500', ['message' => "No judging objectives have been assigned to league '{$targetLeague->name}' for '{$teamName}'. Please have your organiser correct this, then refresh this page!"]);
+                return view('digitaljudge.errors.500', ['message' => "{$problem}. Please have your organiser correct this, then refresh this page!"]);
             }
 
-            DigitalJudge::setClientJudge($targetJudge);
+            DigitalJudge::setClientJudge($objectives->first());
         }
 
 

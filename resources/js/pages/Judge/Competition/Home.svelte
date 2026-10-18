@@ -10,7 +10,10 @@
         selectTimeHeat,
     } from "@/actions/App/Http/Controllers/DigitalJudge/Event/EventJudgeController";
 
-    import { confirmJudge } from "@/actions/App/Http/Controllers/DigitalJudge/SERC/SERCJudgeController";
+    import {
+        confirmJudge,
+        confirmJudgePost,
+    } from "@/actions/App/Http/Controllers/DigitalJudge/SERC/SERCJudgeController";
     import {
         event as confirmEventResults,
         serc as confirmSercResults,
@@ -108,15 +111,27 @@
         );
     }
 
-    type EventLink = { href: string; icon: any; label: string };
+    type EventLink = { href: string; icon: any; label: string; method?: "post" };
 
     function sercLinks(serc: SERC): EventLink[] {
+        // with League Objectives the Entity's League picks the Objective, so there's one way in
+        const judging: EventLink[] = serc.league_objectives
+            ? [
+                  {
+                      href: confirmJudgePost({ competition, serc }).url,
+                      icon: ClipboardList,
+                      label: "Start judging",
+                      method: "post",
+                  },
+              ]
+            : serc.judges.map((judge) => ({
+                  href: confirmJudge({ competition, serc, judge }).url,
+                  icon: ClipboardList,
+                  label: judge.name,
+              }));
+
         return [
-            ...serc.judges.map((judge) => ({
-                href: confirmJudge({ competition, serc, judge }).url,
-                icon: ClipboardList,
-                label: judge.name,
-            })),
+            ...judging,
             {
                 href: submissions(competition, {
                     query: { event: `se-${serc.id}` },
@@ -287,10 +302,12 @@
     </div>
 {/snippet}
 
-{#snippet row({ href, icon: Icon, label }: EventLink)}
+{#snippet row({ href, icon: Icon, label, method }: EventLink)}
     <Link
         {href}
-        class="group flex w-full items-center gap-3 px-3 py-2 text-left transition-colors hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-se focus-visible:ring-inset"
+        method={method ?? "get"}
+        as={method === "post" ? "button" : "a"}
+        class="group flex w-full cursor-pointer items-center gap-3 px-3 py-2 text-left transition-colors hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-se focus-visible:ring-inset"
     >
         <span
             class="flex size-8 shrink-0 items-center justify-center rounded-md bg-gray-100 text-gray-600 transition-colors group-hover:bg-se/20 group-hover:text-teal-700"

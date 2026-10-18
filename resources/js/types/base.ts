@@ -65,6 +65,8 @@ export type SERC = Event & {
     judges: Judge[]
     // Set when the SERCs haven't been released to this official yet (no judges are sent)
     locked?: boolean
+    // Each Entity is marked against its League's Objective, so there's no Objective to pick
+    league_objectives?: boolean
 
 }
 

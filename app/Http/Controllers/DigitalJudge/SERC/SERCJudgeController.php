@@ -20,6 +20,9 @@ use Inertia\Inertia;
 
 class SERCJudgeController extends Controller
 {
+    /** Session key for the Objectives an Official has marked against in a League Objectives SERC. */
+    private const LEAGUE_OBJECTIVES_MARKED = 'digitalJudgeLeagueObjectivesMarked';
+
     /**
      * An entity as judges see it. When the competition hides team names from judges (referees still
      * see them), the name is replaced with its place in the draw so the real name never reaches the page.
@@ -45,6 +48,24 @@ class SERCJudgeController extends Controller
     }
 
 
+    /**
+     * The Objective an Entity is marked against in a League Objectives SERC, with the League that
+     * put it there. Null when the Entity's Leagues give no single Objective.
+     */
+    private function leagueObjectiveFor(SERC $serc, $entity): ?array
+    {
+        $objectives = $serc->leagueObjectivesFor($entity);
+
+        if ($objectives->count() != 1) {
+            return null;
+        }
+
+        $objective = $objectives->first();
+        $leagueIds = $objective->restrictedLeagues()->pluck('leagues.id');
+
+        return ['objective' => $objective, 'league' => $entity->leagues->first(fn($league) => $leagueIds->contains($league->id))];
+    }
+
     public function confirmJudge(Competition $competition, SERC $serc, SERCJudge $judge)
     {
 
@@ -67,18 +88,24 @@ class SERCJudgeController extends Controller
 
     public function confirmJudgePost(Competition $competition, SERC $serc, ConfirmJudgeRequest $request)
     {
-        // start again if the judges selected so far are for another SERC
-        $selected = DigitalJudge::getClientJudges();
-
-        if ($selected->contains(fn($judge) => $judge->serc != $serc->id)) {
+        if ($serc->use_restricted_judges) {
+            // with League Objectives every Objective is selected, and each Entity is marked against its League's one
             DigitalJudge::clearClientJudges();
-            $selected = collect();
-        }
+            $serc->getJudges->each(fn($objective) => DigitalJudge::addClientJudge($objective->id));
+            Session::forget(self::LEAGUE_OBJECTIVES_MARKED);
+        } else {
+            // start again if the judges selected so far are for another SERC
+            $selected = DigitalJudge::getClientJudges();
 
-        if (!$selected->contains('id', (int) $request->judge)) {
-            DigitalJudge::addClientJudge((int) $request->judge);
-        }
+            if ($selected->contains(fn($judge) => $judge->serc != $serc->id)) {
+                DigitalJudge::clearClientJudges();
+                $selected = collect();
+            }
 
+            if (!$selected->contains('id', (int) $request->judge)) {
+                DigitalJudge::addClientJudge((int) $request->judge);
+            }
+        }
 
         if ($competition->getScoringSettings->use_tanks) {
             return to_route('judge.competition.serc.select-tank', compact('competition', 'serc'));
@@ -133,6 +160,7 @@ class SERCJudgeController extends Controller
         return Inertia::render('Judge/Competition/SERC/Home', [
             'competition' => [...$competition->jsonable(), 'show_teams_to_judges' => $competition->show_teams_to_judges],
             'serc' => $serc->only(['name', 'id']),
+            'league_objectives' => (bool) $serc->use_restricted_judges,
             'judges' => $judges->map(function ($judge) {
                 return [
                     'id' => $judge->id,
@@ -227,6 +255,13 @@ class SERCJudgeController extends Controller
         foreach ($draw as $allocation) {
             // same check as markEntity, or a team it turns away would be sent straight back here
             $marked = $this->alreadyMarked($allocation->entity, $judges);
+
+            // an Entity with no single League Objective can't be marked until the organiser fixes it,
+            // so carry on to the next one rather than getting stuck on it
+            if (!$marked && $serc->use_restricted_judges && $serc->leagueObjectivesFor($allocation->entity)->count() != 1) {
+                continue;
+            }
+
             if (!$marked) {
 
                 $nextTeamId = $allocation->entity->id;
@@ -237,7 +272,7 @@ class SERCJudgeController extends Controller
 
         if ($nextTeamId == null) {
 
-            $judgeNote = OverallJudgeNote::where('judge', $j->id)->first();
+            $judgeNote = OverallJudgeNote::where('judge', $this->overallNoteObjectives($serc)->first()?->id ?? $j->id)->first();
             Inertia::flash('action', ['type' => 'overall_notes', 'data' => ($judgeNote ? $judgeNote->note : "")]);
             Inertia::flash('toast', ['variant' => 'error', 'title' => "You have finished marking."]);
             return to_route('judge.competition.serc', compact('competition', 'serc'));
@@ -260,6 +295,23 @@ class SERCJudgeController extends Controller
         $judges = DigitalJudge::getClientJudges();
 
         if (!DigitalJudge::isClientHeadJudge($competition) && $this->alreadyMarked($team, $judges)) return to_route("judge.competition.serc.mark.next", compact('competition', 'serc'));
+
+        $leagueObjective = null;
+        if ($serc->use_restricted_judges) {
+            $leagueObjective = $this->leagueObjectiveFor($serc, $team);
+
+            if (!$leagueObjective) {
+                return Inertia::render('Judge/Competition/SERC/NoLeagueObjective', [
+                    'competition' => $competition->jsonable(),
+                    'serc' => $serc->only(['id', 'name']),
+                    'entity' => $this->entityForJudges($competition, $serc, $team),
+                    'leagues' => $team->leagues->pluck('name')->sort()->values()->all(),
+                    'reason' => $serc->leagueObjectivesFor($team)->isEmpty() ? 'no_objective' : 'several_objectives',
+                ]);
+            }
+
+            $judges = collect([$leagueObjective['objective']]);
+        }
 
         $draw_info = $serc->getPositionInDraw($team);
 
@@ -291,6 +343,7 @@ class SERCJudgeController extends Controller
                 ];
             }),
             'entity' => $this->entityForJudges($competition, $serc, $team),
+            'league_objective' => $leagueObjective ? ['objective' => $leagueObjective['objective']->name, 'league' => $leagueObjective['league']->name] : null,
             'draw' => $serc->getPositionInDraw($team),
             'existingMarks' => $judges->mapWithKeys(function ($judge) use ($team) {
                 $marks = $judge->getMarkingPoints->mapWithKeys(function ($mp) use ($team) {
@@ -339,8 +392,20 @@ class SERCJudgeController extends Controller
             if (!$allowedMarkingPoints->has($judge_id)) abort(403);
         }
 
+        // with League Objectives the Entity can only be marked against its League's Objective, and it
+        // counts as marked once any Objective has a Mark for it
+        if ($serc->use_restricted_judges) {
+            $objectiveId = $this->leagueObjectiveFor($serc, $entity)['objective']->id ?? null;
+
+            foreach ([...array_keys($judges), ...array_keys($notes)] as $judge_id) {
+                abort_if($judge_id != $objectiveId, 422, "These marks aren't for this team's League Objective.");
+            }
+        }
+
         // Marks already submitted can only be overridden by a referee
-        $payloadJudges = $clientJudges->only([...array_keys($judges), ...array_keys($notes)]);
+        $payloadJudges = $serc->use_restricted_judges
+            ? $clientJudges
+            : $clientJudges->only([...array_keys($judges), ...array_keys($notes)]);
 
         abort_if(
             !DigitalJudge::isClientHeadJudge($competition) && $this->alreadyMarked($entity, $payloadJudges),
@@ -390,6 +455,10 @@ class SERCJudgeController extends Controller
             }
         }
 
+        if ($serc->use_restricted_judges && count($judges) > 0) {
+            Session::put(self::LEAGUE_OBJECTIVES_MARKED, collect(Session::get(self::LEAGUE_OBJECTIVES_MARKED, []))->push($objectiveId)->unique()->values()->all());
+        }
+
         if (count($changes) > 0) {
             $overridden = collect($changes)->contains(fn($change) => $change['old'] !== null);
             $verb = $overridden ? 'overridden' : 'marked';
@@ -404,18 +473,40 @@ class SERCJudgeController extends Controller
     {
         $data = $request->validated();
 
-        $judge = DigitalJudge::getClientJudges()[0];
+        $judges = $this->overallNoteObjectives($serc);
 
-        $note = OverallJudgeNote::firstOrNew(['judge' => $judge->id]);
+        if ($judges->isEmpty()) {
+            Inertia::flash('toast', ['variant' => 'error', 'title' => "Mark a team before leaving overall notes"]);
+            return;
+        }
 
-        if ($data['note'] == ''  && $note->id) {
-            $note->delete();
-        } else if ($data['note'] != '' && $data['note'] != null) {
-            $note->note = $data['note'];
-            $note->save();
+        foreach ($judges as $judge) {
+            $note = OverallJudgeNote::firstOrNew(['judge' => $judge->id]);
+
+            if ($data['note'] == ''  && $note->id) {
+                $note->delete();
+            } else if ($data['note'] != '' && $data['note'] != null) {
+                $note->note = $data['note'];
+                $note->save();
+            }
         }
 
         Inertia::flash('toast', ['variant' => 'success', 'title' => "Overall note saved"]);
+    }
+
+    /**
+     * The Objectives an Official's overall notes are for: the one they picked, or with League
+     * Objectives, each Objective they marked against in this session.
+     */
+    private function overallNoteObjectives(SERC $serc)
+    {
+        $judges = DigitalJudge::getClientJudges();
+
+        if (!$serc->use_restricted_judges) {
+            return $judges->take(1);
+        }
+
+        return $judges->whereIn('id', Session::get(self::LEAGUE_OBJECTIVES_MARKED, []))->values();
     }
 
     public function getJudgeNotes(Competition $competition, SERC $serc)

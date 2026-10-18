@@ -45,12 +45,14 @@
         competition,
         serc,
         judges,
+        league_objectives,
         tank,
         draws,
     }: {
         competition: Competition;
         serc: SERC;
         judges: Judge[];
+        league_objectives: boolean;
         tank?: number;
         draws?: Draw[];
     } = $props();
@@ -82,7 +84,14 @@
         <BackLink href={home(competition)} label="All events" class="mt-2 mb-4" />
     {/if}
 
-    <SectionLabel class="mb-2">Judging · {judges.length}</SectionLabel>
+    {#if league_objectives}
+        <SectionLabel class="mb-1">League Objectives · {judges.length}</SectionLabel>
+        <p class="mb-2 text-sm text-gray-500">
+            Each team is marked against the Objective for its league.
+        </p>
+    {:else}
+        <SectionLabel class="mb-2">Judging · {judges.length}</SectionLabel>
+    {/if}
     <div class="divide-y overflow-hidden rounded-xl border bg-white shadow-sm">
         {#each judges as judge (judge.id)}
             <div class="flex items-center gap-3 px-3 py-2.5">
@@ -98,7 +107,9 @@
                     </p>
                 </div>
 
-                {#if judges.length == 1}
+                {#if league_objectives}
+                    <!-- the team's league picks the Objective, so there's nothing to swap or remove -->
+                {:else if judges.length == 1}
                     <Link
                         href={addJudge(
                             { competition, serc },
@@ -122,17 +133,19 @@
             </div>
         {/each}
 
-        <Link
-            href={addJudge({ competition, serc })}
-            class="group flex items-center gap-3 px-3 py-2.5 text-teal-700 transition-colors hover:bg-se/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-se focus-visible:ring-inset"
-        >
-            <span
-                class="flex size-8 shrink-0 items-center justify-center rounded-md border border-dashed border-se/60"
+        {#if !league_objectives}
+            <Link
+                href={addJudge({ competition, serc })}
+                class="group flex items-center gap-3 px-3 py-2.5 text-teal-700 transition-colors hover:bg-se/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-se focus-visible:ring-inset"
             >
-                <Plus size={16} />
-            </span>
-            <span class="font-archivo flex-1 text-sm">Add casualty/objective</span>
-        </Link>
+                <span
+                    class="flex size-8 shrink-0 items-center justify-center rounded-md border border-dashed border-se/60"
+                >
+                    <Plus size={16} />
+                </span>
+                <span class="font-archivo flex-1 text-sm">Add casualty/objective</span>
+            </Link>
+        {/if}
     </div>
 
     <Link href={nextEntityToMark({ competition, serc })} class="mt-6">
