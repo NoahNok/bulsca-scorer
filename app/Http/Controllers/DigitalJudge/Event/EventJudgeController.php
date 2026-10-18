@@ -44,7 +44,7 @@ class EventJudgeController extends Controller
         }
 
         return Inertia::render('Judge/Competition/Speed/Time/SelectHeat', [
-            'competition' => $competition->only(['id', 'name']),
+            'competition' => $competition->jsonable(),
             'event' => $event->jsonable(),
             'heats' => $heats,
 
@@ -77,7 +77,7 @@ class EventJudgeController extends Controller
         }
 
         return Inertia::render('Judge/Competition/Speed/Time/MarkTime', [
-            'competition' => $competition->only(['id', 'name']),
+            'competition' => $competition->jsonable(),
             'event' => $event->jsonable(),
             'heat' => ['heat' => $heat, 'complete' => false, 'lanes' => $laneData],
             'existingTimes' => $existingTimes
@@ -224,7 +224,7 @@ class EventJudgeController extends Controller
         }
 
         return Inertia::render('Judge/Competition/Speed/OOF/SelectHeat', [
-            'competition' => $competition->only(['id', 'name']),
+            'competition' => $competition->jsonable(),
             'event' => $event->jsonable(),
             'heats' => $heats,
 
@@ -250,7 +250,7 @@ class EventJudgeController extends Controller
         }
 
         return Inertia::render('Judge/Competition/Speed/OOF/MarkOOF', [
-            'competition' => $competition->only(['id', 'name']),
+            'competition' => $competition->jsonable(),
             'event' => $event->jsonable(),
             'heat' => ['heat' => $heat, 'complete' => false, 'lanes' => $lanes->map(function ($lane) {
 

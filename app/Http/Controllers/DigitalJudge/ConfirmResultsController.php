@@ -43,7 +43,7 @@ class ConfirmResultsController extends Controller
         $markingPoints = $judges->flatMap->getMarkingPoints;
 
         return Inertia::render('Judge/Competition/ConfirmResults/SERC', [
-            'competition' => $competition->only(['id', 'name']),
+            'competition' => $competition->jsonable(),
             'event' => $serc->jsonable(),
             'useTanks' => (bool) $competition->getScoringSettings?->use_tanks,
             'judges' => $judges->map(fn($judge) => [
@@ -72,7 +72,7 @@ class ConfirmResultsController extends Controller
         }
 
         return Inertia::render('Judge/Competition/ConfirmResults/Event', [
-            'competition' => $competition->only(['id', 'name']),
+            'competition' => $competition->jsonable(),
             'event' => $event->jsonable(),
             'isRopeThrow' => $event->getName() == 'Rope Throw',
             'summary' => fn() => $this->eventSummary($event),

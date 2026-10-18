@@ -35,7 +35,7 @@ class ViolationController extends Controller
 
 
         return Inertia::render('Judge/Competition/Violation/Submissions', [
-            'competition' => $competition,
+            'competition' => $competition->jsonable(),
             'submissions' => $submissions->map(function ($submission) {
                 return $submission->jsonable();
             })
@@ -95,7 +95,7 @@ class ViolationController extends Controller
     private function issueProps(Competition $competition): array
     {
         return [
-            'competition' => $competition->only(['id', 'name']),
+            'competition' => $competition->jsonable(),
             'sercs' => !$competition->canSeeSercs(Auth::user()) ? [] : $competition->getSERCs()->where('digitalJudgeEnabled', true)->get()->map(function ($serc) {
                 return $serc->jsonable();
             }),

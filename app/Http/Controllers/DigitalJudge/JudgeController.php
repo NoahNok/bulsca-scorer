@@ -119,7 +119,7 @@ class JudgeController extends Controller
         $canSeeSercs = $competition->canSeeSercs(Auth::user());
 
         return Inertia::render("Judge/Competition/Home", [
-            'competition' => $competition,
+            'competition' => $competition->jsonable(),
             'sercsReleased' => $competition->sercsReleased(),
             'sercs' => $competition->getSERCs()->where('digitalJudgeEnabled', true)->get()->map(function ($serc) use ($canSeeSercs) {
 

@@ -52,6 +52,11 @@ class Competition extends Model implements IInvitable, IJsonable
         'referee' => 'Referee',
     ];
 
+    protected $hidden = [
+        'digitalJudgePin',
+        'digitalJudgeHeadPin',
+    ];
+
     protected $casts = [
         'when' => 'datetime',
         'serc_start_time' => 'datetime',

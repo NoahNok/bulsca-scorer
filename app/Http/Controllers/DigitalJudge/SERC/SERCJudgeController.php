@@ -49,7 +49,7 @@ class SERCJudgeController extends Controller
     {
 
         return Inertia::render('Judge/Competition/SERC/ConfirmJudge', [
-            'competition' => $competition->only(['id', 'name']),
+            'competition' => $competition->jsonable(),
             'serc' => $judge->getSerc->only(['id', 'name']),
             'judge' => [
                 'id' => $judge->id,
@@ -95,7 +95,7 @@ class SERCJudgeController extends Controller
         // grab serc again as the draw is against the serc with the lowest id?
         $tanks = SERC::where('competition', $competition->id)->first()->draw()->orderBy('tank')->distinct('tank')->get('tank')->pluck('tank')->toArray();
 
-        return Inertia::render('Judge/Competition/SERC/SelectTank', ['competition' => $competition, 'serc' => $serc, 'tanks' => $tanks]);
+        return Inertia::render('Judge/Competition/SERC/SelectTank', ['competition' => $competition->jsonable(), 'serc' => $serc, 'tanks' => $tanks]);
     }
 
     public function setTank(Competition $competition, SERC $serc, int $tank)
@@ -131,7 +131,7 @@ class SERCJudgeController extends Controller
         }
 
         return Inertia::render('Judge/Competition/SERC/Home', [
-            'competition' => $competition->only(['id', 'name', 'show_teams_to_judges']),
+            'competition' => [...$competition->jsonable(), 'show_teams_to_judges' => $competition->show_teams_to_judges],
             'serc' => $serc->only(['name', 'id']),
             'judges' => $judges->map(function ($judge) {
                 return [
@@ -166,7 +166,7 @@ class SERCJudgeController extends Controller
         $unselectedJudges = $serc->getJudges()->whereNotIn('id', $selectedJudges->pluck('id'))->get();
 
         return Inertia::render('Judge/Competition/SERC/AddJudge', [
-            'competition' => $competition->only(['id', 'name']),
+            'competition' => $competition->jsonable(),
             'serc' => $serc->only(['name', 'id']),
             'judges' => $unselectedJudges->map(function ($judge) {
                 return [
@@ -268,7 +268,7 @@ class SERCJudgeController extends Controller
         DigitalJudge::setStatus($competition, $judgeName . ' | Marking ' . $team->getName() . ' (' . $draw_info['text'] . ')', $serc);
 
         return Inertia::render("Judge/Competition/SERC/JudgeEntity", [
-            'competition' => $competition->only(['id', 'name', 'show_teams_to_judges']),
+            'competition' => [...$competition->jsonable(), 'show_teams_to_judges' => $competition->show_teams_to_judges],
             'serc' => $serc->only(['id', 'name']),
             'judges' => $judges->map(function ($judge) {
                 return [
