@@ -2,16 +2,158 @@
 
 use App\DigitalJudge\DigitalJudge;
 use App\Helpers\RouteHelpers;
+use App\Http\Controllers\DigitalJudge\AnnouncementController;
+use App\Http\Controllers\DigitalJudge\Auth\AccountController;
+use App\Http\Controllers\DigitalJudge\Auth\ForgotPasswordController;
+use App\Http\Controllers\DigitalJudge\Auth\LoginController;
+use App\Http\Controllers\DigitalJudge\Auth\RegisterController;
+use App\Http\Controllers\DigitalJudge\ConfirmResultsController;
 use App\Http\Controllers\DigitalJudge\DigitalJudgeController;
 use App\Http\Controllers\DigitalJudge\DJDQController;
 use App\Http\Controllers\DigitalJudge\DJJudgingController;
 use App\Http\Controllers\DigitalJudge\DJManageController;
+use App\Http\Controllers\DigitalJudge\Event\EventJudgeController;
+use App\Http\Controllers\DigitalJudge\JudgeController;
+use App\Http\Controllers\DigitalJudge\SERC\SERCJudgeController;
 use App\Http\Controllers\DigitalJudge\SpeedJudgingController;
+use App\Http\Controllers\DigitalJudge\Violation\ViolationController;
+use App\Http\Controllers\DigitalJudge\Violation\ViolationStateController;
+use App\Http\Middleware\DigitalJudge\SERC\MustHaveJudgeSelected;
 use Illuminate\Support\Facades\Route;
 
 
 
 Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
+
+
+    Route::prefix('v2')->group(function () {
+        Route::get('login', [LoginController::class, 'login'])->name('judge.login');
+        Route::post('login', [LoginController::class, 'loginPost'])->name('judge.login.post');
+        Route::post('login/password', [LoginController::class, 'loginPassword'])->name('judge.login.password');
+        Route::post('login/resend-pin', [LoginController::class, 'resendPin'])->name('judge.login.resend-pin');
+
+        Route::get('register', [RegisterController::class, 'register'])->name('judge.register');
+        Route::post('register', [RegisterController::class, 'registerPost'])->name('judge.register.post');
+        Route::get('forgot-password', [ForgotPasswordController::class, 'forgotPassword'])->name('judge.password.forgot');
+        Route::post('forgot-password', [ForgotPasswordController::class, 'forgotPasswordPost'])->name('judge.password.forgot.post');
+
+        Route::middleware('auth.judge')->group(function () {
+            Route::get('', [JudgeController::class, 'index'])->name('judge.index');
+
+            Route::post('join', [JudgeController::class, 'joinCompetition'])->name('judge.join-competition');
+            Route::get('join/{pin}', [JudgeController::class, 'joinCompetitionLink'])->whereNumber('pin')->middleware('throttle:20,1')->name('judge.join-link');
+            Route::post('logout', [LoginController::class, 'logout'])->name('judge.logout');
+
+            Route::get('account', [AccountController::class, 'account'])->name('judge.account');
+            Route::post('account', [AccountController::class, 'updateAccount'])->name('judge.account.update');
+            Route::post('account/photo', [AccountController::class, 'updatePhoto'])->name('judge.account.photo');
+            Route::delete('account/photo', [AccountController::class, 'destroyPhoto'])->name('judge.account.photo.destroy');
+            Route::post('account/password', [AccountController::class, 'updatePassword'])->name('judge.account.password');
+            Route::get('account/devices', [AccountController::class, 'devices'])->name('judge.account.devices');
+            Route::delete('account/devices/{login}', [AccountController::class, 'signOutDevice'])->whereNumber('login')->name('judge.account.devices.destroy');
+            Route::delete('account/devices', [AccountController::class, 'signOutOtherDevices'])->name('judge.account.devices.destroy-others');
+            Route::post('account/devices/sign-out-everywhere', [AccountController::class, 'signOutEverywhere'])->name('judge.account.devices.sign-out-everywhere');
+
+
+
+
+            Route::prefix('{competition}')->middleware('judge.officiates')->group(function () {
+
+
+
+
+                Route::get('', [JudgeController::class, 'home'])->name('judge.competition');
+                Route::get('officials', [JudgeController::class, 'officials'])->name('judge.competition.officials');
+
+                Route::post('sercs/release', [JudgeController::class, 'setSercsReleased'])->middleware('judge.referee')->name('judge.competition.sercs.release');
+
+                Route::get('announcements', [AnnouncementController::class, 'index'])->name('judge.competition.announcements');
+                Route::post('announcements', [AnnouncementController::class, 'store'])->middleware('judge.referee')->name('judge.competition.announcements.store');
+                Route::post('announcements/{announcement}/withdraw', [AnnouncementController::class, 'withdraw'])->whereNumber('announcement')->middleware('judge.referee')->name('judge.competition.announcements.withdraw');
+
+                Route::prefix('serc/{serc}')->middleware('judge.sercs-released')->group(function () {
+
+                    Route::get('confirm/{judge}', [SERCJudgeController::class, 'confirmJudge'])->name('judge.competition.serc.confirm');
+                    Route::post('confirm', [SERCJudgeController::class, 'confirmJudgePost'])->name('judge.competition.serc.confirm.post');
+
+                    Route::middleware('judge.referee')->group(function () {
+                        Route::get('confirm-results', [ConfirmResultsController::class, 'serc'])->name('judge.competition.serc.confirm-results');
+                        Route::post('confirm-results', [ConfirmResultsController::class, 'storeSerc'])->name('judge.competition.serc.confirm-results.store');
+                    });
+
+                    Route::middleware(MustHaveJudgeSelected::class)->group(function () {
+                        Route::get('add-judge', [SERCJudgeController::class, 'addJudge'])->name('judge.competition.serc.add-judge');
+                        Route::get('attach-judge/{judge}', [SERCJudgeController::class, 'attachJudge'])->name('judge.competition.serc.attach-judge');
+                        Route::get('detach-judge/{judge}', [SERCJudgeController::class, 'detachJudge'])->name('judge.competition.serc.detach-judge');
+
+                        Route::get('select-tank', [SERCJudgeController::class, 'selectTank'])->name('judge.competition.serc.select-tank');
+                        Route::get('select-tank/{tank}', [SERCJudgeController::class, 'setTank'])->name('judge.competition.serc.set-tank');
+
+                        Route::get('', [SERCJudgeController::class, 'home'])->name('judge.competition.serc');
+
+                        Route::prefix('mark')->group(function () {
+                            Route::get('next', [SERCJudgeController::class, 'nextEntityToMark'])->name('judge.competition.serc.mark.next');
+                            Route::get('e/{entity_id}', [SERCJudgeController::class, 'markEntity'])->name('judge.competition.serc.mark.entity');
+                            Route::post('e/{entity_id}', [SERCJudgeController::class, 'storeEntityMarks'])->name('judge.competition.serc.mark.store');
+
+                            Route::get('notes', [SERCJudgeController::class, 'getJudgeNotes'])->name('judge.competition.serc.mark.notes');
+                            Route::get('previous-marks/{judge_id}', [SERCJudgeController::class, 'getPreviousMarks'])->name('judge.competition.serc.previous-marks');
+                        });
+
+                        Route::post('overall-notes', [SERCJudgeController::class, 'storeOverallNotes'])->name('judge.competition.serc.overall-notes.store');
+                    });
+                });
+
+                Route::prefix('event/{event}')->group(function () {
+
+                    Route::middleware('judge.referee')->group(function () {
+                        Route::get('confirm-results', [ConfirmResultsController::class, 'event'])->name('judge.competition.event.confirm-results');
+                        Route::post('confirm-results', [ConfirmResultsController::class, 'storeEvent'])->name('judge.competition.event.confirm-results.store');
+                    });
+
+                    Route::prefix('time')->group(function () {
+                        Route::get('select-heat', [EventJudgeController::class, 'selectTimeHeat'])->name('judge.competition.event.time.select-heat');
+
+                        Route::get('mark/{heat}', [EventJudgeController::class, 'markTime'])->name('judge.competition.event.time.mark');
+                        Route::post('mark/{heat}', [EventJudgeController::class, 'storeTime'])->name('judge.competition.event.time.mark.store');
+                    });
+
+                    Route::prefix('oof')->group(function () {
+                        Route::get('select-heat', [EventJudgeController::class, 'selectOOFHeat'])->name('judge.competition.event.oof.select-heat');
+
+                        Route::get('mark/{heat}', [EventJudgeController::class, 'markOOF'])->name('judge.competition.event.oof.mark');
+                        Route::post('mark/{heat}', [EventJudgeController::class, 'storeOOF'])->name('judge.competition.event.oof.mark.store');
+                    });
+                });
+
+                Route::prefix('violation')->group(function () {
+                    Route::get('submissions', [ViolationController::class, 'submissions'])->name('judge.competition.violation.submissions');
+                    Route::get('issue', [ViolationController::class, 'issue'])->name('judge.competition.violation.issue');
+                    Route::post('issue', [ViolationController::class, 'submit'])->name('judge.competition.violation.submit');
+
+                    Route::get('heats/{event}', [ViolationController::class, 'getHeatsFor'])->name('judge.competition.violation.issue.getHeats');
+                    Route::get('draw/{serc}', [ViolationController::class, 'getDrawFor'])->middleware('judge.sercs-released')->name('judge.competition.violation.issue.getDraw');
+
+                    Route::get('event-codes/{eventName}', [ViolationController::class, 'getEventRelatedCodes'])->name('judge.competition.violation.issue.getCodes');
+
+                    // Add a middleware to check for head ref, then remove check from request models
+                    Route::prefix('submission/{submission}')->group(function () {
+                        Route::get('', [ViolationController::class, 'view'])->name('judge.competition.violation.submission.view');
+                        Route::post('update-state', [ViolationStateController::class, 'updateState'])->name('judge.competition.violation.submission.update-state');
+
+                        Route::get('edit', [ViolationController::class, 'edit'])->name('judge.competition.violation.submission.edit');
+                        Route::post('resubmit', [ViolationController::class, 'resubmit'])->name('judge.competition.violation.submission.resubmit');
+                    });
+                });
+            });
+
+            if (env('APP_ENV') == 'local') {
+                Route::get('switchreferee/{competition}', [JudgeController::class, 'toggleReferee'])->name('judge.referee-toggle');
+            }
+        });
+    });
+
+
     Route::get('', [DigitalJudgeController::class, 'index'])->name('dj.index');
     Route::post('login', [DigitalJudgeController::class, 'login'])->name('dj.login');
     Route::get('logout', [DigitalJudgeController::class, 'logout'])->name('dj.logout');
@@ -19,6 +161,9 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
     Route::middleware('canJudge')->group(function () {
         Route::get('home', [DigitalJudgeController::class, 'home'])->name('dj.home');
         Route::get('help', [DigitalJudgeController::class, 'help'])->name('dj.help');
+
+
+
 
         Route::prefix('judging/{judge}')->group(function () {
             Route::get('confirm-judge', [DJJudgingController::class, 'confirmJudge'])->name('dj.judging.confirm-judge');
@@ -101,7 +246,7 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
         Route::prefix('dq')->group(function () {
             Route::get('', [DJDQController::class, 'index'])->name('dj.dq.index');
             Route::get('/current/{event}/{team}/{type}', [DJDQController::class, 'current'])->name('dj.dq.current');
-            Route::post('', [DJDQController::class, 'submit'])->name('dj.dq.index.post');
+            Route::post('', [DJDQController::class, 'submit'])->name('dj.dq.submit');
             Route::Get('/resolve', [DJDQController::class, 'resolve'])->name('dj.dq.resolve');
             Route::Get('/resolve/list', [DJDQController::class, 'getNeedingResolving'])->name('dj.dq.resolve.list');
             Route::post('/resolve/{submission}', [DJDQController::class, 'resolveSubmission'])->name('dj.dq.submission.resolve');

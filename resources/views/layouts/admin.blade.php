@@ -19,7 +19,13 @@
 
     <div class="  tabbed-bar mt-2 mb-4 ">
 
-        <div>Competitions</div>
+
+        <a href="{{ route('admin.index') }}" class="@if (Route::currentRouteName() == 'admin.index') active @endif">Admin</a>
+        <a href="{{ route('admin.users.index') }}"
+            class="@if (Str::startsWith(Route::currentRouteName(), 'admin.users')) active @endif">Users</a>
+        <a href="{{ route('admin.serc.marking-point-template.index') }}"
+            class="@if (Str::startsWith(Route::currentRouteName(), 'admin.serc.marking-point-template')) active @endif">SERC
+            Marking Point Templates</a>
 
 
     </div>

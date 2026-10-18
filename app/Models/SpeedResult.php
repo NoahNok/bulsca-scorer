@@ -91,6 +91,77 @@ class SpeedResult extends Resultable
         }
     }
 
+    /**
+     * The Time as History shows it: DNF, DNS or OOT when entered in place of a time, otherwise the
+     * full time. Only those three DQs count, so a DQ issued for something else still shows the time.
+     */
+    public function getHistoryTime(): string
+    {
+        $code = $this->disqualifications()->whereIn('code', [99915, 99904, 99901])->value('code');
+
+        if ($code) {
+            return match ($code) {
+                99915 => 'DNF',
+                99904 => 'DNS',
+                99901 => 'OOT',
+            };
+        }
+
+        return $this->result === null ? '—' : (string) self::prettyTime($this->result);
+    }
+
+    /**
+     * Returns the result as either the time string (XX:XX.XX) or respective DNx or OOT code as required
+     * @return void
+     */
+    public function getJudgeFormattedResult(): string
+    {
+        $finalResult = $this->result;
+
+        $dq = $this->disqualifications()->first();
+
+        if ($dq) {
+
+            $code = $dq->code;
+
+            $finalResult = match ($code) {
+                99915 => 'DNF',
+                99904 => 'DNS',
+                99901 => 'OOT',
+                null => '-',
+                default => $code,
+            };
+        } else {
+            $mins = floor($finalResult / 60000);
+            $secs = ($finalResult - $mins * 60000) / 1000;
+
+            $finalResult = $finalResult < 4 ? $finalResult : (sprintf('%02d', $mins) . ':' . str_pad(number_format($secs, 2, '.', ''), 5, '0', STR_PAD_LEFT));
+        }
+
+        return $finalResult;
+    }
+
+
+    /**
+     * Format a raw result the way judges enter it (XX:XX.XX, or a count for Rope Throw),
+     * without swapping it for any DQ code. Null when there's no result yet.
+     */
+    public static function confirmFormattedResult(?int $result, bool $isRopeThrow): ?string
+    {
+        if ($result === null) {
+            return null;
+        }
+
+        if ($isRopeThrow && $result < 4) {
+            return (string) $result;
+        }
+
+        $mins = floor($result / 60000);
+        $secs = ($result - $mins * 60000) / 1000;
+
+        return sprintf('%02d', $mins) . ':' . str_pad(number_format($secs, 2, '.', ''), 5, '0', STR_PAD_LEFT);
+    }
+
     public function getJudgeLogTitle()
     {
         return "Speed: {judge} marked {team} for {event}";

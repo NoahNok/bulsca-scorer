@@ -4,6 +4,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AccountInviteController;
 use App\Http\Controllers\Activity\ActivityController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminUsersController;
 use App\Http\Controllers\ChampionshipController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -20,6 +21,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 use App\Http\Controllers\CompetitionController;
+use App\Http\Controllers\CompetitionOfficialsController;
 use App\Http\Controllers\CompetitorController;
 use App\Http\Controllers\DigitalJudge\DigitalJudgeController;
 use App\Http\Controllers\EntityController;
@@ -35,6 +37,7 @@ use App\Http\Controllers\PrintableController;
 use App\Http\Controllers\PublicResultsController;
 use App\Http\Controllers\Push\PushController;
 use App\Http\Controllers\Result\MasterSchemaController;
+use App\Http\Controllers\SERC\MarkingPointTemplateController;
 use App\Http\Controllers\SpeedsEventController;
 use App\Http\Controllers\TeamsController;
 use App\Http\Controllers\SERCController;
@@ -43,7 +46,9 @@ use App\Models\DQCode;
 use App\Models\Organisation\Organisation;
 use App\Models\SERC;
 use Carbon\Carbon;
+use App\Helpers\RouteHelpers;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Middleware\CompetitionOwnsRouteModels;
 
 
 
@@ -92,6 +97,11 @@ Route::get('/', function () {
     /** @var User $user */
     $user = Auth::user();
 
+    // self-registered officials only have access to Digital Judge
+    if ($user->isJudgeOnly()) {
+        return redirect()->away(RouteHelpers::externalRoute('judge', 'judge.index'));
+    }
+
 
 
     $comps = [];
@@ -105,7 +115,7 @@ Route::get('/', function () {
 
 
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'not.judge-only'])->group(function () {
 
 
     // Route::get('/comps', [CompetitionController::class, 'index'])->name('comps');
@@ -118,7 +128,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/create', [CompetitionController::class, 'create'])->name('comps.create');
     Route::post('/create', [CompetitionController::class, 'createPost'])->name('comps.create.post');
 
-    Route::prefix('/comps/{comp}')->group(function () {
+    Route::prefix('/comps/{comp}')->middleware(CompetitionOwnsRouteModels::class)->group(function () {
         Route::get('', [CompetitionController::class, 'view'])->middleware('can:access,comp,"view"')->name('comps.view');
 
         Route::get('/activity-log', [CompetitionController::class, 'activityLog'])->middleware('can:access,comp,"admin"')->name('comps.activityLog');
@@ -127,6 +137,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/digital-judge-toggle', [DigitalJudgeController::class, 'toggle'])->name('dj.toggle');
 
             Route::post('/digital-judge-settings', [DigitalJudgeController::class, 'settingsPost'])->name('dj.settings');
+            Route::post('/digital-judge-sercs-release', [DigitalJudgeController::class, 'sercsReleasePost'])->name('dj.sercs-release');
             Route::get('/digital-judge-qrs', [DigitalJudgeController::class, 'qrs'])->name('dj.qrs');
 
 
@@ -144,6 +155,14 @@ Route::middleware('auth')->group(function () {
             Route::delete('/account/{account}', [CompetitionController::class, 'deleteCompetitionAccount'])->name('comps.accounts.delete');
             Route::post('/accounts/invitee', [CompetitionController::class, 'inviteCompetitionAccount'])->name('comps.accounts.invite');
             Route::post('/account/serc-writer/new-password', [CompetitionController::class, 'resetSercWriterAccountPassword'])->name('comps.accounts.serc-writer.new-password');
+
+            Route::get('/officials', [CompetitionOfficialsController::class, 'index'])->name('comps.officials');
+            Route::post('/officials', [CompetitionOfficialsController::class, 'store'])->name('comps.officials.store');
+            Route::get('/officials/search', [CompetitionOfficialsController::class, 'search'])->name('comps.officials.search');
+            Route::post('/officials/copy', [CompetitionOfficialsController::class, 'copy'])->name('comps.officials.copy');
+            Route::post('/officials/{official}/resend', [CompetitionOfficialsController::class, 'resend'])->whereNumber('official')->name('comps.officials.resend');
+            Route::post('/officials/{official}', [CompetitionOfficialsController::class, 'update'])->whereNumber('official')->name('comps.officials.update');
+            Route::delete('/officials/{official}', [CompetitionOfficialsController::class, 'destroy'])->whereNumber('official')->name('comps.officials.destroy');
         });
 
         Route::prefix('/leagues')->middleware('can:access,comp,"teams"')->group(function () {
@@ -195,7 +214,7 @@ Route::middleware('auth')->group(function () {
 
                     Route::get('', [SERCController::class, 'view'])->name('comps.events.sercs.view');
                     Route::get('/edit', [SERCController::class, 'edit'])->name('comps.events.sercs.edit');
-                    Route::post('/edit', [SERCController::class, 'editPost'])->name('comps.view.events.sercs.editPost');
+                    Route::post('/edit', [SERCController::class, 'editPost'])->name('comps.events.sercs.editPost');
                     Route::get('/print-results', [SERCController::class, 'printResults'])->name('comps.view.events.sercs.printResults');
 
 
@@ -329,6 +348,9 @@ Route::middleware('auth')->group(function () {
     Route::prefix('organisation/{organisation}')->middleware('can:access,organisation,"admin"')->group(function () {
         Route::get('/accounts', [OrganisationController::class, 'accounts'])->name('orgs.accounts');
         Route::post('/accounts', [OrganisationController::class, 'accountsPost'])->name('orgs.accounts.post');
+        Route::get('/officials', [OrganisationController::class, 'officials'])->name('orgs.officials');
+        Route::get('/officials/export', [OrganisationController::class, 'officialsExport'])->name('orgs.officials.export');
+        Route::post('/officials/add', [OrganisationController::class, 'officialsAddToCompetition'])->name('orgs.officials.add');
 
         Route::get('/accounts/{account}', [OrganisationController::class, 'account'])->name('orgs.accounts.view');
         Route::post('/accounts/{account}', [OrganisationController::class, 'accountEditPost'])->name('orgs.accounts.edit');
@@ -395,6 +417,13 @@ Route::middleware('auth')->group(function () {
         Route::get('search/{email}', [AccountController::class, 'search'])->name('accounts.search');
     });
 
+    Route::prefix('account')->group(function () {
+        Route::get('', [AccountController::class, 'edit'])->name('account');
+        Route::post('', [AccountController::class, 'update'])->name('account.update');
+        Route::delete('devices/{login}', [AccountController::class, 'signOutDevice'])->whereNumber('login')->name('account.devices.destroy');
+        Route::delete('devices', [AccountController::class, 'signOutOtherDevices'])->name('account.devices.destroy-others');
+    });
+
 
 
     Route::get('/comp/results/view-schema/{schema}', [OverallResultsController::class, 'computeResults'])->name("comps.results.view-schema");
@@ -422,6 +451,18 @@ Route::prefix('/admin')->middleware('isAdmin')->group(function () {
     Route::delete('/competition/{comp}/delete', [AdminController::class, 'deleteCompPost'])->name('admin.comp.delete');
 
     Route::get('/activity', [ActivityController::class, 'admin'])->name('admin.activity');
+
+    Route::get('/users', [AdminUsersController::class, 'index'])->name('admin.users.index');
+    Route::get('/users/{user}', [AdminUsersController::class, 'show'])->name('admin.users.show');
+
+    Route::resource('serc/marking-points', MarkingPointTemplateController::class)->except(['show'])->names([
+        'index' => 'admin.serc.marking-point-template.index',
+        'create' => 'admin.serc.marking-point-template.create',
+        'store' => 'admin.serc.marking-point-template.store',
+        'edit' => 'admin.serc.marking-point-template.edit',
+        'update' => 'admin.serc.marking-point-template.update',
+        'destroy' => 'admin.serc.marking-point-template.destroy',
+    ]);
 });
 
 

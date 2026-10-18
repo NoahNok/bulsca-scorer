@@ -4,17 +4,22 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Models\DigitalJudge\JudgeDQSubmission;
 use App\Models\Organisation\Organisation;
 use App\Models\Organisation\OrganisationUserAccess;
+use App\Services\ProfilePhotoService;
+use ALajusticia\Logins\Traits\HasLogins;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
 use NotificationChannels\WebPush\HasPushSubscriptions;
+use Spatie\OneTimePasswords\Models\Concerns\HasOneTimePasswords;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasPushSubscriptions;
+    use HasApiTokens, HasFactory, Notifiable, HasPushSubscriptions, HasOneTimePasswords, HasLogins;
 
     /**
      * The attributes that are mass assignable.
@@ -35,6 +40,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'judge_only',
     ];
 
     /**
@@ -44,11 +50,76 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'judge_only' => 'boolean',
     ];
+
+    protected static function booted(): void
+    {
+        static::deleted(fn (User $user) => app(ProfilePhotoService::class)->deleteFiles($user->profile_photo));
+    }
+
+    /**
+     * Public URLs of the official's profile photo, or null if they haven't uploaded one.
+     *
+     * @return array{webp: string, jpg: string}|null
+     */
+    public function profilePhotoUrls(): ?array
+    {
+        if (!$this->profile_photo) {
+            return null;
+        }
+
+        $disk = Storage::disk(ProfilePhotoService::DISK);
+
+        return [
+            'webp' => $disk->url($this->profile_photo . '.webp'),
+            'jpg' => $disk->url($this->profile_photo . '.jpg'),
+        ];
+    }
 
     public function isAdmin()
     {
         return $this->admin;
+    }
+
+    /**
+     * Self-registered officials, who can only use Digital Judge, not the main site.
+     */
+    public function isJudgeOnly(): bool
+    {
+        return (bool) $this->judge_only;
+    }
+
+    /**
+     * Sign out every other device, leaving the one making this request signed in.
+     */
+    public function logoutOtherDevices(): void
+    {
+        $this->revokeLogins(
+            $this->logins()->where(fn ($query) => $query
+                ->where('session_id', '!=', session()->getId())
+                ->orWhereNull('session_id'))
+        );
+    }
+
+    /**
+     * Sign out every device, including this one.
+     */
+    public function logoutEverywhere(): void
+    {
+        $this->revokeLogins($this->logins());
+    }
+
+    /**
+     * Destroy the session behind each login and delete it. Used instead of the package's
+     * revoke(), which deletes nothing when none of the logins has a session id, and with
+     * withExpired() so a login past its expiry whose session is still live isn't missed.
+     */
+    private function revokeLogins($query): void
+    {
+        foreach ($query->withExpired()->get() as $login) {
+            $login->revoke() || $login->delete();
+        }
     }
 
 
@@ -91,5 +162,22 @@ class User extends Authenticatable
             'id',
             'organisation'
         )->where('access_to', '!=', 'none')->distinct('organisations.id');
+    }
+
+
+    public function officiating()
+    {
+        return $this->belongsToMany(Competition::class, 'competition_officials', 'user_id', 'competition_id');
+    }
+
+    public function violations(?Competition $competition = null)
+    {
+        $query = $this->hasMany(JudgeDQSubmission::class, 'user_id', 'id');
+
+        if ($competition) {
+            $query->where('competition', $competition->id);
+        }
+
+        return $query;
     }
 }

@@ -11,12 +11,12 @@
 <body class="flex flex-col space-y-3 items-center mt-52 w-screen h-screen">
     <h2>{{ $comp->name }}</h2>
     @php
-        $params = ['pin' => $comp->digitalJudgePin];
-
+        // signs them in if needed, then adds them to the competition as an official
+        $link = route('judge.join-link', $comp->digitalJudgePin);
     @endphp
-    {!! QrCode::size(300)->style('round')->generate(route('dj.index', $params)) !!}
+    {!! QrCode::size(300)->style('round')->generate($link) !!}
     <small class="text-center">
-        {{ route('dj.index', $params) }}
+        {{ $link }}
         <br>
         PIN: {{ $comp->digitalJudgePin }}
     </small>

@@ -10,6 +10,7 @@ use App\Models\DigitalJudge\JudgeNote;
 use App\Models\EntityData;
 use App\Models\Event\Disqualification;
 use App\Models\Event\Penalty;
+use App\Models\Interfaces\IJsonable;
 use App\Models\League;
 use App\Models\Orders\Draw;
 use App\Models\Orders\EntityEventSeed;
@@ -21,9 +22,10 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Nette\NotImplementedException;
+use Override;
 use ShiftOneLabs\LaravelCascadeDeletes\CascadesDeletes;
 
-abstract class Entity extends Model
+abstract class Entity extends Model implements IJsonable
 {
     use CascadesDeletes;
 
@@ -181,5 +183,15 @@ abstract class Entity extends Model
     public function sercNotes()
     {
         return $this->morphMany(JudgeNote::class, 'entity');
+    }
+
+    // method to return json formatted entity for what svelte expexts, need to work out how to collapse to entity type enum
+    #[Override]
+    public function jsonable(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->getName()
+        ];
     }
 }

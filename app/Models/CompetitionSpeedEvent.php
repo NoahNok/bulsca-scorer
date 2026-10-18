@@ -15,6 +15,7 @@ use App\Models\Orders\EntityEventSeed;
 use App\Models\Orders\Heat;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Override;
 
 class CompetitionSpeedEvent extends Event
 {
@@ -224,5 +225,14 @@ class CompetitionSpeedEvent extends Event
         $possibleResults = $this->getScorableEntities()->count();
 
         return $results >= $possibleResults;
+    }
+
+    #[Override]
+    public function jsonable(): array
+    {
+        $data = parent::jsonable();
+        $data['max_lanes'] = $this->getCompetition()->value('max_lanes');
+
+        return $data;
     }
 }

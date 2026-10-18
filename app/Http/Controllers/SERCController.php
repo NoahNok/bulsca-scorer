@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ClassHelpers;
 use App\Http\Requests\Event\UpdateScoringSettings;
+use App\Http\Requests\SERC\SaveSERCSetupRequest;
 use App\Models\Competition;
 use App\Models\CompetitionTeam;
 use App\Models\Competitor;
 use App\Models\Event\ScoringSchema;
 use App\Models\League;
 use App\Models\SERC;
+use App\Models\SERC\MarkingPointTemplate;
 use App\Models\SERCDisqualification;
 use App\Models\SERCJudge;
 use App\Models\SERCMarkingPoint;
@@ -28,44 +30,12 @@ class SERCController extends Controller
         return view('competition.events.sercs.add', ['comp' => $comp]);
     }
 
-    public function addPost(Competition $comp, Request $request)
+    public function addPost(Competition $comp, SaveSERCSetupRequest $request)
     {
-
-        $json = json_decode($request->input('data'));
-
-
-
-
-
         $serc = new SERC();
-        $serc->name = $json->serc_name;
         $serc->competition = $comp->id;
-        $serc->type = $json->serc_type;
-        $serc->scorable_entity = $json->serc_target;
-        $serc->save();
 
-        foreach ($json->judges as $judge) {
-
-
-            $j = new SERCJudge();
-            $j->name = $judge->name;
-            $j->serc = $serc->id;
-            $j->description = $judge->description;
-            $j->save();
-
-            foreach ($judge->marking_points as $marking_point) {
-                $mp = new SERCMarkingPoint();
-                $mp->name = $marking_point->description;
-                $mp->weight = $marking_point->weight;
-                $mp->judge = $j->id;
-                $mp->serc = $serc->id;
-                $mp->save();
-            }
-        }
-
-        $request->session()->flash('success', "SERC created!");
-
-        return response()->json(['sid' => $serc->id]);
+        return $this->editPost($comp, $serc, $request);
     }
 
     public function view(Competition $comp, SERC $serc)
@@ -91,39 +61,22 @@ class SERCController extends Controller
 
     public function restrictionMap(Competition $comp, SERC $serc)
     {
-        $judges = $serc->getJudges()->with('restrictedLeagues')->get();
         $entities = $serc->getScorableEntities();
 
-        $restrictionMap = [];
+        $restrictionMap = $entities->map(function ($entity) use ($comp, $serc) {
+            $objectives = $serc->leagueObjectivesFor($entity);
 
-        foreach ($entities as $entity) {
-            $leagueId = $entity->getLeague()?->id;
-            $leagueName = $entity->getLeague()?->name;
-
-            $visibleJudges = [];
-
-            if ($serc->use_restricted_judges && $leagueId) {
-                // If restrictions are enabled, find judges restricted to this league
-                foreach ($judges as $judge) {
-                    if ($judge->restrictedLeagues->isEmpty()) {
-                        // Judges with no restrictions can see all entities
-                        $visibleJudges[] = $judge->name;
-                    } elseif ($judge->restrictedLeagues->contains('id', $leagueId)) {
-                        // Judge is restricted to this league
-                        $visibleJudges[] = $judge->name;
-                    }
-                }
-            } else {
-                // No restrictions enabled, all judges see all entities
-                $visibleJudges = $judges->pluck('name')->toArray();
-            }
-
-            $restrictionMap[] = [
+            return [
                 'entity_name' => $entity->getName($comp),
-                'league_name' => $leagueName,
-                'judges' => $visibleJudges,
+                'league_names' => $entity->leagues->pluck('name')->all(),
+                'objective' => $objectives->count() == 1 ? $objectives->first()->name : null,
+                'problem' => match ($objectives->count()) {
+                    0 => 'no_objective',
+                    1 => null,
+                    default => 'several_objectives',
+                },
             ];
-        }
+        })->values()->all();
 
         return view('competition.events.sercs.restriction-map', [
             'comp' => $comp,
@@ -138,63 +91,122 @@ class SERCController extends Controller
         return view('competition.events.sercs.edit', ['comp' => $comp, 'serc' => $serc]);
     }
 
-    public function editPost(Competition $comp, SERC $serc, Request $request)
+    public function editPost(Competition $comp, SERC $serc, SaveSERCSetupRequest $request)
     {
-        $json = json_decode($request->input('data'));
 
+        abort_if($serc->exists && $serc->competition != $comp->id, 404);
 
+        // Validate the request data
+        $validated = $request->validated();
 
-        // Process deletions first
-        SERCJudge::destroy($json->deleted->judges);
-        SERCMarkingPoint::destroy($json->deleted->marking_points);
+        // every judge and marking point id sent must already belong to this SERC, so one
+        // competition can't delete or take over another's (a new SERC has none yet)
+        $judgeIds = collect($validated['judges'])->pluck('id')
+            ->merge($validated['deleted']['judges'] ?? [])->filter()->unique();
+        $markingPointIds = collect($validated['judges'])->pluck('marking_points')->flatten(1)->pluck('id')
+            ->merge($validated['deleted']['marking_points'] ?? [])->filter()->unique();
 
+        abort_if(SERCJudge::where('serc', $serc->id ?? 0)->whereIn('id', $judgeIds)->count() != $judgeIds->count(), 422, 'Unknown judge for this SERC.');
+        abort_if(SERCMarkingPoint::where('serc', $serc->id ?? 0)->whereIn('id', $markingPointIds)->count() != $markingPointIds->count(), 422, 'Unknown marking point for this SERC.');
 
+        // changing which objective a league is marked against strands the marks already entered,
+        // so the organiser has to confirm it once they know how many marks are affected
+        $affectedMarks = $this->marksAffectedByLeagueObjectiveChanges($serc, $validated);
+        if ($affectedMarks > 0 && !($validated['confirm_affected_marks'] ?? false)) {
+            return response()->json(['affected_marks' => $affectedMarks], 409);
+        }
 
-        $serc = SERC::find($json->serc_id);
+        // Delete any judges or marking points that were removed in the frontend
+        SERCJudge::destroy($validated['deleted']['judges']);
+        SERCMarkingPoint::destroy($validated['deleted']['marking_points']);
 
-        $serc->name = $json->serc_name;
-        $serc->type = $json->serc_type;
-        $serc->scorable_entity = $json->serc_target;
-        $serc->use_restricted_judges = $json->use_restricted_judges;
+        $serc->name = $validated['name'];
+        $serc->type = $validated['type'];
+        $serc->scorable_entity = $validated['target_entity'];
+        if (array_key_exists('use_restricted_judges', $validated)) {
+            $serc->use_restricted_judges = $validated['use_restricted_judges'];
+        }
 
         $serc->save();
 
-        foreach ($json->judges as $judge) {
+        // Update or create judges and marking points
+        foreach ($validated['judges'] as $judge) {
 
             $j = null;
-            if ($judge->id == "null") {
+            if ($judge['id'] == null) {
                 $j = new SERCJudge();
             } else {
-                $j = SERCJudge::find($judge->id);
+                $j = SERCJudge::find($judge['id']);
             }
 
-            $j->name = $judge->name;
-            $j->description = $judge->description;
+            $j->name = $judge['name'];
+            $j->description = $judge['hint'] ?? '';
             $j->serc = $serc->id;
             $j->save();
 
-            $j->restrictedLeagues()->sync($judge->restricted_leagues);
+            if (array_key_exists('restricted_leagues', $judge)) {
+                $j->restrictedLeagues()->sync($judge['restricted_leagues']);
+            }
 
-            foreach ($judge->marking_points as $marking_point) {
+            foreach ($judge['marking_points'] as $marking_point) {
 
                 $mp = null;
-                if ($marking_point->id == "null") {
+                if ($marking_point['id'] == null) {
                     $mp = new SERCMarkingPoint();
                 } else {
-                    $mp = SERCMarkingPoint::find($marking_point->id);
+                    $mp = SERCMarkingPoint::find($marking_point['id']);
                 }
 
-                $mp->name = $marking_point->description;
-                $mp->weight = $marking_point->weight;
+                $mp->name = $marking_point['description'];
+                $mp->weight = $marking_point['weight'];
                 $mp->judge = $j->id;
                 $mp->serc = $serc->id;
+                $mp->marking_point_template_id = $marking_point['template_id'] ?? null;
                 $mp->save();
             }
         }
 
-        $request->session()->flash('success', "SERC updated!");
+        if ($affectedMarks > 0) {
+            $serc->recordActivity('SERC_LEAGUE_OBJECTIVES_CHANGED', "League Objectives changed for '{$serc->getName()}', affecting {$affectedMarks} " . ($affectedMarks == 1 ? 'mark' : 'marks'), context: ['affected_marks' => $affectedMarks], related: [$serc, $comp]);
+        }
 
-        return response()->json(['sid' => $serc->id]);
+        $request->session()->flash('success', $serc->wasRecentlyCreated ? "SERC created!" : "SERC updated!");
+
+        return response()->json(['id' => $serc->id]);
+    }
+
+    /**
+     * How many Marks would be marked against a different Objective after this save: all of the
+     * SERC's Marks when League Objectives is switched on or off, otherwise the Marks on each
+     * Objective whose Leagues change while it's on.
+     */
+    private function marksAffectedByLeagueObjectiveChanges(SERC $serc, array $validated): int
+    {
+        if (!$serc->exists) {
+            return 0;
+        }
+
+        $wasOn = (bool) $serc->use_restricted_judges;
+        $isOn = array_key_exists('use_restricted_judges', $validated) ? (bool) $validated['use_restricted_judges'] : $wasOn;
+
+        if ($wasOn != $isOn) {
+            return SERCResult::whereIn('marking_point', $serc->getMarkingPoints()->select('serc_marking_points.id'))->count();
+        }
+
+        if (!$isOn) {
+            return 0;
+        }
+
+        $changedObjectives = collect($validated['judges'])
+            ->filter(fn($judge) => $judge['id'] != null && array_key_exists('restricted_leagues', $judge))
+            ->filter(function ($judge) {
+                $current = SERCJudge::find($judge['id'])->restrictedLeagues()->pluck('leagues.id')->sort()->values()->all();
+
+                return $current != collect($judge['restricted_leagues'])->map(fn($id) => (int) $id)->sort()->values()->all();
+            })
+            ->pluck('id');
+
+        return SERCResult::whereIn('marking_point', SERCMarkingPoint::whereIn('judge', $changedObjectives)->select('id'))->count();
     }
 
     public function delete(Competition $comp, SERC $serc, Request $request)
@@ -209,14 +221,14 @@ class SERCController extends Controller
     public function editResultsView(Competition $comp, SERC $serc, int $entity_id)
     {
 
-        $team = $serc->getScorableEntity()->findOrFail($entity_id);
+        $team = $serc->getScorableEntity()::where('competition', $comp->id)->findOrFail($entity_id);
 
         return view('competition.events.sercs.edit-team-results', ['comp' => $comp, 'serc' => $serc, 'team' => $team]);
     }
 
     public function updateTeamResults(Competition $comp, SERC $serc, int $entity_id, Request $request)
     {
-        $team = $serc->getScorableEntity()->findOrFail($entity_id);
+        $team = $serc->getScorableEntity()::where('competition', $comp->id)->findOrFail($entity_id);
 
         $json = json_decode($request->input('data'));
         $sawDQ = false;
@@ -307,7 +319,7 @@ class SERCController extends Controller
 
     private function nextTeamId(Competition $comp, SERC $serc, int $entity_id): ?int
     {
-        $team = $serc->getScorableEntity()->findOrFail($entity_id);
+        $team = $serc->getScorableEntity()::where('competition', $comp->id)->findOrFail($entity_id);
 
         $teamIds = $serc->getScorableEntities()->pluck('id')->toArray();
 

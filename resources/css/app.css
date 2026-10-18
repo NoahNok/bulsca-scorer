@@ -2,26 +2,6 @@
 @plugin '@tailwindcss/typography';
 
 
-/*
-  The default border color has changed to `currentcolor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
-@layer base {
-
-  *,
-  ::after,
-  ::before,
-  ::backdrop,
-  ::file-selector-button {
-    border-color: var(--color-gray-200, currentcolor);
-  }
-
-  
-
   @font-face {
     font-family: 'Astoria';
     font-style: normal;
@@ -49,6 +29,28 @@
     font-weight: 400;
     src: url('/Greycliff-CF-Regular.otf');
   }
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+
+  
+
+
 }
 
 @tailwind base;
@@ -1283,17 +1285,68 @@ aside {
   @apply relative cursor-pointer ;
 
   &::after {
-    @apply absolute whitespace-nowrap bg-black text-white text-xs rounded-md px-2 py-1 opacity-0 transition-opacity pointer-events-none left-1/2 -top-8 -translate-x-1/2;
-
-    content: attr(title);
+    @apply absolute whitespace-nowrap bg-black text-white text-xs rounded-md px-2 py-1 pointer-events-none left-1/2 -top-8 -translate-x-1/2;
   }
 
   &.tooltip-left::after {
     @apply !top-0 !-translate-x-5/4;
   }
 
+  /* Only generate the tooltip while it's shown. A hidden (opacity-0) one
+     still takes up layout space and pushes the page wider than the screen
+     when the element sits near the right edge. */
   &:hover::after, &:focus::after, &:active::after {
-    @apply opacity-100 pointer-events-auto;
+    @apply pointer-events-auto;
+
+    content: attr(title);
   }
 }
 
+
+.se-alert-box {
+  @apply flex flex-col border-red-500 border-l-2 border-dashed p-4;
+
+  > h1 {
+    @apply text-red-500 text-xl flex items-center fill-red-500;
+  }
+
+  &.alert-info {
+    @apply border-blue-500;
+
+    > h1 {
+      @apply text-blue-500 fill-blue-500;
+    }
+  }
+
+  &.alert-thin {
+    @apply py-2;
+
+    > h1 {
+      @apply text-lg;
+    }
+  }
+}
+
+
+
+    @theme inline {
+        --animate-accordion-down: accordion-down 0.2s ease-out;
+        --animate-accordion-up: accordion-up 0.2s ease-out;
+    }
+    @keyframes accordion-down {
+        from {
+            height: 0;
+        }
+        to {
+            height: var(--bits-accordion-content-height);
+        }
+    }
+
+    @keyframes accordion-up {
+        from {
+            height: var(--bits-accordion-content-height);
+        }
+        to {
+            height: 0;
+        }
+    }

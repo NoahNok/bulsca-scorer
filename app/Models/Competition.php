@@ -7,11 +7,15 @@ use App\Mail\CompetitionAccountInvite;
 use App\Models\Activity\Activity;
 use App\Models\Competition\CompetitionScoringSettings;
 use App\Models\Competition\CompetitionStatusMessage;
+use App\Models\DigitalJudge\Announcement;
+use App\Models\DigitalJudge\JudgeDQSubmission;
 use App\Models\DigitalJudge\JudgeLog;
 use App\Models\Interfaces\IInvitable;
+use App\Models\Interfaces\IJsonable;
 use App\Models\Orders\Draw;
 use App\Models\Orders\Heat;
 use App\Models\Organisation\Organisation;
+use App\Models\Pivots\CompetitionOfficial;
 use App\Stats\StatsManager;
 use App\Traits\Cloneable;
 use App\Traits\RecordActivity;
@@ -23,10 +27,12 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Override;
+use ShiftOneLabs\LaravelCascadeDeletes\CascadesDeletes;
 
-class Competition extends Model implements IInvitable
+class Competition extends Model implements IInvitable, IJsonable
 {
-    use HasFactory, Cloneable, RecordActivity;
+    use HasFactory, Cloneable, RecordActivity, CascadesDeletes;
 
     public static $types = ['STANDALONE', 'REGIONAL', 'QUALIFIER', 'FINAL'];
     public static $accessTypes = [
@@ -41,11 +47,27 @@ class Competition extends Model implements IInvitable
         'serc_writer' => 'SERC Writer',
     ];
 
+    public static $officialRoles = [
+        'official' => 'Official',
+        'referee' => 'Referee',
+    ];
+
+    protected $hidden = [
+        'digitalJudgePin',
+        'digitalJudgeHeadPin',
+    ];
+
     protected $casts = [
         'when' => 'datetime',
         'serc_start_time' => 'datetime',
+        'sercs_released_at' => 'datetime',
         'data' => 'array'
     ];
+
+    protected $cascadeDeletes = [
+        'getJudgeDQSubmissions',
+    ];
+
 
 
     public function getSlug()
@@ -239,6 +261,11 @@ class Competition extends Model implements IInvitable
     public function getHeatEntries()
     {
         return $this->hasMany(Heat::class, 'competition', 'id');
+    }
+
+    public function getJudgeDQSubmissions()
+    {
+        return $this->hasMany(JudgeDQSubmission::class, 'competition', 'id');
     }
 
 
@@ -650,5 +677,122 @@ class Competition extends Model implements IInvitable
     public function championship()
     {
         return $this->belongsTo(Championship::class);
+    }
+
+    public function officials()
+    {
+        return $this->belongsToMany(User::class, 'competition_officials')
+            ->using(CompetitionOfficial::class)
+            ->withPivot('role', 'last_seen_at')
+            ->withTimestamps();
+    }
+
+    public function announcements()
+    {
+        return $this->hasMany(Announcement::class);
+    }
+
+    /**
+     * Note that the official has just used Digital Judge for this competition. Written at most
+     * once a minute, so it's cheap to call on every request.
+     */
+    public function markOfficialSeen(User $user): void
+    {
+        DB::table('competition_officials')
+            ->where('competition_id', $this->id)
+            ->where('user_id', $user->id)
+            ->where(fn ($query) => $query
+                ->whereNull('last_seen_at')
+                ->orWhere('last_seen_at', '<', now()->subMinute()))
+            ->update(['last_seen_at' => now()]);
+    }
+
+    /**
+     * The display name for an official's role, "Admin" for an admin who isn't an official.
+     */
+    public static function officialRoleName(?string $role): string
+    {
+        return $role ? (self::$officialRoles[$role] ?? 'Official') : 'Admin';
+    }
+
+    /**
+     * Whether the user can judge this competition: one of its officials, or an admin.
+     */
+    public function isOfficiatedBy(User $user): bool
+    {
+        return $user->isAdmin() || $this->officials()->whereKey($user->id)->exists();
+    }
+
+    public function officialHasRole(User $user, string $role): bool
+    {
+        $pivot = $this->officials()
+            ->where('user_id', $user->id)
+            ->first()?->pivot;
+
+        return $pivot?->isOfficialRole($role) ?? false;
+    }
+
+    public function setOfficialRole(User $user, string $role): void
+    {
+        $this->officials()->syncWithoutDetaching([
+            $user->id => ['role' => $role],
+        ]);
+    }
+
+    public function sercsReleased(): bool
+    {
+        return $this->sercs_released_at !== null;
+    }
+
+    /**
+     * SERCs stay hidden from officials until they're released on the day. Referees can always see them.
+     */
+    public function canSeeSercs(User $user): bool
+    {
+        return $this->sercsReleased() || $this->officialHasRole($user, 'referee');
+    }
+
+    public function setSercsReleased(bool $released): void
+    {
+        if ($released === $this->sercsReleased()) {
+            return;
+        }
+
+        $this->sercs_released_at = $released ? now() : null;
+        $this->save();
+
+        $this->recordActivity(
+            $released ? 'SERCS_RELEASED' : 'SERCS_LOCKED',
+            $released ? 'SERCs released to officials' : 'SERCs locked from officials',
+            related: $this
+        );
+    }
+
+    /**
+     * Returns false if the user already officiates this competition (their role is left alone).
+     */
+    public function addOfficial(User $user, string $role = 'official'): bool
+    {
+        if ($this->officials()->whereKey($user->id)->exists()) {
+            return false;
+        }
+
+        $this->officials()->attach($user, ['role' => $role]);
+
+        return true;
+    }
+
+    public function removeOfficial(User $user): void
+    {
+        $this->officials()->detach($user);
+    }
+
+    #[Override]
+    public function jsonable(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name
+        ];
     }
 }

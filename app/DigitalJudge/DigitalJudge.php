@@ -11,6 +11,7 @@ use App\Models\CompetitionTeam;
 use App\Models\SERC;
 use App\Models\SERCJudge;
 use App\Models\SERCResult;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request;
@@ -39,7 +40,13 @@ class DigitalJudge
 
     public static function getClientName(): string
     {
-        return Session::get('digitalJudgeClientName', 'UNKNOWN');
+        $name = '';
+        if (auth()->check()) {
+            $name = auth()->user()->name;
+        } else {
+            $name = Session::get('digitalJudgeClientName', 'UNKNOWN');
+        }
+        return $name;
     }
 
     public static function getClientId(): string
@@ -89,9 +96,22 @@ class DigitalJudge
         Session::put('digitalJudgeJudgeId', array_diff(Session::get('digitalJudgeJudgeId', []), [$judgeId]));
     }
 
+    public static function clearClientJudges()
+    {
+        Session::put('digitalJudgeJudgeId', []);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection<int, SERCJudge>
+     */
     public static function getClientJudges()
     {
         return SERCJudge::find(Session::get('digitalJudgeJudgeId', []));
+    }
+
+    public static function getClientJudgeIds()
+    {
+        return Session::get('digitalJudgeJudgeId', []);
     }
 
     public static function clientUrlAndSessionJudgeMatch(): bool
@@ -105,14 +125,21 @@ class DigitalJudge
         Session::put('digitalJudgeClientHeadJudge', $isHeadJudge);
     }
 
-    public static function isClientHeadJudge(): bool
+    public static function isClientHeadJudge(?Competition $competition = null): bool
     {
+
+        $user = Auth::user();
+        if ($user && $competition) {
+            return $competition->officialHasRole($user, 'referee');
+        }
+
         return Session::get('digitalJudgeClientHeadJudge', false);
     }
 
     public static function hasTeamBeenJudgedAlready(Entity $entity, bool $allowAnyJudge = false)
     {
         // SELECT COUNT(*) FROM serc_results WHERE team=? AND marking_point IN (SELECT id FROM serc_marking_points WHERE judge=?)
+
 
         $judge = DigitalJudge::getClientJudges()[0];
         $serc = $judge->getSERC;
@@ -126,6 +153,16 @@ class DigitalJudge
                 $query->where('serc', $serc->id)->where('judge', $judge->id);
             })->exists();
         }
+    }
+
+    public static function hasEntityBeenJudgedAlready(Entity $entity, SERCJudge $judge)
+    {
+        // SELECT COUNT(*) FROM serc_results WHERE team=? AND marking_point IN (SELECT id FROM serc_marking_points WHERE judge=?)
+        $serc = $judge->getSERC;
+
+        return SERCResult::whereMorphedTo('entity', $entity)->whereHas('getMarkingPoint', function ($query) use ($serc, $judge) {
+            $query->where('serc', $serc->id)->where('judge', $judge->id);
+        })->exists();
     }
 
     public static function hasTeamBeenJudgedAlreadyForJudge(CompetitionTeam $team, SERCJudge $judge)
@@ -191,9 +228,9 @@ class DigitalJudge
         return (int) $value;
     }
 
-    public static function setStatus(string $status, ?Event $event = null)
+    public static function setStatus(Competition $competition, string $status, ?Event $event = null)
     {
-        $competition = DigitalJudge::getClientCompetition();
+
         $clientId = DigitalJudge::getClientId();
         $data = Cache::get("digitaljudge.live-monitor.{$competition->id}", []);
 

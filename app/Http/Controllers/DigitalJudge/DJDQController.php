@@ -495,17 +495,6 @@ class DJDQController extends Controller
             }
         }
 
-
-
-
-
-
-
-
-
-
-
-
         return response()->json(compact('related', 'other'));
     }
 }

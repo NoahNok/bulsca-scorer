@@ -1,21 +1,30 @@
 @extends('layouts.competition')
 
 @section('title')
-    Restriction Map | {{ $serc->name }}
+    League Objectives | {{ $serc->name }}
 @endsection
 
 @section('content')
+    @php
+        $problemCount = collect($restrictionMap)->whereNotNull('problem')->count();
+    @endphp
     <div class="grid-3">
         <div class="flex flex-col space-y-4 col-span-3">
             <div>
-                <h2 class="mb-0">{{ $serc->name }} - Restriction Map</h2>
-                <small>Shows which judge the entity will be marked against.
-                    Mapped/Total Entities ({{ count($restrictionMap) }}/{{ $totalEntities }})</small>
+                <h2 class="mb-0">{{ $serc->name }} - League Objectives</h2>
+                <small>Shows which Objective each entity will be marked against.
+                    Mapped/Total Entities ({{ $totalEntities - $problemCount }}/{{ $totalEntities }})</small>
             </div>
 
             @if (!$serc->use_restricted_judges)
-                <div class="alert-box alert-info">
-                    <p>Restricted judges are not enabled for this SERC. All judges will see all entities.</p>
+                <div class="se-alert-box alert-info">
+                    <p>League Objectives aren't turned on for this SERC. Judges pick the Objective they mark against.</p>
+                </div>
+            @elseif ($problemCount > 0)
+                <div class="se-alert-box">
+                    <p>{{ $problemCount }} {{ $problemCount == 1 ? 'entity has' : 'entities have' }} no single Objective
+                        to be marked against. Judges will be asked to get you to fix this before they can mark
+                        {{ $problemCount == 1 ? 'it' : 'them' }}.</p>
                 </div>
             @endif
 
@@ -25,7 +34,7 @@
                         <tr>
                             <th scope="col">Entity</th>
                             <th scope="col">League</th>
-                            <th scope="col">Visible to Judges</th>
+                            <th scope="col">Objective</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -35,17 +44,15 @@
                                     {{ $item['entity_name'] }}
                                 </th>
                                 <td>
-                                    {{ $item['league_name'] ?? 'No League' }}
+                                    {{ empty($item['league_names']) ? 'No League' : implode(', ', $item['league_names']) }}
                                 </td>
                                 <td>
-                                    @if (empty($item['judges']))
-                                        <span class="text-yellow-600">No judges assigned</span>
+                                    @if ($item['problem'] == 'no_objective')
+                                        <span class="badge badge-danger">No Objective for this League</span>
+                                    @elseif ($item['problem'] == 'several_objectives')
+                                        <span class="badge badge-danger">Leagues on more than one Objective</span>
                                     @else
-                                        <div class=" gap-1 ">
-                                            @foreach ($item['judges'] as $judge)
-                                                <span class="badge badge-info  ">{{ $judge }}</span>
-                                            @endforeach
-                                        </div>
+                                        <span class="badge badge-info">{{ $item['objective'] }}</span>
                                     @endif
                                 </td>
                             </tr>
@@ -62,15 +69,15 @@
 
             <div>
                 <div>
-                    <h3 class="mb-0">Judges <-> League</h3>
-                    <small>Shows which league(s) each judge can be connected to.</small>
+                    <h3 class="mb-0">Objectives and Leagues</h3>
+                    <small>Shows which League(s) each Objective is marked against.</small>
                 </div>
                 <div class="se-table">
                     <table>
                         <thead>
                             <tr>
-                                <th scope="col">Judge</th>
-                                <th scope="col">Restricted to Leagues</th>
+                                <th scope="col">Objective</th>
+                                <th scope="col">Leagues</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -81,7 +88,7 @@
                                     </th>
                                     <td>
                                         @if ($judge->restrictedLeagues->isEmpty())
-                                            <span class="text-gray-500">No restrictions (sees all entities)</span>
+                                            <span class="badge badge-gray">No Leagues (not used)</span>
                                         @else
                                             <div class="gap-1">
                                                 @foreach ($judge->restrictedLeagues as $league)
@@ -93,7 +100,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="2" class="text-center">No judges found</td>
+                                    <td colspan="2" class="text-center">No Objectives found</td>
                                 </tr>
                             @endforelse
                         </tbody>

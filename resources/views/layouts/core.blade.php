@@ -29,7 +29,7 @@
         rel="stylesheet">
 
 
-    @vite('resources/js/app.js')
+    @vite('resources/js/basic-app.js')
     @vite('resources/css/app.css')
     {{-- <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}"> --}}
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/mask@3.13.3/dist/cdn.min.js"></script>
@@ -37,10 +37,9 @@
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
 
 
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
 
-    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
+
     @auth
         <script src="{{ asset('sw.js') }}"></script>
     @endauth
@@ -250,6 +249,8 @@
                     <a href="{{ route('admin.index') }}"
                         class="text-sm/6 font-semibold text-gray-900 hover:text-se transition-colors">Admin</a>
                 @endif
+                <a href="{{ route('account') }}"
+                    class="text-sm/6 font-semibold text-gray-900 hover:text-se transition-colors">Account</a>
                 <a href="{{ route('logout') }}"
                     class="text-sm/6 font-semibold text-gray-900 hover:text-se transition-colors">Sign out <span
                         aria-hidden="true">&rarr;</span></a>
@@ -359,6 +360,9 @@
                                 class="-mx-3 block rounded-lg px-3 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Admin</a>
                         @endif
 
+                        <a href="{{ route('account') }}"
+                            class="-mx-3 block rounded-lg px-3 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Account</a>
+
                         <hr class="spacer my-4!">
 
                         <a href="{{ route('logout') }}"
@@ -420,14 +424,9 @@
 
 <script src="{{ asset('js/editable-table.js') }}"></script>
 <script src="{{ asset('js/alert.js') }}"></script>
-<script src="{{ asset('js/serc-builder.js') }}"></script>
 <script>
     window.onload = () => {
 
-        document.querySelectorAll("[serc-builder]").forEach(sb => {
-
-            new SERCBuilder(sb);
-        })
         document.querySelectorAll("[editable-table]").forEach(et => {
             new EditableTable(et)
         })

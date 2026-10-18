@@ -349,7 +349,7 @@
                     <a href="{{ route('comps.events.sercs.restriction-map', [$comp, $serc]) }}"
                         class="flex items-center
                     cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
-                        <p class="font-archivo">Judge/Marking Restrictions</p>
+                        <p class="font-archivo">League Objectives</p>
 
 
 

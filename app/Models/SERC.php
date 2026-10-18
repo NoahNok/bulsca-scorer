@@ -217,17 +217,22 @@ class SERC extends Event
 
         $data = [];
 
+        $total = -1;
+
         if (!$draw) {
             $data = ["text" => -1, "percent" => 100, "percent_unit" => 50];
         } else if ($use_tanks) {
             $total = $this->getDraw()->where('tank', $draw->tank)->count();
-            $data = ["text" => "{$draw->draw} / {$total} - Tank {$draw->tank}", "percent" => $draw->draw / $total * 100, "percent_unit" => 100 / $total];
+            $data = ["text" => "{$draw->draw} / {$total} - Tank {$draw->tank}", "percent" => ($draw->draw - 1) / $total * 100, "percent_unit" => 100 / $total];
         } else {
             $total = $this->getDraw()->count();
-            $data = ["text" => "$draw->draw / $total", "percent" => $draw->draw / $total * 100, "percent_unit" => 100 / $total];
+            $data = ["text" => "$draw->draw / $total", "percent" => ($draw->draw - 1) / $total * 100, "percent_unit" => 100 / $total];
         }
 
         $data["percent"] = min($data['percent'], 100);
+
+        $data["index"] = $draw?->draw ?? -1;
+        $data["total"] = $total;
 
 
         return $data;
@@ -235,9 +240,25 @@ class SERC extends Event
 
 
 
-    public function getTankDraw()
+    public function getTankDraw($jsonable = false)
     {
         $comp = $this->getCompetition;
+        if ($jsonable) {
+            return $this->getDraw()->with('entity')->orderBy('tank')->orderBy('draw')->get()->map(function ($draw) use ($comp) {
+                return [
+                    'tank' => $draw->tank,
+                    'draw' => $draw->draw,
+                    'entity' => $draw?->entity?->jsonable() ?? null,
+                ];
+            })->groupBy('tank')->map(function ($items, $tank) {
+                return [
+                    'tank'  => $tank,
+                    'draw' => $items->values(), // ensure numeric array
+                ];
+            })
+                ->values(); // optional: remove tank keys
+        }
+
         $draws = $this->draw()->with('entity')->orderBy('tank')->orderBy('draw')->get();
         $tankNumbers = $this->drawTanks()->pluck('tank')
             ->merge($draws->pluck('tank'))
@@ -261,6 +282,18 @@ class SERC extends Event
     public function getJudges()
     {
         return $this->hasMany(SERCJudge::class, 'serc', 'id');
+    }
+
+    /**
+     * With League Objectives on, the Objectives assigned to any of the Entity's Leagues. The Entity
+     * is marked against the Objective only when there's exactly one; none or several is an error
+     * for the organiser to fix.
+     */
+    public function leagueObjectivesFor(Entity $entity)
+    {
+        return $this->getJudges()
+            ->whereHas('restrictedLeagues', fn($q) => $q->whereIn('leagues.id', $entity->leagues()->select('leagues.id')))
+            ->get();
     }
 
     public function getMarkingPoints()
@@ -484,36 +517,20 @@ class SERC extends Event
     {
 
         if ($this->use_restricted_judges) {
-            $judges = $this->getJudges()->with('restrictedLeagues')->get();
-
-            // Build up a map of league: markingPoints
-            $leagueMarkingPointMap = [];
-
-            foreach ($judges as $judge) {
-                $judgeMarkingPoints = $judge->getMarkingPoints->pluck('id');
-                foreach ($judge->restrictedLeagues as $league) {
-                    $leagueMarkingPointMap[$league->id] = $judgeMarkingPoints;
-                }
-            }
-
-            $totalMarkedEntites = 0;
+            // each entity is complete once every marking point on its League's Objective has a Mark
             $entities = $this->getScorableEntities();
 
-            // Foreach entity get the marking points for their league and check if the total marked matches expected
-            foreach ($entities as $entity) {
-                $leagueId = $entity->leagues->first()?->id;
+            $totalMarkedEntites = $entities->filter(function ($entity) {
+                $objectives = $this->leagueObjectivesFor($entity);
 
-                if (!key_exists($leagueId, $leagueMarkingPointMap)) {
-                    continue;
+                if ($objectives->count() != 1) {
+                    return false;
                 }
 
-                $targetMps = $leagueMarkingPointMap[$leagueId];
-                $results = SERCResult::whereIn('marking_point', $targetMps)->where('entity_id', $entity->id)->count();
+                $targetMps = $objectives->first()->getMarkingPoints()->pluck('id');
 
-                if ($results == count($targetMps)) {
-                    $totalMarkedEntites++;
-                }
-            }
+                return SERCResult::whereIn('marking_point', $targetMps)->whereMorphedTo('entity', $entity)->count() == $targetMps->count();
+            })->count();
 
             return $totalMarkedEntites >= $entities->count();
         }
@@ -526,5 +543,37 @@ class SERC extends Event
         $totalResults = SERCResult::whereIn('marking_point', $markingPoints->pluck('id'))->count('entity_id');
 
         return $totalResults >= $totalPossibleResults;
+    }
+
+    public function getSERCConfiguration()
+    {
+        $judges = $this->getJudges()->with('getMarkingPoints', 'restrictedLeagues')->get();
+
+        $config = [];
+
+        foreach ($judges as $judge) {
+            $mpConfig = [];
+
+            foreach ($judge->getMarkingPoints as $mp) {
+
+                $mpConfig[] = [
+                    'id' => $mp->id,
+                    'description' => $mp->name,
+                    'weight' => $mp->weight,
+                    'hints' => $mp->hints,
+                    'template_id' => $mp->marking_point_template_id
+                ];
+            }
+
+            $config[] = [
+                'id' => $judge->id,
+                'name' => $judge->name,
+                'hint' => $judge->description,
+                'restricted_leagues' => $judge->restrictedLeagues->pluck('id')->all(),
+                'marking_points' => $mpConfig
+            ];
+        }
+
+        return $config;
     }
 }

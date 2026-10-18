@@ -110,7 +110,7 @@
                 @if ($comp->digitalJudgeEnabled)
                     <div class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1"
                         @click="modals.djPin = true">
-                        <p class="font-archivo">Pins</p>
+                        <p class="font-archivo">PIN</p>
 
 
 
@@ -187,6 +187,26 @@
 
 
                     </div>
+
+                    <hr class="spacer">
+
+                    <div class="px-2 mb-2">
+                        <p class="font-archivo">SERCs</p>
+                        @if ($comp->sercsReleased())
+                            <small>Released to officials at {{ $comp->sercs_released_at->format('H:i, M jS') }}</small>
+                        @else
+                            <small>Locked. Only referees can see them until they're released.</small>
+                        @endif
+                    </div>
+
+                    <form method="POST" action="{{ route('dj.sercs-release', $comp) }}" class="mb-2"
+                        @if ($comp->sercsReleased()) @submit="doConfirm($event, @js('Lock the SERCs? Officials won\'t be able to see or judge them until they\'re released again.'))" @endif>
+                        @csrf
+                        <input type="hidden" name="released" value="{{ $comp->sercsReleased() ? 0 : 1 }}">
+                        <button type="submit" class="btn w-full @if ($comp->sercsReleased()) btn-danger @endif">
+                            {{ $comp->sercsReleased() ? 'Lock SERCs' : 'Release SERCs' }}
+                        </button>
+                    </form>
 
                     <a href="{{ route('dj.toggle', $comp) }}" class="se-btn se-btn-danger block ">Disable</a>
                 @else
@@ -269,25 +289,18 @@
     </div>
 
     @can('access', [$comp, 'admin'])
-        <x-s-e-modal id="djPin" title="Pins">
-            <p class="mb-4">Officials should navigate to <a
-                    href="{{ \App\Helpers\RouteHelpers::externalRoute('judge', 'dj.index') }}"
-                    class="link">{{ \App\Helpers\RouteHelpers::externalRoute('judge', 'dj.index') }}
-                </a> and enter one of the following:</p>
+        <x-s-e-modal id="djPin" title="Digital Judge PIN">
+            <p class="mb-4">Officials go to <a href="{{ route('judge.index') }}" target="_blank"
+                    class="link">{{ route('judge.index') }}</a>, sign in, and enter this PIN to join
+                {{ $comp->name }}:</p>
 
+            <p class="font-semibold text-3xl tracking-widest mb-4">{{ $comp->digitalJudgePin }}</p>
 
-            <div class="grid-2">
-                <div>
-                    <h4>Judges</h4>
-                    <p class="font-semibold text-lg">{{ $comp->digitalJudgePin }}</p>
+            <p class="mb-4">Or they can scan the <a href="{{ route('dj.qrs', $comp) }}" target="_blank"
+                    class="link">printable QR code</a>, which signs them in and adds them in one go.</p>
 
-                </div>
-
-                <div>
-                    <h4>Head Referee</h4>
-                    <p class="font-semibold text-lg">{{ $comp->digitalJudgeHeadPin }}</p>
-                </div>
-            </div>
+            <p class="text-gray-500">Referees don't need a separate PIN. Give them the Referee role on the
+                <a href="{{ route('comps.officials', $comp) }}" class="link">Officials</a> tab.</p>
         </x-s-e-modal>
 
         <x-s-e-modal id="djSettings" title="DigitalJudge Settings">
@@ -1117,11 +1130,20 @@
                         },
                         body: fd,
                         method: 'POST'
-                    }).then(resp => resp.json()).then(data => {
+                    }).then(resp => {
+                        if (!resp.ok) {
+                            showAlert('Something went wrong, unable to delete competition')
+                            return
+                        }
+            
+                        return resp.json()
+                    }).then(data => {
                         if (data.error) {
                             showAlert(data.error)
                             return
                         }
+            
+            
             
                         window.location.href = '/'
                     })

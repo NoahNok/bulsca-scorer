@@ -131,7 +131,7 @@
                                 </div>
                                 <article
                                     class="block prose prose-neutral prose-p:mb-0 prose-ul:my-0 prose-ol:my-0 prose-li:my-0 leading-5!"
-                                    x-show="open" x-collapse>
+                                    x-show="open" x-cloak x-collapse>
                                     {!! $mJudge->description !!}
                                 </article>
                             </div>
@@ -146,72 +146,11 @@
 
                         @foreach ($mJudge->getMarkingPoints as $mp)
                             @php
-                                $mpValue = $mp->getScoreForTeam($team) ?: -1;
                                 $mpIds[] = $mp->id;
                             @endphp
-                            <div class="flex flex-col space-y-2 border-b pb-4" id="mpcontainer-{{ $mp->id }}"
-                                x-data="{
-                                    half_open: {{ fmod($mpValue, 1) === 0.5 ? 'true' : 'false' }}
-                                }">
-                                <div class="flex justify-between items-center ">
-                                    <p>{{ $mp->name }}</p>
-                                    <div class="flex items-center justify-center">
-                                        <input type="radio" required class="w-0 h-0 peer" value="0"
-                                            x-judge="{{ $mJudge->id }}" name="mp-{{ $mp->id }}"
-                                            @if ($mpValue == 0) checked @endif id="mp-{{ $mp->id }}-0">
-                                        <label for="mp-{{ $mp->id }}-0"
-                                            class="  flex items-center justify-center px-4 py-0.5 font-semibold  rounded-xs bg-gray-200 text-xs peer-checked:bg-bulsca_red peer-checked:text-white ">
-                                            ZERO
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <div class="grid grid-cols-5 gap-2 gap-y-4" x-show="!half_open">
-                                    @for ($i = 1; $i <= 10; $i++)
-                                        <div class="flex items-center justify-center">
-                                            <input type="radio" required class="w-0 h-0 peer" value="{{ $i }}"
-                                                name="mp-{{ $mp->id }}"
-                                                @if ($mpValue == $i) checked @endif
-                                                id="mp-{{ $mp->id }}-{{ $i }}">
-                                            <label for="mp-{{ $mp->id }}-{{ $i }}"
-                                                class="w-6 h-6 flex items-center justify-center p-4 font-semibold font-mono rounded-md bg-gray-200 text-sm peer-checked:bg-bulsca peer-checked:text-white ">
-                                                {{ $i }}
-                                            </label>
-                                        </div>
-                                    @endfor
-                                </div>
-
-                                <div class="grid grid-cols-5 gap-2 gap-y-4" x-show="half_open">
-                                    @for ($i = 0.5; $i <= 10; $i++)
-                                        <div class="flex items-center justify-center">
-                                            <input type="radio" required class="w-0 h-0 peer" value="{{ $i }}"
-                                                name="mp-{{ $mp->id }}"
-                                                @if ($mpValue == $i) checked @endif
-                                                id="mp-{{ $mp->id }}-{{ $i }}">
-                                            <label for="mp-{{ $mp->id }}-{{ $i }}"
-                                                class="w-6 h-6 flex items-center justify-center p-4 font-semibold font-mono rounded-md bg-gray-200 text-sm peer-checked:bg-bulsca peer-checked:text-white ">
-                                                {{ $i }}
-                                            </label>
-                                        </div>
-                                    @endfor
-                                </div>
 
 
-                                <div class="flex items-center justify-center mt-2">
-                                    <button type="button" class="badge  font-mono! text-black!"
-                                        :class="half_open ? 'bg-bulsca! text-white!' : 'bg-gray-200!'"
-                                        @click="half_open = !half_open">Toggle Half Marks</button>
-                                </div>
-
-
-
-                                <div class="text-gray-500 pt-2 flex justify-between">
-                                    <small>Min:
-                                        {{ round(App\Models\SERCResult::where('marking_point', $mp->id)->min('result')) ?: '0' }}</small><small>Avg:
-                                        {{ round(App\Models\SERCResult::where('marking_point', $mp->id)->avg('result'), 1) ?: '0' }}</small><small>Max:
-                                        {{ round(App\Models\SERCResult::where('marking_point', $mp->id)->max('result')) ?: '0' }}</small>
-                                </div>
-                            </div>
+                            <x-serc.marking-point :mp="$mp" :team="$team" />
                         @endforeach
 
 
@@ -436,7 +375,7 @@
         function zeroAll(judgeId) {
             if (!confirm('Are you sure you want to zero all marking points for this judge?')) return;
 
-            document.querySelectorAll(`input[value='0'][x-judge='${judgeId}']`).forEach(i => i.checked = true)
+            document.querySelectorAll(`input[value='0'][mp-zero-judge='mp-j-${judgeId}']`).forEach(i => i.checked = true)
         }
     </script>
 @endsection

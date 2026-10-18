@@ -12,6 +12,8 @@ use App\Http\Requests\Organisation\InviteAccountToOrganisationRequest;
 use App\Http\Requests\Organisation\NameSubdomainTakenRequest;
 use App\Http\Requests\Organisation\RemoveOrganisationAccountRequest;
 use App\Http\Requests\Result\UpdateResultSchemaScoringSettings;
+use App\Mail\CompetitionOfficialAddedMail;
+use App\Models\Competition;
 use App\Models\DQCode;
 use App\Models\Event\ScoringSchema;
 use App\Models\EventCode;
@@ -22,7 +24,12 @@ use App\Models\ResultSchemaTemplate;
 use App\Models\SpeedEvent;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class OrganisationController extends Controller
 {
@@ -126,6 +133,130 @@ class OrganisationController extends Controller
         $this->authorize('access', [$organisation, 'admin']);
 
         return view('organisation.accounts', ['org' => $organisation]);
+    }
+
+    public function officials(Request $request, Organisation $organisation)
+    {
+        $this->authorize('access', [$organisation, 'admin']);
+
+        [$q, $role] = $this->officialsFilters($request);
+        $all = $organisation->officials();
+
+        return view('organisation.officials', [
+            'org' => $organisation,
+            'officials' => $this->filterOfficials($all, $q, $role),
+            'total' => $all->count(),
+            'q' => $q,
+            'role' => $role,
+            'upcomingCompetitions' => $this->upcomingCompetitions($organisation),
+            // so a failed "add to a competition" reopens the modal with the same person
+            'oldOfficial' => $all->firstWhere('id', (int) $request->old('user_id')),
+        ]);
+    }
+
+    /**
+     * The officials list as a CSV, with the same search and role filter as the page.
+     */
+    public function officialsExport(Request $request, Organisation $organisation)
+    {
+        $this->authorize('access', [$organisation, 'admin']);
+
+        [$q, $role] = $this->officialsFilters($request);
+        $officials = $this->filterOfficials($organisation->officials(), $q, $role);
+
+        return response()->streamDownload(function () use ($officials) {
+            $out = fopen('php://output', 'w');
+            // the BOM tells Excel it's UTF-8, so accented names come out right
+            fwrite($out, "\u{FEFF}");
+            // escape is passed explicitly: leaving it out is deprecated on PHP 8.4+, and the notice ends up in the file
+            fputcsv($out, ['Name', 'Email', 'Roles', 'Competitions', 'Last competition', 'Last competition date'], escape: '');
+
+            foreach ($officials as $official) {
+                fputcsv($out, [
+                    $official['name'],
+                    $official['email'],
+                    $official['roles']->map(fn ($role) => Competition::officialRoleName($role))->implode(', '),
+                    $official['count'],
+                    $official['last']['name'],
+                    $official['last']['when']?->format('Y-m-d'),
+                ], escape: '');
+            }
+
+            fclose($out);
+        }, Str::slug($organisation->name) . '-officials.csv', ['Content-Type' => 'text/csv; charset=UTF-8']);
+    }
+
+    /**
+     * Add one of the organisation's past officials to one of its upcoming competitions.
+     */
+    public function officialsAddToCompetition(Request $request, Organisation $organisation)
+    {
+        $this->authorize('access', [$organisation, 'admin']);
+
+        $validated = $request->validateWithBag('addToCompetition', [
+            'user_id' => ['required', 'integer'],
+            'competition_id' => ['required', 'integer'],
+            'role' => ['required', Rule::in(array_keys(Competition::$officialRoles))],
+        ]);
+
+        $official = $organisation->officials()->contains('id', (int) $validated['user_id'])
+            ? User::find($validated['user_id'])
+            : null;
+        if (!$official) {
+            return back()->withInput()->withErrors(['user_id' => "Pick someone who has officiated for {$organisation->name}."], 'addToCompetition');
+        }
+
+        $comp = $this->upcomingCompetitions($organisation)->firstWhere('id', (int) $validated['competition_id']);
+        if (!$comp) {
+            return back()->withInput()->withErrors(['competition_id' => 'Pick one of your upcoming competitions.'], 'addToCompetition');
+        }
+
+        if (!$comp->addOfficial($official, $validated['role'])) {
+            return back()->withInput()->withErrors(['competition_id' => "{$official->name} is already an official for {$comp->name}."], 'addToCompetition');
+        }
+
+        // admin-made accounts stay unverified until the official first signs in with a PIN
+        Mail::to($official->email)->send(new CompetitionOfficialAddedMail(
+            $comp,
+            $validated['role'],
+            $official->isJudgeOnly() && !$official->hasVerifiedEmail(),
+        ));
+
+        return back()->with('success', "{$official->name} added to {$comp->name} as " . ($validated['role'] === 'referee' ? 'a referee' : 'an official'));
+    }
+
+    /**
+     * The search text and role filter from the query string, ignoring roles that don't exist.
+     */
+    private function officialsFilters(Request $request): array
+    {
+        $q = trim((string) $request->query('q'));
+        $role = (string) $request->query('role');
+
+        return [$q, array_key_exists($role, Competition::$officialRoles) ? $role : ''];
+    }
+
+    private function filterOfficials(Collection $officials, string $q, string $role): Collection
+    {
+        return $officials
+            ->filter(fn ($official) => $q === ''
+                || Str::contains($official['name'], $q, true)
+                || Str::contains($official['email'], $q, true))
+            ->filter(fn ($official) => $role === '' || $official['roles']->contains($role))
+            ->values();
+    }
+
+    /**
+     * The organisation's competitions from today on that the current user can admin, soonest first.
+     */
+    private function upcomingCompetitions(Organisation $organisation): Collection
+    {
+        return Competition::where('organisation', $organisation->id)
+            ->where('when', '>=', today())
+            ->orderBy('when')
+            ->get()
+            ->filter(fn (Competition $comp) => Gate::allows('access', [$comp, 'admin']))
+            ->values();
     }
 
     public function accountsPost(InviteAccountToOrganisationRequest $request, Organisation $organisation)
