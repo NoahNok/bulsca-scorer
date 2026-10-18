@@ -17,7 +17,7 @@
         @endif
         {{ $comp->name }} | Results | BULSCA
     </title>
-    <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
+    <x-favicon />
 
 
 

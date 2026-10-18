@@ -5,6 +5,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <x-favicon />
 
 
     <meta name="csrf-token" content="{{ csrf_token() }}">

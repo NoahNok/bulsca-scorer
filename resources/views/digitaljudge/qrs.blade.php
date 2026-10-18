@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <x-favicon />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QRS</title>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">

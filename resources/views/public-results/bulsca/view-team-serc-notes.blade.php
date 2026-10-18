@@ -13,7 +13,7 @@
             (PROVISIONAL)
         @endif{{ $serc->getName() }} | {{ $comp->name }} | Results | BULSCA
     </title>
-    <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
+    <x-favicon />
 
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
 

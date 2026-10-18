@@ -14,7 +14,7 @@
     </title>
 
 
-    <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
+    <x-favicon />
 
 
     @vite('resources/js/legacy-app.js')

@@ -43,6 +43,10 @@ actions, and an "Add" button that opens a modal form) and `account.blade.php`.
 - `layouts.guest` is for account pages outside a competition.
 - `layouts.core` is the shell. It loads Alpine, the `modals` state, and the
   `showSuccess()` / `showAlert()` toasts.
+- A standalone page that writes its own `<head>` (public results, live,
+  what-if, print views) adds `<x-favicon />` after the charset meta, so it
+  gets the site's "S." icon (`public/favicon.svg`, `favicon.ico`,
+  `apple-touch-icon.png`). `layouts.organisation` keeps the organisation's logo.
 
 Pages set `@section('title')` and fill `@section('content')`.
 

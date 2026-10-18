@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
 
 
-    <link rel="icon" type="image/png" href="{{ asset('blogo.png') }}" />
+    <x-favicon />
     <title>{{ $comp->name }} | Live | Scoring.Events</title>
 
 

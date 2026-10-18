@@ -4,6 +4,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <x-favicon />
 
 
     <title>{{ $comp->name }} | Results | RLSS</title>
