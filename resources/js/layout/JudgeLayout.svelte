@@ -4,7 +4,6 @@
     import type { DialogControls } from "@/components/GenericDialog.svelte";
     import GenericDialog from "@/components/GenericDialog.svelte";
     import JudgeTabBar from "@/components/JudgeTabBar.svelte";
-    import LegalFooter from "@/components/LegalFooter.svelte";
     import OfficialsSheet from "@/components/OfficialsSheet.svelte";
     import PokeAnimation from "@/components/PokeAnimation.svelte";
     import ToastViewport from "@/components/Toast/ToastViewport.svelte";
@@ -103,16 +102,7 @@
         : 'h-screen'}"
 >
     {@render children?.()}
-
-    {#if showTabBar}
-        <LegalFooter class="mt-10" />
-    {/if}
 </div>
-
-<!-- Pages without the tab bar fill the screen (sign-in pages centre themselves), so it goes just below -->
-{#if !showTabBar}
-    <LegalFooter class="pb-6" />
-{/if}
 
 {#if showTabBar}
     <JudgeTabBar {competition} />
