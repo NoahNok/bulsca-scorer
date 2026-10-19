@@ -73,7 +73,7 @@ Pages set `@section('title')` and fill `@section('content')`.
 | Button (anywhere, including inside forms) | `.se-btn`, with variants `se-btn-success`, `se-btn-danger`, `se-btn-primary`. Don't use the older `.btn` classes. |
 | Grouped panel / list | `.se-card`; add `divide-y` for a list of rows, `se-card-hover` for clickable rows |
 | Status labels | `.badge` + `badge-info`, `badge-success`, `badge-danger`, `badge-orange`, `badge-gray`, sized with `badge-sm` |
-| Tables | `.se-table` (`se-table-thin` for dense ones) |
+| Tables | `div.se-table` wrapping the `<table>` (`se-table-thin` for dense ones). It right-aligns cells for numbers, so give text columns `text-left`. |
 | Grids | `.grid-2` … `.grid-5` (they collapse on small screens) |
 | Warnings | `.se-alert-box` (red), `.se-alert-box alert-info` (blue) |
 | Text input | `<x-form-input id="…" title="…" />`. It shows the `@error` message for that field and refills from `old()`. |

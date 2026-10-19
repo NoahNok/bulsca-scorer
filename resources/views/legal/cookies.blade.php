@@ -4,31 +4,32 @@
 
 @section('policy')
     <h3>Cookies</h3>
-    <div class="overflow-x-auto">
-        <table class="se-table">
+    {{-- se-table right-aligns cells for numbers; this one is all text --}}
+    <div class="se-table">
+        <table>
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>What it's for</th>
-                    <th>How long</th>
+                    <th class="text-left">Name</th>
+                    <th class="text-left">What it's for</th>
+                    <th class="text-left">How long</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td><code>{{ config('session.cookie') }}</code></td>
-                    <td>Keeps you signed in and remembers your session between pages.</td>
-                    <td>{{ config('session.lifetime') }} minutes after your last visit</td>
+                    <td class="text-left whitespace-nowrap"><code>{{ config('session.cookie') }}</code></td>
+                    <td class="text-left">Keeps you signed in and remembers your session between pages.</td>
+                    <td class="text-left">{{ config('session.lifetime') }} minutes after your last visit</td>
                 </tr>
                 <tr>
-                    <td><code>XSRF-TOKEN</code></td>
-                    <td>Security: stops other sites submitting forms as you.</td>
-                    <td>Same as the session</td>
+                    <td class="text-left whitespace-nowrap"><code>XSRF-TOKEN</code></td>
+                    <td class="text-left">Security: stops other sites submitting forms as you.</td>
+                    <td class="text-left">Same as the session</td>
                 </tr>
                 <tr>
-                    <td><code>remember_web_…</code></td>
-                    <td>Keeps you signed in on this device. Set when you tick "Remember me", and whenever you sign in to
+                    <td class="text-left whitespace-nowrap"><code>remember_web_…</code></td>
+                    <td class="text-left">Keeps you signed in on this device. Set when you tick "Remember me", and whenever you sign in to
                         Digital Judge with a PIN, so you stay signed in poolside.</td>
-                    <td>Up to 400 days, or until you sign out</td>
+                    <td class="text-left">Up to 400 days, or until you sign out</td>
                 </tr>
             </tbody>
         </table>
