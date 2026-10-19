@@ -2,19 +2,6 @@
 
 @section('title', 'Privacy Policy')
 
-@section('summary')
-    <ul>
-        <li>We hold what's needed to run competitions: account details, sign-in records, scores and the names of
-            competitors and officials.</li>
-        <li>Competitors' names, clubs and results are published publicly once the organiser releases them.</li>
-        <li>For competitor data, the organiser is in charge and we act on their behalf.</li>
-        <li>Everything is stored on a server in the UK. We don't sell data, show adverts or use tracking or analytics.
-        </li>
-        <li>You can ask to see, correct or delete your data by emailing <a class="link"
-                href="mailto:{{ config('legal.contact_email') }}">{{ config('legal.contact_email') }}</a>.</li>
-    </ul>
-@endsection
-
 @section('policy')
     <h3>Who's responsible for your data</h3>
     <p>{{ config('legal.trading_as') }} is run by {{ config('legal.operator') }}, a sole trader in the United Kingdom.

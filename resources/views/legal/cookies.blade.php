@@ -2,14 +2,6 @@
 
 @section('title', 'Cookie Policy')
 
-@section('summary')
-    <ul>
-        <li>We only use cookies and browser storage that the site needs to work, such as keeping you signed in.</li>
-        <li>No analytics, advertising or tracking cookies.</li>
-        <li>That's why there's no cookie banner: strictly necessary cookies don't need consent.</li>
-    </ul>
-@endsection
-
 @section('policy')
     <h3>Cookies</h3>
     <div class="overflow-x-auto">

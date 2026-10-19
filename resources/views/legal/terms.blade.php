@@ -2,16 +2,6 @@
 
 @section('title', 'Terms of Service')
 
-@section('summary')
-    <ul>
-        <li>{{ config('legal.trading_as') }} is a free tool for running and scoring lifesaving competitions.</li>
-        <li>Official results are whatever the organiser and referee declare, not whatever the software shows.</li>
-        <li>Organisers are responsible for the competitor data they upload, including consent for under-18s.</li>
-        <li>You must be 16 or over to have an account.</li>
-        <li>We provide the service as it is, and limit our liability as far as UK law allows.</li>
-    </ul>
-@endsection
-
 @section('policy')
     <h3>1. Who we are</h3>
     <p>{{ config('legal.trading_as') }} ("we", "us") is run by {{ config('legal.operator') }}, a sole trader based in

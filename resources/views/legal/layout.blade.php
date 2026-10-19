@@ -1,17 +1,12 @@
 @extends('layouts.landing')
 
-{{-- Shared shape for the Terms, Privacy and Cookie policies: title, last-updated date, a plain-English summary, then the sections. --}}
+{{-- Shared shape for the Terms, Privacy and Cookie policies: title, last-updated date, then the sections. --}}
 
 @section('content')
     <article class="legal max-w-3xl">
         <h2 class="mb-1">@yield('title')</h2>
         <p class="text-sm text-gray-500">Last updated
             {{ \Illuminate\Support\Carbon::parse(config('legal.updated'))->format('j F Y') }}</p>
-
-        <div class="se-card se-card-body mt-6 mb-8">
-            <h3 class="mb-2">In short</h3>
-            @yield('summary')
-        </div>
 
         @yield('policy')
 
