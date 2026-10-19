@@ -54,10 +54,9 @@
         aged 16 or over.</p>
 
     <h3>Who we share it with</h3>
-    <p>We don't sell personal data or use it for advertising. We use these services to run
-        {{ config('legal.trading_as') }}:</p>
+    <p>Everything is stored on our own server in the United Kingdom. We don't sell personal data or use it for
+        advertising. We use these services to run {{ config('legal.trading_as') }}:</p>
     <ul>
-        <li><strong>Our server host:</strong> data is stored on a server in the United Kingdom.</li>
         <li><strong>Cloudflare</strong> (United States) sits in front of the site to protect it and speed it up, so
             your requests, including your IP address, pass through it. Transfers are covered by the UK–US data bridge
             and Cloudflare's data processing terms.</li>
