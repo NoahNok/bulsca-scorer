@@ -37,12 +37,15 @@ class PublicResultsController extends Controller
 
     public function viewSpeed(Competition $comp, CompetitionSpeedEvent $event, Request $request)
     {
+        abort_unless($comp->hasReleased($event), 404);
+
         if ($request->exists('dlCSV')) return $this->getSpeedAsCSV($event, $comp);
         else return view("public-results.$comp->scoring_type.view-speed", ['comp' => $comp, 'event' => $event]);
     }
 
     public function viewSerc(Competition $comp, SERC $event, Request $request)
     {
+        abort_unless($comp->hasReleased($event), 404);
 
         if ($request->exists('dlCSV')) return $this->getSercAsCSV($event, $comp);
 
@@ -57,6 +60,8 @@ class PublicResultsController extends Controller
 
     public function viewResults(Competition $comp, ResultSchema $schema)
     {
+
+        abort_unless($schema->competition == $comp->id, 404);
 
         if (!$schema->viewable) return redirect()->route('public.results.comp', ['comp' => $comp->resultsSlug()]);
 
@@ -227,8 +232,9 @@ class PublicResultsController extends Controller
 
     public function viewEntitySercNotes(Competition $comp, SERC $event, int $entity_id)
     {
+        abort_unless($comp->hasReleased($event), 404);
 
-        $entity = $event->getScorableEntity()::find($entity_id);
+        $entity = $event->getScorableEntity()::where('competition', $comp->id)->findOrFail($entity_id);
 
         $notes = [];
 

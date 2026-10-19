@@ -23,3 +23,7 @@ storage/logs/laravel.log
 /resources/js/actions
 /resources/js/routes
 /resources/js/wayfinder
+
+# Competition data exports (contain competitors' names)
+/*.csv
+/public/*.csv

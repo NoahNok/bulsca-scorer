@@ -23,6 +23,7 @@ class LiveController extends Controller
         if ($request->has('comp')) {
             $comp = Competition::find($request->input('comp'));
             if (!$comp) return view('live.unavailable', ['message' => 'No competitions with that ID exists!']);
+            abort_unless($comp->canBeViewedLive(), 404);
             $comp->can_be_live = true;
         }
 
@@ -51,6 +52,8 @@ class LiveController extends Controller
 
     public function liveData(Competition $comp)
     {
+        abort_unless($comp->canBeViewedLive(), 404);
+
         $serc = Cache::remember('live.' . $comp->id . '.drySerc', 60 * 60, function () use ($comp) {
             $serc = SERC::where('competition', $comp->id)->where(function ($query) {
                 $query->where('type', 'DRY')->orWhere('name', 'LIKE', '%Dry%');
@@ -111,6 +114,8 @@ class LiveController extends Controller
         } else {
             $realEvent = SERC::where('id', substr($event, 3))->first();
         }
+
+        abort_unless($realEvent?->competition == $comp->id, 404);
 
 
         $dqs = JudgeDQSubmission::where('event_id', $realEvent->id)->where('event_type', $realEvent::class)->where('competition', $comp->id)->where('resolved', true)->get();

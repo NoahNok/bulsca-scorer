@@ -63,7 +63,7 @@ class ResultsController extends Controller
             ];
         }
 
-        if (!$event->viewable || !$comp->public_results) {
+        if (!$comp->hasReleased($event)) {
             return response()->json(['error' => 'Results unavailable at this time, please try again later.'], 403);
         }
 
@@ -77,7 +77,7 @@ class ResultsController extends Controller
     public function getSheetResults(Competition $comp, ResultSchema $schema)
     {
 
-        if (!$schema->viewable || !$comp->public_results) {
+        if (!$comp->hasReleased($schema)) {
             return response()->json(['error' => 'Results unavailable at this time, please try again later.'], 403);
         }
 
@@ -110,7 +110,7 @@ class ResultsController extends Controller
     public function getMasterSheetResults(Competition $comp, MasterSchema $schema)
     {
 
-        if (!$schema->viewable || !$comp->public_results) {
+        if (!$comp->hasReleased($schema)) {
             return response()->json(['error' => 'Results unavailable at this time, please try again later.'], 403);
         }
 
@@ -148,6 +148,8 @@ class ResultsController extends Controller
             $violation = Penalty::findOrFail($violation_id);
         }
 
+        abort_unless($violation->entity?->competition == $comp->id && $comp->hasReleased($violation->event), 404);
+
         $submission = $violation->submission;
 
 
@@ -172,6 +174,8 @@ class ResultsController extends Controller
 
     public function showSercBreakdown(Competition $comp, SERC $serc)
     {
+        abort_unless($comp->hasReleased($serc), 404);
+
         $fasterSercData = $serc->getSERCData();
 
         $overallJudgeNotes = $serc->getOverallJudgeNotes();
@@ -182,8 +186,9 @@ class ResultsController extends Controller
 
     public function getSercNote(Competition $comp, SERC $serc, int $entity_id)
     {
+        abort_unless($comp->hasReleased($serc), 404);
 
-        $entity = $serc->getScorableEntity()::find($entity_id);
+        $entity = $serc->getScorableEntity()::where('competition', $comp->id)->findOrFail($entity_id);
 
         $notes = [];
 

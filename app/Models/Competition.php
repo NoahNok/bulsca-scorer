@@ -230,6 +230,27 @@ class Competition extends Model implements IInvitable, IJsonable
         return $this->public_results;
     }
 
+    /**
+     * Whether the live site can show this competition: the organiser has made it live, or its
+     * results are already public.
+     */
+    public function canBeViewedLive(): bool
+    {
+        return $this->can_be_live || $this->public_results;
+    }
+
+    /**
+     * Whether the public can see an event's or result sheet's results: it belongs to this
+     * competition, and the organiser has published the competition's results and that item.
+     */
+    public function hasReleased($resultable): bool
+    {
+        return $resultable
+            && $this->public_results
+            && $resultable->competition == $this->id
+            && $resultable->viewable;
+    }
+
 
     public function areResultsProvisional()
     {
