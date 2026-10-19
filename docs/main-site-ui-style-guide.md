@@ -44,7 +44,9 @@ actions, and an "Add" button that opens a modal form) and `account.blade.php`.
 - `layouts.core` is the shell. It loads Alpine, the `modals` state, the
   `showSuccess()` / `showAlert()` toasts and the site footer.
 - **Footer:** `<x-site-footer />` links to the Terms, Privacy and Cookie
-  policies. `layouts.core` renders it. A standalone page that writes its own
+  policies. `layouts.core` renders it, and its body is a `min-h-dvh` flex
+  column, so the footer (`mt-auto`) sits at the bottom of the screen on short
+  pages and after the content on long ones. A standalone page that writes its own
   `<body>` adds it just before `</body>`. Print views, PDFs and the
   maintenance page don't get it.
 - **Legal pages** (`/terms`, `/privacy`, `/cookies`) extend `legal.layout`. The

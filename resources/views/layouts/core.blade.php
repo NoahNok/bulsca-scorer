@@ -96,7 +96,7 @@
 
 </head>
 
-<body class="flex flex-col overflow-x-hidden selection:bg-se selection:text-white " x-data="{
+<body class="flex min-h-dvh flex-col overflow-x-hidden selection:bg-se selection:text-white " x-data="{
     asideCollapsed: false,
     modals: {
         data: {}
