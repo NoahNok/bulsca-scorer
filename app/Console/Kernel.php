@@ -3,10 +3,8 @@
 namespace App\Console;
 
 use ALajusticia\Logins\Models\Login;
-use App\Models\Competition;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use Illuminate\Support\Facades\Config;
 
 class Kernel extends ConsoleKernel
 {
@@ -18,21 +16,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
-        $schedule->call(function() {
-            
-            Config::set('database.default', 'whatif');
-
-            Competition::whereNotNull('wi_user')->where('updated_at', '<', now()->subDays(14))->delete();
-
-            Config::set('database.default', 'mysql');
-        })->daily();
-
-        // expired logins (sessions and remember tokens), plus ones signed out over a month ago
+        // expired logins (sessions and remember tokens)
         $schedule->command('expirable:purge', [Login::class])->daily();
-        $schedule->call(function () {
-            Login::onlyTrashed()->where('deleted_at', '<', now()->subMonth())->forceDelete();
-        })->daily();
+
+        // old logins and unused WhatIf competitions and accounts, per the privacy policy
+        $schedule->command('retention:prune')->daily();
     }
 
     /**
