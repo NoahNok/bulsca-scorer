@@ -5,9 +5,9 @@
 @endsection
 
 @section('core-meta')
-    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
+    <link href="/vendor/quill@2.0.2/quill.snow.css" rel="stylesheet" />
 
-    <script defer src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+    <script defer src="/vendor/quill@2.0.2/quill.js"></script>
 @endsection
 
 @section('core-content')

@@ -9,8 +9,8 @@
     <title>DigitalJudge</title>
     @vite('resources/js/legacy-app.js')
     @vite('resources/css/app.css')
-    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/mask@3.x.x/dist/cdn.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="/vendor/alpinejs-mask@3.13.3/cdn.min.js"></script>
+    <script defer src="/vendor/alpinejs@3.13.3/cdn.min.js"></script>
     @yield('extra-head')
 </head>
 

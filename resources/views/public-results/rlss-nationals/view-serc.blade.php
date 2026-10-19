@@ -16,8 +16,8 @@
 
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
     <script src="{{ asset('js/sorttable.js') }}?{{ config('version.hash') }}"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
+    <script defer src="/vendor/alpinejs-collapse@3.13.3/cdn.min.js"></script>
+    <script defer src="/vendor/alpinejs@3.13.3/cdn.min.js"></script>
 
 </head>
 
@@ -278,7 +278,7 @@
                 onload="this.height=this.contentWindow.document.body.scrollHeight;"></iframe>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/vendor/chart.js@4.5.1/chart.umd.min.js"></script>
     <script src="{{ asset('js/analysis.js') }}"></script>
     <script>
         function initTable() {

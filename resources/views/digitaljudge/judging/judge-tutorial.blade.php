@@ -4,7 +4,7 @@
     Tutorial SERC
 @endsection
 @section('head')
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css">
+    <link rel="stylesheet" href="/vendor/intro.js@7.2.0/introjs.css">
 @endsection
 @php
     $nopad = true;
@@ -271,10 +271,7 @@
             <div class="flex flex-col items-start ">
                 <div class="border-b pb-4 mb-3 last-of-type:border-b-0 border-b-gray-300">
                     <h3>Team 0</h3>
-                    <p><iframe src="https://giphy.com/embed/JIX9t2j0ZTN9S" class="w-full" frameBorder="0"
-                            class="giphy-embed" allowFullScreen></iframe>
-
-                    </p>
+                    <p>Great casualty care, but remember to check for breathing first.</p>
                 </div>
             </div>
             <br>
@@ -345,7 +342,7 @@
             return allGood;
         }
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/intro.min.js"></script>
+    <script src="/vendor/intro.js@7.2.0/intro.js"></script>
     <script>
         let ij = introJs().setOption("exitOnOverlayClick", false).setOption('disableInteraction', true)
 

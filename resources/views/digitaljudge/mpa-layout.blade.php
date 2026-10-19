@@ -21,10 +21,10 @@
     @vite('resources/css/app.css')
 
 
-    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/mask@3.13.3/dist/cdn.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.13.3/dist/cdn.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.13.3/dist/cdn.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
+    <script defer src="/vendor/alpinejs-mask@3.13.3/cdn.min.js"></script>
+    <script defer src="/vendor/alpinejs-collapse@3.13.3/cdn.min.js"></script>
+    <script defer src="/vendor/alpinejs-persist@3.13.3/cdn.min.js"></script>
+    <script defer src="/vendor/alpinejs@3.13.3/cdn.min.js"></script>
     @yield('head')
 </head>
 

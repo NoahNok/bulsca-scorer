@@ -46,10 +46,9 @@
             <h2>Details</h2>
             <p>{{ $comp->when->format('M jS Y') }} at {{ $comp->where }}</p>
 
-            <iframe width="100%" height="450" style="border:0" loading="lazy" allowfullscreen
-                referrerpolicy="no-referrer-when-downgrade"
-                src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCC_QTIqaeEJifTEugGosP03tcXrGu5cw8&q={{ $comp->where }}&zoom=15&maptype=roadmap">
-            </iframe>
+            <a class="link" target="_blank" rel="noopener"
+                href="https://www.google.com/maps/search/?{{ http_build_query(['api' => 1, 'query' => $comp->where]) }}">Open
+                in Google Maps &nearr;</a>
         </div>
 
 

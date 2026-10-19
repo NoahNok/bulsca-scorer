@@ -23,23 +23,19 @@
     @yield('core-meta')
 
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,100..900;1,100..900&family=Oswald:wght@300;400;700&display=swap"
-        rel="stylesheet">
+    <link rel="stylesheet" href="/fonts/google/fonts.css">
 
 
     @vite('resources/js/basic-app.js')
     @vite('resources/css/app.css')
     {{-- <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}"> --}}
-    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/mask@3.13.3/dist/cdn.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="/vendor/alpinejs-mask@3.13.3/cdn.min.js"></script>
+    <script defer src="/vendor/alpinejs-collapse@3.13.3/cdn.min.js"></script>
+    <script defer src="/vendor/alpinejs-persist@3.13.3/cdn.min.js"></script>
 
 
 
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
+    <script defer src="/vendor/alpinejs@3.13.3/cdn.min.js"></script>
 
     @auth
         <script src="{{ asset('sw.js') }}"></script>
