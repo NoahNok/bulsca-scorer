@@ -73,4 +73,9 @@ class ThirdPartyAssetsTest extends TestCase
     {
         $this->assertNoThirdPartyAssets(route('live') . '?comp=' . $this->comp->id);
     }
+
+    public function test_live_display_has_no_third_party_assets(): void
+    {
+        $this->assertNoThirdPartyAssets(route('live.display') . '?comp=' . $this->comp->id);
+    }
 }

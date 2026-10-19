@@ -52,6 +52,7 @@ class LiveDqsTest extends TestCase
         $this->get($this->eventDqsUrl())->assertNotFound();
         $this->get(route('live.dqs') . '?comp=' . $this->comp->id)->assertNotFound();
         $this->get(route('live') . '?comp=' . $this->comp->id)->assertNotFound();
+        $this->get(route('live.display') . '?comp=' . $this->comp->id)->assertNotFound();
         $this->get(route('live.data', ['comp' => $this->comp]))->assertNotFound();
     }
 
@@ -61,6 +62,7 @@ class LiveDqsTest extends TestCase
         $this->comp->save();
 
         $this->get($this->eventDqsUrl())->assertOk();
+        $this->get(route('live.display') . '?comp=' . $this->comp->id)->assertOk();
     }
 
     public function test_dqs_for_a_past_competition_with_public_results_can_be_viewed(): void

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\DigitalJudge\JudgeDQSubmission;
+use App\Models\DQCode;
+use App\Models\PenaltyCode;
 use App\Models\SERC;
 use Carbon\Carbon;
 use DateTime;
@@ -43,6 +45,14 @@ class LiveController extends Controller
 
 
         return view('live.index', ['comp' => $comp]);
+    }
+
+    public function display(Request $request)
+    {
+        $comp = $this->resolveComp($request);
+        if ($comp instanceof \Illuminate\View\View) return $comp;
+
+        return view('live.display', ['comp' => $comp]);
     }
 
     public function all()
@@ -120,6 +130,14 @@ class LiveController extends Controller
 
         $dqs = JudgeDQSubmission::where('event_id', $realEvent->id)->where('event_type', $realEvent::class)->where('competition', $comp->id)->where('resolved', true)->get();
 
-        return view('live.dqs.event', ['comp' => $comp, 'event' => $realEvent, 'dqs' => $dqs]);
+        // Codes are P<penalty code id> or DQ<dq code id>
+        $penaltyCodes = PenaltyCode::whereIn('id', $dqs->filter(fn($dq) => str_starts_with((string) $dq->code, 'P'))->map(fn($dq) => substr((string) $dq->code, 1)))->pluck('description', 'id');
+        $dqCodes = DQCode::whereIn('id', $dqs->reject(fn($dq) => str_starts_with((string) $dq->code, 'P'))->map(fn($dq) => substr((string) $dq->code, 2)))->pluck('description', 'id');
+
+        $descriptions = $dqs->mapWithKeys(fn($dq) => [$dq->id => str_starts_with((string) $dq->code, 'P')
+            ? $penaltyCodes[substr((string) $dq->code, 1)] ?? 'Penalty code not found'
+            : $dqCodes[substr((string) $dq->code, 2)] ?? 'DQ code not found']);
+
+        return view('live.dqs.event', ['comp' => $comp, 'event' => $realEvent, 'dqs' => $dqs, 'descriptions' => $descriptions]);
     }
 }

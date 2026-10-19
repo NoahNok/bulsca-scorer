@@ -1,63 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('live.layout')
 
-<head>
-    <meta charset="UTF-8">
-    <x-favicon />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unavailable | Live | BULSCA</title>
+@section('title', 'Unavailable')
 
-    @vite('resources/js/legacy-app.js')
-    @vite('resources/css/app.css')
-    <style>
+@section('content')
+    @php
+        $pastComps = \App\Models\Competition::where('when', '<=', now())
+            ->where(function ($query) {
+                $query->where('public_results', true)->orWhere('can_be_live', true);
+            })
+            ->orderBy('when', 'desc')
+            ->paginate(9);
+    @endphp
 
-    </style>
-</head>
-
-<body class="overflow-x-hidden">
-<div class="overflow-x-hidden flex justify-center w-screen h-screen">
-
-    <div class="w-[90vw] md:w-[70vw] my-12 ">
-        <x-se-title class="text-6xl! ml-0!" />
-        <br>
-
+    <h2>Live</h2>
+    <div class="se-alert-box alert-info mb-8">
         <p>{{ $message }}</p>
-
-
-        <br>
-
-        <br>
-        <h4>Previously</h4>
-
-
-        <div class="grid-3">
-
-            @php
-                $comps = \App\Models\Competition::where('when', '<=', now())
-                    ->where(function ($query) {
-                        $query->where('public_results', true)->orWhere('can_be_live', true);
-                    })
-                    ->orderBy('when', 'desc')
-                    ->paginate(9);
-            @endphp
-
-            @foreach ($comps as $comp)
-                <x-competition-card url="{{ route('live') }}?comp={{ $comp->id }}" :comp="$comp"
-                    class=" "></x-competition-card>
-            @endforeach
-
-
-        </div>
-        <br>
-        {{ $comps->links() }}
-
-
     </div>
 
+    @if ($pastComps->isNotEmpty())
+        <h3>Previously</h3>
+        <div class="grid-3">
+            @foreach ($pastComps as $pastComp)
+                <x-competition-card url="{{ route('live') }}?comp={{ $pastComp->id }}" :comp="$pastComp" />
+            @endforeach
+        </div>
 
-</div>
-    <x-site-footer />
-</body>
-
-</html>
+        <div class="mt-6">
+            {{ $pastComps->links() }}
+        </div>
+    @endif
+@endsection
