@@ -536,8 +536,11 @@ require __DIR__ . '/auth.php';
 
 Route::get('/championship/{championship}', [LandingController::class, 'showChampionship'])->name('landing.championship');
 
-Route::view('/terms', 'legal.terms')->name('legal.terms');
-Route::view('/privacy', 'legal.privacy')->name('legal.privacy');
-Route::view('/cookies', 'legal.cookies')->name('legal.cookies');
+// on the main domain, so links to them work from the subdomains (whose catch-all routes would take these paths)
+Route::domain(config('app.subdomain_base'))->group(function () {
+    Route::view('/terms', 'legal.terms')->name('legal.terms');
+    Route::view('/privacy', 'legal.privacy')->name('legal.privacy');
+    Route::view('/cookies', 'legal.cookies')->name('legal.cookies');
+});
 
 Route::get('/{organisation}', [LandingController::class, 'showOrganisation'])->name('landing.organisation');

@@ -26,7 +26,7 @@ class PruneRetainedData extends Command
      *
      * @var string
      */
-    protected $description = 'Deletes old login records and unused WhatIf competitions and accounts.';
+    protected $description = 'Deletes old login records, log files, and unused WhatIf competitions and accounts.';
 
     /**
      * Execute the console command.
@@ -39,6 +39,13 @@ class PruneRetainedData extends Command
                 ->where('last_activity_at', '<', now()->subYear())
                 ->orWhere('deleted_at', '<', now()->subMonth()))
             ->forceDelete();
+
+        // log files not written to for 14 days; the daily channel prunes its own, this also catches the old single laravel.log
+        foreach (glob(storage_path('logs/*.log')) as $log) {
+            if (filemtime($log) < now()->subDays(14)->timestamp) {
+                unlink($log);
+            }
+        }
 
         // WhatIf competitions untouched for 14 days, then accounts left with none (new ones get 14 days to start one)
         Config::set('database.default', 'whatif');

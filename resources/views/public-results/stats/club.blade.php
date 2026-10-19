@@ -33,7 +33,8 @@
 
 </head>
 
-<body class="overflow-x-hidden flex w-full h-full justify-center">
+<body class="overflow-x-hidden">
+<div class="overflow-x-hidden flex w-full h-full justify-center">
     <div class=" w-full md:w-[75%] p-6 md:my-28 md:mx-0 ">
       
             <img src="https://www.bulsca.co.uk/storage/logo/blogo.png" class=" w-40 mb-2 " alt="">    
@@ -84,6 +85,7 @@
     </div>
 
 
+</div>
     <x-site-footer />
 </body>
 

@@ -84,4 +84,22 @@ class RetentionPruneTest extends TestCase
         $this->assertSame([$active, $new], $whatif->table('users')->orderBy('id')->pluck('id')->all());
         $this->assertSame([$active], $whatif->table('competitions')->pluck('wi_user')->all());
     }
+    public function test_log_files_older_than_14_days_are_deleted(): void
+    {
+        $old = storage_path('logs/retention-test-old.log');
+        $recent = storage_path('logs/retention-test-recent.log');
+        file_put_contents($old, 'old');
+        file_put_contents($recent, 'recent');
+        touch($old, now()->subDays(15)->timestamp);
+
+        try {
+            $this->artisan('retention:prune')->assertSuccessful();
+
+            $this->assertFileDoesNotExist($old);
+            $this->assertFileExists($recent);
+        } finally {
+            @unlink($old);
+            @unlink($recent);
+        }
+    }
 }

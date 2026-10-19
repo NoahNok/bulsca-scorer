@@ -13,7 +13,6 @@ use App\Models\ResultSchema;
 use App\Models\SERC;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class PublicResultsController extends Controller
 {
@@ -265,11 +264,14 @@ class PublicResultsController extends Controller
     public function viewDqPen(Competition $comp, CompetitionTeam $team, string $code)
     {
 
-        $judgeSubmission = collect(DB::select("SELECT jds.id FROM judge_dq_submissions jds INNER JOIN heats h ON h.id=jds.heat_lane WHERE jds.competition=? AND h.team=? AND code=?", [$comp->id, $team->id, $code]))->first();
-
-        // $judgeSubmission = JudgeDQSubmission::with('getHeat')->where('competition', $comp->id)->whereHas('getHeat', function ($query) use ($team) {
-        //     $query->where('team', $team->id)
-        // })->where('code', $code)->first();
+        // only accepted DQs from released events, so who reported them stays private until then
+        $judgeSubmission = JudgeDQSubmission::with(['getHeat', 'getEvent'])
+            ->where('competition', $comp->id)
+            ->where('code', $code)
+            ->where('resolved', true)
+            ->whereHas('getHeat', fn($query) => $query->whereMorphedTo('entity', $team))
+            ->get()
+            ->first(fn($submission) => $comp->hasReleased($submission->getEvent));
 
         if (!$judgeSubmission) {
             $code = strtoupper($code);
@@ -285,6 +287,6 @@ class PublicResultsController extends Controller
             }
         }
 
-        return view('public-results.view-dqpen', ['dq' => JudgeDQSubmission::with('getHeat')->find($judgeSubmission->id)]);
+        return view('public-results.view-dqpen', ['dq' => $judgeSubmission]);
     }
 }

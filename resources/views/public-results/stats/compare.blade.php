@@ -35,7 +35,8 @@
     </script>
 </head>
 
-<body class="overflow-x-hidden flex w-full h-full justify-center" x-data="{
+<body class="overflow-x-hidden">
+<div class="overflow-x-hidden flex w-full h-full justify-center" x-data="{
     loader: false
 }">
     <div class=" w-full md:w-[75%] m-6 md:my-28 md:mx-0 ">
@@ -212,6 +213,7 @@
 
     </script>
 
+</div>
     <x-site-footer />
 </body>
 

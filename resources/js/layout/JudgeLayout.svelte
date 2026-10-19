@@ -96,7 +96,7 @@
     (e.g. login) keep the fixed height so pages can centre themselves.
 -->
 <div
-    class="relative p-6 sm:max-w-[70%] xl:max-w-[50%] 2xl:max-w-[40%] sm:mx-auto {showTabBar
+    class="p-6 sm:max-w-[70%] xl:max-w-[50%] 2xl:max-w-[40%] sm:mx-auto {showTabBar
         ? competition && page.props.judge.isHeadRef
             ? 'min-h-screen pb-[calc(7.5rem+env(safe-area-inset-bottom))]'
             : 'min-h-screen pb-[calc(6rem+env(safe-area-inset-bottom))]'
@@ -104,9 +104,15 @@
 >
     {@render children?.()}
 
-    <!-- after the content on tab bar pages; pinned to the bottom of centred (sign-in) pages -->
-    <LegalFooter class={showTabBar ? "mt-10" : "absolute inset-x-0 bottom-4"} />
+    {#if showTabBar}
+        <LegalFooter class="mt-10" />
+    {/if}
 </div>
+
+<!-- Pages without the tab bar fill the screen (sign-in pages centre themselves), so it goes just below -->
+{#if !showTabBar}
+    <LegalFooter class="pb-6" />
+{/if}
 
 {#if showTabBar}
     <JudgeTabBar {competition} />

@@ -19,7 +19,7 @@ class Kernel extends ConsoleKernel
         // expired logins (sessions and remember tokens)
         $schedule->command('expirable:purge', [Login::class])->daily();
 
-        // old logins and unused WhatIf competitions and accounts, per the privacy policy
+        // old logins, log files and unused WhatIf competitions and accounts, per the privacy policy
         $schedule->command('retention:prune')->daily();
     }
 

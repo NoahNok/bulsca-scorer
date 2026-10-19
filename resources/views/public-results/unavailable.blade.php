@@ -18,7 +18,8 @@
 
 </head>
 
-<body class="overflow-x-hidden flex justify-center w-screen h-screen">
+<body class="overflow-x-hidden">
+<div class="overflow-x-hidden flex justify-center w-screen h-screen">
 
     <div class="w-[90vw] md:w-[70vw] my-12 ">
         <img src="{{ asset('blogo.png') }}" class=" w-60 h-60 " alt="">
@@ -37,6 +38,7 @@
     </div>
 
 
+</div>
     <x-site-footer />
 </body>
 

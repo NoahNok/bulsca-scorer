@@ -3,9 +3,13 @@
 namespace Tests\Feature;
 
 use App\Models\Competition;
+use App\Models\CompetitionSpeedEvent;
 use App\Models\CompetitionTeam;
+use App\Models\DigitalJudge\JudgeDQSubmission;
 use App\Models\Event\Disqualification;
+use App\Models\Orders\Heat;
 use App\Models\SERC;
+use App\Models\SpeedEvent;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -160,5 +164,67 @@ class ResultsReleaseTest extends TestCase
 
         $this->get(route('public.results.serc', ['comp' => $theirs['comp']->resultsSlug(), 'event' => $this->serc]))->assertNotFound();
         $this->get(route('public.results.serc.entity-notes', ['comp' => $theirs['comp']->resultsSlug(), 'event' => $this->serc, 'entity_id' => $this->team->id]))->assertNotFound();
+    }
+    private function speedDqSubmission(?bool $resolved, bool $viewable): JudgeDQSubmission
+    {
+        $base = new SpeedEvent();
+        $base->name = 'Swim & Tow';
+        $base->save();
+
+        $event = new CompetitionSpeedEvent();
+        $event->event = $base->id;
+        $event->competition = $this->comp->id;
+        $event->record = 0;
+        $event->viewable = $viewable;
+        $event->save();
+
+        $heat = new Heat();
+        $heat->speed_event = $event->id;
+        $heat->entity()->associate($this->team);
+        $heat->heat = 1;
+        $heat->lane = 1;
+        $heat->save();
+
+        $submission = new JudgeDQSubmission();
+        $submission->competition = $this->comp->id;
+        $submission->event_id = $event->id;
+        $submission->event_type = CompetitionSpeedEvent::class;
+        $submission->heat_lane = $heat->id;
+        $submission->code = 'DQ012';
+        $submission->name = 'Reporting Judge';
+        $submission->position = 'Turn judge';
+        $submission->resolved = $resolved;
+        $submission->save();
+
+        $this->comp->public_results = true;
+        $this->comp->save();
+
+        return $submission;
+    }
+
+    private function dqPenUrl(): string
+    {
+        return route('public.results.dq-pen', [$this->comp->resultsSlug(), $this->team, 'DQ012']);
+    }
+
+    public function test_results_site_shows_an_accepted_dq_from_a_released_event(): void
+    {
+        $this->speedDqSubmission(resolved: true, viewable: true);
+
+        $this->get($this->dqPenUrl())->assertOk()->assertSee('Reporting Judge');
+    }
+
+    public function test_results_site_doesnt_show_who_reported_a_dq_in_a_hidden_event(): void
+    {
+        $this->speedDqSubmission(resolved: true, viewable: false);
+
+        $this->get($this->dqPenUrl())->assertOk()->assertDontSee('Reporting Judge');
+    }
+
+    public function test_results_site_doesnt_show_dq_submissions_that_werent_accepted(): void
+    {
+        $this->speedDqSubmission(resolved: null, viewable: true);
+
+        $this->get($this->dqPenUrl())->assertOk()->assertDontSee('Reporting Judge');
     }
 }

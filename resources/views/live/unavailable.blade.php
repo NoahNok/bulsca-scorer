@@ -15,7 +15,8 @@
     </style>
 </head>
 
-<body class="overflow-x-hidden flex justify-center w-screen h-screen">
+<body class="overflow-x-hidden">
+<div class="overflow-x-hidden flex justify-center w-screen h-screen">
 
     <div class="w-[90vw] md:w-[70vw] my-12 ">
         <x-se-title class="text-6xl! ml-0!" />
@@ -55,6 +56,7 @@
     </div>
 
 
+</div>
     <x-site-footer />
 </body>
 

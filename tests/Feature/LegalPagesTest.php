@@ -39,8 +39,9 @@ class LegalPagesTest extends TestCase
 
     private function assertLinksToPolicies($response, array $policies = ['terms', 'privacy', 'cookies']): void
     {
+        // always the main domain: the subdomains have their own catch-all routes
         foreach ($policies as $policy) {
-            $response->assertSee('href="' . route("legal.$policy") . '"', false);
+            $response->assertSee('href="' . config('app.url') . "/$policy" . '"', false);
         }
     }
 
@@ -109,9 +110,9 @@ class LegalPagesTest extends TestCase
         $this->get(route('judge.login'))
             ->assertOk()
             ->assertInertia(fn(AssertableInertia $page) => $page
-                ->where('legal.terms', route('legal.terms'))
-                ->where('legal.privacy', route('legal.privacy'))
-                ->where('legal.cookies', route('legal.cookies')));
+                ->where('legal.terms', config('app.url') . '/terms')
+                ->where('legal.privacy', config('app.url') . '/privacy')
+                ->where('legal.cookies', config('app.url') . '/cookies'));
     }
 
     public function test_official_added_email_links_to_the_policies(): void

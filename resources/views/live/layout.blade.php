@@ -22,12 +22,14 @@
     </style>
 </head>
 
-<body class="overflow-x-hidden flex justify-center w-screen h-screen">
+<body class="overflow-x-hidden">
+<div class="overflow-x-hidden flex justify-center w-screen h-screen">
 
 
     @yield('content')
 
 
+</div>
     <x-site-footer />
 </body>
 
