@@ -21,6 +21,8 @@
                 <a href="{{ route('invite.resolve', [$invite, $invite->email, 'decline']) }}" class="se-btn">Decline</a>
             </div>
 
+            <x-legal-notice class="mt-4 text-center" />
+
 
         </div>
 

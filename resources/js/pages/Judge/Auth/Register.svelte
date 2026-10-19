@@ -12,6 +12,7 @@
     import AppHead from "@/components/AppHead.svelte";
     import Button from "@/components/Button.svelte";
     import Input from "@/components/input.svelte";
+    import LegalNotice from "@/components/LegalNotice.svelte";
     import { Form, Link } from "@inertiajs/svelte";
     import { ArrowRight, LogIn } from "@lucide/svelte";
     import { slide } from "svelte/transition";
@@ -107,5 +108,7 @@
             <LogIn size={14} />
             Already have an account? Sign in
         </Link>
+
+        <LegalNotice class="mt-6" />
     </div>
 </section>

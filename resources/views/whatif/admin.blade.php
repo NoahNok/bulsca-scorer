@@ -98,6 +98,7 @@
         console.log('   NOOT')
         console.log('      NOOT')
     </script>
+    <x-site-footer />
 </body>
 
 </html>

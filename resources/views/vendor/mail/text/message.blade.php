@@ -22,6 +22,7 @@
     <x-slot:footer>
         <x-mail::footer>
             You're receiving this email from [{{ config('app.name') }}]({{ config('app.url') }}).
+            Terms: {{ route('legal.terms') }} · Privacy: {{ route('legal.privacy') }}
         </x-mail::footer>
     </x-slot:footer>
 </x-mail::layout>

@@ -28,6 +28,7 @@
     @yield('content')
 
 
+    <x-site-footer />
 </body>
 
 </html>

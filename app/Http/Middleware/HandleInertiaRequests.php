@@ -50,7 +50,13 @@ class HandleInertiaRequests extends Middleware
             'judge' => [
                 'isHeadRef' => $competition instanceof Competition ? DigitalJudge::isClientHeadJudge($competition) : false
             ],
-            'env_local' => app()->environment('local')
+            'env_local' => app()->environment('local'),
+            // the policies are Blade pages on the main domain, so these are full urls
+            'legal' => [
+                'terms' => route('legal.terms'),
+                'privacy' => route('legal.privacy'),
+                'cookies' => route('legal.cookies'),
+            ],
             //
         ];
     }

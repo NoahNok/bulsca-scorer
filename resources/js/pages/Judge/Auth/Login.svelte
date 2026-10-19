@@ -17,6 +17,7 @@
     import AppHead from "@/components/AppHead.svelte";
     import Button from "@/components/Button.svelte";
     import Input from "@/components/input.svelte";
+    import LegalNotice from "@/components/LegalNotice.svelte";
     import { toastError, toastSuccess } from "@/lib/toast.svelte";
     import { Form, Link, router } from "@inertiajs/svelte";
     import {
@@ -265,5 +266,7 @@
                 Didn't get it? Send a new PIN
             </button>
         {/if}
+
+        <LegalNotice class="mt-6" />
     </div>
 </section>

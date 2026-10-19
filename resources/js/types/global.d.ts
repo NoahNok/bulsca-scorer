@@ -27,6 +27,12 @@ declare module '@inertiajs/core' {
                 isHeadRef: boolean
             }
             env_local: boolean
+            // full urls of the Terms, Privacy and Cookie policies (Blade pages on the main domain)
+            legal: {
+                terms: string
+                privacy: string
+                cookies: string
+            }
             [key: string]: unknown;
         };
 

@@ -21,7 +21,8 @@
 {{-- Footer --}}
 <x-slot:footer>
 <x-mail::footer>
-You're receiving this email from [{{ config('app.name') }}]({{ config('app.url') }}).
+You're receiving this email from [{{ config('app.name') }}]({{ config('app.url') }}).<br>
+[Terms]({{ route('legal.terms') }}) · [Privacy]({{ route('legal.privacy') }}) · [Contact](mailto:{{ config('legal.contact_email') }})
 </x-mail::footer>
 </x-slot:footer>
 </x-mail::layout>

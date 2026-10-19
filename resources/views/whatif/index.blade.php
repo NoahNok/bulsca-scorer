@@ -104,6 +104,7 @@
 
 
     <script src="{{ asset('js/alert.js') }}"></script>
+    <x-site-footer />
 </body>
 
 </html>

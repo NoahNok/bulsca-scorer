@@ -86,4 +86,5 @@
 
     </div>
 
+    <x-site-footer />
 </body>

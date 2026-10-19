@@ -305,6 +305,7 @@
 
         window.onload = initTable()
     </script>
+    <x-site-footer />
 </body>
 
 </html>

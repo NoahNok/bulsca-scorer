@@ -5,6 +5,8 @@ You've been added as {{ $roleName === 'official' ? 'an' : 'a' }} {{ $roleName }}
 
 @if ($newAccount)
 We've made a Digital Judge account for you. Sign in with this email address and we'll email you a PIN.
+
+An organiser of {{ $competition->name }} made this account for you with your name and email address. Our [Privacy Policy]({{ route('legal.privacy') }}) explains how we use them, and you can ask us to delete the account at any time.
 @endif
 
 <x-mail::button :url="$url">

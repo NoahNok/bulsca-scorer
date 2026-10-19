@@ -62,6 +62,7 @@
             showAlert('{{ Session::get('alert-error') }}')
         </script>
     @endif
+    <x-site-footer />
 </body>
 
 </html>

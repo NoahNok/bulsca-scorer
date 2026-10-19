@@ -65,6 +65,8 @@
 
             </div>
 
+            <x-legal-notice class="mt-4 text-center" />
+
 
         </div>
 

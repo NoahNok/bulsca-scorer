@@ -55,6 +55,8 @@
                         {{ __('Log in') }}
                     </button>
                 </div>
+
+                <x-legal-notice class="mt-4" />
             </form>
         </div>
 

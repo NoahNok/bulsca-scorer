@@ -4,6 +4,7 @@
     import type { DialogControls } from "@/components/GenericDialog.svelte";
     import GenericDialog from "@/components/GenericDialog.svelte";
     import JudgeTabBar from "@/components/JudgeTabBar.svelte";
+    import LegalFooter from "@/components/LegalFooter.svelte";
     import OfficialsSheet from "@/components/OfficialsSheet.svelte";
     import PokeAnimation from "@/components/PokeAnimation.svelte";
     import ToastViewport from "@/components/Toast/ToastViewport.svelte";
@@ -95,13 +96,16 @@
     (e.g. login) keep the fixed height so pages can centre themselves.
 -->
 <div
-    class="p-6 sm:max-w-[70%] xl:max-w-[50%] 2xl:max-w-[40%] sm:mx-auto {showTabBar
+    class="relative p-6 sm:max-w-[70%] xl:max-w-[50%] 2xl:max-w-[40%] sm:mx-auto {showTabBar
         ? competition && page.props.judge.isHeadRef
             ? 'min-h-screen pb-[calc(7.5rem+env(safe-area-inset-bottom))]'
             : 'min-h-screen pb-[calc(6rem+env(safe-area-inset-bottom))]'
         : 'h-screen'}"
 >
     {@render children?.()}
+
+    <!-- after the content on tab bar pages; pinned to the bottom of centred (sign-in) pages -->
+    <LegalFooter class={showTabBar ? "mt-10" : "absolute inset-x-0 bottom-4"} />
 </div>
 
 {#if showTabBar}

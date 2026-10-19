@@ -355,6 +355,7 @@
     <br>
 
 
+    <x-site-footer />
 </body>
 
 </html>

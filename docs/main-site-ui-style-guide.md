@@ -41,8 +41,17 @@ actions, and an "Add" button that opens a modal form) and `account.blade.php`.
   `organisation/officials.blade.php` (a searchable, filterable `.se-card` list
   with badges, a CSV export and a per-row action that opens a modal).
 - `layouts.guest` is for account pages outside a competition.
-- `layouts.core` is the shell. It loads Alpine, the `modals` state, and the
-  `showSuccess()` / `showAlert()` toasts.
+- `layouts.core` is the shell. It loads Alpine, the `modals` state, the
+  `showSuccess()` / `showAlert()` toasts and the site footer.
+- **Footer:** `<x-site-footer />` links to the Terms, Privacy and Cookie
+  policies. `layouts.core` renders it. A standalone page that writes its own
+  `<body>` adds it just before `</body>`. Print views, PDFs and the
+  maintenance page don't get it.
+- **Legal pages** (`/terms`, `/privacy`, `/cookies`) extend `legal.layout`. The
+  operator's name, contact email and "last updated" date come from
+  `config/legal.php`. Change `updated` whenever a policy's wording changes, and
+  keep the retention periods in the privacy policy in step with the
+  `retention:prune` command.
 - A standalone page that writes its own `<head>` (public results, live,
   what-if, print views) adds `<x-favicon />` after the charset meta, so it
   gets the site's "S." icon (`public/favicon.svg`, `favicon.ico`,
@@ -71,6 +80,7 @@ Pages set `@section('title')` and fill `@section('content')`.
 | Select | `<x-form-select>` takes models with `id` and `name`. For a fixed list, write a `<select>` inside a `div.se-form-input`, as the officials page does. |
 | Modal | `<x-s-e-modal id="…" title="…">`, opened with `modals.<id> = true` |
 | "Add" tile in a grid | `<x-add-card link="…" text="…" />` |
+| "By continuing you agree to…" line under a form that signs someone in or gives them an account | `<x-legal-notice />` |
 
 ## Behaviour
 
@@ -154,6 +164,12 @@ Pages set `@section('title')` and fill `@section('content')`.
   `Competition::$accessTypes`). Repeat the same check on the tab.
 - Don't modify `public/js/editable-table.js`. Layer page-specific table
   behaviour inline in the Blade view.
+- **Don't load anything from a CDN or third-party embed.** The privacy policy
+  promises visitors' IP addresses only go to the services it lists. Fonts are
+  in `public/fonts/google` (`fonts.css`). Scripts and styles are pinned copies
+  in `public/vendor/<package>@<version>/`. To add or upgrade a library, copy
+  its dist file there with its licence. Link to Google Maps instead of
+  embedding it.
 
 ## Emails
 
@@ -163,7 +179,8 @@ Pages set `@section('title')` and fill `@section('content')`.
 - The template lives in `resources/views/vendor/mail` and is styled by
   `html/themes/default.css`. The header shows the logo and the app name on a
   white card with a teal top bar, and the footer has one generic line naming
-  the sender, which suits every email, including Laravel's password reset.
+  the sender, plus Terms, Privacy and Contact links, which suits every email,
+  including Laravel's password reset.
 - Emails are light only (`color-scheme: light`). Don't add dark-mode styles.
   Gmail and desktop Outlook may darken the email anyway, and the logo still
   reads on dark backgrounds.
