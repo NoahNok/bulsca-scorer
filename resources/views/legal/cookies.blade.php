@@ -30,11 +30,6 @@
                         Digital Judge with a PIN, so you stay signed in poolside.</td>
                     <td>Up to 400 days, or until you sign out</td>
                 </tr>
-                <tr>
-                    <td><code>__cf_bm</code></td>
-                    <td>May be set by Cloudflare, which protects the site, to tell people from bots.</td>
-                    <td>30 minutes</td>
-                </tr>
             </tbody>
         </table>
     </div>
