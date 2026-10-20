@@ -62,7 +62,7 @@ actions, and an "Add" button that opens a modal form) and `account.blade.php`.
     `RouteHelpers::mainRoute()` instead.
   - **What the layout gives you:** the competition heading (as on
     `layouts.landing-comp`), the SERC order / DQs & Penalties / Full screen /
-    Competition page tabs, and the connection pill and clock. Keep
+    Heats & Draws (the competition's main site page) tabs, and the connection pill and clock. Keep
     `request()->all()` on live links so `?comp=` carries through.
   - **Live data:** `live.partials.store` defines `$store.live`, which polls
     `live.data` every 5s. `<x-live.serc-order :comp="$comp" />` renders the

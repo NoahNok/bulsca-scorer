@@ -105,10 +105,11 @@ class LivePagesTest extends TestCase
             ->assertSee(route('live.dqs.event', ['sp:' . $this->speed->id]), false);
     }
 
-    public function test_the_hub_links_to_the_competition_on_the_main_site(): void
+    public function test_the_hub_links_to_the_heats_and_draws_on_the_main_site(): void
     {
         $this->get($this->url('live'))
-            ->assertSee('href="' . config('app.url') . '/competition/' . $this->comp->getSlug() . '"', false);
+            ->assertSee('href="' . config('app.url') . '/competition/' . $this->comp->getSlug() . '/heats-and-draws"', false)
+            ->assertSee('Heats & Draws &nearr;', false);
     }
 
     public function test_the_display_shows_only_the_serc_order(): void

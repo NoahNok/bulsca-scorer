@@ -39,11 +39,11 @@
 
                 <div class="tabbed-bar mt-4 mb-6">
                     <a href="{{ route('live', request()->all()) }}"
-                        class="@if (Route::currentRouteName() == 'live') active @endif">SERC order</a>
+                        class="@if (Route::currentRouteName() == 'live') active @endif">Draw</a>
                     <a href="{{ route('live.dqs', request()->all()) }}"
                         class="@if (Str::startsWith(Route::currentRouteName(), 'live.dqs')) active @endif">DQs & Penalties</a>
                     <a href="{{ route('live.display', request()->all()) }}" target="_blank">Full screen &nearr;</a>
-                    <a href="{{ \App\Helpers\RouteHelpers::mainRoute('landing.competition', $comp->getSlug()) }}">Competition page &nearr;</a>
+                    <a href="{{ \App\Helpers\RouteHelpers::mainRoute('landing.competition.heats-draws', $comp->getSlug()) }}">Heats & Draws &nearr;</a>
                 </div>
             @endisset
 
