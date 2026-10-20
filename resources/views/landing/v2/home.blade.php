@@ -5,8 +5,10 @@
     <style>
         .f-hero {
             position: relative;
-            isolation: isolate;
-            overflow: hidden;
+            /* Sits above the sheet so the search results can drop over it */
+            z-index: 1;
+            /* Clip the marquee sideways only; hidden would cut off the search results */
+            overflow-x: clip;
             padding: 3.5rem 0 4.5rem;
             color: #f9fafb;
         }
@@ -352,7 +354,7 @@
             </div>
         </div>
 
-        <div class="f-hero-inner">
+        <div class="f-hero-inner ">
             <div class="f-hero-search">
                 <x-search-all />
             </div>
@@ -396,7 +398,8 @@
                                 <td class="f-where f-hide-sm">{{ $comp->where }}</td>
                                 <td class="f-hide-sm">
                                     @if ($comp->getOrganisation?->getLogo())
-                                        <img src="{{ $comp->getOrganisation->getLogo() }}" alt="{{ $comp->getOrganisation->name }}">
+                                        <img src="{{ $comp->getOrganisation->getLogo() }}"
+                                            alt="{{ $comp->getOrganisation->name }}">
                                     @endif
                                 </td>
                                 <td class="f-hide-sm">
@@ -414,7 +417,8 @@
 
                         <tr class="f-today">
                             <td colspan="6">
-                                <span class="f-rope"><span class="f-rope-label">Today, {{ today()->format('D j M') }}</span></span>
+                                <span class="f-rope"><span class="f-rope-label">Today,
+                                        {{ today()->format('D j M') }}</span></span>
                             </td>
                         </tr>
 
@@ -428,7 +432,8 @@
                                 <td class="f-where f-hide-sm">{{ $comp->where }}</td>
                                 <td class="f-hide-sm">
                                     @if ($comp->getOrganisation?->getLogo())
-                                        <img src="{{ $comp->getOrganisation->getLogo() }}" alt="{{ $comp->getOrganisation->name }}">
+                                        <img src="{{ $comp->getOrganisation->getLogo() }}"
+                                            alt="{{ $comp->getOrganisation->name }}">
                                     @endif
                                 </td>
                                 <td class="f-hide-sm">
@@ -438,8 +443,9 @@
                                 <td>
                                     <div class="f-live-actions">
                                         <a href="{{ route('landing.competition', $comp->getSlug()) }}"
-                                            class="v2-link v2-row-link"><span class="f-hide-sm" aria-hidden="true">Details</span><span
-                                                class="sr-only">Details for {{ $comp->name }}</span></a>
+                                            class="v2-link v2-row-link"><span class="f-hide-sm"
+                                                aria-hidden="true">Details</span><span class="sr-only">Details for
+                                                {{ $comp->name }}</span></a>
                                         @if ($comp->canBeViewedLive())
                                             <a href="{{ route('live', ['comp' => $comp->id]) }}"
                                                 class="v2-btn v2-btn-primary v2-over-row">Follow live</a>
@@ -468,7 +474,8 @@
                                 <td class="f-where f-hide-sm">{{ $comp->where }}</td>
                                 <td class="f-hide-sm">
                                     @if ($comp->getOrganisation?->getLogo())
-                                        <img src="{{ $comp->getOrganisation->getLogo() }}" alt="{{ $comp->getOrganisation->name }}">
+                                        <img src="{{ $comp->getOrganisation->getLogo() }}"
+                                            alt="{{ $comp->getOrganisation->name }}">
                                     @endif
                                 </td>
                                 <td class="f-hide-sm">
