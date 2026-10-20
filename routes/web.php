@@ -513,6 +513,7 @@ Route::prefix('invite/{invite}/{email}')->group(function () {
 });
 
 Route::get('explore', [LandingController::class, 'explore'])->name('explore');
+Route::get('v2', [LandingController::class, 'v2'])->name('landing.v2');
 Route::get('search/{search}', [LandingController::class, 'search'])->name('search');
 
 Route::prefix('competition/{comp}')->group(function () {

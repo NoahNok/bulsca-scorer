@@ -1,0 +1,797 @@
+/*
+ * Shared styles for redesigned (v2) pages, loaded by landing/v2/layout.blade.php.
+ * See docs/v2-ui-style-guide.md. Page-only styles stay in the page's @section('v2-styles').
+ *
+ * Dark mode follows the OS unless the header toggle forces a theme with data-theme on <html>,
+ * so every dark rule is written twice: in the prefers-color-scheme block and under
+ * html[data-theme="dark"].
+ */
+
+/* Tokens. The maintenance page (errors/503.blade.php) uses the same values. */
+:root {
+    --v2-bg: #f9fafb;
+    --v2-card: #ffffff;
+    --v2-sunk: #f3f4f6;
+    --v2-ink: #111827;
+    --v2-muted: #6b7280;
+    --v2-border: #e5e7eb;
+    --v2-teal: #00d5be;
+    /* teal dark enough for small text on --v2-card */
+    --v2-teal-text: #0f766e;
+    --v2-tile: #111827;
+
+    --v2-teal-soft: rgb(0 213 190 / 0.08);
+    --v2-row-hover: rgb(0 213 190 / 0.08);
+    --v2-danger: #dc2626;
+    --v2-danger-soft: #fef2f2;
+    --v2-danger-text: #b91c1c;
+    --v2-success: #059669;
+    --v2-success-soft: #ecfdf5;
+    --v2-success-text: #047857;
+    --v2-warning-soft: #fef3c7;
+    --v2-warning-text: #92400e;
+}
+
+@media (prefers-color-scheme: dark) {
+    html:not([data-theme="light"]) {
+        & {
+            --v2-bg: #030712;
+            --v2-card: #111827;
+            --v2-sunk: #1f2937;
+            --v2-ink: #f9fafb;
+            --v2-muted: #9ca3af;
+            --v2-border: #1f2937;
+            --v2-teal-text: #2dd4bf;
+
+            --v2-teal-soft: rgb(0 213 190 / 0.12);
+            --v2-row-hover: rgb(0 213 190 / 0.14);
+            --v2-danger: #ef4444;
+            --v2-danger-soft: rgb(239 68 68 / 0.12);
+            --v2-danger-text: #fca5a5;
+            --v2-success: #10b981;
+            --v2-success-soft: rgb(16 185 129 / 0.12);
+            --v2-success-text: #6ee7b7;
+        }
+
+        .v2-toast {
+            background: var(--v2-sunk);
+            border: 1px solid #374151;
+        }
+    }
+}
+
+html[data-theme="dark"] {
+    & {
+        --v2-bg: #030712;
+        --v2-card: #111827;
+        --v2-sunk: #1f2937;
+        --v2-ink: #f9fafb;
+        --v2-muted: #9ca3af;
+        --v2-border: #1f2937;
+        --v2-teal-text: #2dd4bf;
+
+        --v2-teal-soft: rgb(0 213 190 / 0.12);
+        --v2-row-hover: rgb(0 213 190 / 0.14);
+        --v2-danger: #ef4444;
+        --v2-danger-soft: rgb(239 68 68 / 0.12);
+        --v2-danger-text: #fca5a5;
+        --v2-success: #10b981;
+        --v2-success-soft: rgb(16 185 129 / 0.12);
+        --v2-success-text: #6ee7b7;
+    }
+
+    .v2-toast {
+        background: var(--v2-sunk);
+        border: 1px solid #374151;
+    }
+}
+
+/* Native controls and scrollbars follow a forced theme too */
+html[data-theme="light"] {
+    color-scheme: light;
+}
+
+html[data-theme="dark"] {
+    color-scheme: dark;
+}
+
+/* The toggle's circular reveal animates the new snapshot itself, so drop the default crossfade */
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+}
+
+body.v2 {
+    background: var(--v2-bg);
+    color: var(--v2-ink);
+    font-family: 'Archivo', ui-sans-serif, system-ui, sans-serif;
+}
+
+.v2 a:focus-visible,
+.v2 button:focus-visible,
+.v2 input:focus-visible {
+    outline: 2px solid var(--v2-teal);
+    outline-offset: 2px;
+}
+
+/* The "S." mark from the favicon. Its dot doubles as the live signal. */
+.v2-mark {
+    display: block;
+    flex-shrink: 0;
+}
+
+.v2-dot {
+    display: inline-block;
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 9999px;
+    background: var(--v2-teal);
+    flex-shrink: 0;
+}
+
+.v2-dot.is-live,
+.v2-mark-dot.is-live {
+    animation: v2-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes v2-pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.35;
+        transform: scale(0.8);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .v2-dot.is-live,
+    .v2-mark-dot.is-live,
+    .v2 .animate-marquee,
+    .v2 .animate-pulse,
+    .v2 .animate-sts {
+        animation: none;
+    }
+}
+
+/* Header and footer */
+.v2-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+    max-width: 76rem;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.v2-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--v2-ink);
+}
+
+.v2-nav {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.v2-nav a {
+    color: var(--v2-ink);
+}
+
+.v2-nav a:hover {
+    color: var(--v2-teal-text);
+}
+
+.v2-nav .v2-nav-wide {
+    display: none;
+}
+
+@media (min-width: 640px) {
+    .v2-nav .v2-nav-wide {
+        display: inline;
+    }
+}
+
+.v2-theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 9999px;
+    border: 1px solid var(--v2-border);
+    color: var(--v2-ink);
+    cursor: pointer;
+    transition: border-color 150ms;
+}
+
+.v2-theme-toggle:hover {
+    border-color: var(--v2-muted);
+}
+
+.v2-theme-toggle svg {
+    width: 1.125rem;
+    height: 1.125rem;
+}
+
+.v2-footer {
+    margin-top: auto;
+    border-top: 1px solid var(--v2-border);
+    padding: 1.5rem 1rem;
+    font-size: 0.75rem;
+    color: var(--v2-muted);
+}
+
+.v2-footer nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    column-gap: 1rem;
+    row-gap: 0.25rem;
+}
+
+.v2-footer a:hover {
+    color: var(--v2-ink);
+    text-decoration: underline;
+}
+
+/* The shared search component on the v2 tokens, so it follows dark mode */
+.v2 .se-form-input input {
+    background: var(--v2-card);
+    color: var(--v2-ink);
+    border-color: var(--v2-border);
+}
+
+.v2 .se-form-input input::placeholder {
+    color: var(--v2-muted);
+}
+
+.v2 .se-form-input input:hover,
+.v2 .se-form-input input:focus {
+    border-color: var(--v2-muted);
+}
+
+.v2 .se-form-input+div.absolute {
+    background: var(--v2-card);
+    border-color: var(--v2-border);
+    color: var(--v2-ink);
+}
+
+.v2 .se-form-input+div.absolute a:hover {
+    background: var(--v2-sunk);
+}
+
+.v2 .se-form-input+div.absolute p {
+    color: var(--v2-muted);
+}
+
+/* Buttons */
+.v2-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    border: 1px solid var(--v2-border);
+    background: var(--v2-card);
+    color: var(--v2-ink);
+    transition: border-color 150ms;
+    /* Tailwind's base styles give buttons the default cursor */
+    cursor: pointer;
+}
+
+.v2-btn:hover {
+    border-color: var(--v2-muted);
+}
+
+.v2-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.v2-btn-primary {
+    background: var(--v2-ink);
+    border-color: var(--v2-ink);
+    color: var(--v2-bg);
+}
+
+.v2-btn-primary:hover {
+    border-color: var(--v2-ink);
+    opacity: 0.9;
+}
+
+.v2-btn-accent {
+    background: var(--v2-teal);
+    border-color: var(--v2-teal);
+    color: var(--v2-tile);
+}
+
+.v2-btn-accent:hover {
+    border-color: var(--v2-teal);
+    opacity: 0.9;
+}
+
+.v2-btn-danger {
+    background: var(--v2-danger);
+    border-color: var(--v2-danger);
+    color: #fff;
+}
+
+.v2-btn-danger:hover {
+    border-color: var(--v2-danger);
+    opacity: 0.9;
+}
+
+.v2-btn-ghost {
+    background: transparent;
+    border-color: transparent;
+}
+
+.v2-btn-ghost:hover {
+    background: var(--v2-sunk);
+    border-color: transparent;
+}
+
+.v2-btn-sm {
+    padding: 0.35rem 0.7rem;
+    font-size: 0.8125rem;
+}
+
+/* Links */
+.v2-link {
+    color: var(--v2-teal-text);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.v2-link:hover {
+    text-decoration: underline;
+}
+
+.v2-link-muted {
+    color: var(--v2-muted);
+    font-weight: 600;
+}
+
+.v2-link-muted:hover {
+    color: var(--v2-ink);
+    text-decoration: underline;
+}
+
+.v2-link-inline {
+    color: var(--v2-teal-text);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+/* Fields */
+.v2-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+}
+
+.v2-field+.v2-field {
+    margin-top: 1rem;
+}
+
+.v2-field label {
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.v2-input {
+    height: 2.75rem;
+    padding: 0 0.875rem;
+    border: 1px solid var(--v2-border);
+    border-radius: 0.5rem;
+    background: var(--v2-bg);
+    color: var(--v2-ink);
+    font: inherit;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+
+textarea.v2-input {
+    height: auto;
+    min-height: 5.5rem;
+    padding: 0.75rem 0.875rem;
+    resize: vertical;
+}
+
+select.v2-input {
+    appearance: none;
+    cursor: pointer;
+    padding-right: 2.5rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1rem;
+}
+
+.v2-input::placeholder {
+    color: var(--v2-muted);
+}
+
+.v2-input:hover {
+    border-color: var(--v2-muted);
+}
+
+/* .v2 to beat the page-wide focus outline: fields show a border and ring instead */
+.v2 .v2-input:focus,
+.v2 .v2-input:focus-visible {
+    outline: none;
+    border-color: var(--v2-teal);
+    box-shadow: 0 0 0 3px rgb(0 213 190 / 0.25);
+}
+
+.v2-input.is-invalid {
+    border-color: var(--v2-danger);
+}
+
+.v2-hint {
+    font-size: 0.8125rem;
+    color: var(--v2-muted);
+}
+
+.v2-error {
+    font-size: 0.8125rem;
+    color: var(--v2-danger-text);
+    font-weight: 600;
+}
+
+/* Checkboxes, radios and the switch */
+.v2-check {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.9375rem;
+    cursor: pointer;
+}
+
+.v2-check+.v2-check {
+    margin-top: 0.6rem;
+}
+
+.v2-check input {
+    width: 1.125rem;
+    height: 1.125rem;
+    accent-color: var(--v2-teal);
+    cursor: pointer;
+}
+
+.v2-switch {
+    position: relative;
+    cursor: pointer;
+    width: 2.75rem;
+    height: 1.5rem;
+    flex-shrink: 0;
+    border-radius: 9999px;
+    background: var(--v2-border);
+    transition: background-color 150ms;
+}
+
+.v2-switch::after {
+    content: '';
+    position: absolute;
+    top: 0.1875rem;
+    left: 0.1875rem;
+    width: 1.125rem;
+    height: 1.125rem;
+    border-radius: 9999px;
+    background: #fff;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.2);
+    transition: transform 150ms;
+}
+
+.v2-switch[aria-checked='true'] {
+    background: var(--v2-teal);
+}
+
+.v2-switch[aria-checked='true']::after {
+    transform: translateX(1.25rem);
+}
+
+/* Badges */
+.v2-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    padding: 0.15rem 0.6rem;
+    border-radius: 9999px;
+    background: var(--v2-sunk);
+    white-space: nowrap;
+}
+
+.v2-badge.is-provisional {
+    background: var(--v2-warning-soft);
+    color: var(--v2-warning-text);
+}
+
+.v2-badge.is-success {
+    background: var(--v2-success-soft);
+    color: var(--v2-success-text);
+}
+
+.v2-badge.is-danger {
+    background: var(--v2-danger-soft);
+    color: var(--v2-danger-text);
+}
+
+.v2-badge.is-live {
+    background: var(--v2-teal-soft);
+    color: var(--v2-teal-text);
+}
+
+/* Alerts */
+.v2-alert {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.875rem 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid transparent;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+}
+
+.v2-alert+.v2-alert {
+    margin-top: 0.75rem;
+}
+
+.v2-alert strong {
+    display: block;
+}
+
+.v2-alert.is-info {
+    background: var(--v2-teal-soft);
+    border-color: rgb(0 213 190 / 0.35);
+}
+
+.v2-alert.is-danger {
+    background: var(--v2-danger-soft);
+    border-color: color-mix(in srgb, var(--v2-danger) 35%, transparent);
+    color: var(--v2-danger-text);
+}
+
+.v2-alert.is-success {
+    background: var(--v2-success-soft);
+    border-color: color-mix(in srgb, var(--v2-success) 35%, transparent);
+    color: var(--v2-success-text);
+}
+
+.v2-alert svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+}
+
+/* Toasts: dark in both themes (a lighter grey with a border in dark mode; see the dark blocks above) */
+.v2-toast {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1rem;
+    border-radius: 0.75rem;
+    background: var(--v2-tile);
+    color: #f9fafb;
+    font-size: 0.9375rem;
+    box-shadow: 0 10px 30px -10px rgb(0 0 0 / 0.35);
+}
+
+.v2-toast+.v2-toast {
+    margin-top: 0.75rem;
+}
+
+.v2-toast .v2-toast-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
+}
+
+.v2-toast.is-success .v2-toast-icon {
+    color: var(--v2-teal);
+}
+
+.v2-toast.is-danger .v2-toast-icon {
+    color: #f87171;
+}
+
+.v2-toast span {
+    flex: 1;
+}
+
+.v2-toast button {
+    cursor: pointer;
+    color: #9ca3af;
+    font-weight: 600;
+    font-size: 0.8125rem;
+}
+
+.v2-toast button:hover {
+    color: #fff;
+}
+
+/* Fired toasts stack bottom-right */
+.v2-toasts {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 60;
+    width: min(22rem, calc(100vw - 2rem));
+}
+
+/*
+ * Each fired toast sits in a slot that grows from no height as it arrives and shrinks back as it
+ * leaves, so the toasts around it slide into place rather than jumping.
+ */
+.v2-toast-slot {
+    display: grid;
+    grid-template-rows: 0fr;
+    padding-top: 0;
+    opacity: 0;
+    transform: translateY(0.75rem);
+    transition: grid-template-rows 300ms ease, padding-top 300ms ease, opacity 200ms ease,
+        transform 300ms cubic-bezier(0.3, 0.7, 0.4, 1);
+}
+
+.v2-toast-slot.is-in {
+    grid-template-rows: 1fr;
+    padding-top: 0.75rem;
+    opacity: 1;
+    transform: none;
+}
+
+.v2-toast-slot.is-leaving {
+    transform: translateX(2rem);
+}
+
+.v2-toast-clip {
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* Settled toasts can show their shadow */
+.v2-toast-slot.is-in .v2-toast-clip {
+    overflow: visible;
+}
+
+/* Tabs: equal-width tabs, with one pill behind them that slides to the selected tab */
+.v2-tabs {
+    position: relative;
+    display: flex;
+    padding: 0.25rem;
+    border-radius: 0.625rem;
+    background: var(--v2-sunk);
+}
+
+/* Set --v2-tabs to the number of tabs, and translateX(index * 100%) to move it */
+.v2-tabs-pill {
+    position: absolute;
+    top: 0.25rem;
+    bottom: 0.25rem;
+    left: 0.25rem;
+    width: calc((100% - 0.5rem) / var(--v2-tabs, 3));
+    border-radius: 0.5rem;
+    background: var(--v2-card);
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.12);
+    transition: transform 250ms cubic-bezier(0.3, 0.7, 0.4, 1);
+}
+
+.v2-tabs button {
+    position: relative;
+    cursor: pointer;
+    flex: 1;
+    padding: 0.45rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--v2-muted);
+    transition: color 250ms;
+}
+
+.v2-tabs button:hover,
+.v2-tabs button[aria-selected='true'] {
+    color: var(--v2-ink);
+}
+
+/* Modal */
+.v2-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: rgb(3 7 18 / 0.6);
+}
+
+.v2-modal {
+    width: 100%;
+    max-width: 28rem;
+    background: var(--v2-card);
+    border: 1px solid var(--v2-border);
+    border-radius: 1rem;
+    padding: 1.75rem;
+    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.4);
+}
+
+.v2-modal h3 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
+.v2-modal p {
+    color: var(--v2-muted);
+    line-height: 1.6;
+}
+
+.v2-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+}
+
+/*
+ * Whole-row links: give a <tr> .v2-row, and its own link .v2-row-link; the link's
+ * ::after stretches over the row. Anything else clickable in the row gets .v2-over-row.
+ */
+.v2-row {
+    position: relative;
+    cursor: pointer;
+}
+
+.v2-row td {
+    transition: background-color 150ms;
+}
+
+.v2-row:hover td,
+.v2-row:focus-within td {
+    background: var(--v2-row-hover);
+}
+
+.v2-row:hover .v2-link {
+    text-decoration: underline;
+}
+
+.v2-row-link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+}
+
+.v2-over-row {
+    position: relative;
+    z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .v2-toast-slot,
+    .v2-tabs-pill {
+        transition: none;
+    }
+}

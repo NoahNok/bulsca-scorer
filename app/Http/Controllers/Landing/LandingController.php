@@ -23,6 +23,21 @@ class LandingController extends Controller
         return view('landing.explore', compact(['comps', 'orgs', 'ongoing']));
     }
 
+    /**
+     * The redesigned home page: today's competitions with the last couple of results before them and
+     * the next few competitions after.
+     */
+    public function v2()
+    {
+        $visible = fn() => Competition::where('show_competition', true)->with('getOrganisation');
+
+        $live = $visible()->whereDate('when', Carbon::today())->orderBy('name')->get();
+        $upcoming = $visible()->whereDate('when', '>', Carbon::today())->orderBy('when')->limit(3)->get();
+        $recent = $visible()->where('public_results', true)->whereDate('when', '<', Carbon::today())->orderByDesc('when')->limit(2)->get();
+
+        return view('landing.v2.home', compact('live', 'upcoming', 'recent'));
+    }
+
     public function showOrganisation(Organisation $organisation)
     {
         return view('landing.organisation', ['org' => $organisation, 'ongoing' => $organisation->getOngoingCompetition()]);

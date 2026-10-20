@@ -81,6 +81,9 @@ actions, and an "Add" button that opens a modal form) and `account.blade.php`.
   pre-renders it with `artisan down --render` while `vendor/` and
   `public/build` are being replaced, so it uses inline styles and no `@vite`,
   and its favicon links are root-relative rather than `<x-favicon />`.
+- **Redesigned (v2) pages**, starting with the home page at `/v2`, extend
+  `landing.v2.layout` and follow
+  [`v2-ui-style-guide.md`](v2-ui-style-guide.md) instead of this guide.
 
 Pages set `@section('title')` and fill `@section('content')`.
 

@@ -27,6 +27,13 @@ Organiser pages (competitions, events, entries, results, officials) live in
 - If you add or change a shared Blade component, layout tab or global class,
   update that guide in the same change.
 
+### v2 redesign
+
+Pages being redesigned onto `landing.v2.layout` (starting with `/v2`,
+`resources/views/landing/v2/`) follow `docs/v2-ui-style-guide.md` instead of
+the main-site guide: light/dark tokens, no `se-` classes. Update that guide
+when you add or change a v2 component, token or pattern.
+
 ## frontend-design plugin
 
 - The `frontend-design` plugin is secondary to the style guides: use it only
