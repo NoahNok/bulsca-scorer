@@ -13,7 +13,7 @@
         @forelse ($dqs as $dq)
             <div class="se-card" x-data="{ open: false }">
                 <button type="button" @click="open = !open"
-                    class="se-card-body flex items-center justify-between gap-3 w-full text-left cursor-pointer">
+                    class="p-4 flex items-center justify-between gap-3 w-full text-left cursor-pointer">
                     <span class="flex flex-wrap items-center gap-3">
                         <span class="font-semibold">{{ $dq['entity'] ?? '-' }}</span>
                         <span class="badge badge-danger badge-sm">{{ $dq['code'] ?? '-' }}</span>
