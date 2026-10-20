@@ -9,7 +9,7 @@
     import SubmitButton from "@/manage/components/SubmitButton.svelte";
     import judge from "@/routes/judge";
     import password from "@/routes/password";
-    import { Form } from "@inertiajs/svelte";
+    import { Form, Link } from "@inertiajs/svelte";
 </script>
 
 <svelte:head>
@@ -22,10 +22,20 @@
 <Form action={store()} resetOnError={["password"]} class="a-form">
     {#snippet children({ errors, processing })}
         {#if errors.auth}
-            <Alert tone="danger" title="Couldn't sign you in">{errors.auth}</Alert>
+            <Alert tone="danger" title="Couldn't sign you in"
+                >{errors.auth}</Alert
+            >
         {/if}
 
-        <Field id="email" name="email" type="email" label="Email" autocomplete="username" required error={errors.email} />
+        <Field
+            id="email"
+            name="email"
+            type="email"
+            label="Email"
+            autocomplete="username"
+            required
+            error={errors.email}
+        />
         <Field
             id="password"
             name="password"
@@ -37,9 +47,10 @@
         />
 
         <div class="s-row">
-            <label class="v2-check"><input type="checkbox" name="remember" value="1" /> Remember me</label>
-            <!-- Still Blade -->
-            <a href={password.request().url} class="v2-link">Forgot password?</a>
+            <label class="v2-check"
+                ><input type="checkbox" name="remember" value="1" /> Remember me</label
+            >
+            <Link href={password.request()} class="v2-link">Forgot password?</Link>
         </div>
 
         <SubmitButton {processing}>Sign in</SubmitButton>
@@ -48,7 +59,9 @@
 </Form>
 
 <p class="a-aside">
-    Judging today? <a href={judge.login().url} class="v2-link">Go to the Digital Judge</a>
+    Judging today? <a href={judge.login().url} class="v2-link"
+        >Go to Digital Judge</a
+    >
 </p>
 
 <style>

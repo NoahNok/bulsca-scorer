@@ -9,16 +9,20 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\Rules;
-use Illuminate\View\View;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class NewPasswordController extends Controller
 {
     /**
-     * Display the password reset view.
+     * The Management app's reset password page (Svelte), from the link in the reset email.
      */
-    public function create(Request $request): View
+    public function create(Request $request): Response
     {
-        return view('auth.reset-password', ['request' => $request]);
+        return Inertia::render('Manage/Auth/ResetPassword', [
+            'token' => $request->route('token'),
+            'email' => $request->query('email'),
+        ]);
     }
 
     /**

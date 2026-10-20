@@ -1,10 +1,11 @@
 <!--
-    Frame for the signed-out pages (pages/Manage/Auth/): the pool band beside the form, in place of
+    Frame for the signed-out pages (pages/Manage/Auth/): the pool band beside the form on desktop, in place of
     ManageLayout's header and footer. It stays mounted between these pages, so the band only draws in once
     and its line crossfades. See "The Management app" in docs/v2-ui-style-guide.md.
 -->
 <script lang="ts">
     import Alert from "@/manage/components/Alert.svelte";
+    import BrandMark from "@/manage/components/BrandMark.svelte";
     import PoolBand from "@/manage/components/PoolBand.svelte";
     import ThemeToggle from "@/manage/components/ThemeToggle.svelte";
     import { page } from "@inertiajs/svelte";
@@ -17,6 +18,8 @@
         "Manage/Auth/SignIn": "Run the day. We'll keep the score.",
         "Manage/Auth/Register": "Accounts come by invite.",
         "Manage/Auth/InviteNewAccount": "You're on the team.",
+        "Manage/Auth/ForgotPassword": "Happens to the best of us.",
+        "Manage/Auth/ResetPassword": "Fresh start.",
     };
 
     const headline = $derived(headlines[page.component] ?? headlines["Manage/Auth/SignIn"]);
@@ -28,6 +31,11 @@
 
     <div class="a-side">
         <div class="a-top">
+            <!-- phones only: the band carries the brand on desktop -->
+            <a href={page.props.manage?.site.home} class="a-brand">
+                <BrandMark size={28} />
+                Scoring.Events
+            </a>
             <ThemeToggle />
         </div>
 
@@ -60,7 +68,6 @@
 <style>
     .a-frame {
         display: grid;
-        grid-template-rows: auto 1fr;
         min-height: 100dvh;
     }
 
@@ -73,15 +80,23 @@
 
     .a-top {
         display: flex;
-        justify-content: flex-end;
+        align-items: center;
+        justify-content: space-between;
         padding: 1rem 0;
     }
 
-    /* under the strip on phones; centred beside the band on desktop */
+    .a-brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 800;
+    }
+
+    /* centred in the space between the toggle and the footer */
     .a-main {
         flex: 1;
         display: flex;
-        align-items: flex-start;
+        align-items: center;
         justify-content: center;
         padding: 0.5rem 0 2.5rem;
     }
@@ -163,15 +178,18 @@
     @media (min-width: 64rem) {
         .a-frame {
             grid-template-columns: minmax(0, 5fr) minmax(0, 4fr);
-            grid-template-rows: none;
         }
 
         .a-side {
             padding: 0 2.5rem;
         }
 
-        .a-main {
-            align-items: center;
+        .a-top {
+            justify-content: flex-end;
+        }
+
+        .a-brand {
+            display: none;
         }
     }
 </style>
