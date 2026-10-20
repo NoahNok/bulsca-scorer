@@ -166,7 +166,7 @@
                 </a>
 
                 <div class="hidden lg:flex space-x-10 items-center">
-                    <a href="{{ route('explore') }}"
+                    <a href="{{ \App\Helpers\RouteHelpers::mainRoute('explore') }}"
                         class="text-sm/6 font-semibold text-gray-900 hover:text-se transition-colors">Explore</a>
                     <a href="{{ route('dj.home') }}"
                         class="text-sm/6 font-semibold text-se hover:text-se-accent transition-colors">Officials</a>
@@ -240,7 +240,7 @@
                 @endif
 
 
-                <a href="{{ route('home') }}"
+                <a href="{{ route('dashboard') }}"
                     class="text-sm/6 font-semibold text-gray-900 hover:text-se transition-colors">Dashboard</a>
                 @if (Auth::user()->isAdmin())
                     <a href="{{ route('admin.index') }}"
@@ -337,7 +337,7 @@
                         @endif
                     @endauth
 
-                    <a href="{{ route('explore') }}"
+                    <a href="{{ \App\Helpers\RouteHelpers::mainRoute('explore') }}"
                         class="-mx-3 block rounded-lg px-3 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Explore</a>
 
                     <a href="{{ route('dj.home') }}"
@@ -349,7 +349,7 @@
                     @auth
 
 
-                        <a href="{{ route('home') }}"
+                        <a href="{{ route('dashboard') }}"
                             class="-mx-3 block rounded-lg px-3  text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Dashboard</a>
 
                         @if (Auth::user()->isAdmin())

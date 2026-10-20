@@ -36,6 +36,7 @@ page: redesign the whole page or leave it alone.
 | Shared styles | `resources/css/v2.css` | Every token, component and pattern below, plus the dark re-skin of `<x-search-all />`. Loaded by the layout |
 | Brand mark | `landing/v2/partials/mark.blade.php` | The favicon's "S." as inline SVG: `@include('landing.v2.partials.mark', ['size' => 32, 'live' => true])`. With `live`, its dot pulses |
 | Samples | `landing/v2/partials/kit.blade.php` | The catalogue: every shared component in use. Only the sheet's own layout (`k-` classes) is styled there |
+| Theme | `landing/v2/partials/theme-script.blade.php`, `resources/js/lib/theme.ts` | The script that applies a saved theme before the first paint (in the `<head>` of every v2 page), and the toggle logic. Blade's Alpine toggle reaches it as `window.v2Theme` (set in `basic-app.js`) |
 
 A page `@extends('landing.v2.layout')`, puts styles only it uses in
 `@section('v2-styles')` and its markup in `@section('content')`. Once a
@@ -45,7 +46,44 @@ dark mode. So it doesn't get core's toasts, `modals` state or `customConfirm`.
 Use the patterns below instead.
 
 Content sits in a `max-width: 76rem` column with a `1rem` side gutter, to line
-up with the header. Full-bleed bands (like the pool hero) break out of it.
+up with the header: `.v2-container`. Full-bleed bands (like the pool hero)
+break out of it.
+
+### The Management app (Svelte)
+
+Management and Admin pages are Svelte + Inertia, in an app separate from the
+Digital Judge ([ADR 0002](adr/0002-public-blade-management-svelte.md)). They
+use this guide's tokens and `v2.css` classes, not the judge guide or judge
+components.
+
+| Layer | File | Provides |
+|---|---|---|
+| Root view | `resources/views/manage.blade.php` | The theme script, fonts, `app.css` + `v2.css` and `manage.ts` |
+| Entry | `resources/js/manage.ts` | The Inertia app. Resolves only `pages/Manage/**` and `pages/Admin/**` (`app.ts` leaves them out) |
+| Shell | `resources/js/manage/layout/ManageLayout.svelte` | The same `.v2-header` and `.v2-footer` as the Blade layout, with Explore, Admin (for Admins), Sign out and the theme toggle, and a `.v2-container` for the page |
+| Signed-out frame | `resources/js/manage/layout/AuthLayout.svelte` | Used instead of the shell for `pages/Manage/Auth/*` (sign in, register, Invites). The `PoolBand` beside the form on desktop and above it on phones, the theme toggle, the session flashes as alerts, and the legal links. It holds each page's band line and the `.a-title`, `.a-lead`, `.a-form` and `.a-aside` classes the pages use |
+| Components | `resources/js/manage/components/` | `BrandMark` (the Svelte copy of `mark.blade.php`), `ThemeToggle`, `Field` (a `.v2-field` with its error and hint wired up, and show/hide on passwords), `Alert` (a `.v2-alert` with its icon), `SubmitButton` (full-width, spinner and disabled while processing), `LegalNotice` (the policy line under forms that sign in or create an account) and `PoolBand`. The app's own components go here |
+| Routes | `routes/app.php` | Every signed-in page, Blade or Svelte, on the `app.` subdomain, like the Digital Judge on `judge.`. `HandleInertiaRequests` gives every Inertia page on that domain the `manage` root view, and shares `manage.isAdmin`, `manage.site.home` and `.explore` (the public site's urls) and `manage.flash` (the `status` and `alert-error` session flashes) in place of `judge`. Name new routes `manage.*` (Admin pages `manage.admin.*`). The app's home (`manage.home`) is at `/`; the old Blade dashboard is at `/dashboard` until the home covers it |
+
+Links from `app.` to public pages use `RouteHelpers::mainRoute()` in Blade
+and `manage.site` in Svelte. `route()` would build them on `app.`. Link to a
+Blade page with a plain `<a>`, not Inertia's `<Link>`, which can only load
+Inertia pages.
+
+A Svelte page uses the same markup and classes as the kit. Put styles only it
+uses in its `<style>` block, and move them into `v2.css` once a second page,
+Blade or Svelte, needs them.
+
+Forms use Inertia's `<Form>` with `Field` and `SubmitButton`. A form that can
+land on a Blade page or another domain (signing in, accepting an Invite)
+answers with `Inertia::location()`, which does a full visit. A plain redirect
+would try to load the Blade page as an Inertia response. Errors that aren't
+about one field (wrong credentials, throttling) go on their own key (`auth`)
+and show as a danger `Alert` above the fields.
+
+Svelte transitions don't check `prefers-reduced-motion` on their own: pass
+`duration: prefersReducedMotion.current ? 0 : …` (from `svelte/motion`). Don't
+use `<aside>` in the app: an old rule in `app.css` collapses it to zero width.
 
 ## Tokens
 
@@ -131,7 +169,7 @@ each one in use; copy its markup.
 | Alert | `.v2-alert` + `is-info`, `is-success`, `is-danger`, with an icon and a `<strong>` title |
 | Tabs | `.v2-tabs` with a sliding `.v2-tabs-pill` (equal-width tabs; set `--v2-tabs` to the count if it isn't 3) |
 | Toast | `.v2-toasts` > `.v2-toast-slot` > `.v2-toast-clip` > `.v2-toast`, stacked bottom-right, newest nearest the corner. They slide up in and slide out right, and the stack closes the gap. The Alpine that fires them is in the kit for now |
-| Modal | `.v2-modal-backdrop` + `.v2-modal` with `x-trap.noscroll`: it traps Tab, locks page scroll and focuses the first button, so put the safe one first. Close on Escape and backdrop click |
+| Modal | `.v2-modal-backdrop` + `.v2-modal` with `x-trap.noscroll`: it traps Tab, locks page scroll and focuses the first button, so put the safe one first. Close on Escape and backdrop click. In Svelte, use a native `<dialog class="v2-modal">` opened with `showModal()` instead (it traps focus, closes on Escape and gets the backdrop from `v2.css`); close it on a click on the dialog itself |
 | Whole-row link | `.v2-row` on the `<tr>`, `.v2-row-link` on its link, `.v2-over-row` on anything else clickable in it (see Patterns) |
 
 ## Patterns
@@ -157,9 +195,10 @@ each one in use; copy its markup.
 
 ## Behaviour
 
-- **Interactivity is Alpine.** The layout loads it with the focus plugin
-  (`x-trap`), but not mask, collapse or persist. Add a plugin's
-  `/vendor` script to the layout, before Alpine's, if a page needs it.
+- **Interactivity is Alpine** on Blade pages, and Svelte in the Management
+  app. The Blade layout loads Alpine with the focus plugin (`x-trap`), but not
+  mask, collapse or persist. Add a plugin's `/vendor` script to the layout,
+  before Alpine's, if a page needs it.
 - **Pointer cursor:** Tailwind's base styles give buttons the default cursor,
   so every clickable control sets `cursor: pointer` (`.v2-btn` already does).
 - **Focus:** `:focus-visible` shows a 2px teal outline (from the layout).

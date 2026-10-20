@@ -4,8 +4,8 @@
 
 The judge app lives in `resources/js` (Svelte 5 + Inertia 3, Tailwind 4).
 
-- **Follow `docs/judge-ui-style-guide.md` for all Svelte UI work** (only
-  `resources/js`). That covers new pages, new components, and any page you
+- **Follow `docs/judge-ui-style-guide.md` for all Digital Judge Svelte UI
+  work** (only `resources/js`). That covers new pages, new components, and any page you
   touch. Reuse the shared
   components it lists before writing new markup. When an older page is in
   scope, migrate it using the checklist at the end of the guide.
@@ -15,6 +15,34 @@ The judge app lives in `resources/js` (Svelte 5 + Inertia 3, Tailwind 4).
   `layout/JudgeHeaderLayout.svelte`), wired up in `app.ts`. Don't add the
   "Digital Judge" header or bottom nav to pages.
 - Type-check with `npx svelte-check --threshold error`.
+
+## Management and Admin (Svelte, separate app)
+
+Management (Organisers editing competitions, events, officials) and Admin
+(site-wide `/admin`) are moving from Blade to Svelte + Inertia as one app,
+separate from the Digital Judge. See
+`docs/adr/0002-public-blade-management-svelte.md`.
+
+- Don't import judge components or layouts into Management or Admin pages,
+  and don't import Management code into the judge app. Only `resources/js/lib/`
+  and the backend are shared.
+- Use the v2 tokens (`docs/v2-ui-style-guide.md`, "The Management app"), not
+  the judge guide. Entry `resources/js/manage.ts`, root view
+  `resources/views/manage.blade.php`, pages in `resources/js/pages/Manage/` and
+  `pages/Admin/`, app components in `resources/js/manage/`.
+- Every signed-in page (Blade or Svelte, sign-in included) lives in
+  `routes/app.php` on the `app.` subdomain, like the Digital Judge on
+  `judge.`. The main domain is public only. Don't add signed-in routes to
+  `web.php`, and add a new top-level path to the 301 redirect list in
+  `web.php` if one moves. Every Inertia page on `app.` gets the Management
+  root view and shared props. Name new routes `manage.*` (Admin
+  `manage.admin.*`).
+- Link from `app.` to public pages with `RouteHelpers::mainRoute()`, not
+  `route()`, which builds domain-less routes on the current host.
+- Tests that hit signed-in pages by path use `$this->appUrl('/path')`.
+- Port a page only as part of its v2 redesign. Public pages stay Blade.
+- Say Organiser for competition/organisation `"admin"` access, and Admin only
+  for `isAdmin`. See `GLOSSARY.md`.
 
 ## Main site (Blade)
 

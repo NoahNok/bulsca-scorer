@@ -229,6 +229,14 @@ body.v2 {
     height: 1.125rem;
 }
 
+/* The content column, lined up with the header */
+.v2-container {
+    width: 100%;
+    max-width: 76rem;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
 .v2-footer {
     margin-top: auto;
     border-top: 1px solid var(--v2-border);
@@ -735,7 +743,7 @@ select.v2-input {
     box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.4);
 }
 
-.v2-modal h3 {
+.v2-modal :is(h2, h3) {
     font-size: 1.25rem;
     font-weight: 800;
     text-transform: uppercase;
@@ -745,6 +753,16 @@ select.v2-input {
 .v2-modal p {
     color: var(--v2-muted);
     line-height: 1.6;
+}
+
+/* In Svelte, the modal is a native <dialog class="v2-modal">: it traps focus and closes on Escape itself */
+dialog.v2-modal {
+    margin: auto;
+    color: var(--v2-ink);
+}
+
+dialog.v2-modal::backdrop {
+    background: rgb(3 7 18 / 0.6);
 }
 
 .v2-modal-actions {

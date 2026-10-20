@@ -2,33 +2,34 @@
 
 namespace Tests\Feature\Auth;
 
-use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
+/**
+ * Open sign-up is off: accounts come from an Invite (AccountInviteTest).
+ */
 class RegistrationTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_registration_screen_can_be_rendered(): void
+    public function test_register_explains_accounts_come_by_invite(): void
     {
-        $response = $this->get('/register');
-
-        $response->assertStatus(200);
+        $this->get($this->appUrl('/register'))
+            ->assertOk()
+            ->assertViewIs('manage')
+            ->assertInertia(fn (Assert $page) => $page->component('Manage/Auth/Register'));
     }
 
-    public function test_new_users_can_register(): void
+    public function test_open_sign_up_is_closed(): void
     {
-        $this->markTestSkipped('Registration does not log the new user in; needs investigating.');
-
-        $response = $this->post('/register', [
+        $this->post($this->appUrl('/register'), [
             'name' => 'Test User',
             'email' => 'test@example.com',
             'password' => 'password',
             'password_confirmation' => 'password',
-        ]);
+        ])->assertForbidden();
 
-        $this->assertAuthenticated();
-        $response->assertRedirect(RouteServiceProvider::HOME);
+        $this->assertGuest();
     }
 }

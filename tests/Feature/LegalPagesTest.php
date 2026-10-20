@@ -85,7 +85,11 @@ class LegalPagesTest extends TestCase
 
     public function test_login_points_out_the_terms(): void
     {
-        $this->assertLinksToPolicies($this->get(route('login'))->assertOk()->assertSee('By continuing you agree to'), ['terms', 'privacy']);
+        // a Svelte page: its LegalNotice links to the shared policy urls
+        $this->get(route('login'))->assertOk()->assertInertia(fn (AssertableInertia $page) => $page
+            ->component('Manage/Auth/SignIn')
+            ->where('legal.terms', config('app.url') . '/terms')
+            ->where('legal.privacy', config('app.url') . '/privacy'));
     }
 
     public function test_accepting_an_invite_points_out_the_terms(): void
@@ -95,7 +99,10 @@ class LegalPagesTest extends TestCase
         $invite->to()->associate($this->comp);
         $invite->save();
 
-        $this->get(route('invite.show', [$invite, 'new@example.com']))->assertOk()->assertSee('By continuing you agree to');
+        $this->get(route('invite.show', [$invite, 'new@example.com']))->assertOk()->assertInertia(fn (AssertableInertia $page) => $page
+            ->component('Manage/Auth/InviteNewAccount')
+            ->where('legal.terms', config('app.url') . '/terms')
+            ->where('legal.privacy', config('app.url') . '/privacy'));
 
         $user = User::factory()->create(['email' => 'existing@example.com']);
         $existing = $invite->replicate();

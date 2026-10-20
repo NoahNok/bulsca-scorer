@@ -13,13 +13,7 @@
     <meta name="color-scheme" content="light dark">
     <title>Scoring.Events</title>
 
-    {{-- Apply a theme picked with the toggle before anything paints, so the page doesn't flash the other one --}}
-    <script>
-        try {
-            const theme = localStorage.getItem('v2-theme');
-            if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
-        } catch (e) {}
-    </script>
+    @include('landing.v2.partials.theme-script')
 
     <link rel="stylesheet" href="/fonts/google/fonts.css">
     @vite('resources/js/basic-app.js')
@@ -43,44 +37,16 @@
             <a href="{{ route('explore') }}" class="v2-nav-wide">Explore</a>
             <a href="{{ route('dj.home') }}" class="v2-nav-wide">Officials</a>
             @auth
-                <a href="{{ route('home') }}">Dashboard</a>
+                <a href="{{ route('dashboard') }}">Dashboard</a>
             @else
                 <a href="{{ route('login') }}">Sign in</a>
             @endauth
             {{-- Flips between light and dark, starting from whatever is showing (the OS setting until it's used) --}}
+            {{-- window.v2Theme is resources/js/lib/theme.ts, shared with the Management app's toggle --}}
             <button type="button" class="v2-theme-toggle" x-data="{
                 dark: false,
-                init() {
-                    const forced = document.documentElement.dataset.theme;
-                    this.dark = forced ? forced === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
-                },
-                flip() {
-                    let applied = false;
-                    const apply = () => {
-                        if (applied) return;
-                        applied = true;
-                        this.dark = !this.dark;
-                        const theme = this.dark ? 'dark' : 'light';
-                        document.documentElement.dataset.theme = theme;
-                        try { localStorage.setItem('v2-theme', theme); } catch (e) {}
-                    };
-                    if (!document.startViewTransition || matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                        return apply();
-                    }
-                    // Reveal the new theme in a circle growing out of the toggle, big enough to reach the far corner
-                    const box = this.$el.getBoundingClientRect();
-                    const x = box.left + box.width / 2;
-                    const y = box.top + box.height / 2;
-                    const r = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
-                    // If the browser never gets round to the swap (e.g. a hidden tab), make it anyway
-                    setTimeout(apply, 400);
-                    document.startViewTransition(apply).ready.then(() => {
-                        document.documentElement.animate(
-                            { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${r}px at ${x}px ${y}px)`] },
-                            { duration: 500, easing: 'cubic-bezier(0.4, 0, 0.2, 1)', pseudoElement: '::view-transition-new(root)' }
-                        );
-                    });
-                }
+                init() { this.dark = v2Theme.isDark(); },
+                flip() { v2Theme.flipTheme(this.$el, (dark) => this.dark = dark); }
             }" @click="flip()" :aria-label="dark ? 'Switch to light mode' : 'Switch to dark mode'"
                 aria-label="Switch theme">
                 {{-- Shows the mode you'd switch to --}}

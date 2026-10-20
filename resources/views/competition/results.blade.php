@@ -106,7 +106,7 @@
 
 
                     </a>
-                    <a href="{{ route('landing.competition.results', $comp->resultsSlug()) }}" target="_blank"
+                    <a href="{{ \App\Helpers\RouteHelpers::mainRoute('landing.competition.results', $comp->resultsSlug()) }}" target="_blank"
                         class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
                         <p class="font-archivo">View Results</p>
 

@@ -40,6 +40,24 @@ _Avoid_: v2, new judge app
 The older Digital Judge that Officials join with only a PIN and a name. It still works, but it gets no new features.
 _Avoid_: v1, classic, old judge app
 
+### Organising
+
+**Organiser**:
+A person who sets up and runs a competition: its Events, Entities, Officials and results.
+_Avoid_: Admin, owner, host
+
+**Management**:
+The signed-in area where Organisers edit their competitions and organisations.
+_Avoid_: Admin, dashboard, backend
+
+**Admin**:
+A site-wide administrator who runs the site itself (seasons, users, speed records, creating competitions), as opposed to an Organiser of one competition.
+_Avoid_: Organiser, superuser
+
+**Invite**:
+An email asking someone to become an Organiser of a competition or organisation. Accepting it creates their account if they don't have one.
+_Avoid_: Sign-up, registration
+
 ### On the day
 
 **Announcement**:
