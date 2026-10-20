@@ -39,7 +39,7 @@
 
                 <div class="tabbed-bar mt-4 mb-6">
                     <a href="{{ route('live', request()->all()) }}"
-                        class="@if (Route::currentRouteName() == 'live') active @endif">Draw</a>
+                        class="@if (Route::currentRouteName() == 'live') active @endif">Live</a>
                     <a href="{{ route('live.dqs', request()->all()) }}"
                         class="@if (Str::startsWith(Route::currentRouteName(), 'live.dqs')) active @endif">DQs & Penalties</a>
                     <a href="{{ route('live.display', request()->all()) }}" target="_blank">Full screen &nearr;</a>
