@@ -48,5 +48,11 @@ class RouteServiceProvider extends ServiceProvider
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
+
+        // Live pages poll every 5s (12/min per device), and spectators on the venue wifi share one IP,
+        // so this allows about 100 devices per IP. The live data is cached, so each request is cheap
+        RateLimiter::for('live', function (Request $request) {
+            return Limit::perMinute(1200)->by($request->ip());
+        });
     }
 }

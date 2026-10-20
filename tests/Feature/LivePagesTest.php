@@ -151,4 +151,12 @@ class LivePagesTest extends TestCase
             ->assertOk()
             ->assertSee('No DQs or penalties for this event');
     }
+
+    public function test_several_devices_on_one_ip_can_poll_the_live_data(): void
+    {
+        // A few phones on the venue wifi polling every 5s for a minute
+        foreach (range(1, 60) as $i) {
+            $this->get(route('live.data', ['comp' => $this->comp]))->assertOk();
+        }
+    }
 }

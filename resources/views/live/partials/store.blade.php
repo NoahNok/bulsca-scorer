@@ -45,9 +45,9 @@
                 return done >= this.sercCount ? 'done' : 'part';
             },
 
-            // Unfinished teams in draw order, one avgTime apart from the start time (or now)
+            // Unfinished teams in draw order, one avgTime apart from the start time, but never earlier than now
             get estimates() {
-                let time = this.startTime ? new Date(this.startTime) : new Date(this.now);
+                let time = new Date(Math.max(this.startTime, this.now.getTime()));
                 const estimates = {};
 
                 this.groups.flat().forEach(teamId => {

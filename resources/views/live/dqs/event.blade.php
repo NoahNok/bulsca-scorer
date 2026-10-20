@@ -11,17 +11,13 @@
 
     <div class="flex flex-col gap-3">
         @forelse ($dqs as $dq)
-            @php
-                $heat = $dq->getHeat;
-            @endphp
-
             <div class="se-card" x-data="{ open: false }">
                 <button type="button" @click="open = !open"
                     class="se-card-body flex items-center justify-between gap-3 w-full text-left cursor-pointer">
                     <span class="flex flex-wrap items-center gap-3">
-                        <span class="font-semibold">{{ $heat?->entity?->getName($comp) ?? '-' }}</span>
-                        <span class="badge badge-danger badge-sm">{{ $dq->code ?? '-' }}</span>
-                        @if ($dq->appealed)
+                        <span class="font-semibold">{{ $dq['entity'] ?? '-' }}</span>
+                        <span class="badge badge-danger badge-sm">{{ $dq['code'] ?? '-' }}</span>
+                        @if ($dq['appealed'])
                             <span class="badge badge-info badge-sm">Appealed</span>
                         @endif
                     </span>
@@ -34,25 +30,26 @@
                 <div x-show="open" x-collapse x-cloak>
                     <div class="se-card-body border-t flex flex-col gap-4">
                         <div>
-                            <p class="font-semibold text-gray-900!">{{ $dq->code ?? '-' }}</p>
-                            <p>{{ $descriptions[$dq->id] }}</p>
+                            <p class="font-semibold text-gray-900!">{{ $dq['code'] ?? '-' }}</p>
+                            <p>{{ $dq['description'] }}</p>
                         </div>
 
                         <div class="flex flex-col md:flex-row md:gap-8 gap-1">
-                            <p><strong>Heat</strong>: {{ $heat?->heat ?? '-' }}</p>
-                            <p><strong>Lane</strong>: {{ $heat?->lane ?? '-' }}</p>
-                            <p><strong>Turn</strong>: {{ $dq->turn ?? '-' }}</p>
-                            <p><strong>Length</strong>: {{ $dq->length ?? '-' }}</p>
+                            @foreach ($dq['placement'] as $label => $value)
+                                <p><strong>{{ $label }}</strong>: {{ $value ?? '-' }}</p>
+                            @endforeach
+                            <p><strong>Turn</strong>: {{ $dq['turn'] ?? '-' }}</p>
+                            <p><strong>Length</strong>: {{ $dq['length'] ?? '-' }}</p>
                         </div>
 
                         <div class="flex flex-col md:flex-row md:gap-8 gap-1">
-                            <p><strong>Reporter</strong>: {{ $dq->name ?? '-' }} ({{ $dq->position ?? '-' }})</p>
-                            <p><strong>Seconder</strong>: {{ $dq->seconder_name ?? '-' }} ({{ $dq->seconder_position ?? '-' }})</p>
+                            <p><strong>Reporter</strong>: {{ $dq['reporter'][0] ?? '-' }} ({{ $dq['reporter'][1] ?? '-' }})</p>
+                            <p><strong>Seconder</strong>: {{ $dq['seconder'][0] ?? '-' }} ({{ $dq['seconder'][1] ?? '-' }})</p>
                         </div>
 
                         <div>
                             <p class="font-semibold text-gray-900!">Additional judge details</p>
-                            <p>{{ $dq->details ?? '-' }}</p>
+                            <p>{{ $dq['details'] ?? '-' }}</p>
                         </div>
                     </div>
                 </div>

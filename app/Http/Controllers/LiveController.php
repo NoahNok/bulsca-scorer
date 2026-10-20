@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\DigitalJudge\JudgeDQSubmission;
+use App\Models\DigitalJudge\Violation\ViolationSubmission;
 use App\Models\DQCode;
 use App\Models\PenaltyCode;
 use App\Models\SERC;
@@ -128,16 +129,65 @@ class LiveController extends Controller
         abort_unless($realEvent?->competition == $comp->id, 404);
 
 
-        $dqs = JudgeDQSubmission::where('event_id', $realEvent->id)->where('event_type', $realEvent::class)->where('competition', $comp->id)->where('resolved', true)->get();
+        // DQs come from both the old JudgeDQSubmission flow and the newer ViolationSubmission one
+        $dqs = $this->judgeDqRows($comp, $realEvent)->concat($this->violationRows($comp, $realEvent))->values();
+
+        return view('live.dqs.event', ['comp' => $comp, 'event' => $realEvent, 'dqs' => $dqs]);
+    }
+
+    /**
+     * Accepted JudgeDQSubmissions for the event, as rows for the live DQ page
+     */
+    private function judgeDqRows(Competition $comp, $event)
+    {
+        $dqs = JudgeDQSubmission::with('getHeat.entity')->where('event_id', $event->id)->where('event_type', $event::class)->where('competition', $comp->id)->where('resolved', true)->get();
 
         // Codes are P<penalty code id> or DQ<dq code id>
         $penaltyCodes = PenaltyCode::whereIn('id', $dqs->filter(fn($dq) => str_starts_with((string) $dq->code, 'P'))->map(fn($dq) => substr((string) $dq->code, 1)))->pluck('description', 'id');
         $dqCodes = DQCode::whereIn('id', $dqs->reject(fn($dq) => str_starts_with((string) $dq->code, 'P'))->map(fn($dq) => substr((string) $dq->code, 2)))->pluck('description', 'id');
 
-        $descriptions = $dqs->mapWithKeys(fn($dq) => [$dq->id => str_starts_with((string) $dq->code, 'P')
-            ? $penaltyCodes[substr((string) $dq->code, 1)] ?? 'Penalty code not found'
-            : $dqCodes[substr((string) $dq->code, 2)] ?? 'DQ code not found']);
+        return $dqs->map(fn($dq) => [
+            'entity' => $dq->getHeat?->entity?->getName($comp),
+            'code' => $dq->code,
+            'description' => str_starts_with((string) $dq->code, 'P')
+                ? $penaltyCodes[substr((string) $dq->code, 1)] ?? 'Penalty code not found'
+                : $dqCodes[substr((string) $dq->code, 2)] ?? 'DQ code not found',
+            'appealed' => (bool) $dq->appealed,
+            'placement' => ['Heat' => $dq->getHeat?->heat, 'Lane' => $dq->getHeat?->lane],
+            'turn' => $dq->turn,
+            'length' => $dq->length,
+            'reporter' => [$dq->name, $dq->position],
+            'seconder' => [$dq->seconder_name, $dq->seconder_position],
+            'details' => $dq->details,
+        ]);
+    }
 
-        return view('live.dqs.event', ['comp' => $comp, 'event' => $realEvent, 'dqs' => $dqs, 'descriptions' => $descriptions]);
+    /**
+     * Accepted and successfully appealed ViolationSubmissions for the event, as rows for the live DQ page
+     */
+    private function violationRows(Competition $comp, $event)
+    {
+        $submissions = ViolationSubmission::with(['entity', 'submitted', 'submitter', 'seconder'])->where('competition_id', $comp->id)->whereMorphedTo('event', $event)->whereIn('status', ['ACCEPTED', 'APPEALED'])->orderBy('created_at')->get();
+
+        $placements = $event->getType() == 'speed' ? $event->getHeats()->get() : $event->getDraw()->get();
+
+        return $submissions->map(function (ViolationSubmission $submission) use ($comp, $event, $placements) {
+            $placement = $placements->first(fn($row) => $row->entity_type == $submission->entity_type && $row->entity_id == $submission->entity_id);
+
+            return [
+                'entity' => $submission->entity?->getName($comp),
+                'code' => $submission->code(),
+                'description' => $submission->submitted?->description ?? 'Code not found',
+                'appealed' => $submission->status == 'APPEALED',
+                'placement' => $event->getType() == 'speed'
+                    ? ['Heat' => $placement?->heat, 'Lane' => $placement?->lane]
+                    : array_filter(['Tank' => $comp->getScoringSettings->use_tanks ? $placement?->tank : null, 'Draw' => $placement?->draw], fn($value) => $value !== null),
+                'turn' => $submission->turn,
+                'length' => $submission->length,
+                'reporter' => [$submission->submitter?->name, $submission->submitter_position],
+                'seconder' => [$submission->seconder?->name ?? $submission->seconder_name, $submission->seconder_position],
+                'details' => $submission->details,
+            ];
+        });
     }
 }
