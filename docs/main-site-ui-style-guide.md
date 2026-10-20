@@ -47,13 +47,32 @@ actions, and an "Add" button that opens a modal form) and `account.blade.php`.
   policies. `layouts.core` renders it, and its body is a `min-h-dvh` flex
   column, so the footer (`mt-auto`) sits at the bottom of the screen on short
   pages and after the content on long ones. A standalone page that writes its own
-  `<body>` adds it just before `</body>`. Print views, PDFs and the
+  `<body>` adds it just before `</body>`. Print views, PDFs, the live full-screen display and the
   maintenance page don't get it.
 - **Legal pages** (`/terms`, `/privacy`, `/cookies`) extend `legal.layout`. The
   operator's name, contact email and "last updated" date come from
   `config/legal.php`. Change `updated` whenever a policy's wording changes, and
   keep the retention periods in the privacy policy in step with the
   `retention:prune` command.
+- **Live pages** (`live.` subdomain, `resources/views/live`) extend
+  `live.layout`, not `layouts.core`.
+  - **Why not core:** core's header uses `route()` for routes that have no
+    domain, which builds the link on the current host, so on `live.` those
+    links would hit the live catch-all routes. Link to main site pages with
+    `RouteHelpers::mainRoute()` instead.
+  - **What the layout gives you:** the competition heading (as on
+    `layouts.landing-comp`), the SERC order / DQs & Penalties / Full screen /
+    Heats & Draws (the competition's main site page) tabs, and the connection pill and clock. Keep
+    `request()->all()` on live links so `?comp=` carries through.
+  - **Live data:** `live.partials.store` defines `$store.live`, which polls
+    `live.data` every 5s. `<x-live.serc-order :comp="$comp" />` renders the
+    order from it:
+    - a white `se-card` tile per team;
+    - solid amber once it's done the dry SERC, solid green once it's done both;
+    - an inset teal ring and "Up next" badge on the next team in each tank (a
+      ring, so the tile doesn't change size).
+  - **The full-screen page:** `live/display.blade.php` is a standalone screen
+    for a TV at the pool. It has no header or footer and never scrolls.
 - A standalone page that writes its own `<head>` (public results, live,
   what-if, print views) adds `<x-favicon />` after the charset meta, so it
   gets the site's "S." icon (`public/favicon.svg`, `favicon.ico`,

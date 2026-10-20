@@ -30,4 +30,15 @@ class RouteHelpers
 
         return Request::getScheme() . "://" . $sub . '.' . $host . ($parts['path'] ?? '/');
     }
+
+    /**
+     * A main site url that works from a subdomain. route() builds urls for routes without a domain
+     * on the current host, so from live. they'd land on the subdomain's own catch-all routes.
+     */
+    static function mainRoute($name, $options = [])
+    {
+        $parts = parse_url(route($name, $options));
+
+        return rtrim(config('app.url'), '/') . ($parts['path'] ?? '/') . (isset($parts['query']) ? '?' . $parts['query'] : '');
+    }
 }

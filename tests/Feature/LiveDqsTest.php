@@ -3,6 +3,9 @@
 namespace Tests\Feature;
 
 use App\Models\Competition;
+use App\Models\CompetitionTeam;
+use App\Models\DigitalJudge\Violation\ViolationSubmission;
+use App\Models\DQCode;
 use App\Models\SERC;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -52,6 +55,7 @@ class LiveDqsTest extends TestCase
         $this->get($this->eventDqsUrl())->assertNotFound();
         $this->get(route('live.dqs') . '?comp=' . $this->comp->id)->assertNotFound();
         $this->get(route('live') . '?comp=' . $this->comp->id)->assertNotFound();
+        $this->get(route('live.display') . '?comp=' . $this->comp->id)->assertNotFound();
         $this->get(route('live.data', ['comp' => $this->comp]))->assertNotFound();
     }
 
@@ -61,6 +65,7 @@ class LiveDqsTest extends TestCase
         $this->comp->save();
 
         $this->get($this->eventDqsUrl())->assertOk();
+        $this->get(route('live.display') . '?comp=' . $this->comp->id)->assertOk();
     }
 
     public function test_dqs_for_a_past_competition_with_public_results_can_be_viewed(): void
@@ -78,5 +83,39 @@ class LiveDqsTest extends TestCase
         $other->save();
 
         $this->get(route('live.dqs.event', ['event' => 'se-' . $this->serc->id]) . '?comp=' . $other->id)->assertNotFound();
+    }
+
+    public function test_accepted_violation_submissions_are_listed(): void
+    {
+        $this->comp->can_be_live = true;
+        $this->comp->save();
+
+        $team = new CompetitionTeam();
+        $team->competition = $this->comp->id;
+        $team->team = 'A';
+        $team->save();
+
+        foreach ([100 => 'ACCEPTED', 101 => 'APPEALED', 102 => 'SUBMITTED', 103 => 'REJECTED', 104 => 'REMOVED'] as $code => $status) {
+            $dq = new DQCode();
+            $dq->code = $code;
+            $dq->description = "Description {$code}";
+            $dq->save();
+
+            $submission = new ViolationSubmission();
+            $submission->competition_id = $this->comp->id;
+            $submission->entity()->associate($team);
+            $submission->event()->associate($this->serc);
+            $submission->submitted()->associate($dq);
+            $submission->status = $status;
+            $submission->details = 'Some details';
+            $submission->submitter_position = 'Judge';
+            $submission->save();
+        }
+
+        $this->get($this->eventDqsUrl())
+            ->assertOk()
+            ->assertSee('DQ100')->assertSee('Description 100')
+            ->assertSee('DQ101')->assertSee('Appealed')
+            ->assertDontSee('DQ102')->assertDontSee('DQ103')->assertDontSee('DQ104');
     }
 }
