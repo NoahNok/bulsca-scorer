@@ -15,9 +15,6 @@ use Inertia\Inertia;
 
 class ManageController extends Controller
 {
-    /** Past competitions shown per section before "View all" */
-    private const PAST_SHOWN = 3;
-
     /** Competitions in "Recent" */
     private const RECENT_SHOWN = 6;
 
@@ -29,15 +26,13 @@ class ManageController extends Controller
         /** @var User $user */
         $user = Auth::user();
 
-        $orgs = $user->getOrganisations()->with('getCompetitions')->orderBy('name')->get();
+        $orgs = $user->getOrganisations()->orderBy('name')->get();
         $orgIds = $orgs->pluck('id');
 
         $directIds = UserCompetitionAccess::where('user', $user->id)->where('access_to', '!=', 'none')->select('competition');
 
-        // Direct access to a competition one of your organisations already covers shows under the organisation
-        [$upcoming, $past] = $this->upcomingThenPast(Competition::whereIn('id', $directIds)
-            ->where(fn ($query) => $query->whereNull('organisation')->orWhereNotIn('organisation', $orgIds))
-            ->get());
+        // Every competition in your organisations, and any others you were given access to, each once
+        [$upcoming, $past] = $this->upcomingThenPast(Competition::whereIn('id', $directIds)->orWhereIn('organisation', $orgIds)->get());
 
         // Admins can open any competition, so theirs all stay
         $recent = CompetitionVisit::where('user_id', $user->id)
@@ -54,20 +49,17 @@ class ManageController extends Controller
 
         return Inertia::render('Manage/Home', [
             'recent' => $recent->map($row),
-            'organisations' => $orgs->map(function (Organisation $org) use ($row) {
-                [$upcoming, $past] = $this->upcomingThenPast($org->getCompetitions);
-
-                return [
+            // Yours, then ones you were only invited into a competition of, which have no page you can open
+            'organisations' => $orgs->concat(Organisation::whereIn('id', $upcoming->concat($past)->pluck('organisation')->filter())
+                ->whereNotIn('id', $orgIds)->orderBy('name')->get())
+                ->map(fn (Organisation $org) => [
+                    'id' => $org->id,
                     'name' => $org->name,
                     'logo' => $org->getLogo() ?: null,
-                    'url' => route('orgs.show', $org),
-                    'competitions' => $upcoming->concat($past->take(self::PAST_SHOWN))->map($row),
-                    'more' => $past->count() > self::PAST_SHOWN,
-                ];
-            }),
-            // All of them, as there's no page to link to: the page shows as many as an organisation, then expands in place
-            'competitions' => $upcoming->concat($past)->map($row),
-            'competitionsShown' => $upcoming->count() + min($past->count(), self::PAST_SHOWN),
+                    'url' => $orgIds->contains($org->id) ? route('orgs.show', $org) : null,
+                ]),
+            // All of them: the page filters by organisation (none is Personal) and shows the upcoming and latest past until "Show all"
+            'competitions' => $upcoming->concat($past)->map(fn (Competition $comp) => [...$row($comp), 'organisation' => $comp->organisation]),
         ]);
     }
 

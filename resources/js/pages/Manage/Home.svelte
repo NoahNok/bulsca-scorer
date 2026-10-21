@@ -1,12 +1,12 @@
 <!--
-    Management home, at / on app.: the competitions you opened recently, each of your organisations with
-    its competitions, then competitions you can manage outside them (personal ones, and ones you were
-    invited to). Officiating isn't listed here; that's the Digital Judge.
+    Management home, at / on app.: the competitions you opened recently, then one list of every
+    competition you can manage, filtered by organisation (yours, then ones you were invited into) or
+    Personal. Officiating isn't listed here; that's the Digital Judge.
 -->
 <script lang="ts">
     import { shortDate } from "@/lib/dates";
     import CompetitionTable from "@/manage/components/CompetitionTable.svelte";
-    import type { ManagedCompetition, ManagedOrganisation } from "@/manage/types";
+    import type { ListedCompetition, ManagedCompetition, ManagedOrganisation } from "@/manage/types";
     import comps from "@/routes/comps";
     import orgs from "@/routes/orgs";
 
@@ -14,19 +14,47 @@
         recent,
         organisations,
         competitions,
-        competitionsShown,
     }: {
         recent: ManagedCompetition[];
         organisations: ManagedOrganisation[];
-        competitions: ManagedCompetition[];
-        /** As many as an organisation shows, until "Show all" */
-        competitionsShown: number;
+        competitions: ListedCompetition[];
     } = $props();
 
+    // Past competitions shown under the upcoming ones until "Show all"
+    const PAST_SHOWN = 3;
+
+    let filter = $state<"all" | "personal" | number>("all");
     let showAll = $state(false);
-    let shown = $derived(showAll ? competitions : competitions.slice(0, competitionsShown));
+
+    let names = $derived(new Map(organisations.map((org) => [org.id, org.name])));
+    let hasPersonal = $derived(competitions.some((comp) => comp.organisation === null));
+    let selected = $derived(typeof filter === "number" ? organisations.find((org) => org.id === filter) : undefined);
+
+    let filtered = $derived(
+        competitions.filter((comp) =>
+            filter === "all" ? true : filter === "personal" ? comp.organisation === null : comp.organisation === filter,
+        ),
+    );
+    let shown = $derived(
+        showAll ? filtered : filtered.slice(0, filtered.filter((comp) => !comp.past).length + PAST_SHOWN),
+    );
+    // In All, say which organisation each one is under, once there's more than one place it could be
+    let rows = $derived(
+        shown.map((comp) => ({
+            ...comp,
+            organisationName:
+                filter === "all" && organisations.length + (hasPersonal ? 1 : 0) > 1 && comp.organisation !== null
+                    ? names.get(comp.organisation)
+                    : null,
+        })),
+    );
 
     let empty = $derived(recent.length === 0 && organisations.length === 0 && competitions.length === 0);
+
+    function choose(next: typeof filter) {
+        filter = next;
+        showAll = false;
+    }
 
     const newCompetition = comps.create({ query: { type: "acc" } }).url;
     const newOrganisation = orgs.create().url;
@@ -72,31 +100,43 @@
     </section>
 {/if}
 
-{#each organisations as org (org.url)}
-    <section class="h-section" aria-label={org.name}>
-        <div class="h-section-head">
-            <h2 class="h-heading h-org">
-                {#if org.logo}<img src={org.logo} alt="" />{/if}
-                {org.name}
-            </h2>
-            <a href={org.url} class="v2-link">{org.more ? "View all" : "Organisation"}<span class="sr-only"> {org.name}</span></a>
-        </div>
-        {#if org.competitions.length > 0}
-            <CompetitionTable competitions={org.competitions} />
-        {:else}
-            <p class="h-none">No competitions yet. They appear here once one is added to {org.name}.</p>
-        {/if}
-    </section>
-{/each}
+{#if organisations.length > 0 || competitions.length > 0}
+    <section class="h-section" aria-labelledby="h-all">
+        <h2 id="h-all" class="h-heading">Competitions</h2>
 
-{#if competitions.length > 0}
-    <section class="h-section" aria-labelledby="h-own">
-        <h2 id="h-own" class="h-heading">{organisations.length > 0 ? "Other competitions" : "Competitions"}</h2>
-        <CompetitionTable competitions={shown} />
-        {#if shown.length < competitions.length}
-            <button type="button" class="v2-btn v2-btn-ghost v2-btn-sm h-more" onclick={() => (showAll = true)}>
-                Show all {competitions.length}
-            </button>
+        {#if organisations.length > 0}
+            <div class="h-filters" role="group" aria-label="Filter by organisation">
+                <button type="button" class="h-chip" aria-pressed={filter === "all"} onclick={() => choose("all")}>All</button>
+                {#each organisations as org (org.id)}
+                    <button type="button" class="h-chip" aria-pressed={filter === org.id} onclick={() => choose(org.id)}>
+                        {#if org.logo}<img src={org.logo} alt="" />{/if}
+                        {org.name}
+                    </button>
+                {/each}
+                {#if hasPersonal}
+                    <button type="button" class="h-chip" aria-pressed={filter === "personal"} onclick={() => choose("personal")}>Personal</button>
+                {/if}
+            </div>
+        {/if}
+
+        {#if rows.length > 0}
+            <CompetitionTable competitions={rows} />
+        {:else}
+            <p class="h-none">No competitions yet. They appear here once one is added to {selected?.name ?? "your organisations"}.</p>
+        {/if}
+
+        {#if shown.length < filtered.length || selected?.url}
+            <div class="h-foot">
+                {#if shown.length < filtered.length}
+                    <button type="button" class="v2-btn v2-btn-ghost v2-btn-sm" onclick={() => (showAll = true)}>
+                        Show all {filtered.length}
+                    </button>
+                {/if}
+                {#if selected?.url}
+                    <!-- A plain link: organisation pages are still Blade -->
+                    <a href={selected.url} class="v2-link">{selected.name}'s page</a>
+                {/if}
+            </div>
         {/if}
     </section>
 {/if}
@@ -141,30 +181,12 @@
         margin-top: 2.5rem;
     }
 
-    .h-section-head {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 1rem;
-    }
 
     .h-heading {
         font-weight: 800;
         font-size: 1.125rem;
         text-transform: uppercase;
         margin-bottom: 0.75rem;
-    }
-
-    .h-org {
-        display: flex;
-        align-items: center;
-        gap: 0.6rem;
-    }
-
-    .h-org img {
-        width: 1.75rem;
-        height: 1.75rem;
-        border-radius: 9999px;
     }
 
     .h-recent {
@@ -215,7 +237,49 @@
         color: var(--v2-muted);
     }
 
-    .h-more {
+    .h-filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Filters: a pill per organisation, ink when chosen like the primary button */
+    .h-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.3rem 0.8rem;
+        border: 1px solid var(--v2-border);
+        border-radius: 9999px;
+        background: var(--v2-card);
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 150ms;
+    }
+
+    .h-chip:hover {
+        background: var(--v2-row-hover);
+    }
+
+    .h-chip[aria-pressed="true"] {
+        border-color: var(--v2-ink);
+        background: var(--v2-ink);
+        color: var(--v2-bg);
+    }
+
+    .h-chip img {
+        width: 1.25rem;
+        height: 1.25rem;
+        border-radius: 9999px;
+    }
+
+    .h-foot {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
         margin-top: 0.75rem;
     }
 
@@ -238,7 +302,8 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-        .h-card {
+        .h-card,
+        .h-chip {
             transition: none;
         }
     }

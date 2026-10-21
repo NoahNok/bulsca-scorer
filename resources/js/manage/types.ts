@@ -18,12 +18,13 @@ export type ManagedCompetition = {
     limited: boolean;
 };
 
+/** One of the Management home's list, with its organisation (null for a Personal Competition) */
+export type ListedCompetition = ManagedCompetition & { organisation: number | null };
+
 export type ManagedOrganisation = {
+    id: number;
     name: string;
     logo: string | null;
-    url: string;
-    /** Upcoming, then the latest past ones */
-    competitions: ManagedCompetition[];
-    /** It has older competitions than these */
-    more: boolean;
+    /** Null for one you were only invited into a competition of: you can't open its page */
+    url: string | null;
 };

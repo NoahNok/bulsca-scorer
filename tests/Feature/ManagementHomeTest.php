@@ -57,43 +57,12 @@ class ManagementHomeTest extends TestCase
         return $this->actingAs($this->organiser)->get(route('manage.home'))->assertOk();
     }
 
-    public function test_organisations_list_their_competitions(): void
-    {
-        $org = $this->makeOrg('Test Org');
-        $org->addAccount($this->organiser, 'admin');
-        $this->makeComp('Spring Champs', now()->addMonth(), $org);
-        $this->makeOrg('Not Ours');
-
-        $this->home()->assertInertia(fn (Assert $page) => $page
-            ->component('Manage/Home')
-            ->has('organisations', 1)
-            ->where('organisations.0.name', 'Test Org')
-            ->where('organisations.0.competitions.0.name', 'Spring Champs'));
-    }
-
-    public function test_organisations_show_upcoming_soonest_first_then_the_three_latest_past(): void
-    {
-        $org = $this->makeOrg('Test Org');
-        $org->addAccount($this->organiser, 'admin');
-        $this->makeComp('Later', now()->addMonths(2), $org);
-        $this->makeComp('Sooner', now()->addWeek(), $org);
-        $this->makeComp('Today', now(), $org);
-        foreach ([1, 2, 3, 4] as $weeks) {
-            $this->makeComp("$weeks weeks ago", now()->subWeeks($weeks), $org);
-        }
-
-        $this->home()->assertInertia(fn (Assert $page) => $page
-            ->where('organisations.0.competitions', fn ($comps) => collect($comps)->pluck('name')->all() === [
-                'Today', 'Sooner', 'Later', '1 weeks ago', '2 weeks ago', '3 weeks ago',
-            ])
-            ->where('organisations.0.more', true));
-    }
-
-    public function test_competitions_with_direct_access_are_listed_once_unless_an_organisation_covers_them(): void
+    public function test_competitions_from_your_organisations_and_direct_access_are_listed_once(): void
     {
         $ours = $this->makeOrg('Our Org');
         $ours->addAccount($this->organiser, 'admin');
-        $covered = $this->makeComp('Covered', now()->addWeek(), $ours);
+        $this->makeOrg('Not Our Org');
+        $covered = $this->makeComp('Covered', now()->addWeeks(2), $ours);
         $covered->addAccount($this->organiser, 'admin');
 
         $personal = $this->makeComp('Personal', now()->addWeek());
@@ -105,10 +74,34 @@ class ManagementHomeTest extends TestCase
         $this->makeComp('Not Ours', now()->addWeek());
 
         $this->home()->assertInertia(fn (Assert $page) => $page
-            ->where('competitions', fn ($comps) => collect($comps)->pluck('name')->all() === ['Personal', 'Elsewhere'])
+            ->component('Manage/Home')
+            ->where('competitions', fn ($comps) => collect($comps)->pluck('name')->all() === ['Personal', 'Covered', 'Elsewhere'])
+            ->where('competitions.0.organisation', null)
+            ->where('competitions.1.organisation', $ours->id)
+            ->where('competitions.2.organisation', $elsewhere->organisation)
+            // Yours first, then ones you were only invited into, which have no page you can open
+            ->where('organisations', fn ($orgs) => collect($orgs)->map(fn ($org) => [$org['name'], $org['url'] !== null])->all() === [
+                ['Our Org', true], ['Their Org', false],
+            ])
             ->where('competitions.0.limited', false)
-            ->where('competitions.1.limited', true)
-            ->where('competitions.1.past', true));
+            ->where('competitions.2.limited', true)
+            ->where('competitions.2.past', true));
+    }
+
+    public function test_competitions_are_upcoming_soonest_first_then_past_latest_first(): void
+    {
+        $org = $this->makeOrg('Test Org');
+        $org->addAccount($this->organiser, 'admin');
+        $this->makeComp('Later', now()->addMonths(2), $org);
+        $this->makeComp('Sooner', now()->addWeek(), $org);
+        $this->makeComp('Today', now(), $org);
+        $this->makeComp('Last week', now()->subWeek(), $org);
+        $this->makeComp('Last month', now()->subMonth(), $org);
+
+        $this->home()->assertInertia(fn (Assert $page) => $page
+            ->where('competitions', fn ($comps) => collect($comps)->pluck('name')->all() === [
+                'Today', 'Sooner', 'Later', 'Last week', 'Last month',
+            ]));
     }
 
     public function test_competitions_today_are_flagged_and_live_when_the_live_site_is_on(): void
