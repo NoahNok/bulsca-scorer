@@ -46,6 +46,10 @@ _Avoid_: v1, classic, old judge app
 A person who sets up and runs a competition: its Events, Entities, Officials and results. An Organiser can have limited permissions, e.g. only results, and is still an Organiser.
 _Avoid_: Admin, owner, host, helper
 
+**Organisation**:
+A club, university or body that runs competitions. Its Organisers can manage all of its competitions.
+_Avoid_: Club, team
+
 **Management**:
 The signed-in area where Organisers edit their competitions and organisations.
 _Avoid_: Admin, dashboard, backend

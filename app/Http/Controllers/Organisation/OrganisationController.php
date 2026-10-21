@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Organisation;
 use App\Http\Controllers\AccountInviteController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Event\UpdateScoringSettings;
-use App\Http\Requests\Organisation\CreateOrganisationRequest;
 use App\Http\Requests\Organisation\EditAccoutOrganisationAccess;
 use App\Http\Requests\Organisation\EditOrganisationRequest;
 use App\Http\Requests\Organisation\InviteAccountToOrganisationRequest;
@@ -23,6 +22,7 @@ use App\Models\PenaltyCode;
 use App\Models\ResultSchemaTemplate;
 use App\Models\SpeedEvent;
 use App\Models\User;
+use App\Services\OrganisationLogoService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -39,37 +39,6 @@ class OrganisationController extends Controller
     public function index()
     {
         //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('organisation.create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(CreateOrganisationRequest $request)
-    {
-        $validated = $request->validated();
-
-        $org = new Organisation();
-        $org->name = $validated['name'];
-
-        if ($request->hasFile('logo')) {
-            $org->logo = $request->file('logo')->store('orgs', 'public');
-        }
-
-        $org->save();
-
-        $org->addAccount(Auth::user(), ['owner']);
-
-        return response()->json([
-            'url' => route('orgs.show', $org->name)
-        ]);
     }
 
     /**
@@ -95,22 +64,18 @@ class OrganisationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(EditOrganisationRequest $request, Organisation $organisation)
+    public function update(EditOrganisationRequest $request, Organisation $organisation, OrganisationLogoService $logos)
     {
         $this->authorize('access', [$organisation, 'admin']);
 
         $validated = $request->validated();
 
         $organisation->name = $validated['name'];
+        $organisation->save();
 
         if ($request->hasFile('logo')) {
-
-            unlink(public_path() . '/storage/' . $organisation->logo);
-
-            $organisation->logo = $request->file('logo')->store('orgs', 'public');
+            $logos->store($organisation, $request->file('logo'));
         }
-
-        $organisation->save();
 
         session()->flash('success', 'Changes saved.');
 

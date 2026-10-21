@@ -65,7 +65,7 @@
         </div>
 
 
-        <x-add-card text="Competition" link="{{ route('comps.create') }}?type=org&org={{ $org->name }}"></x-add-card>
+        <x-add-card text="Competition" link="{{ route('manage.competitions.create', ['org' => $org->id]) }}"></x-add-card>
 
 
     </div>

@@ -11,7 +11,7 @@ class CreateCompetitionRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // Will handle org access in controller
+        // Access to the organisation is checked in the controller, so it can say which one
         return true;
     }
 
@@ -23,11 +23,20 @@ class CreateCompetitionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
-            'when' => 'required',
-            'where' => 'required',
-            'lanes' => 'required',
-            'org' => ''
+            'name' => 'required|string|min:3|max:255',
+            'when' => 'required|date_format:Y-m-d',
+            'where' => 'required|string|min:3|max:255',
+            'lanes' => 'required|integer|min:1|max:10',
+            // None makes a Personal Competition
+            'organisation' => 'nullable|integer',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'when.date_format' => 'Enter the date the competition is on.',
+            'lanes.max' => 'A pool has at most 10 lanes.',
         ];
     }
 }

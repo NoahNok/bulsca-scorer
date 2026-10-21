@@ -12,7 +12,9 @@ use App\Http\Controllers\CompetitionOfficialsController;
 use App\Http\Controllers\DigitalJudge\DigitalJudgeController;
 use App\Http\Controllers\EntityController;
 use App\Http\Controllers\LeagueController;
+use App\Http\Controllers\Manage\CompetitionCreateController;
 use App\Http\Controllers\Manage\ManageController;
+use App\Http\Controllers\Manage\OrganisationCreateController;
 use App\Http\Controllers\Orders\DrawController;
 use App\Http\Controllers\Orders\HeatController;
 use App\Http\Controllers\Organisation\OrganisationController;
@@ -59,8 +61,8 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
 
         Route::redirect('/comps', '/')->name('comps');
 
-        Route::get('/create', [CompetitionController::class, 'create'])->name('comps.create');
-        Route::post('/create', [CompetitionController::class, 'createPost'])->name('comps.create.post');
+        Route::get('/create', [CompetitionCreateController::class, 'create'])->name('manage.competitions.create');
+        Route::post('/create', [CompetitionCreateController::class, 'store'])->name('manage.competitions.store');
 
         Route::prefix('/comps/{comp}')->middleware([CompetitionOwnsRouteModels::class, RecordCompetitionVisit::class])->group(function () {
             Route::get('', [CompetitionController::class, 'view'])->middleware('can:access,comp,"view"')->name('comps.view');
@@ -278,7 +280,10 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
         });
 
 
-        Route::resource('organisation', OrganisationController::class)->names('orgs');
+        // Before the resource, whose show route would otherwise take /organisation/create
+        Route::get('/organisation/create', [OrganisationCreateController::class, 'create'])->name('manage.organisations.create');
+        Route::post('/organisation', [OrganisationCreateController::class, 'store'])->name('manage.organisations.store');
+        Route::resource('organisation', OrganisationController::class)->except(['create', 'store'])->names('orgs');
         Route::prefix('organisation/{organisation}')->middleware('can:access,organisation,"admin"')->group(function () {
             Route::get('/accounts', [OrganisationController::class, 'accounts'])->name('orgs.accounts');
             Route::post('/accounts', [OrganisationController::class, 'accountsPost'])->name('orgs.accounts.post');

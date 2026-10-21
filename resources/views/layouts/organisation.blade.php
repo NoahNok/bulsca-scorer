@@ -8,7 +8,8 @@
 @endsection
 
 @section('core-meta')
-    <link rel="icon" type="image/png" href="{{ $org->getLogo() }}">
+    {{-- No type: logos are PNG, JPEG or WebP, and browsers sniff it --}}
+    <link rel="icon" href="{{ $org->getLogo() }}">
 @endsection
 
 @section('core-content')

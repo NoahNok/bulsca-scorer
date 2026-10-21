@@ -1,0 +1,69 @@
+<!--
+    A page that's one form (new competition, new organisation): a "Home" link back, the title and a lead,
+    then the form in a narrow column on the left of the container. End the form with a .p-actions row: the
+    SubmitButton, and a muted Cancel link under it.
+-->
+<script lang="ts">
+    import { home } from "@/routes/manage";
+    import { Link } from "@inertiajs/svelte";
+    import { ArrowLeft } from "@lucide/svelte";
+    import type { Snippet } from "svelte";
+
+    let { title, lead, children }: { title: string; lead: string; children: Snippet } = $props();
+</script>
+
+<div class="p-page">
+    <Link href={home()} class="v2-link-muted p-back"><ArrowLeft size={16} aria-hidden="true" /> Home</Link>
+    <h1 class="p-title">{title}</h1>
+    <p class="p-lead">{lead}</p>
+
+    {@render children()}
+</div>
+
+<style>
+    .p-page {
+        max-width: 32rem;
+    }
+
+    .p-page :global(.p-back) {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 0.875rem;
+    }
+
+    .p-title {
+        margin-top: 1rem;
+        font-weight: 800;
+        font-size: 1.75rem;
+        line-height: 1.1;
+        text-transform: uppercase;
+        overflow-wrap: anywhere;
+    }
+
+    .p-lead {
+        margin-top: 0.5rem;
+        color: var(--v2-muted);
+        line-height: 1.6;
+    }
+
+    /* The form's gap spaces the fields */
+    .p-page :global(form) {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+        margin-top: 1.75rem;
+    }
+
+    .p-page :global(form .v2-field + .v2-field) {
+        margin-top: 0;
+    }
+
+    .p-page :global(.p-actions) {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 0.5rem;
+    }
+</style>

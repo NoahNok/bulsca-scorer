@@ -3,14 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Competition\CreateCompetitionAccount;
-use App\Http\Requests\Competition\CreateCompetitionRequest;
 use App\Http\Requests\Competition\DeleteCompetitionRequest;
 use App\Http\Requests\Competition\EditCompetitionAccount;
 use App\Http\Requests\Competition\UpdateCompetitionRequest;
 use App\Http\Requests\Competition\UpdateCompetitionScoringSettingsRequest;
 use App\Models\Competition;
-use App\Models\Competition\CompetitionScoringSettings;
-use App\Models\Organisation\Organisation;
 use App\Models\User;
 use App\Models\UserCompetitionAccess;
 use Carbon\Carbon;
@@ -266,55 +263,6 @@ class CompetitionController extends Controller
         $comp->deleteCompetitionAccount($account);
 
         return response()->json([]);
-    }
-
-    public function create()
-    {
-        return view('competition.create');
-    }
-
-    public function createPost(CreateCompetitionRequest $request)
-    {
-        $validated = $request->validated();
-
-
-        $comp = new Competition();
-        $comp->name = $validated['name'];
-        $comp->when = $validated['when'];
-        $comp->where = $validated['where'];
-        $comp->max_lanes = $validated['lanes'];
-        $comp->anytimepin = false;
-        $comp->seed_per_event = false;
-        $comp->heats_per_event = false;
-        $comp->use_seeds = true;
-        $comp->save();
-
-
-        if ($validated['org'] != 'null') {
-            $organisation = Organisation::find($validated['org']);
-
-            if ($organisation == null) {
-                return response()->json(['error' => 'No organisation exists with that Id.']);
-            }
-
-            if (!Auth::user()->can('access', [$organisation, 'admin'])) {
-                return response()->json(['error' => "You need to be an admin of {$organisation->name} to add competitions to it."]);
-            }
-
-            $organisation->getCompetitions()->save($comp);
-        } else {
-            $comp->addAccount(Auth::user(), ['owner']);
-        }
-
-
-        $css = new CompetitionScoringSettings();
-        $css->use_tanks = true;
-        $css->competition = $comp->id;
-        $css->save();
-
-        $request->session()->flash('success', 'Competition created!');
-
-        return response()->json(['url' => route('comps.view', ['comp' => $comp])]);
     }
 
     public function deleteComp(Competition $comp, DeleteCompetitionRequest $request)

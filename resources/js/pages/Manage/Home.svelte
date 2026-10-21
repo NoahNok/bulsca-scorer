@@ -7,8 +7,8 @@
     import { shortDate } from "@/lib/dates";
     import CompetitionTable from "@/manage/components/CompetitionTable.svelte";
     import type { ListedCompetition, ManagedCompetition, ManagedOrganisation } from "@/manage/types";
-    import comps from "@/routes/comps";
-    import orgs from "@/routes/orgs";
+    import manage from "@/routes/manage";
+    import { Link } from "@inertiajs/svelte";
 
     let {
         recent,
@@ -55,9 +55,6 @@
         filter = next;
         showAll = false;
     }
-
-    const newCompetition = comps.create({ query: { type: "acc" } }).url;
-    const newOrganisation = orgs.create().url;
 </script>
 
 <svelte:head>
@@ -68,9 +65,8 @@
     <h1 class="h-title">Your competitions</h1>
     {#if !empty}
         <div class="h-actions">
-            <!-- Plain links: both forms are still Blade -->
-            <a href={newOrganisation} class="v2-btn">New organisation</a>
-            <a href={newCompetition} class="v2-btn v2-btn-accent">New competition</a>
+            <Link href={manage.organisations.create()} class="v2-btn">New organisation</Link>
+            <Link href={manage.competitions.create()} class="v2-btn v2-btn-accent">New competition</Link>
         </div>
     {/if}
 </div>
@@ -145,8 +141,8 @@
     <div class="h-empty">
         <p>Competitions you organise appear here. Start one of your own, or set up an organisation to run several under one name.</p>
         <div class="h-actions">
-            <a href={newCompetition} class="v2-btn v2-btn-accent">New competition</a>
-            <a href={newOrganisation} class="v2-btn">New organisation</a>
+            <Link href={manage.competitions.create()} class="v2-btn v2-btn-accent">New competition</Link>
+            <Link href={manage.organisations.create()} class="v2-btn">New organisation</Link>
         </div>
         <ul class="h-pitch">
             <li>Branded results, live and information pages at your own address</li>

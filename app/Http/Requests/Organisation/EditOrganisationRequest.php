@@ -23,7 +23,7 @@ class EditOrganisationRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'logo' => 'sometimes|image',
+            'logo' => 'sometimes|image|mimes:jpeg,png,webp|max:10240',
         ];
 
         $name = $this->input('name');
