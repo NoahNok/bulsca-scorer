@@ -17,7 +17,8 @@
     <h3>What we hold and why</h3>
     <ul>
         <li><strong>Your account:</strong> name, email address, a hashed password, an optional profile photo, and which
-            organisations and competitions you can access, so we can provide the service (contract). Your profile photo
+            organisations and competitions you can access and when you last opened each one you manage, so we can
+            provide the service (contract). Your profile photo
             is shown to other officials and anyone with its link can see it.</li>
         <li><strong>Accounts made for you:</strong> an organiser can create an official's account with just a name and
             email address. We email you when this happens.</li>
@@ -73,6 +74,7 @@
     <ul>
         <li>Accounts: until you ask us to delete them.</li>
         <li>Device sign-in records: 12 months after they were last used, or a month after you sign the device out.</li>
+        <li>When you last opened a competition: 12 months.</li>
         <li>Server logs: 14 days.</li>
         <li>Backups: the last 10 copies of the database, replaced as new ones are made.</li>
         <li>WhatIf competitions: 14 days after you last change them. WhatIf accounts with no competitions left are then

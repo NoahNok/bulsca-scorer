@@ -60,7 +60,7 @@ require __DIR__ . '/stats.php';
 |
 */
 
-// The public home page. Signed-in pages, the dashboard included, are on app. (routes/app.php)
+// The public home page. Signed-in pages, the Management home included, are on app. (routes/app.php)
 Route::get('/', function () {
     $ongoing = Competition::where('show_competition', true)->where('when', Carbon::today())->first();
     $upcoming = Competition::where('show_competition', true)->where('when', '>=', Carbon::today())->orderBy('when')->limit(10)->get();

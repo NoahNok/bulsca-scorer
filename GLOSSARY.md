@@ -43,16 +43,20 @@ _Avoid_: v1, classic, old judge app
 ### Organising
 
 **Organiser**:
-A person who sets up and runs a competition: its Events, Entities, Officials and results.
-_Avoid_: Admin, owner, host
+A person who sets up and runs a competition: its Events, Entities, Officials and results. An Organiser can have limited permissions, e.g. only results, and is still an Organiser.
+_Avoid_: Admin, owner, host, helper
 
 **Management**:
 The signed-in area where Organisers edit their competitions and organisations.
 _Avoid_: Admin, dashboard, backend
 
 **Admin**:
-A site-wide administrator who runs the site itself (seasons, users, speed records, creating competitions), as opposed to an Organiser of one competition.
+A site-wide administrator who runs the site itself (seasons, users, speed records), as opposed to an Organiser of one competition.
 _Avoid_: Organiser, superuser
+
+**Personal Competition**:
+A competition that belongs to no organisation. Anyone signed in can create one, and becomes its first Organiser.
+_Avoid_: Owned competition, private competition
 
 **Invite**:
 An email asking someone to become an Organiser of a competition or organisation. Accepting it creates their account if they don't have one.

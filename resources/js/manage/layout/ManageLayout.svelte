@@ -5,7 +5,8 @@
 <script lang="ts">
     import BrandMark from "@/manage/components/BrandMark.svelte";
     import ThemeToggle from "@/manage/components/ThemeToggle.svelte";
-    import { dashboard, logout } from "@/routes";
+    import { logout } from "@/routes";
+    import manage from "@/routes/manage";
     import admin from "@/routes/admin";
     import { page } from "@inertiajs/svelte";
     import type { Snippet } from "svelte";
@@ -15,8 +16,7 @@
 
 <div class="flex min-h-dvh flex-col">
     <header class="v2-header">
-        <!-- A plain link while the dashboard is still Blade: Inertia can't load it in place -->
-        <a href={dashboard().url} class="v2-brand">
+        <a href={manage.home().url} class="v2-brand">
             <BrandMark size={32} />
             Scoring.Events
         </a>

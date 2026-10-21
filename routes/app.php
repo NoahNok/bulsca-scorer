@@ -25,6 +25,7 @@ use App\Http\Controllers\SERC\MarkingPointTemplateController;
 use App\Http\Controllers\SpeedsEventController;
 use App\Http\Controllers\TeamsController;
 use App\Http\Middleware\CompetitionOwnsRouteModels;
+use App\Http\Middleware\RecordCompetitionVisit;
 use App\Models\SERC;
 use Illuminate\Support\Facades\Route;
 
@@ -45,9 +46,7 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
         // The Management app's home (Svelte). Guests are sent to sign in by the auth middleware
         Route::get('/', [ManageController::class, 'home'])->name('manage.home');
         Route::redirect('/v2', '/');
-
-        // The old Blade dashboard, kept until the Management home covers what it lists
-        Route::get('/dashboard', [ManageController::class, 'dashboard'])->name('dashboard');
+        Route::permanentRedirect('/dashboard', '/');
     });
 
     Route::middleware(['auth', 'not.judge-only'])->group(function () {
@@ -63,7 +62,7 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
         Route::get('/create', [CompetitionController::class, 'create'])->name('comps.create');
         Route::post('/create', [CompetitionController::class, 'createPost'])->name('comps.create.post');
 
-        Route::prefix('/comps/{comp}')->middleware(CompetitionOwnsRouteModels::class)->group(function () {
+        Route::prefix('/comps/{comp}')->middleware([CompetitionOwnsRouteModels::class, RecordCompetitionVisit::class])->group(function () {
             Route::get('', [CompetitionController::class, 'view'])->middleware('can:access,comp,"view"')->name('comps.view');
 
             Route::get('/activity-log', [CompetitionController::class, 'activityLog'])->middleware('can:access,comp,"admin"')->name('comps.activityLog');

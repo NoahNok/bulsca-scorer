@@ -37,7 +37,7 @@
             <a href="{{ route('explore') }}" class="v2-nav-wide">Explore</a>
             <a href="{{ route('dj.home') }}" class="v2-nav-wide">Officials</a>
             @auth
-                <a href="{{ route('dashboard') }}">Dashboard</a>
+                <a href="{{ route('manage.home') }}">Management</a>
             @else
                 <a href="{{ route('login') }}">Sign in</a>
             @endauth

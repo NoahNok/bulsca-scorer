@@ -45,16 +45,12 @@ class ManagementAppTest extends TestCase
             ->assertInertia(fn (Assert $page) => $page->where('manage.isAdmin', true));
     }
 
-    public function test_the_dashboard_is_on_app(): void
+    public function test_the_old_dashboard_sends_you_to_the_management_home(): void
     {
-        $organiser = User::factory()->create();
-
-        $this->actingAs($organiser)
-            ->get(route('dashboard'))
-            ->assertOk()
-            ->assertViewIs('dashboard');
-
-        $this->assertStringStartsWith($this->appUrl('/'), route('dashboard') . '/');
+        $this->actingAs(User::factory()->create())
+            ->get($this->appUrl('/dashboard'))
+            ->assertStatus(301)
+            ->assertRedirect(route('manage.home'));
     }
 
     public function test_the_management_home_is_the_app_root(): void

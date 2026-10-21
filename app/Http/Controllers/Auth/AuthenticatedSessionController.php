@@ -57,7 +57,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        // back to the public site: / on app. is the dashboard, which would ask them to sign in again
+        // back to the public site: / on app. is the Management home, which would ask them to sign in again
         return redirect()->away(RouteHelpers::mainRoute('home'));
     }
 }

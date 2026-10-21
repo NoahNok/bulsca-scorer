@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use ALajusticia\Logins\Models\Login;
+use App\Models\Competition;
+use App\Models\CompetitionVisit;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
@@ -57,6 +59,31 @@ class RetentionPruneTest extends TestCase
 
         $this->assertFalse($this->loginExists($old));
         $this->assertTrue($this->loginExists($recent));
+    }
+
+    public function test_competition_visits_over_a_year_old_are_deleted(): void
+    {
+        $user = User::factory()->create();
+        $comp = new Competition();
+        $comp->name = 'Visited';
+        $comp->when = now();
+        $comp->where = 'Test Pool';
+        $comp->max_lanes = 8;
+        $comp->anytimepin = false;
+        $comp->seed_per_event = false;
+        $comp->heats_per_event = false;
+        $comp->use_seeds = true;
+        $comp->save();
+        $other = $comp->replicate();
+        $other->save();
+
+        $stale = CompetitionVisit::create(['user_id' => $user->id, 'competition_id' => $comp->id, 'visited_at' => now()->subMonths(13)]);
+        $recent = CompetitionVisit::create(['user_id' => $user->id, 'competition_id' => $other->id, 'visited_at' => now()->subMonths(11)]);
+
+        $this->artisan('retention:prune')->assertSuccessful();
+
+        $this->assertModelMissing($stale);
+        $this->assertModelExists($recent);
     }
 
     public function test_unused_whatif_competitions_and_accounts_are_deleted(): void
