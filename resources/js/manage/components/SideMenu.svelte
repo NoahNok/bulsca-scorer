@@ -69,8 +69,9 @@
 
 <svelte:window onhashchange={() => (value = fromHash())} />
 
-<div class="grid gap-6 min-[56rem]:grid-cols-[11rem_minmax(0,44rem)] min-[56rem]:gap-12">
-    <nav aria-label={label} class="min-[56rem]:sticky min-[56rem]:top-6 min-[56rem]:self-start">
+<!-- minmax(0, 1fr) on phones, so the menu's row scrolls instead of widening the page -->
+<div class="grid grid-cols-[minmax(0,1fr)] gap-6 min-[56rem]:grid-cols-[11rem_minmax(0,44rem)] min-[56rem]:gap-12">
+    <nav aria-label={label} class="min-w-0 min-[56rem]:sticky min-[56rem]:top-6 min-[56rem]:self-start">
         <ul class="-mx-1 flex gap-1 overflow-x-auto px-1 min-[56rem]:mx-0 min-[56rem]:flex-col min-[56rem]:overflow-visible min-[56rem]:px-0">
             {#each items as menuItem (menuItem.id)}
                 <li
