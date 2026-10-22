@@ -105,18 +105,14 @@ class DigitalJudgeController extends Controller
         $wasState = $comp->digitalJudgeEnabled;
         $comp->digitalJudgeEnabled = !$wasState;
         $comp->save();
-        if ($wasState) return redirect()->back(); // Stop here as we have turned DJ off
+        if ($wasState) return redirect()->back()->with('success', 'Digital Judge off'); // Stop here as we have turned DJ off
 
         $comp->digitalJudgePin = $comp->digitalJudgePin ?: mt_rand(111111, 999999);
         $comp->digitalJudgeHeadPin = $comp->digitalJudgeHeadPin ?: mt_rand(111111, 999999);
 
         $comp->save();
 
-        if ($wasState == false) {
-            return redirect()->back()->with('success', 'Digital Judge Enabled!')->with('modal', 'djSettings');
-        }
-
-        return redirect()->back()->with('success', 'Digital Judge Disabled!');
+        return redirect()->back()->with('success', 'Digital Judge on');
     }
 
     function sercToggle(Competition $comp, SERC $serc)
@@ -229,7 +225,7 @@ class DigitalJudgeController extends Controller
 
         $comp->save();
 
-        return;
+        return back()->with('success', 'Digital Judge settings saved');
     }
 
     public function sercsReleasePost(Competition $comp, Request $request)

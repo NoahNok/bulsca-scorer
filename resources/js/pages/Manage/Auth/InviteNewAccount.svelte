@@ -75,13 +75,13 @@
 </Form>
 
 <p class="a-aside">
-    Not for you? <button type="button" class="v2-link i-decline" onclick={() => dialog?.showModal()}>Decline invite</button>
+    Not for you? <button type="button" class="v2-link cursor-pointer" onclick={() => dialog?.showModal()}>Decline invite</button>
 </p>
 
 <!-- A native dialog: it traps focus, closes on Escape and focuses the first button, the safe one -->
 <dialog
     bind:this={dialog}
-    class="v2-modal i-dialog"
+    class="v2-modal animate-rise-fast motion-reduce:animate-none"
     aria-labelledby="decline-title"
     onclick={(e) => e.target === dialog && dialog.close()}
 >
@@ -92,26 +92,3 @@
         <button type="button" class="v2-btn v2-btn-danger" disabled={declining} onclick={decline}>Decline invite</button>
     </div>
 </dialog>
-
-<style>
-    .i-decline {
-        cursor: pointer;
-    }
-
-    .i-dialog {
-        animation: i-dialog-in 200ms ease-out;
-    }
-
-    @keyframes i-dialog-in {
-        from {
-            opacity: 0;
-            transform: translateY(0.5rem);
-        }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        .i-dialog {
-            animation: none;
-        }
-    }
-</style>

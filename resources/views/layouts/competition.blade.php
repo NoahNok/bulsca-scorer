@@ -49,43 +49,9 @@
 
 
     <div class="  tabbed-bar mt-2 mb-4 ">
-
-        @can('access', [$comp, 'view'])
-            <a href="{{ route('comps.view', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.view')) active @endif">Overview</a>
-        @endcan
-
-        @can('access', [$comp, 'teams'])
-            <a href="{{ route('comps.entities', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.entities') ||
-                    Str::startsWith(Route::currentRouteName(), 'comps.league')) active @endif">Entries &
-                Leagues</a>
-        @endcan
-
-        @can('access', [$comp, ['serc', 'speed', 'serc_writer']])
-            <a href="{{ route('comps.events', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.events')) active @endif">Events</a>
-        @endcan
-
-        @can('access', [$comp, 'heats_and_draws'])
-            <a href="{{ route('comps.heats_and_draws', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.heats_and_draws')) active @endif">Heats
-                &
-                Draws</a>
-        @endcan
-
-        @can('access', [$comp, 'printables'])
-            <a href="{{ route('comps.printables', $comp) }}"
-                class="@if (Str::startsWith(Route::currentRouteName(), 'comps.printables')) active @endif">Printables</a>
-        @endcan
-
-
-
-        @can('access', [$comp, 'results'])
-            <a href="{{ route('comps.results', $comp) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'comps.results')) active @endif">Results</a>
-        @endcan
-
-        @can('access', [$comp, 'admin'])
-            <a href="{{ route('comps.officials', $comp) }}"
-                class="@if (Str::startsWith(Route::currentRouteName(), 'comps.officials')) active @endif">Officials</a>
-        @endcan
-
+        @foreach (\App\Helpers\CompetitionTabs::for($comp) as $tab)
+            <a href="{{ $tab['url'] }}" class="@if ($tab['current']) active @endif">{{ $tab['label'] }}</a>
+        @endforeach
     </div>
 
     @if ($comp->statusMessages)

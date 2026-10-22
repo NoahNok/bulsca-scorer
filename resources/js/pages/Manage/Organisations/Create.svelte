@@ -55,9 +55,12 @@
             <Field id="name" name="name" label="Name" required maxlength={255} error={errors.name} />
 
             <div class="v2-field">
-                <label for="logo">Logo <span class="o-optional">(optional)</span></label>
+                <label for="logo">Logo <span class="font-normal text-v2-muted">(optional)</span></label>
                 <div
-                    class={["o-logo", dragging && "is-dragging"]}
+                    class={[
+                        "flex items-center gap-4 rounded-xl border border-dashed p-3 transition-colors motion-reduce:transition-none",
+                        dragging ? "border-v2-teal bg-v2-teal-soft" : "border-v2-border",
+                    ]}
                     role="group"
                     aria-label="Logo"
                     ondragover={(event) => {
@@ -67,21 +70,21 @@
                     ondragleave={() => (dragging = false)}
                     ondrop={onDrop}
                 >
-                    <span class="o-preview">
+                    <span class="grid size-16 shrink-0 place-items-center overflow-hidden rounded-full bg-v2-sunk text-v2-muted">
                         {#if preview}
-                            <img src={preview} alt="" />
+                            <img src={preview} alt="" class="size-full object-contain" />
                         {:else}
                             <ImagePlus size={22} aria-hidden="true" />
                         {/if}
                     </span>
-                    <div class="o-pick">
+                    <div class="flex flex-wrap items-center gap-2">
                         <button type="button" class="v2-btn v2-btn-sm" onclick={() => input.click()}>
                             {preview ? "Change logo" : "Choose a logo"}
                         </button>
                         {#if preview}
                             <button type="button" class="v2-btn v2-btn-ghost v2-btn-sm" onclick={remove}>Remove</button>
                         {:else}
-                            <span class="o-drop">or drop one here</span>
+                            <span class="text-sm text-v2-muted">or drop one here</span>
                         {/if}
                     </div>
                     <input
@@ -112,63 +115,3 @@
         {/snippet}
     </Form>
 </FormPage>
-
-<style>
-    .o-optional {
-        font-weight: 400;
-        color: var(--v2-muted);
-    }
-
-    .o-logo {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        padding: 0.75rem;
-        border: 1px dashed var(--v2-border);
-        border-radius: 0.75rem;
-        transition:
-            border-color 150ms,
-            background-color 150ms;
-    }
-
-    .o-logo.is-dragging {
-        border-color: var(--v2-teal);
-        background: var(--v2-teal-soft);
-    }
-
-    .o-preview {
-        display: grid;
-        flex-shrink: 0;
-        place-items: center;
-        width: 4rem;
-        height: 4rem;
-        overflow: hidden;
-        border-radius: 9999px;
-        background: var(--v2-sunk);
-        color: var(--v2-muted);
-    }
-
-    .o-preview img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-    }
-
-    .o-pick {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .o-drop {
-        font-size: 0.875rem;
-        color: var(--v2-muted);
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        .o-logo {
-            transition: none;
-        }
-    }
-</style>

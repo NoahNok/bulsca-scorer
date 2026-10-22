@@ -13,6 +13,7 @@ use App\Http\Controllers\DigitalJudge\DigitalJudgeController;
 use App\Http\Controllers\EntityController;
 use App\Http\Controllers\LeagueController;
 use App\Http\Controllers\Manage\CompetitionCreateController;
+use App\Http\Controllers\Manage\CompetitionDashboardController;
 use App\Http\Controllers\Manage\ManageController;
 use App\Http\Controllers\Manage\OrganisationCreateController;
 use App\Http\Controllers\Orders\DrawController;
@@ -65,12 +66,12 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
         Route::post('/create', [CompetitionCreateController::class, 'store'])->name('manage.competitions.store');
 
         Route::prefix('/comps/{comp}')->middleware([CompetitionOwnsRouteModels::class, RecordCompetitionVisit::class])->group(function () {
-            Route::get('', [CompetitionController::class, 'view'])->middleware('can:access,comp,"view"')->name('comps.view');
+            Route::get('', [CompetitionDashboardController::class, 'overview'])->middleware('can:access,comp,"view"')->name('comps.view');
 
             Route::get('/activity-log', [CompetitionController::class, 'activityLog'])->middleware('can:access,comp,"admin"')->name('comps.activityLog');
 
             Route::middleware('can:access,comp,"admin"')->group(function () {
-                Route::get('/digital-judge-toggle', [DigitalJudgeController::class, 'toggle'])->name('dj.toggle');
+                Route::post('/digital-judge-toggle', [DigitalJudgeController::class, 'toggle'])->name('dj.toggle');
 
                 Route::post('/digital-judge-settings', [DigitalJudgeController::class, 'settingsPost'])->name('dj.settings');
                 Route::post('/digital-judge-sercs-release', [DigitalJudgeController::class, 'sercsReleasePost'])->name('dj.sercs-release');
@@ -80,13 +81,12 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
                 Route::get('/create-stats', [CompetitionController::class, 'createCompetitionStats'])->name('comps.createStats');
 
 
+                Route::get('/settings', [CompetitionDashboardController::class, 'settings'])->name('manage.competitions.settings');
                 Route::post('/settings', [CompetitionController::class, 'updateCompetitionSettings'])->name('comps.settings');
                 Route::post('/settings/scoring', [CompetitionController::class, 'updateCompetitionScoringSettings'])->name('comps.settings.scoring');
                 Route::post('/delete', [CompetitionController::class, 'deleteComp'])->name('comps.delete');
 
 
-                Route::get('/accounts', [CompetitionController::class, 'getCompetitionAccounts'])->name('comps.accounts');
-                Route::get('/account/{account}', [CompetitionController::class, 'getCompetitionAccount'])->name('comps.accounts.view');
                 Route::post('/account/{account}', [CompetitionController::class, 'editCompetitionAccount'])->name('comps.accounts.edit');
                 Route::delete('/account/{account}', [CompetitionController::class, 'deleteCompetitionAccount'])->name('comps.accounts.delete');
                 Route::post('/accounts/invitee', [CompetitionController::class, 'inviteCompetitionAccount'])->name('comps.accounts.invite');

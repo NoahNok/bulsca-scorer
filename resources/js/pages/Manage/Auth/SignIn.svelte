@@ -46,7 +46,7 @@
             error={errors.password}
         />
 
-        <div class="s-row">
+        <div class="flex items-center justify-between gap-4 text-sm">
             <label class="v2-check"
                 ><input type="checkbox" name="remember" value="1" /> Remember me</label
             >
@@ -63,13 +63,3 @@
         >Go to Digital Judge</a
     >
 </p>
-
-<style>
-    .s-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 1rem;
-        font-size: 0.875rem;
-    }
-</style>

@@ -26,22 +26,24 @@
     const flash = $derived(page.props.manage?.flash);
 </script>
 
-<div class="a-frame">
+<div class="grid min-h-dvh lg:grid-cols-[minmax(0,5fr)_minmax(0,4fr)]">
     <PoolBand {headline} />
 
-    <div class="a-side">
-        <div class="a-top">
+    <div class="flex min-w-0 flex-col px-4 lg:px-10">
+        <div class="flex items-center justify-between py-4 lg:justify-end">
             <!-- phones only: the band carries the brand on desktop -->
-            <a href={page.props.manage?.site.home} class="a-brand">
+            <a href={page.props.manage?.site.home} class="inline-flex items-center gap-2 font-extrabold lg:hidden">
                 <BrandMark size={28} />
                 Scoring.Events
             </a>
             <ThemeToggle />
         </div>
 
-        <main class="a-main">
+        <!-- centred in the space between the toggle and the footer -->
+        <main class="flex flex-1 items-center justify-center pt-2 pb-10">
             {#key page.component}
-                <div class="a-content">
+                <!-- A CSS animation, not in:fly: Svelte skips intros on the first mount. {#key} replays it per page -->
+                <div class="a-content w-full max-w-sm animate-rise motion-reduce:animate-none">
                     {#if flash?.status}
                         <Alert tone="success">{flash.status}</Alert>
                     {/if}
@@ -53,75 +55,20 @@
             {/key}
         </main>
 
-        <footer class="a-footer">
-            <nav aria-label="Legal">
+        <footer>
+            <nav aria-label="Legal" class="flex flex-wrap justify-center gap-x-4 gap-y-1 py-5 text-[0.8125rem] text-v2-muted">
                 <span>&copy; {new Date().getFullYear()} {page.props.legal.tradingAs}</span>
-                <a href={page.props.legal.terms}>Terms</a>
-                <a href={page.props.legal.privacy}>Privacy</a>
-                <a href={page.props.legal.cookies}>Cookies</a>
-                <a href="mailto:{page.props.legal.contactEmail}">Contact</a>
+                <a href={page.props.legal.terms} class="hover:text-v2-ink">Terms</a>
+                <a href={page.props.legal.privacy} class="hover:text-v2-ink">Privacy</a>
+                <a href={page.props.legal.cookies} class="hover:text-v2-ink">Cookies</a>
+                <a href="mailto:{page.props.legal.contactEmail}" class="hover:text-v2-ink">Contact</a>
             </nav>
         </footer>
     </div>
 </div>
 
 <style>
-    .a-frame {
-        display: grid;
-        min-height: 100dvh;
-    }
-
-    .a-side {
-        display: flex;
-        flex-direction: column;
-        min-width: 0;
-        padding: 0 1rem;
-    }
-
-    .a-top {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 1rem 0;
-    }
-
-    .a-brand {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-weight: 800;
-    }
-
-    /* centred in the space between the toggle and the footer */
-    .a-main {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0.5rem 0 2.5rem;
-    }
-
-    /* a CSS animation, not in:fly: Svelte skips intros on the first mount. {#key} replays it per page */
-    .a-content {
-        width: 100%;
-        max-width: 24rem;
-        animation: a-rise 300ms ease-out both;
-    }
-
-    @keyframes a-rise {
-        from {
-            opacity: 0;
-            transform: translateY(0.5rem);
-        }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        .a-content {
-            animation: none;
-        }
-    }
-
-    /* The pages' shared parts: title, lead, and the form below them */
+    /* The pages' shared parts, used by all five: title, lead, and the form below them */
     .a-content :global(.a-title) {
         font-weight: 800;
         font-size: 1.75rem;
@@ -159,37 +106,5 @@
         border-top: 1px solid var(--v2-border);
         font-size: 0.875rem;
         color: var(--v2-muted);
-    }
-
-    .a-footer nav {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 0.25rem 1rem;
-        padding: 1.25rem 0;
-        font-size: 0.8125rem;
-        color: var(--v2-muted);
-    }
-
-    .a-footer a:hover {
-        color: var(--v2-ink);
-    }
-
-    @media (min-width: 64rem) {
-        .a-frame {
-            grid-template-columns: minmax(0, 5fr) minmax(0, 4fr);
-        }
-
-        .a-side {
-            padding: 0 2.5rem;
-        }
-
-        .a-top {
-            justify-content: flex-end;
-        }
-
-        .a-brand {
-            display: none;
-        }
     }
 </style>

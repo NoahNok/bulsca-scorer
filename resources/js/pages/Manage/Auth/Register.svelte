@@ -22,16 +22,10 @@
     <a href="mailto:{page.props.legal.contactEmail}" class="v2-link-inline">{page.props.legal.contactEmail}</a>.
 </p>
 
-<div class="r-actions">
+<div class="mt-7">
     <Link href={login()} class="v2-btn v2-btn-primary">Sign in</Link>
 </div>
 
 <p class="a-aside">
     Officiating? <a href={judge.register().url} class="v2-link">Create an account in the Digital Judge</a>
 </p>
-
-<style>
-    .r-actions {
-        margin-top: 1.75rem;
-    }
-</style>

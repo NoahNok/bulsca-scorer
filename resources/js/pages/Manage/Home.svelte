@@ -51,6 +51,10 @@
 
     let empty = $derived(recent.length === 0 && organisations.length === 0 && competitions.length === 0);
 
+    // Filters: a pill per organisation, ink when chosen like the primary button
+    const chip =
+        "inline-flex cursor-pointer items-center gap-[0.4rem] rounded-full border border-v2-border bg-v2-card px-[0.8rem] py-[0.3rem] text-sm font-semibold transition-colors hover:bg-v2-row-hover aria-pressed:border-v2-ink aria-pressed:bg-v2-ink aria-pressed:text-v2-bg motion-reduce:transition-none";
+
     function choose(next: typeof filter) {
         filter = next;
         showAll = false;
@@ -61,10 +65,10 @@
     <title>Management - Scoring.Events</title>
 </svelte:head>
 
-<div class="h-head">
-    <h1 class="h-title">Your competitions</h1>
+<div class="flex flex-wrap items-center justify-between gap-4">
+    <h1 class="text-[1.75rem] font-extrabold uppercase">Your competitions</h1>
     {#if !empty}
-        <div class="h-actions">
+        <div class="flex flex-wrap gap-2">
             <Link href={manage.organisations.create()} class="v2-btn">New organisation</Link>
             <Link href={manage.competitions.create()} class="v2-btn v2-btn-accent">New competition</Link>
         </div>
@@ -72,16 +76,21 @@
 </div>
 
 {#if recent.length > 0}
-    <section class="h-section" aria-labelledby="h-recent">
-        <h2 id="h-recent" class="h-heading">Recent</h2>
-        <ul class="h-recent">
+    <section class="mt-10" aria-labelledby="h-recent">
+        <h2 id="h-recent" class="mb-3 text-lg font-extrabold uppercase">Recent</h2>
+        <ul class="grid grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] gap-3">
             {#each recent as comp (comp.id)}
                 <li>
-                    <a href={comp.url} class="h-card">
-                        <span class="h-card-name">{comp.name}</span>
-                        <span class="h-card-meta">
+                    <a
+                        href={comp.url}
+                        class="group flex h-full flex-col gap-1 rounded-xl border border-v2-border bg-v2-card px-4 py-3.5 transition-colors hover:bg-v2-row-hover focus-visible:bg-v2-row-hover motion-reduce:transition-none"
+                    >
+                        <span class="font-bold group-hover:text-v2-teal-text">{comp.name}</span>
+                        <span class="text-sm text-v2-muted">
                             {#if comp.live}
-                                <span class="h-card-live"><span class="v2-dot is-live" aria-hidden="true"></span> Live now</span>
+                                <span class="inline-flex items-center gap-[0.4rem] font-semibold text-v2-teal-text"
+                                    ><span class="v2-dot is-live" aria-hidden="true"></span> Live now</span
+                                >
                             {:else if comp.today}
                                 Today
                             {:else}
@@ -97,20 +106,20 @@
 {/if}
 
 {#if organisations.length > 0 || competitions.length > 0}
-    <section class="h-section" aria-labelledby="h-all">
-        <h2 id="h-all" class="h-heading">Competitions</h2>
+    <section class="mt-10" aria-labelledby="h-all">
+        <h2 id="h-all" class="mb-3 text-lg font-extrabold uppercase">Competitions</h2>
 
         {#if organisations.length > 0}
-            <div class="h-filters" role="group" aria-label="Filter by organisation">
-                <button type="button" class="h-chip" aria-pressed={filter === "all"} onclick={() => choose("all")}>All</button>
+            <div class="mb-4 flex flex-wrap gap-2" role="group" aria-label="Filter by organisation">
+                <button type="button" class={chip} aria-pressed={filter === "all"} onclick={() => choose("all")}>All</button>
                 {#each organisations as org (org.id)}
-                    <button type="button" class="h-chip" aria-pressed={filter === org.id} onclick={() => choose(org.id)}>
-                        {#if org.logo}<img src={org.logo} alt="" />{/if}
+                    <button type="button" class={chip} aria-pressed={filter === org.id} onclick={() => choose(org.id)}>
+                        {#if org.logo}<img src={org.logo} alt="" class="size-5 rounded-full" />{/if}
                         {org.name}
                     </button>
                 {/each}
                 {#if hasPersonal}
-                    <button type="button" class="h-chip" aria-pressed={filter === "personal"} onclick={() => choose("personal")}>Personal</button>
+                    <button type="button" class={chip} aria-pressed={filter === "personal"} onclick={() => choose("personal")}>Personal</button>
                 {/if}
             </div>
         {/if}
@@ -118,11 +127,11 @@
         {#if rows.length > 0}
             <CompetitionTable competitions={rows} />
         {:else}
-            <p class="h-none">No competitions yet. They appear here once one is added to {selected?.name ?? "your organisations"}.</p>
+            <p class="text-v2-muted">No competitions yet. They appear here once one is added to {selected?.name ?? "your organisations"}.</p>
         {/if}
 
         {#if shown.length < filtered.length || selected?.url}
-            <div class="h-foot">
+            <div class="mt-3 flex items-center justify-between gap-4">
                 {#if shown.length < filtered.length}
                     <button type="button" class="v2-btn v2-btn-ghost v2-btn-sm" onclick={() => (showAll = true)}>
                         Show all {filtered.length}
@@ -138,169 +147,16 @@
 {/if}
 
 {#if empty}
-    <div class="h-empty">
+    <div class="mt-6 flex flex-col items-start gap-4 rounded-2xl border border-dashed border-v2-border p-6 text-v2-muted">
         <p>Competitions you organise appear here. Start one of your own, or set up an organisation to run several under one name.</p>
-        <div class="h-actions">
+        <div class="flex flex-wrap gap-2">
             <Link href={manage.competitions.create()} class="v2-btn v2-btn-accent">New competition</Link>
             <Link href={manage.organisations.create()} class="v2-btn">New organisation</Link>
         </div>
-        <ul class="h-pitch">
+        <ul class="list-disc pl-5 text-[0.9375rem]">
             <li>Branded results, live and information pages at your own address</li>
             <li>Organisers across all your competitions, each with just the access they need</li>
             <li>Custom events and leagues, and more scoring options</li>
         </ul>
     </div>
 {/if}
-
-<style>
-    .h-head {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: space-between;
-        gap: 1rem;
-    }
-
-    .h-title {
-        font-weight: 800;
-        font-size: 1.75rem;
-        text-transform: uppercase;
-    }
-
-    .h-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-    }
-
-    .h-section {
-        margin-top: 2.5rem;
-    }
-
-
-    .h-heading {
-        font-weight: 800;
-        font-size: 1.125rem;
-        text-transform: uppercase;
-        margin-bottom: 0.75rem;
-    }
-
-    .h-recent {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
-        gap: 0.75rem;
-    }
-
-    .h-card {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-        height: 100%;
-        padding: 0.875rem 1rem;
-        border: 1px solid var(--v2-border);
-        border-radius: 0.75rem;
-        background: var(--v2-card);
-        transition: background-color 150ms;
-    }
-
-    .h-card:hover,
-    .h-card:focus-visible {
-        background: var(--v2-row-hover);
-    }
-
-    .h-card-name {
-        font-weight: 700;
-    }
-
-    .h-card:hover .h-card-name {
-        color: var(--v2-teal-text);
-    }
-
-    .h-card-meta {
-        font-size: 0.875rem;
-        color: var(--v2-muted);
-    }
-
-    .h-card-live {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.4rem;
-        font-weight: 600;
-        color: var(--v2-teal-text);
-    }
-
-    .h-none {
-        color: var(--v2-muted);
-    }
-
-    .h-filters {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        margin-bottom: 1rem;
-    }
-
-    /* Filters: a pill per organisation, ink when chosen like the primary button */
-    .h-chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.4rem;
-        padding: 0.3rem 0.8rem;
-        border: 1px solid var(--v2-border);
-        border-radius: 9999px;
-        background: var(--v2-card);
-        font-size: 0.875rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background-color 150ms;
-    }
-
-    .h-chip:hover {
-        background: var(--v2-row-hover);
-    }
-
-    .h-chip[aria-pressed="true"] {
-        border-color: var(--v2-ink);
-        background: var(--v2-ink);
-        color: var(--v2-bg);
-    }
-
-    .h-chip img {
-        width: 1.25rem;
-        height: 1.25rem;
-        border-radius: 9999px;
-    }
-
-    .h-foot {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 1rem;
-        margin-top: 0.75rem;
-    }
-
-    .h-empty {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-        margin-top: 1.5rem;
-        padding: 1.5rem;
-        border: 1px dashed var(--v2-border);
-        border-radius: 1rem;
-        color: var(--v2-muted);
-    }
-
-    .h-pitch {
-        list-style: disc;
-        padding-left: 1.25rem;
-        font-size: 0.9375rem;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        .h-card,
-        .h-chip {
-            transition: none;
-        }
-    }
-</style>

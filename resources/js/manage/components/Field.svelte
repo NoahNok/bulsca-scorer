@@ -30,10 +30,14 @@
 
 <div class="v2-field">
     <label for={id}>{label}</label>
-    <div class="f-control">
+    <div class="relative flex">
         <input
             {id}
-            class={["v2-input", error && "is-invalid", type === "password" && "f-has-toggle"]}
+            class={[
+                "v2-input min-w-0 flex-1 read-only:cursor-default read-only:text-v2-muted",
+                error && "is-invalid",
+                type === "password" && "pr-11",
+            ]}
             type={type === "password" && shown ? "text" : type}
             {value}
             aria-invalid={error ? "true" : undefined}
@@ -43,7 +47,7 @@
         {#if type === "password"}
             <button
                 type="button"
-                class="f-toggle"
+                class="absolute top-1.5 right-1.5 grid size-8 cursor-pointer place-items-center rounded-md text-v2-muted hover:text-v2-ink aria-pressed:text-v2-ink"
                 aria-label="Show password"
                 aria-pressed={shown}
                 aria-controls={id}
@@ -64,42 +68,3 @@
         <span id="{id}-error" class="v2-error">{error}</span>
     {/if}
 </div>
-
-<style>
-    .f-control {
-        position: relative;
-        display: flex;
-    }
-
-    .f-control input {
-        flex: 1;
-        min-width: 0;
-    }
-
-    .f-control input:read-only {
-        color: var(--v2-muted);
-        cursor: default;
-    }
-
-    .f-has-toggle {
-        padding-right: 2.75rem;
-    }
-
-    .f-toggle {
-        position: absolute;
-        top: 0.375rem;
-        right: 0.375rem;
-        display: grid;
-        place-items: center;
-        width: 2rem;
-        height: 2rem;
-        border-radius: 0.375rem;
-        color: var(--v2-muted);
-        cursor: pointer;
-    }
-
-    .f-toggle:hover,
-    .f-toggle[aria-pressed="true"] {
-        color: var(--v2-ink);
-    }
-</style>

@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class CompetitionOfficialsTest extends TestCase
@@ -399,7 +400,7 @@ class CompetitionOfficialsTest extends TestCase
             ->assertSee('<svg', false);
     }
 
-    public function test_the_overview_pin_modal_points_officials_at_the_new_judge_app(): void
+    public function test_the_overview_pin_points_officials_at_the_new_judge_app(): void
     {
         $this->comp->digitalJudgePin = 123456;
         $this->comp->digitalJudgeHeadPin = 654321;
@@ -408,10 +409,10 @@ class CompetitionOfficialsTest extends TestCase
 
         $this->actingAs($this->admin)->get(route('comps.view', $this->comp))
             ->assertOk()
-            ->assertSee('Digital Judge PIN')
-            ->assertSee(route('judge.index'))
-            ->assertSee('123456')
-            ->assertSee(route('dj.qrs', $this->comp))
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('digitalJudge.pin', '123456')
+                ->where('digitalJudge.judgeUrl', route('judge.index'))
+                ->where('digitalJudge.qrUrl', route('dj.qrs', $this->comp)))
             // referees get the Referee role instead of a PIN
             ->assertDontSee('654321');
     }

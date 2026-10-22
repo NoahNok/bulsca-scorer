@@ -8,6 +8,7 @@
     import Field from "@/manage/components/Field.svelte";
     import FormPage from "@/manage/components/FormPage.svelte";
     import SubmitButton from "@/manage/components/SubmitButton.svelte";
+    import Tabs from "@/manage/components/Tabs.svelte";
     import { home } from "@/routes/manage";
     import { Form, Link } from "@inertiajs/svelte";
 
@@ -26,18 +27,9 @@
 
     // Most competitions are an organisation's, so start there when you can add to one
     // svelte-ignore state_referenced_locally
-    let owner = $state<(typeof owners)[number]>(organisations.length > 0 ? "organisation" : "personal");
-    let tabs: HTMLButtonElement[] = [];
+    let owner = $state<string>(organisations.length > 0 ? "organisation" : "personal");
 
     const personalNote = "only you and the people you invite can manage it.";
-
-    // Arrow keys move between the tabs, as in any tablist
-    function onTabKey(event: KeyboardEvent) {
-        if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
-        event.preventDefault();
-        owner = owner === "organisation" ? "personal" : "organisation";
-        tabs[owners.indexOf(owner)].focus();
-    }
 </script>
 
 <svelte:head>
@@ -48,62 +40,46 @@
     <Form action={store()}>
         {#snippet children({ errors, processing })}
             {#if organisations.length > 0}
-                <div class="c-owner">
-                    <span id="c-owner-label" class="c-label">Who's running it?</span>
-                    <div class="v2-tabs" role="tablist" aria-labelledby="c-owner-label" style="--v2-tabs: 2">
-                        <span
-                            class="v2-tabs-pill"
-                            aria-hidden="true"
-                            style="transform: translateX({owners.indexOf(owner) * 100}%)"
-                        ></span>
-                        {#each owners as option, i (option)}
-                            <button
-                                bind:this={tabs[i]}
-                                type="button"
-                                role="tab"
-                                id="c-tab-{option}"
-                                aria-selected={owner === option}
-                                aria-controls="c-panel-{option}"
-                                tabindex={owner === option ? 0 : -1}
-                                onclick={() => (owner = option)}
-                                onkeydown={onTabKey}>{labels[option]}</button
-                            >
-                        {/each}
-                    </div>
-
-                    {#if owner === "organisation"}
-                        <div id="c-panel-organisation" role="tabpanel" aria-labelledby="c-tab-organisation" class="c-panel">
-                            <div class="v2-field">
-                                <label for="organisation">Organisation</label>
-                                <select
-                                    id="organisation"
-                                    name="organisation"
-                                    class={["v2-input", errors.organisation && "is-invalid"]}
-                                    aria-invalid={errors.organisation ? "true" : undefined}
-                                    aria-describedby="organisation-hint{errors.organisation ? ' organisation-error' : ''}"
-                                    required
-                                >
-                                    {#if organisations.length > 1 && !selected}
-                                        <option value="" selected disabled>Choose an organisation</option>
+                <div class="flex flex-col gap-2">
+                    <span id="c-owner-label" class="text-sm font-semibold">Who's running it?</span>
+                    <Tabs
+                        id="c"
+                        labelledby="c-owner-label"
+                        tabs={owners.map((option) => ({ id: option, label: labels[option] }))}
+                        bind:value={owner}
+                    >
+                        {#snippet panel(option)}
+                            {#if option === "organisation"}
+                                <div class="v2-field">
+                                    <label for="organisation">Organisation</label>
+                                    <select
+                                        id="organisation"
+                                        name="organisation"
+                                        class={["v2-input", errors.organisation && "is-invalid"]}
+                                        aria-invalid={errors.organisation ? "true" : undefined}
+                                        aria-describedby="organisation-hint{errors.organisation ? ' organisation-error' : ''}"
+                                        required
+                                    >
+                                        {#if organisations.length > 1 && !selected}
+                                            <option value="" selected disabled>Choose an organisation</option>
+                                        {/if}
+                                        {#each organisations as org (org.id)}
+                                            <option value={org.id} selected={org.id === selected}>{org.name}</option>
+                                        {/each}
+                                    </select>
+                                    <span id="organisation-hint" class="v2-hint">Its Organisers can manage it too.</span>
+                                    {#if errors.organisation}
+                                        <span id="organisation-error" class="v2-error">{errors.organisation}</span>
                                     {/if}
-                                    {#each organisations as org (org.id)}
-                                        <option value={org.id} selected={org.id === selected}>{org.name}</option>
-                                    {/each}
-                                </select>
-                                <span id="organisation-hint" class="v2-hint">Its Organisers can manage it too.</span>
-                                {#if errors.organisation}
-                                    <span id="organisation-error" class="v2-error">{errors.organisation}</span>
-                                {/if}
-                            </div>
-                        </div>
-                    {:else}
-                        <div id="c-panel-personal" role="tabpanel" aria-labelledby="c-tab-personal" class="c-panel">
-                            <p class="c-note">A Personal Competition: {personalNote}</p>
-                        </div>
-                    {/if}
+                                </div>
+                            {:else}
+                                <p class="text-sm/[1.6] text-v2-muted">A Personal Competition: {personalNote}</p>
+                            {/if}
+                        {/snippet}
+                    </Tabs>
                 </div>
             {:else}
-                <p class="c-note">This will be a Personal Competition: {personalNote}</p>
+                <p class="text-sm/[1.6] text-v2-muted">This will be a Personal Competition: {personalNote}</p>
             {/if}
 
             <Field id="name" name="name" label="Name" required minlength={3} maxlength={255} error={errors.name} />
@@ -138,26 +114,3 @@
         {/snippet}
     </Form>
 </FormPage>
-
-<style>
-    .c-owner {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-
-    .c-label {
-        font-size: 0.875rem;
-        font-weight: 600;
-    }
-
-    .c-panel {
-        margin-top: 0.5rem;
-    }
-
-    .c-note {
-        color: var(--v2-muted);
-        font-size: 0.875rem;
-        line-height: 1.6;
-    }
-</style>

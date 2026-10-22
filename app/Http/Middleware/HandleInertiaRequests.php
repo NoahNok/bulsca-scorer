@@ -5,7 +5,9 @@ namespace App\Http\Middleware;
 use App\DigitalJudge\DigitalJudge;
 use App\Helpers\RouteHelpers;
 use App\Models\Competition;
+use Closure;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -64,10 +66,12 @@ class HandleInertiaRequests extends Middleware
                         'home' => RouteHelpers::mainRoute('home'),
                         'explore' => RouteHelpers::mainRoute('explore'),
                     ],
-                    // the Blade pages' flashes (password reset status, invite errors), shown as alerts
+                    // the Blade pages' flashes (password reset status, invite errors), shown as alerts, and
+                    // success, shown as a toast after a save
                     'flash' => [
                         'status' => $request->session()->get('status'),
                         'error' => $request->session()->get('alert-error'),
+                        'success' => $request->session()->get('success'),
                     ],
                 ],
             ];
@@ -81,6 +85,15 @@ class HandleInertiaRequests extends Middleware
                 'isHeadRef' => $competition instanceof Competition ? DigitalJudge::isClientHeadJudge($competition) : false
             ],
         ];
+    }
+
+    public function handle(Request $request, Closure $next)
+    {
+        // The SSR renderer (the Vite plugin's dev endpoint) only knows the Digital Judge entry, app.ts,
+        // which leaves out the Management pages, so the Management app renders client-side only
+        Inertia::disableSsr(fn () => $this->isManagementApp(request()) || ! config('inertia.ssr.enabled', true));
+
+        return parent::handle($request, $next);
     }
 
     /**

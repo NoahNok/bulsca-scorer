@@ -35,10 +35,12 @@ declare module '@inertiajs/core' {
                     home: string
                     explore: string
                 }
-                // the Blade pages' session flashes: `status` (e.g. password reset) and `alert-error`
+                // the session flashes: `status` (e.g. password reset) and `alert-error` from the Blade pages,
+                // and `success`, which ManageLayout shows as a toast
                 flash: {
                     status: string | null
                     error: string | null
+                    success: string | null
                 }
             }
             env_local: boolean

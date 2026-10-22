@@ -1,5 +1,6 @@
 /*
- * Shared styles for redesigned (v2) pages, loaded by landing/v2/layout.blade.php.
+ * Shared styles for redesigned (v2) pages, loaded by landing/v2/layout.blade.php and, through
+ * manage.css, by the Management app.
  * See docs/v2-ui-style-guide.md. Page-only styles stay in the page's @section('v2-styles').
  *
  * Dark mode follows the OS unless the header toggle forces a theme with data-theme on <html>,
@@ -95,11 +96,57 @@ html[data-theme="dark"] {
     color-scheme: dark;
 }
 
-/* The toggle's circular reveal animates the new snapshot itself, so drop the default crossfade */
-::view-transition-old(root),
+/*
+ * Page changes (the Management app's Inertia visits; Blade pages never start one): the header and
+ * footer stay put while the page between them fades and rises into place.
+ */
+.v2-header {
+    view-transition-name: v2-header;
+}
+
+.v2-footer {
+    view-transition-name: v2-footer;
+}
+
+::view-transition-old(root) {
+    animation: 120ms ease-out both v2-page-out;
+}
+
 ::view-transition-new(root) {
+    animation: 220ms cubic-bezier(0.3, 0.7, 0.4, 1) 60ms both v2-page-in;
+}
+
+@keyframes v2-page-out {
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes v2-page-in {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+}
+
+/* The theme toggle's circular reveal (lib/theme.ts) animates the new snapshot itself, over the whole page */
+html[data-theme-switching]::view-transition-old(root),
+html[data-theme-switching]::view-transition-new(root) {
     animation: none;
     mix-blend-mode: normal;
+}
+
+html[data-theme-switching] .v2-header,
+html[data-theme-switching] .v2-footer {
+    view-transition-name: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+        animation: none;
+    }
 }
 
 body.v2 {
@@ -719,6 +766,52 @@ select.v2-input {
 .v2-tabs button:hover,
 .v2-tabs button[aria-selected='true'] {
     color: var(--v2-ink);
+}
+
+/* On phones, tighter tabs, so five still fit */
+@media (max-width: 30rem) {
+    .v2-tabs button {
+        padding-inline: 0.25rem;
+    }
+}
+
+/*
+ * Page tabs: links to a set of pages (a competition's Overview, Events, Results...), with a teal
+ * underline under the current one (aria-current="page"). They scroll sideways when they don't fit.
+ * Choices within a page use .v2-tabs instead.
+ */
+.v2-pagetabs {
+    display: flex;
+    gap: 1.75rem;
+    margin-top: 1.5rem;
+    border-bottom: 1px solid var(--v2-border);
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.v2-pagetabs::-webkit-scrollbar {
+    display: none;
+}
+
+.v2-pagetabs a {
+    flex-shrink: 0;
+    padding: 0.7rem 0 0.6rem;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--v2-muted);
+    white-space: nowrap;
+    transition: color 150ms, border-color 150ms;
+}
+
+.v2-pagetabs a:hover {
+    color: var(--v2-ink);
+}
+
+.v2-pagetabs a[aria-current='page'] {
+    color: var(--v2-ink);
+    border-bottom-color: var(--v2-teal);
 }
 
 /* Modal */

@@ -12,7 +12,7 @@ use App\Models\User;
 use App\Models\UserCompetitionAccess;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 use Nette\NotImplementedException;
 
 class CompetitionController extends Controller
@@ -28,13 +28,6 @@ class CompetitionController extends Controller
 
 
         return view('competitions', ['comps' => $c]);
-    }
-
-    public function view(Competition $comp, Request $request)
-    {
-
-
-        return view('competition.view', ['comp' => $comp]);
     }
 
     public function events(Competition $comp, Request $request)
@@ -95,14 +88,11 @@ class CompetitionController extends Controller
                 $updatedNameFormats = true;
             }
 
-            if (is_string($value) && strtotime($value)) {
-
-                if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
-                    $value = Carbon::parse($value);
-                } else {
-                    $value = Carbon::parse($value, $validated['timezone']);
-                    $value->setTimezone('UTC');
-                }
+            // Only the date fields: a name like "Monday" would parse as one too
+            if ($key == 'when' && $value) {
+                $value = Carbon::parse($value);
+            } elseif ($key == 'serc_start_time' && $value) {
+                $value = Carbon::parse($value, $validated['timezone'] ?? 'UTC')->setTimezone('UTC');
             }
 
             if (str_starts_with($key, 'ss:') && $value != null) {
@@ -120,7 +110,7 @@ class CompetitionController extends Controller
             $comp->clearEntityNameCache();
         }
 
-        return response()->json([]);
+        return back()->with('success', 'Settings saved');
     }
 
     public function updateCompetitionScoringSettings(Competition $comp, UpdateCompetitionScoringSettingsRequest $request)
@@ -167,70 +157,17 @@ class CompetitionController extends Controller
         // }
 
         if ($user && $comp->userBelongsToCompetition($user)) {
-            return response()->json([
-                'error' => 'Account already part of this organisation.'
-            ]);
+            throw ValidationException::withMessages(['email' => 'They can already manage this competition.']);
         }
 
         if ($comp->getInvites()->where('email', $validated['email'])->exists()) {
-            return response()->json([
-                'error' => 'Email has already been invited'
-            ]);
+            throw ValidationException::withMessages(['email' => "They've already been invited."]);
         }
 
         AccountInviteController::invite($validated['email'], $comp, ['access' => $validated['access']]);
         // $organisation->addAccount($user, $request->input('access'));
 
-        session()->flash('success', "Account invited.");
-
-        return response()->json([]);
-    }
-
-    public function getCompetitionAccounts(Competition $comp)
-    {
-
-        // Get all users that have access to this competition via access table
-
-        $accounts = [];
-
-        foreach (
-            UserCompetitionAccess::where('competition', $comp->id)
-                ->get()->groupBy('user') as $user_id => $access
-        ) {
-
-            $user = User::find($user_id);
-
-            $accounts[] = [
-                'id' => $user->id,
-                'name' => $user->name . (Auth::user() == $user ? ' (You)' : ''),
-                'email' => $user->email,
-                'access' => $access->pluck('access_to')->map(function ($item) {
-                    return Competition::$accessTypes[$item] ?? $item;
-                })->toArray(),
-            ];
-        }
-
-        return response()->json($accounts);
-    }
-
-    public function getCompetitionAccount(Competition $comp, User $account)
-    {
-        // Get all access for this user in this competition
-
-        $access = UserCompetitionAccess::where('competition', $comp->id)
-            ->where('user', $account->id)
-            ->get();
-
-        if ($access->isEmpty()) {
-            return response()->json(['error' => 'No access found for this user in this competition']);
-        }
-
-        return response()->json([
-            'id' => $account->id,
-            'name' => $account->name,
-            'email' => $account->email,
-            'access' => $access->pluck('access_to')->toArray(),
-        ]);
+        return back()->with('success', 'Invite sent');
     }
 
     public function editCompetitionAccount(Competition $comp, User $account, EditCompetitionAccount $request)
@@ -240,10 +177,10 @@ class CompetitionController extends Controller
         $response = $comp->editCompetitionAccount($account, $request->input('access'));
 
         if (is_string($response)) {
-            return response()->json(['error' => $response]);
+            throw ValidationException::withMessages(['access' => $response]);
         }
 
-        return response()->json([]);
+        return back()->with('success', 'Access saved');
     }
 
     public function deleteCompetitionAccount(Competition $comp, User $account)
@@ -253,16 +190,21 @@ class CompetitionController extends Controller
 
         if (!$user->isAdmin() &&  $user->competition != $comp->id) {
             // if the user is not an admin or does not have access to this competition, return error
-            return response()->json(['error' => 'You do not have permission to delete this account'], 403);
+            throw ValidationException::withMessages(['account' => "You can't remove this account."]);
         }
 
+        // The page hides Remove for these, as the old one refused them
+        if ($account->is($user) || UserCompetitionAccess::where('competition', $comp->id)->where('user', $account->id)->where('access_to', 'owner')->exists()) {
+            throw ValidationException::withMessages(['account' => "The owner and you can't be removed."]);
+        }
 
+        $response = $comp->deleteCompetitionAccount($account);
 
+        if (is_string($response)) {
+            throw ValidationException::withMessages(['account' => $response]);
+        }
 
-
-        $comp->deleteCompetitionAccount($account);
-
-        return response()->json([]);
+        return back()->with('success', 'Account removed');
     }
 
     public function deleteComp(Competition $comp, DeleteCompetitionRequest $request)
@@ -270,13 +212,11 @@ class CompetitionController extends Controller
         $validated = $request->validated();
 
         if ($validated['name'] != $comp->name) {
-            return response()->json(['error' => "Confirmation name doesn't match!"]);
+            throw ValidationException::withMessages(['name' => "That isn't the competition's name."]);
         }
 
         $comp->delete();
 
-        $request->session()->flash('success', 'Competition deleted!');
-
-        return response()->json([]);
+        return redirect()->route('manage.home')->with('success', 'Competition deleted');
     }
 }

@@ -58,26 +58,90 @@ components.
 
 | Layer | File | Provides |
 |---|---|---|
-| Root view | `resources/views/manage.blade.php` | The theme script, fonts, `app.css` + `v2.css` and `manage.ts` |
+| Root view | `resources/views/manage.blade.php` | The theme script, fonts, `manage.css` and `manage.ts` |
+| Styles | `resources/css/manage.css` | The app's own Tailwind build, separate from `app.css` (see Tailwind below). It imports `v2.css` into Tailwind's `components` layer, so utilities beat v2 classes, and has none of `app.css`'s global rules (`se-` classes, `h1`–`h4`, the `[title]` tooltip) |
 | Entry | `resources/js/manage.ts` | The Inertia app. Resolves only `pages/Manage/**` and `pages/Admin/**` (`app.ts` leaves them out) |
-| Shell | `resources/js/manage/layout/ManageLayout.svelte` | The same `.v2-header` and `.v2-footer` as the Blade layout, with Explore, Admin (for Admins), Sign out and the theme toggle, and a `.v2-container` for the page |
+| Shell | `resources/js/manage/layout/ManageLayout.svelte` | The same `.v2-header` and `.v2-footer` as the Blade layout, with Explore, Admin (for Admins), Sign out and the theme toggle, and a `.v2-container` for the page, with 0.5625rem above it (0.75rem from `sm`) so every page's title has room under the header. Pages don't add their own top space |
+| Competition frame | `resources/js/manage/layout/CompetitionLayout.svelte` | Inside the shell for `pages/Manage/Competition/*`: the competition's name as the page statement, its Anton date, venue, championship and Live/Private badges, the organisation logo, its page tabs (`.v2-pagetabs`) and the Organisers' status message as an info alert. It reads the page's `competition` prop, which `CompetitionDashboardController::layoutProps()` builds, so every page in it sends that. The tabs come from `App\Helpers\CompetitionTabs`, which the Blade `layouts/competition.blade.php` draws too, so both always agree; each tab says whether it's Svelte (an Inertia `<Link>`) or Blade (a plain `<a>`). To port the next tab: render it as `Manage/Competition/<Page>`, send `competition`, and flip its `svelte` flag in `CompetitionTabs` |
 | Signed-out frame | `resources/js/manage/layout/AuthLayout.svelte` | Used instead of the shell for `pages/Manage/Auth/*` (sign in, register, forgot and reset password, Invites). The `PoolBand` (one lane with its big ghosted number; the mouse picks the lane by height and swims a top-down swimmer along it by width, with bubbles and ripples on a canvas behind it. It treads water when the mouse stops, rarely dives for a few strokes, and stays under while a password field has focus) beside the form on desktop (phones get the brand mark and name in the top bar instead), the theme toggle, the session flashes as alerts, and the legal links. It holds each page's band line and the `.a-title`, `.a-lead`, `.a-form` and `.a-aside` classes the pages use |
-| Components | `resources/js/manage/components/` | `BrandMark` (the Svelte copy of `mark.blade.php`), `ThemeToggle`, `Field` (a `.v2-field` with its error and hint wired up, and show/hide on passwords), `Alert` (a `.v2-alert` with its icon), `SubmitButton` (full-width, spinner and disabled while processing), `LegalNotice` (the policy line under forms that sign in or create an account), `PoolBand`, `FormPage` (a page that's one form, like New competition and New organisation: a "Home" link back, the uppercase title and a muted lead, then the form in a 32rem column on the left, its fields spaced by the form's gap; end it with a `.p-actions` row: the full-width `SubmitButton` and a muted Cancel link under it) and `CompetitionTable` (competitions an Organiser can manage, as whole-row "Manage" links: a muted Archivo date, the name (with a muted organisation name when given), and a status of Live now, Today or "In N days" plus Private and Limited access badges beside the link; no venue; past rows are muted). Their prop types are in `resources/js/manage/types.ts`. The app's own components go here |
-| Routes | `routes/app.php` | Every signed-in page, Blade or Svelte, on the `app.` subdomain, like the Digital Judge on `judge.`. `HandleInertiaRequests` gives every Inertia page on that domain the `manage` root view, and shares `manage.isAdmin`, `manage.site.home` and `.explore` (the public site's urls) and `manage.flash` (the `status` and `alert-error` session flashes) in place of `judge`. Name new routes `manage.*` (Admin pages `manage.admin.*`). The app's home (`manage.home`, `pages/Manage/Home.svelte`) is at `/`: Recent cards, then one `CompetitionTable` of everything you can manage with a pill filter per organisation (yours, then ones you were invited into) and Personal, showing upcoming and the 3 latest past until "Show all". `/dashboard` redirects to it. New competition (`manage.competitions.create`, `/create`, `?org=<id>` preselects one) and New organisation (`manage.organisations.create`, `/organisation/create`) are `FormPage`s that land on the Blade competition or organisation page |
+| Components | `resources/js/manage/components/` | `BrandMark` (the Svelte copy of `mark.blade.php`), `ThemeToggle`, `Field` (a `.v2-field` with its error and hint wired up, and show/hide on passwords), `Alert` (a `.v2-alert` with its icon), `SubmitButton` (full-width, spinner and disabled while processing), `LegalNotice` (the policy line under forms that sign in or create an account), `PoolBand`, `FormPage` (a page that's one form, like New competition and New organisation: a "Home" link back, the uppercase title and a muted lead, then the form in a 32rem column centred in the container, its fields spaced by the form's gap; end it with a `.p-actions` row: the full-width `SubmitButton` and a muted Cancel link under it) and `CompetitionTable` (competitions an Organiser can manage, as whole-row "Manage" links: a muted Archivo date, the name (with a muted organisation name when given), and a status of Live now, Today or "In N days" plus Private and Limited access badges beside the link; no venue; past rows are muted), `Tabs` (the `.v2-tabs` slider over snippet panels, below), `Switch` (a `.v2-switch` that a form sends as 1 or 0, so off is saved too, with an optional hint), `RichText` (Quill from `/vendor`, on the tokens, sending its HTML as a hidden input), `Toasts` (the `.v2-toast` stack for `lib/toast.svelte.ts`) and `ConfirmDialog` (answers `confirm()` from `lib/confirm.ts` with a `<dialog class="v2-modal">`, Cancel first). `ManageLayout` mounts `Toasts` and `ConfirmDialog` once. Their prop types are in `resources/js/manage/types.ts`. The app's own components go here |
+| Routes | `routes/app.php` | Every signed-in page, Blade or Svelte, on the `app.` subdomain, like the Digital Judge on `judge.`. `HandleInertiaRequests` gives every Inertia page on that domain the `manage` root view, and shares `manage.isAdmin`, `manage.site.home` and `.explore` (the public site's urls) and `manage.flash` (the `status` and `alert-error` session flashes, and `success`, which `ManageLayout` toasts after every visit) in place of `judge`. A save answers with `back()->with('success', '…')` and puts errors that aren't about a field's format (already invited, wrong name) on that field with `ValidationException::withMessages`. Name new routes `manage.*` (Admin pages `manage.admin.*`). The app's home (`manage.home`, `pages/Manage/Home.svelte`) is at `/`: Recent cards, then one `CompetitionTable` of everything you can manage with a pill filter per organisation (yours, then ones you were invited into) and Personal, showing upcoming and the 3 latest past until "Show all". `/dashboard` redirects to it. New competition (`manage.competitions.create`, `/create`, `?org=<id>` preselects one) and New organisation (`manage.organisations.create`, `/organisation/create`) are `FormPage`s; a competition lands on its Overview. A competition's Overview (`comps.view`, `/comps/{comp}`, `pages/Manage/Competition/Overview.svelte`) lists its events and leagues as rows by your access, and for Organisers the Digital Judge panel (the one bold panel: `--v2-teal-soft` with a teal border in light, the dark `--v2-tile` band in dark; the PIN in teal Anton, QR code, releasing or locking the SERCs, on and off) and links to Settings and the activity log. Settings (`manage.competitions.settings`, `/comps/{comp}/settings`, Organisers only) is one form over five `Tabs` panels (Details, Setup, Heats, Names, Status) saved together, then Digital Judge events, Accounts (a table; a row opens a dialog to change access or remove them, and Invite opens another) and Delete (type the name) |
 
 Links from `app.` to public pages use `RouteHelpers::mainRoute()` in Blade
 and `manage.site` in Svelte. `route()` would build them on `app.`. Link to a
 Blade page with a plain `<a>`, not Inertia's `<Link>`, which can only load
 Inertia pages.
 
-A Svelte page uses the same markup and classes as the kit. Put styles only it
-uses in its `<style>` block, and move them into `v2.css` once a second page,
-Blade or Svelte, needs them.
+A Svelte page uses the same markup and classes as the kit for components
+(`.v2-btn`, `.v2-field`, `.v2-alert` and so on), and Tailwind for everything
+else.
+
+#### Tailwind
+
+- **Layout, spacing and type size are utilities**: `flex flex-col gap-2`,
+  `grid sm:grid-cols-2`, `mt-4`, `text-sm font-semibold uppercase`. Don't write
+  a scoped class for what a few utilities say. Utilities beat v2 classes, so
+  `class="v2-btn w-full"` works.
+- **Colours are only the tokens**: `manage.css` removes Tailwind's palette and
+  maps each `--v2-*` token to a colour, so `text-v2-muted`, `bg-v2-card`,
+  `border-v2-border`, `bg-v2-teal-soft`, `text-v2-danger-text`. They switch
+  with the theme on their own, so you rarely need `dark:`. `text-gray-600` or
+  `bg-white` generate nothing. Add a token to `v2.css` and its
+  `--color-v2-*` line to `manage.css` together. A colour no token covers, used
+  once, is an arbitrary value (`dark:border-[#374151]` on the Digital Judge
+  panel). Make it a token when a second place needs it. Opacity works on
+  tokens: `border-v2-teal/35`.
+- **`dark:`** follows the theme like `v2.css` does: the OS setting unless the
+  toggle sets `data-theme`. Use it for the odd dark-only change, like the
+  Digital Judge panel's `--v2-tile` band.
+- **Fonts:** `font-sans` is Archivo (the default) and `font-anton` is Anton,
+  for dates and numerals.
+- **Headings have no global styles** here, unlike Blade: Tailwind's reset
+  leaves them at body size. Give each one its size, weight and `uppercase`.
+- **Repeated markup:** when one page repeats a class list (Home's filter
+  pills), keep it in a `const` in the script and pass it as `class={chip}`.
+  Style table cells from the row with `*:` (`*:py-3.5 *:first:pl-3`, see
+  `CompetitionTable`), and hover children with `group` / `group-hover:`. A
+  repeated piece of markup, like a row's chevron, is a `{#snippet}`. Style
+  HTML you don't write (`{@html}`, like the status message) with `[&_a]:`.
+- **Animations** are named in `manage.css`'s `@theme`: `animate-rise` (fades
+  in rising half a rem, 300ms; the sign-in pages), `animate-rise-fast` (200ms;
+  a dialog opening), `animate-fade-in` (a `Tabs` panel) and `animate-spinner`
+  (`SubmitButton`). Always pair one with `motion-reduce:animate-none`. Add a
+  new one there with its `@keyframes`, not in a `<style>` block: Svelte
+  renames `@keyframes` in a component, and a scoped animation can't be
+  turned off by `motion-reduce:`. Transitions are utilities too:
+  `transition-[height] duration-250 motion-reduce:transition-none`.
+- **Sibling spacing:** utilities beat `v2.css`, so `*:mt-0` on a grid or
+  fieldset drops the `.v2-field + .v2-field` and `.v2-check + .v2-check`
+  margins and lets `gap` space them. `Switch` spaces itself from the one
+  above with `[&+&]:mt-4`.
+- **Use a `<style>` block** only for what utilities can't say: styling markup
+  a library or child component renders (`RichText`'s Quill toolbar), canvas
+  and long animation sequences (`PoolBand`), and the classes a layout hands
+  to every page in it (`AuthLayout`'s `.a-title`, `.a-lead`, `.a-form`,
+  `.a-aside`; `FormPage`'s form and `.p-actions`). A `<style>` block is
+  unlayered, so it beats every utility. Move a style into `v2.css` once a
+  second page, Blade or Svelte, needs it.
+- `manage.css` only scans `resources/js/manage`, `resources/js/pages/Manage`
+  and the root view. Add `pages/Admin` to its `@source` list when the first
+  Admin page lands.
+- Every page, layout and component is on utilities, except the `<style>`
+  uses above.
 
 A choice between two kinds of the same thing in a form (New competition's organisation or Personal)
 is a `.v2-tabs` (`--v2-tabs: 2`) with `role="tab"` buttons, each controlling a `role="tabpanel"` that
-holds that kind's fields, so only the chosen tab's fields are sent. Arrow keys move between the tabs.
+holds that kind's fields, so only the chosen tab's fields are sent. Arrow keys move between the tabs. The panels sit in a wrapper whose height animates to the chosen one's (250ms, off under reduced motion), and the new panel fades in, so the fields below don't jump.
 Hide the tabs when only one kind is possible, and say which in a muted line instead.
+`Tabs` does all of this: pass `tabs`, bind `value`, label it (`labelledby` or `label`) and render each
+panel from its `panel` snippet. Add `keep` when one form saves every panel (competition Settings): all
+of them stay mounted and the others are hidden, and on an error the page switches to the first field's tab.
+On phones the tabs' padding tightens so five fit.
+
+**Slider or page tabs?** `.v2-tabs` is for a choice within a page. Links between pages (a competition's
+Overview, Events, Results and so on) are `.v2-pagetabs`: muted text tabs with a teal underline under
+the one marked `aria-current="page"`, on a bottom border, scrolling sideways without a scrollbar when
+they don't fit.
 
 Organisation logos go through `OrganisationLogoService` (PNG, JPEG or WebP up to 10 MB, scaled to fit
 512px and stored as one transparent `.webp`), on the Svelte and Blade pages alike. Preview them round,
@@ -89,6 +153,12 @@ answers with `Inertia::location()`, which does a full visit. A plain redirect
 would try to load the Blade page as an Inertia response. Errors that aren't
 about one field (wrong credentials, throttling) go on their own key (`auth`)
 and show as a danger `Alert` above the fields.
+
+Page changes between Svelte pages are view transitions: `manage.ts` turns `viewTransition` on for every
+GET visit (not form posts, whose error answer is the same page), and `v2.css` keeps the `.v2-header` and
+`.v2-footer` still while the page between fades and rises in (about 250ms, off under reduced motion).
+Full page loads, like a form landing on a Blade page, don't animate. The theme toggle marks its own
+transition with `data-theme-switching` on `<html>`, which swaps this for its circular reveal.
 
 Svelte transitions don't check `prefers-reduced-motion` on their own: pass
 `duration: prefersReducedMotion.current ? 0 : …` (from `svelte/motion`). Don't
@@ -154,8 +224,9 @@ button, and falls back to an instant switch.
 | Names in lists | Archivo | 700, sentence case. Set `text-transform: none`: the global `h2`/`h3` rules uppercase everything |
 | Dates and numerals | Anton | 400. Short dates like `27 Sep`, tabular |
 
-The global `h1`–`h4` rules in `app.css` are unlayered, so they beat Tailwind
-utilities. Style headings with a page class, not `normal-case`.
+On Blade pages, the global `h1`–`h4` rules in `app.css` are unlayered, so
+they beat Tailwind utilities. Style headings with a page class, not
+`normal-case`. The Management app doesn't load them (see Tailwind above).
 
 Don't add other fonts. Use one heading level per section and no eyebrow labels
 above headings.
@@ -229,7 +300,8 @@ Official, Referee, Announcement) and avoid the words it lists as ones to avoid.
 1. Extend `landing.v2.layout`, not `layouts.core` or `layouts.guest`.
 2. Rebuild the markup with the components above. Don't carry `se-` classes or
    Tailwind colour utilities (`text-gray-600`, `bg-white`) across: they don't
-   follow dark mode.
+   follow dark mode. (In the Management app, use the `v2-` colour utilities
+   instead; see Tailwind.)
 3. Lead with what's happening now, and make list rows whole-row links.
 4. Write any dark-only rule twice (OS block and `data-theme` block).
 5. Check the page at 1440px and 390px, in light and dark, with live and empty

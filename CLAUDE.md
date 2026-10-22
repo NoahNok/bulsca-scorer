@@ -29,7 +29,10 @@ separate from the Digital Judge. See
 - Use the v2 tokens (`docs/v2-ui-style-guide.md`, "The Management app"), not
   the judge guide. Entry `resources/js/manage.ts`, root view
   `resources/views/manage.blade.php`, pages in `resources/js/pages/Manage/` and
-  `pages/Admin/`, app components in `resources/js/manage/`.
+  `pages/Admin/`, app components in `resources/js/manage/`, styles in
+  `resources/css/manage.css` (its own Tailwind build, colours only from v2 tokens).
+- Use Tailwind utilities for layout, spacing and type, and `v2-` classes for
+  components. See "Tailwind" in the v2 guide.
 - Every signed-in page (Blade or Svelte, sign-in included) lives in
   `routes/app.php` on the `app.` subdomain, like the Digital Judge on
   `judge.`. The main domain is public only. Don't add signed-in routes to

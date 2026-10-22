@@ -1,0 +1,89 @@
+/*
+ * The Management app's only stylesheet (Management and Admin, loaded by manage.blade.php).
+ * See docs/v2-ui-style-guide.md, "The Management app".
+ *
+ * Its own Tailwind build, kept apart from app.css (the Blade site and the Digital Judge): it only
+ * scans the Management app, has none of app.css's global rules (se- classes, headings, tooltips),
+ * and its colours are the v2 tokens, so every colour utility follows the theme.
+ */
+@import "tailwindcss" source(none);
+@import "./v2.css" layer(components);
+
+@source "../js/manage";
+@source "../js/pages/Manage";
+@source "../views/manage.blade.php";
+
+/* dark: matches v2.css: the OS setting unless the header toggle forces a theme with data-theme */
+@custom-variant dark {
+    &:where([data-theme="dark"], [data-theme="dark"] *) {
+        @slot;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        &:where(:root:not([data-theme="light"]), :root:not([data-theme="light"]) *) {
+            @slot;
+        }
+    }
+}
+
+/* Only the v2 tokens are colours here: text-v2-muted, bg-v2-card, border-v2-border and so on */
+@theme {
+    --color-*: initial;
+    --font-sans: "Archivo", ui-sans-serif, system-ui, sans-serif;
+    --font-anton: "Anton", sans-serif;
+
+    /* Pair each with motion-reduce:animate-none */
+    --animate-rise: rise 300ms ease-out both;
+    --animate-rise-fast: rise 200ms ease-out;
+    --animate-fade-in: fade-in 200ms ease-out;
+    --animate-spinner: spin 700ms linear infinite;
+
+    /* Something arriving: fades in as it rises half a rem */
+    @keyframes rise {
+        from {
+            opacity: 0;
+            transform: translateY(0.5rem);
+        }
+    }
+
+    @keyframes fade-in {
+        from {
+            opacity: 0;
+        }
+    }
+}
+
+@theme inline {
+    --color-v2-bg: var(--v2-bg);
+    --color-v2-card: var(--v2-card);
+    --color-v2-sunk: var(--v2-sunk);
+    --color-v2-ink: var(--v2-ink);
+    --color-v2-muted: var(--v2-muted);
+    --color-v2-border: var(--v2-border);
+    --color-v2-teal: var(--v2-teal);
+    --color-v2-teal-text: var(--v2-teal-text);
+    --color-v2-teal-soft: var(--v2-teal-soft);
+    --color-v2-tile: var(--v2-tile);
+    --color-v2-row-hover: var(--v2-row-hover);
+    --color-v2-danger: var(--v2-danger);
+    --color-v2-danger-soft: var(--v2-danger-soft);
+    --color-v2-danger-text: var(--v2-danger-text);
+    --color-v2-success: var(--v2-success);
+    --color-v2-success-soft: var(--v2-success-soft);
+    --color-v2-success-text: var(--v2-success-text);
+    --color-v2-warning-soft: var(--v2-warning-soft);
+    --color-v2-warning-text: var(--v2-warning-text);
+}
+
+@layer base {
+    /* Kept from app.css, which these pages used to load */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type="number"] {
+        -moz-appearance: textfield;
+    }
+}

@@ -1,6 +1,6 @@
 <!--
     A page that's one form (new competition, new organisation): a "Home" link back, the title and a lead,
-    then the form in a narrow column on the left of the container. End the form with a .p-actions row: the
+    then the form, in a narrow column centred in the container. End the form with a .p-actions row: the
     SubmitButton, and a muted Cancel link under it.
 -->
 <script lang="ts">
@@ -12,42 +12,16 @@
     let { title, lead, children }: { title: string; lead: string; children: Snippet } = $props();
 </script>
 
-<div class="p-page">
-    <Link href={home()} class="v2-link-muted p-back"><ArrowLeft size={16} aria-hidden="true" /> Home</Link>
-    <h1 class="p-title">{title}</h1>
-    <p class="p-lead">{lead}</p>
+<div class="p-page mx-auto max-w-lg">
+    <Link href={home()} class="v2-link-muted inline-flex items-center gap-1 text-sm"><ArrowLeft size={16} aria-hidden="true" /> Home</Link>
+    <h1 class="mt-4 text-[1.75rem] leading-[1.1] font-extrabold wrap-anywhere uppercase">{title}</h1>
+    <p class="mt-2 leading-[1.6] text-v2-muted">{lead}</p>
 
     {@render children()}
 </div>
 
 <style>
-    .p-page {
-        max-width: 32rem;
-    }
-
-    .p-page :global(.p-back) {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.25rem;
-        font-size: 0.875rem;
-    }
-
-    .p-title {
-        margin-top: 1rem;
-        font-weight: 800;
-        font-size: 1.75rem;
-        line-height: 1.1;
-        text-transform: uppercase;
-        overflow-wrap: anywhere;
-    }
-
-    .p-lead {
-        margin-top: 0.5rem;
-        color: var(--v2-muted);
-        line-height: 1.6;
-    }
-
-    /* The form's gap spaces the fields */
+    /* The form and its .p-actions are the page's, so they're styled from here. The form's gap spaces the fields */
     .p-page :global(form) {
         display: flex;
         flex-direction: column;

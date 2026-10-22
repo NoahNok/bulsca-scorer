@@ -41,7 +41,12 @@ export function flipTheme(origin: Element, onChange: (dark: boolean) => void = (
     const r = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
     // If the browser never gets round to the swap (e.g. a hidden tab), make it anyway
     setTimeout(apply, 400);
-    document.startViewTransition(apply).ready.then(() => {
+    // Marks this transition as the theme's, so v2.css swaps its page-change animation for this reveal
+    const root = document.documentElement;
+    root.dataset.themeSwitching = "";
+    const transition = document.startViewTransition(apply);
+    transition.finished.finally(() => delete root.dataset.themeSwitching);
+    transition.ready.then(() => {
         document.documentElement.animate(
             { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${r}px at ${x}px ${y}px)`] },
             { duration: 500, easing: "cubic-bezier(0.4, 0, 0.2, 1)", pseudoElement: "::view-transition-new(root)" },
