@@ -38,7 +38,7 @@ export type CompetitionTab = {
     svelte: boolean;
 };
 
-/** What CompetitionLayout draws above every competition page (CompetitionDashboardController::layoutProps) */
+/** What CompetitionLayout draws above every competition page (App\Helpers\CompetitionHeader::for) */
 export type CompetitionHeader = {
     id: number;
     name: string;
@@ -73,3 +73,20 @@ export type CompetitionAccount = {
     owner: boolean;
     you: boolean;
 };
+
+/** A team or competitor on Entries & Leagues (CompetitionEntriesController::index) */
+export type Entry = {
+    id: number;
+    name: string;
+    /** League ids */
+    leagues: number[];
+    /** Seed time (01:23.456) by speed event id, only for events that take seeds */
+    seeds: Record<string, string>;
+};
+
+export type EntryTeam = Entry & { competitors: Entry[] };
+
+export type EntryClub = { id: number; name: string; teams: EntryTeam[] };
+
+/** A competition's league, with how many teams and competitors are in it */
+export type CompetitionLeague = { id: number; name: string; teams: number; competitors: number };

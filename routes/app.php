@@ -10,10 +10,10 @@ use App\Http\Controllers\ChampionshipController;
 use App\Http\Controllers\CompetitionController;
 use App\Http\Controllers\CompetitionOfficialsController;
 use App\Http\Controllers\DigitalJudge\DigitalJudgeController;
-use App\Http\Controllers\EntityController;
 use App\Http\Controllers\LeagueController;
 use App\Http\Controllers\Manage\CompetitionCreateController;
 use App\Http\Controllers\Manage\CompetitionDashboardController;
+use App\Http\Controllers\Manage\CompetitionEntriesController;
 use App\Http\Controllers\Manage\ManageController;
 use App\Http\Controllers\Manage\OrganisationCreateController;
 use App\Http\Controllers\Orders\DrawController;
@@ -26,9 +26,9 @@ use App\Http\Controllers\Result\MasterSchemaController;
 use App\Http\Controllers\SERCController;
 use App\Http\Controllers\SERC\MarkingPointTemplateController;
 use App\Http\Controllers\SpeedsEventController;
-use App\Http\Controllers\TeamsController;
 use App\Http\Middleware\CompetitionOwnsRouteModels;
 use App\Http\Middleware\RecordCompetitionVisit;
+use App\Models\Competition;
 use App\Models\SERC;
 use Illuminate\Support\Facades\Route;
 
@@ -101,13 +101,30 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
                 Route::delete('/officials/{official}', [CompetitionOfficialsController::class, 'destroy'])->whereNumber('official')->name('comps.officials.destroy');
             });
 
-            Route::prefix('/leagues')->middleware('can:access,comp,"teams"')->group(function () {
-                Route::get('create', [LeagueController::class, 'create'])->name('comps.leagues.create');
-                Route::post('create', [LeagueController::class, 'store'])->name('comps.leagues.store');
+            // ENTRIES & LEAGUES: one Svelte page, each entry and league saved on its own from a dialog
+            Route::middleware('can:access,comp,"teams"')->group(function () {
+                Route::get('/entries', [CompetitionEntriesController::class, 'index'])->name('manage.competitions.entries');
+                Route::get('/entities', fn (Competition $comp) => redirect()->route('manage.competitions.entries', $comp, 301));
 
-                Route::get('{league}', [LeagueController::class, 'view'])->name('comps.leagues.view');
-                Route::post('{league}', [LeagueController::class, 'update'])->name('comps.leagues.update');
-                Route::delete('{league}', [LeagueController::class, 'delete'])->name('comps.leagues.delete');
+                Route::prefix('/entries')->name('manage.competitions.entries.')->group(function () {
+                    Route::post('/clubs', [CompetitionEntriesController::class, 'storeClub'])->name('clubs.store');
+                    Route::post('/clubs/{club}', [CompetitionEntriesController::class, 'updateClub'])->name('clubs.update');
+                    Route::delete('/clubs/{club}', [CompetitionEntriesController::class, 'destroyClub'])->name('clubs.destroy');
+
+                    Route::post('/teams', [CompetitionEntriesController::class, 'storeTeam'])->name('teams.store');
+                    Route::post('/teams/{team}', [CompetitionEntriesController::class, 'updateTeam'])->name('teams.update');
+                    Route::delete('/teams/{team}', [CompetitionEntriesController::class, 'destroyTeam'])->name('teams.destroy');
+
+                    Route::post('/competitors', [CompetitionEntriesController::class, 'storeCompetitor'])->name('competitors.store');
+                    Route::post('/competitors/{competitor}', [CompetitionEntriesController::class, 'updateCompetitor'])->name('competitors.update');
+                    Route::delete('/competitors/{competitor}', [CompetitionEntriesController::class, 'destroyCompetitor'])->name('competitors.destroy');
+                });
+
+                Route::prefix('/leagues')->name('manage.competitions.leagues.')->group(function () {
+                    Route::post('', [LeagueController::class, 'store'])->name('store');
+                    Route::post('/{league}', [LeagueController::class, 'update'])->name('update');
+                    Route::delete('/{league}', [LeagueController::class, 'delete'])->name('destroy');
+                });
             });
 
 
@@ -180,22 +197,6 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
                 });
             });
 
-
-            // TEAMS
-            Route::prefix('/teams')->middleware('can:access,comp,"teams"')->group(function () {
-                Route::get('', [CompetitionController::class, 'teams'])->name('comps.teams');
-                Route::get('/edit', [TeamsController::class, 'edit'])->name('comps.teams.edit');
-                Route::post('/edit', [TeamsController::class, 'editPost'])->name('comps.view.teams.editPost');
-                Route::delete('/delete', [TeamsController::class, 'delete'])->name('comps.view.teams.delete');
-            });
-
-            // ENTITIES - Only shows if socring type is set to use it instead of teams
-            Route::prefix('/entities')->middleware('can:access,comp,"teams"')->group(function () {
-                Route::get('', [EntityController::class, 'view'])->name('comps.entities');
-                Route::get('/edit', [EntityController::class, 'edit'])->name('comps.entities.edit');
-                Route::post('/edit', [EntityController::class, 'save'])->name('comps.entities.save');
-                // Route::delete('/delete', [TeamsController::class, 'delete'])->name('comps.view.competitors.delete');
-            });
 
             // RESULTS
             Route::prefix('/results')->middleware('can:access,comp,"results"')->group(function () {

@@ -1,7 +1,7 @@
 <!--
     Every competition page in the Management app (pages/Manage/Competition/*), inside ManageLayout: the
     competition's name, date, venue and badges, its page tabs (.v2-pagetabs) and the Organisers' status
-    message. It reads the page's `competition` prop (CompetitionDashboardController::layoutProps), so a page
+    message. It reads the page's `competition` prop (App\Helpers\CompetitionHeader::for), so a page
     only has to send that.
 -->
 <script lang="ts">

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Manage;
 
-use App\Helpers\CompetitionTabs;
+use App\Helpers\CompetitionHeader;
 use App\Http\Controllers\Controller;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
@@ -15,7 +15,7 @@ use Inertia\Inertia;
 
 /**
  * A competition's Svelte pages (Overview and Settings), inside CompetitionLayout. Every page in that
- * layout sends the `competition` prop from layoutProps().
+ * layout sends the `competition` prop from CompetitionHeader::for().
  */
 class CompetitionDashboardController extends Controller
 {
@@ -46,7 +46,7 @@ class CompetitionDashboardController extends Controller
         }
 
         return Inertia::render('Manage/Competition/Overview', [
-            'competition' => $this->layoutProps($comp),
+            'competition' => CompetitionHeader::for($comp),
             // Null when you can't open the Events tab at all, so there's no list or "Add event"
             'events' => $can('serc|speed|serc_writer') ? $events->values() : null,
             'addEventUrl' => route('comps.events', $comp),
@@ -89,7 +89,7 @@ class CompetitionDashboardController extends Controller
             ->filter()->sortBy('name')->values();
 
         return Inertia::render('Manage/Competition/Settings', [
-            'competition' => $this->layoutProps($comp),
+            'competition' => CompetitionHeader::for($comp),
             'settings' => [
                 'name' => $comp->name,
                 'when' => $comp->when->toDateString(),
@@ -126,35 +126,5 @@ class CompetitionDashboardController extends Controller
             'accounts' => $accounts,
             'accessTypes' => Competition::$accessTypes,
         ]);
-    }
-
-    /**
-     * The header and tabs CompetitionLayout draws.
-     */
-    private function layoutProps(Competition $comp): array
-    {
-        $org = $comp->getOrganisation;
-        $today = $comp->when->isToday();
-
-        return [
-            'id' => $comp->id,
-            'name' => $comp->name,
-            'when' => $comp->when->toDateString(),
-            'where' => $comp->where,
-            'organisation' => $org ? [
-                'name' => $org->name,
-                'logo' => $org->getLogo() ?: null,
-                'url' => route('orgs.show', $org->name),
-            ] : null,
-            'championship' => $org && $comp->championship ? [
-                'name' => $comp->championship->name,
-                'url' => route('orgs.championship.view', [$org->name, $comp->championship->slug()]),
-            ] : null,
-            'private' => !$comp->show_competition,
-            // As on the Management home: no flag says a competition is running
-            'live' => $today && (bool) $comp->can_be_live,
-            'statusMessage' => $comp->status_message ?: null,
-            'tabs' => CompetitionTabs::for($comp),
-        ];
     }
 }

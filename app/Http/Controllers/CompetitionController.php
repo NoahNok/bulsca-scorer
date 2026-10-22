@@ -38,20 +38,6 @@ class CompetitionController extends Controller
     }
 
 
-    public function teams(Competition $comp, Request $request)
-    {
-
-
-        return view('competition.teams', ['comp' => $comp]);
-    }
-
-    public function competitors(Competition $comp, Request $request)
-    {
-
-
-        return view('competition.competitors', ['comp' => $comp]);
-    }
-
     public function activityLog(Competition $comp, Request $request)
     {
 

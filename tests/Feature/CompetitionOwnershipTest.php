@@ -123,11 +123,11 @@ class CompetitionOwnershipTest extends TestCase
 
         $this->get(route('comps.events.speeds.view', [$ours, $this->theirs['event']]))->assertNotFound();
         $this->get(route('comps.events.sercs.view', [$ours, $this->theirs['serc']]))->assertNotFound();
-        $this->get(route('comps.leagues.view', [$ours, $this->theirs['league']]))->assertNotFound();
+        $this->post(route('manage.competitions.leagues.update', [$ours, $this->theirs['league']]), ['name' => 'Taken'])->assertNotFound();
 
         $this->delete(route('comps.view.events.speeds.delete', [$ours, $this->theirs['event']]), ['eid' => $this->theirs['event']->id])->assertNotFound();
         $this->delete(route('comps.view.events.sercs.delete', [$ours, $this->theirs['serc']]), ['sid' => $this->theirs['serc']->id])->assertNotFound();
-        $this->delete(route('comps.leagues.delete', [$ours, $this->theirs['league']]))->assertNotFound();
+        $this->delete(route('manage.competitions.leagues.destroy', [$ours, $this->theirs['league']]))->assertNotFound();
 
         $this->assertNotNull($this->theirs['event']->fresh());
         $this->assertNotNull($this->theirs['serc']->fresh());
@@ -139,7 +139,8 @@ class CompetitionOwnershipTest extends TestCase
         $ours = $this->ours['comp'];
         $this->actingAs($this->admin);
 
-        $this->get(route('comps.leagues.view', [$ours, $this->ours['league']]))->assertOk();
+        $this->post(route('manage.competitions.leagues.update', [$ours, $this->ours['league']]), ['name' => 'Renamed'])->assertRedirect();
+        $this->assertSame('Renamed', $this->ours['league']->fresh()->name);
 
         $this->delete(route('comps.view.events.speeds.delete', [$ours, $this->ours['event']]), ['eid' => $this->ours['event']->id])->assertRedirect();
         $this->assertNull($this->ours['event']->fresh());
