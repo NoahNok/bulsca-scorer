@@ -1,7 +1,7 @@
 <!--
-    A competition's Overview (comps.view), in CompetitionLayout: its events and leagues, each by the access
-    you have, and for its Organisers the Digital Judge panel (PIN, QR code, releasing the SERCs) and links
-    to Settings and the activity log.
+    A competition's Overview (comps.view), in CompetitionLayout: its events by the access you have, and for
+    its Organisers links to Settings and the activity log and the Digital Judge panel (PIN, QR code,
+    releasing the SERCs).
 -->
 <script lang="ts">
     import { confirm } from "@/lib/confirm";
@@ -12,8 +12,6 @@
         competition,
         events,
         addEventUrl,
-        leagues,
-        addLeagueUrl,
         digitalJudge,
         links,
     }: {
@@ -21,9 +19,6 @@
         /** Null without access to any events */
         events: (CompetitionEvent & { url: string; digitalJudge: boolean })[] | null;
         addEventUrl: string;
-        /** Null without access to entries */
-        leagues: { id: number; name: string; url: string }[] | null;
-        addLeagueUrl: string;
         /** Organisers only */
         digitalJudge: {
             enabled: boolean;
@@ -129,123 +124,98 @@
             </section>
         {/if}
 
-        {#if leagues}
-            <section aria-labelledby="o-leagues">
-                <div class="mb-2 flex items-baseline justify-between gap-4">
-                    {@render heading("o-leagues", "Leagues")}
-                    <a href={addLeagueUrl} class="v2-link">Add league</a>
-                </div>
-                {#if leagues.length > 0}
-                    <ul class="border-t border-v2-border *:border-b *:border-v2-border">
-                        {#each leagues as league (league.id)}
-                            <li>
-                                <a href={league.url} class={row}>
-                                    <span class="font-bold wrap-anywhere">{league.name}</span>
-                                    {@render chevron()}
-                                </a>
-                            </li>
-                        {/each}
-                    </ul>
-                {:else}
-                    <p class="pt-1 text-[0.9375rem]/[1.6] text-v2-muted">No leagues yet.</p>
-                {/if}
+        {#if links}
+            <section aria-labelledby="o-comp">
+                {@render heading("o-comp", "Competition")}
+                <ul class="border-t border-v2-border *:border-b *:border-v2-border">
+                    <li>
+                        <Link href={links.settingsUrl} class={row}>
+                            <span class="font-bold wrap-anywhere">Settings</span>
+                            {@render chevron()}
+                        </Link>
+                    </li>
+                    <li>
+                        <a href={links.activityLogUrl} class={row}>
+                            <span class="font-bold wrap-anywhere">Activity log</span>
+                            {@render chevron()}
+                        </a>
+                    </li>
+                </ul>
             </section>
         {/if}
     </div>
 
-    {#if digitalJudge || links}
+    {#if digitalJudge}
         <div class="flex min-w-0 flex-col gap-10">
-            {#if digitalJudge}
-                <!-- The page's one bold panel: teal-tinted in light, the dark --v2-tile band in dark -->
-                <section
-                    class="rounded-2xl border border-v2-teal/35 bg-v2-teal-soft p-6 dark:border-transparent dark:bg-v2-tile"
-                    aria-labelledby="o-judge"
-                >
-                    {@render heading("o-judge", "Digital Judge")}
+            <!-- The page's one bold panel: teal-tinted in light, the dark --v2-tile band in dark -->
+            <section
+                class="rounded-2xl border border-v2-teal/35 bg-v2-teal-soft p-6 dark:border-transparent dark:bg-v2-tile"
+                aria-labelledby="o-judge"
+            >
+                {@render heading("o-judge", "Digital Judge")}
 
-                    {#if digitalJudge.enabled}
-                        <p class="mt-5 text-[0.8125rem] font-semibold text-v2-muted">PIN</p>
-                        <p
-                            class="font-anton text-[clamp(2.75rem,7vw,3.5rem)] leading-none tracking-[0.08em] text-v2-teal-text tabular-nums select-all dark:text-v2-teal"
-                        >{digitalJudge.pin}</p>
-                        <p class="mt-4 text-sm/[1.6] text-v2-muted dark:text-[#d1d5db]">
-                            Officials sign in at <a href={digitalJudge.judgeUrl} target="_blank" rel="noopener" class={judgeLink}
-                                >{judgeHost}</a
-                            >
-                            and enter it, or scan the
-                            <a href={digitalJudge.qrUrl} target="_blank" rel="noopener" class={judgeLink}>printable QR code</a>.
-                            Referees don't need it: give them the Referee role on
-                            <a href={digitalJudge.officialsUrl} class={judgeLink}>Officials</a>.
-                        </p>
-
-                        <div
-                            class="mt-5 border-t border-v2-teal/25 pt-5 text-sm/normal text-v2-muted dark:border-[#374151] dark:text-[#d1d5db]"
+                {#if digitalJudge.enabled}
+                    <p class="mt-5 text-[0.8125rem] font-semibold text-v2-muted">PIN</p>
+                    <p
+                        class="font-anton text-[clamp(2.75rem,7vw,3.5rem)] leading-none tracking-[0.08em] text-v2-teal-text tabular-nums select-all dark:text-v2-teal"
+                    >{digitalJudge.pin}</p>
+                    <p class="mt-4 text-sm/[1.6] text-v2-muted dark:text-[#d1d5db]">
+                        Officials sign in at <a href={digitalJudge.judgeUrl} target="_blank" rel="noopener" class={judgeLink}
+                            >{judgeHost}</a
                         >
-                            <p>
-                                <strong class="block text-v2-ink">SERCs {releasedAt ? "released" : "locked"}</strong>
-                                {releasedAt ? `Officials can judge them, since ${releasedAt}.` : "Only referees can see them until you release them."}
-                            </p>
-                            {#if releasedAt}
-                                <!-- On the panel, not a card -->
-                                <button
-                                    type="button"
-                                    class="v2-btn mt-3.5 w-full justify-center border-v2-border bg-transparent text-v2-ink hover:border-v2-muted dark:border-[#4b5563] dark:hover:border-v2-muted"
-                                    disabled={busy}
-                                    onclick={lockSercs}>Lock SERCs</button
-                                >
-                            {:else}
-                                <button
-                                    type="button"
-                                    class="v2-btn v2-btn-accent mt-3.5 w-full justify-center"
-                                    disabled={busy}
-                                    onclick={() => post(digitalJudge.releaseUrl, { released: 1 })}>Release SERCs</button
-                                >
-                            {/if}
-                        </div>
+                        and enter it, or scan the
+                        <a href={digitalJudge.qrUrl} target="_blank" rel="noopener" class={judgeLink}>printable QR code</a>.
+                        Referees don't need it: give them the Referee role on
+                        <a href={digitalJudge.officialsUrl} class={judgeLink}>Officials</a>.
+                    </p>
 
-                        <div class="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold">
-                            {#if links}
-                                <Link href="{links.settingsUrl}#digital-judge" class={judgeLink}>Choose events</Link>
-                            {/if}
-                            <a href={MANUAL_URL} target="_blank" rel="noopener" class={judgeLink}>Manual</a>
+                    <div
+                        class="mt-5 border-t border-v2-teal/25 pt-5 text-sm/normal text-v2-muted dark:border-[#374151] dark:text-[#d1d5db]"
+                    >
+                        <p>
+                            <strong class="block text-v2-ink">SERCs {releasedAt ? "released" : "locked"}</strong>
+                            {releasedAt ? `Officials can judge them, since ${releasedAt}.` : "Only referees can see them until you release them."}
+                        </p>
+                        {#if releasedAt}
+                            <!-- On the panel, not a card -->
                             <button
                                 type="button"
-                                class="ml-auto cursor-pointer text-v2-danger-text underline underline-offset-2 disabled:opacity-50"
+                                class="v2-btn mt-3.5 w-full justify-center border-v2-border bg-transparent text-v2-ink hover:border-v2-muted dark:border-[#4b5563] dark:hover:border-v2-muted"
                                 disabled={busy}
-                                onclick={() => post(digitalJudge.toggleUrl)}>Turn off</button
+                                onclick={lockSercs}>Lock SERCs</button
                             >
-                        </div>
-                    {:else}
-                        <p class="mt-4 text-sm/[1.6] text-v2-muted dark:text-[#d1d5db]">Officials enter SERC marks on their own phones.</p>
+                        {:else}
+                            <button
+                                type="button"
+                                class="v2-btn v2-btn-accent mt-3.5 w-full justify-center"
+                                disabled={busy}
+                                onclick={() => post(digitalJudge.releaseUrl, { released: 1 })}>Release SERCs</button
+                            >
+                        {/if}
+                    </div>
+
+                    <div class="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold">
+                        {#if links}
+                            <Link href="{links.settingsUrl}#digital-judge" class={judgeLink}>Choose events</Link>
+                        {/if}
+                        <a href={MANUAL_URL} target="_blank" rel="noopener" class={judgeLink}>Manual</a>
                         <button
                             type="button"
-                            class="v2-btn v2-btn-accent mt-3.5 w-full justify-center"
+                            class="ml-auto cursor-pointer text-v2-danger-text underline underline-offset-2 disabled:opacity-50"
                             disabled={busy}
-                            onclick={() => post(digitalJudge.toggleUrl)}>Turn on Digital Judge</button
+                            onclick={() => post(digitalJudge.toggleUrl)}>Turn off</button
                         >
-                    {/if}
-                </section>
-            {/if}
-
-            {#if links}
-                <section aria-labelledby="o-comp">
-                    {@render heading("o-comp", "Competition")}
-                    <ul class="border-t border-v2-border *:border-b *:border-v2-border">
-                        <li>
-                            <Link href={links.settingsUrl} class={row}>
-                                <span class="font-bold wrap-anywhere">Settings</span>
-                                {@render chevron()}
-                            </Link>
-                        </li>
-                        <li>
-                            <a href={links.activityLogUrl} class={row}>
-                                <span class="font-bold wrap-anywhere">Activity log</span>
-                                {@render chevron()}
-                            </a>
-                        </li>
-                    </ul>
-                </section>
-            {/if}
+                    </div>
+                {:else}
+                    <p class="mt-4 text-sm/[1.6] text-v2-muted dark:text-[#d1d5db]">Officials enter SERC marks on their own phones.</p>
+                    <button
+                        type="button"
+                        class="v2-btn v2-btn-accent mt-3.5 w-full justify-center"
+                        disabled={busy}
+                        onclick={() => post(digitalJudge.toggleUrl)}>Turn on Digital Judge</button
+                    >
+                {/if}
+            </section>
         </div>
     {/if}
 </div>

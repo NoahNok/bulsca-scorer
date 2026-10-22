@@ -8,6 +8,7 @@
     import ThemeToggle from "@/manage/components/ThemeToggle.svelte";
     import Toasts from "@/manage/components/Toasts.svelte";
     import { toastSuccess } from "@/lib/toast.svelte";
+    import { guardUnsaved } from "@/manage/unsaved";
     import { logout } from "@/routes";
     import manage from "@/routes/manage";
     import admin from "@/routes/admin";
@@ -15,6 +16,9 @@
     import { onMount, type Snippet } from "svelte";
 
     let { children }: { children?: Snippet } = $props();
+
+    // Forms with UnsavedChanges in them ask before you leave
+    onMount(guardUnsaved);
 
     // A save's "Settings saved" and so on: on the first page, then after every visit (each brings its own flash)
     onMount(() => {

@@ -3,9 +3,8 @@
     chosen tab, arrow keys move between tabs, and the panels' wrapper animates to the chosen one's height
     as it fades in, so what's below glides rather than jumps.
 
-    By default only the chosen panel is mounted, so a form sends only its fields (New competition's
-    organisation or Personal). With `keep`, every panel stays mounted and the others are hidden, so one
-    form saves them all (competition Settings).
+    Only the chosen panel is mounted, so a form sends only its fields (New competition's organisation or
+    Personal).
 -->
 <script lang="ts">
     import { onMount, type Snippet } from "svelte";
@@ -16,7 +15,6 @@
         id,
         labelledby,
         label,
-        keep = false,
         panel,
     }: {
         tabs: { id: string; label: string }[];
@@ -26,7 +24,6 @@
         /** The id of a visible label for the tabs, or `label` when there isn't one */
         labelledby?: string;
         label?: string;
-        keep?: boolean;
         panel: Snippet<[string]>;
     } = $props();
 
@@ -75,15 +72,13 @@
 >
     <div class="px-1 pt-2 pb-1" bind:offsetHeight={height}>
         {#each tabs as tab (tab.id)}
-            {#if keep || tab.id === value}
+            {#if tab.id === value}
                 <div
                     id="{id}-panel-{tab.id}"
                     class={[ready && "animate-fade-in motion-reduce:animate-none"]}
                     role="tabpanel"
                     aria-labelledby="{id}-tab-{tab.id}"
-                    hidden={tab.id !== value}
                 >
-                    <!-- An animation replays whenever a hidden panel is shown again, so this covers kept panels too -->
                     {@render panel(tab.id)}
                 </div>
             {/if}

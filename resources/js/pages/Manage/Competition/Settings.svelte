@@ -1,7 +1,8 @@
 <!--
-    A competition's Settings (manage.competitions.settings, Organisers only), in CompetitionLayout. One form
-    with a section per tab (Details, Setup, Heats, Names, Status) saved together, then the Digital Judge
-    events, the accounts that can manage it, and deleting it.
+    A competition's Settings (manage.competitions.settings, Organisers only), in CompetitionLayout. A
+    SideMenu picks one part at a time, each saved on its own: Details, Setup, Heats, Names and Status (all
+    through updateCompetitionSettings, which takes any of its fields), then the Digital Judge events, the
+    accounts that can manage it, and deleting it. Leaving a form with unsaved changes asks first.
 -->
 <script lang="ts">
     import {
@@ -15,8 +16,10 @@
     import { confirm } from "@/lib/confirm";
     import Field from "@/manage/components/Field.svelte";
     import RichText from "@/manage/components/RichText.svelte";
+    import SideMenu, { type SideMenuItem } from "@/manage/components/SideMenu.svelte";
+    import SideMenuPart from "@/manage/components/SideMenuPart.svelte";
+    import UnsavedChanges from "@/manage/components/UnsavedChanges.svelte";
     import Switch from "@/manage/components/Switch.svelte";
-    import Tabs from "@/manage/components/Tabs.svelte";
     import type { CompetitionAccount, CompetitionEvent, CompetitionHeader } from "@/manage/types";
     import { search } from "@/routes/accounts";
     import { Form, router } from "@inertiajs/svelte";
@@ -62,37 +65,29 @@
         { id: "status", label: "Status" },
     ];
 
-    // Which tab each field is on, so a save that fails can open the first field it's about
-    const FIELDS: Record<string, string> = {
-        name: "details",
-        when: "details",
-        where: "details",
-        max_lanes: "setup",
-        serc_start_time: "setup",
-        timezone: "setup",
-        show_competition: "setup",
-        can_be_live: "setup",
-        select_league_first: "setup",
-        "ss:use_tanks": "heats",
-        use_seeds: "heats",
-        heats_per_event: "heats",
-        seed_per_event: "heats",
-        team_format: "names",
-        competitor_format: "names",
-        status_message: "status",
-    };
+    // The menu's parts, each its own form: SECTIONS (all saved by updateCompetitionSettings), then a rule,
+    // then the rest
+    const PARTS: SideMenuItem[] = [
+        ...SECTIONS,
+        { id: "digital-judge", label: "Digital Judge", rule: true },
+        { id: "accounts", label: "Accounts" },
+        { id: "delete", label: "Delete", danger: true },
+    ];
 
-    let section = $state("details");
-
+    // The live examples under Names, kept outside its form, so discarding its changes resets them too
     // svelte-ignore state_referenced_locally
     let teamFormat = $state(settings.team_format);
     // svelte-ignore state_referenced_locally
     let competitorFormat = $state(settings.competitor_format);
 
+    function resetNamePreviews() {
+        teamFormat = settings.team_format;
+        competitorFormat = settings.competitor_format;
+    }
+
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-    // svelte-ignore state_referenced_locally
-    const sercStart = localDateTime(settings.serc_start_time);
+    const sercStart = $derived(localDateTime(settings.serc_start_time));
 
     function localDateTime(iso: string | null): string {
         if (!iso) return "";
@@ -109,12 +104,9 @@
         return format.replace(/:C/g, "Club").replace(/:L/g, "Youth").replace(/:N/g, "Alex").replace(/:T/g, "Team");
     }
 
-    async function showFirstError(errors: Record<string, string>) {
-        const field = Object.keys(FIELDS).find((key) => errors[key]);
-        if (!field) return;
-        section = FIELDS[field];
-        await tick();
-        document.getElementById(`s-${field.replace(":", "-")}`)?.focus();
+    function focusFirstError(errors: Record<string, string>) {
+        const field = Object.keys(errors)[0];
+        if (field) document.getElementById(`s-${field.replace(":", "-")}`)?.focus();
     }
 
     function accessSummary(account: CompetitionAccount) {
@@ -191,144 +183,145 @@
     <title>Settings - {competition.name} - Scoring.Events</title>
 </svelte:head>
 
-<div class="flex max-w-[44rem] flex-col gap-14">
-    <section class="scroll-mt-6" aria-labelledby="s-competition">
-        <h2 id="s-competition" class="mb-4 {heading}">Competition</h2>
+{#snippet saveRow(label: string, processing: boolean, isDirty: boolean)}
+    <UnsavedChanges dirty={isDirty} />
+    <div class="mt-6 flex items-center justify-end gap-4">
+        {#if isDirty}<span class="text-sm font-semibold text-v2-muted">Unsaved changes</span>{/if}
+        <button type="submit" class="v2-btn v2-btn-primary" disabled={processing}>{label}</button>
+    </div>
+{/snippet}
 
-        <Form
-            action={updateCompetitionSettings(competition.id)}
-            options={{ preserveScroll: true }}
-            setDefaultsOnSuccess
-            onError={showFirstError}
-        >
-            {#snippet children({ errors, processing, isDirty })}
-                <input type="hidden" name="timezone" value={timezone} />
-
-                <Tabs id="s" label="Settings" tabs={SECTIONS} bind:value={section} keep>
-                    {#snippet panel(id)}
-                        {#if id === "details"}
-                            <div class={fieldGrid}>
-                                <Field id="s-name" name="name" label="Name" value={settings.name} required minlength={3} maxlength={255} error={errors.name} />
-                                <Field id="s-when" name="when" type="date" label="Date" value={settings.when} required error={errors.when} />
-                                <Field
-                                    id="s-where"
-                                    name="where"
-                                    label="Venue"
-                                    value={settings.where}
-                                    required
-                                    minlength={3}
-                                    maxlength={255}
-                                    error={errors.where}
-                                />
-                            </div>
-                        {:else if id === "setup"}
-                            <div class={fieldGrid}>
-                                <Field
-                                    id="s-max_lanes"
-                                    name="max_lanes"
-                                    type="number"
-                                    label="Lanes"
-                                    value={String(settings.max_lanes)}
-                                    required
-                                    min={1}
-                                    inputmode="numeric"
-                                    error={errors.max_lanes}
-                                />
-                                <Field
-                                    id="s-serc_start_time"
-                                    name="serc_start_time"
-                                    type="datetime-local"
-                                    label="SERCs start"
-                                    value={sercStart}
-                                    hint="In your time zone, {timezone}."
-                                    error={errors.serc_start_time}
-                                />
-                            </div>
-                            <div class="mt-6 border-t border-v2-border pt-6">
-                                <Switch
-                                    name="show_competition"
-                                    label="Public"
-                                    checked={settings.show_competition}
-                                    hint="It shows up in Explore and search."
-                                />
-                                <Switch
-                                    name="can_be_live"
-                                    label="Live results"
-                                    checked={settings.can_be_live}
-                                    hint="People can follow it on the live site on the day."
-                                />
-                                <Switch
-                                    name="select_league_first"
-                                    label="Choose a league first"
-                                    checked={settings.select_league_first}
-                                    hint="People pick a league before they see any results."
-                                />
-                            </div>
-                        {:else if id === "heats"}
+<SideMenu items={PARTS} label="Settings">
+    {#each SECTIONS as { id, label } (id)}
+        <SideMenuPart {id} labelledby="s-h-{id}" ondiscard={id === "names" ? resetNamePreviews : undefined}>
+            <h2 id="s-h-{id}" class="mb-4 {heading}">{label}</h2>
+            <Form
+                action={updateCompetitionSettings(competition.id)}
+                options={{ preserveScroll: true }}
+                setDefaultsOnSuccess
+                onError={focusFirstError}
+            >
+                {#snippet children({ errors, processing, isDirty })}
+                    {#if id === "details"}
+                        <div class={fieldGrid}>
+                            <Field id="s-name" name="name" label="Name" value={settings.name} required minlength={3} maxlength={255} error={errors.name} />
+                            <Field id="s-when" name="when" type="date" label="Date" value={settings.when} required error={errors.when} />
+                            <Field
+                                id="s-where"
+                                name="where"
+                                label="Venue"
+                                value={settings.where}
+                                required
+                                minlength={3}
+                                maxlength={255}
+                                error={errors.where}
+                            />
+                        </div>
+                    {:else if id === "setup"}
+                        <input type="hidden" name="timezone" value={timezone} />
+                        <div class={fieldGrid}>
+                            <Field
+                                id="s-max_lanes"
+                                name="max_lanes"
+                                type="number"
+                                label="Lanes"
+                                value={String(settings.max_lanes)}
+                                required
+                                min={1}
+                                inputmode="numeric"
+                                error={errors.max_lanes}
+                            />
+                            <Field
+                                id="s-serc_start_time"
+                                name="serc_start_time"
+                                type="datetime-local"
+                                label="SERCs start"
+                                value={sercStart}
+                                hint="In your time zone, {timezone}."
+                                error={errors.serc_start_time}
+                            />
+                        </div>
+                        <div class="mt-6 border-t border-v2-border pt-6">
+                            <Switch
+                                name="show_competition"
+                                label="Public"
+                                checked={settings.show_competition}
+                                hint="It shows up in Explore and search."
+                            />
+                            <Switch
+                                name="can_be_live"
+                                label="Live results"
+                                checked={settings.can_be_live}
+                                hint="People can follow it on the live site on the day."
+                            />
+                            <Switch
+                                name="select_league_first"
+                                label="Choose a league first"
+                                checked={settings.select_league_first}
+                                hint="People pick a league before they see any results."
+                            />
+                        </div>
+                    {:else if id === "heats"}
+                        <div>
+                            <Switch name="ss:use_tanks" label="Tanks" checked={settings.use_tanks} />
+                            <Switch name="use_seeds" label="Seed times" checked={settings.use_seeds} />
+                            <Switch name="heats_per_event" label="Heats per event" checked={settings.heats_per_event} />
+                            <Switch name="seed_per_event" label="Seed per event" checked={settings.seed_per_event} />
+                        </div>
+                    {:else if id === "names"}
+                        <p class={lead}>
+                            How team and competitor names are shown. The codes are swapped for each one's details.
+                        </p>
+                        <div class={fieldGrid}>
                             <div>
-                                <Switch name="ss:use_tanks" label="Tanks" checked={settings.use_tanks} />
-                                <Switch name="use_seeds" label="Seed times" checked={settings.use_seeds} />
-                                <Switch name="heats_per_event" label="Heats per event" checked={settings.heats_per_event} />
-                                <Switch name="seed_per_event" label="Seed per event" checked={settings.seed_per_event} />
-                            </div>
-                        {:else if id === "names"}
-                            <p class={lead}>
-                                How team and competitor names are shown. The codes are swapped for each one's details.
-                            </p>
-                            <div class={fieldGrid}>
-                                <div>
-                                    <Field
-                                        id="s-team_format"
-                                        name="team_format"
-                                        label="Team names"
-                                        value={settings.team_format}
-                                        required
-                                        hint=":C club, :L league, :N name, :S competitors"
-                                        error={errors.team_format}
-                                        oninput={(event) => (teamFormat = event.currentTarget.value)}
-                                    />
-                                    <p class="mt-2 text-sm font-semibold">{teamExample(teamFormat)}</p>
-                                </div>
-                                <div>
-                                    <Field
-                                        id="s-competitor_format"
-                                        name="competitor_format"
-                                        label="Competitor names"
-                                        value={settings.competitor_format}
-                                        required
-                                        hint=":C club, :L league, :N name, :T team"
-                                        error={errors.competitor_format}
-                                        oninput={(event) => (competitorFormat = event.currentTarget.value)}
-                                    />
-                                    <p class="mt-2 text-sm font-semibold">{competitorExample(competitorFormat)}</p>
-                                </div>
-                            </div>
-                        {:else}
-                            <div class="v2-field">
-                                <span id="s-status-label" class="text-sm font-semibold">Status message</span>
-                                <span class="v2-hint">Shown to Organisers above every page of this competition. Leave it empty to hide it.</span>
-                                <RichText
-                                    id="s-status_message"
-                                    name="status_message"
-                                    labelledby="s-status-label"
-                                    value={settings.status_message}
-                                    placeholder="e.g. Warm-up moved to 9:30"
+                                <Field
+                                    id="s-team_format"
+                                    name="team_format"
+                                    label="Team names"
+                                    value={settings.team_format}
+                                    required
+                                    hint=":C club, :L league, :N name, :S competitors"
+                                    error={errors.team_format}
+                                    oninput={(event) => (teamFormat = event.currentTarget.value)}
                                 />
-                                {#if errors.status_message}<span class="v2-error">{errors.status_message}</span>{/if}
+                                <p class="mt-2 text-sm font-semibold">{teamExample(teamFormat)}</p>
                             </div>
-                        {/if}
-                    {/snippet}
-                </Tabs>
+                            <div>
+                                <Field
+                                    id="s-competitor_format"
+                                    name="competitor_format"
+                                    label="Competitor names"
+                                    value={settings.competitor_format}
+                                    required
+                                    hint=":C club, :L league, :N name, :T team"
+                                    error={errors.competitor_format}
+                                    oninput={(event) => (competitorFormat = event.currentTarget.value)}
+                                />
+                                <p class="mt-2 text-sm font-semibold">{competitorExample(competitorFormat)}</p>
+                            </div>
+                        </div>
+                    {:else}
+                        <div class="v2-field">
+                            <span id="s-status-label" class="text-sm font-semibold">Status message</span>
+                            <span class="v2-hint">Shown to Organisers above every page of this competition. Leave it empty to hide it.</span>
+                            <RichText
+                                id="s-status_message"
+                                name="status_message"
+                                labelledby="s-status-label"
+                                value={settings.status_message}
+                                placeholder="e.g. Warm-up moved to 9:30"
+                            />
+                            {#if errors.status_message}<span class="v2-error">{errors.status_message}</span>{/if}
+                        </div>
+                    {/if}
 
-                <div class="mt-6 flex items-center justify-end gap-4">
-                    {#if isDirty}<span class="text-sm font-semibold text-v2-muted">Unsaved changes</span>{/if}
-                    <button type="submit" class="v2-btn v2-btn-primary" disabled={processing}>Save changes</button>
-                </div>
-            {/snippet}
-        </Form>
-    </section>
+                    {@render saveRow("Save changes", processing, isDirty)}
+                {/snippet}
+            </Form>
+        </SideMenuPart>
+    {/each}
 
-    <section id="digital-judge" class="scroll-mt-6" aria-labelledby="s-judge">
+    <SideMenuPart id="digital-judge" labelledby="s-judge">
         <h2 id="s-judge" class={heading}>Digital Judge</h2>
         <p class={lead}>
             {digitalJudge.enabled
@@ -336,8 +329,8 @@
                 : "Digital Judge is off. Turn it on from the Overview, and these events can be judged on officials' phones."}
         </p>
 
-        <Form action={settingsPost(competition.id)} options={{ preserveScroll: true }}>
-            {#snippet children({ processing })}
+        <Form action={settingsPost(competition.id)} options={{ preserveScroll: true }} setDefaultsOnSuccess>
+            {#snippet children({ processing, isDirty })}
                 {#if digitalJudge.events.length > 0}
                     <fieldset class={fieldset}>
                         <legend class="mb-[0.6rem] text-sm font-semibold">Events</legend>
@@ -361,14 +354,12 @@
                     </span>
                 </label>
 
-                <div class="mt-6 flex items-center justify-end gap-4">
-                    <button type="submit" class="v2-btn v2-btn-primary" disabled={processing}>Save Digital Judge</button>
-                </div>
+                {@render saveRow("Save Digital Judge", processing, isDirty)}
             {/snippet}
         </Form>
-    </section>
+    </SideMenuPart>
 
-    <section class="scroll-mt-6" aria-labelledby="s-accounts">
+    <SideMenuPart id="accounts" labelledby="s-accounts">
         <div class="flex items-center justify-between gap-4">
             <h2 id="s-accounts" class={heading}>Accounts</h2>
             <button type="button" class="v2-btn v2-btn-sm" onclick={() => inviteDialog.showModal()}>Invite someone</button>
@@ -396,9 +387,9 @@
                 {/each}
             </tbody>
         </table>
-    </section>
+    </SideMenuPart>
 
-    <section class="scroll-mt-6" aria-labelledby="s-delete">
+    <SideMenuPart id="delete" labelledby="s-delete">
         <h2 id="s-delete" class={heading}>Delete competition</h2>
         <p class={lead}>This removes {competition.name} with all its events, entries and results. It can't be undone.</p>
 
@@ -420,8 +411,8 @@
                 </div>
             {/snippet}
         </Form>
-    </section>
-</div>
+    </SideMenuPart>
+</SideMenu>
 
 <dialog bind:this={editDialog} class="v2-modal" aria-labelledby="s-edit-title" onclick={onBackdrop}>
     {#if editing}

@@ -59,7 +59,7 @@ class CompetitionDashboardTest extends TestCase
                 ->where('digitalJudge.enabled', false)
                 ->has('links.settingsUrl')
                 ->has('events', 0)
-                ->has('leagues', 0));
+                ->missing('leagues'));
     }
 
     public function test_a_results_only_account_gets_no_digital_judge_settings_or_events(): void
@@ -73,8 +73,7 @@ class CompetitionDashboardTest extends TestCase
                 ->where('competition.tabs', fn ($tabs) => collect($tabs)->pluck('label')->all() === ['Overview', 'Results'])
                 ->where('digitalJudge', null)
                 ->where('links', null)
-                ->where('events', null)
-                ->where('leagues', null));
+                ->where('events', null));
 
         $this->get(route('manage.competitions.settings', $this->comp))->assertForbidden();
     }
@@ -129,6 +128,27 @@ class CompetitionDashboardTest extends TestCase
         $this->assertTrue((bool) $comp->getScoringSettings->use_tanks);
         // 9:30 in London in March is 9:30 UTC
         $this->assertSame('2030-03-02 09:30', $comp->serc_start_time->format('Y-m-d H:i'));
+    }
+
+    public function test_saving_one_part_of_settings_leaves_the_others_alone(): void
+    {
+        $before = $this->comp->fresh();
+
+        // Details is its own form, so only its fields are sent
+        $this->actingAs($this->organiser)
+            ->from(route('manage.competitions.settings', $this->comp))
+            ->post(route('comps.settings', $this->comp), [
+                'name' => 'Renamed Champs',
+                'when' => '2030-03-02',
+                'where' => 'New Pool',
+            ])
+            ->assertSessionHas('success', 'Settings saved');
+
+        $comp = $this->comp->fresh();
+        $this->assertSame('Renamed Champs', $comp->name);
+        $this->assertSame($before->max_lanes, $comp->max_lanes);
+        $this->assertSame((bool) $before->use_seeds, (bool) $comp->use_seeds);
+        $this->assertSame($before->team_format, $comp->team_format);
     }
 
     public function test_a_bad_setting_comes_back_as_a_field_error(): void

@@ -23,9 +23,9 @@
 
 <header class="flex items-start justify-between gap-6">
     <div class="min-w-0">
-        <h1 class="text-[clamp(2rem,4.5vw,3.25rem)] leading-[1.05] font-extrabold wrap-anywhere uppercase">{comp.name}</h1>
+        <h1 class="text-[clamp(1.75rem,3.5vw,2.5rem)] leading-[1.1] font-extrabold wrap-anywhere uppercase">{comp.name}</h1>
         <p class="mt-[0.6rem] flex flex-wrap items-center gap-x-[0.9rem] gap-y-[0.35rem] text-[0.9375rem] text-v2-muted">
-            <span class="font-anton text-xl leading-none tracking-[0.02em] text-v2-ink tabular-nums">{shortDate(comp.when)}</span>
+            <span class="font-semibold text-v2-ink">{shortDate(comp.when)}</span>
             <span>{comp.where}</span>
             {#if comp.championship}
                 <a href={comp.championship.url} class="v2-link-muted">{comp.championship.name}</a>

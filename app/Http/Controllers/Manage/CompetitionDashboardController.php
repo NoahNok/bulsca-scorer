@@ -6,7 +6,6 @@ use App\Helpers\CompetitionTabs;
 use App\Http\Controllers\Controller;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
-use App\Models\League;
 use App\Models\SERC;
 use App\Models\User;
 use App\Models\UserCompetitionAccess;
@@ -51,12 +50,6 @@ class CompetitionDashboardController extends Controller
             // Null when you can't open the Events tab at all, so there's no list or "Add event"
             'events' => $can('serc|speed|serc_writer') ? $events->values() : null,
             'addEventUrl' => route('comps.events', $comp),
-            'leagues' => $can('teams') ? $comp->getLeagues->map(fn (League $league) => [
-                'id' => $league->id,
-                'name' => $league->name,
-                'url' => route('comps.leagues.view', [$comp, $league]),
-            ]) : null,
-            'addLeagueUrl' => route('comps.leagues.create', $comp),
             'digitalJudge' => $can('admin') ? [
                 'enabled' => (bool) $comp->digitalJudgeEnabled,
                 'pin' => $comp->digitalJudgePin,
