@@ -1,7 +1,7 @@
 <!--
     A competition's Events (manage.competitions.events), in CompetitionLayout: its speed events and SERCs
-    as cards, each type only with the access for it. "Add speed event" opens a dialog that adds one at
-    once; "Add SERC" goes to the SERC setup page.
+    as cards, each type only with the access for it. "Add speed event" opens a dialog that adds one and
+    opens it; "Add SERC" goes to the SERC setup page.
 -->
 <script lang="ts">
     import { storeSpeed } from "@/actions/App/Http/Controllers/Manage/CompetitionEventsController";
@@ -122,7 +122,7 @@
     <h2 id="ev-speed-title">Add speed event</h2>
 
     {#key opened}
-        <Form action={storeSpeed(competition.id)} options={{ preserveScroll: true }} onSuccess={() => speedDialog.close()}>
+        <Form action={storeSpeed(competition.id)}>
             {#snippet children({ errors, processing })}
                 <div class="mt-5 flex flex-col gap-[0.6rem] *:mt-0">
                     <div class={["v2-field", errors.event && "is-invalid"]}>

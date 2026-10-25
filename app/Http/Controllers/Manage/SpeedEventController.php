@@ -16,11 +16,12 @@ use App\Services\ScoringSchemas;
 use App\Services\SpeedResultEntry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
 /**
- * A speed event's page (Svelte, in CompetitionLayout), one part at a time in a SideMenu: its ranked
- * results, the grid to enter them, its setup, its scoring and deleting it. Each part saves on its own.
+ * A speed event's pages (Svelte, in CompetitionLayout): its ranked results, a page with the grid to
+ * enter them, and its settings (setup, scoring and deleting it) in a SideMenu, each saved on its own.
  */
 class SpeedEventController extends Controller
 {
@@ -30,6 +31,49 @@ class SpeedEventController extends Controller
         $schema = $event->scoringSchema;
 
         return Inertia::render('Manage/Competition/SpeedEvent', [
+            ...$this->shared($comp, $event),
+            'leagues' => $comp->getLeagues()->orderBy('name')->get(['id', 'name']),
+            'league' => $league?->id,
+            // Null until the event has scoring set up
+            'results' => $schema ? fn () => $this->rankedResults($comp, $event, $league) : null,
+            'conflicts' => fn () => collect($heats->anyTimeAndOofConflicts($event))
+                ->map(fn ($rows, $heat) => [
+                    'heat' => $heat,
+                    'rows' => collect($rows)->map(fn ($row) => collect($row)->only('lane', 'entity_name', 'time', 'oof')),
+                ])->values(),
+            'eventsUrl' => route('manage.competitions.events', $comp),
+            'printUrl' => route('comps.view.events.speeds.printResults', [$comp, $event]),
+        ]);
+    }
+
+    public function editResults(Competition $comp, CompetitionSpeedEvent $event)
+    {
+        return Inertia::render('Manage/Competition/SpeedEventResults', [
+            ...$this->shared($comp, $event),
+            'grid' => $this->grid($comp, $event),
+        ]);
+    }
+
+    public function settings(Competition $comp, CompetitionSpeedEvent $event)
+    {
+        $schema = $event->scoringSchema;
+
+        return Inertia::render('Manage/Competition/SpeedEventSettings', [
+            ...$this->shared($comp, $event),
+            'scoring' => [
+                'schema' => $schema ? ScoringSchemas::withDefaults($schema->schema) : null,
+                'options' => ScoringSchemas::availableFor(Auth::user(), $comp->getOrganisation)
+                    ->map(fn ($option) => [...$option, 'schema' => ScoringSchemas::withDefaults($option['schema'])]),
+            ],
+        ]);
+    }
+
+    /**
+     * The competition and the event, as every one of its pages takes them
+     */
+    private function shared(Competition $comp, CompetitionSpeedEvent $event): array
+    {
+        return [
             'competition' => CompetitionHeader::for($comp),
             'event' => [
                 'id' => $event->id,
@@ -42,28 +86,11 @@ class SpeedEventController extends Controller
                 'ropeThrow' => $event->getName() == 'Rope Throw',
                 'heats' => $event->getHeats()->count(),
             ],
-            'leagues' => $comp->getLeagues()->orderBy('name')->get(['id', 'name']),
-            'league' => $league?->id,
-            // Null until the event has scoring set up
-            'results' => $schema ? fn () => $this->rankedResults($comp, $event, $league) : null,
-            'conflicts' => fn () => collect($heats->anyTimeAndOofConflicts($event))
-                ->map(fn ($rows, $heat) => [
-                    'heat' => $heat,
-                    'rows' => collect($rows)->map(fn ($row) => collect($row)->only('lane', 'entity_name', 'time', 'oof')),
-                ])->values(),
-            'grid' => fn () => $this->grid($comp, $event),
-            'scoring' => fn () => [
-                'schema' => $schema ? ScoringSchemas::withDefaults($schema->schema) : null,
-                'options' => ScoringSchemas::availableFor(Auth::user(), $comp->getOrganisation)
-                    ->map(fn ($option) => ['id' => $option['id'], 'name' => $option['name'], 'schema' => ScoringSchemas::withDefaults($option['schema'])]),
-            ],
-            'eventsUrl' => route('manage.competitions.events', $comp),
-            'printUrl' => route('comps.view.events.speeds.printResults', [$comp, $event]),
-        ]);
+        ];
     }
 
     /**
-     * The ranked results as the Results part shows them. A combined result (one row standing for
+     * The ranked results as the event's page shows them. A combined result (one row standing for
      * several Entities) lists each one's name, time and DQ, with the total time beside them.
      */
     private function rankedResults(Competition $comp, CompetitionSpeedEvent $event, ?League $league): array
@@ -197,9 +224,17 @@ class SpeedEventController extends Controller
         return back()->with('success', 'Scoring saved');
     }
 
-    public function destroy(Competition $comp, CompetitionSpeedEvent $event)
+    /**
+     * Deleting needs the event's name typed out
+     */
+    public function destroy(Competition $comp, CompetitionSpeedEvent $event, Request $request)
     {
         $name = $event->getName();
+
+        if ($request->validate(['name' => ['required', 'string']])['name'] != $name) {
+            throw ValidationException::withMessages(['name' => "That isn't the event's name."]);
+        }
+
         $event->delete();
 
         return redirect()->route('manage.competitions.events', $comp)->with('success', "{$name} deleted");

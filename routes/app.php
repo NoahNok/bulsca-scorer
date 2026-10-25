@@ -142,15 +142,17 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
 
                     Route::prefix('/{event}')->name('manage.competitions.events.speeds.')->group(function () {
                         Route::get('', [SpeedEventController::class, 'show'])->name('show');
+                        Route::get('/results', [SpeedEventController::class, 'editResults'])->name('results.edit');
+                        Route::get('/settings', [SpeedEventController::class, 'settings'])->name('settings');
                         Route::post('/results', [SpeedEventController::class, 'saveResults'])->name('results');
                         Route::post('/setup', [SpeedEventController::class, 'saveSetup'])->name('setup');
                         Route::post('/visibility', [SpeedEventController::class, 'visibility'])->name('visibility');
                         Route::post('/scoring', [SpeedEventController::class, 'saveScoring'])->name('scoring');
                         Route::delete('', [SpeedEventController::class, 'destroy'])->name('destroy');
 
-                        // The old pages, now parts of the event page
-                        foreach (['edit' => 'setup', 'edit-result' => 'enter-results', 'scoring-settings' => 'scoring'] as $old => $part) {
-                            Route::get("/$old", fn (Competition $comp, CompetitionSpeedEvent $event) => redirect(route('manage.competitions.events.speeds.show', [$comp, $event]) . "#$part", 301))->name("old.$old");
+                        // The old pages, now the results page and parts of the settings page
+                        foreach (['edit' => ['settings', ''], 'edit-result' => ['results.edit', ''], 'scoring-settings' => ['settings', '#scoring']] as $old => [$page, $part]) {
+                            Route::get("/$old", fn (Competition $comp, CompetitionSpeedEvent $event) => redirect(route("manage.competitions.events.speeds.$page", [$comp, $event]) . $part, 301))->name("old.$old");
                         }
                     });
 

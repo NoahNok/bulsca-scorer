@@ -36,6 +36,15 @@
     let started = $state(scoring.schema !== null);
     let template = $state("");
 
+    // The schemas to start from, a group per organisation
+    const groups = $derived.by(() => {
+        const byOrganisation = new Map<string, EventScoring["options"]>();
+        for (const option of scoring.options) {
+            byOrganisation.set(option.organisation, [...(byOrganisation.get(option.organisation) ?? []), option]);
+        }
+        return [...byOrganisation];
+    });
+
     function startFrom(id: string) {
         const option = scoring.options.find((option) => String(option.id) === id);
         const schema = structuredClone($state.snapshot(option?.schema ?? BLANK));
@@ -120,8 +129,12 @@
             <select id="sc-template" class="v2-input w-full" bind:value={template}>
                 <option value="" disabled>Pick a schema</option>
                 <option value="blank">Blank</option>
-                {#each scoring.options as option (option.id)}
-                    <option value={String(option.id)}>{option.name}</option>
+                {#each groups as [organisation, options] (organisation)}
+                    <optgroup label={organisation}>
+                        {#each options as option (option.id)}
+                            <option value={String(option.id)}>{option.name}</option>
+                        {/each}
+                    </optgroup>
                 {/each}
             </select>
         </div>

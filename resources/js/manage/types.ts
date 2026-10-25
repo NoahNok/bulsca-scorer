@@ -109,6 +109,20 @@ export type EventTarget = "club" | "team" | "competitor";
 
 export type SpeedEventCard = EventCard & { target: EventTarget };
 
+/** A speed event, as each of its pages takes it */
+export type SpeedEventHeader = {
+    id: number;
+    name: string;
+    target: EventTarget;
+    complete: boolean;
+    viewable: boolean;
+    hasPenalties: boolean;
+    digitalJudge: boolean;
+    ropeThrow: boolean;
+    /** How many heats it has, which deleting it removes */
+    heats: number;
+};
+
 export type SercCard = EventCard & { type: "DRY" | "WET" };
 
 /** One speed result as the Enter results grid edits it (Manage\SpeedEventController::grid) */
@@ -168,6 +182,6 @@ export type ScoringSchema = {
 export type EventScoring = {
     /** Null until it's set up */
     schema: ScoringSchema | null;
-    /** Organisation schemas to start from */
-    options: { id: number; name: string; schema: ScoringSchema }[];
+    /** Organisation schemas to start from, with their organisation's name */
+    options: { id: number; name: string; organisation: string; schema: ScoringSchema }[];
 };

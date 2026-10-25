@@ -49,7 +49,7 @@ class CompetitionEventsController extends Controller
     }
 
     /**
-     * Adds a speed event, with an empty result for every Entity it scores
+     * Adds a speed event, with an empty result for every Entity it scores, and opens it
      */
     public function storeSpeed(Competition $comp, AddSpeedEventRequest $request)
     {
@@ -71,6 +71,6 @@ class CompetitionEventsController extends Controller
             $result->save();
         }
 
-        return back()->with('success', "{$base->name} added");
+        return redirect()->route('manage.competitions.events.speeds.show', [$comp, $event])->with('success', "{$base->name} added");
     }
 }

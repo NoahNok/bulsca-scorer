@@ -26,6 +26,7 @@ class ScoringSchemas
         return $orgs->flatMap(fn (Organisation $org) => $org->scoringSchemas->map(fn ($schema) => [
             'id' => $schema->id,
             'name' => $schema->name,
+            'organisation' => $org->name,
             'schema' => $schema->schema,
         ]))->values();
     }

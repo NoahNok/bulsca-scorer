@@ -140,18 +140,17 @@ class CompetitionEventsTest extends TestCase
             ->assertForbidden();
     }
 
-    public function test_adding_a_speed_event_gives_every_entity_a_result(): void
+    public function test_adding_a_speed_event_gives_every_entity_a_result_and_opens_it(): void
     {
         $club = Club::create(['competition' => $this->comp->id, 'name' => 'Cardiff']);
         CompetitionTeam::create(['competition' => $this->comp->id, 'club' => $club->id, 'team' => 'A']);
         CompetitionTeam::create(['competition' => $this->comp->id, 'club' => $club->id, 'team' => 'B']);
 
-        $this->actingAs($this->organiser)->from($this->url())
-            ->post($this->url('/speeds'), ['event' => $this->base->id, 'target_entity' => 'team'])
-            ->assertRedirect($this->url())
-            ->assertSessionHas('success');
+        $response = $this->actingAs($this->organiser)->from($this->url())
+            ->post($this->url('/speeds'), ['event' => $this->base->id, 'target_entity' => 'team']);
 
         $event = CompetitionSpeedEvent::where('competition', $this->comp->id)->sole();
+        $response->assertRedirect($this->url('/speeds/' . $event->id))->assertSessionHas('success');
         $this->assertSame('team', $event->scorable_entity);
         $this->assertEquals(60000, $event->record);
         $this->assertEquals(1, $event->weight);

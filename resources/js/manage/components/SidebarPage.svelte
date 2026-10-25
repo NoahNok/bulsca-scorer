@@ -7,7 +7,7 @@
 <script lang="ts" module>
     /** A row in a sidebar list of actions: the whole row is the link or button, the current one on --v2-sunk */
     export const sidebarRow =
-        "flex w-full cursor-pointer items-center gap-3 px-2 py-[0.8rem] text-left font-semibold transition-colors hover:bg-v2-row-hover focus-visible:bg-v2-row-hover aria-[current=true]:bg-v2-sunk motion-reduce:transition-none";
+        "flex w-full cursor-pointer items-center gap-3 px-2 py-[0.55rem] text-left font-semibold transition-colors hover:bg-v2-row-hover focus-visible:bg-v2-row-hover aria-[current=true]:bg-v2-sunk motion-reduce:transition-none";
 </script>
 
 <script lang="ts">

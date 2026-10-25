@@ -137,7 +137,7 @@ class CompetitionOwnershipTest extends TestCase
         $this->post(route('manage.competitions.leagues.update', [$ours, $this->ours['league']]), ['name' => 'Renamed'])->assertRedirect();
         $this->assertSame('Renamed', $this->ours['league']->fresh()->name);
 
-        $this->delete(route('manage.competitions.events.speeds.destroy', [$ours, $this->ours['event']]), ['eid' => $this->ours['event']->id])->assertRedirect();
+        $this->delete(route('manage.competitions.events.speeds.destroy', [$ours, $this->ours['event']]), ['name' => $this->ours['event']->getName()])->assertRedirect();
         $this->assertNull($this->ours['event']->fresh());
     }
 

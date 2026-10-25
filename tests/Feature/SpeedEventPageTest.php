@@ -86,10 +86,10 @@ class SpeedEventPageTest extends TestCase
 
     private function saveRows(array $rows, ?CompetitionSpeedEvent $event = null)
     {
-        return $this->actingAs($this->organiser)->from($this->url('', $event))->post($this->url('/results', $event), ['rows' => $rows]);
+        return $this->actingAs($this->organiser)->from($this->url('/results', $event))->post($this->url('/results', $event), ['rows' => $rows]);
     }
 
-    public function test_the_page_has_every_part(): void
+    public function test_the_page_shows_its_results(): void
     {
         $this->actingAs($this->organiser)->get($this->url())
             ->assertOk()
@@ -98,11 +98,30 @@ class SpeedEventPageTest extends TestCase
                 ->where('event.name', 'Swim & Tow')
                 ->where('event.target', 'team')
                 ->where('results', null)
+                ->has('conflicts', 0)
+                ->missing('grid'));
+    }
+
+    public function test_results_are_edited_on_their_own_page(): void
+    {
+        $this->actingAs($this->organiser)->get($this->url('/results'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Manage/Competition/SpeedEventResults')
+                ->where('event.name', 'Swim & Tow')
                 ->has('grid', 2)
                 ->where('grid.0.name', fn ($name) => str_contains($name, 'A'))
-                ->where('grid.0.result', '')
-                ->where('scoring.schema', null)
-                ->has('conflicts', 0));
+                ->where('grid.0.result', ''));
+    }
+
+    public function test_its_settings_have_their_own_page(): void
+    {
+        $this->actingAs($this->organiser)->get($this->url('/settings'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Manage/Competition/SpeedEventSettings')
+                ->where('event.target', 'team')
+                ->where('scoring.schema', null));
     }
 
     public function test_it_opens_when_its_heats_hold_entities_it_doesnt_score(): void
@@ -121,7 +140,10 @@ class SpeedEventPageTest extends TestCase
 
         $this->actingAs($this->organiser)->get($this->url('', $clubs))
             ->assertOk()
-            ->assertInertia(fn (Assert $page) => $page->has('conflicts', 0)->has('grid', 0));
+            ->assertInertia(fn (Assert $page) => $page->has('conflicts', 0));
+        $this->actingAs($this->organiser)->get($this->url('/results', $clubs))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page->has('grid', 0));
     }
 
     public function test_results_are_ranked_once_it_has_scoring(): void
@@ -138,7 +160,10 @@ class SpeedEventPageTest extends TestCase
         $this->actingAs($this->organiser)->get($this->url())
             ->assertInertia(fn (Assert $page) => $page
                 ->has('results', 1)
-                ->where('results.0.time', '01:02.500')
+                ->where('results.0.time', '01:02.500'));
+
+        $this->actingAs($this->organiser)->get($this->url('/settings'))
+            ->assertInertia(fn (Assert $page) => $page
                 ->where('scoring.schema.equation', '1')
                 ->where('scoring.schema.group_by', []));
     }
@@ -150,13 +175,13 @@ class SpeedEventPageTest extends TestCase
         $this->saveRows([
             $a->id => ['result' => '01:02.50', 'disqualification' => 'dq101'],
             $b->id => ['result' => 'DNS', 'disqualification' => ''],
-        ])->assertRedirect($this->url())->assertSessionHas('success');
+        ])->assertRedirect($this->url('/results'))->assertSessionHas('success');
 
         $this->assertEquals(62500, $a->fresh()->result);
         $this->assertEquals([101], $this->event->disqualifications()->where('entity_id', $a->entity_id)->pluck('code')->all());
         $this->assertEquals([99904], $this->event->disqualifications()->where('entity_id', $b->entity_id)->pluck('code')->all());
 
-        $this->actingAs($this->organiser)->get($this->url())
+        $this->actingAs($this->organiser)->get($this->url('/results'))
             ->assertInertia(fn (Assert $page) => $page
                 ->where('grid.0.result', '01:02.500')
                 ->where('grid.0.disqualification', 'DQ101')
@@ -226,9 +251,9 @@ class SpeedEventPageTest extends TestCase
     {
         $this->saveRows([$this->results[0]->id => ['result' => '01:02.50', 'disqualification' => '']]);
 
-        $this->actingAs($this->organiser)->from($this->url())
+        $this->actingAs($this->organiser)->from($this->url('/settings'))
             ->post($this->url('/setup'), ['target_entity' => 'club', 'has_penalties' => true])
-            ->assertRedirect($this->url());
+            ->assertRedirect($this->url('/settings'));
 
         $this->event->refresh();
         $this->assertSame('club', $this->event->scorable_entity);
@@ -257,7 +282,7 @@ class SpeedEventPageTest extends TestCase
 
     public function test_saving_scoring_sets_it_up(): void
     {
-        $this->actingAs($this->organiser)->from($this->url())->post($this->url('/scoring'), [
+        $this->actingAs($this->organiser)->from($this->url('/settings'))->post($this->url('/scoring'), [
             'equation' => 'result',
             'global_variables' => [],
             'local_variables' => [],
@@ -267,7 +292,7 @@ class SpeedEventPageTest extends TestCase
             'allow_disqualified_to_rank' => false,
             'group_by' => ['league'],
             'force_penalty' => false,
-        ])->assertRedirect($this->url())->assertSessionHas('success');
+        ])->assertRedirect($this->url('/settings'))->assertSessionHas('success');
 
         $schema = $this->event->fresh()->scoringSchema;
         $this->assertSame('result', $schema->schema['equation']);
@@ -278,16 +303,25 @@ class SpeedEventPageTest extends TestCase
 
     public function test_deleting_it_goes_back_to_events(): void
     {
-        $this->actingAs($this->organiser)->delete($this->url())
+        $this->actingAs($this->organiser)->delete($this->url(), ['name' => 'Swim & Tow'])
             ->assertRedirect($this->appUrl('/comps/' . $this->comp->id . '/events'));
 
         $this->assertNull($this->event->fresh());
     }
 
-    public function test_old_pages_redirect_to_their_part(): void
+    public function test_deleting_it_needs_its_name(): void
     {
-        $this->actingAs($this->organiser)->get($this->url('/edit-result'))->assertRedirect($this->url() . '#enter-results');
-        $this->actingAs($this->organiser)->get($this->url('/scoring-settings'))->assertRedirect($this->url() . '#scoring');
+        $this->actingAs($this->organiser)->from($this->url('/settings'))->delete($this->url(), ['name' => 'Swim'])
+            ->assertSessionHasErrors('name');
+
+        $this->assertNotNull($this->event->fresh());
+    }
+
+    public function test_old_pages_redirect_to_their_new_ones(): void
+    {
+        $this->actingAs($this->organiser)->get($this->url('/edit'))->assertRedirect($this->url('/settings'));
+        $this->actingAs($this->organiser)->get($this->url('/edit-result'))->assertRedirect($this->url('/results'));
+        $this->actingAs($this->organiser)->get($this->url('/scoring-settings'))->assertRedirect($this->url('/settings') . '#scoring');
     }
 
     public function test_it_needs_speed_access(): void
@@ -296,6 +330,8 @@ class SpeedEventPageTest extends TestCase
         $this->comp->addAccount($writer, ['serc_writer']);
 
         $this->actingAs($writer)->get($this->url())->assertForbidden();
+        $this->actingAs($writer)->get($this->url('/results'))->assertForbidden();
+        $this->actingAs($writer)->get($this->url('/settings'))->assertForbidden();
         $this->actingAs($writer)->post($this->url('/results'), ['rows' => []])->assertForbidden();
     }
 }

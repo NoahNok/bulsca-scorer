@@ -8,6 +8,8 @@
     import UnsavedChanges from "@/manage/components/UnsavedChanges.svelte";
     import type { SpeedGridRow } from "@/manage/types";
     import { router } from "@inertiajs/svelte";
+    import type { MaskInputOptions } from "maska";
+    import { maska } from "maska/svelte";
 
     let {
         comp,
@@ -89,6 +91,28 @@
         input.setSelectionRange(at, at);
     }
 
+    // Times as mm:ss.hh (or .hhh, as saved times show), DNS, DNF and OOT from their first letter, and DQ
+    // codes, filled in as they're typed. Penalties are a free list, so only capitals
+    const MASKS: Partial<Record<keyof Cells, MaskInputOptions>> = {
+        result: {
+            mask: (input: string) => (input.startsWith("D") ? "DNF" : input.startsWith("O") ? "OOT" : "99:59.99#"),
+            tokens: {
+                "5": { pattern: /[0-5]/ },
+                "9": { pattern: /[0-9]/ },
+                "#": { pattern: /[0-9]/, optional: true },
+                // The last letter of DNS or DNF
+                F: { pattern: /[SF]/ },
+            },
+            preProcess: (value: string) => value.toUpperCase(),
+            eager: true,
+        },
+        disqualification: {
+            mask: (input: string) => (input.startsWith("DQ100") ? "DQ####" : "DQ###"),
+            preProcess: (value: string) => value.toUpperCase(),
+            eager: true,
+        },
+    };
+
     const chip =
         "inline-flex cursor-pointer items-center rounded-full border border-v2-border bg-v2-card px-[0.8rem] py-[0.3rem] text-sm font-semibold transition-colors hover:bg-v2-row-hover aria-pressed:border-v2-ink aria-pressed:bg-v2-ink aria-pressed:text-v2-bg motion-reduce:transition-none";
     const cell = "v2-input w-full min-w-[6.5rem] px-2 py-1.5 font-mono text-sm";
@@ -145,7 +169,8 @@
                                     aria-invalid={message ? "true" : undefined}
                                     aria-describedby={message ? `g-${row.id}-${key}` : undefined}
                                     bind:value={cells[key]}
-                                    oninput={upper}
+                                    use:maska={MASKS[key] ?? {}}
+                                    oninput={MASKS[key] ? undefined : upper}
                                 />
                                 {#if message}<span id="g-{row.id}-{key}" class="v2-error">{message}</span>{/if}
                             </td>
