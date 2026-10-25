@@ -1,16 +1,16 @@
 <!--
-    A speed event's page (manage.competitions.events.speeds.show), in CompetitionLayout. A SideMenu shows
-    one part at a time, each saved on its own: its ranked results (by league, with any time and order of
-    finish conflicts), the grid to enter them, what it scores, its scoring, and deleting it.
+    A speed event's page (manage.competitions.events.speeds.show), in CompetitionLayout. Its ranked results
+    (by league, with any time and order of finish conflicts) fill the left; a column of actions on the right
+    swaps them for the grid to enter results, its setup or its scoring, each saved on its own, and holds
+    showing it in results, printing and deleting it. The view follows the url's hash (#setup).
 -->
 <script lang="ts">
     import { destroy, saveScoring, saveSetup, visibility } from "@/actions/App/Http/Controllers/Manage/SpeedEventController";
     import { confirm } from "@/lib/confirm";
     import Alert from "@/manage/components/Alert.svelte";
-    import SideMenu, { type SideMenuItem } from "@/manage/components/SideMenu.svelte";
-    import SideMenuPart from "@/manage/components/SideMenuPart.svelte";
     import Switch from "@/manage/components/Switch.svelte";
     import UnsavedChanges from "@/manage/components/UnsavedChanges.svelte";
+    import { leaveUnsaved } from "@/manage/unsaved";
     import ScoringSchemaEditor from "@/manage/events/ScoringSchemaEditor.svelte";
     import SpeedResultsGrid from "@/manage/events/SpeedResultsGrid.svelte";
     import type { CompetitionHeader, EventScoring, EventTarget, SpeedGridRow, SpeedResultRow } from "@/manage/types";
@@ -55,13 +55,29 @@
         printUrl: string;
     } = $props();
 
-    const PARTS: SideMenuItem[] = [
-        { id: "results", label: "Results" },
+    // What the left side shows instead of the results, by its hash
+    const VIEWS = [
         { id: "enter-results", label: "Enter results" },
         { id: "setup", label: "Setup" },
         { id: "scoring", label: "Scoring" },
-        { id: "delete", label: "Delete", danger: true, rule: true },
-    ];
+    ] as const;
+
+    type View = "results" | (typeof VIEWS)[number]["id"];
+
+    function fromHash(): View {
+        const hash = typeof location === "undefined" ? "" : location.hash.slice(1);
+        return VIEWS.find((view) => view.id === hash)?.id ?? "results";
+    }
+
+    let view = $state<View>(fromHash());
+
+    async function open(click: MouseEvent, next: View) {
+        click.preventDefault();
+        if (next === view || !(await leaveUnsaved())) return;
+        view = next;
+        history.replaceState(history.state, "", next === "results" ? location.pathname + location.search : `#${next}`);
+        if (next === "setup") resetSetup();
+    }
 
     const TARGETS: Record<EventTarget, string> = { club: "Clubs", team: "Teams", competitor: "Competitors" };
 
@@ -143,6 +159,9 @@
     }
 
     const heading = "text-lg font-extrabold uppercase";
+    // A row in the actions column: the whole row is the target, the current view on --v2-sunk
+    const action =
+        "flex cursor-pointer items-center gap-3 px-2 py-[0.8rem] text-left font-semibold transition-colors hover:bg-v2-row-hover focus-visible:bg-v2-row-hover aria-[current=true]:bg-v2-sunk motion-reduce:transition-none";
     const lead = "mt-[0.35rem] mb-5 text-[0.9375rem]/[1.6] text-v2-muted";
     const chip =
         "inline-flex cursor-pointer items-center rounded-full border border-v2-border bg-v2-card px-[0.8rem] py-[0.3rem] text-sm font-semibold transition-colors hover:bg-v2-row-hover aria-pressed:border-v2-ink aria-pressed:bg-v2-ink aria-pressed:text-v2-bg motion-reduce:transition-none";
@@ -152,6 +171,14 @@
 <svelte:head>
     <title>{event.name} - {competition.name} - Scoring.Events</title>
 </svelte:head>
+
+{#snippet chevron()}
+    <svg class="ml-auto size-4 shrink-0 text-v2-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="m9 6 6 6-6 6" />
+    </svg>
+{/snippet}
+
+<svelte:window onhashchange={() => (view = fromHash())} />
 
 <div class="mb-6">
     <Link href={eventsUrl} class="v2-link-muted text-sm">← Events</Link>
@@ -167,14 +194,162 @@
     <p class="mt-1 text-sm text-v2-muted">Scores {TARGETS[event.target].toLowerCase()}</p>
 </div>
 
-<SideMenu items={PARTS} label={event.name}>
-    <SideMenuPart id="results" labelledby="sp-results">
-        <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
-            <h3 id="sp-results" class={heading}>Results</h3>
-            <a href={printUrl} target="_blank" rel="noopener" class="v2-btn v2-btn-sm">Print results</a>
-        </div>
+{#snippet back()}
+    <a href={location.pathname + location.search} class="v2-link-muted mb-1 inline-block text-sm" onclick={(click) => open(click, "results")}>← Results</a>
+{/snippet}
 
-        <label class="v2-check mt-4">
+<div class="grid grid-cols-[minmax(0,1fr)] gap-8 min-[56rem]:grid-cols-[minmax(0,1fr)_15rem] min-[56rem]:gap-12">
+    <div class="min-w-0 max-[56rem]:order-2">
+        {#if view === "results"}
+            <section aria-labelledby="sp-results">
+                <h3 id="sp-results" class={heading}>Results</h3>
+
+                {#if conflicts.length > 0}
+                    <div class="mt-5">
+                        <Alert tone="danger" title="Times and order of finish disagree">
+                            <p class="mt-1">The times don't put these heats in the order the Digital Judge recorded:</p>
+                            <div class="mt-2 flex flex-wrap gap-2">
+                                {#each conflicts as which (which.heat)}
+                                    <button type="button" class="v2-btn v2-btn-sm" onclick={() => openConflict(which)}>Heat {which.heat}</button>
+                                {/each}
+                            </div>
+                        </Alert>
+                    </div>
+                {/if}
+
+                {#if results === null}
+                    <div class="mt-5">
+                        <Alert tone="info" title="No scoring yet">
+                            <p class="mt-1">Results get points and positions once you <a href="#scoring" class="v2-link-inline" onclick={(click) => open(click, "scoring")}>set up scoring</a>.</p>
+                        </Alert>
+                    </div>
+                {:else}
+                    <div class="mt-5 flex flex-col gap-3">
+                        {#if leagues.length > 0}
+                            <div class="flex flex-wrap gap-2" role="group" aria-label="League">
+                                <button type="button" class={chip} aria-pressed={league === null} onclick={() => showLeague(null)}>Overall</button>
+                                {#each leagues as option (option.id)}
+                                    <button type="button" class={chip} aria-pressed={league === option.id} onclick={() => showLeague(option.id)}>{option.name}</button>
+                                {/each}
+                            </div>
+                        {/if}
+                        {#if results.length > 0}
+                            <input type="search" class="v2-input w-full" placeholder="Search entries" aria-label="Search results" bind:value={query} />
+                        {/if}
+                    </div>
+
+                    <div class="mt-4 overflow-x-auto">
+                        <table class="w-full border-t border-v2-border text-left">
+                            <thead>
+                                <tr class={tableHead}>
+                                    <th scope="col" class="w-px">#</th>
+                                    <th scope="col">Entry</th>
+                                    {#if event.digitalJudge}<th scope="col">Order of finish</th>{/if}
+                                    <th scope="col">{event.ropeThrow ? "Ropes or time" : "Time"}</th>
+                                    <th scope="col">DQ</th>
+                                    {#if event.hasPenalties}<th scope="col">Penalties</th>{/if}
+                                    <th scope="col" class="text-right">Points</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {#each shownResults as row (row.key)}
+                                    <tr class="*:border-b *:border-v2-border *:px-2 *:py-3 *:align-top">
+                                        <td class="font-semibold tabular-nums">{row.position ?? "–"}</td>
+                                        <th scope="row" class="font-bold wrap-anywhere">
+                                            {#each row.names as name, index (index)}<span class="block">{name}</span>{/each}
+                                        </th>
+                                        {#if event.digitalJudge}<td class="text-sm whitespace-nowrap">{row.oof ?? "–"}</td>{/if}
+                                        <td class="whitespace-nowrap tabular-nums">
+                                            {#if row.times.length > 0}
+                                                <span class="flex items-start gap-3">
+                                                    <span class="text-sm text-v2-muted">{#each row.times as time, index (index)}<span class="block">{time ?? "–"}</span>{/each}</span>
+                                                    <span class="font-semibold">{row.time ?? "–"}</span>
+                                                </span>
+                                            {:else}
+                                                {row.time ?? "–"}
+                                                {#if row.was}<span class="block text-sm text-v2-muted">Was {row.was}</span>{/if}
+                                            {/if}
+                                        </td>
+                                        <td class="whitespace-nowrap">
+                                            {#each row.dqs as dq, index (index)}
+                                                <span class={["block", dq && "font-semibold text-v2-danger-text"]}>{dq ?? "–"}</span>
+                                            {/each}
+                                        </td>
+                                        {#if event.hasPenalties}<td class="text-sm">{row.penalties ?? "–"}</td>{/if}
+                                        <td class="text-right font-semibold tabular-nums">{row.points ?? "–"}</td>
+                                    </tr>
+                                {/each}
+                            </tbody>
+                        </table>
+                        {#if results.length === 0}
+                            <p class="px-2 py-6 text-center text-[0.9375rem] text-v2-muted">
+                                No results yet. They appear here, ranked, as you <a href="#enter-results" class="v2-link-inline" onclick={(click) => open(click, "enter-results")}>enter them</a>.
+                            </p>
+                        {:else if shownResults.length === 0}
+                            <p class="px-2 py-6 text-center text-[0.9375rem] text-v2-muted">No entries match.</p>
+                        {/if}
+                    </div>
+                {/if}
+            </section>
+        {:else if view === "enter-results"}
+            <section aria-labelledby="sp-enter">
+                {@render back()}
+                <h3 id="sp-enter" class={heading}>Enter results</h3>
+                <p class={lead}>Change as many rows as you like, then save them together.</p>
+                <SpeedResultsGrid comp={competition.id} event={event.id} rows={grid} penalties={event.hasPenalties} ropeThrow={event.ropeThrow} />
+            </section>
+        {:else if view === "setup"}
+            <section aria-labelledby="sp-setup">
+                {@render back()}
+                <h3 id="sp-setup" class={heading}>Setup</h3>
+                <p class={lead}>What {event.name} scores, and whether it takes penalties.</p>
+                <form onsubmit={saveSetupPart}>
+                    <div class="v2-field mt-0 max-w-sm">
+                        <label for="sp-target">Scores</label>
+                        <select id="sp-target" class="v2-input w-full" bind:value={target}>
+                            {#each Object.entries(TARGETS) as [value, label] (value)}
+                                <option {value}>{label}</option>
+                            {/each}
+                        </select>
+                        {#if target !== event.target}
+                            <span class="v2-hint text-v2-danger-text">Saving this deletes all its results.</span>
+                        {/if}
+                        {#if setupErrors.target_entity}<span class="v2-error">{setupErrors.target_entity}</span>{/if}
+                    </div>
+                    <div class="mt-5">
+                        <Switch name="has_penalties" label="Has penalties" bind:checked={hasPenalties} hint="Penalties can be entered, and show in its results." />
+                    </div>
+
+                    <UnsavedChanges dirty={setupDirty} />
+                    <div class="mt-6 flex items-center justify-end gap-4">
+                        {#if setupDirty}<span class="text-sm font-semibold text-v2-muted">Unsaved changes</span>{/if}
+                        <button type="submit" class="v2-btn v2-btn-primary" disabled={setupSaving}>Save setup</button>
+                    </div>
+                </form>
+            </section>
+        {:else}
+            <section aria-labelledby="sp-scoring">
+                {@render back()}
+                <h3 id="sp-scoring" class={heading}>Scoring</h3>
+                <p class={lead}>How results become points and positions.</p>
+                <ScoringSchemaEditor {scoring} url={saveScoring({ comp, event: event.id }).url} />
+            </section>
+        {/if}
+    </div>
+
+    <div class="min-w-0 max-[56rem]:order-1 min-[56rem]:sticky min-[56rem]:top-6 min-[56rem]:self-start">
+        <ul class="border-t border-v2-border *:border-b *:border-v2-border">
+            {#each VIEWS as item (item.id)}
+                <li>
+                    <a href="#{item.id}" class={action} aria-current={view === item.id ? "true" : undefined} onclick={(click) => open(click, item.id)}>
+                        {item.label}
+                        {@render chevron()}
+                    </a>
+                </li>
+            {/each}
+        </ul>
+
+        <label class="v2-check mt-5">
             <button
                 type="button"
                 class="v2-switch"
@@ -186,142 +361,21 @@
             <span id="sp-viewable" class="font-semibold">Shown in results</span>
         </label>
 
-        {#if conflicts.length > 0}
-            <div class="mt-5">
-                <Alert tone="danger" title="Times and order of finish disagree">
-                    <p class="mt-1">The times don't put these heats in the order the Digital Judge recorded:</p>
-                    <div class="mt-2 flex flex-wrap gap-2">
-                        {#each conflicts as which (which.heat)}
-                            <button type="button" class="v2-btn v2-btn-sm" onclick={() => openConflict(which)}>Heat {which.heat}</button>
-                        {/each}
-                    </div>
-                </Alert>
-            </div>
-        {/if}
-
-        {#if results === null}
-            <div class="mt-5">
-                <Alert tone="info" title="No scoring yet">
-                    <p class="mt-1">Results get points and positions once you <a href="#scoring" class="v2-link-inline">set up scoring</a>.</p>
-                </Alert>
-            </div>
-        {:else}
-            <div class="mt-5 flex flex-col gap-3">
-                {#if leagues.length > 0}
-                    <div class="flex flex-wrap gap-2" role="group" aria-label="League">
-                        <button type="button" class={chip} aria-pressed={league === null} onclick={() => showLeague(null)}>Overall</button>
-                        {#each leagues as option (option.id)}
-                            <button type="button" class={chip} aria-pressed={league === option.id} onclick={() => showLeague(option.id)}>{option.name}</button>
-                        {/each}
-                    </div>
-                {/if}
-                {#if results.length > 0}
-                    <input type="search" class="v2-input w-full" placeholder="Search entries" aria-label="Search results" bind:value={query} />
-                {/if}
-            </div>
-
-            <div class="mt-4 overflow-x-auto">
-                <table class="w-full border-t border-v2-border text-left">
-                    <thead>
-                        <tr class={tableHead}>
-                            <th scope="col" class="w-px">#</th>
-                            <th scope="col">Entry</th>
-                            {#if event.digitalJudge}<th scope="col">Order of finish</th>{/if}
-                            <th scope="col">{event.ropeThrow ? "Ropes or time" : "Time"}</th>
-                            <th scope="col">DQ</th>
-                            {#if event.hasPenalties}<th scope="col">Penalties</th>{/if}
-                            <th scope="col" class="text-right">Points</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {#each shownResults as row (row.key)}
-                            <tr class="*:border-b *:border-v2-border *:px-2 *:py-3 *:align-top">
-                                <td class="font-semibold tabular-nums">{row.position ?? "–"}</td>
-                                <th scope="row" class="font-bold wrap-anywhere">
-                                    {#each row.names as name, index (index)}<span class="block">{name}</span>{/each}
-                                </th>
-                                {#if event.digitalJudge}<td class="text-sm whitespace-nowrap">{row.oof ?? "–"}</td>{/if}
-                                <td class="whitespace-nowrap tabular-nums">
-                                    {#if row.times.length > 0}
-                                        <span class="flex items-start gap-3">
-                                            <span class="text-sm text-v2-muted">{#each row.times as time, index (index)}<span class="block">{time ?? "–"}</span>{/each}</span>
-                                            <span class="font-semibold">{row.time ?? "–"}</span>
-                                        </span>
-                                    {:else}
-                                        {row.time ?? "–"}
-                                        {#if row.was}<span class="block text-sm text-v2-muted">Was {row.was}</span>{/if}
-                                    {/if}
-                                </td>
-                                <td class="whitespace-nowrap">
-                                    {#each row.dqs as dq, index (index)}
-                                        <span class={["block", dq && "font-semibold text-v2-danger-text"]}>{dq ?? "–"}</span>
-                                    {/each}
-                                </td>
-                                {#if event.hasPenalties}<td class="text-sm">{row.penalties ?? "–"}</td>{/if}
-                                <td class="text-right font-semibold tabular-nums">{row.points ?? "–"}</td>
-                            </tr>
-                        {/each}
-                    </tbody>
-                </table>
-                {#if results.length === 0}
-                    <p class="px-2 py-6 text-center text-[0.9375rem] text-v2-muted">
-                        No results yet. They appear here, ranked, as you <a href="#enter-results" class="v2-link-inline">enter them</a>.
-                    </p>
-                {:else if shownResults.length === 0}
-                    <p class="px-2 py-6 text-center text-[0.9375rem] text-v2-muted">No entries match.</p>
-                {/if}
-            </div>
-        {/if}
-    </SideMenuPart>
-
-    <SideMenuPart id="enter-results" labelledby="sp-enter">
-        <h3 id="sp-enter" class={heading}>Enter results</h3>
-        <p class={lead}>Change as many rows as you like, then save them together.</p>
-        <SpeedResultsGrid comp={competition.id} event={event.id} rows={grid} penalties={event.hasPenalties} ropeThrow={event.ropeThrow} />
-    </SideMenuPart>
-
-    <SideMenuPart id="setup" labelledby="sp-setup" ondiscard={resetSetup}>
-        <h3 id="sp-setup" class={heading}>Setup</h3>
-        <p class={lead}>What {event.name} scores, and whether it takes penalties.</p>
-        <form onsubmit={saveSetupPart}>
-            <div class="v2-field mt-0 max-w-sm">
-                <label for="sp-target">Scores</label>
-                <select id="sp-target" class="v2-input w-full" bind:value={target}>
-                    {#each Object.entries(TARGETS) as [value, label] (value)}
-                        <option {value}>{label}</option>
-                    {/each}
-                </select>
-                {#if target !== event.target}
-                    <span class="v2-hint text-v2-danger-text">Saving this deletes all its results.</span>
-                {/if}
-                {#if setupErrors.target_entity}<span class="v2-error">{setupErrors.target_entity}</span>{/if}
-            </div>
-            <div class="mt-5">
-                <Switch name="has_penalties" label="Has penalties" bind:checked={hasPenalties} hint="Penalties can be entered, and show in its results." />
-            </div>
-
-            <UnsavedChanges dirty={setupDirty} />
-            <div class="mt-6 flex items-center justify-end gap-4">
-                {#if setupDirty}<span class="text-sm font-semibold text-v2-muted">Unsaved changes</span>{/if}
-                <button type="submit" class="v2-btn v2-btn-primary" disabled={setupSaving}>Save setup</button>
-            </div>
-        </form>
-    </SideMenuPart>
-
-    <SideMenuPart id="scoring" labelledby="sp-scoring">
-        <h3 id="sp-scoring" class={heading}>Scoring</h3>
-        <p class={lead}>How results become points and positions.</p>
-        <ScoringSchemaEditor {scoring} url={saveScoring({ comp, event: event.id }).url} />
-    </SideMenuPart>
-
-    <SideMenuPart id="delete" labelledby="sp-delete">
-        <h3 id="sp-delete" class={heading}>Delete event</h3>
-        <p class={lead}>
-            This removes {event.name}{event.heats > 0 ? " with its heats" : ""}, its results and its scoring. It can't be undone.
-        </p>
-        <button type="button" class="v2-btn v2-btn-danger" onclick={remove}>Delete event</button>
-    </SideMenuPart>
-</SideMenu>
+        <ul class="mt-5 border-t border-v2-border *:border-b *:border-v2-border">
+            <li>
+                <a href={printUrl} target="_blank" rel="noopener" class={action}>
+                    Print results
+                    <svg class="ml-auto size-4 shrink-0 text-v2-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />
+                    </svg>
+                </a>
+            </li>
+            <li>
+                <button type="button" class="{action} w-full text-v2-danger-text" onclick={remove}>Delete event</button>
+            </li>
+        </ul>
+    </div>
+</div>
 
 <dialog bind:this={conflictDialog} class="v2-modal" aria-labelledby="sp-conflict-title" onclick={onBackdrop}>
     {#if conflict}
