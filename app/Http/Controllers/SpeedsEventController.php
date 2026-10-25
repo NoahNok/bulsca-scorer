@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\AddSpeedEventRequest;
 use App\Http\Requests\Event\UpdateScoringSettings;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\Competition;
@@ -15,52 +14,6 @@ use Illuminate\Http\Request;
 
 class SpeedsEventController extends Controller
 {
-    public function add(Competition $comp)
-    {
-        return view('competition.events.speeds.add', ['comp' => $comp]);
-    }
-
-    public function addPost(Competition $comp, AddSpeedEventRequest $request)
-    {
-
-        $data = $request->validated();
-
-        $cse = new CompetitionSpeedEvent();
-        $cse->event = $data['event'];
-        $cse->competition = $comp->id;
-        $cse->scorable_entity = $data['target_entity'];
-
-        $time = $data['record'];
-        $minSecSplit = explode(":", $time);
-        $min = $minSecSplit[0];
-        $secMillisSplit = explode(".", $minSecSplit[1]);
-
-        $totalMillis = $min * 60000 + $secMillisSplit[0] * 1000 + $secMillisSplit[1];
-
-
-
-
-        $cse->record = SpeedEvent::find($data['event'])->record;
-        $cse->weight = $data['weight'];
-
-        $cse->save();
-
-
-        // Need to add all teams to this new event
-        $allTeams = $cse->getScorableEntities();
-        foreach ($allTeams as $team) {
-            $sr = new SpeedResult();
-            $sr->entity()->associate($team);
-            $sr->event = $cse->id;
-            $sr->save();
-        }
-
-
-
-
-        return redirect()->route('comps.events', $comp);
-    }
-
     public function view(Competition $comp, CompetitionSpeedEvent $event, HeatService $heatService)
     {
 
@@ -305,7 +258,7 @@ class SpeedsEventController extends Controller
 
         $event->delete();
 
-        return redirect()->route('comps.events', $comp);
+        return redirect()->route('manage.competitions.events', $comp);
     }
 
     public function hide(Competition $comp, CompetitionSpeedEvent $event)

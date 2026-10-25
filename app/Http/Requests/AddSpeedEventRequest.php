@@ -2,41 +2,31 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class AddSpeedEventRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
      * @return array<string, mixed>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'event' => ['required', Rule::notIn(['null'])],
-            'target_entity' => 'required|in:club,team,competitor',
-            'weight' => 'required|numeric',
-            'record' => 'regex:/[0-9]{1,2}:[0-9]{1,2}.[0-9]{3}/'
-
+            'event' => ['required', 'integer', 'exists:speed_events,id'],
+            'target_entity' => ['required', 'in:club,team,competitor'],
         ];
     }
 
-    public function messages()
+    public function messages(): array
     {
         return [
-            'record' => 'Expected a time in the form 00:00.000',
+            'event.required' => 'Pick an event.',
+            'event.exists' => 'Pick an event from the list.',
         ];
     }
 }

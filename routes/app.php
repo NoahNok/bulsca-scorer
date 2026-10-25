@@ -14,6 +14,7 @@ use App\Http\Controllers\LeagueController;
 use App\Http\Controllers\Manage\CompetitionCreateController;
 use App\Http\Controllers\Manage\CompetitionDashboardController;
 use App\Http\Controllers\Manage\CompetitionEntriesController;
+use App\Http\Controllers\Manage\CompetitionEventsController;
 use App\Http\Controllers\Manage\ManageController;
 use App\Http\Controllers\Manage\OrganisationCreateController;
 use App\Http\Controllers\Orders\DrawController;
@@ -131,12 +132,11 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
             // EVENTS
             Route::prefix('/events')->middleware('can:access,comp,"speed|serc|serc_writer"')->group(function () {
 
-                Route::get('', [CompetitionController::class, 'events'])->name('comps.events');
+                Route::get('', [CompetitionEventsController::class, 'index'])->name('manage.competitions.events');
 
                 // SPEEDS
                 Route::prefix('/speeds')->middleware('can:access,comp,"speed"')->group(function () {
-                    Route::get('/add', [SpeedsEventController::class, 'add'])->name('comps.events.speeds.add');
-                    Route::post('/add', [SpeedsEventController::class, 'addPost'])->name('comps.view.events.speeds.addPost');
+                    Route::post('', [CompetitionEventsController::class, 'storeSpeed'])->name('manage.competitions.events.speeds.store');
                     Route::delete('/{event}/delete', [SpeedsEventController::class, 'delete'])->name('comps.view.events.speeds.delete');
 
                     Route::get('/{event}', [SpeedsEventController::class, 'view'])->name('comps.events.speeds.view');

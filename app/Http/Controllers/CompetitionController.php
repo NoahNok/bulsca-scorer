@@ -30,14 +30,6 @@ class CompetitionController extends Controller
         return view('competitions', ['comps' => $c]);
     }
 
-    public function events(Competition $comp, Request $request)
-    {
-
-
-        return view('competition.events', ['comp' => $comp]);
-    }
-
-
     public function activityLog(Competition $comp, Request $request)
     {
 

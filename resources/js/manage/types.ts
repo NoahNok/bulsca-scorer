@@ -90,3 +90,23 @@ export type EntryClub = { id: number; name: string; teams: EntryTeam[] };
 
 /** A competition's league, with how many teams and competitors are in it */
 export type CompetitionLeague = { id: number; name: string; teams: number; competitors: number };
+
+/** An event's card on the Events page (CompetitionEventsController::index) */
+type EventCard = {
+    id: number;
+    name: string;
+    /** Marked complete by an Organiser */
+    complete: boolean;
+    /** On the Digital Judge, and confirmed by the Referee */
+    confirmed: boolean;
+    /** Left out of the results */
+    hidden: boolean;
+    url: string;
+};
+
+/** The Entities a speed event or SERC scores */
+export type EventTarget = "club" | "team" | "competitor";
+
+export type SpeedEventCard = EventCard & { target: EventTarget };
+
+export type SercCard = EventCard & { type: "DRY" | "WET" };

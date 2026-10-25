@@ -49,7 +49,7 @@ class CompetitionDashboardController extends Controller
             'competition' => CompetitionHeader::for($comp),
             // Null when you can't open the Events tab at all, so there's no list or "Add event"
             'events' => $can('serc|speed|serc_writer') ? $events->values() : null,
-            'addEventUrl' => route('comps.events', $comp),
+            'addEventUrl' => route('manage.competitions.events', $comp),
             'digitalJudge' => $can('admin') ? [
                 'enabled' => (bool) $comp->digitalJudgeEnabled,
                 'pin' => $comp->digitalJudgePin,
