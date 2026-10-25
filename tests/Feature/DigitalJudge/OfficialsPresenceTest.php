@@ -108,6 +108,35 @@ class OfficialsPresenceTest extends TestCase
         $this->assertSame('Admin', $this->channelData($response)['user_info']['role']);
     }
 
+    public function test_organisers_watch_from_the_management_app_without_showing_as_officials(): void
+    {
+        $organiser = User::factory()->create();
+        $this->comp->addAccount($organiser, 'admin');
+
+        $response = $this->actingAs($organiser)->post($this->appUrl('/broadcasting/auth'), [
+            'channel_name' => 'presence-judge.officials.' . $this->comp->id,
+            'socket_id' => '1234.5678',
+        ])->assertOk();
+
+        $this->assertSame(
+            ['id' => $organiser->id, 'name' => $organiser->name, 'watching' => true],
+            $this->channelData($response)['user_info'],
+        );
+    }
+
+    public function test_only_organisers_can_watch_from_the_management_app(): void
+    {
+        $viewer = User::factory()->create();
+        $this->comp->addAccount($viewer, 'view');
+
+        foreach ([$this->official, $viewer] as $user) {
+            $this->actingAs($user)->post($this->appUrl('/broadcasting/auth'), [
+                'channel_name' => 'presence-judge.officials.' . $this->comp->id,
+                'socket_id' => '1234.5678',
+            ])->assertForbidden();
+        }
+    }
+
     public function test_other_users_cannot_join(): void
     {
         $this->actingAs(User::factory()->create(['judge_only' => true]))

@@ -24,7 +24,7 @@ class CompetitionTabs
         ['Heats & Draws', 'comps.heats_and_draws', 'heats_and_draws', ['comps.heats_and_draws'], false],
         ['Printables', 'comps.printables', 'printables', ['comps.printables'], false],
         ['Results', 'comps.results', 'results', ['comps.results'], false],
-        ['Officials', 'comps.officials', 'admin', ['comps.officials'], false],
+        ['Officials', 'manage.competitions.officials', 'admin', ['manage.competitions.officials'], true],
         ['Settings', 'manage.competitions.settings', 'admin', ['manage.competitions.settings'], true],
     ];
 

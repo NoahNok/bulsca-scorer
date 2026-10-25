@@ -352,7 +352,8 @@ title, a sentence of guidance if needed, then side-by-side `ConfirmDialog`s with
   `JudgeLayout` for the current competition (`judge.officials.{id}` presence channel,
   authorised in `routes/channels.php`). Read `presence.sorted`, `presence.count` and
   `presence.connected`. Statuses (Active/Idle) and pokes are whispers, so nothing is
-  stored. Get the websocket client from `getEcho()` in `lib/echo.ts` rather than
+  stored. Organisers on the Management app's Officials page join the same channel marked
+  `watching`; the store leaves them out of its members, so they never show as online. Get the websocket client from `getEcho()` in `lib/echo.ts` rather than
   `window.Echo`, which is the legacy Blade app's. Map statuses to colours with
   `presenceStatusBadgeClass` in `types/presence.ts`.
 

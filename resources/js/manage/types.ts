@@ -74,6 +74,40 @@ export type CompetitionAccount = {
     you: boolean;
 };
 
+/**
+ * Where an official is with Digital Judge: their account not signed in to yet (made by an Organiser),
+ * the competition not opened yet, using it now, or last seen a while ago
+ */
+export type OfficialStatus = "notSignedIn" | "notOpened" | "online" | "seen";
+
+/** An official on a competition's Officials page (Manage\CompetitionOfficialsController::index) */
+export type CompetitionOfficial = {
+    id: number;
+    name: string;
+    email: string;
+    /** A key of Competition::$officialRoles */
+    role: string;
+    status: OfficialStatus;
+    joined: string | null;
+    lastSeen: string | null;
+    /** The competition's only Referee, so changing or removing them leaves none */
+    onlyReferee: boolean;
+    /** The confirm message for removing them, saying what they leave behind */
+    removeMessage: string;
+};
+
+/** Someone to add as an official: a search result, or a suggestion from the organisation's other competitions */
+export type OfficialCandidate = {
+    id: number;
+    name: string;
+    /** Masked, unless searched for in full */
+    email: string;
+    /** Search results: already an official here */
+    official?: boolean;
+    /** Suggestions: the competition they last officiated */
+    last?: string;
+};
+
 /** A team or competitor on Entries & Leagues (CompetitionEntriesController::index) */
 export type Entry = {
     id: number;

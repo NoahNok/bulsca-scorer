@@ -62,7 +62,7 @@
                                 <p class="text-sm text-gray-500 truncate">{{ $official['email'] }}</p>
                                 <p class="text-xs text-gray-400">
                                     {{ $official['count'] }} {{ Str::plural('competition', $official['count']) }}
-                                    · Last: <a href="{{ route('comps.officials', $official['last']['id']) }}"
+                                    · Last: <a href="{{ route('manage.competitions.officials', $official['last']['id']) }}"
                                         class="link">{{ $official['last']['name'] }}</a>@if ($official['last']['when']), {{ $official['last']['when']->format('M jS Y') }}@endif
                                 </p>
                             </div>

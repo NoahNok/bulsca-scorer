@@ -54,7 +54,7 @@ class CompetitionDashboardController extends Controller
                 'enabled' => (bool) $comp->digitalJudgeEnabled,
                 'pin' => $comp->digitalJudgePin,
                 'judgeUrl' => route('judge.index'),
-                'officialsUrl' => route('comps.officials', $comp),
+                'officialsUrl' => route('manage.competitions.officials', $comp),
                 'qrUrl' => route('dj.qrs', $comp),
                 'toggleUrl' => route('dj.toggle', $comp),
                 'releaseUrl' => route('dj.sercs-release', $comp),

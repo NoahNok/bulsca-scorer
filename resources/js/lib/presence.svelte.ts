@@ -6,6 +6,8 @@ const IDLE_AFTER = 60 * 1000;
 const POKE_COOLDOWN = 3000;
 
 type Me = { id: number; name: string };
+// An Organiser on the Management app's Officials page joins to watch, not as an official
+type Joined = Omit<PresenceMember, "status"> & { watching?: true };
 type Channel = NonNullable<ReturnType<typeof getEcho>> extends {
     join(name: string): infer C;
 }
@@ -16,7 +18,8 @@ type Channel = NonNullable<ReturnType<typeof getEcho>> extends {
  * Who's online for the competition the judge is in. Joined by `JudgeLayout`,
  * read by the Online tab, `OfficialsSheet` and `PokeAnimation`.
  *
- * Membership comes from the presence channel. Status and pokes are whispers
+ * Membership comes from the presence channel, less Organisers watching from the
+ * Management app (`manage/officialsPresence`). Status and pokes are whispers
  * (client events), so nothing goes through the server or is stored.
  */
 class Presence {
@@ -53,13 +56,15 @@ class Presence {
 
         this.#channel = echo
             .join(this.#channelName)
-            .here((users: Omit<PresenceMember, "status">[]) => {
+            .here((users: Joined[]) => {
                 this.connected = true;
-                this.members = users.map((u) => ({ ...u, status: "active" }));
+                this.members = users
+                    .filter((u) => !u.watching)
+                    .map((u) => ({ ...u, status: "active" }));
                 this.#setStatus(this.#currentStatus(), true);
             })
-            .joining((user: Omit<PresenceMember, "status">) => {
-                if (!this.members.some((m) => m.id === user.id)) {
+            .joining((user: Joined) => {
+                if (!user.watching && !this.members.some((m) => m.id === user.id)) {
                     this.members.push({ ...user, status: "active" });
                 }
                 // let the newcomer know how we're doing

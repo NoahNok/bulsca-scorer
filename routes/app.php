@@ -8,13 +8,13 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminUsersController;
 use App\Http\Controllers\ChampionshipController;
 use App\Http\Controllers\CompetitionController;
-use App\Http\Controllers\CompetitionOfficialsController;
 use App\Http\Controllers\DigitalJudge\DigitalJudgeController;
 use App\Http\Controllers\LeagueController;
 use App\Http\Controllers\Manage\CompetitionCreateController;
 use App\Http\Controllers\Manage\CompetitionDashboardController;
 use App\Http\Controllers\Manage\CompetitionEntriesController;
 use App\Http\Controllers\Manage\CompetitionEventsController;
+use App\Http\Controllers\Manage\CompetitionOfficialsController;
 use App\Http\Controllers\Manage\SercEventController;
 use App\Http\Controllers\Manage\SpeedEventController;
 use App\Http\Controllers\Manage\ManageController;
@@ -96,13 +96,13 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
                 Route::post('/accounts/invitee', [CompetitionController::class, 'inviteCompetitionAccount'])->name('comps.accounts.invite');
                 Route::post('/account/serc-writer/new-password', [CompetitionController::class, 'resetSercWriterAccountPassword'])->name('comps.accounts.serc-writer.new-password');
 
-                Route::get('/officials', [CompetitionOfficialsController::class, 'index'])->name('comps.officials');
-                Route::post('/officials', [CompetitionOfficialsController::class, 'store'])->name('comps.officials.store');
-                Route::get('/officials/search', [CompetitionOfficialsController::class, 'search'])->name('comps.officials.search');
-                Route::post('/officials/copy', [CompetitionOfficialsController::class, 'copy'])->name('comps.officials.copy');
-                Route::post('/officials/{official}/resend', [CompetitionOfficialsController::class, 'resend'])->whereNumber('official')->name('comps.officials.resend');
-                Route::post('/officials/{official}', [CompetitionOfficialsController::class, 'update'])->whereNumber('official')->name('comps.officials.update');
-                Route::delete('/officials/{official}', [CompetitionOfficialsController::class, 'destroy'])->whereNumber('official')->name('comps.officials.destroy');
+                Route::get('/officials', [CompetitionOfficialsController::class, 'index'])->name('manage.competitions.officials');
+                Route::post('/officials', [CompetitionOfficialsController::class, 'store'])->name('manage.competitions.officials.store');
+                Route::get('/officials/search', [CompetitionOfficialsController::class, 'search'])->name('manage.competitions.officials.search');
+                Route::post('/officials/copy', [CompetitionOfficialsController::class, 'copy'])->name('manage.competitions.officials.copy');
+                Route::post('/officials/{official}/resend', [CompetitionOfficialsController::class, 'resend'])->whereNumber('official')->name('manage.competitions.officials.resend');
+                Route::post('/officials/{official}', [CompetitionOfficialsController::class, 'update'])->whereNumber('official')->name('manage.competitions.officials.update');
+                Route::delete('/officials/{official}', [CompetitionOfficialsController::class, 'destroy'])->whereNumber('official')->name('manage.competitions.officials.destroy');
             });
 
             // ENTRIES & LEAGUES: one Svelte page, each entry and league saved on its own from a dialog

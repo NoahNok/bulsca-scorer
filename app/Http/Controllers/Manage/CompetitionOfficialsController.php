@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Manage;
 
+use App\Helpers\CompetitionHeader;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Competition\AddCompetitionOfficial;
 use App\Mail\CompetitionOfficialAddedMail;
 use App\Models\Competition;
@@ -14,7 +16,14 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
 
+/**
+ * A competition's Officials page (Svelte, in CompetitionLayout): everyone who can judge it on Digital
+ * Judge, with their role and whether they've signed in, and adding them by search, email or from another
+ * competition. Each write is one official, answered with back().
+ */
 class CompetitionOfficialsController extends Controller
 {
     public function index(Competition $comp)
@@ -40,11 +49,15 @@ class CompetitionOfficialsController extends Controller
                 'name' => $official->name,
                 'email' => $official->email,
                 'role' => $official->pivot->role,
-                // admin-made accounts stay unverified until the official first signs in with a PIN
-                'neverSignedIn' => $official->isJudgeOnly() && !$official->hasVerifiedEmail(),
-                'joined' => $official->pivot->created_at,
-                'online' => $official->pivot->isOnline(),
-                'lastSeen' => $official->pivot->last_seen_at,
+                'status' => match (true) {
+                    // Organiser-made accounts stay unverified until the official first signs in with a PIN
+                    $official->isJudgeOnly() && !$official->hasVerifiedEmail() => 'notSignedIn',
+                    !$official->pivot->last_seen_at => 'notOpened',
+                    $official->pivot->isOnline() => 'online',
+                    default => 'seen',
+                },
+                'joined' => $official->pivot->created_at?->toIso8601String(),
+                'lastSeen' => $official->pivot->last_seen_at?->toIso8601String(),
                 'onlyReferee' => $refereeCount === 1 && $official->pivot->isOfficialRole('referee'),
                 'removeMessage' => $this->removeMessage(
                     $official,
@@ -56,12 +69,24 @@ class CompetitionOfficialsController extends Controller
             ];
         });
 
-        return view('competition.officials', [
-            'comp' => $comp,
-            'officials' => $officials,
-            'hasReferee' => $refereeCount > 0,
+        return Inertia::render('Manage/Competition/Officials', [
+            'competition' => CompetitionHeader::for($comp),
+            'officials' => $officials->values(),
+            'roles' => Competition::$officialRoles,
             'suggestions' => $this->suggestions($comp),
-            'previousCompetitions' => $this->previousCompetitions($comp),
+            'previousCompetitions' => $this->previousCompetitions($comp)->map(fn (Competition $previous) => [
+                'id' => $previous->id,
+                'name' => $previous->name,
+                'when' => $previous->when?->toDateString(),
+                'officials' => $previous->officials_count,
+            ]),
+            'digitalJudge' => [
+                'enabled' => (bool) $comp->digitalJudgeEnabled,
+                'pin' => $comp->digitalJudgeEnabled ? (string) $comp->digitalJudgePin : null,
+                'judgeUrl' => route('judge.index'),
+                'qrUrl' => route('dj.qrs', $comp),
+                'overviewUrl' => route('comps.view', $comp),
+            ],
         ]);
     }
 
@@ -85,7 +110,7 @@ class CompetitionOfficialsController extends Controller
 
     /**
      * People who've officiated the organisation's other competitions, most recent first, for the
-     * add modal to offer before anything's typed. Emails are masked like the search's.
+     * add dialog to offer before anything's typed. Emails are masked like the search's.
      */
     private function suggestions(Competition $comp): Collection
     {
@@ -129,7 +154,7 @@ class CompetitionOfficialsController extends Controller
     }
 
     /**
-     * Find accounts by name or email for the add official modal. Emails are masked unless the
+     * Find accounts by name or email for the add official dialog. Emails are masked unless the
      * search is the full address, so a name search can't be used to look up someone's email.
      */
     public function search(Request $request, Competition $comp)
@@ -191,7 +216,7 @@ class CompetitionOfficialsController extends Controller
         }
 
         if (!$comp->addOfficial($official, $validated['role'])) {
-            return back()->withInput()->withErrors(['email' => "{$official->name} is already an official for this competition."], 'addOfficial');
+            throw ValidationException::withMessages(['email' => "{$official->name} is already an official for this competition."]);
         }
 
         Mail::to($official->email)->send(new CompetitionOfficialAddedMail($comp, $validated['role'], $newAccount));
@@ -205,7 +230,7 @@ class CompetitionOfficialsController extends Controller
      */
     public function copy(Request $request, Competition $comp)
     {
-        $validated = $request->validateWithBag('copyOfficials', [
+        $validated = $request->validate([
             'from' => ['required', 'integer'],
         ]);
 
@@ -214,7 +239,7 @@ class CompetitionOfficialsController extends Controller
             : null;
 
         if (!$from) {
-            return back()->withErrors(['from' => 'Pick one of your organisation\'s other competitions.'], 'copyOfficials');
+            throw ValidationException::withMessages(['from' => 'Pick one of your organisation\'s other competitions.']);
         }
 
         $added = 0;
@@ -245,7 +270,7 @@ class CompetitionOfficialsController extends Controller
         if (RateLimiter::tooManyAttempts($key, 1)) {
             $minutes = ceil(RateLimiter::availableIn($key) / 60);
 
-            return back()->with('alert-error', "{$official->name} was emailed just now. You can send it again in {$minutes} " . Str::plural('minute', $minutes) . '.');
+            throw ValidationException::withMessages(['resend' => "{$official->name} was emailed just now. You can send it again in {$minutes} " . Str::plural('minute', $minutes) . '.']);
         }
 
         RateLimiter::hit($key, 5 * 60);

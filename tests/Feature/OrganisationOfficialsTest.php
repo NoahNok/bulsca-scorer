@@ -133,7 +133,7 @@ class OrganisationOfficialsTest extends TestCase
 
         $this->actingAs($this->admin)
             ->get(route('orgs.officials', $this->org))
-            ->assertSee(route('comps.officials', $comp->id));
+            ->assertSee(route('manage.competitions.officials', $comp->id));
     }
 
     public function test_the_csv_export_lists_the_filtered_officials(): void
