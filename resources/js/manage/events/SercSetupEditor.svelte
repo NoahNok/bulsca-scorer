@@ -206,8 +206,28 @@
         });
     }
 
+    // A marking point's settings (its template), in a dialog: it's rarely changed from the default
+    let settingsDialog: HTMLDialogElement;
+    let editing = $state<{ index: number; pointIndex: number } | null>(null);
+    const editingPoint = $derived(editing ? objectives[editing.index]?.marking_points[editing.pointIndex] : undefined);
+
+    async function openSettings(index: number, pointIndex: number) {
+        editing = { index, pointIndex };
+        await tick();
+        settingsDialog.showModal();
+    }
+
+    // Close a dialog on a click on its backdrop (the dialog itself, outside its content)
+    function onBackdrop(click: MouseEvent) {
+        if (click.target === click.currentTarget) (click.currentTarget as HTMLDialogElement).close();
+    }
+
+    const templateName = (id: string | null) => templates.find((template) => template.id === id)?.name ?? "none";
+
     const leagueOptions = $derived(leagues.map((league) => ({ value: String(league.id), label: league.name })));
     const heading = "text-lg font-extrabold uppercase";
+    const iconButton =
+        "flex size-8 cursor-pointer items-center justify-center self-center rounded-md transition-colors hover:bg-v2-row-hover motion-reduce:transition-none";
     const addCard =
         "flex h-full min-h-[10rem] w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-v2-border px-4 py-3.5 font-semibold text-v2-muted transition-colors hover:border-v2-teal hover:text-v2-teal-text focus-visible:border-v2-teal focus-visible:text-v2-teal-text motion-reduce:transition-none";
 </script>
@@ -215,6 +235,12 @@
 {#snippet plus()}
     <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
         <path d="M12 5v14M5 12h14" />
+    </svg>
+{/snippet}
+
+{#snippet sliders()}
+    <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M20 7h-9M14 17H5" /><circle cx="17" cy="17" r="3" /><circle cx="7" cy="7" r="3" />
     </svg>
 {/snippet}
 
@@ -321,13 +347,15 @@
                                 labelledby="ss-obj-{index}-hint-label"
                                 placeholder="What judges look for when marking it"
                                 bind:value={objective.hint}
+                                minHeight="4.5rem"
                             />
                         </div>
 
                         <div>
-                            <div class="grid grid-cols-[minmax(0,1fr)_4.5rem_2rem] gap-x-2 border-b border-v2-border pb-1 text-sm font-semibold text-v2-muted">
+                            <div class="grid grid-cols-[minmax(0,1fr)_4.5rem_2rem_2rem] gap-x-2 border-b border-v2-border pb-1 text-sm font-semibold text-v2-muted">
                                 <span>Marking point</span>
                                 <span>Weight</span>
+                                <span class="sr-only">Template</span>
                                 <span class="sr-only">Remove</span>
                             </div>
                             {#if objective.marking_points.length === 0}
@@ -338,8 +366,8 @@
                                     {@const prefix = `judges.${index}.marking_points.${pointIndex}`}
                                     {@const descriptionError = problem(`${prefix}.description`, !point.description.trim(), "Describe it.")}
                                     {@const weightError = problem(`${prefix}.weight`, point.weight === null, "Give it a weight.")}
-                                    {@const templateError = problem(`${prefix}.template_id`, !point.template_id, "Pick a template.")}
-                                    <li class="grid grid-cols-[minmax(0,1fr)_4.5rem_2rem] gap-x-2 gap-y-1.5 border-b border-v2-border py-2.5">
+                                    {@const templateError = problem(`${prefix}.template_id`, !point.template_id, "Pick a template in its settings.")}
+                                    <li class="grid grid-cols-[minmax(0,1fr)_4.5rem_2rem_2rem] gap-x-2 gap-y-1.5 border-b border-v2-border py-2.5">
                                         <input
                                             id="ss-mp-{index}-{pointIndex}"
                                             class={["v2-input w-full", descriptionError && "is-invalid"]}
@@ -360,24 +388,21 @@
                                         />
                                         <button
                                             type="button"
-                                            class="flex size-8 cursor-pointer items-center justify-center self-center rounded-md text-v2-muted transition-colors hover:bg-v2-row-hover hover:text-v2-danger-text motion-reduce:transition-none"
+                                            class={[iconButton, templateError ? "text-v2-danger-text" : "text-v2-muted hover:text-v2-ink"]}
+                                            title="Template: {templateName(point.template_id)}"
+                                            onclick={() => openSettings(index, pointIndex)}
+                                        >
+                                            {@render sliders()}<span class="sr-only">Settings for {point.description || `marking point ${pointIndex + 1}`}</span>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            class={[iconButton, "text-v2-muted hover:text-v2-danger-text"]}
                                             onclick={() => removeMarkingPoint(index, pointIndex)}
                                         >
                                             {@render cross()}<span class="sr-only">Remove {point.description || `marking point ${pointIndex + 1}`}</span>
                                         </button>
-                                        <select
-                                            class={["v2-input col-span-2 w-full py-[0.35rem] text-sm", templateError && "is-invalid"]}
-                                            aria-label="Template for marking point {pointIndex + 1}"
-                                            bind:value={point.template_id}
-                                            aria-invalid={templateError ? "true" : undefined}
-                                        >
-                                            <option value={null} disabled>Pick a template…</option>
-                                            {#each templates as template (template.id)}
-                                                <option value={template.id}>{template.name}</option>
-                                            {/each}
-                                        </select>
                                         {#each [descriptionError, weightError, templateError].filter(Boolean) as message, messageIndex (messageIndex)}
-                                            <span class="v2-error col-span-3">{message}</span>
+                                            <span class="v2-error col-span-4">{message}</span>
                                         {/each}
                                     </li>
                                 {/each}
@@ -399,6 +424,25 @@
             </p>
         {/if}
     </section>
+
+    <dialog bind:this={settingsDialog} class="v2-modal" aria-labelledby="ss-mp-settings-title" onclick={onBackdrop} onclose={() => (editing = null)}>
+        {#if editing && editingPoint}
+            <h2 id="ss-mp-settings-title" class="wrap-anywhere">{editingPoint.description || `Marking point ${editing.pointIndex + 1}`}</h2>
+            <p>How the Digital Judge asks for its mark.</p>
+            <div class="v2-field mt-4 mb-0">
+                <label for="ss-mp-template">Template</label>
+                <select id="ss-mp-template" class="v2-input w-full" bind:value={editingPoint.template_id}>
+                    <option value={null} disabled>Pick a template…</option>
+                    {#each templates as template (template.id)}
+                        <option value={template.id}>{template.name}</option>
+                    {/each}
+                </select>
+            </div>
+            <div class="v2-modal-actions mt-6">
+                <button type="button" class="v2-btn v2-btn-primary" onclick={() => settingsDialog.close()}>Done</button>
+            </div>
+        {/if}
+    </dialog>
 
     <div class="sticky bottom-0 mt-6 flex items-center justify-end gap-4 border-t border-v2-border bg-v2-bg py-3">
         {#if !isNew && dirty}<span class="text-sm font-semibold text-v2-muted">Unsaved changes</span>{/if}

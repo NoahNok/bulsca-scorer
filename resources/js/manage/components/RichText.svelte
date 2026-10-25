@@ -12,6 +12,7 @@
         value = $bindable(""),
         placeholder,
         labelledby,
+        minHeight = "8rem",
         oninput,
     }: {
         id: string;
@@ -21,6 +22,8 @@
         placeholder?: string;
         /** The id of its label: Quill's editor isn't a form control a <label for> can point at */
         labelledby?: string;
+        /** The editor's height before it grows with its text */
+        minHeight?: string;
         oninput?: () => void;
     } = $props();
 
@@ -75,7 +78,7 @@
     });
 </script>
 
-<div class="r-wrap">
+<div class="r-wrap" style:--r-min-height={minHeight}>
     <!-- Quill reads its starting content from here -->
     <div bind:this={editor}>{@html initial}</div>
 </div>
@@ -98,7 +101,7 @@
         border-radius: 0 0 0.5rem 0.5rem;
         background: var(--v2-bg);
         font-size: 0.9375rem;
-        min-height: 8rem;
+        min-height: var(--r-min-height);
     }
 
     .r-wrap :global(.ql-editor.ql-blank::before) {
