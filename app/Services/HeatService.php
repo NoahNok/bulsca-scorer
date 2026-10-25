@@ -119,15 +119,20 @@ class HeatService
             return $heatGroup->map(function (Heat $heat) use ($results, $event) {
                 $result = $results->where('entity_id', $heat->entity_id)->where('entity_type', $heat->entity_type)->first();
 
+                // A lane whose Entity has no result in this event (it scores other Entities) has no time to compare
+                if (!$result) {
+                    return null;
+                }
+
                 return [
                     'heat' => $heat->heat,
                     'lane' => $heat->lane,
-                    'result' => (int) $result?->result ?? -1,
+                    'result' => (int) $result->result,
                     'pretty_result' => SpeedResult::prettyTime($result->result) ?? 'N/A',
                     'oof' => $heat->getOOF($event->id)?->oof ?? -1,
                     'entity' => $heat->entity
                 ];
-            })->filter(fn($item) => $item['oof'] != -1);
+            })->filter(fn($item) => $item && $item['oof'] != -1);
         });
 
         $comparison = [];

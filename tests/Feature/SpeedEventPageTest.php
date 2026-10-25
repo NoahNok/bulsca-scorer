@@ -7,6 +7,7 @@ use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\CompetitionTeam;
 use App\Models\Event\ScoringSchema;
+use App\Models\Orders\Heat;
 use App\Models\SpeedEvent;
 use App\Models\SpeedResult;
 use App\Models\User;
@@ -102,6 +103,25 @@ class SpeedEventPageTest extends TestCase
                 ->where('grid.0.result', '')
                 ->where('scoring.schema', null)
                 ->has('conflicts', 0));
+    }
+
+    public function test_it_opens_when_its_heats_hold_entities_it_doesnt_score(): void
+    {
+        // Without heats per event, every event uses the first one's heats, here of teams
+        $heat = new Heat();
+        $heat->speed_event = $this->event->id;
+        $heat->entity()->associate($this->results[0]->entity);
+        $heat->heat = 1;
+        $heat->lane = 1;
+        $heat->save();
+
+        $clubs = $this->speedEvent('Rope Throw');
+        $clubs->scorable_entity = 'club';
+        $clubs->save();
+
+        $this->actingAs($this->organiser)->get($this->url('', $clubs))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page->has('conflicts', 0)->has('grid', 0));
     }
 
     public function test_results_are_ranked_once_it_has_scoring(): void
