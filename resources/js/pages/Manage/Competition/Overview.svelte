@@ -5,6 +5,7 @@
 -->
 <script lang="ts">
     import { confirm } from "@/lib/confirm";
+    import SidebarPage from "@/manage/components/SidebarPage.svelte";
     import type { CompetitionEvent, CompetitionHeader } from "@/manage/types";
     import { Link, router } from "@inertiajs/svelte";
 
@@ -90,8 +91,8 @@
     <h2 {id} class="text-lg font-extrabold uppercase">{text}</h2>
 {/snippet}
 
-<div class="grid gap-10 min-[56rem]:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] min-[56rem]:items-start">
-    <div class="flex min-w-0 flex-col gap-10">
+<SidebarPage>
+    <div class="flex flex-col gap-10">
         {#if events}
             <section aria-labelledby="o-events">
                 <div class="mb-2 flex items-baseline justify-between gap-4">
@@ -145,77 +146,79 @@
         {/if}
     </div>
 
-    {#if digitalJudge}
-        <div class="flex min-w-0 flex-col gap-10">
-            <!-- The page's one bold panel: teal-tinted in light, the dark --v2-tile band in dark -->
-            <section
-                class="rounded-2xl border border-v2-teal/35 bg-v2-teal-soft p-6 dark:border-transparent dark:bg-v2-tile"
-                aria-labelledby="o-judge"
-            >
-                {@render heading("o-judge", "Digital Judge")}
+    {#snippet sidebar()}
+        {#if digitalJudge}
+            <div class="flex flex-col gap-10">
+                <!-- The page's one bold panel: teal-tinted in light, the dark --v2-tile band in dark -->
+                <section
+                    class="rounded-2xl border border-v2-teal/35 bg-v2-teal-soft p-6 dark:border-transparent dark:bg-v2-tile"
+                    aria-labelledby="o-judge"
+                >
+                    {@render heading("o-judge", "Digital Judge")}
 
-                {#if digitalJudge.enabled}
-                    <p class="mt-5 text-[0.8125rem] font-semibold text-v2-muted">PIN</p>
-                    <p
-                        class="font-anton text-[clamp(2.75rem,7vw,3.5rem)] leading-none tracking-[0.08em] text-v2-teal-text tabular-nums select-all dark:text-v2-teal"
-                    >{digitalJudge.pin}</p>
-                    <p class="mt-4 text-sm/[1.6] text-v2-muted dark:text-[#d1d5db]">
-                        Officials sign in at <a href={digitalJudge.judgeUrl} target="_blank" rel="noopener" class={judgeLink}
-                            >{judgeHost}</a
-                        >
-                        and enter it, or scan the
-                        <a href={digitalJudge.qrUrl} target="_blank" rel="noopener" class={judgeLink}>printable QR code</a>.
-                        Referees don't need it: give them the Referee role on
-                        <a href={digitalJudge.officialsUrl} class={judgeLink}>Officials</a>.
-                    </p>
-
-                    <div
-                        class="mt-5 border-t border-v2-teal/25 pt-5 text-sm/normal text-v2-muted dark:border-[#374151] dark:text-[#d1d5db]"
-                    >
-                        <p>
-                            <strong class="block text-v2-ink">SERCs {releasedAt ? "released" : "locked"}</strong>
-                            {releasedAt ? `Officials can judge them, since ${releasedAt}.` : "Only referees can see them until you release them."}
+                    {#if digitalJudge.enabled}
+                        <p class="mt-5 text-[0.8125rem] font-semibold text-v2-muted">PIN</p>
+                        <p
+                            class="font-anton text-[clamp(2.75rem,7vw,3.5rem)] leading-none tracking-[0.08em] text-v2-teal-text tabular-nums select-all dark:text-v2-teal"
+                        >{digitalJudge.pin}</p>
+                        <p class="mt-4 text-sm/[1.6] text-v2-muted dark:text-[#d1d5db]">
+                            Officials sign in at <a href={digitalJudge.judgeUrl} target="_blank" rel="noopener" class={judgeLink}
+                                >{judgeHost}</a
+                            >
+                            and enter it, or scan the
+                            <a href={digitalJudge.qrUrl} target="_blank" rel="noopener" class={judgeLink}>printable QR code</a>.
+                            Referees don't need it: give them the Referee role on
+                            <a href={digitalJudge.officialsUrl} class={judgeLink}>Officials</a>.
                         </p>
-                        {#if releasedAt}
-                            <!-- On the panel, not a card -->
-                            <button
-                                type="button"
-                                class="v2-btn mt-3.5 w-full justify-center border-v2-border bg-transparent text-v2-ink hover:border-v2-muted dark:border-[#4b5563] dark:hover:border-v2-muted"
-                                disabled={busy}
-                                onclick={lockSercs}>Lock SERCs</button
-                            >
-                        {:else}
-                            <button
-                                type="button"
-                                class="v2-btn v2-btn-accent mt-3.5 w-full justify-center"
-                                disabled={busy}
-                                onclick={() => post(digitalJudge.releaseUrl, { released: 1 })}>Release SERCs</button
-                            >
-                        {/if}
-                    </div>
 
-                    <div class="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold">
-                        {#if links}
-                            <Link href="{links.settingsUrl}#digital-judge" class={judgeLink}>Choose events</Link>
-                        {/if}
-                        <a href={MANUAL_URL} target="_blank" rel="noopener" class={judgeLink}>Manual</a>
+                        <div
+                            class="mt-5 border-t border-v2-teal/25 pt-5 text-sm/normal text-v2-muted dark:border-[#374151] dark:text-[#d1d5db]"
+                        >
+                            <p>
+                                <strong class="block text-v2-ink">SERCs {releasedAt ? "released" : "locked"}</strong>
+                                {releasedAt ? `Officials can judge them, since ${releasedAt}.` : "Only referees can see them until you release them."}
+                            </p>
+                            {#if releasedAt}
+                                <!-- On the panel, not a card -->
+                                <button
+                                    type="button"
+                                    class="v2-btn mt-3.5 w-full justify-center border-v2-border bg-transparent text-v2-ink hover:border-v2-muted dark:border-[#4b5563] dark:hover:border-v2-muted"
+                                    disabled={busy}
+                                    onclick={lockSercs}>Lock SERCs</button
+                                >
+                            {:else}
+                                <button
+                                    type="button"
+                                    class="v2-btn v2-btn-accent mt-3.5 w-full justify-center"
+                                    disabled={busy}
+                                    onclick={() => post(digitalJudge.releaseUrl, { released: 1 })}>Release SERCs</button
+                                >
+                            {/if}
+                        </div>
+
+                        <div class="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold">
+                            {#if links}
+                                <Link href="{links.settingsUrl}#digital-judge" class={judgeLink}>Choose events</Link>
+                            {/if}
+                            <a href={MANUAL_URL} target="_blank" rel="noopener" class={judgeLink}>Manual</a>
+                            <button
+                                type="button"
+                                class="ml-auto cursor-pointer text-v2-danger-text underline underline-offset-2 disabled:opacity-50"
+                                disabled={busy}
+                                onclick={() => post(digitalJudge.toggleUrl)}>Turn off</button
+                            >
+                        </div>
+                    {:else}
+                        <p class="mt-4 text-sm/[1.6] text-v2-muted dark:text-[#d1d5db]">Officials enter SERC marks on their own phones.</p>
                         <button
                             type="button"
-                            class="ml-auto cursor-pointer text-v2-danger-text underline underline-offset-2 disabled:opacity-50"
+                            class="v2-btn v2-btn-accent mt-3.5 w-full justify-center"
                             disabled={busy}
-                            onclick={() => post(digitalJudge.toggleUrl)}>Turn off</button
+                            onclick={() => post(digitalJudge.toggleUrl)}>Turn on Digital Judge</button
                         >
-                    </div>
-                {:else}
-                    <p class="mt-4 text-sm/[1.6] text-v2-muted dark:text-[#d1d5db]">Officials enter SERC marks on their own phones.</p>
-                    <button
-                        type="button"
-                        class="v2-btn v2-btn-accent mt-3.5 w-full justify-center"
-                        disabled={busy}
-                        onclick={() => post(digitalJudge.toggleUrl)}>Turn on Digital Judge</button
-                    >
-                {/if}
-            </section>
-        </div>
-    {/if}
-</div>
+                    {/if}
+                </section>
+            </div>
+        {/if}
+    {/snippet}
+</SidebarPage>

@@ -21,6 +21,7 @@
     import Alert from "@/manage/components/Alert.svelte";
     import Field from "@/manage/components/Field.svelte";
     import MultiSelect from "@/manage/components/MultiSelect.svelte";
+    import SidebarPage from "@/manage/components/SidebarPage.svelte";
     import type { CompetitionHeader, CompetitionLeague, Entry, EntryClub, EntryTeam } from "@/manage/types";
     import { Form, router } from "@inertiajs/svelte";
     import { tick } from "svelte";
@@ -232,8 +233,8 @@
     </svg>
 {/snippet}
 
-<div class="grid gap-10 min-[56rem]:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] min-[56rem]:items-start">
-    <section class="min-w-0" aria-labelledby="e-entries">
+<SidebarPage>
+    <section aria-labelledby="e-entries">
         <div {@attach watchStuck}></div>
         <div
             class={[
@@ -342,34 +343,36 @@
         {/if}
     </section>
 
-    <section class="min-w-0" aria-labelledby="e-leagues">
-        <div class="mb-2 flex items-baseline justify-between gap-4">
-            <h2 id="e-leagues" class={heading}>Leagues</h2>
-            <button type="button" class="v2-link cursor-pointer" onclick={() => openLeague()}>Add league</button>
-        </div>
-        {#if leagues.length > 0}
-            <ul class="border-t border-v2-border *:border-b *:border-v2-border">
-                {#each leagues as item (item.id)}
-                    <li>
-                        <button type="button" class={listRow} onclick={() => openLeague(item)}>
-                            <span class="min-w-0">
-                                <span class="block font-bold wrap-anywhere">{item.name}</span>
-                                <span class="block text-sm text-v2-muted">
-                                    {plural(item.teams, "team")} · {plural(item.competitors, "competitor")}
+    {#snippet sidebar()}
+        <section aria-labelledby="e-leagues">
+            <div class="mb-2 flex items-baseline justify-between gap-4">
+                <h2 id="e-leagues" class={heading}>Leagues</h2>
+                <button type="button" class="v2-link cursor-pointer" onclick={() => openLeague()}>Add league</button>
+            </div>
+            {#if leagues.length > 0}
+                <ul class="border-t border-v2-border *:border-b *:border-v2-border">
+                    {#each leagues as item (item.id)}
+                        <li>
+                            <button type="button" class={listRow} onclick={() => openLeague(item)}>
+                                <span class="min-w-0">
+                                    <span class="block font-bold wrap-anywhere">{item.name}</span>
+                                    <span class="block text-sm text-v2-muted">
+                                        {plural(item.teams, "team")} · {plural(item.competitors, "competitor")}
+                                    </span>
                                 </span>
-                            </span>
-                            {@render chevron()}
-                        </button>
-                    </li>
-                {/each}
-            </ul>
-        {:else}
-            <p class="pt-1 text-[0.9375rem]/[1.6] text-v2-muted">
-                No leagues. Add one to group entries, like Open and Novice.
-            </p>
-        {/if}
-    </section>
-</div>
+                                {@render chevron()}
+                            </button>
+                        </li>
+                    {/each}
+                </ul>
+            {:else}
+                <p class="pt-1 text-[0.9375rem]/[1.6] text-v2-muted">
+                    No leagues. Add one to group entries, like Open and Novice.
+                </p>
+            {/if}
+        </section>
+    {/snippet}
+</SidebarPage>
 
 <dialog bind:this={entryDialog} class="v2-modal" aria-labelledby="e-entry-title" onclick={onBackdrop}>
     {#if editing}
