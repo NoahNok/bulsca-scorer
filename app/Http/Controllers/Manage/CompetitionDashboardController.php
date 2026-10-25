@@ -40,7 +40,7 @@ class CompetitionDashboardController extends Controller
                 'key' => 'se:' . $serc->id,
                 'name' => $serc->getName(),
                 'serc' => true,
-                'url' => route('comps.events.sercs.view', [$comp, $serc]),
+                'url' => route('manage.competitions.events.sercs.show', [$comp, $serc]),
                 'digitalJudge' => (bool) $serc->digitalJudgeEnabled,
             ]));
         }

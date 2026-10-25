@@ -41,10 +41,10 @@ class CompetitionEventsController extends Controller
             ])->values() : null,
             'sercs' => $can('serc|serc_writer') ? $comp->getSERCs->map(fn (SERC $serc) => $card($serc) + [
                 'type' => $serc->type,
-                'url' => route('comps.events.sercs.view', [$comp, $serc]),
+                'url' => route('manage.competitions.events.sercs.show', [$comp, $serc]),
             ])->values() : null,
             'speedOptions' => $can('speed') ? SpeedEvent::orderBy('name')->get(['id', 'name']) : [],
-            'newSercUrl' => route('comps.events.sercs.add', $comp),
+            'newSercUrl' => route('manage.competitions.events.sercs.create', $comp),
         ]);
     }
 

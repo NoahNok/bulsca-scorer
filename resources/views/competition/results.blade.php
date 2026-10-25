@@ -14,7 +14,7 @@
                 <br>
                 <br>
                 The following SERCs require confirming: @forelse (DigitalJudge::getSercsRequiringConfirmation($comp) as $serc)
-                    <a href="{{ route('comps.events.sercs.view', [$comp, $serc]) }}" class="link">{{ $serc->name }}</a>
+                    <a href="{{ route('manage.competitions.events.sercs.show', [$comp, $serc]) }}" class="link">{{ $serc->name }}</a>
                 @empty
                     None
                 @endforelse

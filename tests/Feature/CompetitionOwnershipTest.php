@@ -117,11 +117,11 @@ class CompetitionOwnershipTest extends TestCase
         $this->actingAs($this->admin);
 
         $this->get(route('manage.competitions.events.speeds.show', [$ours, $this->theirs['event']]))->assertNotFound();
-        $this->get(route('comps.events.sercs.view', [$ours, $this->theirs['serc']]))->assertNotFound();
+        $this->get(route('manage.competitions.events.sercs.show', [$ours, $this->theirs['serc']]))->assertNotFound();
         $this->post(route('manage.competitions.leagues.update', [$ours, $this->theirs['league']]), ['name' => 'Taken'])->assertNotFound();
 
         $this->delete(route('manage.competitions.events.speeds.destroy', [$ours, $this->theirs['event']]), ['eid' => $this->theirs['event']->id])->assertNotFound();
-        $this->delete(route('comps.view.events.sercs.delete', [$ours, $this->theirs['serc']]), ['sid' => $this->theirs['serc']->id])->assertNotFound();
+        $this->delete(route('manage.competitions.events.sercs.destroy', [$ours, $this->theirs['serc']]), ['name' => $this->theirs['serc']->name])->assertNotFound();
         $this->delete(route('manage.competitions.leagues.destroy', [$ours, $this->theirs['league']]))->assertNotFound();
 
         $this->assertNotNull($this->theirs['event']->fresh());

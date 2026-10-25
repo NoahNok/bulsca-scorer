@@ -65,7 +65,7 @@ class ActivityRelation extends Model
 
         return match (true) {
             $related instanceof Competition => route('comps.view', $related),
-            $related instanceof SERC => route('comps.events.sercs.view', [$related->competition, $related->id]),
+            $related instanceof SERC => route('manage.competitions.events.sercs.show', [$related->competition, $related->id]),
             $related instanceof CompetitionSpeedEvent => route('manage.competitions.events.speeds.show', [$related->competition, $related->id]),
             default => null,
         };

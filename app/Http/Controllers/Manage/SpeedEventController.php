@@ -8,7 +8,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Event\UpdateScoringSettings;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
-use App\Models\Event\ScoringSchema;
 use App\Models\League;
 use App\Models\SpeedResult;
 use App\Services\HeatService;
@@ -56,15 +55,9 @@ class SpeedEventController extends Controller
 
     public function settings(Competition $comp, CompetitionSpeedEvent $event)
     {
-        $schema = $event->scoringSchema;
-
         return Inertia::render('Manage/Competition/SpeedEventSettings', [
             ...$this->shared($comp, $event),
-            'scoring' => [
-                'schema' => $schema ? ScoringSchemas::withDefaults($schema->schema) : null,
-                'options' => ScoringSchemas::availableFor(Auth::user(), $comp->getOrganisation)
-                    ->map(fn ($option) => [...$option, 'schema' => ScoringSchemas::withDefaults($option['schema'])]),
-            ],
+            'scoring' => ScoringSchemas::editorFor($event, Auth::user(), $comp->getOrganisation),
         ]);
     }
 
@@ -208,18 +201,7 @@ class SpeedEventController extends Controller
 
     public function saveScoring(Competition $comp, CompetitionSpeedEvent $event, UpdateScoringSettings $request)
     {
-        $schema = $event->scoringSchema;
-
-        if (!$schema) {
-            $schema = new ScoringSchema();
-            $schema->name = "Scoring Schema for {$event->getType()}:{$event->id}";
-            $schema->schema = [];
-            $schema->save();
-            $event->scoring_schema = $schema->id;
-            $event->save();
-        }
-
-        $schema->editFromRequest($request);
+        ScoringSchemas::save($event, $request);
 
         return back()->with('success', 'Scoring saved');
     }

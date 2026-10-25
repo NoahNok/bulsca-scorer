@@ -13,6 +13,7 @@ use App\Models\SERCMarkingPoint;
 use App\Models\SERCResult;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class SercSetupTest extends TestCase
@@ -105,7 +106,7 @@ class SercSetupTest extends TestCase
 
     private function editUrl(SERC $serc): string
     {
-        return route('comps.events.sercs.editPost', [$this->comp, $serc]);
+        return route('manage.competitions.events.sercs.setup.save', [$this->comp, $serc]);
     }
 
     private function assertOtherSercUntouched(): void
@@ -119,8 +120,8 @@ class SercSetupTest extends TestCase
     public function test_adding_and_editing_a_serc_still_works(): void
     {
         $this->actingAs($this->admin)
-            ->postJson(route('comps.events.sercs.addPost', $this->comp), $this->payload([$this->judge()]))
-            ->assertOk();
+            ->postJson(route('manage.competitions.events.sercs.store', $this->comp), $this->payload([$this->judge()]))
+            ->assertRedirect();
 
         $serc = SERC::where('competition', $this->comp->id)->latest('id')->first();
         $judge = $serc->getJudges()->sole();
@@ -128,7 +129,7 @@ class SercSetupTest extends TestCase
 
         $this->actingAs($this->admin)
             ->postJson($this->editUrl($serc), $this->payload([$this->judge($judge->id, $markingPoint->id)]))
-            ->assertOk();
+            ->assertRedirect();
 
         $this->assertSame($serc->id, $judge->fresh()->serc);
         $this->assertSame($serc->id, $markingPoint->fresh()->serc);
@@ -145,7 +146,7 @@ class SercSetupTest extends TestCase
             ->assertStatus(422);
 
         $this->actingAs($this->admin)
-            ->postJson(route('comps.events.sercs.addPost', $this->comp), $this->payload([$this->judge($this->otherJudge->id)]))
+            ->postJson(route('manage.competitions.events.sercs.store', $this->comp), $this->payload([$this->judge($this->otherJudge->id)]))
             ->assertStatus(422);
 
         $this->assertOtherSercUntouched();
@@ -191,11 +192,11 @@ class SercSetupTest extends TestCase
         $open = $this->league($this->comp, 'Open');
 
         $this->actingAs($this->admin)
-            ->postJson(route('comps.events.sercs.addPost', $this->comp), $this->payload([
+            ->postJson(route('manage.competitions.events.sercs.store', $this->comp), $this->payload([
                 $this->judge(name: 'Casualty 1', leagues: [$novice->id]),
                 $this->judge(name: 'Casualty 2', leagues: [$open->id]),
             ], extra: ['use_restricted_judges' => true]))
-            ->assertOk();
+            ->assertRedirect();
 
         $serc = SERC::where('competition', $this->comp->id)->latest('id')->first();
         $this->assertTrue((bool) $serc->use_restricted_judges);
@@ -207,13 +208,15 @@ class SercSetupTest extends TestCase
             ->postJson($this->editUrl($serc), $this->payload([
                 $this->judge($first->id, $first->getMarkingPoints()->sole()->id, 'Casualty 1', [$novice->id, $open->id]),
             ], ['judges' => [$serc->getJudges()->where('name', 'Casualty 2')->sole()->id], 'marking_points' => []], ['use_restricted_judges' => false]))
-            ->assertOk();
+            ->assertRedirect();
 
         $this->actingAs($this->admin)
-            ->get(route('comps.events.sercs.edit', [$this->comp, $serc]))
+            ->get(route('manage.competitions.events.sercs.setup', [$this->comp, $serc]))
             ->assertOk()
-            ->assertSee('League Objectives')
-            ->assertSee('Novice');
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Manage/Competition/SercSetup')
+                ->where('setup.leagueObjectives', false)
+                ->where('leagues.0.name', 'Novice'));
 
         $this->assertFalse((bool) $serc->fresh()->use_restricted_judges);
         $this->assertEqualsCanonicalizing([$novice->id, $open->id], $first->fresh()->restrictedLeagues->pluck('id')->all());
@@ -252,7 +255,7 @@ class SercSetupTest extends TestCase
 
         $this->actingAs($this->admin)
             ->postJson($this->editUrl($this->serc), $this->payload([$this->judge(name: 'Casualty 1', leagues: [$novice->id])], extra: ['use_restricted_judges' => true]))
-            ->assertOk();
+            ->assertRedirect();
 
         $objective = $this->serc->getJudges()->sole();
         $markingPoint = $objective->getMarkingPoints()->sole();
@@ -276,15 +279,15 @@ class SercSetupTest extends TestCase
 
         $this->actingAs($this->admin)
             ->postJson($this->editUrl($this->serc), $moveNovice)
-            ->assertStatus(409)
-            ->assertJson(['affected_marks' => 1]);
+            ->assertStatus(422)
+            ->assertJsonValidationErrors(['confirm_affected_marks' => '1 mark has already been entered']);
 
         $this->assertEquals([$novice->id], $objective->fresh()->restrictedLeagues->pluck('id')->all());
         $this->assertSame(1, $this->serc->getJudges()->count());
 
         $this->actingAs($this->admin)
             ->postJson($this->editUrl($this->serc), [...$moveNovice, 'confirm_affected_marks' => true])
-            ->assertOk();
+            ->assertRedirect();
 
         $this->assertEquals([], $objective->fresh()->restrictedLeagues->pluck('id')->all());
         $this->assertSame(1, Activity::where('activity', 'SERC_LEAGUE_OBJECTIVES_CHANGED')->count());
@@ -295,8 +298,8 @@ class SercSetupTest extends TestCase
                 $this->judge($objective->id, $markingPoint->id, 'Casualty 1', []),
                 $this->judge($this->serc->getJudges()->where('name', 'Casualty 2')->sole()->id, $this->serc->getJudges()->where('name', 'Casualty 2')->sole()->getMarkingPoints()->sole()->id, 'Casualty 2', [$novice->id]),
             ]])
-            ->assertStatus(409)
-            ->assertJson(['affected_marks' => 1]);
+            ->assertStatus(422)
+            ->assertJsonValidationErrors(['confirm_affected_marks' => '1 mark has already been entered']);
     }
 
     private function teamIn(string $letter, array $leagues): CompetitionTeam
@@ -325,7 +328,7 @@ class SercSetupTest extends TestCase
                 $this->judge(name: 'Casualty 2', leagues: [$open->id]),
                 $this->judge(name: 'Casualty 3', leagues: []),
             ], extra: ['use_restricted_judges' => true]))
-            ->assertOk();
+            ->assertRedirect();
 
         $noviceTeam = $this->teamIn('A', [$novice]);
         $noLeague = $this->teamIn('B', []);

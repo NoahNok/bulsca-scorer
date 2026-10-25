@@ -1,6 +1,7 @@
 <!--
-    A small rich-text field (bold, italic, underline, links) for HTML a form sends as `name`: Quill, loaded
-    from /vendor on first use as the Blade pages do. It sends an empty value when there's no text left.
+    A small rich-text field (bold, italic, underline, links) for HTML a form sends as `name`, or that a
+    page binds as `value`: Quill, loaded from /vendor on first use as the Blade pages do. Its value is
+    empty when there's no text left. It starts from `value`, and doesn't follow later changes to it.
 -->
 <script lang="ts">
     import { onMount } from "svelte";
@@ -8,13 +9,14 @@
     let {
         id,
         name,
-        value = "",
+        value = $bindable(""),
         placeholder,
         labelledby,
         oninput,
     }: {
         id: string;
-        name: string;
+        /** Leave it out when the page binds `value` instead */
+        name?: string;
         value?: string | null;
         placeholder?: string;
         /** The id of its label: Quill's editor isn't a form control a <label for> can point at */
@@ -25,9 +27,11 @@
     const QUILL = "/vendor/quill@2.0.2/quill";
 
     let editor: HTMLDivElement;
-    let input: HTMLInputElement;
+    let input: HTMLInputElement | undefined = $state();
+    // Quill owns the editor's content once it starts, so only the first value is drawn
     // svelte-ignore state_referenced_locally
-    let html = $state(value ?? "");
+    const initial = value ?? "";
+    let html = $state(initial);
 
     function load(): Promise<void> {
         if ((window as any).Quill) return Promise.resolve();
@@ -60,8 +64,9 @@
 
             quill.on("text-change", () => {
                 html = quill.getText().trim() === "" ? "" : quill.root.innerHTML;
+                value = html;
                 // A hidden input fires nothing itself, so tell the form it changed
-                input.dispatchEvent(new Event("input", { bubbles: true }));
+                input?.dispatchEvent(new Event("input", { bubbles: true }));
                 oninput?.();
             });
         });
@@ -72,9 +77,9 @@
 
 <div class="r-wrap">
     <!-- Quill reads its starting content from here -->
-    <div bind:this={editor}>{@html value ?? ""}</div>
+    <div bind:this={editor}>{@html initial}</div>
 </div>
-<input bind:this={input} type="hidden" {name} value={html} />
+{#if name}<input bind:this={input} type="hidden" {name} value={html} />{/if}
 
 <style>
     /* Quill's snow theme, on the v2 tokens */

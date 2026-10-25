@@ -38,7 +38,7 @@
                 <h2 class="mb-0">Mark Splits - {{ $serc->name }}</h2>
 
                 <div class="sticky top-4 flex space-x-2 ">
-                    <a href="{{ route('comps.events.sercs.view', [$comp, $serc]) }}" class="se-btn">Back</a>
+                    <a href="{{ route('manage.competitions.events.sercs.show', [$comp, $serc]) }}" class="se-btn">Back</a>
 
                 </div>
             </div>

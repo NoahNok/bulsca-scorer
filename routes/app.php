@@ -15,6 +15,7 @@ use App\Http\Controllers\Manage\CompetitionCreateController;
 use App\Http\Controllers\Manage\CompetitionDashboardController;
 use App\Http\Controllers\Manage\CompetitionEntriesController;
 use App\Http\Controllers\Manage\CompetitionEventsController;
+use App\Http\Controllers\Manage\SercEventController;
 use App\Http\Controllers\Manage\SpeedEventController;
 use App\Http\Controllers\Manage\ManageController;
 use App\Http\Controllers\Manage\OrganisationCreateController;
@@ -160,36 +161,44 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
                     Route::get('/{event}/digital-judge-toggle', [DigitalJudgeController::class, 'speedToggle'])->name('dj.speedToggle');
                 });
 
-                // SERCS
+                // SERCS: a Svelte page per SERC, with its setup, settings and marking on their own pages
 
                 Route::prefix('/sercs')->middleware('can:access,comp,"serc|serc_writer"')->group(function () {
-                    Route::get('/add', [SERCController::class, 'add'])->name('comps.events.sercs.add');
-                    Route::post('/add', [SERCController::class, 'addPost'])->name('comps.events.sercs.addPost');
+                    Route::get('/create', [SercEventController::class, 'create'])->name('manage.competitions.events.sercs.create');
+                    Route::post('', [SercEventController::class, 'store'])->name('manage.competitions.events.sercs.store');
+                    Route::get('/add', fn (Competition $comp) => redirect(route('manage.competitions.events.sercs.create', $comp), 301))->name('manage.competitions.events.sercs.old.add');
+
                     Route::prefix('/{serc}')->group(function () {
+                        Route::name('manage.competitions.events.sercs.')->group(function () {
+                            Route::get('', [SercEventController::class, 'show'])->name('show');
+                            Route::get('/setup', [SercEventController::class, 'setup'])->name('setup');
+                            Route::post('/setup', [SercEventController::class, 'saveSetup'])->name('setup.save');
 
+                            Route::middleware('can:access,comp,"serc"')->group(function () {
+                                Route::get('/settings', [SercEventController::class, 'settings'])->name('settings');
+                                Route::post('/visibility', [SercEventController::class, 'visibility'])->name('visibility');
+                                Route::post('/scoring', [SercEventController::class, 'saveScoring'])->name('scoring');
+                                Route::delete('', [SercEventController::class, 'destroy'])->name('destroy');
+                            });
 
-                        Route::get('', [SERCController::class, 'view'])->name('comps.events.sercs.view');
-                        Route::get('/edit', [SERCController::class, 'edit'])->name('comps.events.sercs.edit');
-                        Route::post('/edit', [SERCController::class, 'editPost'])->name('comps.events.sercs.editPost');
+                            // The old pages, now the setup page and a part of the settings page
+                            foreach (['edit' => ['setup', ''], 'scoring-settings' => ['settings', '#scoring']] as $old => [$page, $part]) {
+                                Route::get("/$old", fn (Competition $comp, SERC $serc) => redirect(route("manage.competitions.events.sercs.$page", [$comp, $serc]) . $part, 301))->name("old.$old");
+                            }
+                        });
+
                         Route::get('/print-results', [SERCController::class, 'printResults'])->name('comps.view.events.sercs.printResults');
 
-
                         Route::middleware('can:access,comp,"serc"')->group(function () {
-                            Route::delete('', [SERCController::class, 'delete'])->name('comps.view.events.sercs.delete');
-
                             Route::get('results/{entity_id}/next', [SERCController::class, 'next'])->name('comps.view.events.sercs.next');
 
                             Route::get('/results/{entity_id}/edit', [SERCController::class, 'editResultsView'])->name('comps.events.sercs.editResults');
                             Route::post('/results/{entity_id}/edit', [SERCController::class, 'updateTeamResults'])->name('comps.view.events.sercs.editResultsPost');
 
                             Route::get('/digital-judge-toggle', [DigitalJudgeController::class, 'sercToggle'])->name('dj.sercToggle');
-                            Route::get('/hide', [SERCController::class, 'hide'])->name('comps.view.sercs.hide');
 
                             Route::post('/image', [SERCController::class, 'addSercImage'])->name('comps.view.sercs.image');
                             Route::get('/image/remove', [SERCController::class, 'removeSercImage'])->name('comps.view.sercs.image.remove');
-
-                            Route::get('/scoring-settings', [SERCController::class, 'scoringSettings'])->name('comps.events.sercs.scoring-settings');
-                            Route::post('/scoring-settings', [SERCController::class, 'saveScoringSettings'])->name('comps.events.sercs.scoring-settings.save');
 
                             Route::get('/mark-splits', [SERCController::class, 'markSplits'])->name('comps.events.sercs.mark-splits');
                             Route::get('/mark-splits/{judge}', [SERCController::class, 'loadMarkSplit'])->name('comps.events.sercs.mark-splits.judge');

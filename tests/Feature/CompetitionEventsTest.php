@@ -105,7 +105,7 @@ class CompetitionEventsTest extends TestCase
                 ->has('sercs', 1)
                 ->where('sercs.0.name', 'Dry SERC')
                 ->where('sercs.0.type', 'DRY')
-                ->where('sercs.0.url', route('comps.events.sercs.view', [$this->comp, $serc]))
+                ->where('sercs.0.url', route('manage.competitions.events.sercs.show', [$this->comp, $serc]))
                 ->has('speedOptions', 1));
     }
 

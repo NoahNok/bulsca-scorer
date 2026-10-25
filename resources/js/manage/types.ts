@@ -123,7 +123,78 @@ export type SpeedEventHeader = {
     heats: number;
 };
 
-export type SercCard = EventCard & { type: "DRY" | "WET" };
+export type SercType = "DRY" | "WET";
+
+export type SercCard = EventCard & { type: SercType };
+
+/** A SERC, as each of its pages takes it (Manage\SercEventController::shared) */
+export type SercEventHeader = {
+    id: number;
+    name: string;
+    type: SercType;
+    target: EventTarget;
+    complete: boolean;
+    viewable: boolean;
+    /** Each Entity is marked against the Objective its League is assigned */
+    leagueObjectives: boolean;
+    /** SERC access; a SERC Writer only sees its results and edits its setup */
+    canManage: boolean;
+};
+
+/** An Entity a SERC scores, in draw order, with how many of its marks are in */
+export type SercEntity = {
+    key: string;
+    id: number;
+    name: string;
+    /** Its place in the draw (Tank 2-3 with tanks), null when it isn't in one */
+    draw: string | null;
+    marked: number;
+    /** How many marks it takes; null when League Objectives give it none or several Objectives */
+    possible: number | null;
+};
+
+/** A ranked row on a SERC's page. A combined row stands for several Entities, one per entry in `names` */
+export type SercResultRow = {
+    key: string;
+    names: string[];
+    dq: string | null;
+    /** The weighted mark */
+    mark: number;
+    points: number;
+    disqualified: boolean;
+    position: number | null;
+};
+
+/** A marking point as the setup editor edits it; id null until it's saved */
+export type SercMarkingPoint = {
+    id: number | null;
+    description: string;
+    weight: number | null;
+    template_id: string | null;
+    /** Keys a new one in the list until it has an id */
+    sort_id?: number;
+};
+
+/** An Objective as the setup editor edits it (SERC::getSERCConfiguration) */
+export type SercObjective = {
+    id: number | null;
+    name: string;
+    /** Its marking hint, as HTML */
+    hint: string | null;
+    /** League ids, with League Objectives on */
+    restricted_leagues: number[];
+    marking_points: SercMarkingPoint[];
+    sort_id?: number;
+};
+
+/** What the setup editor starts from */
+export type SercSetup = {
+    name: string;
+    type: SercType;
+    target: EventTarget;
+    leagueObjectives: boolean;
+    objectives: SercObjective[];
+};
 
 /** One speed result as the Enter results grid edits it (Manage\SpeedEventController::grid) */
 export type SpeedGridRow = {

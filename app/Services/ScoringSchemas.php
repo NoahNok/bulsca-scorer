@@ -2,6 +2,9 @@
 
 namespace App\Services;
 
+use App\Http\Requests\Event\UpdateScoringSettings;
+use App\Models\AbstractClasses\Event;
+use App\Models\Event\ScoringSchema;
 use App\Models\Organisation\Organisation;
 use App\Models\User;
 use Illuminate\Support\Collection;
@@ -29,6 +32,40 @@ class ScoringSchemas
             'organisation' => $org->name,
             'schema' => $schema->schema,
         ]))->values();
+    }
+
+    /**
+     * What an event's Scoring part edits: its schema (null until it has one), and the schemas it can
+     * start from
+     */
+    public static function editorFor(Event $event, User $user, ?Organisation $org = null): array
+    {
+        $schema = $event->scoringSchema;
+
+        return [
+            'schema' => $schema ? self::withDefaults($schema->schema) : null,
+            'options' => self::availableFor($user, $org)
+                ->map(fn ($option) => [...$option, 'schema' => self::withDefaults($option['schema'])]),
+        ];
+    }
+
+    /**
+     * Saves an event's scoring, giving it a schema of its own first if it has none
+     */
+    public static function save(Event $event, UpdateScoringSettings $request): void
+    {
+        $schema = $event->scoringSchema;
+
+        if (!$schema) {
+            $schema = new ScoringSchema();
+            $schema->name = "Scoring Schema for {$event->getType()}:{$event->id}";
+            $schema->schema = [];
+            $schema->save();
+            $event->scoring_schema = $schema->id;
+            $event->save();
+        }
+
+        $schema->editFromRequest($request);
     }
 
     /**

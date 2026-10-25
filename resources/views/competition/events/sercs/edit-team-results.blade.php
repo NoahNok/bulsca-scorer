@@ -30,7 +30,7 @@
             <div>
                 <div class="  se-table  ">
                     <table editable-table="scores" table-submit-csrf="{{ csrf_token() }}"
-                        table-after-url="{{ route('comps.events.sercs.view', [$comp, $serc]) }}"
+                        table-after-url="{{ route('manage.competitions.events.sercs.show', [$comp, $serc]) }}"
                         table-submit-url="{{ route('comps.view.events.sercs.editResultsPost', [$comp, $serc, $team]) }}">
                         <thead>
                             <tr>
@@ -128,7 +128,7 @@
         <div>
 
             <div class="flex justify-end items-center space-x-3 sticky top-4">
-                <a href="{{ route('comps.events.sercs.view', [$comp, $serc]) }}" class="se-btn">Back</a>
+                <a href="{{ route('manage.competitions.events.sercs.show', [$comp, $serc]) }}" class="se-btn">Back</a>
                 <a href="{{ route('comps.view.events.sercs.next', [$comp, $serc, $team]) }}" class="se-btn">Next Team</a>
                 <button class="se-btn se-btn-success " table-submit="scores">Save & Next</button>
             </div>
