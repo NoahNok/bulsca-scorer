@@ -11,6 +11,7 @@
     import type { CompetitionHeader, SercEventHeader, SercMarkingObjective } from "@/manage/types";
     import { Link, router } from "@inertiajs/svelte";
     import { tick } from "svelte";
+    import { upperCase } from "@/manage/ui";
 
     let {
         competition,
@@ -81,14 +82,6 @@
         });
     }
 
-    // Codes are capitals, however they're typed
-    function upper(input: Event & { currentTarget: HTMLInputElement }) {
-        const field = input.currentTarget;
-        const at = field.selectionStart;
-        field.value = field.value.toUpperCase();
-        field.setSelectionRange(at, at);
-    }
-
     const heading = "text-lg font-extrabold uppercase";
 </script>
 
@@ -129,7 +122,7 @@
                     placeholder={field.placeholder}
                     autocomplete="off"
                     bind:value={values[field.key]}
-                    oninput={upper}
+                    oninput={upperCase}
                     aria-invalid={error ? "true" : undefined}
                     aria-describedby={error ? `sm-${field.key}-error` : undefined}
                 />

@@ -9,7 +9,9 @@
     import type { SpeedGridRow } from "@/manage/types";
     import { router } from "@inertiajs/svelte";
     import type { MaskInputOptions } from "maska";
+    import { untrack } from "svelte";
     import { maska } from "maska/svelte";
+    import { upperCase } from "@/manage/ui";
 
     let {
         comp,
@@ -35,12 +37,21 @@
 
     // svelte-ignore state_referenced_locally
     let values = $state(cellsOf(rows));
+
+    // Rows can change under the grid when a save comes back (another Organiser added an Entity): give new
+    // ones their saved cells, keeping what's been typed in the rest
+    $effect.pre(() => {
+        const missing = rows.filter((row) => !untrack(() => row.id in values));
+        if (missing.length > 0) Object.assign(values, cellsOf(missing));
+    });
+
     let errors = $state<Record<string, string>>({});
     let processing = $state(false);
 
     const changed = $derived(
         rows.filter((row) => {
             const cells = values[row.id];
+            if (!cells) return false;
             return cells.result !== row.result || cells.disqualification !== row.disqualification || cells.penalties !== row.penalties;
         }),
     );
@@ -83,14 +94,6 @@
         });
     }
 
-    // Codes are capitals, however they're typed
-    function upper(event: Event & { currentTarget: HTMLInputElement }) {
-        const input = event.currentTarget;
-        const at = input.selectionStart;
-        input.value = input.value.toUpperCase();
-        input.setSelectionRange(at, at);
-    }
-
     // Times as mm:ss.hh (or .hhh, as saved times show), DNS, DNF and OOT from their first letter, and DQ
     // codes, filled in as they're typed. Penalties are a free list, so only capitals
     const MASKS: Partial<Record<keyof Cells, MaskInputOptions>> = {
@@ -113,8 +116,6 @@
         },
     };
 
-    const chip =
-        "inline-flex cursor-pointer items-center rounded-full border border-v2-border bg-v2-card px-[0.8rem] py-[0.3rem] text-sm font-semibold transition-colors hover:bg-v2-row-hover aria-pressed:border-v2-ink aria-pressed:bg-v2-ink aria-pressed:text-v2-bg motion-reduce:transition-none";
     const cell = "v2-input w-full min-w-[6.5rem] px-2 py-1.5 font-mono text-sm";
 </script>
 
@@ -125,9 +126,9 @@
         <input type="search" class="v2-input w-full" placeholder="Search {rows.length === 1 ? 'the entry' : 'entries'}" aria-label="Search entries" bind:value={query} />
         {#if heats.length > 0}
             <div class="flex flex-wrap gap-2" role="group" aria-label="Heat">
-                <button type="button" class={chip} aria-pressed={heat === null} onclick={() => (heat = null)}>All heats</button>
+                <button type="button" class="v2-chip" aria-pressed={heat === null} onclick={() => (heat = null)}>All heats</button>
                 {#each heats as number (number)}
-                    <button type="button" class={chip} aria-pressed={heat === number} onclick={() => (heat = number)}>Heat {number}</button>
+                    <button type="button" class="v2-chip" aria-pressed={heat === number} onclick={() => (heat = number)}>Heat {number}</button>
                 {/each}
             </div>
         {/if}
@@ -149,7 +150,7 @@
                 </tr>
             </thead>
             <tbody>
-                {#each shown as row (row.id)}
+                {#each shown.filter((row) => values[row.id]) as row (row.id)}
                     {@const cells = values[row.id]}
                     <tr class="*:border-b *:border-v2-border *:px-2 *:py-2 *:align-top">
                         <th scope="row" class="pt-3.5 font-semibold wrap-anywhere">{row.name}</th>
@@ -170,7 +171,7 @@
                                     aria-describedby={message ? `g-${row.id}-${key}` : undefined}
                                     bind:value={cells[key]}
                                     use:maska={MASKS[key] ?? {}}
-                                    oninput={MASKS[key] ? undefined : upper}
+                                    oninput={MASKS[key] ? undefined : upperCase}
                                 />
                                 {#if message}<span id="g-{row.id}-{key}" class="v2-error">{message}</span>{/if}
                             </td>

@@ -20,11 +20,8 @@ class ScoringSchemas
      */
     public static function availableFor(User $user, ?Organisation $org = null): Collection
     {
-        $orgs = $user->getOrganisations;
-
-        if ($org) {
-            $orgs = $orgs->push($org)->unique('id');
-        }
+        // concat makes a new collection; push would add the org to the user's loaded relation too
+        $orgs = $user->getOrganisations->concat($org ? [$org] : [])->unique('id');
 
         return $orgs->flatMap(fn (Organisation $org) => $org->scoringSchemas->map(fn ($schema) => [
             'id' => $schema->id,

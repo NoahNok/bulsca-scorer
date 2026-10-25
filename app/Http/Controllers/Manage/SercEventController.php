@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Manage;
 
-use App\DTO\Result;
 use App\Helpers\CompetitionHeader;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Manage\Concerns\ManagesEventPages;
 use App\Http\Requests\Event\UpdateScoringSettings;
 use App\Http\Requests\SERC\SaveSERCSetupRequest;
 use App\Models\AbstractClasses\Entity;
@@ -32,23 +32,29 @@ use Inertia\Inertia;
  */
 class SercEventController extends Controller
 {
+    use ManagesEventPages;
+
     public function show(Competition $comp, SERC $serc, Request $request)
     {
         $league = $comp->getLeagues()->find($request->query('league'));
-        $marking = $this->marking($comp, $serc);
+        // Built once, and only when a prop needs it: a league pill reloads only the results
+        $marking = null;
+        $getMarking = function () use (&$marking, $comp, $serc) {
+            return $marking ??= $this->marking($comp, $serc);
+        };
 
         return Inertia::render('Manage/Competition/Serc', [
             ...$this->shared($comp, $serc),
-            'leagues' => $comp->getLeagues()->orderBy('name')->get(['id', 'name']),
+            'leagues' => fn () => $comp->getLeagues()->orderBy('name')->get(['id', 'name']),
             'league' => $league?->id,
-            'marking' => [
-                'marked' => $marking->sum('marked'),
-                'possible' => $marking->sum('possible'),
+            'marking' => fn () => [
+                'marked' => $getMarking()->sum('marked'),
+                'possible' => $getMarking()->sum('possible'),
             ],
             // Null until the SERC has scoring set up
-            'results' => $serc->scoringSchema ? fn () => $this->rankedResults($comp, $serc, $league, $marking) : null,
-            'entities' => $marking->values(),
-            'drawn' => $serc->getDraw()->exists(),
+            'results' => $serc->scoringSchema ? fn () => $this->rankedResults($comp, $serc, $league) : null,
+            'entities' => fn () => $getMarking()->values(),
+            'drawn' => fn () => $serc->getDraw()->exists(),
             'eventsUrl' => route('manage.competitions.events', $comp),
             'printUrl' => route('comps.view.events.sercs.printResults', [$comp, $serc]),
             // Mark sheets are a printable, which needs its own access
@@ -88,7 +94,8 @@ class SercEventController extends Controller
     {
         return [
             'competition' => CompetitionHeader::for($comp),
-            'event' => [
+            // Lazy, so a partial reload (a league pill) doesn't check completion again
+            'event' => fn () => [
                 'id' => $serc->id,
                 'name' => $serc->getName(),
                 'type' => $serc->type,
@@ -178,18 +185,14 @@ class SercEventController extends Controller
     }
 
     /**
-     * The ranked results as the SERC's page shows them, each with its Entity's marking. A combined
-     * result (one row standing for several Entities) lists each one's name.
+     * The ranked results as the SERC's page shows them. A combined result (one row standing for
+     * several Entities) lists each one's name; the page joins each row to its Entity's marking by key.
      */
-    private function rankedResults(Competition $comp, SERC $serc, ?League $league, Collection $marking): array
+    private function rankedResults(Competition $comp, SERC $serc, ?League $league): array
     {
-        return collect($serc->getRankedResults($league))->map(function ($result) use ($comp, $marking) {
-            $parts = $result->isCombined() ? $result->combined : collect([$result]);
-            $key = $parts->map(fn (Result $part) => $part->entity->getMorphClass() . ':' . $part->entity->id)->implode(',');
-
+        return collect($serc->getRankedResults($league))->map(function ($result) use ($comp) {
             return [
-                'key' => $key,
-                'names' => $parts->map(fn (Result $part) => $part->entity->getName($comp))->values(),
+                ...$this->keyAndNames($comp, $result),
                 'dq' => $result->getDisqualificationsString(),
                 'mark' => round($result->resolvedResult, 1),
                 'points' => round($result->points ?? 0, 1),
@@ -538,10 +541,7 @@ class SercEventController extends Controller
 
     public function visibility(Competition $comp, SERC $serc, Request $request)
     {
-        $serc->viewable = $request->validate(['viewable' => ['required', 'boolean']])['viewable'];
-        $serc->save();
-
-        return back()->with('success', $serc->viewable ? 'Shown in results' : 'Hidden from results');
+        return $this->setVisibility($serc, $request);
     }
 
     public function saveScoring(Competition $comp, SERC $serc, UpdateScoringSettings $request)
@@ -556,14 +556,6 @@ class SercEventController extends Controller
      */
     public function destroy(Competition $comp, SERC $serc, Request $request)
     {
-        $name = $serc->getName();
-
-        if ($request->validate(['name' => ['required', 'string']])['name'] != $name) {
-            throw ValidationException::withMessages(['name' => "That isn't the SERC's name."]);
-        }
-
-        $serc->delete();
-
-        return redirect()->route('manage.competitions.events', $comp)->with('success', "{$name} deleted");
+        return $this->destroyNamed($comp, $serc, $request, 'SERC');
     }
 }

@@ -31,8 +31,6 @@
         router.reload({ data: { objective: id }, only: ["splits", "objective"] });
     }
 
-    const chip =
-        "inline-flex cursor-pointer items-center rounded-full border border-v2-border bg-v2-card px-[0.8rem] py-[0.3rem] text-sm font-semibold transition-colors hover:bg-v2-row-hover aria-pressed:border-v2-ink aria-pressed:bg-v2-ink aria-pressed:text-v2-bg motion-reduce:transition-none";
     const tableHead = "text-sm text-v2-muted *:border-b *:border-v2-border *:px-2 *:py-2 *:font-semibold";
 </script>
 
@@ -51,7 +49,7 @@
 {:else}
     <div class="flex flex-wrap gap-2" role="group" aria-label="Objective">
         {#each objectives as option (option.id)}
-            <button type="button" class={chip} aria-pressed={objective === option.id} onclick={() => showObjective(option.id)}>{option.name}</button>
+            <button type="button" class="v2-chip" aria-pressed={objective === option.id} onclick={() => showObjective(option.id)}>{option.name}</button>
         {/each}
     </div>
 

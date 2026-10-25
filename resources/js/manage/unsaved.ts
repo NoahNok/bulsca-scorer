@@ -36,26 +36,30 @@ export async function leaveUnsaved(): Promise<boolean> {
         cancelLabel: "Keep editing",
         confirmVariant: "danger",
     });
-    // Outside a SideMenuPart nothing remounts, so stop counting the form as unsaved, or the visit
-    // carrying on would be stopped again
-    if (ok)
-        dirty.forEach((entry) => {
-            entry.dirty = false;
-            entry.discard();
-        });
+    if (ok) dirty.forEach((entry) => entry.discard());
     return ok;
 }
 
 /** Asks before an Inertia visit to another page or leaving the site. Returns a function that stops it */
 export function guardUnsaved() {
+    // The visit you chose to discard your changes for. Outside a SideMenuPart nothing remounts, so the form
+    // is still dirty when it carries on: let that one visit through, and keep guarding if it doesn't leave
+    let discarded: string | null = null;
+
     // Only page visits: a form's own save is a POST and goes ahead
     const stopVisits = router.on("before", (event) => {
         const visit = event.detail.visit;
         if (visit.method !== "get" || visit.url.pathname === location.pathname || unsaved().length === 0) return;
+        if (discarded === visit.url.href) {
+            discarded = null;
+            return;
+        }
 
         event.preventDefault();
         leaveUnsaved().then((ok) => {
-            if (ok) router.visit(visit.url.href, { preserveScroll: visit.preserveScroll, replace: visit.replace });
+            if (!ok) return;
+            discarded = visit.url.href;
+            router.visit(visit.url.href, { preserveScroll: visit.preserveScroll, replace: visit.replace });
         });
     });
 

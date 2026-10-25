@@ -14,6 +14,7 @@
     import type { EventTarget, SercMarkingPoint, SercObjective, SercSetup, SercType } from "@/manage/types";
     import { Link, router } from "@inertiajs/svelte";
     import { tick } from "svelte";
+    import { closeOnBackdrop, TARGET_LABELS } from "@/manage/ui";
 
     let {
         setup,
@@ -34,8 +35,6 @@
         /** Adding a SERC: no unsaved changes guard, and the button says Add */
         isNew: boolean;
     } = $props();
-
-    const TARGETS: Record<EventTarget, string> = { club: "Clubs", team: "Teams", competitor: "Competitors" };
 
     // The editor's copy, with each Objective's Leagues as strings for MultiSelect
     type Objective = Omit<SercObjective, "restricted_leagues"> & { restricted_leagues: string[] };
@@ -217,11 +216,6 @@
         settingsDialog.showModal();
     }
 
-    // Close a dialog on a click on its backdrop (the dialog itself, outside its content)
-    function onBackdrop(click: MouseEvent) {
-        if (click.target === click.currentTarget) (click.currentTarget as HTMLDialogElement).close();
-    }
-
     const templateName = (id: string | null) => templates.find((template) => template.id === id)?.name ?? "none";
 
     const leagueOptions = $derived(leagues.map((league) => ({ value: String(league.id), label: league.name })));
@@ -276,13 +270,12 @@
         <div class="v2-field mt-0">
             <label for="ss-target">Scores</label>
             <select id="ss-target" class="v2-input w-full" bind:value={target}>
-                {#each Object.entries(TARGETS) as [value, label] (value)}
+                {#each Object.entries(TARGET_LABELS) as [value, label] (value)}
                     <option {value}>{label}</option>
                 {/each}
             </select>
         </div>
     </div>
-
 
     <div class="mt-5 max-w-xl">
         <Switch
@@ -425,7 +418,7 @@
         {/if}
     </section>
 
-    <dialog bind:this={settingsDialog} class="v2-modal" aria-labelledby="ss-mp-settings-title" onclick={onBackdrop} onclose={() => (editing = null)}>
+    <dialog bind:this={settingsDialog} class="v2-modal" aria-labelledby="ss-mp-settings-title" onclick={closeOnBackdrop} onclose={() => (editing = null)}>
         {#if editing && editingPoint}
             <h2 id="ss-mp-settings-title" class="wrap-anywhere">{editingPoint.description || `Marking point ${editing.pointIndex + 1}`}</h2>
             <p>How the Digital Judge asks for its mark.</p>

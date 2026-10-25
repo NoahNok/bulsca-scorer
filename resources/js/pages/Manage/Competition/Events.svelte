@@ -8,6 +8,7 @@
     import type { CompetitionHeader, EventTarget, SercCard, SpeedEventCard } from "@/manage/types";
     import { Form } from "@inertiajs/svelte";
     import { tick } from "svelte";
+    import { closeOnBackdrop, TARGET_LABELS } from "@/manage/ui";
 
     let {
         competition,
@@ -25,8 +26,6 @@
         newSercUrl: string;
     } = $props();
 
-    const TARGETS: Record<EventTarget, string> = { club: "Clubs", team: "Teams", competitor: "Competitors" };
-
     let speedDialog: HTMLDialogElement;
     // Remounts the form each time the dialog opens, so it starts empty
     let opened = $state(0);
@@ -35,11 +34,6 @@
         opened++;
         await tick();
         speedDialog.showModal();
-    }
-
-    // Close a dialog on a click on its backdrop (the dialog itself, outside its content)
-    function onBackdrop(event: MouseEvent) {
-        if (event.target === event.currentTarget) (event.currentTarget as HTMLDialogElement).close();
     }
 
     const heading = "text-lg font-extrabold uppercase";
@@ -118,7 +112,7 @@
     {/if}
 </div>
 
-<dialog bind:this={speedDialog} class="v2-modal" aria-labelledby="ev-speed-title" onclick={onBackdrop}>
+<dialog bind:this={speedDialog} class="v2-modal" aria-labelledby="ev-speed-title" onclick={closeOnBackdrop}>
     <h2 id="ev-speed-title">Add speed event</h2>
 
     {#key opened}
@@ -145,7 +139,7 @@
                     <div class="v2-field">
                         <label for="ev-target">Scores</label>
                         <select id="ev-target" name="target_entity" class="v2-input w-full" value="team">
-                            {#each Object.entries(TARGETS) as [value, label] (value)}
+                            {#each Object.entries(TARGET_LABELS) as [value, label] (value)}
                                 <option {value}>{label}</option>
                             {/each}
                         </select>

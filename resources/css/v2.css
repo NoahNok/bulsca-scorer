@@ -596,6 +596,39 @@ select.v2-input {
     color: var(--v2-teal-text);
 }
 
+/* Chips: a pill button that filters, pressed (aria-pressed) for the one chosen */
+.v2-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 600;
+    padding: 0.3rem 0.8rem;
+    border: 1px solid var(--v2-border);
+    border-radius: 9999px;
+    background: var(--v2-card);
+    color: var(--v2-ink);
+    transition: background-color 150ms, color 150ms, border-color 150ms;
+}
+
+.v2-chip:hover {
+    background: var(--v2-row-hover);
+}
+
+.v2-chip[aria-pressed='true'] {
+    border-color: var(--v2-ink);
+    background: var(--v2-ink);
+    color: var(--v2-bg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .v2-chip {
+        transition: none;
+    }
+}
+
 /* Alerts */
 .v2-alert {
     display: flex;

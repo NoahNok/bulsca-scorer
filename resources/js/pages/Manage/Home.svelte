@@ -52,8 +52,6 @@
     let empty = $derived(recent.length === 0 && organisations.length === 0 && competitions.length === 0);
 
     // Filters: a pill per organisation, ink when chosen like the primary button
-    const chip =
-        "inline-flex cursor-pointer items-center gap-[0.4rem] rounded-full border border-v2-border bg-v2-card px-[0.8rem] py-[0.3rem] text-sm font-semibold transition-colors hover:bg-v2-row-hover aria-pressed:border-v2-ink aria-pressed:bg-v2-ink aria-pressed:text-v2-bg motion-reduce:transition-none";
 
     function choose(next: typeof filter) {
         filter = next;
@@ -111,15 +109,15 @@
 
         {#if organisations.length > 0}
             <div class="mb-4 flex flex-wrap gap-2" role="group" aria-label="Filter by organisation">
-                <button type="button" class={chip} aria-pressed={filter === "all"} onclick={() => choose("all")}>All</button>
+                <button type="button" class="v2-chip" aria-pressed={filter === "all"} onclick={() => choose("all")}>All</button>
                 {#each organisations as org (org.id)}
-                    <button type="button" class={chip} aria-pressed={filter === org.id} onclick={() => choose(org.id)}>
+                    <button type="button" class="v2-chip" aria-pressed={filter === org.id} onclick={() => choose(org.id)}>
                         {#if org.logo}<img src={org.logo} alt="" class="size-5 rounded-full" />{/if}
                         {org.name}
                     </button>
                 {/each}
                 {#if hasPersonal}
-                    <button type="button" class={chip} aria-pressed={filter === "personal"} onclick={() => choose("personal")}>Personal</button>
+                    <button type="button" class="v2-chip" aria-pressed={filter === "personal"} onclick={() => choose("personal")}>Personal</button>
                 {/if}
             </div>
         {/if}

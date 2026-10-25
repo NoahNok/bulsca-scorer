@@ -24,6 +24,7 @@
     import { search } from "@/routes/accounts";
     import { Form, router } from "@inertiajs/svelte";
     import { tick } from "svelte";
+    import { closeOnBackdrop } from "@/manage/ui";
 
     let {
         competition,
@@ -173,10 +174,6 @@
     const fieldset = "mb-5 flex flex-col gap-[0.6rem] *:mt-0";
     const accessGrid = "grid grid-cols-2 gap-x-4 gap-y-[0.6rem] *:mt-0";
 
-    // Close a dialog on a click on its backdrop (the dialog itself, outside its content)
-    function onBackdrop(event: MouseEvent) {
-        if (event.target === event.currentTarget) (event.currentTarget as HTMLDialogElement).close();
-    }
 </script>
 
 <svelte:head>
@@ -414,7 +411,7 @@
     </SideMenuPart>
 </SideMenu>
 
-<dialog bind:this={editDialog} class="v2-modal" aria-labelledby="s-edit-title" onclick={onBackdrop}>
+<dialog bind:this={editDialog} class="v2-modal" aria-labelledby="s-edit-title" onclick={closeOnBackdrop}>
     {#if editing}
         {@const account = editing}
         <h2 id="s-edit-title">{account.name}</h2>
@@ -461,7 +458,7 @@
     {/if}
 </dialog>
 
-<dialog bind:this={inviteDialog} class="v2-modal" aria-labelledby="s-invite-title" onclick={onBackdrop}>
+<dialog bind:this={inviteDialog} class="v2-modal" aria-labelledby="s-invite-title" onclick={closeOnBackdrop}>
     <h2 id="s-invite-title">Invite someone</h2>
     <p>We'll email them a link. If they don't have an account yet, they'll make one.</p>
 

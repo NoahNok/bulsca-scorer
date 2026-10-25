@@ -10,6 +10,7 @@
     import type { CompetitionHeader, SpeedEventHeader, SpeedResultRow } from "@/manage/types";
     import { Link, router } from "@inertiajs/svelte";
     import { tick } from "svelte";
+    import { closeOnBackdrop } from "@/manage/ui";
 
     let {
         competition,
@@ -62,13 +63,6 @@
         conflictDialog.showModal();
     }
 
-    // Close a dialog on a click on its backdrop (the dialog itself, outside its content)
-    function onBackdrop(click: MouseEvent) {
-        if (click.target === click.currentTarget) (click.currentTarget as HTMLDialogElement).close();
-    }
-
-    const chip =
-        "inline-flex cursor-pointer items-center rounded-full border border-v2-border bg-v2-card px-[0.8rem] py-[0.3rem] text-sm font-semibold transition-colors hover:bg-v2-row-hover aria-pressed:border-v2-ink aria-pressed:bg-v2-ink aria-pressed:text-v2-bg motion-reduce:transition-none";
     const tableHead = "text-sm text-v2-muted *:border-b *:border-v2-border *:px-2 *:py-2 *:font-semibold";
 </script>
 
@@ -122,9 +116,9 @@
             <div class="mt-5 flex flex-col gap-3">
                 {#if leagues.length > 0}
                     <div class="flex flex-wrap gap-2" role="group" aria-label="League">
-                        <button type="button" class={chip} aria-pressed={league === null} onclick={() => showLeague(null)}>Overall</button>
+                        <button type="button" class="v2-chip" aria-pressed={league === null} onclick={() => showLeague(null)}>Overall</button>
                         {#each leagues as option (option.id)}
-                            <button type="button" class={chip} aria-pressed={league === option.id} onclick={() => showLeague(option.id)}>{option.name}</button>
+                            <button type="button" class="v2-chip" aria-pressed={league === option.id} onclick={() => showLeague(option.id)}>{option.name}</button>
                         {/each}
                     </div>
                 {/if}
@@ -230,7 +224,7 @@
     {/snippet}
 </SidebarPage>
 
-<dialog bind:this={conflictDialog} class="v2-modal" aria-labelledby="sp-conflict-title" onclick={onBackdrop}>
+<dialog bind:this={conflictDialog} class="v2-modal" aria-labelledby="sp-conflict-title" onclick={closeOnBackdrop}>
     {#if conflict}
         <h2 id="sp-conflict-title">Heat {conflict.heat}</h2>
         <p>Lanes in order of their times, beside the order they finished.</p>

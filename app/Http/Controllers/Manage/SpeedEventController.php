@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Manage;
 use App\DTO\Result;
 use App\Helpers\CompetitionHeader;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Manage\Concerns\ManagesEventPages;
 use App\Http\Requests\Event\UpdateScoringSettings;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
@@ -15,7 +16,6 @@ use App\Services\ScoringSchemas;
 use App\Services\SpeedResultEntry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
 /**
@@ -24,6 +24,8 @@ use Inertia\Inertia;
  */
 class SpeedEventController extends Controller
 {
+    use ManagesEventPages;
+
     public function show(Competition $comp, CompetitionSpeedEvent $event, Request $request, HeatService $heats)
     {
         $league = $comp->getLeagues()->find($request->query('league'));
@@ -68,7 +70,8 @@ class SpeedEventController extends Controller
     {
         return [
             'competition' => CompetitionHeader::for($comp),
-            'event' => [
+            // Lazy, so a partial reload (a league pill) doesn't check completion or count heats again
+            'event' => fn () => [
                 'id' => $event->id,
                 'name' => $event->getName(),
                 'target' => $event->scorable_entity,
@@ -92,15 +95,14 @@ class SpeedEventController extends Controller
         $eventHeats = $event->digitalJudgeEnabled ? $event->getHeats()->with('oofs')->get() : collect();
 
         return collect($event->getRankedResults($league))->map(function ($result) use ($comp, $event, $showDqPoints, $eventHeats) {
-            $parts = $result->isCombined() ? $result->combined : collect([$result]);
+            $parts = $this->partsOf($result);
             $heat = $result->isCombined() ? null : $eventHeats
                 ->where('entity_id', $result->entity->id)
                 ->where('entity_type', $result->entity->getMorphClass())
                 ->first();
 
             return [
-                'key' => $parts->map(fn (Result $part) => $part->entity->getMorphClass() . ':' . $part->entity->id)->implode(','),
-                'names' => $parts->map(fn (Result $part) => $part->entity->getName($comp))->values(),
+                ...$this->keyAndNames($comp, $result),
                 'times' => $result->isCombined() ? $parts->map(fn (Result $part) => SpeedResult::prettyTime($part->result))->values() : [],
                 'dqs' => $parts->map(fn (Result $part) => $part->getDisqualificationsString())->values(),
                 'time' => SpeedResult::prettyTime($result->resolvedResult),
@@ -193,10 +195,7 @@ class SpeedEventController extends Controller
 
     public function visibility(Competition $comp, CompetitionSpeedEvent $event, Request $request)
     {
-        $event->viewable = $request->validate(['viewable' => ['required', 'boolean']])['viewable'];
-        $event->save();
-
-        return back()->with('success', $event->viewable ? 'Shown in results' : 'Hidden from results');
+        return $this->setVisibility($event, $request);
     }
 
     public function saveScoring(Competition $comp, CompetitionSpeedEvent $event, UpdateScoringSettings $request)
@@ -211,14 +210,6 @@ class SpeedEventController extends Controller
      */
     public function destroy(Competition $comp, CompetitionSpeedEvent $event, Request $request)
     {
-        $name = $event->getName();
-
-        if ($request->validate(['name' => ['required', 'string']])['name'] != $name) {
-            throw ValidationException::withMessages(['name' => "That isn't the event's name."]);
-        }
-
-        $event->delete();
-
-        return redirect()->route('manage.competitions.events', $comp)->with('success', "{$name} deleted");
+        return $this->destroyNamed($comp, $event, $request, 'event');
     }
 }

@@ -14,6 +14,7 @@
     import ScoringSchemaEditor from "@/manage/events/ScoringSchemaEditor.svelte";
     import type { CompetitionHeader, EventScoring, EventTarget, SpeedEventHeader } from "@/manage/types";
     import { Form, Link, router } from "@inertiajs/svelte";
+    import { TARGET_LABELS } from "@/manage/ui";
 
     let {
         competition,
@@ -30,8 +31,6 @@
         { id: "scoring", label: "Scoring" },
         { id: "delete", label: "Delete", rule: true, danger: true },
     ];
-
-    const TARGETS: Record<EventTarget, string> = { club: "Clubs", team: "Teams", competitor: "Competitors" };
 
     const comp = $derived(competition.id);
 
@@ -54,8 +53,8 @@
         submit.preventDefault();
         if (target !== event.target) {
             const ok = await confirm({
-                title: `Score ${TARGETS[target].toLowerCase()} instead?`,
-                description: `This deletes all of ${event.name}'s results, and starts an empty one for each of the ${TARGETS[target].toLowerCase()}.`,
+                title: `Score ${TARGET_LABELS[target].toLowerCase()} instead?`,
+                description: `This deletes all of ${event.name}'s results, and starts an empty one for each of the ${TARGET_LABELS[target].toLowerCase()}.`,
                 confirmLabel: "Delete results and save",
                 confirmVariant: "danger",
             });
@@ -94,7 +93,7 @@
             <div class="v2-field mt-0 max-w-sm">
                 <label for="sp-target">Scores</label>
                 <select id="sp-target" class="v2-input w-full" bind:value={target}>
-                    {#each Object.entries(TARGETS) as [value, label] (value)}
+                    {#each Object.entries(TARGET_LABELS) as [value, label] (value)}
                         <option {value}>{label}</option>
                     {/each}
                 </select>

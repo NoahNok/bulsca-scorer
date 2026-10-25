@@ -9,6 +9,7 @@
     import Alert from "@/manage/components/Alert.svelte";
     import SidebarPage, { sidebarRow } from "@/manage/components/SidebarPage.svelte";
     import type { CompetitionHeader, SercEntity, SercEventHeader, SercResultRow } from "@/manage/types";
+    import { TARGET_LABELS } from "@/manage/ui";
     import { Link, router } from "@inertiajs/svelte";
 
     let {
@@ -63,8 +64,6 @@
 
     const marksUrl = (entity: SercEntity) => marks({ comp, serc: event.id, entity: entity.id }).url;
 
-    const chip =
-        "inline-flex cursor-pointer items-center rounded-full border border-v2-border bg-v2-card px-[0.8rem] py-[0.3rem] text-sm font-semibold transition-colors hover:bg-v2-row-hover aria-pressed:border-v2-ink aria-pressed:bg-v2-ink aria-pressed:text-v2-bg motion-reduce:transition-none";
     const tableHead = "text-sm text-v2-muted *:border-b *:border-v2-border *:px-2 *:py-2 *:font-semibold";
     const heading = "text-lg font-extrabold uppercase";
 </script>
@@ -134,9 +133,9 @@
         <div class="mt-5 flex flex-col gap-3">
             {#if results !== null && leagues.length > 0}
                 <div class="flex flex-wrap gap-2" role="group" aria-label="League">
-                    <button type="button" class={chip} aria-pressed={league === null} onclick={() => showLeague(null)}>Overall</button>
+                    <button type="button" class="v2-chip" aria-pressed={league === null} onclick={() => showLeague(null)}>Overall</button>
                     {#each leagues as option (option.id)}
-                        <button type="button" class={chip} aria-pressed={league === option.id} onclick={() => showLeague(option.id)}>{option.name}</button>
+                        <button type="button" class="v2-chip" aria-pressed={league === option.id} onclick={() => showLeague(option.id)}>{option.name}</button>
                     {/each}
                 </div>
             {/if}
@@ -237,7 +236,7 @@
             </table>
             {#if entities.length === 0}
                 <p class="px-2 py-6 text-center text-[0.9375rem] text-v2-muted">
-                    No {event.target === "club" ? "clubs" : event.target === "competitor" ? "competitors" : "teams"} yet. Add them on Entries & Leagues, and they appear here to mark.
+                    No {TARGET_LABELS[event.target].toLowerCase()} yet. Add them on Entries & Leagues, and they appear here to mark.
                 </p>
             {:else if shownEntities.length === 0}
                 <p class="px-2 py-6 text-center text-[0.9375rem] text-v2-muted">No entries match.</p>

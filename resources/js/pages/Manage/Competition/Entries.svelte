@@ -25,6 +25,7 @@
     import type { CompetitionHeader, CompetitionLeague, Entry, EntryClub, EntryTeam } from "@/manage/types";
     import { Form, router } from "@inertiajs/svelte";
     import { tick } from "svelte";
+    import { closeOnBackdrop } from "@/manage/ui";
 
     let {
         competition,
@@ -127,11 +128,6 @@
 
     function plural(count: number, word: string) {
         return `${count} ${word}${count === 1 ? "" : "s"}`;
-    }
-
-    // Close a dialog on a click on its backdrop (the dialog itself, outside its content)
-    function onBackdrop(event: MouseEvent) {
-        if (event.target === event.currentTarget) (event.currentTarget as HTMLDialogElement).close();
     }
 
     // Entries: one dialog, adding (row null) or changing one club, team or competitor
@@ -374,7 +370,7 @@
     {/snippet}
 </SidebarPage>
 
-<dialog bind:this={entryDialog} class="v2-modal" aria-labelledby="e-entry-title" onclick={onBackdrop}>
+<dialog bind:this={entryDialog} class="v2-modal" aria-labelledby="e-entry-title" onclick={closeOnBackdrop}>
     {#if editing}
         {@const { kind, row, parent } = editing}
         {@const entry = row?.entry}
@@ -481,7 +477,7 @@
     {/if}
 </dialog>
 
-<dialog bind:this={leagueDialog} class="v2-modal" aria-labelledby="e-league-title" onclick={onBackdrop}>
+<dialog bind:this={leagueDialog} class="v2-modal" aria-labelledby="e-league-title" onclick={closeOnBackdrop}>
     <h2 id="e-league-title">{league ? league.name : "Add league"}</h2>
 
     {#key opened}
