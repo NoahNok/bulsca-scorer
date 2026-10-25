@@ -76,6 +76,12 @@
 }
 
 @layer base {
+    /* Always keep room for the scrollbar, so the page doesn't shift sideways between a page that
+       scrolls and one that doesn't (a SERC, then one Entity's marks) */
+    html {
+        scrollbar-gutter: stable;
+    }
+
     /* Kept from app.css, which these pages used to load */
     input[type="number"]::-webkit-inner-spin-button,
     input[type="number"]::-webkit-outer-spin-button {
