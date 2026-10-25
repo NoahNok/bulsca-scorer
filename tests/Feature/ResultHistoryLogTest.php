@@ -138,11 +138,9 @@ class ResultHistoryLogTest extends TestCase
         $result->result = 62500;
         $result->save();
 
-        $this->actingAs($this->admin)->post(route('comps.view.events.speeds.editResultPost', [$this->comp, $this->event]), [
-            'data' => json_encode([
-                ['id' => $result->id, 'values' => ['disqualification' => '', 'result' => 'DNF']],
-            ]),
-        ])->assertOk();
+        $this->actingAs($this->admin)->post(route('manage.competitions.events.speeds.results', [$this->comp, $this->event]), [
+            'rows' => [$result->id => ['disqualification' => '', 'result' => 'DNF']],
+        ])->assertRedirect();
 
         $activity = Activity::where('activity', 'SPEED_RESULT_UPDATED')->sole();
 

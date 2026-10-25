@@ -111,21 +111,16 @@ class CompetitionOwnershipTest extends TestCase
         return compact('comp', 'event', 'serc', 'league', 'teams', 'heats', 'draws', 'results');
     }
 
-    private function resultRow(SpeedResult $result, string $time): array
-    {
-        return ['id' => $result->id, 'values' => ['disqualification' => '', 'result' => $time]];
-    }
-
     public function test_cannot_open_or_delete_another_competitions_events_or_leagues(): void
     {
         $ours = $this->ours['comp'];
         $this->actingAs($this->admin);
 
-        $this->get(route('comps.events.speeds.view', [$ours, $this->theirs['event']]))->assertNotFound();
+        $this->get(route('manage.competitions.events.speeds.show', [$ours, $this->theirs['event']]))->assertNotFound();
         $this->get(route('comps.events.sercs.view', [$ours, $this->theirs['serc']]))->assertNotFound();
         $this->post(route('manage.competitions.leagues.update', [$ours, $this->theirs['league']]), ['name' => 'Taken'])->assertNotFound();
 
-        $this->delete(route('comps.view.events.speeds.delete', [$ours, $this->theirs['event']]), ['eid' => $this->theirs['event']->id])->assertNotFound();
+        $this->delete(route('manage.competitions.events.speeds.destroy', [$ours, $this->theirs['event']]), ['eid' => $this->theirs['event']->id])->assertNotFound();
         $this->delete(route('comps.view.events.sercs.delete', [$ours, $this->theirs['serc']]), ['sid' => $this->theirs['serc']->id])->assertNotFound();
         $this->delete(route('manage.competitions.leagues.destroy', [$ours, $this->theirs['league']]))->assertNotFound();
 
@@ -142,15 +137,15 @@ class CompetitionOwnershipTest extends TestCase
         $this->post(route('manage.competitions.leagues.update', [$ours, $this->ours['league']]), ['name' => 'Renamed'])->assertRedirect();
         $this->assertSame('Renamed', $this->ours['league']->fresh()->name);
 
-        $this->delete(route('comps.view.events.speeds.delete', [$ours, $this->ours['event']]), ['eid' => $this->ours['event']->id])->assertRedirect();
+        $this->delete(route('manage.competitions.events.speeds.destroy', [$ours, $this->ours['event']]), ['eid' => $this->ours['event']->id])->assertRedirect();
         $this->assertNull($this->ours['event']->fresh());
     }
 
     public function test_cannot_change_another_competitions_speed_results(): void
     {
         $this->actingAs($this->admin)
-            ->post(route('comps.view.events.speeds.editResultPost', [$this->ours['comp'], $this->ours['event']]), [
-                'data' => json_encode([$this->resultRow($this->theirs['results'][0], '0:30.000')]),
+            ->post(route('manage.competitions.events.speeds.results', [$this->ours['comp'], $this->ours['event']]), [
+                'rows' => [$this->theirs['results'][0]->id => ['result' => '00:30.000', 'disqualification' => '']],
             ])
             ->assertNotFound();
 

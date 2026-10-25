@@ -20,7 +20,7 @@
                 @endforelse
                 <br>
                 The following speeds require confirming: @forelse (DigitalJudge::getSpeedsRequiringConfirmation($comp) as $speed)
-                    <a href="{{ route('comps.events.speeds.view', [$comp, $speed]) }}"
+                    <a href="{{ route('manage.competitions.events.speeds.show', [$comp, $speed]) }}"
                         class="link">{{ $speed->getName() }}</a>
                 @empty
                     None

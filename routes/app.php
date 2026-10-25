@@ -15,6 +15,7 @@ use App\Http\Controllers\Manage\CompetitionCreateController;
 use App\Http\Controllers\Manage\CompetitionDashboardController;
 use App\Http\Controllers\Manage\CompetitionEntriesController;
 use App\Http\Controllers\Manage\CompetitionEventsController;
+use App\Http\Controllers\Manage\SpeedEventController;
 use App\Http\Controllers\Manage\ManageController;
 use App\Http\Controllers\Manage\OrganisationCreateController;
 use App\Http\Controllers\Orders\DrawController;
@@ -30,6 +31,7 @@ use App\Http\Controllers\SpeedsEventController;
 use App\Http\Middleware\CompetitionOwnsRouteModels;
 use App\Http\Middleware\RecordCompetitionVisit;
 use App\Models\Competition;
+use App\Models\CompetitionSpeedEvent;
 use App\Models\SERC;
 use Illuminate\Support\Facades\Route;
 
@@ -134,27 +136,26 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
 
                 Route::get('', [CompetitionEventsController::class, 'index'])->name('manage.competitions.events');
 
-                // SPEEDS
+                // SPEEDS: one Svelte page per event, each part of it saved on its own
                 Route::prefix('/speeds')->middleware('can:access,comp,"speed"')->group(function () {
                     Route::post('', [CompetitionEventsController::class, 'storeSpeed'])->name('manage.competitions.events.speeds.store');
-                    Route::delete('/{event}/delete', [SpeedsEventController::class, 'delete'])->name('comps.view.events.speeds.delete');
 
-                    Route::get('/{event}', [SpeedsEventController::class, 'view'])->name('comps.events.speeds.view');
-                    Route::get('/{event}/edit-result', [SpeedsEventController::class, 'editResult'])->name('comps.events.speeds.editResult');
-                    Route::get('/{event}/edit', [SpeedsEventController::class, 'edit'])->name('comps.events.speeds.edit');
-                    Route::post('/{event}/edit', [SpeedsEventController::class, 'editPost'])->name('comps.events.speeds.editPost');
-                    Route::post('/{event}/edit-result', [SpeedsEventController::class, 'updateResults'])->name('comps.view.events.speeds.editResultPost');
+                    Route::prefix('/{event}')->name('manage.competitions.events.speeds.')->group(function () {
+                        Route::get('', [SpeedEventController::class, 'show'])->name('show');
+                        Route::post('/results', [SpeedEventController::class, 'saveResults'])->name('results');
+                        Route::post('/setup', [SpeedEventController::class, 'saveSetup'])->name('setup');
+                        Route::post('/visibility', [SpeedEventController::class, 'visibility'])->name('visibility');
+                        Route::post('/scoring', [SpeedEventController::class, 'saveScoring'])->name('scoring');
+                        Route::delete('', [SpeedEventController::class, 'destroy'])->name('destroy');
+
+                        // The old pages, now parts of the event page
+                        foreach (['edit' => 'setup', 'edit-result' => 'enter-results', 'scoring-settings' => 'scoring'] as $old => $part) {
+                            Route::get("/$old", fn (Competition $comp, CompetitionSpeedEvent $event) => redirect(route('manage.competitions.events.speeds.show', [$comp, $event]) . "#$part", 301))->name("old.$old");
+                        }
+                    });
 
                     Route::get('/{event}/print-results', [SpeedsEventController::class, 'printResults'])->name('comps.view.events.speeds.printResults');
-
-
                     Route::get('/{event}/digital-judge-toggle', [DigitalJudgeController::class, 'speedToggle'])->name('dj.speedToggle');
-
-                    Route::get('/{event}/hide', [SpeedsEventController::class, 'hide'])->name('comps.view.speeds.hide');
-
-
-                    Route::get('/{event}/scoring-settings', [SpeedsEventController::class, 'scoringSettings'])->name('comps.events.speeds.scoring-settings');
-                    Route::post('/{event}/scoring-settings', [SpeedsEventController::class, 'saveScoringSettings'])->name('comps.events.speeds.scoring-settings.save');
                 });
 
                 // SERCS

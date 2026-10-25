@@ -110,3 +110,64 @@ export type EventTarget = "club" | "team" | "competitor";
 export type SpeedEventCard = EventCard & { target: EventTarget };
 
 export type SercCard = EventCard & { type: "DRY" | "WET" };
+
+/** One speed result as the Enter results grid edits it (Manage\SpeedEventController::grid) */
+export type SpeedGridRow = {
+    id: number;
+    name: string;
+    heat: number | null;
+    lane: number | null;
+    /** A time (01:23.450), DNS, DNF or OOT, Rope Throw's ropes in (0-3), or empty */
+    result: string;
+    /** DQ101, or empty */
+    disqualification: string;
+    /** P100, P200, or empty */
+    penalties: string;
+};
+
+/** A ranked row on a speed event's Results. A combined row stands for several Entities, one per entry in `names` */
+export type SpeedResultRow = {
+    key: string;
+    names: string[];
+    /** Each combined Entity's own time; empty for a single one */
+    times: string[];
+    /** Each Entity's DQ, null for none */
+    dqs: (string | null)[];
+    /** The time that counts, after penalties */
+    time: string | null;
+    /** The time entered, when penalties changed it */
+    was: string | null;
+    /** Heat, lane and order of finish, with the Digital Judge on */
+    oof: string | null;
+    penalties: string | null;
+    /** "DQ" when disqualified ones don't score */
+    points: number | "DQ" | null;
+    position: number | null;
+};
+
+export type ScoringVariable = { order?: number; name: string; expression: string };
+
+export type ScoringViolation = { code: string; condition: string; amount: string };
+
+/** An event's scoring schema (ScoringSchemas::withDefaults) */
+export type ScoringSchema = {
+    equation: string;
+    penalty_func: string | null;
+    global_variables: ScoringVariable[];
+    local_variables: ScoringVariable[];
+    auto_penalties: ScoringViolation[];
+    auto_disqualifications: ScoringViolation[];
+    rank_higher: boolean;
+    rank_equation: string | null;
+    allow_disqualified_to_rank: boolean;
+    group_by: string[];
+    force_penalty: boolean;
+};
+
+/** What an event page's Scoring part edits */
+export type EventScoring = {
+    /** Null until it's set up */
+    schema: ScoringSchema | null;
+    /** Organisation schemas to start from */
+    options: { id: number; name: string; schema: ScoringSchema }[];
+};

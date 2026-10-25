@@ -37,7 +37,7 @@ class CompetitionEventsController extends Controller
             // Null without access to that kind of event
             'speeds' => $can('speed') ? $comp->getSpeedEvents->map(fn (CompetitionSpeedEvent $event) => $card($event) + [
                 'target' => $event->scorable_entity,
-                'url' => route('comps.events.speeds.view', [$comp, $event]),
+                'url' => route('manage.competitions.events.speeds.show', [$comp, $event]),
             ])->values() : null,
             'sercs' => $can('serc|serc_writer') ? $comp->getSERCs->map(fn (SERC $serc) => $card($serc) + [
                 'type' => $serc->type,

@@ -1,24 +1,7 @@
  @props(['type', 'route', 'schema' => null, 'org' => null, 'edit_create' => false, 'delete_route' => '#'])
 
  @php
-
-     $allOrgs = Auth::user()->getOrganisations;
-
-     if ($org) {
-         $allOrgs->push($org);
-         $allOrgs = $allOrgs->unique('id');
-     }
-
-     $availableSchemas = $allOrgs->flatMap(function ($org) {
-         return $org->scoringSchemas->map(function ($schema) {
-             return [
-                 'id' => $schema->id,
-                 'name' => $schema->name,
-                 'schema' => $schema->schema,
-             ];
-         });
-     });
-
+     $availableSchemas = \App\Services\ScoringSchemas::availableFor(Auth::user(), $org);
  @endphp
 
  <div class="flex flex-col space-y-4 col-span-2 mt-2" @change="has_changes=true" x-data="{

@@ -255,7 +255,7 @@ class ActivityLogFiltersTest extends TestCase
         $response->assertSee('href="' . e(route('comps.activityLog', $this->comp)) . '" aria-pressed="true"', false);
 
         // the event keeps a link to its own page
-        $response->assertSee('href="' . route('comps.events.speeds.view', [$this->comp, $this->speed->id]) . '"', false);
+        $response->assertSee('href="' . route('manage.competitions.events.speeds.show', [$this->comp, $this->speed->id]) . '"', false);
 
         // the competition is already the page's filter, so it isn't clickable and has no page link
         $response->assertDontSee('comp%3A' . $this->comp->id, false);
