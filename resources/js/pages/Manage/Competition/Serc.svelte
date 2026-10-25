@@ -156,14 +156,23 @@
                             <th scope="col" class="text-right">Mark</th>
                             <th scope="col" class="text-right">Points</th>
                             <th scope="col"><span class="sr-only">Marking</span></th>
+                            {#if event.canManage}<th scope="col" class="w-px"><span class="sr-only">Enter marks</span></th>{/if}
                         </tr>
                     </thead>
                     <tbody>
                         {#each shownResults as row (row.key)}
-                            <tr class="*:border-b *:border-v2-border *:px-2 *:py-3 *:align-top">
+                            <!-- A combined row stands for several Entities, so it has no one page of marks -->
+                            {@const entity = event.canManage ? byKey.get(row.key) : undefined}
+                            <tr class={[entity && "v2-row", "*:border-b *:border-v2-border *:px-2 *:py-3 *:align-top"]}>
                                 <td class="font-semibold tabular-nums">{row.position ?? "–"}</td>
                                 <th scope="row" class="font-bold wrap-anywhere">
-                                    {#each row.names as name, index (index)}<span class="block">{name}</span>{/each}
+                                    {#if entity}
+                                        <Link href={marksUrl(entity)} class="v2-row-link focus-visible:outline-none">
+                                            {entity.name}<span class="sr-only">: enter marks</span>
+                                        </Link>
+                                    {:else}
+                                        {#each row.names as name, index (index)}<span class="block">{name}</span>{/each}
+                                    {/if}
                                 </th>
                                 <td class={["whitespace-nowrap", row.dq && "font-semibold text-v2-danger-text"]}>{row.dq ?? "–"}</td>
                                 <td class="text-right tabular-nums">{row.mark}</td>
@@ -171,6 +180,7 @@
                                     {#if row.disqualified}<s class="font-normal text-v2-muted">{row.points}</s> DQ{:else}{row.points}{/if}
                                 </td>
                                 <td class="text-right">{@render status(byKey.get(row.key))}</td>
+                                {#if event.canManage}<td class="align-middle!">{#if entity}{@render chevron()}{/if}</td>{/if}
                             </tr>
                         {/each}
                     </tbody>
@@ -203,6 +213,7 @@
                         <th scope="col" class="w-px whitespace-nowrap">Draw</th>
                         <th scope="col">Entry</th>
                         <th scope="col"><span class="sr-only">Marking</span></th>
+                        {#if event.canManage}<th scope="col" class="w-px"><span class="sr-only">Enter marks</span></th>{/if}
                     </tr>
                 </thead>
                 <tbody>
@@ -218,12 +229,8 @@
                                     {entity.name}
                                 {/if}
                             </th>
-                            <td class="text-right">
-                                <span class="inline-flex items-center gap-3">
-                                    {@render status(entity)}
-                                    {#if event.canManage}<span class="v2-link max-sm:hidden" aria-hidden="true">Enter marks</span>{/if}
-                                </span>
-                            </td>
+                            <td class="text-right">{@render status(entity)}</td>
+                            {#if event.canManage}<td>{@render chevron()}</td>{/if}
                         </tr>
                     {/each}
                 </tbody>
