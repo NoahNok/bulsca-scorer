@@ -180,22 +180,22 @@
 
 <svelte:window onhashchange={() => (view = fromHash())} />
 
-<div class="mb-6">
-    <Link href={eventsUrl} class="v2-link-muted text-sm">← Events</Link>
-    <div class="mt-1 flex flex-wrap items-center gap-x-3 gap-y-2">
-        <h2 class="text-2xl font-extrabold uppercase wrap-anywhere">{event.name}</h2>
-        {#if event.complete}
-            <span class="v2-badge is-success">Complete</span>
-        {:else}
-            <span class="v2-badge is-danger">Incomplete</span>
-        {/if}
-        {#if !event.viewable}<span class="v2-badge" title="Left out of the results">Hidden</span>{/if}
-    </div>
-    <p class="mt-1 text-sm text-v2-muted">Scores {TARGETS[event.target].toLowerCase()}</p>
-</div>
-
 <div class="grid gap-10 min-[56rem]:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] min-[56rem]:items-start">
-    <div class="min-w-0 max-[56rem]:order-2">
+    <div class="min-w-0">
+        <div class="mb-6">
+            <Link href={eventsUrl} class="v2-link-muted text-sm">← Events</Link>
+            <div class="mt-1 flex flex-wrap items-center gap-x-3 gap-y-2">
+                <h2 class="text-2xl font-extrabold uppercase wrap-anywhere">{event.name}</h2>
+                {#if event.complete}
+                    <span class="v2-badge is-success">Complete</span>
+                {:else}
+                    <span class="v2-badge is-danger">Incomplete</span>
+                {/if}
+                {#if !event.viewable}<span class="v2-badge" title="Left out of the results">Hidden</span>{/if}
+            </div>
+            <p class="mt-1 text-sm text-v2-muted">Scores {TARGETS[event.target].toLowerCase()}</p>
+        </div>
+
         {#if view === "results"}
             <section aria-labelledby="sp-results">
                 <h3 id="sp-results" class={heading}>Results</h3>
@@ -330,9 +330,7 @@
         {/if}
     </div>
 
-    <nav class="min-w-0 max-[56rem]:order-1 min-[56rem]:sticky min-[56rem]:top-6 min-[56rem]:self-start" aria-labelledby="sp-actions">
-        <!-- A heading level with the left side's, as Entries & Leagues has, so both columns start together -->
-        <h3 id="sp-actions" class="mb-3 {heading}">Event</h3>
+    <nav class="min-w-0 min-[56rem]:sticky min-[56rem]:top-6" aria-label="{event.name}">
         <ul class="border-t border-v2-border *:border-b *:border-v2-border">
             <li>
                 <a
