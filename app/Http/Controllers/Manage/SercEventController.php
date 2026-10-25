@@ -252,8 +252,8 @@ class SercEventController extends Controller
     }
 
     /**
-     * Saves an Entity's DQ, penalties and marks, then opens the next Entity in draw order, or the
-     * SERC once it was the last. A blank mark takes the mark away.
+     * Saves an Entity's DQ, penalties and marks, then opens the next Entity in draw order (`next`), or
+     * the SERC when asked to or once it was the last. A blank mark takes the mark away.
      */
     public function saveMarks(Competition $comp, SERC $serc, int $entity, Request $request)
     {
@@ -264,6 +264,7 @@ class SercEventController extends Controller
             'penalties' => ['nullable', 'string', 'regex:/^\s*((p)?\s*\d+\s*)(,\s*(p)?\s*\d+\s*)*$/i'],
             'marks' => ['array'],
             'marks.*' => ['nullable', 'numeric', 'min:0', 'max:10'],
+            'next' => ['sometimes', 'boolean'],
         ], [
             'disqualification.regex' => 'Enter a DQ code, like DQ101.',
             'penalties.regex' => 'Enter penalty codes, like P100, P200.',
@@ -318,7 +319,7 @@ class SercEventController extends Controller
             ], related: [$serc, $entity, $comp]);
         }
 
-        $next = $this->nextIn($this->marking($comp, $serc), $entity->getMorphClass() . ':' . $entity->id);
+        $next = ($data['next'] ?? true) ? $this->nextIn($this->marking($comp, $serc), $entity->getMorphClass() . ':' . $entity->id) : null;
         $message = "Marks saved for {$entity->getName($comp)}";
 
         return $next

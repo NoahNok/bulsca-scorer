@@ -1,7 +1,8 @@
 <!--
     An Entity's marks on a SERC (manage.competitions.events.sercs.marks), in CompetitionLayout, laid out like
-    a score sheet: its DQ and penalties, then each Objective with a 0-10 mark per marking point. "Save & next"
-    saves and opens the next Entity in draw order (the SERC after the last); "Skip" opens it unsaved.
+    a score sheet: its DQ and penalties, then each Objective with a 0-10 mark per marking point. "Save" saves
+    and goes back to the SERC; "Save & next" saves and opens the next Entity in draw order (not on the last);
+    "Skip to next" opens it unsaved.
 -->
 <script lang="ts">
     import { leagueObjectives, saveMarks, show } from "@/actions/App/Http/Controllers/Manage/SercEventController";
@@ -65,9 +66,11 @@
 
     const dirty = $derived(JSON.stringify(values) !== JSON.stringify(saved()));
 
+    // Enter saves and moves on, as "Save & next" does; "Save" goes back to the SERC
     function save(submit: SubmitEvent) {
         submit.preventDefault();
-        router.post(saveMarks({ comp, serc: event.id, entity: entity.id }).url, $state.snapshot(values), {
+        const next = (submit.submitter as HTMLButtonElement | null)?.value !== "back";
+        router.post(saveMarks({ comp, serc: event.id, entity: entity.id }).url, { ...$state.snapshot(values), next }, {
             onStart: () => (processing = true),
             onFinish: () => (processing = false),
             onError: async (failed) => {
@@ -182,6 +185,12 @@
     <div class="sticky bottom-0 mt-6 flex items-center justify-end gap-4 border-t border-v2-border bg-v2-bg py-3">
         {#if dirty}<span class="mr-auto text-sm font-semibold text-v2-muted">Unsaved changes</span>{/if}
         {#if nextUrl}<Link href={nextUrl} class="v2-link-muted text-sm">Skip to next</Link>{/if}
-        <button type="submit" class="v2-btn v2-btn-primary" disabled={processing}>{nextUrl ? "Save & next" : "Save"}</button>
+        {#if nextUrl}
+            <!-- First in the form so Enter is "Save & next", shown last -->
+            <button type="submit" class="v2-btn v2-btn-primary order-last" disabled={processing}>Save & next</button>
+            <button type="submit" value="back" class="v2-btn" disabled={processing}>Save</button>
+        {:else}
+            <button type="submit" value="back" class="v2-btn v2-btn-primary" disabled={processing}>Save</button>
+        {/if}
     </div>
 </form>

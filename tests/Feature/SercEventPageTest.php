@@ -330,7 +330,10 @@ class SercEventPageTest extends TestCase
         $this->assertSame(['P100', 'P200'], $this->serc->getEntityPenalties($a)->get()->map(fn ($p) => (string) $p)->all());
         $this->assertSame(1, \App\Models\Activity\Activity::where('activity', 'SERC_RESULT_UPDATED')->count());
 
-        // The last one goes back to the SERC
+        // Save goes back to the SERC
+        $this->actingAs($this->organiser)->post($this->url('/results/' . $a->id), ['marks' => [], 'next' => false])->assertRedirect($this->url());
+
+        // So does the last one
         $this->actingAs($this->organiser)->post($this->url('/results/' . $b->id), ['marks' => []])->assertRedirect($this->url());
     }
 
