@@ -19,13 +19,15 @@ use App\Services\ScoringSchemas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
 /**
  * A SERC's pages (Svelte, in CompetitionLayout): its ranked results and every Entity in draw order, a
- * page to edit its setup (also used to add one), and its settings (scoring and deleting it).
+ * page to enter each Entity's marks, a page to edit its setup (also used to add one), its settings
+ * (scoring and deleting it), its mark splits and its League Objectives.
  * A SERC Writer sees its results and edits its setup; the rest needs SERC access.
  */
 class SercEventController extends Controller
@@ -195,6 +197,221 @@ class SercEventController extends Controller
                 'position' => $result->position ?? null,
             ];
         })->values()->all();
+    }
+
+    /**
+     * An Entity's marks: its DQ and penalties, then a 0-10 mark per marking point, Objective by
+     * Objective. With League Objectives on, only its League's Objective, unless its Leagues give it
+     * none or several, when every Objective shows with a warning.
+     */
+    public function marks(Competition $comp, SERC $serc, int $entity)
+    {
+        $entity = $this->entityOf($comp, $serc, $entity);
+        $order = $this->marking($comp, $serc);
+        $key = $entity->getMorphClass() . ':' . $entity->id;
+
+        $objectives = $serc->getJudges()->with('getMarkingPoints')->get();
+        $its = $serc->use_restricted_judges ? $serc->leagueObjectivesFor($entity) : collect();
+        if ($its->count() == 1) {
+            $objectives = $objectives->where('id', $its->first()->id);
+        }
+
+        $marks = SERCResult::whereIn('marking_point', $serc->getMarkingPoints()->select('serc_marking_points.id'))
+            ->whereMorphedTo('entity', $entity)
+            ->pluck('result', 'marking_point');
+
+        $next = $this->nextIn($order, $key);
+
+        return Inertia::render('Manage/Competition/SercMarks', [
+            ...$this->shared($comp, $serc),
+            'entity' => [
+                'id' => $entity->id,
+                'name' => $entity->getName($comp),
+                'draw' => $order->get($key)['draw'] ?? null,
+                // Where it is among the Entities, in draw order
+                'index' => $order->keys()->search($key) + 1,
+                'of' => $order->count(),
+            ],
+            'disqualification' => $serc->getEntityDisqualifications($entity)->first()?->__toString() ?? '',
+            'penalties' => $serc->getEntityPenalties($entity)->get()->map(fn ($penalty) => (string) $penalty)->implode(', '),
+            'objectives' => $objectives->values()->map(fn (SERCJudge $objective) => [
+                'id' => $objective->id,
+                'name' => $objective->name,
+                'hint' => $objective->description ?: null,
+                'markingPoints' => $objective->getMarkingPoints->map(fn (SERCMarkingPoint $mp) => [
+                    'id' => $mp->id,
+                    'name' => $mp->name,
+                    'weight' => $mp->weight,
+                    'mark' => isset($marks[$mp->id]) ? 0 + $marks[$mp->id] : null,
+                ])->values(),
+            ]),
+            // With League Objectives on, its Leagues give it no Objective, or more than one
+            'objectiveProblem' => $serc->use_restricted_judges && $its->count() != 1,
+            'nextUrl' => $next ? route('manage.competitions.events.sercs.marks', [$comp, $serc, $next['id']]) : null,
+        ]);
+    }
+
+    /**
+     * Saves an Entity's DQ, penalties and marks, then opens the next Entity in draw order, or the
+     * SERC once it was the last. A blank mark takes the mark away.
+     */
+    public function saveMarks(Competition $comp, SERC $serc, int $entity, Request $request)
+    {
+        $entity = $this->entityOf($comp, $serc, $entity);
+
+        $data = $request->validate([
+            'disqualification' => ['nullable', 'string', 'regex:/^\s*(dq)?\s*\d+\s*$/i'],
+            'penalties' => ['nullable', 'string', 'regex:/^\s*((p)?\s*\d+\s*)(,\s*(p)?\s*\d+\s*)*$/i'],
+            'marks' => ['array'],
+            'marks.*' => ['nullable', 'numeric', 'min:0', 'max:10'],
+        ], [
+            'disqualification.regex' => 'Enter a DQ code, like DQ101.',
+            'penalties.regex' => 'Enter penalty codes, like P100, P200.',
+            'marks.*.min' => 'Marks are 0 to 10.',
+            'marks.*.max' => 'Marks are 0 to 10.',
+            'marks.*.numeric' => 'Marks are 0 to 10.',
+        ]);
+
+        $markingPoints = $serc->getMarkingPoints()
+            ->select('serc_marking_points.id', 'serc_marking_points.name', 'serc_judges.name AS judge_name')
+            ->get()->keyBy('id');
+        $sent = collect($data['marks'] ?? []);
+        abort_if($sent->keys()->diff($markingPoints->keys())->isNotEmpty(), 404);
+
+        $serc->clearEntityDisqualifications($entity);
+        if (filled($data['disqualification'] ?? null)) {
+            $serc->addEntityDisqualification($entity, (int) preg_replace('/\D/', '', $data['disqualification']));
+        }
+
+        $serc->clearEntityPenalties($entity);
+        foreach (array_filter(explode(',', $data['penalties'] ?? '')) as $penalty) {
+            $serc->addEntityPenalty($entity, (int) preg_replace('/\D/', '', $penalty));
+        }
+
+        $changes = [];
+        foreach ($sent as $id => $mark) {
+            $result = SERCResult::where('marking_point', $id)->forEntity($entity)->first();
+            $was = $result?->result;
+            $mark = filled($mark) ? 0 + $mark : null;
+
+            if ($mark === null) {
+                $result?->delete();
+            } else {
+                $result ??= new SERCResult();
+                $result->marking_point = $id;
+                $result->result = $mark;
+                $result->entity()->associate($entity);
+                $result->save();
+            }
+
+            if ($was != $mark || ($was === null) != ($mark === null)) {
+                $mp = $markingPoints->get($id);
+                $changes[] = ['name' => "{$mp->judge_name} - {$mp->name}", 'old' => $was, 'new' => $mark];
+            }
+
+            Cache::forget('mp.' . $id . '.team.' . $entity->id);
+        }
+
+        if (count($changes) > 0) {
+            $serc->recordActivity('SERC_RESULT_UPDATED', count($changes) > 1 ? count($changes) . ' results changed' : '1 result changed', context: [
+                'changes' => $changes,
+            ], related: [$serc, $entity, $comp]);
+        }
+
+        $next = $this->nextIn($this->marking($comp, $serc), $entity->getMorphClass() . ':' . $entity->id);
+        $message = "Marks saved for {$entity->getName($comp)}";
+
+        return $next
+            ? redirect()->route('manage.competitions.events.sercs.marks', [$comp, $serc, $next['id']])->with('success', $message)
+            : redirect()->route('manage.competitions.events.sercs.show', [$comp, $serc])->with('success', $message);
+    }
+
+    /**
+     * One Objective's marks for every Entity in draw order, a column per marking point. Nothing until
+     * an Objective is picked.
+     */
+    public function markSplits(Competition $comp, SERC $serc, Request $request)
+    {
+        $objectives = $serc->getJudges()->get(['id', 'name']);
+        $objective = $objectives->find($request->query('objective'));
+
+        return Inertia::render('Manage/Competition/SercMarkSplits', [
+            ...$this->shared($comp, $serc),
+            'objectives' => $objectives,
+            'objective' => $objective?->id,
+            'splits' => fn () => $objective ? $this->splits($comp, $serc, $objective) : null,
+        ]);
+    }
+
+    private function splits(Competition $comp, SERC $serc, SERCJudge $objective): array
+    {
+        $markingPoints = $objective->getMarkingPoints()->orderBy('id')->get(['id', 'name']);
+
+        $marks = SERCResult::whereIn('marking_point', $markingPoints->pluck('id'))->get()
+            ->groupBy(fn ($mark) => "{$mark->entity_type}:{$mark->entity_id}")
+            ->map(fn ($marks) => $marks->mapWithKeys(fn ($mark) => [$mark->marking_point => 0 + $mark->result]));
+
+        return [
+            'markingPoints' => $markingPoints,
+            'rows' => $this->marking($comp, $serc)->map(fn ($entity) => [
+                'key' => $entity['key'],
+                'name' => $entity['name'],
+                'draw' => $entity['draw'],
+                'marks' => $marks->get($entity['key'], (object) []),
+            ])->values(),
+        ];
+    }
+
+    /**
+     * With League Objectives on, the Objective each Entity is marked against by its Leagues, flagging
+     * those with none or several, and the Leagues on each Objective
+     */
+    public function leagueObjectives(Competition $comp, SERC $serc)
+    {
+        $entities = $serc->getScorableEntities()->load('leagues:id,name');
+
+        return Inertia::render('Manage/Competition/SercLeagueObjectives', [
+            ...$this->shared($comp, $serc),
+            'entities' => $entities->map(function (Entity $entity) use ($comp, $serc) {
+                $objectives = $serc->leagueObjectivesFor($entity);
+
+                return [
+                    'key' => $entity->getMorphClass() . ':' . $entity->id,
+                    'name' => $entity->getName($comp),
+                    'leagues' => $entity->leagues->pluck('name')->all(),
+                    'objective' => $objectives->count() == 1 ? $objectives->first()->name : null,
+                    'problem' => match ($objectives->count()) {
+                        0 => 'no_objective',
+                        1 => null,
+                        default => 'several_objectives',
+                    },
+                ];
+            })->values(),
+            'objectives' => $serc->getJudges()->with('restrictedLeagues:id,name')->get()->map(fn (SERCJudge $objective) => [
+                'id' => $objective->id,
+                'name' => $objective->name,
+                'leagues' => $objective->restrictedLeagues->pluck('name')->all(),
+            ]),
+        ]);
+    }
+
+    /**
+     * One of the Entities the SERC scores, of this competition
+     */
+    private function entityOf(Competition $comp, SERC $serc, int $id): Entity
+    {
+        return $serc->getScorableEntity()::where('competition', $comp->id)->findOrFail($id);
+    }
+
+    /**
+     * The Entity after this one in draw order, null after the last
+     */
+    private function nextIn(Collection $order, string $key): ?array
+    {
+        $keys = $order->keys();
+        $at = $keys->search($key);
+
+        return $at === false ? null : $order->get($keys->get($at + 1));
     }
 
     public function store(Competition $comp, SaveSERCSetupRequest $request)

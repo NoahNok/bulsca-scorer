@@ -155,11 +155,11 @@ class CompetitionOwnershipTest extends TestCase
     public function test_cannot_change_another_competitions_serc_results(): void
     {
         $this->actingAs($this->admin)
-            ->get(route('comps.events.sercs.editResults', [$this->ours['comp'], $this->ours['serc'], $this->theirs['teams'][0]->id]))
+            ->get(route('manage.competitions.events.sercs.marks', [$this->ours['comp'], $this->ours['serc'], $this->theirs['teams'][0]->id]))
             ->assertNotFound();
 
         $this->actingAs($this->admin)
-            ->post(route('comps.view.events.sercs.editResultsPost', [$this->ours['comp'], $this->ours['serc'], $this->theirs['teams'][0]->id]), ['data' => '[]'])
+            ->post(route('manage.competitions.events.sercs.marks.save', [$this->ours['comp'], $this->ours['serc'], $this->theirs['teams'][0]->id]), ['marks' => []])
             ->assertNotFound();
     }
 

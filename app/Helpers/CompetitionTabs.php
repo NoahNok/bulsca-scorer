@@ -20,7 +20,7 @@ class CompetitionTabs
     private const TABS = [
         ['Overview', 'comps.view', 'view', ['comps.view'], true],
         ['Entries & Leagues', 'manage.competitions.entries', 'teams', ['manage.competitions.entries', 'manage.competitions.leagues'], true],
-        ['Events', 'manage.competitions.events', 'serc|speed|serc_writer', ['manage.competitions.events', 'comps.events'], true],
+        ['Events', 'manage.competitions.events', 'serc|speed|serc_writer', ['manage.competitions.events'], true],
         ['Heats & Draws', 'comps.heats_and_draws', 'heats_and_draws', ['comps.heats_and_draws'], false],
         ['Printables', 'comps.printables', 'printables', ['comps.printables'], false],
         ['Results', 'comps.results', 'results', ['comps.results'], false],

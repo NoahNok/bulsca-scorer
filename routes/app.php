@@ -179,10 +179,17 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
                                 Route::post('/visibility', [SercEventController::class, 'visibility'])->name('visibility');
                                 Route::post('/scoring', [SercEventController::class, 'saveScoring'])->name('scoring');
                                 Route::delete('', [SercEventController::class, 'destroy'])->name('destroy');
+
+                                Route::get('/results/{entity}', [SercEventController::class, 'marks'])->whereNumber('entity')->name('marks');
+                                Route::post('/results/{entity}', [SercEventController::class, 'saveMarks'])->whereNumber('entity')->name('marks.save');
+                                Route::get('/mark-splits', [SercEventController::class, 'markSplits'])->name('mark-splits');
+                                Route::get('/league-objectives', [SercEventController::class, 'leagueObjectives'])->name('league-objectives');
+
+                                Route::get('/results/{entity}/edit', fn (Competition $comp, SERC $serc, int $entity) => redirect(route('manage.competitions.events.sercs.marks', [$comp, $serc, $entity]), 301))->whereNumber('entity')->name('old.marks');
                             });
 
-                            // The old pages, now the setup page and a part of the settings page
-                            foreach (['edit' => ['setup', ''], 'scoring-settings' => ['settings', '#scoring']] as $old => [$page, $part]) {
+                            // The old pages, now the setup page, a part of the settings page and League Objectives
+                            foreach (['edit' => ['setup', ''], 'scoring-settings' => ['settings', '#scoring'], 'restriction-map' => ['league-objectives', '']] as $old => [$page, $part]) {
                                 Route::get("/$old", fn (Competition $comp, SERC $serc) => redirect(route("manage.competitions.events.sercs.$page", [$comp, $serc]) . $part, 301))->name("old.$old");
                             }
                         });
@@ -190,20 +197,10 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
                         Route::get('/print-results', [SERCController::class, 'printResults'])->name('comps.view.events.sercs.printResults');
 
                         Route::middleware('can:access,comp,"serc"')->group(function () {
-                            Route::get('results/{entity_id}/next', [SERCController::class, 'next'])->name('comps.view.events.sercs.next');
-
-                            Route::get('/results/{entity_id}/edit', [SERCController::class, 'editResultsView'])->name('comps.events.sercs.editResults');
-                            Route::post('/results/{entity_id}/edit', [SERCController::class, 'updateTeamResults'])->name('comps.view.events.sercs.editResultsPost');
-
                             Route::get('/digital-judge-toggle', [DigitalJudgeController::class, 'sercToggle'])->name('dj.sercToggle');
 
                             Route::post('/image', [SERCController::class, 'addSercImage'])->name('comps.view.sercs.image');
                             Route::get('/image/remove', [SERCController::class, 'removeSercImage'])->name('comps.view.sercs.image.remove');
-
-                            Route::get('/mark-splits', [SERCController::class, 'markSplits'])->name('comps.events.sercs.mark-splits');
-                            Route::get('/mark-splits/{judge}', [SERCController::class, 'loadMarkSplit'])->name('comps.events.sercs.mark-splits.judge');
-
-                            Route::get('/restriction-map', [SERCController::class, 'restrictionMap'])->name('comps.events.sercs.restriction-map');
                         });
                     });
                 });

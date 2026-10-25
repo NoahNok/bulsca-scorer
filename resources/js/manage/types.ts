@@ -187,6 +187,15 @@ export type SercObjective = {
     sort_id?: number;
 };
 
+/** An Objective on an Entity's marks page, with its marks (null for none) */
+export type SercMarkingObjective = {
+    id: number;
+    name: string;
+    /** Its marking hint, as HTML */
+    hint: string | null;
+    markingPoints: { id: number; name: string; weight: number; mark: number | null }[];
+};
+
 /** What the setup editor starts from */
 export type SercSetup = {
     name: string;

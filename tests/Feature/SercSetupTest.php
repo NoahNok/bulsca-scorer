@@ -336,15 +336,15 @@ class SercSetupTest extends TestCase
         $unassignedLeague = $this->teamIn('D', [$masters]);
 
         $this->actingAs($this->admin)
-            ->get(route('comps.events.sercs.restriction-map', [$this->comp, $this->serc]))
+            ->get(route('manage.competitions.events.sercs.league-objectives', [$this->comp, $this->serc]))
             ->assertOk()
-            ->assertViewHas('restrictionMap', function ($map) use ($noviceTeam, $noLeague, $twoObjectives, $unassignedLeague) {
-                $byEntity = collect($map)->keyBy('entity_name');
+            ->assertInertia(fn (Assert $page) => $page->component('Manage/Competition/SercLeagueObjectives')->where('entities', function ($map) use ($noviceTeam, $noLeague, $twoObjectives, $unassignedLeague) {
+                $byEntity = collect($map)->keyBy('name');
 
                 return $byEntity[$noviceTeam->getName()]['objective'] === 'Casualty 1' && $byEntity[$noviceTeam->getName()]['problem'] === null
                     && $byEntity[$noLeague->getName()]['objective'] === null && $byEntity[$noLeague->getName()]['problem'] === 'no_objective'
                     && $byEntity[$twoObjectives->getName()]['objective'] === null && $byEntity[$twoObjectives->getName()]['problem'] === 'several_objectives'
                     && $byEntity[$unassignedLeague->getName()]['objective'] === null && $byEntity[$unassignedLeague->getName()]['problem'] === 'no_objective';
-            });
+            }));
     }
 }

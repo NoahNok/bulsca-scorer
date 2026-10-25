@@ -293,6 +293,111 @@ class SercEventPageTest extends TestCase
             ->assertRedirect($this->appUrl('/comps/' . $this->comp->id . '/events/sercs/create'));
     }
 
+    public function test_an_entitys_marks_have_their_own_page(): void
+    {
+        [$a] = $this->teams;
+        $this->mark($a, $this->markingPoints[0], 7);
+
+        $this->actingAs($this->organiser)->get($this->url('/results/' . $a->id))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Manage/Competition/SercMarks')
+                ->where('entity.id', $a->id)
+                ->where('entity.index', 1)
+                ->where('entity.of', 2)
+                ->where('disqualification', '')
+                ->has('objectives', 1)
+                ->where('objectives.0.markingPoints.0.mark', 7)
+                ->where('objectives.0.markingPoints.1.mark', null)
+                ->where('nextUrl', $this->url('/results/' . $this->teams[1]->id)));
+    }
+
+    public function test_saving_marks_opens_the_next_entity_and_logs_the_changes(): void
+    {
+        [$a, $b] = $this->teams;
+        $this->mark($a, $this->markingPoints[1], 4);
+
+        $this->actingAs($this->organiser)->post($this->url('/results/' . $a->id), [
+            'disqualification' => 'dq101',
+            'penalties' => 'P100, p200',
+            'marks' => [$this->markingPoints[0]->id => 8, $this->markingPoints[1]->id => null],
+        ])->assertRedirect($this->url('/results/' . $b->id))->assertSessionHas('success');
+
+        $this->assertEquals(8, SERCResult::where('marking_point', $this->markingPoints[0]->id)->forEntity($a)->sole()->result);
+        // A blank mark takes it away
+        $this->assertNull(SERCResult::where('marking_point', $this->markingPoints[1]->id)->forEntity($a)->first());
+        $this->assertSame('DQ101', (string) $this->serc->getEntityDisqualifications($a)->sole());
+        $this->assertSame(['P100', 'P200'], $this->serc->getEntityPenalties($a)->get()->map(fn ($p) => (string) $p)->all());
+        $this->assertSame(1, \App\Models\Activity\Activity::where('activity', 'SERC_RESULT_UPDATED')->count());
+
+        // The last one goes back to the SERC
+        $this->actingAs($this->organiser)->post($this->url('/results/' . $b->id), ['marks' => []])->assertRedirect($this->url());
+    }
+
+    public function test_marks_and_codes_are_checked(): void
+    {
+        $a = $this->teams[0];
+
+        $this->actingAs($this->organiser)->from($this->url('/results/' . $a->id))->post($this->url('/results/' . $a->id), [
+            'disqualification' => 'D1',
+            'penalties' => 'P1,,',
+            'marks' => [$this->markingPoints[0]->id => 11],
+        ])->assertSessionHasErrors(['disqualification', 'penalties', 'marks.' . $this->markingPoints[0]->id]);
+
+        $this->assertSame(0, SERCResult::count());
+    }
+
+    public function test_another_sercs_marking_points_cant_be_marked_through_this_one(): void
+    {
+        $other = new SERC();
+        $other->name = 'Wet SERC';
+        $other->competition = $this->comp->id;
+        $other->save();
+
+        $objective = new SERCJudge();
+        $objective->name = 'Casualty';
+        $objective->description = '';
+        $objective->serc = $other->id;
+        $objective->save();
+
+        $mp = new SERCMarkingPoint();
+        $mp->name = 'Swims';
+        $mp->weight = 1;
+        $mp->judge = $objective->id;
+        $mp->serc = $other->id;
+        $mp->save();
+
+        $this->actingAs($this->organiser)->post($this->url('/results/' . $this->teams[0]->id), ['marks' => [$mp->id => 5]])->assertNotFound();
+        $this->assertSame(0, SERCResult::count());
+    }
+
+    public function test_mark_splits_show_one_objectives_marks(): void
+    {
+        $this->mark($this->teams[1], $this->markingPoints[0], 6);
+        $objective = $this->serc->getJudges()->sole();
+
+        $this->actingAs($this->organiser)->get($this->url('/mark-splits'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Manage/Competition/SercMarkSplits')
+                ->has('objectives', 1)
+                ->where('splits', null));
+
+        $this->actingAs($this->organiser)->get($this->url('/mark-splits?objective=' . $objective->id))
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('objective', $objective->id)
+                ->has('splits.markingPoints', 2)
+                ->has('splits.rows', 2)
+                ->where('splits.rows.1.marks.' . $this->markingPoints[0]->id, 6));
+    }
+
+    public function test_old_marking_pages_redirect(): void
+    {
+        $this->actingAs($this->organiser)->get($this->url('/results/' . $this->teams[0]->id . '/edit'))
+            ->assertRedirect($this->url('/results/' . $this->teams[0]->id));
+        $this->actingAs($this->organiser)->get($this->url('/restriction-map'))->assertRedirect($this->url('/league-objectives'));
+    }
+
     public function test_a_serc_writer_sees_results_and_edits_setup_only(): void
     {
         $writer = $this->writer();
@@ -305,5 +410,7 @@ class SercEventPageTest extends TestCase
         $this->actingAs($writer)->get($this->url('/settings'))->assertForbidden();
         $this->actingAs($writer)->post($this->url('/visibility'), ['viewable' => false])->assertForbidden();
         $this->actingAs($writer)->delete($this->url(), ['name' => 'Dry SERC'])->assertForbidden();
+        $this->actingAs($writer)->get($this->url('/results/' . $this->teams[0]->id))->assertForbidden();
+        $this->actingAs($writer)->get($this->url('/mark-splits'))->assertForbidden();
     }
 }

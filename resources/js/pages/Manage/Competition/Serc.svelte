@@ -5,8 +5,7 @@
     results and printing it. A SERC Writer sees the results and only the link to the setup.
 -->
 <script lang="ts">
-    import { editResultsView, markSplits, restrictionMap } from "@/actions/App/Http/Controllers/SERCController";
-    import { settings, setup, visibility } from "@/actions/App/Http/Controllers/Manage/SercEventController";
+    import { leagueObjectives, markSplits, marks, settings, setup, visibility } from "@/actions/App/Http/Controllers/Manage/SercEventController";
     import Alert from "@/manage/components/Alert.svelte";
     import SidebarPage, { sidebarRow } from "@/manage/components/SidebarPage.svelte";
     import type { CompetitionHeader, SercEntity, SercEventHeader, SercResultRow } from "@/manage/types";
@@ -62,7 +61,7 @@
         router.post(visibility({ comp, serc: event.id }).url, { viewable }, { preserveScroll: true });
     }
 
-    const marksUrl = (entity: SercEntity) => editResultsView({ comp, serc: event.id, entity_id: entity.id }).url;
+    const marksUrl = (entity: SercEntity) => marks({ comp, serc: event.id, entity: entity.id }).url;
 
     const chip =
         "inline-flex cursor-pointer items-center rounded-full border border-v2-border bg-v2-card px-[0.8rem] py-[0.3rem] text-sm font-semibold transition-colors hover:bg-v2-row-hover aria-pressed:border-v2-ink aria-pressed:bg-v2-ink aria-pressed:text-v2-bg motion-reduce:transition-none";
@@ -212,9 +211,9 @@
                             <td class="whitespace-nowrap text-v2-muted tabular-nums">{entity.draw ?? "–"}</td>
                             <th scope="row" class="font-bold wrap-anywhere">
                                 {#if event.canManage}
-                                    <a href={marksUrl(entity)} class="v2-row-link focus-visible:outline-none">
+                                    <Link href={marksUrl(entity)} class="v2-row-link focus-visible:outline-none">
                                         {entity.name}<span class="sr-only">: enter marks</span>
-                                    </a>
+                                    </Link>
                                 {:else}
                                     {entity.name}
                                 {/if}
@@ -250,17 +249,17 @@
                 </li>
                 {#if event.canManage}
                     <li>
-                        <a href={markSplits({ comp, serc: event.id }).url} class={sidebarRow}>
+                        <Link href={markSplits({ comp, serc: event.id }).url} class={sidebarRow}>
                             Mark splits
                             {@render chevron()}
-                        </a>
+                        </Link>
                     </li>
                     {#if event.leagueObjectives}
                         <li>
-                            <a href={restrictionMap({ comp, serc: event.id }).url} class={sidebarRow}>
+                            <Link href={leagueObjectives({ comp, serc: event.id }).url} class={sidebarRow}>
                                 League Objectives
                                 {@render chevron()}
-                            </a>
+                            </Link>
                         </li>
                     {/if}
                     <li>
