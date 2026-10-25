@@ -330,7 +330,9 @@
         {/if}
     </div>
 
-    <div class="min-w-0 max-[56rem]:order-1 min-[56rem]:sticky min-[56rem]:top-6 min-[56rem]:self-start">
+    <nav class="min-w-0 max-[56rem]:order-1 min-[56rem]:sticky min-[56rem]:top-6 min-[56rem]:self-start" aria-labelledby="sp-actions">
+        <!-- A heading level with the left side's, as Entries & Leagues has, so both columns start together -->
+        <h3 id="sp-actions" class="mb-3 {heading}">Event</h3>
         <ul class="border-t border-v2-border *:border-b *:border-v2-border">
             <li>
                 <a
@@ -378,7 +380,7 @@
                 <button type="button" class="{action} w-full text-v2-danger-text" onclick={remove}>Delete event</button>
             </li>
         </ul>
-    </div>
+    </nav>
 </div>
 
 <dialog bind:this={conflictDialog} class="v2-modal" aria-labelledby="sp-conflict-title" onclick={onBackdrop}>
