@@ -230,10 +230,7 @@ class SercEventController extends Controller
             'entity' => [
                 'id' => $entity->id,
                 'name' => $entity->getName($comp),
-                'draw' => $order->get($key)['draw'] ?? null,
-                // Where it is among the Entities, in draw order
-                'index' => $order->keys()->search($key) + 1,
-                'of' => $order->count(),
+                'draw' => $this->drawPlace($comp, $serc, $entity),
             ],
             'disqualification' => $serc->getEntityDisqualifications($entity)->first()?->__toString() ?? '',
             'penalties' => $serc->getEntityPenalties($entity)->get()->map(fn ($penalty) => (string) $penalty)->implode(', '),
@@ -397,6 +394,28 @@ class SercEventController extends Controller
                 'leagues' => $objective->restrictedLeagues->pluck('name')->all(),
             ]),
         ]);
+    }
+
+    /**
+     * Where the Entity is in the SERC's draw: its place of how many (in its tank, with tanks), or null
+     * when it isn't in the draw
+     *
+     * @return array{tank: ?int, draw: int, of: int}|null
+     */
+    private function drawPlace(Competition $comp, SERC $serc, Entity $entity): ?array
+    {
+        $draw = $serc->getDraw()->whereMorphedTo('entity', $entity)->first();
+        if (!$draw) {
+            return null;
+        }
+
+        $useTanks = (bool) $comp->getScoringSettings?->use_tanks;
+
+        return [
+            'tank' => $useTanks ? $draw->tank : null,
+            'draw' => $draw->draw,
+            'of' => $useTanks ? $serc->getDraw()->where('tank', $draw->tank)->count() : $serc->getDraw()->count(),
+        ];
     }
 
     /**

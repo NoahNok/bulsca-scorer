@@ -303,13 +303,25 @@ class SercEventPageTest extends TestCase
             ->assertInertia(fn (Assert $page) => $page
                 ->component('Manage/Competition/SercMarks')
                 ->where('entity.id', $a->id)
-                ->where('entity.index', 1)
-                ->where('entity.of', 2)
+                ->where('entity.draw', null)
                 ->where('disqualification', '')
                 ->has('objectives', 1)
                 ->where('objectives.0.markingPoints.0.mark', 7)
                 ->where('objectives.0.markingPoints.1.mark', null)
                 ->where('nextUrl', $this->url('/results/' . $this->teams[1]->id)));
+    }
+
+    public function test_the_marks_page_shows_the_entitys_place_in_the_draw(): void
+    {
+        [$a, $b] = $this->teams;
+        foreach ([$a, $b] as $index => $team) {
+            $draw = new Draw(['entity_id' => $team->id, 'entity_type' => $team->getMorphClass(), 'tank' => 1, 'draw' => $index + 1]);
+            $draw->serc = $this->serc->id;
+            $draw->save();
+        }
+
+        $this->actingAs($this->organiser)->get($this->url('/results/' . $b->id))
+            ->assertInertia(fn (Assert $page) => $page->where('entity.draw', ['tank' => null, 'draw' => 2, 'of' => 2]));
     }
 
     public function test_saving_marks_opens_the_next_entity_and_logs_the_changes(): void
