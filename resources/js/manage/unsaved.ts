@@ -36,7 +36,13 @@ export async function leaveUnsaved(): Promise<boolean> {
         cancelLabel: "Keep editing",
         confirmVariant: "danger",
     });
-    if (ok) dirty.forEach((entry) => entry.discard());
+    // Outside a SideMenuPart nothing remounts, so stop counting the form as unsaved, or the visit
+    // carrying on would be stopped again
+    if (ok)
+        dirty.forEach((entry) => {
+            entry.dirty = false;
+            entry.discard();
+        });
     return ok;
 }
 
