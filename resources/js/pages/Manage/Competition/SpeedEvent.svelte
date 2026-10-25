@@ -1,7 +1,7 @@
 <!--
     A speed event's page (manage.competitions.events.speeds.show), in CompetitionLayout. Its ranked results
     (by league, with any time and order of finish conflicts) fill the left; a column of actions on the right
-    swaps them for the grid to enter results, its setup or its scoring, each saved on its own, and holds
+    swaps them for the grid to enter results, its setup or its scoring (each saved on its own) and back, and holds
     showing it in results, printing and deleting it. The view follows the url's hash (#setup).
 -->
 <script lang="ts">
@@ -194,11 +194,7 @@
     <p class="mt-1 text-sm text-v2-muted">Scores {TARGETS[event.target].toLowerCase()}</p>
 </div>
 
-{#snippet back()}
-    <a href={location.pathname + location.search} class="v2-link-muted mb-1 inline-block text-sm" onclick={(click) => open(click, "results")}>← Results</a>
-{/snippet}
-
-<div class="grid grid-cols-[minmax(0,1fr)] gap-8 min-[56rem]:grid-cols-[minmax(0,1fr)_15rem] min-[56rem]:gap-12">
+<div class="grid gap-10 min-[56rem]:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] min-[56rem]:items-start">
     <div class="min-w-0 max-[56rem]:order-2">
         {#if view === "results"}
             <section aria-labelledby="sp-results">
@@ -293,14 +289,12 @@
             </section>
         {:else if view === "enter-results"}
             <section aria-labelledby="sp-enter">
-                {@render back()}
                 <h3 id="sp-enter" class={heading}>Enter results</h3>
                 <p class={lead}>Change as many rows as you like, then save them together.</p>
                 <SpeedResultsGrid comp={competition.id} event={event.id} rows={grid} penalties={event.hasPenalties} ropeThrow={event.ropeThrow} />
             </section>
         {:else if view === "setup"}
             <section aria-labelledby="sp-setup">
-                {@render back()}
                 <h3 id="sp-setup" class={heading}>Setup</h3>
                 <p class={lead}>What {event.name} scores, and whether it takes penalties.</p>
                 <form onsubmit={saveSetupPart}>
@@ -329,7 +323,6 @@
             </section>
         {:else}
             <section aria-labelledby="sp-scoring">
-                {@render back()}
                 <h3 id="sp-scoring" class={heading}>Scoring</h3>
                 <p class={lead}>How results become points and positions.</p>
                 <ScoringSchemaEditor {scoring} url={saveScoring({ comp, event: event.id }).url} />
@@ -339,6 +332,17 @@
 
     <div class="min-w-0 max-[56rem]:order-1 min-[56rem]:sticky min-[56rem]:top-6 min-[56rem]:self-start">
         <ul class="border-t border-v2-border *:border-b *:border-v2-border">
+            <li>
+                <a
+                    href={location.pathname + location.search}
+                    class={action}
+                    aria-current={view === "results" ? "true" : undefined}
+                    onclick={(click) => open(click, "results")}
+                >
+                    Results
+                    {@render chevron()}
+                </a>
+            </li>
             {#each VIEWS as item (item.id)}
                 <li>
                     <a href="#{item.id}" class={action} aria-current={view === item.id ? "true" : undefined} onclick={(click) => open(click, item.id)}>
