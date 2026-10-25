@@ -190,12 +190,11 @@
             {/if}
             {#if !event.viewable}<span class="v2-badge" title="Left out of the results">Hidden</span>{/if}
         </div>
-        <p class="mt-1 text-sm text-v2-muted">Scores {TARGETS[event.target].toLowerCase()}</p>
     </div>
 
     {#if view === "results"}
-        <section aria-labelledby="sp-results">
-            <h3 id="sp-results" class={heading}>Results</h3>
+        <!-- Under the event's name, so no heading of its own; the first block's top margin goes too -->
+        <section aria-label="Results" class="*:first:mt-0">
 
             {#if conflicts.length > 0}
                 <div class="mt-5">
