@@ -78,6 +78,27 @@
         ...competitors.map((c) => ({ kind: "competitor" as const, depth: 0, entry: c, parent: null, children: 0 })),
     ]);
 
+    // Search by name: a match shows with the club and team it's in, and everything under it
+    let query = $state("");
+
+    const shownRows = $derived.by(() => {
+        const term = query.trim().toLowerCase();
+        if (!term) return rows;
+        const shown = new Set<number>();
+        // The rows above this one in its tree, by depth
+        const path: { index: number; matched: boolean }[] = [];
+        rows.forEach((row, index) => {
+            path.length = row.depth;
+            const matched = row.entry.name.toLowerCase().includes(term);
+            if (matched || path.some((above) => above.matched)) {
+                shown.add(index);
+                path.forEach((above) => shown.add(above.index));
+            }
+            path.push({ index, matched });
+        });
+        return rows.filter((_, index) => shown.has(index));
+    });
+
     const counts = $derived({
         club: clubs.length,
         team: rows.filter((row) => row.kind === "team").length,
@@ -93,6 +114,16 @@
         return "leagues" in row.entry ? row.entry.leagues.map((id) => leagueNames.get(id)).filter(Boolean).join(", ") : "";
     }
 
+    // The heading and Add buttons stick to the top of the screen over a long table, with a rule under
+    // them only once they're stuck: a marker just above them has scrolled off the top
+    let stuck = $state(false);
+
+    function watchStuck(marker: HTMLElement) {
+        const observer = new IntersectionObserver(([entry]) => (stuck = !entry.isIntersecting && entry.boundingClientRect.top < 0));
+        observer.observe(marker);
+        return () => observer.disconnect();
+    }
+
     function plural(count: number, word: string) {
         return `${count} ${word}${count === 1 ? "" : "s"}`;
     }
@@ -105,7 +136,7 @@
     // Entries: one dialog, adding (row null) or changing one club, team or competitor
 
     let entryDialog: HTMLDialogElement;
-    /** `parent` picks the club or team a new entry goes in, from a row's own Add button */
+    /** `parent` is the club or team the entry is in, or for a new one, the row whose Add button opened it */
     let editing = $state<{ kind: Kind; row: Row | null; parent: number | null } | null>(null);
     // Remounts the form each time the dialog opens, so it starts from the entry's saved values
     let opened = $state(0);
@@ -203,7 +234,13 @@
 
 <div class="grid gap-10 min-[56rem]:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] min-[56rem]:items-start">
     <section class="min-w-0" aria-labelledby="e-entries">
-        <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
+        <div {@attach watchStuck}></div>
+        <div
+            class={[
+                "sticky top-0 z-10 -mx-2 flex flex-wrap items-center justify-between gap-x-4 gap-y-3 border-b bg-v2-bg px-2 py-2",
+                stuck ? "border-v2-border" : "border-transparent",
+            ]}
+        >
             <div>
                 <h2 id="e-entries" class={heading}>Entries</h2>
                 <p class="mt-0.5 text-sm text-v2-muted">
@@ -215,6 +252,15 @@
                 <button type="button" class="v2-btn v2-btn-sm" onclick={() => openEntry("team")}>Add team</button>
                 <button type="button" class="v2-btn v2-btn-sm" onclick={() => openEntry("competitor")}>Add competitor</button>
             </div>
+            {#if rows.length > 0}
+                <input
+                    type="search"
+                    class="v2-input w-full basis-full"
+                    placeholder="Search clubs, teams and competitors"
+                    aria-label="Search entries"
+                    bind:value={query}
+                />
+            {/if}
         </div>
 
         <div class="mt-5 flex flex-col gap-3">
@@ -241,9 +287,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {#each rows as row (`${row.kind}:${row.entry.id}`)}
+                        {#each shownRows as row (`${row.kind}:${row.entry.id}`)}
                             {@const leagueList = leaguesOf(row)}
-                            <tr class="v2-row *:border-b *:border-v2-border *:px-2 *:py-3 *:align-middle">
+                            <tr class="v2-row group *:border-b *:border-v2-border *:px-2 *:py-3 *:align-middle">
                                 <td class="min-w-0" style:padding-left="{0.5 + row.depth * 1.5}rem">
                                     <button
                                         type="button"
@@ -266,11 +312,12 @@
                                 {/each}
                                 <td class="w-px whitespace-nowrap">
                                     <span class="flex items-center justify-end gap-2">
+                                        <!-- Add a team to a club or a competitor to a team: shown on hover or keyboard focus, not on touch screens -->
                                         {#if row.kind !== "competitor"}
                                             {@const child = row.kind === "club" ? "team" : "competitor"}
                                             <button
                                                 type="button"
-                                                class="v2-btn v2-btn-sm v2-btn-ghost v2-over-row"
+                                                class="v2-btn v2-btn-sm v2-btn-ghost v2-over-row opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 focus-visible:opacity-100 motion-reduce:transition-none [@media(hover:none)]:hidden"
                                                 onclick={() => openEntry(child, null, row.entry.id)}
                                             >
                                                 <span aria-hidden="true">+</span>
@@ -284,6 +331,9 @@
                         {/each}
                     </tbody>
                 </table>
+                {#if shownRows.length === 0}
+                    <p class="px-2 py-6 text-center text-[0.9375rem] text-v2-muted">No entries match “{query.trim()}”.</p>
+                {/if}
             </div>
         {:else}
             <p class="mt-5 rounded-xl border border-dashed border-v2-border px-5 py-8 text-center text-[0.9375rem]/[1.6] text-v2-muted">
