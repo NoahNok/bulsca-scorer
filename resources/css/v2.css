@@ -875,12 +875,13 @@ dialog.v2-modal::backdrop {
     cursor: pointer;
 }
 
-.v2-row td {
+/* th too: a row's header cell (its name) is tinted with the rest */
+.v2-row :is(td, th) {
     transition: background-color 150ms;
 }
 
-.v2-row:hover td,
-.v2-row:focus-within td {
+.v2-row:hover :is(td, th),
+.v2-row:focus-within :is(td, th) {
     background: var(--v2-row-hover);
 }
 

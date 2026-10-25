@@ -276,7 +276,7 @@ each one in use; copy its markup.
 - **Whole-row links:** `.v2-row` on the row, and `.v2-row-link` on its own
   link, whose `::after` covers the row. Anything else clickable in the row
   (like **Follow live**) gets `.v2-over-row` to sit above it. Add `sr-only` text so the link says what it's for ("Results for Cardiff
-  Classic"). Hover and `:focus-within` tint the row teal and underline the link.
+  Classic"). Hover and `:focus-within` tint every cell in the row teal, a `<th scope="row">` included, and underline the link.
 - **Live:** a pulsing teal dot plus the words "Live now". Never colour alone.
 - **Empty states** say what will appear and when ("Results appear here once
   an organiser publishes them"), in a dashed-border box or a muted line.
