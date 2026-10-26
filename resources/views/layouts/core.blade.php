@@ -168,7 +168,7 @@
                 <div class="hidden lg:flex space-x-10 items-center">
                     <a href="{{ route('explore') }}"
                         class="text-sm/6 font-semibold text-gray-900 hover:text-se transition-colors">Explore</a>
-                    <a href="{{ route('dj.home') }}"
+                    <a href="{{ route('judge.index') }}"
                         class="text-sm/6 font-semibold text-se hover:text-se-accent transition-colors">Officials</a>
                 </div>
 
@@ -340,7 +340,7 @@
                     <a href="{{ route('explore') }}"
                         class="-mx-3 block rounded-lg px-3 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Explore</a>
 
-                    <a href="{{ route('dj.home') }}"
+                    <a href="{{ route('judge.index') }}"
                         class="-mx-3 block rounded-lg px-3 text-se font-semibold text-gray-900 hover:bg-gray-50">Officials
                         Login</a>
 

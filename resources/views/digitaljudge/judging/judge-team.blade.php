@@ -297,7 +297,7 @@
 
 
                     <div class="se-card se-card-body w-full">
-                        <h4> {{ $comp->show_teams_to_judges || $head ? $note->entity->getName($comp) : $serc->getPositionInDraw($note->entity) }}
+                        <h4> {{ $comp->show_teams_to_judges || $head ? $note->entity->getName($comp) : $serc->getPositionInDraw($note->entity)['text'] }}
                         </h4>
                         <p>{{ $note->note }}</p>
                     </div>

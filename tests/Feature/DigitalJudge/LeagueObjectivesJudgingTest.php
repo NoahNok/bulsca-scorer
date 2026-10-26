@@ -3,6 +3,7 @@
 namespace Tests\Feature\DigitalJudge;
 
 use App\Models\Competition;
+use App\Models\DigitalJudge\JudgeNote;
 use App\Models\DigitalJudge\OverallJudgeNote;
 use App\Models\CompetitionTeam;
 use App\Models\League;
@@ -299,5 +300,29 @@ class LeagueObjectivesJudgingTest extends TestCase
             ->assertOk()
             ->assertViewIs('digitaljudge.errors.500')
             ->assertSee('Please have your organiser correct this');
+    }
+
+    public function test_legacy_judging_lists_previous_notes_by_draw_when_teams_are_hidden(): void
+    {
+        $this->comp->digitalJudgeEnabled = true;
+        $this->comp->show_teams_to_judges = false;
+        $this->comp->save();
+
+        $note = new JudgeNote();
+        $note->judge = $this->noviceObjective->id;
+        $note->entity()->associate($this->noviceTeam);
+        $note->note = 'Missed the airway check';
+        $note->save();
+
+        $this->withoutVite()->withSession([
+            'digitalJudgeClientAllowed' => true,
+            'digitalJudgeClientComp' => $this->comp->id,
+            'digitalJudgeJudgeId' => [$this->noviceObjective->id],
+        ])
+            ->get(route('dj.judging.judge-team', ['entity_id' => $this->noviceTeam->id]))
+            ->assertOk()
+            ->assertViewIs('digitaljudge.judging.judge-team')
+            ->assertSee('1 / 2')
+            ->assertSee('Missed the airway check');
     }
 }
