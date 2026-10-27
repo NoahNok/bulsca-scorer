@@ -125,7 +125,9 @@ Pages set `@section('title')` and fill `@section('content')`.
   `.pack-block` so it never splits across pages; add `.pack-page` for one block
   per page. `npm install` downloads Chrome into `.cache/puppeteer`; if it won't
   start, install its system libraries
-  (https://pptr.dev/troubleshooting#chrome-doesnt-launch-on-linux).
+  (https://pptr.dev/troubleshooting#chrome-doesnt-launch-on-linux). PHP-FPM
+  doesn't get your shell's `PATH` (e.g. nvm), so set
+  `LARAVEL_PDF_NODE_BINARY` in `.env` to the output of `which node`.
 - **Heats and pools:** when a competition uses pools, heat numbers restart in
   each pool, so name heats with `Pool::heatLabel($pool, $heat)` ("Main Pool ·
   Heat 3", or "Heat 3" without pools), or `Pool::heatLaneLabel($pool, $heat,

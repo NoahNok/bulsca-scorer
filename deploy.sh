@@ -90,6 +90,9 @@ if ! (cd public && node -e "require('puppeteer').launch().then(b => b.close())" 
     echo "  https://pptr.dev/troubleshooting#chrome-doesnt-launch-on-linux"
     exit 1
 fi
+if ! grep -q '^LARAVEL_PDF_NODE_BINARY=' .env; then
+    warn "LARAVEL_PDF_NODE_BINARY isn't set in .env. PHP-FPM may not find node; set it to $(command -v node)."
+fi
 
 if ! php artisan migrate:status --pending=1 > /dev/null 2>&1; then
     step "Backing up the database before migrating"
