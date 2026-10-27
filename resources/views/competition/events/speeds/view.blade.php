@@ -237,7 +237,7 @@
                                                             ->first();
                                                     @endphp
                                                     @if ($h)
-                                                        {{ $h->getPool ? $h->getPool->name . ' · ' : '' }}H{{ $h->heat }}L{{ $h->lane }}:
+                                                        {{ \App\Models\Pool::heatLaneLabel($h->getPool, $h->heat, $h->lane) }}:
                                                         {{ $h->getOOF($event->id)?->oof ?: '-' }}
                                                     @else
                                                         -

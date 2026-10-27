@@ -49,4 +49,12 @@ class Pool extends Model
     {
         return $pool ? "{$pool->name} · Heat {$heat}" : "Heat {$heat}";
     }
+
+    /**
+     * The short heat and lane form for result tables: "Main Pool · H3 L2", or just "H3 L2" without pools.
+     */
+    public static function heatLaneLabel(?Pool $pool, int $heat, int $lane): string
+    {
+        return ($pool ? "{$pool->name} · " : '') . "H{$heat} L{$lane}";
+    }
 }

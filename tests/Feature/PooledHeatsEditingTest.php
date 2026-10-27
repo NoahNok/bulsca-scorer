@@ -183,6 +183,19 @@ class PooledHeatsEditingTest extends TestCase
         $this->assertSame([1, 2, $this->diving->id], [$heat->heat, $heat->lane, $heat->pool]);
     }
 
+    public function test_unassigning_only_removes_the_entity_from_the_pool_being_edited(): void
+    {
+        $team = $this->team('A', $this->main, 1, 2);
+
+        $this->postHeats('unassign', ['entity' => $team->id])->assertStatus(422);
+
+        $this->postHeats('unassign', ['entity' => $team->id, 'pool' => $this->diving->id])->assertOk();
+        $this->assertSame($this->main->id, $this->heatOf($team)->pool);
+
+        $this->postHeats('unassign', ['entity' => $team->id, 'pool' => $this->main->id])->assertOk();
+        $this->assertFalse(Heat::whereMorphedTo('entity', $team)->exists());
+    }
+
     public function test_a_pool_from_another_competition_is_rejected(): void
     {
         $this->team('A', $this->main, 1, 4);

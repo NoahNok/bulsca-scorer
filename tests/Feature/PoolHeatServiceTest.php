@@ -413,4 +413,41 @@ class PoolHeatServiceTest extends TestCase
         $this->assertSame(['Masters', 'Open'], $pool->leagues->pluck('name')->all());
         $this->assertSame(['Main Pool' => [1 => [3 => 'M1'], 2 => [3 => 'O1']]], $this->heats());
     }
+
+    public function test_an_aborted_command_leaves_pools_turned_off(): void
+    {
+        $this->comp->use_pools = false;
+        $this->comp->save();
+
+        $open = $this->league('Open');
+        $this->pool('Main Pool', 4, [$open]);
+        $this->competitor('Unseeded', [$open], null);
+
+        $this->artisan('heats-and-draws:pool-heats', ['competition_id' => $this->comp->id])
+            ->expectsConfirmation('Pools are turned off for this competition. Turn them on?', 'yes')
+            ->expectsConfirmation('Use the saved pool setup?', 'yes')
+            ->expectsQuestion('Heat style', PoolHeatService::STYLE_STANDARD)
+            ->assertFailed();
+
+        $this->assertFalse((bool) $this->comp->fresh()->use_pools);
+    }
+
+    public function test_the_command_turns_pools_on_once_heats_are_generated(): void
+    {
+        $this->comp->use_pools = false;
+        $this->comp->save();
+
+        $open = $this->league('Open');
+        $this->pool('Main Pool', 4, [$open]);
+        $this->competitor('A', [$open], 10);
+
+        $this->artisan('heats-and-draws:pool-heats', ['competition_id' => $this->comp->id])
+            ->expectsConfirmation('Pools are turned off for this competition. Turn them on?', 'yes')
+            ->expectsConfirmation('Use the saved pool setup?', 'yes')
+            ->expectsQuestion('Heat style', PoolHeatService::STYLE_STANDARD)
+            ->assertSuccessful();
+
+        $this->assertTrue((bool) $this->comp->fresh()->use_pools);
+        $this->assertSame(['Main Pool' => [1 => [2 => 'A']]], $this->heats());
+    }
 }

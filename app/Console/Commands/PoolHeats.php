@@ -60,14 +60,9 @@ class PoolHeats extends Command
             return self::FAILURE;
         }
 
-        if (!$comp->use_pools) {
-            if (!confirm('Pools are turned off for this competition. Turn them on?')) {
-                error('aborting');
-                return self::FAILURE;
-            }
-
-            $comp->use_pools = true;
-            $comp->save();
+        if (!$comp->use_pools && !confirm('Pools are turned off for this competition. Turn them on?')) {
+            error('aborting');
+            return self::FAILURE;
         }
 
         $this->showPools($comp);
@@ -114,6 +109,12 @@ class PoolHeats extends Command
         if ($impact['heats'] > 0 && !confirm("This will delete {$impact['heats']} existing heat entries, {$impact['oofs']} OOFs and {$impact['dq_submissions']} DQ submissions. Continue?", default: false)) {
             error('aborting');
             return self::FAILURE;
+        }
+
+        // Only switch pools on once nothing else can abort, so a cancelled run leaves the competition as it was
+        if (!$comp->use_pools) {
+            $comp->use_pools = true;
+            $comp->save();
         }
 
         $service->generate($comp, $style);

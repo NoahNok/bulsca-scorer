@@ -260,10 +260,12 @@ class HeatController extends Controller
             'entity' => ['required', 'integer'],
         ])['entity'];
 
+        $pool = $this->requestedPool($comp, $request);
+
         $entityClass = $event->getScorableEntity();
         $entity = $entityClass::where('competition', $comp->id)->findOrFail($entityId);
 
-        $event->heats()->whereMorphedTo('entity', $entity)->delete();
+        $event->heats()->whereMorphedTo('entity', $entity)->inPool($pool?->id)->delete();
         $comp->clearHeatCache();
 
         return response()->json(['result' => 'ok']);
