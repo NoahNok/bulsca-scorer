@@ -397,16 +397,23 @@ class Competition extends Model implements IInvitable, IJsonable
 
             $heats = Heat::whereHas('speedEvent', function ($query) {
                 $query->where('competition', $this->id);
-            })->with('entity', 'entity.leagues')->get()->groupBy('speed_event');
+            })->with('entity', 'entity.leagues', 'getPool')->get()->groupBy('speed_event');
 
-            return $heats->map(function ($heatsForEvent, $speedEventId) {
+            $byHeat = fn($lanes) => $lanes->values()->sortBy('heat')->groupBy('heat')->map(function ($group) {
+                return $group->sortBy('lane')->values(); // sort each group by lane number
+            });
+
+            return $heats->map(function ($heatsForEvent, $speedEventId) use ($byHeat) {
                 $speedEvent = $heatsForEvent->first()->speedEvent;
 
                 return [
                     'event' => $speedEvent,
-                    'heats' => $heatsForEvent->values()->sortBy('heat')->groupBy('heat')->map(function ($group) {
-                        return $group->sortBy('lane')->values(); // sort each group by lane number
-                    }), // optional: reindex
+                    'heats' => $byHeat($heatsForEvent),
+                    // Heat numbers restart per pool. Without pools this is one group with a null pool
+                    'pools' => $heatsForEvent->groupBy(fn($lane) => $lane->pool ?? 0)->sortKeys()->map(fn($lanes) => [
+                        'pool' => $lanes->first()->getPool,
+                        'heats' => $byHeat($lanes),
+                    ])->values(),
                 ];
             })->values()->toArray();
         });

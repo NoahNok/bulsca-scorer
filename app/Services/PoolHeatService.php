@@ -35,6 +35,8 @@ class PoolHeatService
             $event->heats()->get()->each->delete();
             Heat::insert($rows);
         });
+
+        $comp->clearHeatCache();
     }
 
     /**
