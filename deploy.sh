@@ -83,11 +83,19 @@ npm run build
 
 step "Checking the PDF renderer"
 # Packs are rendered to PDF by headless Chrome (docs/adr/0002). npm ci downloads Chrome into
-# .cache/puppeteer; this launches it from public/, where PHP-FPM runs, to prove it starts.
-# It runs as this user, so .cache/ must also be readable by the web server's user.
-if ! (cd public && node -e "require('puppeteer').launch().then(b => b.close())" > /dev/null 2>&1); then
-    echo "Headless Chrome won't start, so Packs can't be printed. It's usually missing system libraries:"
-    echo "  https://pptr.dev/troubleshooting#chrome-doesnt-launch-on-linux"
+# .cache/puppeteer; this launches it from public/, where PHP-FPM runs, with the same sandbox
+# setting as .env, to prove it starts. It runs as this user, so .cache/ must also be readable
+# by the web server's user.
+CHROME_ARGS="[]"
+if grep -qi '^LARAVEL_PDF_NO_SANDBOX=true' .env; then
+    CHROME_ARGS="['--no-sandbox']"
+fi
+if ! CHROME_ERROR=$(cd public && node -e "require('puppeteer').launch({ args: $CHROME_ARGS }).then(b => b.close())" 2>&1); then
+    echo "$CHROME_ERROR" | head -5
+    echo
+    echo "Headless Chrome won't start, so Packs can't be printed."
+    echo "- Missing libraries: https://pptr.dev/troubleshooting#chrome-doesnt-launch-on-linux"
+    echo "- \"No usable sandbox\": set LARAVEL_PDF_NO_SANDBOX=true in .env"
     exit 1
 fi
 if ! grep -q '^LARAVEL_PDF_NODE_BINARY=' .env; then

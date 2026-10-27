@@ -127,7 +127,10 @@ Pages set `@section('title')` and fill `@section('content')`.
   start, install its system libraries
   (https://pptr.dev/troubleshooting#chrome-doesnt-launch-on-linux). PHP-FPM
   doesn't get your shell's `PATH` (e.g. nvm), so set
-  `LARAVEL_PDF_NODE_BINARY` in `.env` to the output of `which node`.
+  `LARAVEL_PDF_NODE_BINARY` in `.env` to the output of `which node`. Where
+  Chrome fails with "No usable sandbox" (WSL, or Ubuntu 23.10+ restricting user
+  namespaces), set `LARAVEL_PDF_NO_SANDBOX=true`. Packs render with JavaScript
+  off, so keep it that way: Objective descriptions are organiser-entered HTML.
 - **Heats and pools:** when a competition uses pools, heat numbers restart in
   each pool, so name heats with `Pool::heatLabel($pool, $heat)` ("Main Pool ·
   Heat 3", or "Heat 3" without pools), or `Pool::heatLaneLabel($pool, $heat,
