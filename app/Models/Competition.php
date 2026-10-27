@@ -391,7 +391,7 @@ class Competition extends Model implements IInvitable, IJsonable
     public function getHeats()
     {
 
-        return Cache::rememberForever("{$this->cacheKey()}.heats", function () {
+        return Cache::rememberForever($this->heatCacheKey(), function () {
 
 
 
@@ -695,7 +695,15 @@ class Competition extends Model implements IInvitable, IJsonable
 
     public function clearHeatCache()
     {
-        Cache::forget("{$this->cacheKey()}.heats");
+        Cache::forget($this->heatCacheKey());
+    }
+
+    /**
+     * Versioned so a change to the cached shape (v2 added 'pools') isn't served from an old entry.
+     */
+    private function heatCacheKey(): string
+    {
+        return "{$this->cacheKey()}.heats.v2";
     }
 
     public function clearDrawCache()
