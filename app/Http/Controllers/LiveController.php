@@ -7,6 +7,7 @@ use App\Models\CompetitionSpeedEvent;
 use App\Models\DigitalJudge\JudgeDQSubmission;
 use App\Models\DigitalJudge\Violation\ViolationSubmission;
 use App\Models\DQCode;
+use App\Models\Orders\Heat;
 use App\Models\PenaltyCode;
 use App\Models\SERC;
 use Carbon\Carbon;
@@ -140,7 +141,7 @@ class LiveController extends Controller
      */
     private function judgeDqRows(Competition $comp, $event)
     {
-        $dqs = JudgeDQSubmission::with('getHeat.entity')->where('event_id', $event->id)->where('event_type', $event::class)->where('competition', $comp->id)->where('resolved', true)->get();
+        $dqs = JudgeDQSubmission::with('getHeat.entity', 'getHeat.getPool')->where('event_id', $event->id)->where('event_type', $event::class)->where('competition', $comp->id)->where('resolved', true)->get();
 
         // Codes are P<penalty code id> or DQ<dq code id>
         $penaltyCodes = PenaltyCode::whereIn('id', $dqs->filter(fn($dq) => str_starts_with((string) $dq->code, 'P'))->map(fn($dq) => substr((string) $dq->code, 1)))->pluck('description', 'id');
@@ -153,7 +154,7 @@ class LiveController extends Controller
                 ? $penaltyCodes[substr((string) $dq->code, 1)] ?? 'Penalty code not found'
                 : $dqCodes[substr((string) $dq->code, 2)] ?? 'DQ code not found',
             'appealed' => (bool) $dq->appealed,
-            'placement' => ['Heat' => $dq->getHeat?->heat, 'Lane' => $dq->getHeat?->lane],
+            'placement' => $this->heatPlacement($dq->getHeat),
             'turn' => $dq->turn,
             'length' => $dq->length,
             'reporter' => [$dq->name, $dq->position],
@@ -169,7 +170,7 @@ class LiveController extends Controller
     {
         $submissions = ViolationSubmission::with(['entity', 'submitted', 'submitter', 'seconder'])->where('competition_id', $comp->id)->whereMorphedTo('event', $event)->whereIn('status', ['ACCEPTED', 'APPEALED'])->orderBy('created_at')->get();
 
-        $placements = $event->getType() == 'speed' ? $event->getHeats()->get() : $event->getDraw()->get();
+        $placements = $event->getType() == 'speed' ? $event->getHeats()->with('getPool')->get() : $event->getDraw()->get();
 
         return $submissions->map(function (ViolationSubmission $submission) use ($comp, $event, $placements) {
             $placement = $placements->first(fn($row) => $row->entity_type == $submission->entity_type && $row->entity_id == $submission->entity_id);
@@ -180,7 +181,7 @@ class LiveController extends Controller
                 'description' => $submission->submitted?->description ?? 'Code not found',
                 'appealed' => $submission->status == 'APPEALED',
                 'placement' => $event->getType() == 'speed'
-                    ? ['Heat' => $placement?->heat, 'Lane' => $placement?->lane]
+                    ? $this->heatPlacement($placement)
                     : array_filter(['Tank' => $comp->getScoringSettings->use_tanks ? $placement?->tank : null, 'Draw' => $placement?->draw], fn($value) => $value !== null),
                 'turn' => $submission->turn,
                 'length' => $submission->length,
@@ -189,5 +190,15 @@ class LiveController extends Controller
                 'details' => $submission->details,
             ];
         });
+    }
+
+    /**
+     * Where an entity swam, with its pool first when the competition uses pools
+     */
+    private function heatPlacement(?Heat $heat): array
+    {
+        $pool = $heat?->getPool ? ['Pool' => $heat->getPool->name] : [];
+
+        return [...$pool, 'Heat' => $heat?->heat, 'Lane' => $heat?->lane];
     }
 }

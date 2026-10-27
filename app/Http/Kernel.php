@@ -75,6 +75,7 @@ class Kernel extends HttpKernel
         'onlyViewOwnComp' => \App\Http\Middleware\CanOnlyViewOwnComp::class,
         'canJudge' => \App\Http\Middleware\DigitalJudge\CanJudge::class,
         'isHeadJudge' => \App\Http\Middleware\DigitalJudge\HeadJudgeOnly::class,
+        'legacyWithoutPools' => \App\Http\Middleware\DigitalJudge\LegacyWithoutPools::class,
         'whatif' => \App\Http\Middleware\WhatIfMiddleware::class,
         'allowPublicResults' => \App\Http\Middleware\PublicResultAllowed::class
     ];

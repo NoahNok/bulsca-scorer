@@ -46,6 +46,11 @@ if [ "$(stat -c %U storage)" != "$(id -un)" ]; then
     warn "storage/ is owned by $(stat -c %U storage), not $(id -un). Caches written now may not be writable by the web server."
 fi
 
+if ! command -v node > /dev/null; then
+    echo "Node isn't installed. It builds the frontend and renders PDF Packs (docs/adr/0002)."
+    exit 1
+fi
+
 if [ -n "$(git status --porcelain --untracked-files=no)" ]; then
     echo "Working tree has local changes; refusing to deploy over them:"
     git status --short --untracked-files=no
@@ -75,6 +80,27 @@ composer install --no-dev --optimize-autoloader --no-interaction
 step "Building the frontend"
 npm ci
 npm run build
+
+step "Checking the PDF renderer"
+# Packs are rendered to PDF by headless Chrome (docs/adr/0002). npm ci downloads Chrome into
+# .cache/puppeteer; this launches it from public/, where PHP-FPM runs, with the same sandbox
+# setting as .env, to prove it starts. It runs as this user, so .cache/ must also be readable
+# by the web server's user.
+CHROME_ARGS="[]"
+if grep -qi '^LARAVEL_PDF_NO_SANDBOX=true' .env; then
+    CHROME_ARGS="['--no-sandbox']"
+fi
+if ! CHROME_ERROR=$(cd public && node -e "require('puppeteer').launch({ args: $CHROME_ARGS }).then(b => b.close())" 2>&1); then
+    echo "$CHROME_ERROR" | head -5
+    echo
+    echo "Headless Chrome won't start, so Packs can't be printed."
+    echo "- Missing libraries: https://pptr.dev/troubleshooting#chrome-doesnt-launch-on-linux"
+    echo "- \"No usable sandbox\": set LARAVEL_PDF_NO_SANDBOX=true in .env"
+    exit 1
+fi
+if ! grep -q '^LARAVEL_PDF_NODE_BINARY=' .env; then
+    warn "LARAVEL_PDF_NODE_BINARY isn't set in .env. PHP-FPM may not find node; set it to $(command -v node)."
+fi
 
 if ! php artisan migrate:status --pending=1 > /dev/null 2>&1; then
     step "Backing up the database before migrating"

@@ -22,6 +22,22 @@ _Avoid_: Judge (for the slot), casualty, position
 A SERC setting where each League is assigned exactly one Objective, and every Entity is marked against its League's Objective instead of one the Official picks.
 _Avoid_: Restricted judges, restricted SERC
 
+**Pool**:
+A separate body of water at a competition with its own lane count, where speed heats for its assigned Leagues run with their own heat numbering.
+_Avoid_: Tank (that's for SERCs), venue
+
+**Heat**:
+A group of Entities racing one speed event together in one Pool. Heat numbers restart in each Pool.
+_Avoid_: Race, round
+
+**Tank**:
+One of the separate areas where a SERC runs at the same time as others.
+_Avoid_: Pool (that's for speed events), station
+
+**Draw**:
+An Entity's place in a Tank's running order. A competition has one set of Draws, shared by all its SERCs.
+_Avoid_: Heat (that's for speed events), slot
+
 ### Officials
 
 **Official**:
@@ -79,6 +95,10 @@ _Avoid_: Delete, retract
 **Alert**:
 A personal notice to one Official about a DQ or penalty they submitted or need to review.
 _Avoid_: Notification
+
+**Pack**:
+A printable PDF for one role on the day, e.g. the Chief Timekeeper Pack or a Marshalling Pack.
+_Avoid_: Printable, sheet (when meaning the whole document)
 
 ### Results
 

@@ -1,4 +1,5 @@
 import { User } from "./auth"
+import { heatLabel } from "@/lib/heats"
 import { Entity, Event, HeatLane, TankDraw } from "./base"
 
 export type ViolationStatus = "SUBMITTED" | "ACCEPTED" | "REJECTED" | "APPEALED" | "REMOVED"
@@ -90,7 +91,7 @@ export function isVoided(state: ViolationStatus) {
 
 export function formatOrder(submission: ViolationSubmission) {
     if ("heat" in submission.order) {
-        return `Heat ${submission.order.heat} · Lane ${submission.order.lane}`;
+        return `${heatLabel(submission.order)} · Lane ${submission.order.lane}`;
     }
 
     const tank = submission.order.tank ? `Tank ${submission.order.tank}` : "";

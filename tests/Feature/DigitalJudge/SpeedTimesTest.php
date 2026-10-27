@@ -10,6 +10,7 @@ use App\Models\SpeedEvent;
 use App\Models\SpeedResult;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia;
 use Tests\TestCase;
 
 class SpeedTimesTest extends TestCase
@@ -131,5 +132,22 @@ class SpeedTimesTest extends TestCase
         $this->team('A', heat: 1);
 
         $this->store([999999 => '1:02.50'])->assertStatus(422);
+    }
+
+    public function test_a_disqualified_team_shows_its_time_not_the_dq_code(): void
+    {
+        $a = $this->team('A', heat: 1);
+        $b = $this->team('B', heat: 1);
+        $this->team('C', heat: 1); // left untimed so the page doesn't redirect a non-referee
+        $this->store([$a->id => '1:02.50', $b->id => 'DNF'])->assertOk();
+        $this->event->addEntityDisqualification($a, 123);
+
+        $this->actingAs($this->official)->get(route('judge.competition.event.time.mark', [
+            'competition' => $this->comp->getSlug(),
+            'event' => $this->event,
+            'heat' => 1,
+        ]))->assertInertia(fn(AssertableInertia $page) => $page
+            ->where("existingTimes.{$a->id}", '01:02.50')
+            ->where("existingTimes.{$b->id}", 'DNF'));
     }
 }

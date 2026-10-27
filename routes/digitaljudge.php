@@ -206,7 +206,7 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
 
 
 
-        Route::prefix('speeds/{speed}')->group(function () {
+        Route::prefix('speeds/{speed}')->middleware('legacyWithoutPools')->group(function () {
 
             Route::prefix('times')->group(function () {
                 Route::get('', [SpeedJudgingController::class, 'timesIndex'])->name('dj.speeds.times.index');
@@ -225,7 +225,7 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
         });
     });
 
-    Route::prefix('dq')->group(function () {
+    Route::prefix('dq')->middleware('legacyWithoutPools')->group(function () {
         Route::get('issue', [DJDQController::class, 'issue'])->name('dj.dq.issue');
         Route::get('resolveCode/{code}', [DJDQController::class, 'resolveCode'])->name('dj.dq.resolveCode');
 
@@ -260,8 +260,8 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
             Route::get('serc/{serc}', [DigitalJudgeController::class, 'confirmResults'])->name('dj.confirm-results');
             Route::post('serc/{serc}', [DigitalJudgeController::class, 'confirmResultsPost'])->name('dj.confirm-results.post');
 
-            Route::get('speed/{speed}', [DigitalJudgeController::class, 'confirmSpeedResults'])->name('dj.confirm-results.speed');
-            Route::post('speed/{speed}', [DigitalJudgeController::class, 'confirmSpeedResultsPost'])->name('dj.confirm-results.speed.post');
+            Route::get('speed/{speed}', [DigitalJudgeController::class, 'confirmSpeedResults'])->name('dj.confirm-results.speed')->middleware('legacyWithoutPools');
+            Route::post('speed/{speed}', [DigitalJudgeController::class, 'confirmSpeedResultsPost'])->name('dj.confirm-results.speed.post')->middleware('legacyWithoutPools');
         });
 
         Route::prefix('live')->group(function () {

@@ -1,5 +1,6 @@
 <script lang="ts">
     import SectionLabel from "@/components/SectionLabel.svelte";
+    import { heatLabel } from "@/lib/heats";
     import type { ConfirmHeat } from "@/types/results";
     import ViolationList from "./ViolationList.svelte";
 
@@ -14,7 +15,7 @@
 
 <div>
     <div class="mb-2 flex items-end justify-between">
-        <SectionLabel>Heat {heat.heat}</SectionLabel>
+        <SectionLabel>{heatLabel(heat)}</SectionLabel>
         <span class="text-xs text-gray-400">
             OOF · {isRopeThrow ? "Result" : "Time"}
         </span>

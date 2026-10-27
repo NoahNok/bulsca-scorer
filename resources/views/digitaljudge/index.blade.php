@@ -31,9 +31,17 @@
         <br>
         <h2 class="font-bold">DigitalJudge</h2>
 
+        <div class="se-alert-box mx-4">
+            <h1>Legacy Digital Judge</h1>
+            <p>Only use this if your organiser has told you to. Otherwise, sign in to the
+                <a href="{{ route('judge.index') }}" class="link">new Digital Judge</a> instead.
+            </p>
+        </div>
+
         <form action="{{ route('dj.login') }}" method="POST">
             <div class="form-input">
-                <input type="number" id="pin" value="{{ request()->input('pin', old('pin')) }}" maxlength="6" required
+                <input type="number" id="pin" value="{{ request()->input('pin', old('pin')) }}" maxlength="6"
+                    required
                     oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
                     class="text-center" name="pin" placeholder="PIN">
                 @error('pin')

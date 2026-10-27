@@ -6,6 +6,7 @@ use App\Exceptions\HeatException;
 use App\Http\Controllers\Controller;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
+use App\Models\Pool;
 use App\Services\HeatService;
 use App\Traits\RecordActivity;
 use Illuminate\Http\Request;
@@ -16,6 +17,8 @@ class HeatController extends Controller
 {
     use RecordActivity;
 
+    const POOLED_HEATS_MESSAGE = 'Pooled heats are generated with the heats-and-draws:pool-heats command.';
+
     public function index(Competition $comp)
     {
 
@@ -25,6 +28,9 @@ class HeatController extends Controller
 
     public function generate(Competition $comp, HeatService $heatService)
     {
+        if ($comp->use_pools) {
+            return redirect()->back()->with('alert-error', self::POOLED_HEATS_MESSAGE);
+        }
 
         try {
             if ($comp->heats_per_event) {
@@ -55,21 +61,32 @@ class HeatController extends Controller
         return redirect()->back();
     }
 
-    public function edit(Competition $comp, CompetitionSpeedEvent $event)
+    public function edit(Competition $comp, CompetitionSpeedEvent $event, Request $request)
     {
         $this->ensureEventBelongsToCompetition($comp, $event);
 
-        return view('competition.heats-and-orders.heats.edit', ['comp' => $comp, 'event' => $event]);
+        $pools = $comp->use_pools ? $comp->getPools()->get() : collect();
+        $pool = $request->integer('pool') ? $pools->firstWhere('id', $request->integer('pool')) : $pools->first();
+
+        abort_if($request->integer('pool') && !$pool, 404);
+
+        return view('competition.heats-and-orders.heats.edit', ['comp' => $comp, 'event' => $event, 'pools' => $pools, 'pool' => $pool]);
     }
 
     public function swap(Competition $comp, CompetitionSpeedEvent $event, Request $request)
     {
         $this->ensureEventBelongsToCompetition($comp, $event);
 
+        $pool = $this->requestedPool($comp, $request);
+
         $currentAllocation = $event->heats()->findOrFail($request->input('team'));
         $targetAllocation = $event->heats()->find($request->input('target-heat'));
+
+        // Heat numbers restart per pool, so entities can only move within their own pool
+        abort_if($currentAllocation->pool != $pool?->id || ($targetAllocation && $targetAllocation->pool != $pool?->id), 422, 'Entities can only be moved within their pool.');
+
         $activityDescription = $targetAllocation
-            ? "Swapped heats: " . $currentAllocation->entity->getName($comp) . " (Heat {$currentAllocation->heat}, Lane {$currentAllocation->lane}) <-> " . $targetAllocation->entity->getName($comp) . " (Heat {$targetAllocation->heat}, Lane {$targetAllocation->lane})"
+            ? "Swapped heats: " . $currentAllocation->entity->getName($comp) . " (" . Pool::heatLabel($pool, $currentAllocation->heat) . ", Lane {$currentAllocation->lane}) <-> " . $targetAllocation->entity->getName($comp) . " (" . Pool::heatLabel($pool, $targetAllocation->heat) . ", Lane {$targetAllocation->lane})"
             : null;
 
         DB::transaction(function () use ($currentAllocation, $targetAllocation, $request) {
@@ -103,7 +120,7 @@ class HeatController extends Controller
         $comp->clearHeatCache();
 
         if ($targetAllocation == null) {
-            $this->recordActivity('HEAT_SWAP', "Moved " . $currentAllocation->entity->getName($comp) . " to Heat {$currentAllocation->heat}, Lane {$currentAllocation->lane}", context: ['current_allocation' => $currentAllocation->id], related: [$comp, $currentAllocation->entity]);
+            $this->recordActivity('HEAT_SWAP', "Moved " . $currentAllocation->entity->getName($comp) . " to " . Pool::heatLabel($pool, $currentAllocation->heat) . ", Lane {$currentAllocation->lane}", context: ['current_allocation' => $currentAllocation->id], related: [$comp, $currentAllocation->entity]);
         } else {
             $this->recordActivity('HEAT_SWAP', $activityDescription, context: ['current_allocation' => $currentAllocation->id, 'target_allocation' => $targetAllocation->id], related: [$comp, $currentAllocation->entity, $targetAllocation->entity]);
         }
@@ -117,10 +134,10 @@ class HeatController extends Controller
 
         $first = $request->input('first');
         $second = $request->input('second');
+        $pool = $this->requestedPool($comp, $request);
 
-
-        $firstLanes = $event->heats()->where('heat', $first)->get();
-        $secondLanes = $event->heats()->where('heat', $second)->get();
+        $firstLanes = $event->heats()->where('heat', $first)->inPool($pool?->id)->get();
+        $secondLanes = $event->heats()->where('heat', $second)->inPool($pool?->id)->get();
 
         DB::transaction(function () use ($firstLanes, $secondLanes, $first, $second) {
             $firstLanes->each(function ($lane) {
@@ -141,7 +158,8 @@ class HeatController extends Controller
 
         $comp->clearHeatCache();
 
-        $this->recordActivity('HEATS_SWAPPED', "Swapped heats $first and $second", context: ['first' => $first, 'second' => $second], related: $comp);
+        $where = $pool ? " in {$pool->name}" : '';
+        $this->recordActivity('HEATS_SWAPPED', "Swapped heats $first and $second$where", context: ['first' => $first, 'second' => $second, 'pool' => $pool?->name], related: $comp);
 
         return response()->json(['result' => 'ok']);
     }
@@ -150,6 +168,10 @@ class HeatController extends Controller
     {
 
         $this->ensureEventBelongsToCompetition($comp, $event);
+
+        if ($comp->use_pools) {
+            return redirect()->back()->with('alert-error', self::POOLED_HEATS_MESSAGE);
+        }
 
         try {
             $heatService->generateHeatsForEvent($event);
@@ -169,10 +191,11 @@ class HeatController extends Controller
         $this->ensureEventBelongsToCompetition($comp, $event);
 
         $heat = (int) $request->validate(['heat' => ['required', 'integer', 'min:1']])['heat'];
+        $pool = $this->requestedPool($comp, $request);
 
-        DB::transaction(function () use ($event, $heat) {
-            $event->heats()->where('heat', $heat)->delete();
-            $event->heats()->where('heat', '>', $heat)->decrement('heat');
+        DB::transaction(function () use ($event, $heat, $pool) {
+            $event->heats()->where('heat', $heat)->inPool($pool?->id)->delete();
+            $event->heats()->where('heat', '>', $heat)->inPool($pool?->id)->decrement('heat');
         });
 
         $comp->clearHeatCache();
@@ -190,10 +213,12 @@ class HeatController extends Controller
             'lane' => ['required', 'integer', 'min:1'],
         ]);
 
+        $pool = $this->requestedPool($comp, $request);
+
         $entityClass = $event->getScorableEntity();
         $entity = $entityClass::where('competition', $comp->id)->findOrFail($data['entity']);
 
-        if ($event->heats()->where('heat', $data['heat'])->where('lane', $data['lane'])->exists()) {
+        if ($event->heats()->where('heat', $data['heat'])->where('lane', $data['lane'])->inPool($pool?->id)->exists()) {
             return response()->json(['message' => 'That lane is already occupied.'], 422);
         }
 
@@ -203,6 +228,7 @@ class HeatController extends Controller
             'entity_type' => $entity->getMorphClass(),
             'heat' => $data['heat'],
             'lane' => $data['lane'],
+            'pool' => $pool?->id,
         ]);
 
         $comp->clearHeatCache();
@@ -218,7 +244,9 @@ class HeatController extends Controller
             'position' => ['required', 'integer', 'min:1'],
         ])['position'];
 
-        $event->heats()->where('heat', '>=', $position)->increment('heat');
+        $pool = $this->requestedPool($comp, $request);
+
+        $event->heats()->where('heat', '>=', $position)->inPool($pool?->id)->increment('heat');
         $comp->clearHeatCache();
 
         return response()->json(['result' => 'ok']);
@@ -232,13 +260,29 @@ class HeatController extends Controller
             'entity' => ['required', 'integer'],
         ])['entity'];
 
+        $pool = $this->requestedPool($comp, $request);
+
         $entityClass = $event->getScorableEntity();
         $entity = $entityClass::where('competition', $comp->id)->findOrFail($entityId);
 
-        $event->heats()->whereMorphedTo('entity', $entity)->delete();
+        $event->heats()->whereMorphedTo('entity', $entity)->inPool($pool?->id)->delete();
         $comp->clearHeatCache();
 
         return response()->json(['result' => 'ok']);
+    }
+
+    /**
+     * The pool being edited. Required when the competition uses pools, and must be one of its own.
+     */
+    private function requestedPool(Competition $comp, Request $request): ?Pool
+    {
+        if (!$comp->use_pools) {
+            return null;
+        }
+
+        $id = $request->validate(['pool' => ['required', 'integer']])['pool'];
+
+        return $comp->getPools()->findOrFail($id);
     }
 
     private function ensureEventBelongsToCompetition(Competition $comp, CompetitionSpeedEvent $event): void

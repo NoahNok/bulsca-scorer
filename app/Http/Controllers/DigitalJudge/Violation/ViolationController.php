@@ -16,6 +16,7 @@ use App\Models\DigitalJudge\Violation\ViolationSubmission;
 use App\Models\DQCode;
 use App\Models\Event\Disqualification;
 use App\Models\Event\Penalty;
+use App\Models\Orders\Heat;
 use App\Models\PenaltyCode;
 use App\Models\SERC;
 use Illuminate\Http\Request;
@@ -174,9 +175,10 @@ class ViolationController extends Controller
     // Issue Context Handlers - heats/draws/codes/etc
     public function getHeatsFor(Competition $competition, CompetitionSpeedEvent $event)
     {
-        return $event->getHeats()->orderBy('heat')->orderBy('lane')->get()->groupBy('heat')->map(function ($lanes, $heat) {
+        return Heat::groupIntoHeats($event->getHeats()->with('getPool')->orderBy('lane')->get())->map(function ($lanes) {
             return [
-                'heat' => $heat,
+                'heat' => $lanes->first()->heat,
+                'pool' => $lanes->first()->getPool?->jsonable(),
                 'lanes' => $lanes->map(function ($lane) {
                     return [
                         'lane' => $lane->lane,

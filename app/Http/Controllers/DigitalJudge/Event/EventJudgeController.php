@@ -9,6 +9,8 @@ use App\Http\Requests\DigitalJudge\Event\StoreHeatTimesRequest;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\EventOOF;
+use App\Models\Orders\Heat;
+use App\Models\Pool;
 use App\Models\SpeedResult;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -23,7 +25,7 @@ class EventJudgeController extends Controller
 
         $heats = [];
 
-        foreach ($event->getHeats()->with('entity.speedResults')->get()->sortBy('heat')->groupBy('heat') as $heat => $lanes) {
+        foreach (Heat::groupIntoHeats($event->getHeats()->with('entity.speedResults', 'getPool')->get()) as $lanes) {
 
 
             $missingResult = false;
@@ -38,7 +40,8 @@ class EventJudgeController extends Controller
             }
 
             $heats[] = [
-                'heat' => $heat,
+                'heat' => $lanes->first()->heat,
+                'pool' => $lanes->first()->getPool?->jsonable(),
                 'complete' => !$missingResult
             ];
         }
@@ -53,11 +56,12 @@ class EventJudgeController extends Controller
 
     public function markTime(Competition $competition, CompetitionSpeedEvent $event, int $heat)
     {
+        $pool = $this->requestedPool($competition);
 
         $laneData = [];
         $existingTimes = []; // This will literally be the entity_id => value
 
-        $event->getHeats()->where('heat', $heat)->orderBy('lane')->get()->each(function ($lane) use (&$existingTimes, &$laneData, $event) {
+        $event->getHeats()->where('heat', $heat)->inPool($pool?->id)->orderBy('lane')->get()->each(function ($lane) use (&$existingTimes, &$laneData, $event) {
             $sr = SpeedResult::whereMorphedTo('entity', $lane->entity)->where('event', $event->id)->first();
 
             if ($sr != null && $sr->result != null) {
@@ -79,7 +83,7 @@ class EventJudgeController extends Controller
         return Inertia::render('Judge/Competition/Speed/Time/MarkTime', [
             'competition' => $competition->jsonable(),
             'event' => $event->jsonable(),
-            'heat' => ['heat' => $heat, 'complete' => false, 'lanes' => $laneData],
+            'heat' => ['heat' => $heat, 'pool' => $pool?->jsonable(), 'complete' => false, 'lanes' => $laneData],
             'existingTimes' => $existingTimes
         ]);
     }
@@ -89,10 +93,11 @@ class EventJudgeController extends Controller
         $data = $request->validated();
 
         $marks = $data['mark']; // this is a key value array of entity_id -> time
+        $pool = $this->requestedPool($competition);
 
         // Check every entity is in this heat and has a result row before writing anything, so a bad
         // or stale id can't fail partway through and leave the heat half saved
-        $lanes = $event->getHeats()->where('heat', $heat)->with('entity')->get()->keyBy('entity_id');
+        $lanes = $event->getHeats()->where('heat', $heat)->inPool($pool?->id)->with('entity')->get()->keyBy('entity_id');
         $isReferee = DigitalJudge::isClientHeadJudge($competition);
         $results = [];
 
@@ -112,16 +117,16 @@ class EventJudgeController extends Controller
             $results[$entity_id] = $sr;
         }
 
-        DB::transaction(fn() => $this->saveTimes($competition, $event, $heat, $marks, $results));
+        DB::transaction(fn() => $this->saveTimes($competition, $event, $heat, $pool, $marks, $results));
 
-        return response()->json(['hasNextHeat' => $heat < $event->getMaxHeats()]);
+        return response()->json(['hasNextHeat' => $heat < $event->getMaxHeats($pool?->id)]);
     }
 
     /**
      * @param array<int, string> $marks entity_id => time entered
      * @param array<int, SpeedResult> $results entity_id => its result for this event
      */
-    private function saveTimes(Competition $competition, CompetitionSpeedEvent $event, int $heat, array $marks, array $results): void
+    private function saveTimes(Competition $competition, CompetitionSpeedEvent $event, int $heat, ?Pool $pool, array $marks, array $results): void
     {
         foreach ($marks as $entity_id => $value) {
             $sr = $results[$entity_id];
@@ -136,6 +141,7 @@ class EventJudgeController extends Controller
 
             $sr->recordActivity('SPEED_RESULT_MARKED', "{$sr->entity->getName($competition)}: {$from} → {$to}", context: [
                 'heat' => $heat,
+                'pool' => $pool?->name,
                 'changes' => ['result' => ['old' => $from, 'new' => $to]],
             ], related: [$event, $sr->entity, $competition]);
         }
@@ -203,12 +209,13 @@ class EventJudgeController extends Controller
 
         $heats = [];
 
-        $raw = $event->getHeats()->with([
+        $raw = Heat::groupIntoHeats($event->getHeats()->with([
+            'getPool',
             'oofs' => fn($q) => $q->where('event', $event->id)
-        ])->orderBy('heat')->orderBy('lane')->get()->groupBy('heat');
+        ])->orderBy('lane')->get());
 
         foreach (
-            $raw as $heat => $lanes
+            $raw as $lanes
         ) {
 
 
@@ -218,7 +225,8 @@ class EventJudgeController extends Controller
             );
 
             $heats[] = [
-                'heat' => $heat,
+                'heat' => $lanes->first()->heat,
+                'pool' => $lanes->first()->getPool?->jsonable(),
                 'complete' => $hasResult
             ];
         }
@@ -242,7 +250,8 @@ class EventJudgeController extends Controller
 
     public function markOOF(Competition $competition, CompetitionSpeedEvent $event, int $heat)
     {
-        $lanes = $event->getHeats()->with(['oofs' => fn($q) => $q->where('event', $event->id)])->where('heat', $heat)->orderBy('lane')->get();
+        $pool = $this->requestedPool($competition);
+        $lanes = $event->getHeats()->with(['oofs' => fn($q) => $q->where('event', $event->id)])->where('heat', $heat)->inPool($pool?->id)->orderBy('lane')->get();
 
         if (!DigitalJudge::isClientHeadJudge($competition) && $this->hasPlaces($lanes)) {
             Inertia::flash('toast', ['variant' => 'error', 'title' => 'This heat has places — ask a referee to change them.']);
@@ -252,7 +261,7 @@ class EventJudgeController extends Controller
         return Inertia::render('Judge/Competition/Speed/OOF/MarkOOF', [
             'competition' => $competition->jsonable(),
             'event' => $event->jsonable(),
-            'heat' => ['heat' => $heat, 'complete' => false, 'lanes' => $lanes->map(function ($lane) {
+            'heat' => ['heat' => $heat, 'pool' => $pool?->jsonable(), 'complete' => false, 'lanes' => $lanes->map(function ($lane) {
 
                 return [
                     'lane' => $lane->lane,
@@ -266,10 +275,11 @@ class EventJudgeController extends Controller
     public function storeOOF(Competition $competition, CompetitionSpeedEvent $event, int $heat, StoreHeatOOFRequest $request)
     {
         $data = $request->validated();
+        $pool = $this->requestedPool($competition);
 
         // Check every entity is in this heat before writing anything, so a bad or stale id
         // can't fail partway through and leave the heat half saved
-        $lanes = $event->getHeats()->where('heat', $heat)->with(['entity', 'oofs' => fn($q) => $q->where('event', $event->id)])->get()->keyBy('entity_id');
+        $lanes = $event->getHeats()->where('heat', $heat)->inPool($pool?->id)->with(['entity', 'oofs' => fn($q) => $q->where('event', $event->id)])->get()->keyBy('entity_id');
 
         foreach ($data as $res) {
             abort_if($lanes->get($res['entity']['id'])?->entity == null, 422, 'That team isn\'t in this heat.');
@@ -281,16 +291,16 @@ class EventJudgeController extends Controller
             'This heat has places — ask a referee to change them.'
         );
 
-        DB::transaction(fn() => $this->savePlaces($competition, $event, $heat, $data, $lanes));
+        DB::transaction(fn() => $this->savePlaces($competition, $event, $heat, $pool, $data, $lanes));
 
-        return response()->json(['hasNextHeat' => $heat < $event->getMaxHeats()]);
+        return response()->json(['hasNextHeat' => $heat < $event->getMaxHeats($pool?->id)]);
     }
 
     /**
      * @param array<int, array{entity: array{id: int}, oof?: ?int}> $data the lanes as sent
      * @param \Illuminate\Support\Collection $lanes this heat's lanes, keyed by entity id
      */
-    private function savePlaces(Competition $competition, CompetitionSpeedEvent $event, int $heat, array $data, $lanes): void
+    private function savePlaces(Competition $competition, CompetitionSpeedEvent $event, int $heat, ?Pool $pool, array $data, $lanes): void
     {
         $changes = [];
         $changedEntities = [];
@@ -320,10 +330,24 @@ class EventJudgeController extends Controller
         }
 
         if (count($changes) > 0) {
-            $event->recordActivity('OOF_MARKED', "Heat {$heat}: " . count($changes) . (count($changes) > 1 ? ' places changed' : ' place changed'), context: [
+            $event->recordActivity('OOF_MARKED', Pool::heatLabel($pool, $heat) . ": " . count($changes) . (count($changes) > 1 ? ' places changed' : ' place changed'), context: [
                 'heat' => $heat,
+                'pool' => $pool?->name,
                 'changes' => $changes,
             ], related: [$event, ...$changedEntities, $competition]);
         }
+    }
+
+    /**
+     * The pool picked with ?pool=, which must belong to this competition. Null without pools.
+     */
+    private function requestedPool(Competition $competition): ?Pool
+    {
+        $id = request()->integer('pool');
+
+        // Heat numbers restart per pool, so a pooled heat can't be found without its pool
+        abort_if(!$id && $competition->use_pools, 404);
+
+        return $id ? $competition->getPools()->findOrFail($id) : null;
     }
 }

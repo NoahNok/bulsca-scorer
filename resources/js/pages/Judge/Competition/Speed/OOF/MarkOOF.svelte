@@ -23,6 +23,7 @@
     import { confirm } from "@/lib/confirm";
     import { toastInfo, toastSuccess } from "@/lib/toast.svelte";
 
+    import { heatLabel, heatQuery, laneCount } from "@/lib/heats";
     import type { Competition, OOFHeat, OOFLane, SpeedEvent } from "@/types/base";
     import { Link, useHttp } from "@inertiajs/svelte";
     import { ArrowRight, Check, House, Info, RefreshCcw } from "@lucide/svelte";
@@ -57,7 +58,7 @@
                 competition: competition,
                 event: event,
                 heat: heat.heat,
-            }).url,
+            }, heatQuery(heat)).url,
             {
                 onSuccess(response, httpResponse) {
                     hasNextHeat = response.hasNextHeat;
@@ -117,7 +118,7 @@
     const hasPlaces = $derived(heat.lanes?.some((l) => l.oof) ?? false);
 </script>
 
-<AppHead title="Heat {heat.heat} - OOF - {event.name} - {competition.name}" />
+<AppHead title="{heatLabel(heat)} - OOF - {event.name} - {competition.name}" />
 
 
 <section class="flex flex-col">
@@ -131,7 +132,7 @@
     />
 
     <SectionLabel>Order of finish</SectionLabel>
-    <p class="font-archivo text-xl font-semibold">Heat {heat.heat}</p>
+    <p class="font-archivo text-xl font-semibold">{heatLabel(heat)}</p>
 
     <div
         class="mt-3 flex items-start gap-3 rounded-xl bg-gray-50 p-3 text-sm text-gray-700"
@@ -156,7 +157,7 @@
     </div>
 
     <div class="divide-y overflow-hidden rounded-xl border bg-white shadow-sm">
-        {#each Array.from({ length: event.max_lanes }, (_, i) => i + 1) as lane_no}
+        {#each Array.from({ length: laneCount(heat, event.max_lanes) }, (_, i) => i + 1) as lane_no}
             {@const lane = heat.lanes?.find((l) => l.lane === lane_no)}
             {#if lane}
                 <button
@@ -228,7 +229,7 @@
                         competition: competition,
                         event: event,
                         heat: heat.heat + 1,
-                    })}
+                    }, heatQuery(heat))}
                     viewTransition
                     class="w-full"
                 >

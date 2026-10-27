@@ -21,6 +21,7 @@
     import Lane from "@/components/Judging/Speed/Lane.svelte";
     import SignOffCheckbox from "@/components/Judging/SignOffCheckbox.svelte";
     import SectionLabel from "@/components/SectionLabel.svelte";
+    import { heatLabel, heatQuery, laneCount } from "@/lib/heats";
 
     import type { Competition, Heat, SpeedEvent } from "@/types/base";
     import { Link, useHttp } from "@inertiajs/svelte";
@@ -41,8 +42,13 @@
     let modalRef: ActionStatusModal | null = null;
 
     // keyed by entity id. PHP sends an empty array as [] rather than {}, and
-    // setting times[entityId] on an array pads it with nulls when serialised
-    let times = $derived.by<Record<number, any>>(() => ({ ...existingTimes }));
+    // setting times[entityId] on an array pads it with nulls when serialised.
+    // Wrapped in $state so Lane can bind to times[entityId]; derived so it
+    // resets when Inertia swaps in the next heat's props
+    let times = $derived.by<Record<number, any>>(() => {
+        const t = $state({ ...existingTimes });
+        return t;
+    });
 
     let hasNextHeat = $state<boolean>(true);
 
@@ -58,7 +64,7 @@
                 competition: competition,
                 event: event,
                 heat: heat.heat,
-            }).url,
+            }, heatQuery(heat)).url,
             {
                 onSuccess(response, httpResponse) {
                     hasNextHeat = response.hasNextHeat;
@@ -80,7 +86,7 @@
 
 </script>
 
-<AppHead title="Heat {heat.heat} - Times - {event.name} - {competition.name}" />
+<AppHead title="{heatLabel(heat)} - Times - {event.name} - {competition.name}" />
 
 
 <section class="flex flex-col">
@@ -94,7 +100,7 @@
     />
 
     <SectionLabel>Times</SectionLabel>
-    <p class="font-archivo text-xl font-semibold">Heat {heat.heat}</p>
+    <p class="font-archivo text-xl font-semibold">{heatLabel(heat)}</p>
 
     <div
         class="mt-3 flex items-start gap-3 rounded-xl bg-gray-50 p-3 text-sm text-gray-700"
@@ -112,7 +118,7 @@
 
     <form onsubmit={submit} class="mt-4 flex flex-col gap-4">
         <div class="divide-y overflow-hidden rounded-xl border bg-white shadow-sm">
-            {#each Array.from({ length: event.max_lanes }, (_, i) => i + 1) as lane}
+            {#each Array.from({ length: laneCount(heat, event.max_lanes) }, (_, i) => i + 1) as lane}
                 <Lane
                     lane={heat.lanes?.find((l) => l.lane === lane) ?? lane}
                     bind:times
@@ -138,7 +144,7 @@
                         competition: competition,
                         event: event,
                         heat: heat.heat + 1,
-                    })}
+                    }, heatQuery(heat))}
                     viewTransition
                     class="w-full"
                 >

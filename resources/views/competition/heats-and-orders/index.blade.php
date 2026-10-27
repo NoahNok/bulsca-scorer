@@ -22,56 +22,76 @@
                             id="edit-heats-kill" class="se-btn">Edit
                             Heats</a>
                     </div>
-                @else
+                @elseif (!$comp->use_pools)
                     <a href="{{ route('comps.heats_and_draws.heats.edit', [$comp, $heatevent['event']]) }}"
                         id="edit-heats-kill" class="se-btn">Edit
                         Heats</a>
                 @endif
 
 
-                <div class="grid grid-flow-col auto-cols-max gap-4 flex-wrap overflow-x-auto snap-x snap-mandatory">
+                @foreach ($heatevent['pools'] as $poolHeats)
+                    @php
+                        $pool = $poolHeats['pool'];
+                        $laneCount = $pool?->lanes ?? $comp->max_lanes;
+                    @endphp
 
-                    <div class="flex flex-col  py-2 sticky top-0 left-0 bg-white pr-2 ">
-                        <h3 class="font-bold  mb-2">L</h3>
-                        <div class="space-y-2">
-
-                            @for ($i = 0; $i < $comp->max_lanes; $i++)
-                                <div class="border border-transparent font-semibold py-2  rounded">
-                                    {{ $i + 1 }}
-                                </div>
-                            @endfor
-
-
+                    @if ($pool)
+                        <div class="mt-4 flex items-center justify-between">
+                            <h3 class="mb-0">{{ $pool->name }}</h3>
+                            <a href="{{ route('comps.heats_and_draws.heats.edit', [$comp, $heatevent['event']]) }}?pool={{ $pool->id }}"
+                                class="se-btn">Edit {{ $pool->name }}</a>
                         </div>
-                    </div>
+                    @endif
 
-                    @foreach ($heatevent['heats'] as $heat_no => $lanes)
-                        <div class="flex flex-col  py-2 snap-start pl-5">
-                            <h3 class="font-bold  mb-2">Heat {{ $heat_no }}</h3>
+                    <div class="grid grid-flow-col auto-cols-max gap-4 flex-wrap overflow-x-auto snap-x snap-mandatory">
+
+                        <div class="flex flex-col  py-2 sticky top-0 left-0 bg-white pr-2 ">
+                            <h3 class="font-bold  mb-2">L</h3>
                             <div class="space-y-2">
 
-                                @for ($i = 0; $i < $comp->max_lanes; $i++)
-                                    @php
-                                        $lane = $lanes->where('lane', $i + 1)->first();
-                                    @endphp
-                                    <div class="se-card  se-card-body min-w-56 p-2! px-4! rounded">
-                                        {{ $lane?->entity?->getName($comp) ?? '-' }}
+                                @for ($i = 0; $i < $laneCount; $i++)
+                                    <div class="border border-transparent font-semibold py-2  rounded">
+                                        {{ $i + 1 }}
                                     </div>
                                 @endfor
 
 
                             </div>
                         </div>
-                    @endforeach
+
+                        @foreach ($poolHeats['heats'] as $heat_no => $lanes)
+                            <div class="flex flex-col  py-2 snap-start pl-5">
+                                <h3 class="font-bold  mb-2">Heat {{ $heat_no }}</h3>
+                                <div class="space-y-2">
+
+                                    @for ($i = 0; $i < $laneCount; $i++)
+                                        @php
+                                            $lane = $lanes->where('lane', $i + 1)->first();
+                                        @endphp
+                                        <div class="se-card  se-card-body min-w-56 p-2! px-4! rounded">
+                                            {{ $lane?->entity?->getName($comp) ?? '-' }}
+                                        </div>
+                                    @endfor
 
 
-                </div>
+                                </div>
+                            </div>
+                        @endforeach
+
+
+                    </div>
+                @endforeach
 
             @empty
                 @if ($comp->getSpeedEvents->count() == 0)
                     <div class="alert-box">
                         <h1>Heats</h1>
                         <p>You must add a Speed Event before you can generate heats.</p>
+                    </div>
+                @elseif ($comp->use_pools)
+                    <div class="se-alert-box alert-info">
+                        <p>This competition uses pools. Pooled heats are generated with the
+                            <code>heats-and-draws:pool-heats</code> command.</p>
                     </div>
                 @else
                     <a href="{{ route('comps.heats_and_draws.heats.generate', $comp) }}" class="se-btn">Generate Heats</a>

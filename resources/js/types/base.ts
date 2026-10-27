@@ -131,8 +131,16 @@ export type CurrentDraw = {
     total: number
 }
 
+export type Pool = {
+    id: number
+    name: string
+    lanes: number
+}
+
 export type Heat = {
     heat: number
+    // Set when the competition uses pools: heat numbers restart in each pool
+    pool?: Pool | null
     complete: boolean
     lanes?: Lane[]
 }
@@ -153,6 +161,7 @@ export type OOFHeat = Omit<Heat, 'lanes'> & {
 export type HeatLane = {
     heat: number
     lane: number
+    pool?: Pool | null
 }
 
 export type TankDraw = {
