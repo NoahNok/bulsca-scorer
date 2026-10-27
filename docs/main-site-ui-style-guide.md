@@ -123,8 +123,9 @@ Pages set `@section('title')` and fill `@section('content')`.
   numbers. Don't call `window.print()`. In the view, wrap each new-page group
   (a Pool, event or SERC) in `.pack-section` and each heat or draw in
   `.pack-block` so it never splits across pages; add `.pack-page` for one block
-  per page. Local rendering needs Chrome's system libraries
-  (`sudo npx puppeteer browsers install chrome --install-deps`).
+  per page. `npm install` downloads Chrome into `.cache/puppeteer`; if it won't
+  start, install its system libraries
+  (https://pptr.dev/troubleshooting#chrome-doesnt-launch-on-linux).
 - **Heats and pools:** when a competition uses pools, heat numbers restart in
   each pool, so name heats with `Pool::heatLabel($pool, $heat)` ("Main Pool ·
   Heat 3", or "Heat 3" without pools), or `Pool::heatLaneLabel($pool, $heat,

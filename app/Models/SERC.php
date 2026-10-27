@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\DTO\RankedResult;
+use Illuminate\Support\Facades\Storage;
 use App\DTO\ResolvedResult;
 use App\DTO\Result;
 use App\DTO\SERCResult as DTOSERCResult;
@@ -305,6 +306,20 @@ class SERC extends Event
     public function getName(): string
     {
         return $this->name;
+    }
+
+    /**
+     * The SERC's image as a data URI, so a PDF Pack can embed it without fetching it back from the site.
+     */
+    public function imageDataUri(): ?string
+    {
+        $disk = Storage::disk('public');
+
+        if (!$this->image || !$disk->exists($this->image)) {
+            return null;
+        }
+
+        return 'data:' . $disk->mimeType($this->image) . ';base64,' . base64_encode($disk->get($this->image));
     }
 
 

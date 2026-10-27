@@ -46,6 +46,11 @@ if [ "$(stat -c %U storage)" != "$(id -un)" ]; then
     warn "storage/ is owned by $(stat -c %U storage), not $(id -un). Caches written now may not be writable by the web server."
 fi
 
+if ! command -v node > /dev/null; then
+    echo "Node isn't installed. It builds the frontend and renders PDF Packs (docs/adr/0002)."
+    exit 1
+fi
+
 if [ -n "$(git status --porcelain --untracked-files=no)" ]; then
     echo "Working tree has local changes; refusing to deploy over them:"
     git status --short --untracked-files=no
@@ -79,9 +84,10 @@ npm run build
 step "Checking the PDF renderer"
 # Packs are rendered to PDF by headless Chrome (docs/adr/0002). npm ci downloads Chrome into
 # .cache/puppeteer; this launches it from public/, where PHP-FPM runs, to prove it starts.
+# It runs as this user, so .cache/ must also be readable by the web server's user.
 if ! (cd public && node -e "require('puppeteer').launch().then(b => b.close())" > /dev/null 2>&1); then
-    echo "Headless Chrome won't start, so Packs can't be printed. Install its system libraries with:"
-    echo "  sudo npx puppeteer browsers install chrome --install-deps"
+    echo "Headless Chrome won't start, so Packs can't be printed. It's usually missing system libraries:"
+    echo "  https://pptr.dev/troubleshooting#chrome-doesnt-launch-on-linux"
     exit 1
 fi
 

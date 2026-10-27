@@ -23,33 +23,43 @@ class CompetitionPdfCreator
     }
 
     /**
-     * Every speed event's heats. Without heats per event, every event runs the first event's heats.
+     * One section per event and Pool, each starting on a new page. Heat numbers restart per Pool.
+     * With Pools, every event in a Pool comes before the next Pool, so each Pool's officials get
+     * their own stack. Without heats per event, every event runs the first event's heats, so
+     * $everyEvent false keeps just that one set.
      */
-    private function heatsForEachEvent(): array
+    private function heatSections(bool $everyEvent = true): array
     {
         $heats = $this->comp->getHeats();
 
-        if ($this->comp->heats_per_event || empty($heats)) {
-            return $heats;
+        if (!$this->comp->heats_per_event && !empty($heats) && $everyEvent) {
+            $heats = $this->comp->getSpeedEvents->map(fn($event) => [...$heats[0], 'event' => $event])->all();
+        } elseif (!$this->comp->heats_per_event) {
+            $heats = array_slice($heats, 0, 1);
         }
 
-        return $this->comp->getSpeedEvents->map(fn($event) => [...$heats[0], 'event' => $event])->all();
-    }
-
-    /**
-     * One section per event and Pool, each starting on a new page. Heat numbers restart per Pool.
-     */
-    private function heatSections(): array
-    {
         $sections = [];
 
-        foreach ($this->heatsForEachEvent() as $heatevent) {
-            foreach ($heatevent['pools'] as $poolHeats) {
-                $sections[] = ['event' => $heatevent['event'], 'pool' => $poolHeats['pool'], 'heats' => $poolHeats['heats']];
+        foreach ($heats as $eventHeats) {
+            foreach ($eventHeats['pools'] as $poolHeats) {
+                $sections[] = ['event' => $eventHeats['event'], 'pool' => $poolHeats['pool'], 'heats' => $poolHeats['heats']];
             }
         }
 
+        // usort is stable, so events keep their order within each Pool
+        usort($sections, fn($a, $b) => ($a['pool']?->id ?? 0) <=> ($b['pool']?->id ?? 0));
+
         return $sections;
+    }
+
+    /**
+     * The short code printed at the foot of a sheet, e.g. "Swim & Tow" -> "ST".
+     */
+    public static function initials(string $name): string
+    {
+        preg_match_all('/\b\w/', $name, $matches);
+
+        return implode('', $matches[0]);
     }
 
     private function pack(string $view, string $packName, array $data): PdfBuilder
@@ -82,7 +92,7 @@ class CompetitionPdfCreator
     }
 
     /**
-     * Blank tables for judges to rough-mark every team against one SERC's Objectives.
+     * Blank tables for judges to rough-mark every team against each of one SERC's Objectives.
      */
     public function rawMarkingSheets(SERC $serc): PdfBuilder
     {
@@ -106,33 +116,21 @@ class CompetitionPdfCreator
 
     private function speedMarshallingSections(): array
     {
-        $sections = [];
+        return array_map(function ($section) {
+            $pool = $section['pool'];
+            $eventName = $this->comp->heats_per_event ? $section['event']->getName() : 'Speeds';
+            $blocks = [];
 
-        foreach ($this->comp->getHeats() as $heatevent) {
-            $eventName = $this->comp->heats_per_event ? $heatevent['event']->getName() : 'Speeds';
-
-            foreach ($heatevent['pools'] as $poolHeats) {
-                $pool = $poolHeats['pool'];
-                $blocks = [];
-
-                foreach ($poolHeats['heats'] as $heatNo => $lanes) {
-                    $blocks[] = [
-                        'name' => $eventName . ' · ' . Pool::heatLabel($pool, $heatNo),
-                        'leagues' => $this->leagues($lanes),
-                        'lines' => $lanes->map(fn($lane) => "Lane {$lane->lane}: {$lane->entity?->getName($this->comp)}")->all(),
-                    ];
-                }
-
-                $sections[] = ['title' => $pool ? "$eventName · {$pool->name}" : $eventName, 'blocks' => $blocks];
+            foreach ($section['heats'] as $heatNo => $lanes) {
+                $blocks[] = [
+                    'name' => $eventName . ' · ' . Pool::heatLabel($pool, $heatNo),
+                    'leagues' => $this->leagueNames($lanes),
+                    'lines' => $lanes->map(fn($lane) => "Lane {$lane->lane}: {$lane->entity?->getName($this->comp)}")->all(),
+                ];
             }
 
-            // Without heats per event, every event runs the same heats
-            if (!$this->comp->heats_per_event) {
-                break;
-            }
-        }
-
-        return $sections;
+            return ['title' => $pool ? "$eventName · {$pool->name}" : $eventName, 'blocks' => $blocks];
+        }, $this->heatSections(everyEvent: false));
     }
 
     private function sercMarshallingSections(): array
@@ -140,8 +138,8 @@ class CompetitionPdfCreator
         $useTanks = $this->comp->getScoringSettings?->use_tanks ?? false;
         $sections = [];
 
-        foreach ($this->comp->getDraws() as $drawevent) {
-            $tanks = $drawevent['draws'];
+        foreach ($this->comp->getDraws() as $sercDraws) {
+            $tanks = $sercDraws['draws'];
             $blocks = [];
 
             if ($useTanks) {
@@ -164,19 +162,19 @@ class CompetitionPdfCreator
                     $tankNo = $index + 1;
                     $blocks[] = [
                         'name' => "Tank {$tankNo}",
-                        'leagues' => $this->leagues($draws),
+                        'leagues' => $this->leagueNames($draws),
                         'lines' => $draws->map(fn($draw) => "{$draw->draw}: {$draw->entity?->getName($this->comp)}")->all(),
                     ];
                 }
             }
 
-            $sections[] = ['title' => $drawevent['serc']->getName(), 'blocks' => $blocks];
+            $sections[] = ['title' => $sercDraws['serc']->getName(), 'blocks' => $blocks];
         }
 
         return $sections;
     }
 
-    private function leagues($rows): string
+    private function leagueNames($rows): string
     {
         return $rows->map(fn($row) => $row->entity?->getLeague()?->name)->filter()->unique()->implode(', ');
     }

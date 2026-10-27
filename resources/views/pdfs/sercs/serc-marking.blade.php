@@ -15,13 +15,8 @@
     {{-- One sheet per page: each goes to the judge marking that Draw --}}
     @foreach ($sercs as $serc)
         @php
-            preg_match_all('/\b\w/', $serc->getName(), $matches);
-            $sercShort = implode('', $matches[0]);
-
-            // Embed the image so Chrome doesn't have to fetch it back from the site
-            $image = $serc->image && Storage::disk('public')->exists($serc->image)
-                ? 'data:' . Storage::disk('public')->mimeType($serc->image) . ';base64,' . base64_encode(Storage::disk('public')->get($serc->image))
-                : null;
+            $sercShort = \App\Pdf\CompetitionPdfCreator::initials($serc->getName());
+            $image = $serc->imageDataUri();
         @endphp
 
         @foreach ($tanks as $tankIndex => $tank)
@@ -58,17 +53,17 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($serc->getJudges as $judge)
+                            @foreach ($serc->getJudges as $objective)
                                 <tr class="border-b border-black">
-                                    <td class="py-1 bg-gray-200" colspan="2">{{ $judge->name }}
+                                    <td class="py-1 bg-gray-200" colspan="2">{{ $objective->name }}
                                         <br>
                                         <article
                                             class="block prose prose-sm prose-neutral prose-p:mb-0 prose-ul:my-0 prose-ol:my-0 prose-li:my-0 leading-5!">
-                                            {!! $judge->description !!}
+                                            {!! $objective->description !!}
                                         </article>
                                     </td>
                                 </tr>
-                                @foreach ($judge->getMarkingPoints as $mp)
+                                @foreach ($objective->getMarkingPoints as $mp)
                                     <tr class="border-b border-black">
                                         <td class="py-2 border-r border-black indent-3">{{ $mp->name }}</td>
                                         <td></td>

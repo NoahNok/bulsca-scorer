@@ -13,12 +13,8 @@
     @foreach ($sections as $section)
         @php
             $pool = $section['pool'];
-
-            preg_match_all('/\b\w/', $section['event']->getName(), $matches);
-            $eventShort = implode('', $matches[0]);
-
-            preg_match_all('/\b\w/', $pool?->name ?? '', $matches);
-            $poolShort = implode('', $matches[0]);
+            $eventShort = \App\Pdf\CompetitionPdfCreator::initials($section['event']->getName());
+            $poolShort = \App\Pdf\CompetitionPdfCreator::initials($pool?->name ?? '');
         @endphp
 
         <div class="pack-section">

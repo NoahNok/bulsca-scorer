@@ -317,4 +317,36 @@ class PacksTest extends TestCase
             ->assertSee(route('comps.printables.chief-timekeeper-pack', $this->comp), false)
             ->assertSee(route('comps.printables.chief-timekeeper-pack', [$this->comp, 'layout' => 'packed']), false);
     }
+
+    public function test_pooled_packs_put_every_event_for_a_pool_before_the_next_pool(): void
+    {
+        $this->comp->heats_per_event = true;
+        $this->comp->save();
+        $main = $this->pool('Main Pool', 8);
+        $diving = $this->pool('Diving Pool', 4);
+        $this->team('Main Team', 1, 4, $main);
+        $this->team('Diving Team', 1, 2, $diving);
+
+        $base = new SpeedEvent();
+        $base->name = 'Rope Throw';
+        $base->save();
+        $this->event = new CompetitionSpeedEvent();
+        $this->event->event = $base->id;
+        $this->event->competition = $this->comp->id;
+        $this->event->record = 0;
+        $this->event->save();
+        $this->team('Main Thrower', 1, 1, $main);
+        $this->team('Diving Thrower', 1, 1, $diving);
+
+        $this->actingAs($this->admin)->get(route('comps.printables.chief-timekeeper-pack', $this->comp));
+        $this->actingAs($this->admin)->get(route('comps.printables.marshalling', $this->comp));
+
+        Pdf::assertRespondedWithPdf(fn(PdfBuilder $pdf) => $pdf->contains([
+            'Swim &amp; Tow · Main Pool · Heat 1', 'Rope Throw · Main Pool · Heat 1',
+            'Swim &amp; Tow · Diving Pool · Heat 1', 'Rope Throw · Diving Pool · Heat 1',
+        ]) && $pdf->viewName === 'pdfs.heats.chief-timekeeper');
+        Pdf::assertRespondedWithPdf(fn(PdfBuilder $pdf) => array_column($pdf->viewData['sections'], 'title') === [
+            'Swim & Tow · Main Pool', 'Rope Throw · Main Pool', 'Swim & Tow · Diving Pool', 'Rope Throw · Diving Pool',
+        ]);
+    }
 }

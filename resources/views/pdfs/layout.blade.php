@@ -50,7 +50,7 @@
 
 <body class="bg-white text-black">
 
-    <div class="h-[250mm] flex flex-col items-center justify-center text-center">
+    <div class="min-h-[250mm] flex flex-col items-center justify-center text-center">
         <h1>{{ $packName }}</h1>
         <h3>{{ $comp->name }}</h3>
         <p>{{ $comp->where }}<br>{{ $comp->when->format('jS F Y') }}</p>
