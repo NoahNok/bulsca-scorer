@@ -433,7 +433,9 @@
                     })
             
                     if (!response.ok) {
-                        showAlert('Failed to save settings. Check your inputs')
+                        let errors = response.status == 422 ? (await response.json()).errors ?? {} : {}
+                        let firstError = Object.values(errors)[0]?.[0]
+                        showAlert(firstError ?? 'Failed to save settings. Check your inputs')
                         return
                     }
             
@@ -573,6 +575,12 @@
                                 :default="$comp->seed_per_event">
                                 <option value="1" @if ($comp->seed_per_event) selected @endif>Yes</option>
                                 <option value="0" @if (!$comp->seed_per_event) selected @endif>No</option>
+                            </x-se-input>
+
+                            <x-se-input label="Use Pools" name="use_pools" type="select" section="hd"
+                                :default="$comp->use_pools">
+                                <option value="1" @if ($comp->use_pools) selected @endif>Yes</option>
+                                <option value="0" @if (!$comp->use_pools) selected @endif>No</option>
                             </x-se-input>
 
 

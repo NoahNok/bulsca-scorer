@@ -5,6 +5,7 @@ namespace App\Models\Orders;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\DigitalJudge\JudgeDQSubmission;
 use App\Models\EventOOF;
+use App\Models\Pool;
 use App\Models\SpeedResult;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -20,6 +21,7 @@ class Heat extends Model
         'entity_type',
         'heat',
         'lane',
+        'pool',
     ];
 
     protected $cascadeDeletes = [
@@ -34,6 +36,11 @@ class Heat extends Model
     public function speedEvent()
     {
         return $this->belongsTo(CompetitionSpeedEvent::class, 'speed_event');
+    }
+
+    public function getPool()
+    {
+        return $this->belongsTo(Pool::class, 'pool');
     }
 
     public function oofs()

@@ -84,6 +84,11 @@ class Competition extends Model implements IInvitable, IJsonable
         return parent::resolveRouteBinding($value, $field);
     }
 
+    public function pools()
+    {
+        return $this->hasMany(Pool::class, 'competition', 'id')->orderBy('id');
+    }
+
     public function getSpeedEvents()
     {
         return $this->hasMany(CompetitionSpeedEvent::class, 'competition', 'id');

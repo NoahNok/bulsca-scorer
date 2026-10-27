@@ -138,7 +138,7 @@ class CompetitionController extends Controller
 
         foreach ($validated as $key => $value) {
 
-            if ($key == 'heats_per_event' || $key == 'seed_per_event' || $key == 'use_seeds') {
+            if ($key == 'heats_per_event' || $key == 'seed_per_event' || $key == 'use_seeds' || $key == 'use_pools') {
                 $comp->{$key} = $value;
                 continue;
             }
