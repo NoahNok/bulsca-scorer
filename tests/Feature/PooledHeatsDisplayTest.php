@@ -148,4 +148,14 @@ class PooledHeatsDisplayTest extends TestCase
             ->get(route('dj.speeds.times.index', $this->event))
             ->assertOk();
     }
+
+    public function test_the_event_page_loads_when_a_heat_entity_has_no_result_row(): void
+    {
+        // Imported entities can be placed in heats without a result row for the event
+        SpeedResult::query()->delete();
+
+        $this->actingAs($this->admin)
+            ->get(route('comps.events.speeds.view', [$this->comp, $this->event]))
+            ->assertOk();
+    }
 }

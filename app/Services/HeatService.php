@@ -124,8 +124,9 @@ class HeatService
                 return [
                     'heat' => $heat->heat,
                     'lane' => $heat->lane,
-                    'result' => (int) $result?->result ?? -1,
-                    'pretty_result' => SpeedResult::prettyTime($result->result) ?? 'N/A',
+                    // An entity can be in a heat without a result row for this event (e.g. imported entities)
+                    'result' => (int) ($result?->result ?? -1),
+                    'pretty_result' => $result ? SpeedResult::prettyTime($result->result) ?? 'N/A' : 'N/A',
                     'oof' => $heat->getOOF($event->id)?->oof ?? -1,
                     'entity' => $heat->entity
                 ];

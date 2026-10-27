@@ -4,9 +4,6 @@
     {{ $event->getName() }}
 @endsection
 
-@section('breadcrumbs')
-
-
 @section('content')
     <div class="grid-3 ">
         <div class="flex flex-col space-y-4 col-span-2" x-data="{
