@@ -19,13 +19,7 @@ class PrintableController extends Controller
     {
         $pdfCreator = new CompetitionPdfCreator($comp);
 
-        $poolNames = $request->input('poolNames');
-
-        if ($poolNames) {
-            return $pdfCreator->chiefTimekeeper(explode(",", $poolNames));
-        }
-
-        return $pdfCreator->chiefTimekeeper();
+        return $pdfCreator->chiefTimekeeper($request->input('layout') !== 'packed');
     }
 
     public function printSMS(Competition $comp)
@@ -37,13 +31,15 @@ class PrintableController extends Controller
 
     public function sercSheets(Competition $comp, SERC $serc)
     {
-        return view('competition.printables.serc-sheet', ['comp' => $comp, 'serc' => $serc]);
+        $pdfCreator = new CompetitionPdfCreator($comp);
+
+        return $pdfCreator->rawMarkingSheets($serc);
     }
 
     public function printMarshalling(Competition $comp, Request $request)
     {
         $pdfCreator = new CompetitionPdfCreator($comp);
 
-        return $pdfCreator->marshalling($request->input('type', 'speed'), $request->input('even_odd', false));
+        return $pdfCreator->marshalling($request->input('type', 'speed'));
     }
 }

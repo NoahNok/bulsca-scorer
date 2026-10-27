@@ -1,189 +1,92 @@
-<!DOCTYPE html>
-<html lang="en" class="bg-gray-100 w-screen h-screen flex items-center justify-center">
+@extends('pdfs.layout')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
-    <title>SERC Marking Pack</title>
+@section('cover')
+    <ol class="list-none">
+        @foreach ($sercs as $serc)
+            <li>{{ $tanks->sum(fn($tank) => count($tank)) }}x {{ $serc->getName() }} Marking Sheets (Over
+                {{ count($tanks) }} tanks)</li>
+        @endforeach
+    </ol>
+    <br>
+    <p class="font-semibold">Pages with a black strip at the top mark the beginning of a new tank!</p>
+@endsection
 
-    <style>
-        @page {
-            size: A4;
-            margin: 0;
-        }
+@section('content')
+    {{-- One sheet per page: each goes to the judge marking that Draw --}}
+    @foreach ($sercs as $serc)
+        @php
+            preg_match_all('/\b\w/', $serc->getName(), $matches);
+            $sercShort = implode('', $matches[0]);
 
-        @media print {
+            // Embed the image so Chrome doesn't have to fetch it back from the site
+            $image = $serc->image && Storage::disk('public')->exists($serc->image)
+                ? 'data:' . Storage::disk('public')->mimeType($serc->image) . ';base64,' . base64_encode(Storage::disk('public')->get($serc->image))
+                : null;
+        @endphp
 
-            html,
-            body {
-                width: 210mm;
-                height: 297mm;
-            }
-
-        }
-    </style>
-
-
-</head>
-
-
-
-<body class="w-screen h-screen  flex flex-col space-y-12 print:space-y-0 items-center overflow-x-hidden ">
-
-    @php
-        $drawevent = $tanks[0];
-    @endphp
-
-    <div class="min-h-[297mm] min-w-[210mm] bg-white p-5 flex flex-col  items-center justify-center text-center">
-        <h1>SERC Marking Pack</h1>
-        <h3>{{ $comp->name }}</h3>
-        <p>{{ $location }}<br>{{ $comp->when->format('jS F Y') }}</p>
-        <br>
-        <br>
-        <ol class="list ">
-
-         
-
-            @foreach ($events as $serc)
-                <li>{{ 
-                    $drawevent['draws']->reduce(function ($carry, $item) {
-                        return $carry + count($item);
-                    }, 0),
-             }}x
-                    {{ $serc->getName() }} Marking Sheets (Over
-                    {{ count($drawevent['draws']) }} tanks)</li>
-            @endforeach
-        </ol>
-        <br>
-        <p class="  "><span class="font-semibold">Pages with a black strip at the top mark the begining of a new
-                tank!</span><br><span class=" print:hidden">(Ensure 'Background graphics' is ticked when
-                printing)</span></p>
-    </div>
-
-
-    @foreach ($events as $serc)
-        @forelse ($drawevent['draws'] as $key => $tank)
-            @foreach ($tank as $draw_no => $draw)
-                <div class="min-h-[297mm] min-w-[210mm] max-w-[210mm] bg-white p-5 flex flex-col grow-0 relative">
-                    @if ($loop->index == 0)
+        @foreach ($tanks as $tankIndex => $tank)
+            @foreach ($tank as $drawIndex => $draw)
+                <div class="pack-section relative pt-4">
+                    @if ($loop->first)
                         <div class="absolute top-0 left-0 w-full h-2 bg-black">&nbsp;</div>
                     @endif
 
                     <div class="flex w-full justify-between items-center">
-                        <h2 class="hmb-0">{{ $serc->getName() }}</h2>
-                        <p class=" font-semibold text-right">{{ $comp->name }} -
-                            {{ $comp->when->format('jS F') }}<br><small>{{ $location }}</small></p>
+                        <h2>{{ $serc->getName() }}</h2>
+                        <p class="font-semibold">Initiative Judge</p>
                     </div>
-
-                    <div class="flex w-full justify-between items-center">
-                        <p>Tank {{ $draw->tank }} | Draw {{ $draw->draw }}</p>
-                        <p class=" font-semibold text-right">Initiative Judge</p>
-                    </div>
-
+                    <p>Tank {{ $draw->tank }} | Draw {{ $draw->draw }}</p>
 
                     <br>
-                    <div class="flex justify-between items-center">
 
-                        <h4>{{ $draw?->entity?->getName($comp) ?? '-' }}</h4>
-                        <p class="text-small text-gray-500">{{ $draw?->entity?->getLeague()?->name ?? 'No League' }}
-                        </p>
+                    <div class="flex justify-between items-center">
+                        <h4>{{ $draw->entity?->getName($comp) ?? '-' }}</h4>
+                        <p class="text-sm text-gray-500">{{ $draw->entity?->getLeague()?->name ?? 'No League' }}</p>
                     </div>
 
-                    @if ($serc->image)
+                    @if ($image)
                         <div class="flex items-center justify-center">
-                            <img src="{{ asset('storage/' . $serc->image) }}" alt="SERC Image"
-                                class=" w-[70%] ">
-
+                            <img src="{{ $image }}" alt="SERC Image" class="w-[70%]">
                         </div>
                     @endif
 
-
-                    <table class=" table-fixed text-left ">
+                    <table class="table-fixed text-left w-full">
                         <thead class="border-b border-black">
-
                             <tr>
                                 <th class="w-full">Criteria</th>
-                                <th class="  min-w-[5.5rem] text-right">Mark (/10)</th>
-
-
+                                <th class="min-w-[5.5rem] text-right">Mark (/10)</th>
                             </tr>
                         </thead>
-                        <tbody class="">
-
+                        <tbody>
                             @foreach ($serc->getJudges as $judge)
                                 <tr class="border-b border-black">
-                                    <td class="py-1 bg-gray-200 " colspan="2">{{ $judge->name }}
+                                    <td class="py-1 bg-gray-200" colspan="2">{{ $judge->name }}
                                         <br>
                                         <article
                                             class="block prose prose-sm prose-neutral prose-p:mb-0 prose-ul:my-0 prose-ol:my-0 prose-li:my-0 leading-5!">
                                             {!! $judge->description !!}
                                         </article>
                                     </td>
-
                                 </tr>
                                 @foreach ($judge->getMarkingPoints as $mp)
                                     <tr class="border-b border-black">
-                                        <td class="py-2 border-r border-black indent-3 ">{{ $mp->name }}</td>
+                                        <td class="py-2 border-r border-black indent-3">{{ $mp->name }}</td>
                                         <td></td>
-
                                     </tr>
                                 @endforeach
                             @endforeach
-
-
                         </tbody>
-
                     </table>
 
-                    <p><strong>Comments:</strong></p>
+                    <p class="mt-2"><strong>Comments:</strong></p>
+                    <div class="h-40"></div>
 
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
+                    <p><strong>Time:</strong><br><strong>Signature:</strong></p>
 
-                    <div>
-                        <p><strong>Time:</strong>
-                            <br>
-                            <strong>Signature:</strong>
-                        </p>
-                    </div>
-
-                    <div class="mt-auto">
-                        @php
-                            preg_match_all('/\b\w/', $serc->getName(), $matches);
-                            $firstLetters = implode('', $matches[0]);
-
-                        @endphp
-                        <p class="text-sm text-right">IJ -
-                            {{ $firstLetters }}
-                            -
-                            T{{ $key + 1 }} -
-                            D{{ $draw_no + 1 }}</p>
-                        {{-- ROLE - EVENT - TANK - DRAW --}}
-                    </div>
-
+                    {{-- ROLE - EVENT - TANK - DRAW --}}
+                    <p class="text-sm text-right">IJ - {{ $sercShort }} - T{{ $tankIndex + 1 }} - D{{ $drawIndex + 1 }}</p>
                 </div>
             @endforeach
-
-        @empty
-            <div></div>
-        @endforelse
+        @endforeach
     @endforeach
-
-
-    <script>
-        window.onload = function() {
-            window.print()
-        }
-    </script>
-
-</body>
-
-</html>
+@endsection

@@ -76,6 +76,15 @@ step "Building the frontend"
 npm ci
 npm run build
 
+step "Checking the PDF renderer"
+# Packs are rendered to PDF by headless Chrome (docs/adr/0002). npm ci downloads Chrome into
+# .cache/puppeteer; this launches it from public/, where PHP-FPM runs, to prove it starts.
+if ! (cd public && node -e "require('puppeteer').launch().then(b => b.close())" > /dev/null 2>&1); then
+    echo "Headless Chrome won't start, so Packs can't be printed. Install its system libraries with:"
+    echo "  sudo npx puppeteer browsers install chrome --install-deps"
+    exit 1
+fi
+
 if ! php artisan migrate:status --pending=1 > /dev/null 2>&1; then
     step "Backing up the database before migrating"
     mkdir -p "$BACKUP_DIR"

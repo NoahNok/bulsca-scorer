@@ -108,15 +108,6 @@ class PooledHeatsDisplayTest extends TestCase
             ->assertSeeInOrder(['Main Pool · Heat 1', 'Main Team', 'Diving Pool · Heat 1', 'Diving Team']);
     }
 
-    public function test_the_chief_timekeeper_pack_has_a_section_per_pool(): void
-    {
-        $this->actingAs($this->admin)
-            ->get(route('comps.printables.chief-timekeeper-pack', $this->comp))
-            ->assertOk()
-            ->assertSeeInOrder(['Main Pool Heats', 'Diving Pool Heats'])
-            ->assertSeeInOrder(['Main Pool', 'Main Team', 'Diving Pool', 'Diving Team']);
-    }
-
     public function test_the_results_editor_filters_heats_by_pool(): void
     {
         $this->actingAs($this->admin)

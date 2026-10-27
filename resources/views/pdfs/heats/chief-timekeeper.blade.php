@@ -1,189 +1,86 @@
-<!DOCTYPE html>
-<html lang="en" class="bg-gray-100 w-screen h-screen flex items-center justify-center">
+@extends('pdfs.layout')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ config('version.hash') }}">
-    <title>Chief Timekeeper Pack</title>
+@section('cover')
+    <ol class="list-disc">
+        @foreach ($sections as $section)
+            <li>{{ count($section['heats']) }}x {{ $section['event']->getName() }} {{ $section['pool']?->name }} Heats</li>
+        @endforeach
+    </ol>
+@endsection
 
-    <style>
-        @page {
-            size: A4;
-            margin: 0;
-        }
+@section('content')
+    {{-- One section per event and Pool: heat numbers restart in each Pool --}}
+    @foreach ($sections as $section)
+        @php
+            $pool = $section['pool'];
 
-        @media print {
+            preg_match_all('/\b\w/', $section['event']->getName(), $matches);
+            $eventShort = implode('', $matches[0]);
 
-            html,
-            body {
-                width: 210mm;
-                height: 297mm;
-            }
+            preg_match_all('/\b\w/', $pool?->name ?? '', $matches);
+            $poolShort = implode('', $matches[0]);
+        @endphp
 
-        }
-    </style>
+        <div class="pack-section">
+            @foreach ($section['heats'] as $heatNo => $heat)
+                <div class="pack-block {{ $onePerPage ? 'pack-page' : '' }} pb-8">
+                    <h3 class="mb-2">{{ $section['event']->getName() }} · {{ \App\Models\Pool::heatLabel($pool, $heatNo) }}</h3>
 
-</head>
-
-
-
-<body class="w-screen h-screen  flex flex-col space-y-12 print:space-y-0 items-center overflow-x-hidden ">
-
-
-    <div class="min-h-[297mm] min-w-[210mm] bg-white p-5 flex flex-col  items-center justify-center text-center">
-        <h1>Chief Timekeeper Pack</h1>
-        <h3>{{ $comp->name }}</h3>
-        <p>{{ $location }}<br>{{ $comp->when->format('jS F Y') }}</p>
-        <br>
-        <br>
-        <ol class="lis list-disc">
-            @foreach ($heats as $heatevent)
-                @if ($comp->use_pools)
-                    @foreach ($heatevent['pools'] as $poolHeats)
-                        <li>{{ count($poolHeats['heats']) }}x {{ $heatevent['event']->getName() }}
-                            {{ $poolHeats['pool']?->name }} Heats</li>
-                    @endforeach
-                @else
-                    <li>{{ count($heatevent['heats']) }}x {{ $heatevent['event']->getName() }} Heats</li>
-                @endif
-            @endforeach
-        </ol>
-    </div>
-
-
-    @foreach ($heats as $heatevent)
-        {{-- With pools, one section per pool: heat numbers restart in each pool --}}
-        @foreach ($comp->use_pools ? $heatevent['pools'] : [['pool' => null, 'heats' => $heatevent['heats']]] as $poolHeats)
-        @forelse ($poolHeats['heats'] as $key => $heat)
-            @php
-                $pool = $poolHeats['pool'];
-                $poolName = $pool?->name ?? $poolNames[($key - 1) % count($poolNames)];
-            @endphp
-            <div class="min-h-[297mm] min-w-[210mm] bg-white p-5 flex flex-col grow-0 ">
-                <div class="flex w-full justify-between items-center">
-                    <h2 class="hmb-0">{{ $heatevent['event']->getName() }}</h2>
-                    <p class=" font-semibold text-right">{{ $comp->name }} -
-                        {{ $comp->when->format('jS F') }}<br><small>{{ $location }}</small></p>
-                </div>
-
-                <div class="flex w-full justify-between items-center">
-                    <p>{{ $poolName }}</p>
-                    <p class=" font-semibold text-right">CHIEF TIMEKEEPER</p>
-                </div>
-
-
-                <br>
-
-                <h3>Heat {{ $heat->first()->heat }}</h3>
-
-                <table class=" table-fixed text-left ">
-                    <thead class="border-b border-black">
-                        <tr>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th class="text-center" colspan="3">Time</th>
-
-                        </tr>
-                        <tr>
-                            <th class="text-center">Lane</th>
-                            <th>Bracket</th>
-
-                            <th>Name</th>
-                            <th class="w-14 text-center">DQ</th>
-                            <th class="w-14 text-center">Mins</th>
-                            <th class="w-14 text-center">Secs</th>
-                            <th class="w-14 text-center">100th</th>
-
-                        </tr>
-                    </thead>
-                    <tbody class="">
-
-                        @for ($l = 1; $l <= ($pool?->lanes ?? $comp->max_lanes); $l++)
-                            @php
-                                $lane = $heat->where('lane', $l)->first();
-                            @endphp
-
-
-                            @if ($lane)
+                    <table class="table-fixed text-left w-full">
+                        <thead class="border-b border-black">
+                            <tr>
+                                <th colspan="4"></th>
+                                <th class="text-center" colspan="3">Time</th>
+                            </tr>
+                            <tr>
+                                <th class="w-14 text-center">Lane</th>
+                                <th class="w-40">Bracket</th>
+                                <th>Name</th>
+                                <th class="w-14 text-center">DQ</th>
+                                <th class="w-14 text-center">Mins</th>
+                                <th class="w-14 text-center">Secs</th>
+                                <th class="w-14 text-center">100th</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($heat as $lane)
                                 <tr class="border-b border-black">
-                                    <td class="py-2 text-center">{{ $l }}</td>
-                                    <td class="pr-4">{{ $lane?->entity?->getLeague()?->name ?? '-' }}</td>
-
-                                    <td>{{ $lane?->entity?->getName($comp) }}</td>
+                                    <td class="py-2 text-center">{{ $lane->lane }}</td>
+                                    <td class="pr-4">{{ $lane->entity?->getLeague()?->name ?? '-' }}</td>
+                                    <td>{{ $lane->entity?->getName($comp) }}</td>
                                     <td></td>
                                     <td class="border-x border-black"></td>
                                     <td class="border-x border-black"></td>
-                                    <td class=" border-black"></td>
+                                    <td></td>
                                 </tr>
-                            @endif
-                        @endfor
+                            @endforeach
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td class="text-sm" colspan="7"><strong>{{ count($heat) }}
+                                        lane{{ count($heat) == 1 ? '' : 's' }}</strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
 
+                    <div class="flex items-end justify-between mt-4">
+                        <div>
+                            <p class="text-sm font-semibold">Order of finish</p>
+                            <div class="border border-black divide-x divide-black flex items-center">
+                                @foreach ($heat as $lane)
+                                    <div class="size-10"></div>
+                                @endforeach
+                            </div>
+                        </div>
 
-
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td class="text-sm"><strong>{{ count($heat) }}
-                                    lane{{ count($heat) == 1 ? '' : 's' }}</strong></td>
-                        </tr>
-                    </tfoot>
-                </table>
-
-
-                <div class="flex flex-col items-center justify-center">
-                    <p class="text-sm font-semibold">Order of finish</p>
-                    <div class="border border-black divide-x divide-black flex items-center">
-                        @foreach ($heat as $h)
-                            <div class=" size-10"></div>
-                        @endforeach
+                        <p class="text-right"><strong>Time:</strong> ____________<br><br><strong>Signature:</strong>
+                            ____________</p>
                     </div>
-                </div>
 
-                <br>
-                <br>
-
-                <div>
-                    <p><strong>Time:</strong>
-                        <br>
-                        <strong>Signature:</strong>
-                    </p>
-                </div>
-
-                <div class="mt-auto">
-                    @php
-                        preg_match_all('/\b\w/', $heatevent['event']->getName(), $matches);
-                        $firstLetters = implode('', $matches[0]);
-
-                        preg_match_all('/\b\w/', $poolName, $matches);
-                        $poolShort = implode('', $matches[0]);
-                    @endphp
-                    <p class="text-sm text-right">CT -
-                        {{ $firstLetters }}
-                        -
-                        H{{ $key }} -
-                        {{ $poolShort }}</p>
                     {{-- ROLE - EVENT - HEAT - POOL --}}
+                    <p class="text-sm text-right mt-2">CT - {{ $eventShort }} - H{{ $heatNo }}{{ $poolShort ? " - $poolShort" : '' }}</p>
                 </div>
-
-            </div>
-        @empty
-            <div></div>
-        @endforelse
-        @endforeach
+            @endforeach
+        </div>
     @endforeach
-
-
-    <script>
-        window.onload = function() {
-            window.print()
-        }
-    </script>
-
-</body>
-
-</html>
+@endsection
