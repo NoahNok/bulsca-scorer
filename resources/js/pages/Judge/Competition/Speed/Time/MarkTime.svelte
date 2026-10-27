@@ -42,8 +42,13 @@
     let modalRef: ActionStatusModal | null = null;
 
     // keyed by entity id. PHP sends an empty array as [] rather than {}, and
-    // setting times[entityId] on an array pads it with nulls when serialised
-    let times = $derived.by<Record<number, any>>(() => ({ ...existingTimes }));
+    // setting times[entityId] on an array pads it with nulls when serialised.
+    // Wrapped in $state so Lane can bind to times[entityId]; derived so it
+    // resets when Inertia swaps in the next heat's props
+    let times = $derived.by<Record<number, any>>(() => {
+        const t = $state({ ...existingTimes });
+        return t;
+    });
 
     let hasNextHeat = $state<boolean>(true);
 

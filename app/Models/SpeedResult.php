@@ -118,18 +118,14 @@ class SpeedResult extends Resultable
     {
         $finalResult = $this->result;
 
-        $dq = $this->disqualifications()->first();
+        // Only DNF, DNS and OOT are entered in place of a time; any other DQ still has a real time
+        $code = $this->disqualifications()->whereIn('code', [99915, 99904, 99901])->value('code');
 
-        if ($dq) {
-
-            $code = $dq->code;
-
+        if ($code) {
             $finalResult = match ($code) {
                 99915 => 'DNF',
                 99904 => 'DNS',
                 99901 => 'OOT',
-                null => '-',
-                default => $code,
             };
         } else {
             $mins = floor($finalResult / 60000);
