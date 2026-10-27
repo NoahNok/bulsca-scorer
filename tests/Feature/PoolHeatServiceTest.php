@@ -382,10 +382,35 @@ class PoolHeatServiceTest extends TestCase
 
         $this->artisan('heats-and-draws:pool-heats', ['competition_id' => $this->comp->id])
             ->expectsConfirmation('Use the saved pool setup?', 'yes')
-            ->expectsChoice('Heat style', PoolHeatService::STYLE_STANDARD, [PoolHeatService::STYLE_STANDARD, PoolHeatService::STYLE_PAIRS])
-            ->expectsOutput('Main Pool: 1 heats, 1 entries')
+            ->expectsQuestion('Heat style', PoolHeatService::STYLE_STANDARD)
+            ->expectsOutputToContain('Main Pool: 1 heats, 1 entries')
             ->assertSuccessful();
 
         $this->assertSame(['Main Pool' => [1 => [2 => 'A']]], $this->heats());
+    }
+
+    public function test_the_command_sets_up_a_pool_and_its_leagues_in_running_order(): void
+    {
+        $open = $this->league('Open');
+        $masters = $this->league('Masters');
+        $this->competitor('O1', [$open], 10);
+        $this->competitor('M1', [$masters], 10);
+
+        $this->artisan('heats-and-draws:pool-heats', ['competition_id' => $this->comp->id])
+            ->expectsQuestion('Pool setup', 'add')
+            ->expectsQuestion('Pool name', 'Main Pool')
+            ->expectsQuestion('Number of lanes', '6')
+            ->expectsQuestion('Pool setup', 'leagues')
+            ->expectsQuestion('Leagues swum in Main Pool', [$open->id, $masters->id])
+            ->expectsQuestion('Which of these are pairs leagues?', [])
+            ->expectsQuestion('Which league runs next in Main Pool?', $masters->id)
+            ->expectsQuestion('Pool setup', 'done')
+            ->expectsQuestion('Heat style', PoolHeatService::STYLE_STANDARD)
+            ->assertSuccessful();
+
+        $pool = Pool::where('name', 'Main Pool')->firstOrFail();
+        $this->assertSame(6, $pool->lanes);
+        $this->assertSame(['Masters', 'Open'], $pool->leagues->pluck('name')->all());
+        $this->assertSame(['Main Pool' => [1 => [3 => 'M1'], 2 => [3 => 'O1']]], $this->heats());
     }
 }

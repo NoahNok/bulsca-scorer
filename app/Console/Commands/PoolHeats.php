@@ -8,6 +8,16 @@ use App\Models\Pool;
 use App\Services\PoolHeatService;
 use Illuminate\Console\Command;
 
+use function Laravel\Prompts\confirm;
+use function Laravel\Prompts\error;
+use function Laravel\Prompts\info;
+use function Laravel\Prompts\multiselect;
+use function Laravel\Prompts\note;
+use function Laravel\Prompts\select;
+use function Laravel\Prompts\table;
+use function Laravel\Prompts\text;
+use function Laravel\Prompts\warning;
+
 class PoolHeats extends Command
 {
     /**
@@ -24,8 +34,6 @@ class PoolHeats extends Command
      */
     protected $description = "Generate heats across a competition's pools from the leagues swum in each pool";
 
-    const DONE = 'Done';
-
     /**
      * Execute the console command.
      */
@@ -34,27 +42,27 @@ class PoolHeats extends Command
         $comp = Competition::find($this->argument('competition_id'));
 
         if (!$comp) {
-            $this->error('No competition found with that id');
+            error('No competition found with that id');
             return self::FAILURE;
         }
 
-        $this->info("Using: {$comp->name}");
+        info("Using: {$comp->name}");
 
         if ($comp->heats_per_event) {
-            $this->error('Pool heats need heats per event to be off.');
+            error('Pool heats need heats per event to be off.');
             return self::FAILURE;
         }
 
         $event = $comp->getSpeedEvents()->orderBy('id')->first();
 
         if (!$event) {
-            $this->error('The competition has no speed events.');
+            error('The competition has no speed events.');
             return self::FAILURE;
         }
 
         if (!$comp->use_pools) {
-            if (!$this->confirm('Pools are turned off for this competition. Turn them on?', true)) {
-                $this->error('aborting');
+            if (!confirm('Pools are turned off for this competition. Turn them on?')) {
+                error('aborting');
                 return self::FAILURE;
             }
 
@@ -64,44 +72,47 @@ class PoolHeats extends Command
 
         $this->showPools($comp);
 
-        if (!$this->hasUsableSetup($comp) || !$this->confirm('Use the saved pool setup?', true)) {
+        if (!$this->hasUsableSetup($comp) || !confirm('Use the saved pool setup?')) {
             $this->setupPools($comp);
         }
 
         $style = PoolHeatService::STYLE_STANDARD;
 
         if ($event->scorable_entity == 'competitor') {
-            $style = $this->choice('Heat style', [PoolHeatService::STYLE_STANDARD, PoolHeatService::STYLE_PAIRS], PoolHeatService::STYLE_STANDARD);
+            $style = select('Heat style', [
+                PoolHeatService::STYLE_STANDARD => 'Standard: fastest heat last, fastest in the middle lane',
+                PoolHeatService::STYLE_PAIRS => 'Pairs: partners swim back to back in the same lane',
+            ]);
         }
 
         try {
             // Check the setup before anything is deleted
             $service->plan($comp, $style);
         } catch (HeatException $e) {
-            $this->error($e->getMessage());
+            error($e->getMessage());
             return self::FAILURE;
         }
 
         if (!$comp->use_seeds) {
-            $this->warn("The competition doesn't use seed times, so entities are placed in the order they were added.");
+            warning("The competition doesn't use seed times, so entities are placed in the order they were added.");
         }
 
         $unplaced = $service->unplacedEntities($comp);
 
         if ($unplaced->isNotEmpty()) {
-            $this->warn("These entities aren't in any pooled league and won't get a heat:");
-            $unplaced->each(fn($entity) => $this->line(" - {$entity->getName($comp)}"));
+            warning("These entities aren't in any pooled league and won't get a heat:");
+            note($unplaced->map(fn($entity) => " - {$entity->getName($comp)}")->join("\n"));
 
-            if (!$this->confirm('Continue anyway?')) {
-                $this->error('aborting');
+            if (!confirm('Continue anyway?', default: false)) {
+                error('aborting');
                 return self::FAILURE;
             }
         }
 
         $impact = $service->deletionImpact($comp);
 
-        if ($impact['heats'] > 0 && !$this->confirm("This will delete {$impact['heats']} existing heat entries, {$impact['oofs']} OOFs and {$impact['dq_submissions']} DQ submissions. Continue?")) {
-            $this->error('aborting');
+        if ($impact['heats'] > 0 && !confirm("This will delete {$impact['heats']} existing heat entries, {$impact['oofs']} OOFs and {$impact['dq_submissions']} DQ submissions. Continue?", default: false)) {
+            error('aborting');
             return self::FAILURE;
         }
 
@@ -109,7 +120,7 @@ class PoolHeats extends Command
 
         foreach ($comp->getPools()->withCount('heats')->get() as $pool) {
             $heats = $pool->heats()->max('heat') ?? 0;
-            $this->info("{$pool->name}: {$heats} heats, {$pool->heats_count} entries");
+            info("{$pool->name}: {$heats} heats, {$pool->heats_count} entries");
         }
 
         return self::SUCCESS;
@@ -125,61 +136,60 @@ class PoolHeats extends Command
         $pools = $comp->getPools()->with('leagues')->get();
 
         if ($pools->isEmpty()) {
-            $this->line('No pools set up yet.');
+            note('No pools set up yet.');
             return;
         }
 
-        $this->table(['Pool', 'Lanes', 'Leagues (in running order)'], $pools->map(fn(Pool $pool) => [
+        table(['Pool', 'Lanes', 'Leagues (in running order)'], $pools->map(fn(Pool $pool) => [
             $pool->name,
             $pool->lanes,
             $pool->leagues->map(fn($league) => $league->name . ($league->pivot->is_pair ? ' (pairs)' : ''))->join(', '),
-        ]));
+        ])->all());
     }
 
     private function setupPools(Competition $comp): void
     {
         while (true) {
-            $action = $this->choice('Pool setup', ['Add a pool', 'Remove a pool', "Set a pool's leagues", self::DONE], self::DONE);
+            $action = select('Pool setup', [
+                'add' => 'Add a pool',
+                'leagues' => "Set a pool's leagues",
+                'remove' => 'Remove a pool',
+                'done' => 'Done',
+            ]);
 
-            match ($action) {
-                'Add a pool' => $this->addPool($comp),
-                'Remove a pool' => $this->removePool($comp),
-                "Set a pool's leagues" => $this->setLeagues($comp),
-                default => null,
-            };
+            if ($action == 'done') {
+                if ($this->hasUsableSetup($comp)) {
+                    return;
+                }
 
-            if ($action != self::DONE) {
-                $this->showPools($comp);
+                warning('Add at least one pool with leagues first.');
                 continue;
             }
 
-            if ($this->hasUsableSetup($comp)) {
-                return;
-            }
+            match ($action) {
+                'add' => $this->addPool($comp),
+                'leagues' => $this->setLeagues($comp),
+                'remove' => $this->removePool($comp),
+            };
 
-            $this->warn('Add at least one pool with leagues first.');
+            $this->showPools($comp);
         }
     }
 
     private function addPool(Competition $comp): void
     {
-        $name = trim((string) $this->ask('Pool name (e.g. Main Pool)'));
+        $name = text('Pool name', placeholder: 'Main Pool', required: true);
 
-        if ($name == '') {
-            $this->warn('A pool needs a name.');
-            return;
-        }
-
-        $lanes = (int) $this->ask('Number of lanes', (string) $comp->max_lanes);
-
-        if ($lanes < 1) {
-            $this->warn('A pool needs at least one lane.');
-            return;
-        }
+        $lanes = (int) text(
+            'Number of lanes',
+            default: (string) $comp->max_lanes,
+            required: true,
+            validate: fn($value) => ctype_digit($value) && (int) $value > 0 ? null : 'A pool needs at least one lane.',
+        );
 
         $pool = new Pool();
         $pool->competition = $comp->id;
-        $pool->name = $name;
+        $pool->name = trim($name);
         $pool->lanes = $lanes;
         $pool->save();
     }
@@ -191,7 +201,7 @@ class PoolHeats extends Command
         if (!$pool) return;
 
         if ($pool->heats()->exists()) {
-            $this->warn("{$pool->name} still has heats, so it can't be removed.");
+            warning("{$pool->name} still has heats, so it can't be removed.");
             return;
         }
 
@@ -204,38 +214,59 @@ class PoolHeats extends Command
 
         if (!$pool) return;
 
-        $remaining = $comp->getLeagues()->orderBy('id')->get()->keyBy('name');
-        $chosen = [];
+        // A base collection keyed by id: Eloquent's only() would re-index the leagues as a list
+        $leagues = $comp->getLeagues()->orderBy('id')->get()->keyBy('id')->toBase();
 
-        $this->line("Pick {$pool->name}'s leagues in the order their heats should run.");
+        $chosen = multiselect(
+            "Leagues swum in {$pool->name}",
+            $leagues->map->name->all(),
+            default: $pool->leagues->pluck('id')->all(),
+            required: true,
+            scroll: 15,
+        );
 
-        while ($remaining->isNotEmpty()) {
-            $name = $this->choice('Next league', [...$remaining->keys()->all(), self::DONE], self::DONE);
+        $pairs = multiselect(
+            'Which of these are pairs leagues?',
+            $leagues->only($chosen)->map->name->all(),
+            default: $pool->leagues->where('pivot.is_pair', true)->pluck('id')->all(),
+            hint: 'Leave empty if none are.',
+        );
 
-            if ($name == self::DONE) break;
+        // Multiselect returns them in list order, so ask for the running order separately
+        $remaining = $leagues->only($chosen);
+        $order = [];
 
-            $chosen[] = $remaining->pull($name);
+        while ($remaining->count() > 1) {
+            $next = select("Which league runs next in {$pool->name}?", $remaining->map->name->all());
+            $order[] = $next;
+            $remaining->forget($next);
         }
+
+        $order = [...$order, ...$remaining->keys()];
 
         $pool->leagues()->detach();
 
-        foreach ($chosen as $order => $league) {
-            $pool->leagues()->attach($league->id, [
-                'order' => $order,
-                'is_pair' => $this->confirm("Is {$league->name} a pairs league?"),
+        foreach ($order as $position => $leagueId) {
+            $pool->leagues()->attach($leagueId, [
+                'order' => $position,
+                'is_pair' => in_array($leagueId, $pairs),
             ]);
         }
     }
 
     private function pickPool(Competition $comp): ?Pool
     {
-        $pools = $comp->getPools()->get()->keyBy('name');
+        $pools = $comp->getPools()->get()->keyBy('id');
 
         if ($pools->isEmpty()) {
-            $this->warn('Add a pool first.');
+            warning('Add a pool first.');
             return null;
         }
 
-        return $pools->get($this->choice('Which pool?', $pools->keys()->all()));
+        if ($pools->count() == 1) {
+            return $pools->first();
+        }
+
+        return $pools->get(select('Which pool?', $pools->map->name->all()));
     }
 }
