@@ -8,6 +8,8 @@ use App\Models\CompetitionSpeedEvent;
 use App\Models\Competition;
 use App\Models\Event\ScoringSchema;
 use App\Models\League;
+use App\Models\Orders\Heat;
+use App\Models\Pool;
 use App\Models\SpeedEvent;
 use App\Models\SpeedResult;
 use App\Services\HeatService;
@@ -123,12 +125,25 @@ class SpeedsEventController extends Controller
 
     public function editResult(Competition $comp, CompetitionSpeedEvent $event)
     {
-        $heats = $event->getHeats()->get();
+        $heats = $event->getHeats()->with('getPool')->get();
 
         $heatLookup = $heats->keyBy(fn($heat) => $heat->entity_type . ':' . $heat->entity_id);
-        $heatNumbers = $heats->pluck('heat')->unique()->sort()->values();
 
-        return view('competition.events.speeds.edit-result', ['comp' => $comp, 'event' => $event, 'heatLookup' => $heatLookup, 'heatNumbers' => $heatNumbers]);
+        $grouped = Heat::groupIntoHeats($heats);
+
+        // Pools that have heats in this event, shown one at a time behind a toggle
+        $poolFilters = $grouped->map(fn($lanes) => $lanes->first()->getPool)->filter()->unique('id')->values();
+
+        // Heat numbers restart per pool, so filters are keyed by pool and heat together. With a pool
+        // toggle the pool is already named, so the chips just say "Heat 3"
+        $heatFilters = $grouped->mapWithKeys(fn($lanes) => [
+            Heat::keyFor($lanes->first()->pool, $lanes->first()->heat) => [
+                'pool' => $lanes->first()->pool ?? 0,
+                'label' => $poolFilters->count() > 1 ? 'Heat ' . $lanes->first()->heat : Pool::heatLabel($lanes->first()->getPool, $lanes->first()->heat),
+            ],
+        ]);
+
+        return view('competition.events.speeds.edit-result', ['comp' => $comp, 'event' => $event, 'heatLookup' => $heatLookup, 'heatFilters' => $heatFilters, 'poolFilters' => $poolFilters]);
     }
 
     public function updateResults(Competition $comp, CompetitionSpeedEvent $event, Request $request)

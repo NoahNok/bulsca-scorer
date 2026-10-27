@@ -4,8 +4,6 @@
     (Edit) {{ $event->getName() }}
 @endsection
 
-@section('breadcrumbs')
-
 @section('content')
 
     <div class="grid-3">
@@ -29,7 +27,8 @@
 
             @php
                 $allResults = $event->getRawResults(true);
-                $hasHeats = $heatNumbers->isNotEmpty();
+                $hasHeats = $heatFilters->isNotEmpty();
+                $hasPoolToggle = $poolFilters->count() > 1;
                 $heatFor = fn($result) => $heatLookup->get($result->entity->getMorphClass() . ':' . $result->entity->id);
 
                 if ($hasHeats) {
@@ -38,8 +37,8 @@
                         $ha = $heatFor($a);
                         $hb = $heatFor($b);
 
-                        return [$ha?->heat ?? PHP_INT_MAX, $ha?->lane ?? PHP_INT_MAX] <=>
-                            [$hb?->heat ?? PHP_INT_MAX, $hb?->lane ?? PHP_INT_MAX];
+                        return [$ha?->pool ?? 0, $ha?->heat ?? PHP_INT_MAX, $ha?->lane ?? PHP_INT_MAX] <=>
+                            [$hb?->pool ?? 0, $hb?->heat ?? PHP_INT_MAX, $hb?->lane ?? PHP_INT_MAX];
                     });
                 }
             @endphp
@@ -51,13 +50,23 @@
 
                 <br>
 
+                @if ($hasPoolToggle)
+                    <div class="flex flex-wrap items-center gap-2 mb-2">
+                        <span class="font-semibold font-archivo text-sm mr-1">Pool</span>
+                        @foreach ($poolFilters as $pool)
+                            <button type="button" table-pool-filter="scores" data-pool="{{ $pool->id }}"
+                                class="se-btn {{ $loop->first ? 'se-btn-selected' : '' }}">{{ $pool->name }}</button>
+                        @endforeach
+                    </div>
+                @endif
+
                 @if ($hasHeats)
                     <div class="flex flex-wrap gap-2 mb-2">
                         <button type="button" table-heat-filter="scores" data-heat=""
                             class="se-btn se-btn-selected">All</button>
-                        @foreach ($heatNumbers as $heatNumber)
-                            <button type="button" table-heat-filter="scores" data-heat="{{ $heatNumber }}"
-                                class="se-btn">Heat {{ $heatNumber }}</button>
+                        @foreach ($heatFilters as $heatKey => $heatFilter)
+                            <button type="button" table-heat-filter="scores" data-heat="{{ $heatKey }}"
+                                data-pool="{{ $heatFilter['pool'] }}" class="se-btn">{{ $heatFilter['label'] }}</button>
                         @endforeach
                     </div>
                 @endif
@@ -106,14 +115,16 @@
                                 @php
                                     $heat = $heatFor($result);
                                 @endphp
-                                <tr table-row table-row-owner="{{ $result->id }}" data-heat="{{ $heat?->heat }}"
+                                <tr table-row table-row-owner="{{ $result->id }}"
+                                    data-heat="{{ $heat ? \App\Models\Orders\Heat::keyFor($heat->pool, $heat->heat) : '' }}"
+                                    data-pool="{{ $heat ? ($heat->pool ?? 0) : '' }}"
                                     data-lane="{{ $heat?->lane }}">
                                     <th scope="row">
                                         {{ $result->entity->getName($comp) }}
                                     </th>
                                     @if ($hasHeats)
                                         <td class="whitespace-nowrap">
-                                            {{ $heat ? 'H' . $heat->heat . ' L' . $heat->lane : '-' }}
+                                            {{ $heat ? \App\Models\Pool::heatLaneLabel($heat->getPool, $heat->heat, $heat->lane) : '-' }}
                                         </td>
                                     @endif
                                     <td class="table-input">
@@ -246,37 +257,66 @@
 
     @if ($hasHeats)
         <script>
-            // Heat filter: hides rows via inline display so it stacks with the table search (which uses the hidden attribute)
+            // Pool toggle and heat filter: hide rows via inline display so they stack with the table search
+            // (which uses the hidden attribute). With pools, only one pool's rows and heat chips show at a time.
+            // Rows with no heat show in every pool so they can't get lost.
             (() => {
                 const table = document.querySelector("[editable-table='scores']");
                 const rows = [...table.querySelectorAll("[table-row]")];
-                const buttons = [...document.querySelectorAll("[table-heat-filter='scores']")];
+                const poolButtons = [...document.querySelectorAll("[table-pool-filter='scores']")];
+                const heatButtons = [...document.querySelectorAll("[table-heat-filter='scores']")];
                 const counter = document.querySelector("[table-visible-count='scores']");
                 const search = document.querySelector("[table-search]");
+
+                let pool = poolButtons[0]?.dataset.pool ?? "";
+                let heat = "";
+
+                const inPool = (el) => pool === "" || el.dataset.pool === "" || el.dataset.pool === pool;
 
                 const updateCount = () => {
                     counter.textContent = rows.filter((row) => !row.hidden && row.style.display !== "none").length;
                 };
 
-                const setHeat = (heat) => {
+                const apply = () => {
                     rows.forEach((row) => {
-                        row.style.display = heat === "" || row.dataset.heat === heat ? "" : "none";
+                        const shown = inPool(row) && (heat === "" || row.dataset.heat === heat);
+                        row.style.display = shown ? "" : "none";
                     });
-                    buttons.forEach((btn) => btn.classList.toggle("se-btn-selected", btn.dataset.heat === heat));
+                    poolButtons.forEach((btn) => btn.classList.toggle("se-btn-selected", btn.dataset.pool === pool));
+                    heatButtons.forEach((btn) => {
+                        btn.style.display = btn.dataset.heat === "" || inPool(btn) ? "" : "none";
+                        btn.classList.toggle("se-btn-selected", btn.dataset.heat === heat);
+                    });
                     updateCount();
                 };
 
-                buttons.forEach((btn) => btn.addEventListener("click", () => setHeat(btn.dataset.heat)));
+                const setPool = (value) => {
+                    pool = value;
+                    heat = "";
+                    apply();
+                };
+
+                const setHeat = (value) => {
+                    heat = value;
+                    apply();
+                };
+
+                poolButtons.forEach((btn) => btn.addEventListener("click", () => setPool(btn.dataset.pool)));
+                heatButtons.forEach((btn) => btn.addEventListener("click", () => setHeat(btn.dataset.heat)));
 
                 // Search toggles row.hidden in its own handler, so recount after it has run
                 search?.addEventListener("input", () => setTimeout(updateCount));
 
-                // If a save fails on a row hidden by the heat filter, go back to All so the error is visible
+                // If a save fails on a hidden row, switch to its pool and all heats so the error is visible
                 new MutationObserver(() => {
-                    if (rows.some((row) => row.style.display === "none" && row.querySelector(".invalid"))) {
+                    const invalid = rows.find((row) => row.style.display === "none" && row.querySelector(".invalid"));
+                    if (invalid) {
+                        pool = poolButtons.length && invalid.dataset.pool !== "" ? invalid.dataset.pool : pool;
                         setHeat("");
                     }
                 }).observe(table, { subtree: true, attributes: true, attributeFilter: ["class"] });
+
+                apply();
             })();
         </script>
     @endif

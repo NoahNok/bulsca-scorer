@@ -6,7 +6,9 @@
 
 @section('content')
     @php
-        $heatdata = $event->heats->sortBy(['heat', 'lane'])->groupBy('heat');
+        // With pools, edit one pool's heats at a time: heat numbers restart in each pool
+        $laneCount = $pool?->lanes ?? $comp->max_lanes;
+        $heatdata = $event->heats->where('pool', $pool?->id)->sortBy(['heat', 'lane'])->groupBy('heat');
         $highestHeat = max((int) ($heatdata->keys()->max() ?? 0), 1);
         $initialHeats = [];
 
@@ -14,7 +16,7 @@
             $lanes = $heatdata->get($heatNumber, collect())->keyBy('lane');
             $initialHeats[] = [
                 'number' => $heatNumber,
-                'lanes' => collect(range(1, $comp->max_lanes))
+                'lanes' => collect(range(1, $laneCount))
                     ->map(function ($lane) use ($lanes, $comp, $event) {
                         $allocation = $lanes->get($lane);
 
@@ -57,7 +59,8 @@
     <div x-data="heatEditor(@js([
     'heats' => $initialHeats,
     'unassigned' => $unassigned,
-    'maxLanes' => $comp->max_lanes,
+    'maxLanes' => $laneCount,
+    'pool' => $pool?->id,
     'urls' => [
         'swap' => route('comps.heats_and_draws.heats.swap', [$comp, $event]),
         'swapHeats' => route('comps.heats_and_draws.heats.swapHeats', [$comp, $event]),
@@ -67,13 +70,13 @@
         'delete' => route('comps.heats_and_draws.heats.deleteHeats', [$comp, $event]),
     ],
     'csrf' => csrf_token(),
-    'scrollKey' => 'heat-editor-scroll-{{ $event->id }}',
+    'scrollKey' => 'heat-editor-scroll-' . $event->id . '-' . ($pool?->id ?? 0),
 ]))" x-init="restoreScroll()" x-cloak>
         <div class="flex flex-col gap-6">
             <header class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                 <div>
 
-                    <h2 class="mb-1">{{ $comp->heats_per_event ? $event->getName() : '' }} heats</h2>
+                    <h2 class="mb-1">{{ $comp->heats_per_event ? $event->getName() : '' }} {{ $pool?->name }} heats</h2>
                     <p class=" text-sm text-gray-600">Arrange entities by selecting a competitor and then an open
                         lane or another competitor. Select two heat headers to swap complete heats.</p>
                 </div>
@@ -81,6 +84,16 @@
             </header>
 
 
+
+            @if ($pools->count() > 1)
+                <nav class="flex flex-wrap gap-2" aria-label="Pools">
+                    @foreach ($pools as $option)
+                        <a href="{{ route('comps.heats_and_draws.heats.edit', [$comp, $event]) }}?pool={{ $option->id }}"
+                            class="se-btn {{ $option->id == $pool->id ? 'se-btn-selected' : '' }}"
+                            @if ($option->id == $pool->id) aria-current="page" @endif>{{ $option->name }}</a>
+                    @endforeach
+                </nav>
+            @endif
 
             <div
                 class="flex flex-col gap-3 rounded-md border border-gray-200 bg-gray-50 p-4 md:flex-row md:items-center md:justify-between">
@@ -184,6 +197,7 @@
                             lane.</p>
                     </div>
                 </div>
+                @if (!$comp->use_pools)
                 <div class="se-card se-card-body">
                     <h3 class="mb-2">Reset layout</h3>
                     <p class="mb-4 text-sm text-gray-600">Restore the generated heat layout. Manual changes will be lost.
@@ -192,6 +206,7 @@
                         @submit="doConfirm($event, 'Are you sure you want to reset the heats?')"><button
                             class="se-btn se-btn-danger w-full">Reset heats</button></form>
                 </div>
+                @endif
             </section>
         </div>
 
@@ -212,6 +227,7 @@
                 heats: config.heats,
                 unassigned: config.unassigned,
                 maxLanes: config.maxLanes,
+                pool: config.pool,
                 urls: config.urls,
                 csrf: config.csrf,
                 busy: false,
@@ -436,6 +452,7 @@
                     this.busy = true;
                     const body = new FormData();
                     body.append('_token', this.csrf);
+                    if (this.pool) body.append('pool', this.pool);
                     Object.entries(values).forEach(([key, value]) => body.append(key, value));
                     return fetch(url, {
                         method: 'POST',

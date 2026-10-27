@@ -1,4 +1,4 @@
-import type { Entity } from "./base"
+import type { Entity, Pool } from "./base"
 import type { ViolationStatus } from "./violation"
 
 // Shapes sent by ConfirmResultsController for the head ref's Confirm Results pages
@@ -41,6 +41,7 @@ export type ConfirmLane = { lane: number } & (
 
 export type ConfirmHeat = {
     heat: number
+    pool?: Pool | null
     lanes: ConfirmLane[]
 }
 

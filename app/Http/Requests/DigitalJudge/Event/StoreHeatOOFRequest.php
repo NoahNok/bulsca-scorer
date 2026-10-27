@@ -16,6 +16,14 @@ class StoreHeatOOFRequest extends FormRequest
     }
 
     /**
+     * The body is a bare list of lanes, so leave query parameters such as ?pool= out of it.
+     */
+    public function validationData(): array
+    {
+        return $this->json()->all();
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, ValidationRule|array<mixed>|string>

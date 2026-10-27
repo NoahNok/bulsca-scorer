@@ -22,6 +22,10 @@ _Avoid_: Judge (for the slot), casualty, position
 A SERC setting where each League is assigned exactly one Objective, and every Entity is marked against its League's Objective instead of one the Official picks.
 _Avoid_: Restricted judges, restricted SERC
 
+**Pool**:
+A separate body of water at a competition with its own lane count, where speed heats for its assigned Leagues run with their own heat numbering.
+_Avoid_: Tank (that's for SERCs), venue
+
 ### Officials
 
 **Official**:

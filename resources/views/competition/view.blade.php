@@ -422,6 +422,15 @@
                         form_data[name] = data.data
                     }
             
+                    // Turning pools off deletes the heats already in pools, so check first
+                    const pooledHeats = {{ $comp->use_pools ? $comp->pooledHeats()->count() : 0 }}
+                    if (pooledHeats > 0 && form_data.use_pools == '0') {
+                        if (!confirm(`Turning pools off deletes all ${pooledHeats} heat entries in pools, along with their OOFs and DQ submissions. This cannot be undone. Continue?`)) {
+                            return
+                        }
+                        form_data.clear_pooled_heats = true
+                    }
+            
                     let response = await fetch('{{ route('comps.settings', $comp) }}', {
                         method: 'POST',
                         headers: {
@@ -433,7 +442,9 @@
                     })
             
                     if (!response.ok) {
-                        showAlert('Failed to save settings. Check your inputs')
+                        let errors = response.status == 422 ? (await response.json()).errors ?? {} : {}
+                        let firstError = Object.values(errors)[0]?.[0]
+                        showAlert(firstError ?? 'Failed to save settings. Check your inputs')
                         return
                     }
             
@@ -573,6 +584,12 @@
                                 :default="$comp->seed_per_event">
                                 <option value="1" @if ($comp->seed_per_event) selected @endif>Yes</option>
                                 <option value="0" @if (!$comp->seed_per_event) selected @endif>No</option>
+                            </x-se-input>
+
+                            <x-se-input label="Use Pools" name="use_pools" type="select" section="hd"
+                                :default="$comp->use_pools">
+                                <option value="1" @if ($comp->use_pools) selected @endif>Yes</option>
+                                <option value="0" @if (!$comp->use_pools) selected @endif>No</option>
                             </x-se-input>
 
 

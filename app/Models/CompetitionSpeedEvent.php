@@ -176,9 +176,9 @@ class CompetitionSpeedEvent extends Event
         return CompetitionSpeedEvent::where('competition', $this->competition)->orderBy('id')->first()->heats();
     }
 
-    public function getMaxHeats(): int
+    public function getMaxHeats(?int $pool = null): int
     {
-        return $this->getHeats()->max('heat') ?? 1;
+        return $this->getHeats()->inPool($pool)->max('heat') ?? 1;
     }
 
     public function seeds()

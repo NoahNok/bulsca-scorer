@@ -5,9 +5,11 @@ namespace App\Models\Orders;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\DigitalJudge\JudgeDQSubmission;
 use App\Models\EventOOF;
+use App\Models\Pool;
 use App\Models\SpeedResult;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use ShiftOneLabs\LaravelCascadeDeletes\CascadesDeletes;
 
 class Heat extends Model
@@ -20,6 +22,7 @@ class Heat extends Model
         'entity_type',
         'heat',
         'lane',
+        'pool',
     ];
 
     protected $cascadeDeletes = [
@@ -34,6 +37,39 @@ class Heat extends Model
     public function speedEvent()
     {
         return $this->belongsTo(CompetitionSpeedEvent::class, 'speed_event');
+    }
+
+    public function getPool()
+    {
+        return $this->belongsTo(Pool::class, 'pool');
+    }
+
+    /**
+     * Heat numbers restart per pool, so a heat is only identified by its number and pool together.
+     */
+    public function scopeInPool($query, ?int $pool)
+    {
+        return $pool ? $query->where('pool', $pool) : $query->whereNull('pool');
+    }
+
+    /**
+     * Identifies a heat as "pool:heat", with 0 for no pool, as heat numbers restart per pool.
+     */
+    public static function keyFor(?int $pool, int $heat): string
+    {
+        return ($pool ?? 0) . ':' . $heat;
+    }
+
+    /**
+     * Lanes grouped into heats, ordered by pool then heat number.
+     *
+     * @return Collection<int, Collection<int, Heat>>
+     */
+    public static function groupIntoHeats(Collection $lanes): Collection
+    {
+        return $lanes->groupBy(fn(Heat $lane) => self::keyFor($lane->pool, $lane->heat))
+            ->sortBy(fn($heat) => [$heat->first()->pool ?? 0, $heat->first()->heat])
+            ->values();
     }
 
     public function oofs()

@@ -6,6 +6,8 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateCompetitionScoringSettingsRequest extends FormRequest
 {
+    use ValidatesPoolSettings;
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -27,6 +29,7 @@ class UpdateCompetitionScoringSettingsRequest extends FormRequest
             'heats_per_event' => 'sometimes|boolean',
             'seed_per_event' => 'sometimes|boolean',
             'use_seeds' => 'sometimes|boolean',
+            'use_pools' => 'sometimes|boolean',
 
 
         ];

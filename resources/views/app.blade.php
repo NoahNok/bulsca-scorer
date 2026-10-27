@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="[scrollbar-gutter:stable]">
     <head>
         <meta charset="utf-8" />
         <x-favicon />

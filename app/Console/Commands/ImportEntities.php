@@ -22,10 +22,17 @@ class ImportEntities extends Command
         $competitionId = $this->argument('competition_id');
         $csvPath = $this->argument('csv');
 
-        if (!Competition::find($competitionId)) {
+        $competition = Competition::find($competitionId);
+
+        if (!$competition) {
             $this->error("Competition not found: {$competitionId}");
 
             return self::FAILURE;
+        }
+
+        // Speed events give every entity a result when they're created, but importing doesn't
+        if ($competition->getSpeedEvents()->exists()) {
+            $this->warn('This competition already has speed events. Imported entities won\'t get results for them, so they can\'t be timed. Create speed events after importing.');
         }
 
         if (!File::exists($csvPath) || !is_readable($csvPath)) {

@@ -4,9 +4,6 @@
     {{ $event->getName() }}
 @endsection
 
-@section('breadcrumbs')
-
-
 @section('content')
     <div class="grid-3 ">
         <div class="flex flex-col space-y-4 col-span-2" x-data="{
@@ -38,8 +35,8 @@
                     conflicts: {{ json_encode($conflicts) }},
                     open_conflict: null,
                 
-                    openHeatConflictModal(heat_no) {
-                        this.open_conflict = heat_no;
+                    openHeatConflictModal(heat_label) {
+                        this.open_conflict = heat_label;
                         this.modals.conflictDetailsModal = true;
                 
                 
@@ -47,11 +44,11 @@
                 }">
                     <h4>Time & Order of Finish Conflict(s)</h4>
                     <div class="grid-3">
-                        @foreach ($conflicts as $heat_no => $conflict)
-                            <div @click="openHeatConflictModal({{ $heat_no }})"
+                        @foreach ($conflicts as $heat_label => $conflict)
+                            <div @click="openHeatConflictModal(@js($heat_label))"
                                 class="flex items-center
                     cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
-                                <p class="font-archivo">Heat {{ $heat_no }}</p>
+                                <p class="font-archivo">{{ $heat_label }}</p>
 
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor"
@@ -68,7 +65,7 @@
                     <x-s-e-modal id="conflictDetailsModal" title="Time & Order of Finish Conflicts">
                         <div class="se-table" x-data x-init="() => {
                             $watch('open_conflict', (value) => {
-                                title = `Heat ${value} Conflicts`;
+                                title = `${value} Conflicts`;
                             });
                         }">
                             <table>
@@ -240,7 +237,7 @@
                                                             ->first();
                                                     @endphp
                                                     @if ($h)
-                                                        H{{ $h->heat }}L{{ $h->lane }}:
+                                                        {{ \App\Models\Pool::heatLaneLabel($h->getPool, $h->heat, $h->lane) }}:
                                                         {{ $h->getOOF($event->id)?->oof ?: '-' }}
                                                     @else
                                                         -

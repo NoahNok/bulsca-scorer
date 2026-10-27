@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Club;
+use App\Models\Competition;
 use App\Models\CompetitionTeam;
 use App\Models\Competitor;
 use App\Models\League;
@@ -37,6 +38,11 @@ class ImportNationalsCSV extends Command
 
         if (!File::exists($csv_path)) {
             throw new \Exception("CSV file not found at path: $csv_path");
+        }
+
+        // Speed events give every entity a result when they're created, but importing doesn't
+        if (Competition::find($competition_id)?->getSpeedEvents()->exists()) {
+            $this->warn('This competition already has speed events. Imported entities won\'t get results for them, so they can\'t be timed. Create speed events after importing.');
         }
 
         $rows = array_map('str_getcsv', file($csv_path));

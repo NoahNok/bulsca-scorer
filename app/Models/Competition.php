@@ -84,6 +84,41 @@ class Competition extends Model implements IInvitable, IJsonable
         return parent::resolveRouteBinding($value, $field);
     }
 
+    public function getPools()
+    {
+        return $this->hasMany(Pool::class, 'competition', 'id')->orderBy('id');
+    }
+
+    /**
+     * Whether any speed heats are assigned to a pool.
+     */
+    public function hasPooledHeats(): bool
+    {
+        return $this->pooledHeats()->exists();
+    }
+
+    /**
+     * The speed heats assigned to a pool.
+     */
+    public function pooledHeats()
+    {
+        return Heat::whereNotNull('pool')
+            ->whereIn('speed_event', $this->getSpeedEvents()->select('id'));
+    }
+
+    /**
+     * Delete every pooled heat, returning how many were removed.
+     */
+    public function clearPooledHeats(): int
+    {
+        // Delete one by one so each heat's DQ submissions go with it
+        $heats = $this->pooledHeats()->get();
+        $heats->each->delete();
+        $this->clearHeatCache();
+
+        return $heats->count();
+    }
+
     public function getSpeedEvents()
     {
         return $this->hasMany(CompetitionSpeedEvent::class, 'competition', 'id');
@@ -376,22 +411,29 @@ class Competition extends Model implements IInvitable, IJsonable
     public function getHeats()
     {
 
-        return Cache::rememberForever("{$this->cacheKey()}.heats", function () {
+        return Cache::rememberForever($this->heatCacheKey(), function () {
 
 
 
             $heats = Heat::whereHas('speedEvent', function ($query) {
                 $query->where('competition', $this->id);
-            })->with('entity', 'entity.leagues')->get()->groupBy('speed_event');
+            })->with('entity', 'entity.leagues', 'getPool')->get()->groupBy('speed_event');
 
-            return $heats->map(function ($heatsForEvent, $speedEventId) {
+            $byHeat = fn($lanes) => $lanes->values()->sortBy('heat')->groupBy('heat')->map(function ($group) {
+                return $group->sortBy('lane')->values(); // sort each group by lane number
+            });
+
+            return $heats->map(function ($heatsForEvent, $speedEventId) use ($byHeat) {
                 $speedEvent = $heatsForEvent->first()->speedEvent;
 
                 return [
                     'event' => $speedEvent,
-                    'heats' => $heatsForEvent->values()->sortBy('heat')->groupBy('heat')->map(function ($group) {
-                        return $group->sortBy('lane')->values(); // sort each group by lane number
-                    }), // optional: reindex
+                    'heats' => $byHeat($heatsForEvent),
+                    // Heat numbers restart per pool. Without pools this is one group with a null pool
+                    'pools' => $heatsForEvent->groupBy(fn($lane) => $lane->pool ?? 0)->sortKeys()->map(fn($lanes) => [
+                        'pool' => $lanes->first()->getPool,
+                        'heats' => $byHeat($lanes),
+                    ])->values(),
                 ];
             })->values()->toArray();
         });
@@ -673,7 +715,15 @@ class Competition extends Model implements IInvitable, IJsonable
 
     public function clearHeatCache()
     {
-        Cache::forget("{$this->cacheKey()}.heats");
+        Cache::forget($this->heatCacheKey());
+    }
+
+    /**
+     * Versioned so a change to the cached shape (v2 added 'pools') isn't served from an old entry.
+     */
+    private function heatCacheKey(): string
+    {
+        return "{$this->cacheKey()}.heats.v2";
     }
 
     public function clearDrawCache()
