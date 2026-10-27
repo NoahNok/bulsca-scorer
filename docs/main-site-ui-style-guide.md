@@ -117,6 +117,20 @@ Pages set `@section('title')` and fill `@section('content')`.
   `QrCode` facade). The Digital Judge one lives on the printable
   `digitaljudge/qrs.blade.php` page (`dj.qrs`); link to that rather than
   building another.
+- **Packs (printable PDFs):** build them in `App\Pdf\CompetitionPdfCreator`
+  with its `pack()` helper, which renders a view extending
+  `pdfs/layout.blade.php` to an inline A4 PDF with a running header and page
+  numbers. Don't call `window.print()`. In the view, wrap each new-page group
+  (a Pool, event or SERC) in `.pack-section` and each heat or draw in
+  `.pack-block` so it never splits across pages; add `.pack-page` for one block
+  per page. `npm install` downloads Chrome into `.cache/puppeteer`; if it won't
+  start, install its system libraries
+  (https://pptr.dev/troubleshooting#chrome-doesnt-launch-on-linux). PHP-FPM
+  doesn't get your shell's `PATH` (e.g. nvm), so set
+  `LARAVEL_PDF_NODE_BINARY` in `.env` to the output of `which node`. Where
+  Chrome fails with "No usable sandbox" (WSL, or Ubuntu 23.10+ restricting user
+  namespaces), set `LARAVEL_PDF_NO_SANDBOX=true`. Packs render with JavaScript
+  off, so keep it that way: Objective descriptions are organiser-entered HTML.
 - **Heats and pools:** when a competition uses pools, heat numbers restart in
   each pool, so name heats with `Pool::heatLabel($pool, $heat)` ("Main Pool ·
   Heat 3", or "Heat 3" without pools), or `Pool::heatLaneLabel($pool, $heat,

@@ -27,3 +27,4 @@ storage/logs/*.log
 # Competition data exports (contain competitors' names)
 /*.csv
 /public/*.csv
+/.cache

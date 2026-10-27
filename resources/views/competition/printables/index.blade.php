@@ -19,20 +19,20 @@
             <div class="grid-3">
                 <div>
                     <h3>Speeds</h3>
-                    <a href="{{ route('comps.printables.chief-timekeeper-pack', $comp) }}" target="_blank"
-                        class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">
+                    <div class="px-2 py-1">
                         <div class="font-archivo">
                             <p class="-mb-1">Chief Timekeeper Pack</p>
                             <small class="block mt-1 ml-5 text-gray-500">Contains heat sheets for all speed events.
                                 Pre-filled with
                                 data.</small>
                         </div>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor"
-                            class="ml-auto size-4 group-hover:text-se transition-all group-hover:stroke-3">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-                        </svg>
-                    </a>
+                        <div class="flex gap-2 ml-5 mt-2">
+                            <a href="{{ route('comps.printables.chief-timekeeper-pack', $comp) }}" target="_blank"
+                                class="se-btn">One Heat per page</a>
+                            <a href="{{ route('comps.printables.chief-timekeeper-pack', [$comp, 'layout' => 'packed']) }}"
+                                target="_blank" class="se-btn">Packed</a>
+                        </div>
+                    </div>
 
                     <a href="{{ route('comps.printables.marshalling', $comp) }}" target="_blank"
                         class="flex items-center cursor-pointer transition-colors group hover:bg-gray-200 rounded-md px-2 py-1">

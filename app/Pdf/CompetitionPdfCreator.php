@@ -3,193 +3,183 @@
 namespace App\Pdf;
 
 use App\Models\Competition;
-use App\Models\CompetitionSpeedEvent;
-use App\Models\CompetitionTeam;
-use App\Models\Competitor;
-use App\Models\Interfaces\IEvent;
 use App\Models\Pool;
 use App\Models\SERC;
-use PhpParser\Node\Stmt\Foreach_;
+use Illuminate\Support\Str;
+use Spatie\Browsershot\Browsershot;
+use Spatie\LaravelPdf\Enums\Format;
+use Spatie\LaravelPdf\Facades\Pdf;
+use Spatie\LaravelPdf\PdfBuilder;
 
+/**
+ * Builds each Pack as a PDF. See docs/adr/0002-browsershot-for-pdf-packs.md.
+ */
 class CompetitionPdfCreator
 {
-
     private Competition $comp;
-
-    private string $scoringType;
 
     public function __construct(Competition $comp)
     {
         $this->comp = $comp;
     }
 
-    public function test()
+    /**
+     * One section per event and Pool, each starting on a new page. Heat numbers restart per Pool.
+     * With Pools, every event in a Pool comes before the next Pool, so each Pool's officials get
+     * their own stack. Without heats per event, every event runs the first event's heats, so
+     * $everyEvent false keeps just that one set.
+     */
+    private function heatSections(bool $everyEvent = true): array
     {
-        return view("pdfs.heats.chief-timekeeper");
-    }
-
-    public function chiefTimekeeper(array $poolNames = ['Main Pool - Diving Pit End', 'Main Pool - Scoreboard End'])
-    {
-
-
-
-        $eventNames = $this->comp->getSpeedEvents->map(fn($event) => $event->getName());
         $heats = $this->comp->getHeats();
 
+        if (!$this->comp->heats_per_event && !empty($heats) && $everyEvent) {
+            $heats = $this->comp->getSpeedEvents->map(fn($event) => [...$heats[0], 'event' => $event])->all();
+        } elseif (!$this->comp->heats_per_event) {
+            $heats = array_slice($heats, 0, 1);
+        }
 
-        // create cloned heat entry if not heats per event
-        if (!$this->comp->heats_per_event) {
-            $initialHeatEventId = $heats[0]['event']->id;
+        $sections = [];
 
-            foreach ($this->comp->getSpeedEvents as $event) {
-                if ($event->id == $initialHeatEventId) {
-                    continue;
-                }
-
-                array_push($heats, [
-                    'event' => $event,
-                    'heats' => $heats[0]['heats'],
-                    'pools' => $heats[0]['pools'],
-                ]);
+        foreach ($heats as $eventHeats) {
+            foreach ($eventHeats['pools'] as $poolHeats) {
+                $sections[] = ['event' => $eventHeats['event'], 'pool' => $poolHeats['pool'], 'heats' => $poolHeats['heats']];
             }
         }
 
+        // usort is stable, so events keep their order within each Pool
+        usort($sections, fn($a, $b) => ($a['pool']?->id ?? 0) <=> ($b['pool']?->id ?? 0));
 
-        return view("pdfs.heats.chief-timekeeper", ['location' => $this->comp->where, 'poolNames' => $poolNames, 'eventNames' => $eventNames, 'heats' => $heats, 'comp' => $this->comp]);
+        return $sections;
     }
 
-    public function sercMarking()
+    /**
+     * The short code printed at the foot of a sheet, e.g. "Swim & Tow" -> "ST".
+     */
+    public static function initials(string $name): string
     {
+        preg_match_all('/\b\w/', $name, $matches);
 
-        $events = $this->comp->getSERCs;
-        $tanks = $this->comp->getDraws();
-        return view("pdfs.sercs.serc-marking", ['location' => $this->comp->where, 'events' => $events, 'tanks' => $tanks, 'comp' => $this->comp]);
+        return implode('', $matches[0]);
     }
 
-    public function marshalling(string $type, bool $evenOdd = false)
+    private function pack(string $view, string $packName, array $data): PdfBuilder
     {
+        $shared = ['comp' => $this->comp, 'packName' => $packName];
 
-        $data = [];
+        return Pdf::view($view, [...$data, ...$shared])
+            ->headerView('pdfs.partials.header', $shared)
+            ->footerView('pdfs.partials.footer')
+            ->format(Format::A4)
+            ->margins(20, 10, 15, 10)
+            // Packs need no JavaScript, and Chrome may run without its sandbox (LARAVEL_PDF_NO_SANDBOX),
+            // so don't run any script that organiser-entered HTML might carry
+            ->withBrowsershot(fn(Browsershot $browsershot) => $browsershot->disableJavascript())
+            ->inline(Str::slug("{$this->comp->name} {$packName}") . '.pdf');
+    }
 
-        switch ($type) {
-            case 'serc':
+    public function chiefTimekeeper(bool $onePerPage = true): PdfBuilder
+    {
+        return $this->pack('pdfs.heats.chief-timekeeper', 'Chief Timekeeper Pack', [
+            'sections' => $this->heatSections(),
+            'onePerPage' => $onePerPage,
+        ]);
+    }
 
-                $use_tanks = $this->comp->getScoringSettings->use_tanks;
+    public function sercMarking(): PdfBuilder
+    {
+        // Draws are shared by every SERC, so the first SERC's draws are used for all of them
+        return $this->pack('pdfs.sercs.serc-marking', 'SERC Marking Pack', [
+            'sercs' => $this->comp->getSERCs,
+            'tanks' => $this->comp->getDraws()[0]['draws'] ?? collect(),
+        ]);
+    }
 
-                foreach ($this->comp->getDraws() as $heatevent) {
+    /**
+     * Blank tables for judges to rough-mark every team against each of one SERC's Objectives.
+     */
+    public function rawMarkingSheets(SERC $serc): PdfBuilder
+    {
+        return $this->pack('pdfs.sercs.raw-marking', "{$serc->getName()} Raw Marking Sheets", [
+            'serc' => $serc,
+            'teams' => $this->comp->getCompetitionTeams,
+        ]);
+    }
 
-                    $hd = [];
+    /**
+     * Names grouped and ordered by heat (speeds) or draw (SERCs), for the marshals calling teams up.
+     */
+    public function marshalling(string $type): PdfBuilder
+    {
+        $isSerc = $type === 'serc';
 
-                    if ($use_tanks) {
-                        $draws = $heatevent['draws'];
-                        $maxDraws = $draws->map(fn($d) => $d->max('draw'))->max() + 1;
+        return $this->pack('pdfs.marshalling', $isSerc ? 'SERC Marshalling Pack' : 'Speed Marshalling Pack', [
+            'sections' => $isSerc ? $this->sercMarshallingSections() : $this->speedMarshallingSections(),
+        ]);
+    }
 
-                        for ($i = 1; $i < $maxDraws; $i++) {
-                            $names = [];
-                            foreach ($draws as $tank_no => $tank_draws) {
+    private function speedMarshallingSections(): array
+    {
+        return array_map(function ($section) {
+            $pool = $section['pool'];
+            $eventName = $this->comp->heats_per_event ? $section['event']->getName() : 'Speeds';
+            $blocks = [];
 
+            foreach ($section['heats'] as $heatNo => $lanes) {
+                $blocks[] = [
+                    'name' => $eventName . ' · ' . Pool::heatLabel($pool, $heatNo),
+                    'leagues' => $this->leagueNames($lanes),
+                    'lines' => $lanes->map(fn($lane) => "Lane {$lane->lane}: {$lane->entity?->getName($this->comp)}")->all(),
+                ];
+            }
 
-                                $tdraw = $tank_draws->where('draw', $i)->first();
+            return ['title' => $pool ? "$eventName · {$pool->name}" : $eventName, 'blocks' => $blocks];
+        }, $this->heatSections(everyEvent: false));
+    }
 
+    private function sercMarshallingSections(): array
+    {
+        $useTanks = $this->comp->getScoringSettings?->use_tanks ?? false;
+        $sections = [];
 
-                                if ($tdraw) {
-                                    $tank_no += 1;
-                                    $names[] = "Tank {$tank_no}: {$tdraw->entity?->getName($this->comp)}\n";
-                                } else {
-                                    $names[] = "Tank " . ($tank_no + 1) . ": -\n";
-                                }
-                            }
-                            $names[] = "--------------------------";
+        foreach ($this->comp->getDraws() as $sercDraws) {
+            $tanks = $sercDraws['draws'];
+            $blocks = [];
 
+            if ($useTanks) {
+                // Tanks run side by side, so marshal draw by draw across every tank
+                $maxDraw = $tanks->map(fn($tank) => $tank->max('draw'))->max();
 
-                            $hd[] = ['name' => "Draw {$i}", 'data' => $names, 'number' => $i];
-                        }
-                    } else {
-                        foreach ($heatevent['draws'] as $tank_no => $draw) {
-                            $draw_data = $draw->map(function ($lane) use ($heatevent) {
-                                $comp = $this->comp;
-                                return "{$lane->draw}: {$lane->entity?->getName($comp)}";
-                            });
+                for ($drawNo = 1; $drawNo <= $maxDraw; $drawNo++) {
+                    $blocks[] = [
+                        'name' => "Draw {$drawNo}",
+                        'leagues' => '',
+                        'lines' => $tanks->map(function ($tank, $index) use ($drawNo) {
+                            $tankNo = $index + 1;
 
-                            $uniqueLeagues = $draw->map(function ($lane) use ($heatevent) {
-                                return $lane->entity?->getLeague()->name;
-                            })->unique()->values()->implode(', ');
-
-
-                            $tank_no += 1;
-
-                            $hd[] = ['name' => "Tank {$tank_no} ($uniqueLeagues)", 'data' => $draw_data, 'number' => $tank_no];
-                        }
-                    }
-
-
-
-
-                    $data[] = ['event' => $heatevent['serc']->getName(), 'heats' => $hd];
+                            return "Tank {$tankNo}: " . ($tank->firstWhere('draw', $drawNo)?->entity?->getName($this->comp) ?? '-');
+                        })->all(),
+                    ];
                 }
-                break;
-            case 'speed':
-
-
-                foreach ($this->comp->getHeats() as $heatevent) {
-
-                    $hd = [];
-
-                    // Heat numbers restart per pool, so pooled heats are listed pool by pool
-                    foreach ($heatevent['pools'] as $poolHeats) {
-                        foreach ($poolHeats['heats'] as $heat_no => $lanes) {
-                            $lane_data = $lanes->map(function ($lane) use ($heatevent) {
-                                $comp = $this->comp;
-                                return "Lane {$lane->lane}: {$lane->entity?->getName($comp)}";
-                            });
-
-                            $uniqueLeagues = $lanes->map(function ($lane) use ($heatevent) {
-                                return $lane->entity?->getLeague()->name;
-                            })->unique()->values()->implode(', ');
-
-                            $label = Pool::heatLabel($poolHeats['pool'], $heat_no);
-                            $hd[] = ['name' => "$label ($uniqueLeagues)", 'data' => $lane_data, 'number' => $heat_no];
-                        }
-                    }
-
-                    // Odd/even splits heats between the two ends of one pool, which real pools replace
-                    if ($evenOdd && !$this->comp->use_pools) {
-                        $perPage = 3;
-                        $oddHeats = array_filter($hd, fn($h) => $h['number'] % 2 !== 0);
-                        $evenHeats = array_filter($hd, fn($h) => $h['number'] % 2 === 0);
-
-                        // Step 2: Sort both groups by heat number
-                        usort($oddHeats, fn($a, $b) => $a['number'] <=> $b['number']);
-                        usort($evenHeats, fn($a, $b) => $a['number'] <=> $b['number']);
-
-                        // Step 3: Calculate buffer heats needed
-                        $remainder = count($oddHeats) % $perPage;
-                        $bufferCount = $remainder === 0 ? 0 : $perPage - $remainder;
-
-                        // Step 4: Create buffer heats
-                        $bufferHeats = array_fill(0, $bufferCount, [
-                            'name' => '',
-                            'data' => [],
-                            'number' => -1
-                        ]);
-
-                        // Step 5: Merge padded odd heats with even heats
-                        $hd = array_merge($oddHeats, $bufferHeats, $evenHeats);
-                    }
-
-                    $eventName = $this->comp->heats_per_event ? $heatevent['event']->getName() : 'Speeds';
-
-                    $data[] = ['event' => $eventName, 'heats' => $hd];
-
-                    if (!$this->comp->heats_per_event) {
-                        break;
-                    }
+            } else {
+                foreach ($tanks as $index => $draws) {
+                    $tankNo = $index + 1;
+                    $blocks[] = [
+                        'name' => "Tank {$tankNo}",
+                        'leagues' => $this->leagueNames($draws),
+                        'lines' => $draws->map(fn($draw) => "{$draw->draw}: {$draw->entity?->getName($this->comp)}")->all(),
+                    ];
                 }
+            }
+
+            $sections[] = ['title' => $sercDraws['serc']->getName(), 'blocks' => $blocks];
         }
 
-        $type = strtoupper($type);
+        return $sections;
+    }
 
-        $poolNames = ['Main Pool - Diving Pit End', 'Main Pool - Scoreboard End'];
-        return view("pdfs.marshalling", ['location' => $this->comp->where, 'data' => $data, 'poolNames' => $poolNames, 'comp' => $this->comp, 'type' => $type]);
+    private function leagueNames($rows): string
+    {
+        return $rows->map(fn($row) => $row->entity?->getLeague()?->name)->filter()->unique()->implode(', ');
     }
 }
