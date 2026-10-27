@@ -22,20 +22,30 @@
                 <div class="pack-block {{ $onePerPage ? 'pack-page' : '' }} pb-8">
                     <h3 class="mb-2">{{ $section['event']->getName() }} · {{ \App\Models\Pool::heatLabel($pool, $heatNo) }}</h3>
 
-                    <table class="table-fixed text-left w-full">
+                    {{-- A fixed table takes its widths from the first row, which here is colspans, so set them on the columns --}}
+                    <table class="table-fixed text-left text-sm w-full">
+                        <colgroup>
+                            <col class="w-[8%]">
+                            <col class="w-[26%]">
+                            <col>
+                            <col class="w-[7%]">
+                            <col class="w-[8%]">
+                            <col class="w-[8%]">
+                            <col class="w-[8%]">
+                        </colgroup>
                         <thead class="border-b border-black">
                             <tr>
                                 <th colspan="4"></th>
                                 <th class="text-center" colspan="3">Time</th>
                             </tr>
                             <tr>
-                                <th class="w-14 text-center">Lane</th>
-                                <th class="w-40">Bracket</th>
+                                <th class="text-center">Lane</th>
+                                <th>Bracket</th>
                                 <th>Name</th>
-                                <th class="w-14 text-center">DQ</th>
-                                <th class="w-14 text-center">Mins</th>
-                                <th class="w-14 text-center">Secs</th>
-                                <th class="w-14 text-center">100th</th>
+                                <th class="text-center">DQ</th>
+                                <th class="text-center">Mins</th>
+                                <th class="text-center">Secs</th>
+                                <th class="text-center">100th</th>
                             </tr>
                         </thead>
                         <tbody>
