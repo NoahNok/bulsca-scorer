@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Competition;
 
 use App\Models\Competition;
-use App\Models\Orders\Heat;
 use Illuminate\Validation\Validator;
 
 /**
@@ -26,26 +25,20 @@ trait ValidatesPoolSettings
                 $usePools = (bool) $this->input('use_pools', $comp->use_pools);
 
                 if ($usePools && $heatsPerEvent) {
-                    $key = $this->has('use_pools') && !$comp->use_pools ? 'use_pools' : 'heats_per_event';
-                    $message = $key == 'use_pools'
-                        ? 'Pools can only be used when heats per event is off.'
-                        : 'Heats per event cannot be turned on while pools are in use.';
+                    $turningPoolsOn = !$comp->use_pools;
 
-                    $validator->errors()->add($key, $message);
+                    if ($turningPoolsOn) {
+                        $validator->errors()->add('use_pools', 'Pools can only be used when heats per event is off.');
+                    } else {
+                        $validator->errors()->add('heats_per_event', 'Heats per event cannot be turned on while pools are in use.');
+                    }
                     return;
                 }
 
-                if (!$usePools && $comp->use_pools && $this->hasPooledHeats($comp)) {
+                if (!$usePools && $comp->use_pools && $comp->hasPooledHeats()) {
                     $validator->errors()->add('use_pools', 'Pools cannot be turned off while heats are assigned to pools.');
                 }
             },
         ];
-    }
-
-    private function hasPooledHeats(Competition $comp): bool
-    {
-        return Heat::whereNotNull('pool')
-            ->whereIn('speed_event', $comp->getSpeedEvents()->select('id'))
-            ->exists();
     }
 }

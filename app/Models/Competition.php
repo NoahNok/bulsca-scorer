@@ -84,9 +84,19 @@ class Competition extends Model implements IInvitable, IJsonable
         return parent::resolveRouteBinding($value, $field);
     }
 
-    public function pools()
+    public function getPools()
     {
         return $this->hasMany(Pool::class, 'competition', 'id')->orderBy('id');
+    }
+
+    /**
+     * Whether any speed heats are assigned to a pool.
+     */
+    public function hasPooledHeats(): bool
+    {
+        return Heat::whereNotNull('pool')
+            ->whereIn('speed_event', $this->getSpeedEvents()->select('id'))
+            ->exists();
     }
 
     public function getSpeedEvents()
