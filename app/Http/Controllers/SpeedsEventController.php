@@ -131,7 +131,7 @@ class SpeedsEventController extends Controller
 
         // Heat numbers restart per pool, so filters are keyed by pool and heat together
         $heatFilters = Heat::groupIntoHeats($heats)->mapWithKeys(fn($lanes) => [
-            ($lanes->first()->pool ?? 0) . ':' . $lanes->first()->heat => Pool::heatLabel($lanes->first()->getPool, $lanes->first()->heat),
+            Heat::keyFor($lanes->first()->pool, $lanes->first()->heat) => Pool::heatLabel($lanes->first()->getPool, $lanes->first()->heat),
         ]);
 
         return view('competition.events.speeds.edit-result', ['comp' => $comp, 'event' => $event, 'heatLookup' => $heatLookup, 'heatFilters' => $heatFilters]);

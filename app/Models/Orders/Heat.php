@@ -53,13 +53,21 @@ class Heat extends Model
     }
 
     /**
+     * Identifies a heat as "pool:heat", with 0 for no pool, as heat numbers restart per pool.
+     */
+    public static function keyFor(?int $pool, int $heat): string
+    {
+        return ($pool ?? 0) . ':' . $heat;
+    }
+
+    /**
      * Lanes grouped into heats, ordered by pool then heat number.
      *
      * @return Collection<int, Collection<int, Heat>>
      */
     public static function groupIntoHeats(Collection $lanes): Collection
     {
-        return $lanes->groupBy(fn(Heat $lane) => ($lane->pool ?? 0) . ':' . $lane->heat)
+        return $lanes->groupBy(fn(Heat $lane) => self::keyFor($lane->pool, $lane->heat))
             ->sortBy(fn($heat) => [$heat->first()->pool ?? 0, $heat->first()->heat])
             ->values();
     }

@@ -222,4 +222,13 @@ class PooledHeatsJudgingTest extends TestCase
                 ->where('heats.data.1.pool.name', 'Diving Pool')
                 ->has('heats.data.1.lanes', 4));
     }
+
+    public function test_a_pooled_heat_cannot_be_opened_without_its_pool(): void
+    {
+        $this->team('M', $this->main, 1, 4);
+
+        $this->actingAs($this->official)
+            ->get(route('judge.competition.event.time.mark', ['competition' => $this->comp->getSlug(), 'event' => $this->event, 'heat' => 1]))
+            ->assertNotFound();
+    }
 }

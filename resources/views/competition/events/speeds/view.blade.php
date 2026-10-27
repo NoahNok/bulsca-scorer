@@ -240,7 +240,7 @@
                                                             ->first();
                                                     @endphp
                                                     @if ($h)
-                                                        H{{ $h->heat }}L{{ $h->lane }}:
+                                                        {{ $h->getPool ? $h->getPool->name . ' · ' : '' }}H{{ $h->heat }}L{{ $h->lane }}:
                                                         {{ $h->getOOF($event->id)?->oof ?: '-' }}
                                                     @else
                                                         -

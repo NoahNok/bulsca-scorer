@@ -345,10 +345,9 @@ class EventJudgeController extends Controller
     {
         $id = request()->integer('pool');
 
-        if (!$id) {
-            return null;
-        }
+        // Heat numbers restart per pool, so a pooled heat can't be found without its pool
+        abort_if(!$id && $competition->use_pools, 404);
 
-        return $competition->getPools()->findOrFail($id);
+        return $id ? $competition->getPools()->findOrFail($id) : null;
     }
 }

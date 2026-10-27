@@ -260,8 +260,8 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
             Route::get('serc/{serc}', [DigitalJudgeController::class, 'confirmResults'])->name('dj.confirm-results');
             Route::post('serc/{serc}', [DigitalJudgeController::class, 'confirmResultsPost'])->name('dj.confirm-results.post');
 
-            Route::get('speed/{speed}', [DigitalJudgeController::class, 'confirmSpeedResults'])->name('dj.confirm-results.speed');
-            Route::post('speed/{speed}', [DigitalJudgeController::class, 'confirmSpeedResultsPost'])->name('dj.confirm-results.speed.post');
+            Route::get('speed/{speed}', [DigitalJudgeController::class, 'confirmSpeedResults'])->name('dj.confirm-results.speed')->middleware('legacyWithoutPools');
+            Route::post('speed/{speed}', [DigitalJudgeController::class, 'confirmSpeedResultsPost'])->name('dj.confirm-results.speed.post')->middleware('legacyWithoutPools');
         });
 
         Route::prefix('live')->group(function () {

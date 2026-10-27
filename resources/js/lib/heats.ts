@@ -8,6 +8,13 @@ export function heatLabel(heat: { heat: number; pool?: Pool | null }): string {
 }
 
 /**
+ * Identifies a heat as "pool:heat", with 0 for no pool, matching Heat::keyFor.
+ */
+export function heatKey(heat: { heat: number; pool?: Pool | null }): string {
+    return `${heat.pool?.id ?? 0}:${heat.heat}`;
+}
+
+/**
  * Heat numbers restart in each pool, so routes to a heat carry its pool as ?pool=.
  */
 export function heatQuery(heat: Pick<Heat, "pool">) {

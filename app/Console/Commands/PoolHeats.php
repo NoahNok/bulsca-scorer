@@ -74,6 +74,18 @@ class PoolHeats extends Command
             $style = $this->choice('Heat style', [PoolHeatService::STYLE_STANDARD, PoolHeatService::STYLE_PAIRS], PoolHeatService::STYLE_STANDARD);
         }
 
+        try {
+            // Check the setup before anything is deleted
+            $service->plan($comp, $style);
+        } catch (HeatException $e) {
+            $this->error($e->getMessage());
+            return self::FAILURE;
+        }
+
+        if (!$comp->use_seeds) {
+            $this->warn("The competition doesn't use seed times, so entities are placed in the order they were added.");
+        }
+
         $unplaced = $service->unplacedEntities($comp);
 
         if ($unplaced->isNotEmpty()) {
@@ -84,14 +96,6 @@ class PoolHeats extends Command
                 $this->error('aborting');
                 return self::FAILURE;
             }
-        }
-
-        try {
-            // Check the setup before anything is deleted
-            $service->plan($comp, $style);
-        } catch (HeatException $e) {
-            $this->error($e->getMessage());
-            return self::FAILURE;
         }
 
         $impact = $service->deletionImpact($comp);

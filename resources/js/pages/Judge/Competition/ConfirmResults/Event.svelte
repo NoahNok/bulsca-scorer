@@ -16,6 +16,7 @@
     import HeatResultsCard from "@/components/Judging/ConfirmResults/HeatResultsCard.svelte";
     import SectionLabel from "@/components/SectionLabel.svelte";
     import Spinner from "@/components/Spinner.svelte";
+    import { heatKey } from "@/lib/heats";
 
     import { submissions } from "@/routes/judge/competition/violation";
     import type { Competition, SpeedEvent } from "@/types/base";
@@ -79,7 +80,7 @@
         />
     {:else}
         <InfiniteScroll data="heats" preserveUrl buffer={400} class="mt-4 flex flex-col gap-5">
-            {#each heats.data as heat (`${heat.pool?.id ?? 0}:${heat.heat}`)}
+            {#each heats.data as heat (heatKey(heat))}
                 <HeatResultsCard {heat} {isRopeThrow} />
             {/each}
 

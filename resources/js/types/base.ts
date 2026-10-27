@@ -161,7 +161,7 @@ export type OOFHeat = Omit<Heat, 'lanes'> & {
 export type HeatLane = {
     heat: number
     lane: number
-    pool?: string | null
+    pool?: Pool | null
 }
 
 export type TankDraw = {

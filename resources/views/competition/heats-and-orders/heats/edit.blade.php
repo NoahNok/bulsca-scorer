@@ -89,7 +89,7 @@
                 <nav class="flex flex-wrap gap-2" aria-label="Pools">
                     @foreach ($pools as $option)
                         <a href="{{ route('comps.heats_and_draws.heats.edit', [$comp, $event]) }}?pool={{ $option->id }}"
-                            class="se-btn {{ $option->id == $pool->id ? 'se-btn-primary' : '' }}"
+                            class="se-btn {{ $option->id == $pool->id ? 'se-btn-selected' : '' }}"
                             @if ($option->id == $pool->id) aria-current="page" @endif>{{ $option->name }}</a>
                     @endforeach
                 </nav>

@@ -105,7 +105,7 @@
                                     $heat = $heatFor($result);
                                 @endphp
                                 <tr table-row table-row-owner="{{ $result->id }}"
-                                    data-heat="{{ $heat ? ($heat->pool ?? 0) . ':' . $heat->heat : '' }}"
+                                    data-heat="{{ $heat ? \App\Models\Orders\Heat::keyFor($heat->pool, $heat->heat) : '' }}"
                                     data-lane="{{ $heat?->lane }}">
                                     <th scope="row">
                                         {{ $result->entity->getName($comp) }}

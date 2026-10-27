@@ -4,7 +4,7 @@
 >
     import NumberedList from "@/components/NumberedList/NumberedList.svelte";
     import NumberedListItem from "@/components/NumberedList/NumberedListItem.svelte";
-    import { heatLabel, heatQuery } from "@/lib/heats";
+    import { heatKey, heatLabel, heatQuery } from "@/lib/heats";
     import { toastInfo } from "@/lib/toast.svelte";
 
     import type { Heat } from "@/types/base";
@@ -33,7 +33,7 @@
 </script>
 
 <NumberedList>
-    {#each heats as heat (`${heat.pool?.id ?? 0}:${heat.heat}`)}
+    {#each heats as heat (heatKey(heat))}
         <NumberedListItem
             number={heat.heat}
             href={canHeatBeSelected(heat)

@@ -12,6 +12,7 @@ use App\Models\DigitalJudge\JudgeNote;
 use App\Models\DigitalJudge\Violation\ViolationSubmission;
 use App\Models\DQCode;
 use App\Models\Event\Disqualification;
+use App\Models\Orders\Heat;
 use App\Models\PenaltyCode;
 use App\Models\SERC;
 use App\Models\SERCResult;
@@ -201,7 +202,7 @@ class ConfirmResultsController extends Controller
         $lanes = $event->getHeats()->count();
 
         // Heat numbers restart per pool, so a heat is a pool and heat number together
-        $heatKey = fn($lane) => "{$lane->pool}:{$lane->heat}";
+        $heatKey = fn($lane) => Heat::keyFor($lane->pool, $lane->heat);
         $heats = $event->getHeats()->get(['pool', 'heat'])->unique($heatKey)->count();
 
         $heatsWithOof = $event->getHeats()
@@ -225,7 +226,7 @@ class ConfirmResultsController extends Controller
         // Grouped rather than distinct so the paginator counts heats, not lanes
         $heats = $event->getHeats()->select('pool', 'heat')->groupBy('pool', 'heat')->orderBy('pool')->orderBy('heat')->paginate(4);
 
-        $heatKey = fn($row) => "{$row->pool}:{$row->heat}";
+        $heatKey = fn($row) => Heat::keyFor($row->pool, $row->heat);
         $pageKeys = $heats->getCollection()->map($heatKey);
 
         $lanes = $event->getHeats()

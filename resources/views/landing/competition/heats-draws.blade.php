@@ -124,7 +124,7 @@
                     @foreach ($poolHeats['heats'] as $heat_no => $lanes)
                         @php
                             $names = $lanes->map(fn($lane) => $lane->entity?->getName($comp))->filter()->implode(' ');
-                            $heatKey = ($poolHeats['pool']?->id ?? 0) . ':' . $heat_no;
+                            $heatKey = \App\Models\Orders\Heat::keyFor($poolHeats['pool']?->id, $heat_no);
                             $laneCount = $poolHeats['pool']?->lanes ?? $comp->max_lanes;
                         @endphp
 
