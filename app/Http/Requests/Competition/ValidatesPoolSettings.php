@@ -7,7 +7,8 @@ use Illuminate\Validation\Validator;
 
 /**
  * Pools only work with a single set of heats, and heat numbers restart per pool, so
- * use_pools can't be combined with heats_per_event or turned off while pooled heats exist.
+ * use_pools can't be combined with heats_per_event or turned off while pooled heats exist,
+ * unless the request opts in to clearing those heats.
  */
 trait ValidatesPoolSettings
 {
@@ -35,10 +36,18 @@ trait ValidatesPoolSettings
                     return;
                 }
 
-                if (!$usePools && $comp->use_pools && $comp->hasPooledHeats()) {
+                if (!$usePools && $comp->use_pools && !$this->clearsPooledHeats() && $comp->hasPooledHeats()) {
                     $validator->errors()->add('use_pools', 'Pools cannot be turned off while heats are assigned to pools.');
                 }
             },
         ];
+    }
+
+    /**
+     * Whether turning pools off should delete the pooled heats rather than be refused.
+     */
+    protected function clearsPooledHeats(): bool
+    {
+        return false;
     }
 }

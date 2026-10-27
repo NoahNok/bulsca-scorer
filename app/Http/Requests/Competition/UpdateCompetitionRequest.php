@@ -38,10 +38,16 @@ class UpdateCompetitionRequest extends FormRequest
             'seed_per_event' => 'sometimes|boolean',
             'use_seeds' => 'sometimes|boolean',
             'use_pools' => 'sometimes|boolean',
+            'clear_pooled_heats' => 'sometimes|boolean',
             'status_message' => 'sometimes|nullable|string',
             'select_league_first' => 'sometimes|boolean',
             'show_competition' => 'sometimes|boolean'
 
         ];
+    }
+
+    protected function clearsPooledHeats(): bool
+    {
+        return $this->boolean('clear_pooled_heats');
     }
 }

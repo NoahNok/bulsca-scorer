@@ -13,14 +13,16 @@ use App\Models\Competition\CompetitionScoringSettings;
 use App\Models\Organisation\Organisation;
 use App\Models\User;
 use App\Models\UserCompetitionAccess;
+use App\Traits\RecordActivity;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Nette\NotImplementedException;
 
 class CompetitionController extends Controller
 {
-    //
+    use RecordActivity;
 
     public function index()
     {
@@ -88,6 +90,9 @@ class CompetitionController extends Controller
 
         $updatedNameFormats = false;
 
+        $clearPooledHeats = ($validated['clear_pooled_heats'] ?? false) && $comp->use_pools && !($validated['use_pools'] ?? true);
+        unset($validated['clear_pooled_heats']);
+
         foreach ($validated as $key => $value) {
 
             if ($key == "timezone") {
@@ -116,8 +121,15 @@ class CompetitionController extends Controller
             $comp->$key = $value;
         }
 
-        $settings->save();
-        $comp->save();
+        DB::transaction(function () use ($comp, $settings, $clearPooledHeats) {
+            // Turning pools off with heats in pools: clear them first, as the organiser confirmed
+            if ($clearPooledHeats && ($cleared = $comp->clearPooledHeats()) > 0) {
+                $this->recordActivity('POOLED_HEATS_CLEARED', "Turned pools off and cleared {$cleared} pooled heat entries", related: $comp);
+            }
+
+            $settings->save();
+            $comp->save();
+        });
 
         if ($updatedNameFormats) {
             $comp->clearEntityNameCache();

@@ -422,6 +422,15 @@
                         form_data[name] = data.data
                     }
             
+                    // Turning pools off deletes the heats already in pools, so check first
+                    const pooledHeats = {{ $comp->use_pools ? $comp->pooledHeats()->count() : 0 }}
+                    if (pooledHeats > 0 && form_data.use_pools == '0') {
+                        if (!confirm(`Turning pools off deletes all ${pooledHeats} heat entries in pools, along with their OOFs and DQ submissions. This cannot be undone. Continue?`)) {
+                            return
+                        }
+                        form_data.clear_pooled_heats = true
+                    }
+            
                     let response = await fetch('{{ route('comps.settings', $comp) }}', {
                         method: 'POST',
                         headers: {

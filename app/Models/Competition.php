@@ -94,9 +94,29 @@ class Competition extends Model implements IInvitable, IJsonable
      */
     public function hasPooledHeats(): bool
     {
+        return $this->pooledHeats()->exists();
+    }
+
+    /**
+     * The speed heats assigned to a pool.
+     */
+    public function pooledHeats()
+    {
         return Heat::whereNotNull('pool')
-            ->whereIn('speed_event', $this->getSpeedEvents()->select('id'))
-            ->exists();
+            ->whereIn('speed_event', $this->getSpeedEvents()->select('id'));
+    }
+
+    /**
+     * Delete every pooled heat, returning how many were removed.
+     */
+    public function clearPooledHeats(): int
+    {
+        // Delete one by one so each heat's DQ submissions go with it
+        $heats = $this->pooledHeats()->get();
+        $heats->each->delete();
+        $this->clearHeatCache();
+
+        return $heats->count();
     }
 
     public function getSpeedEvents()

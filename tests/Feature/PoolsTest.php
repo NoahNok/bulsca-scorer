@@ -132,6 +132,32 @@ class PoolsTest extends TestCase
         $this->assertTrue((bool) $this->comp->fresh()->use_pools);
     }
 
+    public function test_confirming_the_clear_turns_pools_off_and_deletes_the_pooled_heats(): void
+    {
+        $this->comp->use_pools = true;
+        $this->comp->save();
+        $heat = $this->pooledHeat($this->pool());
+
+        $this->saveSettings(['use_pools' => false, 'heats_per_event' => true, 'clear_pooled_heats' => true])->assertOk();
+
+        $comp = $this->comp->fresh();
+        $this->assertFalse((bool) $comp->use_pools);
+        $this->assertTrue((bool) $comp->heats_per_event);
+        $this->assertNull(Heat::find($heat->id));
+    }
+
+    public function test_the_clear_flag_does_nothing_while_pools_stay_on(): void
+    {
+        $this->comp->use_pools = true;
+        $this->comp->save();
+        $heat = $this->pooledHeat($this->pool());
+
+        $this->saveSettings(['use_pools' => true, 'clear_pooled_heats' => true])->assertOk();
+
+        $this->assertTrue((bool) $this->comp->fresh()->use_pools);
+        $this->assertNotNull(Heat::find($heat->id));
+    }
+
     public function test_a_pool_with_heats_cannot_be_deleted(): void
     {
         $pool = $this->pool();
