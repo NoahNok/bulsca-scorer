@@ -10,6 +10,8 @@ use App\Http\Requests\Event\UpdateScoringSettings;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\League;
+use App\Models\Orders\Heat;
+use App\Models\Pool;
 use App\Models\SpeedResult;
 use App\Services\HeatService;
 use App\Services\ScoringSchemas;
@@ -92,7 +94,7 @@ class SpeedEventController extends Controller
     private function rankedResults(Competition $comp, CompetitionSpeedEvent $event, ?League $league): array
     {
         $showDqPoints = $event->scoringSchema->schema['allow_disqualified_to_rank'] ?? false;
-        $eventHeats = $event->digitalJudgeEnabled ? $event->getHeats()->with('oofs')->get() : collect();
+        $eventHeats = $event->digitalJudgeEnabled ? $event->getHeats()->with('oofs', 'getPool')->get() : collect();
 
         return collect($event->getRankedResults($league))->map(function ($result) use ($comp, $event, $showDqPoints, $eventHeats) {
             $parts = $this->partsOf($result);
@@ -108,7 +110,7 @@ class SpeedEventController extends Controller
                 'time' => SpeedResult::prettyTime($result->resolvedResult),
                 'was' => !$result->isCombined() && $result->resolvedResult != $result->result ? SpeedResult::prettyTime($result->result) : null,
                 'oof' => !$event->digitalJudgeEnabled || $result->isCombined() ? null
-                    : ($heat ? "H{$heat->heat}L{$heat->lane}: " . ($heat->getOOF($event->id)?->oof ?: '-') : '-'),
+                    : ($heat ? Pool::heatLaneLabel($heat->getPool, $heat->heat, $heat->lane) . ': ' . ($heat->getOOF($event->id)?->oof ?: '-') : '-'),
                 'penalties' => $result->getPenaltiesString(),
                 'points' => $result->isDisqualified() && !$showDqPoints ? 'DQ' : (round($result->points, 1) ?: null),
                 'position' => $result->position ?? null,
@@ -117,12 +119,13 @@ class SpeedEventController extends Controller
     }
 
     /**
-     * Every result as the grid edits it, in heat and lane order (those without a heat last), with
-     * DNS, DNF and OOT shown in the time cell, where they're entered
+     * Every result as the grid edits it, in pool, heat and lane order (those without a heat last), with
+     * DNS, DNF and OOT shown in the time cell, where they're entered. Heat numbers restart per pool, so
+     * each row's heat is keyed by its pool and number together, and labelled with its pool.
      */
     private function grid(Competition $comp, CompetitionSpeedEvent $event): array
     {
-        $heats = $event->getHeats()->get()->keyBy(fn ($heat) => $heat->entity_type . ':' . $heat->entity_id);
+        $heats = $event->getHeats()->with('getPool')->get()->keyBy(fn ($heat) => $heat->entity_type . ':' . $heat->entity_id);
 
         return collect($event->getRawResults(true))
             ->map(function (Result $result) use ($comp, $heats) {
@@ -133,7 +136,10 @@ class SpeedEventController extends Controller
                 return [
                     'id' => $result->id,
                     'name' => $result->entity->getName($comp),
+                    'pool' => $heat?->getPool?->only('id', 'name'),
                     'heat' => $heat?->heat,
+                    'heatKey' => $heat ? Heat::keyFor($heat->pool, $heat->heat) : null,
+                    'heatLane' => $heat ? Pool::heatLaneLabel($heat->getPool, $heat->heat, $heat->lane) : null,
                     'lane' => $heat?->lane,
                     'result' => $special ? $dq : (string) (SpeedResult::prettyTime($result->result) ?? ''),
                     'disqualification' => $special ? '' : ($dq ?? ''),
@@ -141,6 +147,8 @@ class SpeedEventController extends Controller
                 ];
             })
             ->sortBy([
+                fn ($a, $b) => ($a['heat'] === null) <=> ($b['heat'] === null),
+                fn ($a, $b) => ($a['pool']['id'] ?? 0) <=> ($b['pool']['id'] ?? 0),
                 fn ($a, $b) => ($a['heat'] ?? PHP_INT_MAX) <=> ($b['heat'] ?? PHP_INT_MAX),
                 fn ($a, $b) => ($a['lane'] ?? PHP_INT_MAX) <=> ($b['lane'] ?? PHP_INT_MAX),
             ])

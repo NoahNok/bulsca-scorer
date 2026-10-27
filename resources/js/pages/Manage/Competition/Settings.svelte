@@ -13,6 +13,7 @@
         updateCompetitionSettings,
     } from "@/actions/App/Http/Controllers/CompetitionController";
     import { settingsPost } from "@/actions/App/Http/Controllers/DigitalJudge/DigitalJudgeController";
+    import type { PendingVisit } from "@inertiajs/core";
     import { confirm } from "@/lib/confirm";
     import Field from "@/manage/components/Field.svelte";
     import RichText from "@/manage/components/RichText.svelte";
@@ -48,6 +49,9 @@
             use_seeds: boolean;
             heats_per_event: boolean;
             seed_per_event: boolean;
+            use_pools: boolean;
+            /** Heat entries in pools, which turning pools off deletes */
+            pooled_heats: number;
             team_format: string;
             competitor_format: string;
             status_message: string | null;
@@ -103,6 +107,28 @@
 
     function competitorExample(format: string) {
         return format.replace(/:C/g, "Club").replace(/:L/g, "Youth").replace(/:N/g, "Alex").replace(/:T/g, "Team");
+    }
+
+    // Turning pools off deletes the heats already in pools, so Heats asks first, then saves again with
+    // clear_pooled_heats. Without it the save is refused
+    const forms: Record<string, { submit: () => void }> = {};
+    let clearPooledHeats = false;
+
+    function confirmClearingPools(visit: PendingVisit) {
+        const turningOff = settings.use_pools && String((visit.data as Record<string, unknown>).use_pools) === "0";
+        if (!turningOff || settings.pooled_heats === 0 || clearPooledHeats) return;
+
+        confirm({
+            title: "Turn pools off?",
+            description: `This deletes all ${settings.pooled_heats} heat entries in pools, with their order of finish and DQ submissions. It can't be undone.`,
+            confirmLabel: "Delete heats and save",
+            confirmVariant: "danger",
+        }).then((ok) => {
+            if (!ok) return;
+            clearPooledHeats = true;
+            forms.heats.submit();
+        });
+        return false;
     }
 
     function focusFirstError(errors: Record<string, string>) {
@@ -193,10 +219,14 @@
         <SideMenuPart {id} labelledby="s-h-{id}" ondiscard={id === "names" ? resetNamePreviews : undefined}>
             <h2 id="s-h-{id}" class="mb-4 {heading}">{label}</h2>
             <Form
+                bind:this={forms[id]}
                 action={updateCompetitionSettings(competition.id)}
                 options={{ preserveScroll: true }}
                 setDefaultsOnSuccess
                 onError={focusFirstError}
+                onBefore={id === "heats" ? confirmClearingPools : undefined}
+                transform={(data) => (clearPooledHeats ? { ...data, clear_pooled_heats: 1 } : data)}
+                onFinish={() => (clearPooledHeats = false)}
             >
                 {#snippet children({ errors, processing, isDirty })}
                     {#if id === "details"}
@@ -264,6 +294,15 @@
                             <Switch name="use_seeds" label="Seed times" checked={settings.use_seeds} />
                             <Switch name="heats_per_event" label="Heats per event" checked={settings.heats_per_event} />
                             <Switch name="seed_per_event" label="Seed per event" checked={settings.seed_per_event} />
+                            <Switch
+                                name="use_pools"
+                                label="Pools"
+                                checked={settings.use_pools}
+                                hint="Heats swim in more than one pool. Not with heats per event."
+                            />
+                            {#if errors.use_pools || errors.heats_per_event}
+                                <p class="v2-error mt-4" role="alert">{errors.use_pools ?? errors.heats_per_event}</p>
+                            {/if}
                         </div>
                     {:else if id === "names"}
                         <p class={lead}>

@@ -104,6 +104,9 @@ class CompetitionDashboardController extends Controller
                 'use_seeds' => (bool) $comp->use_seeds,
                 'heats_per_event' => (bool) $comp->heats_per_event,
                 'seed_per_event' => (bool) $comp->seed_per_event,
+                'use_pools' => (bool) $comp->use_pools,
+                // Turning pools off deletes these, so the page asks first
+                'pooled_heats' => $comp->use_pools ? $comp->pooledHeats()->count() : 0,
                 'team_format' => $comp->team_format,
                 'competitor_format' => $comp->competitor_format,
                 'status_message' => $comp->status_message,

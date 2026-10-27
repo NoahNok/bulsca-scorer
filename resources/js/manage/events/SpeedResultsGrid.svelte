@@ -1,6 +1,7 @@
 <!--
-    A speed event's Enter results part: a grid of every result in heat and lane order, with a time, a DQ
-    and (when the event has them) penalties per row. One Save sends only the rows that changed to
+    A speed event's Enter results part: a grid of every result in pool, heat and lane order, with a time,
+    a DQ and (when the event has them) penalties per row. With heats in more than one pool, a pool is
+    picked first and only its rows and heats show, as heat numbers restart in each pool. One Save sends only the rows that changed to
     SpeedResultEntry, which saves none of them if any cell is wrong, and the failing cells show why.
 -->
 <script lang="ts">
@@ -56,13 +57,32 @@
         }),
     );
 
-    const heats = $derived([...new Set(rows.map((row) => row.heat).filter((heat) => heat !== null))].sort((a, b) => a - b));
-    let heat = $state<number | null>(null);
+    // Rows without a heat show in every pool, so none get lost
+    const pools = $derived([...new Map(rows.flatMap((row) => (row.pool ? [[row.pool.id, row.pool] as const] : []))).values()]);
+    let pool = $state<number | null>(null);
+    const activePool = $derived(pools.length > 1 ? (pools.find(({ id }) => id === pool) ?? pools[0]).id : null);
+    const inPool = (row: SpeedGridRow) => activePool === null || row.pool === null || row.pool.id === activePool;
+
+    const hasHeats = $derived(rows.some((row) => row.heatKey !== null));
+    // Rows come in pool and heat order. With a pool picked it's already named, so its chips say "Heat 3"
+    const heats = $derived([
+        ...new Map(
+            rows
+                .filter((row) => row.heatKey !== null && inPool(row))
+                .map((row) => [row.heatKey!, row.pool && pools.length === 1 ? `${row.pool.name} · Heat ${row.heat}` : `Heat ${row.heat}`] as const),
+        ),
+    ]);
+    let heat = $state<string | null>(null);
     let query = $state("");
 
     const shown = $derived(
-        rows.filter((row) => (heat === null || row.heat === heat) && row.name.toLowerCase().includes(query.trim().toLowerCase())),
+        rows.filter((row) => inPool(row) && (heat === null || row.heatKey === heat) && row.name.toLowerCase().includes(query.trim().toLowerCase())),
     );
+
+    function choosePool(id: number) {
+        pool = id;
+        heat = null;
+    }
 
     function error(id: number, cell: keyof Cells) {
         return errors[`rows.${id}.${cell}`];
@@ -87,7 +107,9 @@
             },
             onError: (failed) => {
                 errors = failed;
-                // Show every row, so none of the failing ones are hidden by a filter
+                // Show every row, so none of the failing ones are hidden by a filter, in the first failing one's pool
+                const failing = rows.find((row) => Object.keys(failed).some((key) => key.startsWith(`rows.${row.id}.`)));
+                if (failing?.pool) pool = failing.pool.id;
                 heat = null;
                 query = "";
             },
@@ -124,11 +146,18 @@
 
     <div class="flex flex-col gap-3">
         <input type="search" class="v2-input w-full" placeholder="Search {rows.length === 1 ? 'the entry' : 'entries'}" aria-label="Search entries" bind:value={query} />
+        {#if pools.length > 1}
+            <div class="flex flex-wrap gap-2" role="group" aria-label="Pool">
+                {#each pools as { id, name } (id)}
+                    <button type="button" class="v2-chip" aria-pressed={activePool === id} onclick={() => choosePool(id)}>{name}</button>
+                {/each}
+            </div>
+        {/if}
         {#if heats.length > 0}
             <div class="flex flex-wrap gap-2" role="group" aria-label="Heat">
                 <button type="button" class="v2-chip" aria-pressed={heat === null} onclick={() => (heat = null)}>All heats</button>
-                {#each heats as number (number)}
-                    <button type="button" class="v2-chip" aria-pressed={heat === number} onclick={() => (heat = number)}>Heat {number}</button>
+                {#each heats as [key, label] (key)}
+                    <button type="button" class="v2-chip" aria-pressed={heat === key} onclick={() => (heat = key)}>{label}</button>
                 {/each}
             </div>
         {/if}
@@ -143,7 +172,7 @@
             <thead>
                 <tr class="text-sm text-v2-muted *:border-b *:border-v2-border *:px-2 *:py-2 *:font-semibold">
                     <th scope="col">Entry</th>
-                    {#if heats.length > 0}<th scope="col" class="w-px whitespace-nowrap">Heat</th>{/if}
+                    {#if hasHeats}<th scope="col" class="w-px whitespace-nowrap">Heat</th>{/if}
                     <th scope="col">{ropeThrow ? "Ropes or time" : "Time"}</th>
                     <th scope="col">DQ</th>
                     {#if penalties}<th scope="col">Penalties</th>{/if}
@@ -154,8 +183,8 @@
                     {@const cells = values[row.id]}
                     <tr class="*:border-b *:border-v2-border *:px-2 *:py-2 *:align-top">
                         <th scope="row" class="pt-3.5 font-semibold wrap-anywhere">{row.name}</th>
-                        {#if heats.length > 0}
-                            <td class="pt-3.5 text-sm whitespace-nowrap text-v2-muted">{row.heat === null ? "–" : `H${row.heat} L${row.lane}`}</td>
+                        {#if hasHeats}
+                            <td class="pt-3.5 text-sm whitespace-nowrap text-v2-muted">{row.heatLane ?? "–"}</td>
                         {/if}
                         {#each [["result", ropeThrow ? "0-3 or 00:00.00" : "00:00.00"], ["disqualification", "DQ000"], ...(penalties ? [["penalties", "P000, P000"]] : [])] as [name, placeholder] (name)}
                             {@const key = name as keyof Cells}

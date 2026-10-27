@@ -29,8 +29,8 @@
         league: number | null;
         /** Null until it has scoring */
         results: SpeedResultRow[] | null;
-        /** Heats where the times and the order of finish disagree */
-        conflicts: { heat: number; rows: { lane: number; entity_name: string; time: string; oof: number }[] }[];
+        /** Heats where the times and the order of finish disagree, by label ("Heat 3", or "Main Pool · Heat 3" with pools) */
+        conflicts: { heat: string; rows: { lane: number; entity_name: string; time: string; oof: number }[] }[];
         eventsUrl: string;
         printUrl: string;
     } = $props();
@@ -99,7 +99,7 @@
                     <p class="mt-1">The times don't put these heats in the order the Digital Judge recorded:</p>
                     <div class="mt-2 flex flex-wrap gap-2">
                         {#each conflicts as which (which.heat)}
-                            <button type="button" class="v2-btn v2-btn-sm" onclick={() => openConflict(which)}>Heat {which.heat}</button>
+                            <button type="button" class="v2-btn v2-btn-sm" onclick={() => openConflict(which)}>{which.heat}</button>
                         {/each}
                     </div>
                 </Alert>
@@ -226,7 +226,7 @@
 
 <dialog bind:this={conflictDialog} class="v2-modal" aria-labelledby="sp-conflict-title" onclick={closeOnBackdrop}>
     {#if conflict}
-        <h2 id="sp-conflict-title">Heat {conflict.heat}</h2>
+        <h2 id="sp-conflict-title">{conflict.heat}</h2>
         <p>Lanes in order of their times, beside the order they finished.</p>
         <table class="mt-4 w-full text-left">
             <thead>

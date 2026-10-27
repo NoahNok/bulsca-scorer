@@ -243,7 +243,13 @@ export type SercSetup = {
 export type SpeedGridRow = {
     id: number;
     name: string;
+    /** The pool its heat swims in, when the competition uses pools */
+    pool: { id: number; name: string } | null;
     heat: number | null;
+    /** The heat's pool and number ("12:3"), as heat numbers restart in each pool */
+    heatKey: string | null;
+    /** "H3 L2", or "Main Pool · H3 L2" with a pool */
+    heatLane: string | null;
     lane: number | null;
     /** A time (01:23.450), DNS, DNF or OOT, Rope Throw's ropes in (0-3), or empty */
     result: string;
