@@ -206,7 +206,7 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
 
 
 
-        Route::prefix('speeds/{speed}')->group(function () {
+        Route::prefix('speeds/{speed}')->middleware('legacyWithoutPools')->group(function () {
 
             Route::prefix('times')->group(function () {
                 Route::get('', [SpeedJudgingController::class, 'timesIndex'])->name('dj.speeds.times.index');
@@ -225,7 +225,7 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
         });
     });
 
-    Route::prefix('dq')->group(function () {
+    Route::prefix('dq')->middleware('legacyWithoutPools')->group(function () {
         Route::get('issue', [DJDQController::class, 'issue'])->name('dj.dq.issue');
         Route::get('resolveCode/{code}', [DJDQController::class, 'resolveCode'])->name('dj.dq.resolveCode');
 

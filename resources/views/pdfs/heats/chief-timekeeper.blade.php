@@ -40,14 +40,27 @@
         <br>
         <ol class="lis list-disc">
             @foreach ($heats as $heatevent)
-                <li>{{ count($heatevent['heats']) }}x {{ $heatevent['event']->getName() }} Heats</li>
+                @if ($comp->use_pools)
+                    @foreach ($heatevent['pools'] as $poolHeats)
+                        <li>{{ count($poolHeats['heats']) }}x {{ $heatevent['event']->getName() }}
+                            {{ $poolHeats['pool']?->name }} Heats</li>
+                    @endforeach
+                @else
+                    <li>{{ count($heatevent['heats']) }}x {{ $heatevent['event']->getName() }} Heats</li>
+                @endif
             @endforeach
         </ol>
     </div>
 
 
     @foreach ($heats as $heatevent)
-        @forelse ($heatevent['heats'] as $key => $heat)
+        {{-- With pools, one section per pool: heat numbers restart in each pool --}}
+        @foreach ($comp->use_pools ? $heatevent['pools'] : [['pool' => null, 'heats' => $heatevent['heats']]] as $poolHeats)
+        @forelse ($poolHeats['heats'] as $key => $heat)
+            @php
+                $pool = $poolHeats['pool'];
+                $poolName = $pool?->name ?? $poolNames[($key - 1) % count($poolNames)];
+            @endphp
             <div class="min-h-[297mm] min-w-[210mm] bg-white p-5 flex flex-col grow-0 ">
                 <div class="flex w-full justify-between items-center">
                     <h2 class="hmb-0">{{ $heatevent['event']->getName() }}</h2>
@@ -56,7 +69,7 @@
                 </div>
 
                 <div class="flex w-full justify-between items-center">
-                    <p>{{ $poolNames[($key - 1) % count($poolNames)] }}</p>
+                    <p>{{ $poolName }}</p>
                     <p class=" font-semibold text-right">CHIEF TIMEKEEPER</p>
                 </div>
 
@@ -90,7 +103,7 @@
                     </thead>
                     <tbody class="">
 
-                        @for ($l = 1; $l <= $comp->max_lanes; $l++)
+                        @for ($l = 1; $l <= ($pool?->lanes ?? $comp->max_lanes); $l++)
                             @php
                                 $lane = $heat->where('lane', $l)->first();
                             @endphp
@@ -146,7 +159,7 @@
                         preg_match_all('/\b\w/', $heatevent['event']->getName(), $matches);
                         $firstLetters = implode('', $matches[0]);
 
-                        preg_match_all('/\b\w/', $poolNames[($key - 1) % count($poolNames)], $matches);
+                        preg_match_all('/\b\w/', $poolName, $matches);
                         $poolShort = implode('', $matches[0]);
                     @endphp
                     <p class="text-sm text-right">CT -
@@ -161,6 +174,7 @@
         @empty
             <div></div>
         @endforelse
+        @endforeach
     @endforeach
 
 

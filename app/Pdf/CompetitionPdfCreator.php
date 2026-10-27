@@ -7,6 +7,7 @@ use App\Models\CompetitionSpeedEvent;
 use App\Models\CompetitionTeam;
 use App\Models\Competitor;
 use App\Models\Interfaces\IEvent;
+use App\Models\Pool;
 use App\Models\SERC;
 use PhpParser\Node\Stmt\Foreach_;
 
@@ -47,7 +48,8 @@ class CompetitionPdfCreator
 
                 array_push($heats, [
                     'event' => $event,
-                    'heats' => $heats[0]['heats']
+                    'heats' => $heats[0]['heats'],
+                    'pools' => $heats[0]['pools'],
                 ]);
             }
         }
@@ -133,20 +135,25 @@ class CompetitionPdfCreator
 
                     $hd = [];
 
-                    foreach ($heatevent['heats'] as $heat_no => $lanes) {
-                        $lane_data = $lanes->map(function ($lane) use ($heatevent) {
-                            $comp = $this->comp;
-                            return "Lane {$lane->lane}: {$lane->entity?->getName($comp)}";
-                        });
+                    // Heat numbers restart per pool, so pooled heats are listed pool by pool
+                    foreach ($heatevent['pools'] as $poolHeats) {
+                        foreach ($poolHeats['heats'] as $heat_no => $lanes) {
+                            $lane_data = $lanes->map(function ($lane) use ($heatevent) {
+                                $comp = $this->comp;
+                                return "Lane {$lane->lane}: {$lane->entity?->getName($comp)}";
+                            });
 
-                        $uniqueLeagues = $lanes->map(function ($lane) use ($heatevent) {
-                            return $lane->entity?->getLeague()->name;
-                        })->unique()->values()->implode(', ');
+                            $uniqueLeagues = $lanes->map(function ($lane) use ($heatevent) {
+                                return $lane->entity?->getLeague()->name;
+                            })->unique()->values()->implode(', ');
 
-                        $hd[] = ['name' => "Heat $heat_no ($uniqueLeagues)", 'data' => $lane_data, 'number' => $heat_no];
+                            $label = Pool::heatLabel($poolHeats['pool'], $heat_no);
+                            $hd[] = ['name' => "$label ($uniqueLeagues)", 'data' => $lane_data, 'number' => $heat_no];
+                        }
                     }
 
-                    if ($evenOdd) {
+                    // Odd/even splits heats between the two ends of one pool, which real pools replace
+                    if ($evenOdd && !$this->comp->use_pools) {
                         $perPage = 3;
                         $oddHeats = array_filter($hd, fn($h) => $h['number'] % 2 !== 0);
                         $evenHeats = array_filter($hd, fn($h) => $h['number'] % 2 === 0);

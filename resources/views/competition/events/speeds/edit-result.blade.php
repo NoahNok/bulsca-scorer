@@ -4,8 +4,6 @@
     (Edit) {{ $event->getName() }}
 @endsection
 
-@section('breadcrumbs')
-
 @section('content')
 
     <div class="grid-3">
@@ -29,7 +27,7 @@
 
             @php
                 $allResults = $event->getRawResults(true);
-                $hasHeats = $heatNumbers->isNotEmpty();
+                $hasHeats = $heatFilters->isNotEmpty();
                 $heatFor = fn($result) => $heatLookup->get($result->entity->getMorphClass() . ':' . $result->entity->id);
 
                 if ($hasHeats) {
@@ -38,8 +36,8 @@
                         $ha = $heatFor($a);
                         $hb = $heatFor($b);
 
-                        return [$ha?->heat ?? PHP_INT_MAX, $ha?->lane ?? PHP_INT_MAX] <=>
-                            [$hb?->heat ?? PHP_INT_MAX, $hb?->lane ?? PHP_INT_MAX];
+                        return [$ha?->pool ?? 0, $ha?->heat ?? PHP_INT_MAX, $ha?->lane ?? PHP_INT_MAX] <=>
+                            [$hb?->pool ?? 0, $hb?->heat ?? PHP_INT_MAX, $hb?->lane ?? PHP_INT_MAX];
                     });
                 }
             @endphp
@@ -55,9 +53,9 @@
                     <div class="flex flex-wrap gap-2 mb-2">
                         <button type="button" table-heat-filter="scores" data-heat=""
                             class="se-btn se-btn-selected">All</button>
-                        @foreach ($heatNumbers as $heatNumber)
-                            <button type="button" table-heat-filter="scores" data-heat="{{ $heatNumber }}"
-                                class="se-btn">Heat {{ $heatNumber }}</button>
+                        @foreach ($heatFilters as $heatKey => $heatLabel)
+                            <button type="button" table-heat-filter="scores" data-heat="{{ $heatKey }}"
+                                class="se-btn">{{ $heatLabel }}</button>
                         @endforeach
                     </div>
                 @endif
@@ -106,14 +104,15 @@
                                 @php
                                     $heat = $heatFor($result);
                                 @endphp
-                                <tr table-row table-row-owner="{{ $result->id }}" data-heat="{{ $heat?->heat }}"
+                                <tr table-row table-row-owner="{{ $result->id }}"
+                                    data-heat="{{ $heat ? ($heat->pool ?? 0) . ':' . $heat->heat : '' }}"
                                     data-lane="{{ $heat?->lane }}">
                                     <th scope="row">
                                         {{ $result->entity->getName($comp) }}
                                     </th>
                                     @if ($hasHeats)
                                         <td class="whitespace-nowrap">
-                                            {{ $heat ? 'H' . $heat->heat . ' L' . $heat->lane : '-' }}
+                                            {{ $heat ? ($heat->getPool ? $heat->getPool->name . ' · ' : '') . 'H' . $heat->heat . ' L' . $heat->lane : '-' }}
                                         </td>
                                     @endif
                                     <td class="table-input">

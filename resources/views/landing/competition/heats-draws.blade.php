@@ -120,27 +120,30 @@
 
 
 
-                    @foreach ($heatevent['heats'] as $heat_no => $lanes)
+                    @foreach ($heatevent['pools'] as $poolHeats)
+                    @foreach ($poolHeats['heats'] as $heat_no => $lanes)
                         @php
                             $names = $lanes->map(fn($lane) => $lane->entity?->getName($comp))->filter()->implode(' ');
+                            $heatKey = ($poolHeats['pool']?->id ?? 0) . ':' . $heat_no;
+                            $laneCount = $poolHeats['pool']?->lanes ?? $comp->max_lanes;
                         @endphp
 
                         <div class="flex flex-col space-x-2 " x-data="{
                             shouldShow() {
                                 let show = search.trim() === '' || `{{ strtolower($names) }}`.includes(search.trim().toLowerCase())
-                                children['{{ $heat_no }}'] = show
+                                children['{{ $heatKey }}'] = show
                                 return show;
                             }
                         }" x-show="shouldShow">
 
                             <div class="flex space-x-3">
                                 <h3 class="font-bold mb-2">L</h3>
-                                <h3 class="font-bold  mb-2">Heat {{ $heat_no }}</h3>
+                                <h3 class="font-bold  mb-2">{{ \App\Models\Pool::heatLabel($poolHeats['pool'], $heat_no) }}</h3>
                             </div>
 
                             <div class="space-y-2">
 
-                                @for ($i = 0; $i < $comp->max_lanes; $i++)
+                                @for ($i = 0; $i < $laneCount; $i++)
                                     @php
                                         $lane = $lanes->where('lane', $i + 1)->first();
                                     @endphp
@@ -169,6 +172,7 @@
 
 
                         </div>
+                    @endforeach
                     @endforeach
 
 

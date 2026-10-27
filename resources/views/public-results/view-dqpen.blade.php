@@ -29,7 +29,11 @@
 
 
             <div class="flex justify-between">
-                <p><strong>Heat</strong>: {{ $dq->getHeat?->heat ?? '-' }}
+                <p>
+                    @if ($dq->getHeat?->getPool)
+                        <strong>Pool</strong>: {{ $dq->getHeat->getPool->name }}
+                    @endif
+                    <strong>Heat</strong>: {{ $dq->getHeat?->heat ?? '-' }}
                     <strong>Lane</strong>: {{ $dq->getHeat?->lane ?? '-' }} </span>
                 </p>
             </div>

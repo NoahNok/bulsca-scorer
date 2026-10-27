@@ -117,6 +117,11 @@ Pages set `@section('title')` and fill `@section('content')`.
   `QrCode` facade). The Digital Judge one lives on the printable
   `digitaljudge/qrs.blade.php` page (`dj.qrs`); link to that rather than
   building another.
+- **Heats and pools:** when a competition uses pools, heat numbers restart in
+  each pool, so name heats with `Pool::heatLabel($pool, $heat)` ("Main Pool ·
+  Heat 3", or "Heat 3" without pools) and size lanes with `$pool?->lanes ??
+  $comp->max_lanes`. `Competition::getHeats()` gives each event's heats grouped
+  under `pools` (one group with a null pool when there are none).
 - **Use Alpine for small client-side behaviour**, such as autocomplete,
   toggles and modals. Keep it inline in the view.
 - **Picking a person:** copy the search box in the Add Official modal.
