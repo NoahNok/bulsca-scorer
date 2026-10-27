@@ -123,7 +123,11 @@ class PooledHeatsDisplayTest extends TestCase
             ->get(route('comps.events.speeds.editResult', [$this->comp, $this->event]))
             ->assertOk()
             ->assertSee('data-heat="' . $this->main->id . ':1"', false)
-            ->assertSee('Diving Pool · Heat 1');
+            ->assertSee('table-pool-filter="scores" data-pool="' . $this->main->id . '"', false)
+            ->assertSee('table-pool-filter="scores" data-pool="' . $this->diving->id . '"', false)
+            ->assertSee('data-pool="' . $this->diving->id . '" class="se-btn">Heat 1', false)
+            ->assertSee('Main Pool · H1 L4')
+            ->assertSee('Diving Pool · H1 L2');
     }
 
     public function test_the_legacy_digital_judge_speed_pages_are_closed_when_pools_are_in_use(): void

@@ -119,9 +119,12 @@ Pages set `@section('title')` and fill `@section('content')`.
   building another.
 - **Heats and pools:** when a competition uses pools, heat numbers restart in
   each pool, so name heats with `Pool::heatLabel($pool, $heat)` ("Main Pool ·
-  Heat 3", or "Heat 3" without pools) and size lanes with `$pool?->lanes ??
-  $comp->max_lanes`. `Competition::getHeats()` gives each event's heats grouped
-  under `pools` (one group with a null pool when there are none).
+  Heat 3", or "Heat 3" without pools), or `Pool::heatLaneLabel($pool, $heat,
+  $lane)` for the short "Main Pool · H3 L2" form in result tables, and size
+  lanes with `$pool?->lanes ?? $comp->max_lanes`. `Competition::getHeats()` gives each event's heats grouped
+  under `pools` (one group with a null pool when there are none). Where a list
+  of heats spans pools, show one pool at a time behind a row of pool `se-btn`s
+  rather than every pool back to back, as the speed results editor does.
 - **Use Alpine for small client-side behaviour**, such as autocomplete,
   toggles and modals. Keep it inline in the view.
 - **Picking a person:** copy the search box in the Add Official modal.

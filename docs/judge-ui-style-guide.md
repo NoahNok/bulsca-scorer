@@ -33,6 +33,7 @@ The layouts provide the chrome, so pages don't add it themselves:
 |---|---|---|
 | Shell | `layout/JudgeLayout.svelte` | Padded, centred column, bottom tab bar (`JudgeTabBar`: Home, DQ/Penalty, Alerts, Online, plus the "Referee mode" band for the head ref), toasts, confirm dialog, the officials-online sheet and poke animation (joins the competition's presence channel), and the Alerts sheet (starts `alerts` from `lib/alerts.svelte` and `announcements` from `lib/announcements.svelte`) |
 | Header | `layout/JudgeHeaderLayout.svelte` | "Digital Judge" header + icon, the space under it, and the `AnnouncementBanner` on competition pages (all `Judge/*` pages) |
+| Root | `resources/views/app.blade.php` | The Inertia root view. `<html>` has `scrollbar-gutter: stable` so the page doesn't shift sideways when a scrollbar appears |
 
 The header defaults to the House icon linking to the competition home. Override
 it from the page's `layout` export:
@@ -153,7 +154,7 @@ navigable row shows a `ChevronRight` that nudges right on hover.
 | `SearchInput` | Filtering a list in place. `bind:value`. |
 | `SearchSelect` | Picking one item from a list that may be long (e.g. the seconder from the competition's officials). Looks like a soft `Input` (`label`, `hint`, `required`). `options` are `{ value, label, description? }` with string values; `bind:value`. A search box appears in the dropdown once there are more than `searchThreshold` (8) options. `allowClear` adds a "None" row. Use `SearchInput` instead when the whole list is already on the page. |
 | `FilterChip` | Status/category filters with optional count. You own the state (`active`, `onclick`). |
-| `SegmentedControl` | Switching between 2–4 views of the same list (DQs / Penalties). `bind:value`, typed by option values. |
+| `SegmentedControl` | Switching between 2–4 views of the same list (DQs / Penalties). `bind:value`, typed by option values. The white pill slides to the selected option (no animation with reduced motion). |
 | `NumberedList` / `NumberedListItem` | Numbered rows in a bordered list (criteria, tanks, running order). Give an item `href` to make the whole row a link with a chevron; `trailing` adds a hint or badge on the right; `onclick` (without `href`) makes it a button. |
 | `Judging/SignOffCheckbox` | The required "I acknowledge…" sign-off panel before submitting marks, times or OOF. Pass `id` (and `name` if the form needs it). Children replace the default wording; `bind:checked` if you need the state. |
 | `SectionLabel` | Small uppercase heading above a group of rows or a form section. |
@@ -265,6 +266,9 @@ pool and a number together. Name heats with `heatLabel` from `lib/heats.ts`
 `heatQuery(heat)` as the route options on any link or request for a heat so it
 carries `?pool=`, and size lane lists with `laneCount(heat, event.max_lanes)`.
 `Judging/Speed/HeatSelector` already does this, and keys heats by pool and number.
+With more than one pool it shows one pool at a time behind a `SegmentedControl`
+(remembered per device, since a judge usually stays at one pool) and labels the
+rows "Heat 3", as the toggle already names the pool.
 
 ### Detail views
 
