@@ -14,6 +14,7 @@ use App\Models\SERCMarkingPoint;
 use App\Models\SpeedEvent;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Browsershot\Browsershot;
 use Spatie\LaravelPdf\Facades\Pdf;
 use Spatie\LaravelPdf\PdfBuilder;
 use Tests\TestCase;
@@ -348,5 +349,15 @@ class PacksTest extends TestCase
         Pdf::assertRespondedWithPdf(fn(PdfBuilder $pdf) => array_column($pdf->viewData['sections'], 'title') === [
             'Swim & Tow · Main Pool', 'Rope Throw · Main Pool', 'Swim & Tow · Diving Pool', 'Rope Throw · Diving Pool',
         ]);
+    }
+
+    public function test_packs_render_with_javascript_off(): void
+    {
+        // Chrome may run without its sandbox, and Objective descriptions are organiser-entered HTML
+        $this->team('Alpha', 1, 1);
+
+        $this->actingAs($this->admin)->get(route('comps.printables.chief-timekeeper-pack', $this->comp));
+
+        Pdf::assertBrowsershot(fn(Browsershot $browsershot) => ($browsershot->createPdfCommand()['options']['disableJavascript'] ?? false) === true);
     }
 }

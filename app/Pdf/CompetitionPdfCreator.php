@@ -6,6 +6,7 @@ use App\Models\Competition;
 use App\Models\Pool;
 use App\Models\SERC;
 use Illuminate\Support\Str;
+use Spatie\Browsershot\Browsershot;
 use Spatie\LaravelPdf\Enums\Format;
 use Spatie\LaravelPdf\Facades\Pdf;
 use Spatie\LaravelPdf\PdfBuilder;
@@ -71,6 +72,9 @@ class CompetitionPdfCreator
             ->footerView('pdfs.partials.footer')
             ->format(Format::A4)
             ->margins(20, 10, 15, 10)
+            // Packs need no JavaScript, and Chrome may run without its sandbox (LARAVEL_PDF_NO_SANDBOX),
+            // so don't run any script that organiser-entered HTML might carry
+            ->withBrowsershot(fn(Browsershot $browsershot) => $browsershot->disableJavascript())
             ->inline(Str::slug("{$this->comp->name} {$packName}") . '.pdf');
     }
 
