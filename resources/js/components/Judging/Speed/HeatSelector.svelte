@@ -1,9 +1,10 @@
 <script
     lang="ts"
-    generics="THref extends (...args: any[]) => { url: string; method: 'get' }"
+    generics="THref extends (args: any, options?: any) => { url: string; method: 'get' }"
 >
     import NumberedList from "@/components/NumberedList/NumberedList.svelte";
     import NumberedListItem from "@/components/NumberedList/NumberedListItem.svelte";
+    import { heatLabel, heatQuery } from "@/lib/heats";
     import { toastInfo } from "@/lib/toast.svelte";
 
     import type { Heat } from "@/types/base";
@@ -32,16 +33,16 @@
 </script>
 
 <NumberedList>
-    {#each heats as heat (heat.heat)}
+    {#each heats as heat (`${heat.pool?.id ?? 0}:${heat.heat}`)}
         <NumberedListItem
             number={heat.heat}
             href={canHeatBeSelected(heat)
-                ? href({ ...params, heat: heat.heat })
+                ? href({ ...params, heat: heat.heat }, heatQuery(heat))
                 : undefined}
             onclick={() => toastInfo("This heat is already complete")}
             class={canHeatBeSelected(heat) ? "" : "opacity-60"}
         >
-            <span class="font-medium text-gray-900">Heat {heat.heat}</span>
+            <span class="font-medium text-gray-900">{heatLabel(heat)}</span>
             {#snippet trailing()}
                 {#if heat.complete}
                     <span

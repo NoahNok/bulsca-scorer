@@ -136,7 +136,8 @@ class ViolationSubmission extends Model implements IJsonable
 
         return [
             'heat' => $heatlane->heat,
-            'lane' => $heatlane->lane
+            'lane' => $heatlane->lane,
+            'pool' => $heatlane->getPool?->name,
         ];
     }
 

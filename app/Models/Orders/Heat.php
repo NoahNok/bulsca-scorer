@@ -9,6 +9,7 @@ use App\Models\Pool;
 use App\Models\SpeedResult;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use ShiftOneLabs\LaravelCascadeDeletes\CascadesDeletes;
 
 class Heat extends Model
@@ -41,6 +42,26 @@ class Heat extends Model
     public function getPool()
     {
         return $this->belongsTo(Pool::class, 'pool');
+    }
+
+    /**
+     * Heat numbers restart per pool, so a heat is only identified by its number and pool together.
+     */
+    public function scopeInPool($query, ?int $pool)
+    {
+        return $pool ? $query->where('pool', $pool) : $query->whereNull('pool');
+    }
+
+    /**
+     * Lanes grouped into heats, ordered by pool then heat number.
+     *
+     * @return Collection<int, Collection<int, Heat>>
+     */
+    public static function groupIntoHeats(Collection $lanes): Collection
+    {
+        return $lanes->groupBy(fn(Heat $lane) => ($lane->pool ?? 0) . ':' . $lane->heat)
+            ->sortBy(fn($heat) => [$heat->first()->pool ?? 0, $heat->first()->heat])
+            ->values();
     }
 
     public function oofs()

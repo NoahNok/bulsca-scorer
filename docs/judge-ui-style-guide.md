@@ -257,6 +257,15 @@ mode, `font-archivo text-xl font-semibold` for the heat/team), an optional
 `divide-y rounded-xl border bg-white` list, then `SignOffCheckbox` and a
 full-width primary submit `Button`.
 
+### Heats and pools
+
+When a competition uses pools, heat numbers restart in each pool, so a heat is a
+pool and a number together. Name heats with `heatLabel` from `lib/heats.ts`
+("Main Pool · Heat 3", or "Heat 3" without pools), never `Heat {heat.heat}`. Pass
+`heatQuery(heat)` as the route options on any link or request for a heat so it
+carries `?pool=`, and size lane lists with `laneCount(heat, event.max_lanes)`.
+`Judging/Speed/HeatSelector` already does this, and keys heats by pool and number.
+
 ### Detail views
 
 - **Edit pages reuse the create page.** `Violation/Issue` doubles as the edit

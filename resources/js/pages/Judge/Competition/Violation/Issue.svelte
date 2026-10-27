@@ -20,6 +20,7 @@
     import SearchSelect from "@/components/SearchSelect.svelte";
     import SectionLabel from "@/components/SectionLabel.svelte";
     import SegmentedControl from "@/components/SegmentedControl.svelte";
+    import { heatLabel } from "@/lib/heats";
     import Spinner from "@/components/Spinner.svelte";
     import type {
         StepControls,
@@ -340,7 +341,7 @@
                     <div transition:slide>
                         {#each heats as heat}
                             {@render entityGroup(
-                                `Heat ${heat.heat}`,
+                                heatLabel(heat),
                                 "Lane",
                                 (heat.lanes ?? []).map((l) => ({
                                     position: l.lane,

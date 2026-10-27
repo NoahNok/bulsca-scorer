@@ -7,6 +7,7 @@ use App\Events\Violation\ViolationSubmitted;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DigitalJudge\Violation\ResubmitViolationRequest;
 use App\Http\Requests\DigitalJudge\Violation\SubmitViolationRequest;
+use App\Models\Orders\Heat;
 use App\Models\Club;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
@@ -174,9 +175,10 @@ class ViolationController extends Controller
     // Issue Context Handlers - heats/draws/codes/etc
     public function getHeatsFor(Competition $competition, CompetitionSpeedEvent $event)
     {
-        return $event->getHeats()->orderBy('heat')->orderBy('lane')->get()->groupBy('heat')->map(function ($lanes, $heat) {
+        return Heat::groupIntoHeats($event->getHeats()->with('getPool')->orderBy('lane')->get())->map(function ($lanes) {
             return [
-                'heat' => $heat,
+                'heat' => $lanes->first()->heat,
+                'pool' => $lanes->first()->getPool?->jsonable(),
                 'lanes' => $lanes->map(function ($lane) {
                     return [
                         'lane' => $lane->lane,

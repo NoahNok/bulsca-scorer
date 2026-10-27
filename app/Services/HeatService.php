@@ -7,6 +7,7 @@ use App\Models\AbstractClasses\Entity;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\Orders\Heat;
+use App\Models\Pool;
 use App\Models\SpeedResult;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
@@ -110,7 +111,8 @@ class HeatService
      */
     public function anyTimeAndOofConflicts(CompetitionSpeedEvent $event)
     {
-        $heats = $event->getHeats()->with('oofs', 'entity')->orderBy('heat')->orderBy('lane')->get()->groupBy('heat');
+        $heats = Heat::groupIntoHeats($event->getHeats()->with('oofs', 'entity', 'getPool')->orderBy('lane')->get())
+            ->keyBy(fn($lanes) => Pool::heatLabel($lanes->first()->getPool, $lanes->first()->heat));
 
         $results = $event->results;
 
@@ -133,7 +135,7 @@ class HeatService
         $comparison = [];
 
         // want to check that the order of times and the order of oofs are the same in each heat
-        foreach ($heats as $heatNumber => $heatGroup) {
+        foreach ($heats as $heatLabel => $heatGroup) {
             $times = $heatGroup->sortBy('result')->values();
             $oofs = $heatGroup->sortBy('oof')->values();
 
@@ -142,7 +144,7 @@ class HeatService
                 continue;
             }
 
-            $comparison_key = $heatNumber;
+            $comparison_key = $heatLabel;
 
             // lets check they are the same length first
             if ($times->count() != $oofs->count()) {

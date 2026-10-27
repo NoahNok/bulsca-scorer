@@ -199,12 +199,16 @@ class ConfirmResultsController extends Controller
     private function eventSummary(CompetitionSpeedEvent $event): array
     {
         $lanes = $event->getHeats()->count();
-        $heats = $event->getHeats()->distinct()->count('heat');
+
+        // Heat numbers restart per pool, so a heat is a pool and heat number together
+        $heatKey = fn($lane) => "{$lane->pool}:{$lane->heat}";
+        $heats = $event->getHeats()->get(['pool', 'heat'])->unique($heatKey)->count();
 
         $heatsWithOof = $event->getHeats()
             ->whereHas('oofs', fn($q) => $q->where('event', $event->id)->whereNotNull('oof'))
-            ->distinct()
-            ->count('heat');
+            ->get(['pool', 'heat'])
+            ->unique($heatKey)
+            ->count();
 
         $withResult = SpeedResult::where('event', $event->id)->whereNotNull('result')->count();
 
@@ -219,14 +223,18 @@ class ConfirmResultsController extends Controller
     private function eventHeats(Competition $competition, CompetitionSpeedEvent $event)
     {
         // Grouped rather than distinct so the paginator counts heats, not lanes
-        $heats = $event->getHeats()->select('heat')->groupBy('heat')->orderBy('heat')->paginate(4);
+        $heats = $event->getHeats()->select('pool', 'heat')->groupBy('pool', 'heat')->orderBy('pool')->orderBy('heat')->paginate(4);
+
+        $heatKey = fn($row) => "{$row->pool}:{$row->heat}";
+        $pageKeys = $heats->getCollection()->map($heatKey);
 
         $lanes = $event->getHeats()
             ->whereIn('heat', $heats->getCollection()->pluck('heat'))
-            ->with(['entity', 'oofs' => fn($q) => $q->where('event', $event->id)])
+            ->with(['entity', 'getPool', 'oofs' => fn($q) => $q->where('event', $event->id)])
             ->orderBy('heat')
             ->orderBy('lane')
-            ->get();
+            ->get()
+            ->filter(fn($lane) => $pageKeys->contains($heatKey($lane)));
 
         $entities = $lanes->pluck('entity')->filter();
 
@@ -239,11 +247,12 @@ class ConfirmResultsController extends Controller
 
         $isRopeThrow = $event->getName() == 'Rope Throw';
         $maxLanes = $competition->max_lanes;
-        $lanesByHeat = $lanes->groupBy('heat');
+        $lanesByHeat = $lanes->groupBy($heatKey);
 
-        return $heats->through(function ($row) use ($lanesByHeat, $results, $violations, $isRopeThrow, $maxLanes) {
-            $heatLanes = $lanesByHeat->get($row->heat, collect())->keyBy('lane');
-            $laneCount = max($maxLanes, $heatLanes->keys()->max() ?? 0);
+        return $heats->through(function ($row) use ($lanesByHeat, $heatKey, $results, $violations, $isRopeThrow, $maxLanes) {
+            $heatLanes = $lanesByHeat->get($heatKey($row), collect())->keyBy('lane');
+            $pool = $heatLanes->first()?->getPool;
+            $laneCount = max($pool?->lanes ?? $maxLanes, $heatLanes->keys()->max() ?? 0);
 
             $laneData = [];
 
@@ -277,6 +286,7 @@ class ConfirmResultsController extends Controller
 
             return [
                 'heat' => $row->heat,
+                'pool' => $pool?->jsonable(),
                 'lanes' => $laneData,
             ];
         });

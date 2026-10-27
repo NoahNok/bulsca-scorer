@@ -32,4 +32,21 @@ class Pool extends Model
     {
         return $this->hasMany(Heat::class, 'pool');
     }
+
+    public function jsonable(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'lanes' => $this->lanes,
+        ];
+    }
+
+    /**
+     * How a heat is named wherever it's shown: "Main Pool · Heat 3", or just "Heat 3" without pools.
+     */
+    public static function heatLabel(?Pool $pool, int $heat): string
+    {
+        return $pool ? "{$pool->name} · Heat {$heat}" : "Heat {$heat}";
+    }
 }

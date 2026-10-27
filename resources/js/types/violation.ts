@@ -90,7 +90,8 @@ export function isVoided(state: ViolationStatus) {
 
 export function formatOrder(submission: ViolationSubmission) {
     if ("heat" in submission.order) {
-        return `Heat ${submission.order.heat} · Lane ${submission.order.lane}`;
+        const pool = submission.order.pool ? `${submission.order.pool} · ` : "";
+        return `${pool}Heat ${submission.order.heat} · Lane ${submission.order.lane}`;
     }
 
     const tank = submission.order.tank ? `Tank ${submission.order.tank}` : "";
