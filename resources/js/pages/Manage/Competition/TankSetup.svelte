@@ -1,6 +1,6 @@
 <!--
     Tank setup (manage.competitions.heats_and_draws.draws.tank_setup), in CompetitionLayout, full width, with
-    tanks only. Select Leagues, then "Put here" on a tank to move them into it; nothing saves until Save,
+    tanks only. Select Leagues, then click a tank to move them into it; nothing saves until Save,
     which draws every Entity again League by League, each League's Entities shuffled, and replaces the
     Draw. Every League has to be in a tank first. Leaving with changes asks first (UnsavedChanges).
 -->
@@ -93,10 +93,15 @@
 
 <UnsavedChanges dirty={dirty && !saving} />
 
-{#snippet league(id: number)}
+{#snippet league(id: number, wide = false)}
     {@const option = byId.get(id)}
     {#if option}
-        <button type="button" class="v2-chip" aria-pressed={selected.includes(id)} onclick={() => toggle(id)}>
+        <button
+            type="button"
+            class={["v2-chip", wide && "relative z-10 w-full justify-between"]}
+            aria-pressed={selected.includes(id)}
+            onclick={() => toggle(id)}
+        >
             {option.name}
             <span class="tabular-nums opacity-70">{option.count}</span>
         </button>
@@ -138,21 +143,40 @@
 
     <div class="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {#each assigned as tank, index (index)}
-            <div class="flex flex-col rounded-md border border-v2-border bg-v2-card p-4">
+            <!-- With Leagues selected, the Put here button's ::after covers the card, so the whole tank is its target;
+                 the chips and remove button sit above it -->
+            <div
+                class={[
+                    "relative flex flex-col rounded-md border border-v2-border bg-v2-sunk p-4",
+                    selected.length > 0 && "has-[[data-put]:hover]:border-v2-teal has-[[data-put]:hover]:bg-v2-teal-soft",
+                ]}
+            >
                 <div class="flex items-start gap-2">
                     <div class="min-w-0 flex-1">
                         <h4 class="font-bold">Tank {index + 1}</h4>
                         <p class="text-sm text-v2-muted tabular-nums">{entries(tank)} {entries(tank) === 1 ? "entry" : "entries"}</p>
                     </div>
-                    <RemoveButton label="Remove Tank {index + 1}" title="Remove tank" onclick={() => removeTank(index)} />
+                    <div class="relative z-10">
+                        <RemoveButton label="Remove Tank {index + 1}" title="Remove tank" onclick={() => removeTank(index)} />
+                    </div>
                 </div>
-                <div class="mt-3 flex flex-wrap gap-2">
-                    {#each tank as id (id)}{@render league(id)}{/each}
-                </div>
+                {#if tank.length > 0}
+                    <div class="mt-3 grid gap-2">
+                        {#each tank as id (id)}{@render league(id, true)}{/each}
+                    </div>
+                {/if}
                 {#if selected.length > 0}
-                    <button type="button" class="v2-btn v2-btn-sm mt-3 self-start" onclick={() => putIn(index)}>Put here</button>
+                    <button
+                        type="button"
+                        data-put
+                        class="mt-3 cursor-pointer rounded-md border border-dashed border-v2-muted py-2 text-sm font-semibold text-v2-muted after:absolute after:inset-0 after:rounded-md hover:border-v2-teal hover:text-v2-teal-text"
+                        aria-label="Put the selected Leagues in Tank {index + 1}"
+                        onclick={() => putIn(index)}
+                    >
+                        Put here
+                    </button>
                 {:else if tank.length === 0}
-                    <p class="text-sm text-v2-muted">Empty.</p>
+                    <p class="mt-3 text-sm text-v2-muted">Empty.</p>
                 {/if}
             </div>
         {/each}
