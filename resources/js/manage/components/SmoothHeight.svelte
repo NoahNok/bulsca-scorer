@@ -11,9 +11,10 @@
     let height = $state(0);
 </script>
 
-<!-- Padding out and back in, so overflow doesn't clip focus rings -->
+<!-- Padding out and back in, so overflow doesn't clip focus rings. Clip, not hidden, so a WideScroll's
+     scrollbar inside can still stick to the screen -->
 <div
-    class="-mx-1 -mb-1 overflow-hidden transition-[height] duration-250 ease-[cubic-bezier(0.3,0.7,0.4,1)] motion-reduce:transition-none"
+    class="-mx-1 -mb-1 overflow-clip transition-[height] duration-250 ease-[cubic-bezier(0.3,0.7,0.4,1)] motion-reduce:transition-none"
     style:height={height ? `${height}px` : undefined}
 >
     <div class="px-1 pb-1" bind:offsetHeight={height}>

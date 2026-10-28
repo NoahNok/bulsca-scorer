@@ -1,9 +1,11 @@
 <!--
     The draw editor (manage.competitions.heats_and_draws.draws.edit), in CompetitionLayout, full width: the
     competition's one Draw, a Tank at a time in Tabs when it uses tanks. Select an entry, then another to
-    swap them, or Before/After beside one (or the end of the Tank) to move it there; entries not in the
+    swap them, or Between beside one (Before the first, After the last, or into an empty Tank) to move it
+    there; entries not in the
     Draw are listed under it to add the same way. Each change shows at once, lit up, and saves on its own
-    (ChangeSaver). Tank changes and compacting confirm first, then wait for the saved Draw.
+    (ChangeSaver). Tank changes and compacting confirm first, then wait for the saved Draw. A search finds
+    where an entry is, lighting it up.
 -->
 <script lang="ts">
     import { addTank, assign, compactTanks, move, regenerate, remove, removeTank, swap, tankSetup } from "@/actions/App/Http/Controllers/Manage/DrawsController";
@@ -15,6 +17,7 @@
     import { ChangeSaver, changedClass, selectedClass } from "@/manage/orders.svelte";
     import RemoveButton from "@/manage/orders/RemoveButton.svelte";
     import SelectionBar from "@/manage/orders/SelectionBar.svelte";
+    import PlacementSearch, { dimClass, matchClass, matcher, type Place } from "@/manage/orders/PlacementSearch.svelte";
     import UnassignedList from "@/manage/orders/UnassignedList.svelte";
     import type { CompetitionHeader, DrawTank, UnplacedEntity } from "@/manage/types";
     import { Link, router } from "@inertiajs/svelte";
@@ -44,6 +47,21 @@
     let chosenTank = $state<string>("");
 
     const saver = new ChangeSaver();
+
+    let query = $state("");
+    const matches = $derived(matcher(query));
+    const searching = $derived(query.trim() !== "");
+
+    /** A place the search found: open its Tank and select it, ready to move */
+    function pickFound(place: Place) {
+        if (saver.busy) return;
+        if (place.kind === "draw") {
+            chosenTank = String(place.tank);
+            selection = { kind: "draw", id: place.id };
+        } else {
+            selection = { kind: "entity", id: place.entity };
+        }
+    }
 
     const activeTank = $derived(list.find((tank) => String(tank.number) === chosenTank) ?? list[0] ?? null);
     const tabs = $derived(list.map((tank) => ({ id: String(tank.number), label: `Tank ${tank.number}` })));
@@ -222,9 +240,9 @@
 
     const hint = $derived(
         selection?.kind === "draw"
-            ? `${selectedName} selected. Select another entry to swap them, or Before or After to move it.`
+            ? `${selectedName} selected. Select another entry to swap them, or Between two to move it.`
             : selection?.kind === "entity"
-              ? `${selectedName} selected. Select Before or After an entry, or the end of the ${useTanks ? "tank" : "draw"}, to add it there.`
+              ? `${selectedName} selected. Select Between two entries, Before the first or After the last to add it there.`
               : "Select an entry to swap or move it.",
     );
 
@@ -247,14 +265,19 @@
     </div>
 
     <ol class="grid gap-2 sm:grid-cols-2 xl:grid-cols-3" aria-busy={saver.busy}>
-        {#each tank.draws as entry (entry.id)}
+        {#each tank.draws as entry, index (entry.id)}
             {@const selected = selection?.kind === "draw" && selection.id === entry.id}
-            {@const sides = selection !== null && !selected}
+            {@const next = tank.draws[index + 1]}
+            <!-- One button between each pair, after the first of them; none beside the selected Draw, where it already is -->
+            {@const before = selection !== null && !selected && index === 0}
+            {@const after = selection !== null && !selected && !(selection.kind === "draw" && next?.id === selection.id)}
             <li class="flex min-w-0 items-center gap-1">
-                {#if sides}<button type="button" class={sideButton} disabled={saver.busy} onclick={() => moveTo(entry, "before")}>Before</button>{/if}
+                {#if before}<button type="button" class={sideButton} disabled={saver.busy} onclick={() => moveTo(entry, "before")}>Before</button>{/if}
                 <div
                     class={[
                         "flex min-w-0 flex-1 items-center gap-2 rounded-md border border-v2-border bg-v2-card text-sm transition-colors hover:border-v2-teal motion-reduce:transition-none",
+                        matches(entry.name) && `${matchClass} border-v2-teal`,
+                        searching && !matches(entry.name) && !selected && dimClass,
                         selected && selectedClass,
                         saver.changed.has(drawKey(entry.id)) && changedClass,
                     ]}
@@ -263,23 +286,32 @@
                         type="button"
                         class="flex min-w-0 flex-1 cursor-pointer items-baseline gap-2 py-2 pl-3 text-left"
                         aria-pressed={selected}
+                        data-place="draw:{entry.id}"
                         onclick={() => selectDraw(entry)}
                     >
                         <span class="w-6 shrink-0 text-right text-v2-muted tabular-nums">{entry.draw}</span>
-                        <span class="truncate font-semibold">{entry.name}</span>
+                        <span class="truncate font-semibold" title={entry.name}>{entry.name}</span>
                     </button>
                     <RemoveButton class="mr-1" label="Take {entry.name} out of the draw" title="Take out of the draw" onclick={() => removeEntry(entry)} />
                 </div>
-                {#if sides}<button type="button" class={sideButton} disabled={saver.busy} onclick={() => moveTo(entry, "after")}>After</button>{/if}
+                {#if after}
+                    <button
+                        type="button"
+                        class={sideButton}
+                        disabled={saver.busy}
+                        aria-label={next ? `Between ${entry.name} and ${next.name}` : `After ${entry.name}`}
+                        onclick={() => moveTo(entry, "after")}>{next ? "Between" : "After"}</button
+                    >
+                {/if}
             </li>
         {/each}
-        {#if selection}
+        {#if selection && tank.draws.length === 0}
             <li>
                 <button
                     type="button"
                     class="flex min-h-10 w-full cursor-pointer items-center justify-center rounded-md border border-dashed border-v2-border px-3 py-2 text-sm font-semibold text-v2-muted hover:border-v2-teal hover:text-v2-ink"
                     disabled={saver.busy}
-                    onclick={moveToEnd}>{selection.kind === "entity" ? "Add" : "Move"} to the end{useTanks ? ` of Tank ${tank.number}` : ""}</button
+                    onclick={moveToEnd}>{selection.kind === "entity" ? "Add" : "Move"} to {useTanks ? `Tank ${tank.number}` : "the draw"}</button
                 >
             </li>
         {/if}
@@ -294,6 +326,10 @@
     title="Edit draw"
     lead="The running order every SERC shares. Every change saves as you make it."
 />
+
+<div class="mb-4">
+    <PlacementSearch bind:query draw={{ tanks: list, useTanks }} unassigned={waiting} onpick={pickFound} />
+</div>
 
 <SelectionBar {hint} selected={selection !== null} onclear={() => (selection = null)} />
 

@@ -1,7 +1,8 @@
 <!--
     Heats & Draws (manage.competitions.heats_and_draws), in CompetitionLayout. The first column shows the
     Heats as a lane × Heat table, one event (with heats per event) and one Pool (with pools) at a time,
-    picked by chips that are kept in the url, then the Draw tank by tank. The sticky actions column on the
+    picked by chips that are kept in the url, then the Draw tank by tank. A search over both lights up the
+    entries it finds and dims the rest. The sticky actions column on the
     right generates and edits them, opens Tank setup, and holds the switches that show them publicly.
 -->
 <script lang="ts">
@@ -14,7 +15,9 @@
     import EmptyState from "@/manage/components/EmptyState.svelte";
     import RowIcon from "@/manage/components/RowIcon.svelte";
     import SmoothHeight from "@/manage/components/SmoothHeight.svelte";
+    import WideScroll from "@/manage/components/WideScroll.svelte";
     import SidebarPage, { sidebarRow } from "@/manage/components/SidebarPage.svelte";
+    import PlacementSearch, { dimClass, matchClass, matcher } from "@/manage/orders/PlacementSearch.svelte";
     import type { CompetitionHeader, DrawTank, HeatGrid, NamedOption } from "@/manage/types";
     import { Link, router } from "@inertiajs/svelte";
 
@@ -52,6 +55,20 @@
 
     let generating = $state(false);
 
+    // The search lights up what matches in both the heats and the draw, dimming the rest rather than hiding
+    // it, so a lane or draw number stays where it is
+    let query = $state("");
+    const matches = $derived(matcher(query));
+    const searching = $derived(query.trim() !== "");
+    const searchable = $derived((heats.grid?.heats.length ?? 0) > 0 || draw.tanks.some((tank) => tank.draws.length > 0));
+    // The heats shown are one event's, or one Pool's, so say which
+    const heatsLabel = $derived.by(() => {
+        const eventName = heats.perEvent && heats.events.length > 1 ? heats.events.find((option) => option.id === heats.event)?.name : null;
+        const context = [eventName, poolName].filter(Boolean).join(", ");
+        return context ? `Heats (${context})` : "Heats";
+    });
+    let heatsBox = $state<HTMLDivElement>();
+
     function pick(data: { event?: number | null; pool?: number | null }) {
         const picked = { event: heats.event, pool: heats.pool, ...data };
         router.reload({ data: { event: picked.event ?? undefined, pool: picked.pool ?? undefined }, only: ["heats"] });
@@ -74,6 +91,17 @@
 
 <SidebarPage sticky>
     <h2 class="mb-6 text-2xl font-extrabold uppercase">Heats & Draws</h2>
+
+    {#if searchable}
+        <div class="mb-8">
+            <PlacementSearch
+                bind:query
+                heats={{ list: heats.grid?.heats ?? [], label: heatsLabel }}
+                draw={draw.generated ? { tanks: draw.tanks, useTanks: draw.useTanks } : undefined}
+                scroll={heatsBox}
+            />
+        </div>
+    {/if}
 
     <section aria-labelledby="hd-heats">
         <h3 id="hd-heats" class={heading}>Heats</h3>
@@ -109,7 +137,7 @@
                 {#key `${heats.event}:${heats.pool}`}
                     <div class="animate-fade-in motion-reduce:animate-none">
                         {#if heats.grid && heats.grid.heats.length > 0}
-                            <div class="mt-4 overflow-x-auto">
+                            <WideScroll class="mt-4" bind:element={heatsBox}>
                                 <table class="border-separate border-spacing-0 text-left text-sm">
                                     <thead>
                                         <tr class="text-v2-muted *:border-b *:border-v2-border *:px-3 *:py-2 *:font-semibold">
@@ -125,13 +153,25 @@
                                                 <th scope="row" class="sticky left-0 z-10 bg-v2-bg font-semibold text-v2-muted tabular-nums">{index + 1}</th>
                                                 {#each heats.grid.heats as heat (heat.number)}
                                                     {@const cell = heat.lanes[index]}
-                                                    <td class={["wrap-anywhere", cell ? "font-semibold" : "text-v2-muted"]}>{cell?.name ?? "–"}</td>
+                                                    {@const hit = matches(cell?.name)}
+                                                    <td
+                                                        class={[
+                                                            "wrap-anywhere transition-[opacity,background-color] motion-reduce:transition-none",
+                                                            cell ? "font-semibold" : "text-v2-muted",
+                                                            hit && matchClass,
+                                                            searching && !hit && dimClass,
+                                                        ]}
+                                                        data-match={hit || undefined}
+                                                        data-place="heat:{heat.number}:{index + 1}"
+                                                    >
+                                                        {cell?.name ?? "–"}
+                                                    </td>
                                                 {/each}
                                             </tr>
                                         {/each}
                                     </tbody>
                                 </table>
-                            </div>
+                            </WideScroll>
                         {:else if !heats.usePools || heats.generated}
                             <EmptyState class="mt-4">No heats yet. They appear here once they're generated.</EmptyState>
                         {/if}
@@ -159,7 +199,15 @@
                         {#if draw.useTanks}<h4 class="mb-2 font-bold">Tank {tank.number}</h4>{/if}
                         <ol class={["border-t border-v2-border", !draw.useTanks && "sm:columns-2 xl:columns-3 sm:gap-6"]}>
                             {#each tank.draws as entry (entry.id)}
-                                <li class="flex break-inside-avoid gap-3 border-b border-v2-border px-2 py-2">
+                                {@const hit = matches(entry.name)}
+                                <li
+                                    class={[
+                                        "flex break-inside-avoid gap-3 border-b border-v2-border px-2 py-2 transition-[opacity,background-color] motion-reduce:transition-none",
+                                        hit && matchClass,
+                                        searching && !hit && dimClass,
+                                    ]}
+                                    data-place="draw:{entry.id}"
+                                >
                                     <span class="w-6 shrink-0 text-right text-v2-muted tabular-nums">{entry.draw}</span>
                                     <span class="font-semibold wrap-anywhere">{entry.name}</span>
                                 </li>

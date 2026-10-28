@@ -50,6 +50,7 @@
                         changed(entry.id) && changedClass,
                     ]}
                     aria-pressed={selected === entry.id}
+                    data-place="entity:{entry.id}"
                     onclick={() => onselect(entry.id)}
                 >
                     <span class="font-semibold wrap-anywhere">{entry.name}</span>

@@ -3,7 +3,8 @@
     an event's Heats in one Pool as a lane × Heat table. Select an entry, then an open lane to move it
     or another entry to swap them; select two Heat headers to swap whole Heats. Each change shows at
     once, lit up, and saves on its own (ChangeSaver). Chips pick the event (with heats per event) and
-    the Pool (with pools); entries not in any Heat are listed under the table to place.
+    the Pool (with pools); entries not in any Heat are listed under the table to place. A search finds
+    where an entry is, lighting up its lane.
 -->
 <script lang="ts">
     import { index as overview } from "@/actions/App/Http/Controllers/Manage/HeatsAndDrawsController";
@@ -13,9 +14,11 @@
     import EmptyState from "@/manage/components/EmptyState.svelte";
     import PageHeading from "@/manage/components/PageHeading.svelte";
     import SmoothHeight from "@/manage/components/SmoothHeight.svelte";
+    import WideScroll from "@/manage/components/WideScroll.svelte";
     import { ChangeSaver, changedClass, selectedClass } from "@/manage/orders.svelte";
     import RemoveButton from "@/manage/orders/RemoveButton.svelte";
     import SelectionBar from "@/manage/orders/SelectionBar.svelte";
+    import PlacementSearch, { dimClass, matchClass, matcher, type Place } from "@/manage/orders/PlacementSearch.svelte";
     import UnassignedList from "@/manage/orders/UnassignedList.svelte";
     import type { CompetitionHeader, HeatCell, HeatGrid, NamedOption, UnplacedEntity } from "@/manage/types";
     import { router } from "@inertiajs/svelte";
@@ -60,6 +63,17 @@
     let selection = $state<Selection>(null);
 
     const saver = new ChangeSaver();
+
+    let query = $state("");
+    const matches = $derived(matcher(query));
+    const searching = $derived(query.trim() !== "");
+    const poolName = $derived(pools.length > 1 ? (pools.find((option) => option.id === pool)?.name ?? null) : null);
+    let heatsBox = $state<HTMLDivElement>();
+
+    /** A place the search found: select it, ready to move */
+    function pickFound(place: Place) {
+        if (!saver.busy) selection = { kind: "entity", entity: place.entity };
+    }
 
     const cellKey = (heat: number, lane: number) => `${heat}:${lane}`;
     const heatKey = (heat: number) => `heat:${heat}`;
@@ -211,9 +225,12 @@
     function cellClass(heat: number, lane: number, cell: HeatCell | null) {
         const selected = selection?.kind === "entity" && cell?.entity === selection.entity;
         const lit = saver.changed.has(cellKey(heat, lane)) || saver.changed.has(heatKey(heat));
+        const hit = matches(cell?.name);
         return [
             "flex min-h-14 w-full cursor-pointer flex-col justify-center rounded-md border px-3 py-2 text-left text-sm transition-colors motion-reduce:transition-none",
             cell ? "border-v2-border bg-v2-card hover:border-v2-teal" : "border-dashed border-v2-border text-v2-muted hover:border-v2-teal hover:text-v2-ink",
+            hit && `${matchClass} border-v2-teal`,
+            searching && !hit && !selected && dimClass,
             selected && selectedClass,
             lit && changedClass,
         ];
@@ -241,6 +258,16 @@
     </div>
 {/if}
 
+<div class="mb-4">
+    <PlacementSearch
+        bind:query
+        heats={{ list: heats, label: poolName ? `Heats (${poolName})` : "Heats" }}
+        unassigned={waiting}
+        scroll={heatsBox}
+        onpick={pickFound}
+    />
+</div>
+
 <SelectionBar {hint} selected={selection !== null} onclear={() => (selection = null)}>
     {#if selectedIsPlaced}
         <button type="button" class="v2-btn v2-btn-sm" disabled={saver.busy} onclick={unassignSelected}>Unassign</button>
@@ -257,7 +284,7 @@
                     <button type="button" class="v2-btn mt-3" disabled={saver.busy} onclick={() => addHeat(1)}>Add a heat</button>
                 </EmptyState>
             {:else}
-                <div class="overflow-x-auto pb-2" aria-busy={saver.busy}>
+                <WideScroll class="pb-2" aria-busy={saver.busy} bind:element={heatsBox}>
                     <table class="border-separate border-spacing-x-2 border-spacing-y-1.5 text-left">
                         <thead>
                             <tr>
@@ -300,7 +327,13 @@
                                     {#each heats as heat (heat.number)}
                                         {@const cell = heat.lanes[index]}
                                         <td>
-                                            <button type="button" class={cellClass(heat.number, lane, cell)} onclick={() => selectCell(heat.number, lane)}>
+                                            <button
+                                                type="button"
+                                                class={cellClass(heat.number, lane, cell)}
+                                                data-match={matches(cell?.name) || undefined}
+                                                data-place="heat:{heat.number}:{lane}"
+                                                onclick={() => selectCell(heat.number, lane)}
+                                            >
                                                 {#if cell}
                                                     <span class="font-semibold wrap-anywhere">{cell.name}</span>
                                                     {#if useSeeds && cell.seed}<span class="text-xs text-v2-muted tabular-nums">{cell.seed}</span>{/if}
@@ -314,7 +347,7 @@
                             {/each}
                         </tbody>
                     </table>
-                </div>
+                </WideScroll>
             {/if}
         </div>
     {/key}
