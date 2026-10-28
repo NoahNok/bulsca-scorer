@@ -9,6 +9,7 @@
     import { index as overview } from "@/actions/App/Http/Controllers/Manage/HeatsAndDrawsController";
     import { assign, deleteHeat, edit, insertHeat, reset, swap, swapHeats, unassign } from "@/actions/App/Http/Controllers/Manage/HeatsController";
     import { confirm } from "@/lib/confirm";
+    import SmoothHeight from "@/manage/components/SmoothHeight.svelte";
     import { ChangeSaver } from "@/manage/orders.svelte";
     import type { CompetitionHeader, HeatCell, HeatGrid, NamedOption, UnplacedEntity } from "@/manage/types";
     import { Link, router } from "@inertiajs/svelte";
@@ -253,77 +254,79 @@
     {/if}
 </div>
 
-<!-- Fades in as another event or Pool is picked -->
-{#key `${event.id}:${pool}`}
-    <div class="animate-fade-in motion-reduce:animate-none">
-        {#if heats.length === 0}
-            <div class="rounded-md border border-dashed border-v2-border px-4 py-8 text-center">
-                <p class="text-[0.9375rem] text-v2-muted">No heats yet.</p>
-                <button type="button" class="v2-btn mt-3" disabled={saver.busy} onclick={() => addHeat(1)}>Add a heat</button>
-            </div>
-        {:else}
-            <div class="overflow-x-auto pb-2" aria-busy={saver.busy}>
-                <table class="border-separate border-spacing-x-2 border-spacing-y-1.5 text-left">
-                    <thead>
-                        <tr>
-                            <th scope="col" class="sticky left-0 z-10 w-px bg-v2-bg pr-2 text-sm font-semibold text-v2-muted">Lane</th>
-                            {#each heats as heat (heat.number)}
-                                <th scope="col" class="min-w-52 pb-1">
-                                    <div class="flex items-center gap-1">
-                                        <button
-                                            type="button"
-                                            class={[
-                                                "v2-chip",
-                                                saver.changed.has(heatKey(heat.number)) && "animate-changed motion-reduce:animate-none",
-                                            ]}
-                                            aria-pressed={selection?.kind === "heat" && selection.number === heat.number}
-                                            onclick={() => selectHeat(heat.number)}>Heat {heat.number}</button
-                                        >
-                                        <button
-                                            type="button"
-                                            class="ml-auto cursor-pointer rounded px-1.5 py-1 text-sm font-semibold text-v2-muted hover:bg-v2-row-hover hover:text-v2-ink"
-                                            title="Add a heat after Heat {heat.number}"
-                                            aria-label="Add a heat after Heat {heat.number}"
-                                            onclick={() => addHeat(heat.number + 1)}>+</button
-                                        >
-                                        <button
-                                            type="button"
-                                            class="cursor-pointer rounded px-1.5 py-1 text-sm font-semibold text-v2-muted hover:bg-v2-danger-soft hover:text-v2-danger-text"
-                                            title="Remove Heat {heat.number}"
-                                            aria-label="Remove Heat {heat.number}"
-                                            onclick={() => removeHeat(heat.number)}>×</button
-                                        >
-                                    </div>
-                                </th>
-                            {/each}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {#each { length: grid.lanes } as _, index (index)}
-                            {@const lane = index + 1}
+<!-- Fades in as another event or Pool is picked, the height easing to fit -->
+<SmoothHeight>
+    {#key `${event.id}:${pool}`}
+        <div class="animate-fade-in motion-reduce:animate-none">
+            {#if heats.length === 0}
+                <div class="rounded-md border border-dashed border-v2-border px-4 py-8 text-center">
+                    <p class="text-[0.9375rem] text-v2-muted">No heats yet.</p>
+                    <button type="button" class="v2-btn mt-3" disabled={saver.busy} onclick={() => addHeat(1)}>Add a heat</button>
+                </div>
+            {:else}
+                <div class="overflow-x-auto pb-2" aria-busy={saver.busy}>
+                    <table class="border-separate border-spacing-x-2 border-spacing-y-1.5 text-left">
+                        <thead>
                             <tr>
-                                <th scope="row" class="sticky left-0 z-10 bg-v2-bg pr-2 text-sm font-semibold text-v2-muted tabular-nums">{lane}</th>
+                                <th scope="col" class="sticky left-0 z-10 w-px bg-v2-bg pr-2 text-sm font-semibold text-v2-muted">Lane</th>
                                 {#each heats as heat (heat.number)}
-                                    {@const cell = heat.lanes[index]}
-                                    <td>
-                                        <button type="button" class={cellClass(heat.number, lane, cell)} onclick={() => selectCell(heat.number, lane)}>
-                                            {#if cell}
-                                                <span class="font-semibold wrap-anywhere">{cell.name}</span>
-                                                {#if useSeeds && cell.seed}<span class="text-xs text-v2-muted tabular-nums">{cell.seed}</span>{/if}
-                                            {:else}
-                                                <span class="text-xs font-semibold tracking-wide uppercase">Open</span>
-                                            {/if}
-                                        </button>
-                                    </td>
+                                    <th scope="col" class="min-w-52 pb-1">
+                                        <div class="flex items-center gap-1">
+                                            <button
+                                                type="button"
+                                                class={[
+                                                    "v2-chip",
+                                                    saver.changed.has(heatKey(heat.number)) && "animate-changed motion-reduce:animate-none",
+                                                ]}
+                                                aria-pressed={selection?.kind === "heat" && selection.number === heat.number}
+                                                onclick={() => selectHeat(heat.number)}>Heat {heat.number}</button
+                                            >
+                                            <button
+                                                type="button"
+                                                class="ml-auto cursor-pointer rounded px-1.5 py-1 text-sm font-semibold text-v2-muted hover:bg-v2-row-hover hover:text-v2-ink"
+                                                title="Add a heat after Heat {heat.number}"
+                                                aria-label="Add a heat after Heat {heat.number}"
+                                                onclick={() => addHeat(heat.number + 1)}>+</button
+                                            >
+                                            <button
+                                                type="button"
+                                                class="cursor-pointer rounded px-1.5 py-1 text-sm font-semibold text-v2-muted hover:bg-v2-danger-soft hover:text-v2-danger-text"
+                                                title="Remove Heat {heat.number}"
+                                                aria-label="Remove Heat {heat.number}"
+                                                onclick={() => removeHeat(heat.number)}>×</button
+                                            >
+                                        </div>
+                                    </th>
                                 {/each}
                             </tr>
-                        {/each}
-                    </tbody>
-                </table>
-            </div>
-        {/if}
-    </div>
-{/key}
+                        </thead>
+                        <tbody>
+                            {#each { length: grid.lanes } as _, index (index)}
+                                {@const lane = index + 1}
+                                <tr>
+                                    <th scope="row" class="sticky left-0 z-10 bg-v2-bg pr-2 text-sm font-semibold text-v2-muted tabular-nums">{lane}</th>
+                                    {#each heats as heat (heat.number)}
+                                        {@const cell = heat.lanes[index]}
+                                        <td>
+                                            <button type="button" class={cellClass(heat.number, lane, cell)} onclick={() => selectCell(heat.number, lane)}>
+                                                {#if cell}
+                                                    <span class="font-semibold wrap-anywhere">{cell.name}</span>
+                                                    {#if useSeeds && cell.seed}<span class="text-xs text-v2-muted tabular-nums">{cell.seed}</span>{/if}
+                                                {:else}
+                                                    <span class="text-xs font-semibold tracking-wide uppercase">Open</span>
+                                                {/if}
+                                            </button>
+                                        </td>
+                                    {/each}
+                                </tr>
+                            {/each}
+                        </tbody>
+                    </table>
+                </div>
+            {/if}
+        </div>
+    {/key}
+</SmoothHeight>
 
 <section aria-labelledby="he-unassigned" class="mt-8">
     <div class="flex items-center gap-3">

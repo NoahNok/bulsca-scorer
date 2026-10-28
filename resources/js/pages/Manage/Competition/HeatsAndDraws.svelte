@@ -9,6 +9,7 @@
     import { visibility } from "@/actions/App/Http/Controllers/Manage/HeatsAndDrawsController";
     import { edit as editHeats, generate as generateHeats } from "@/actions/App/Http/Controllers/Manage/HeatsController";
     import Alert from "@/manage/components/Alert.svelte";
+    import SmoothHeight from "@/manage/components/SmoothHeight.svelte";
     import SidebarPage, { sidebarRow } from "@/manage/components/SidebarPage.svelte";
     import type { CompetitionHeader, DrawTank, HeatGrid, NamedOption } from "@/manage/types";
     import { Link, router } from "@inertiajs/svelte";
@@ -120,38 +121,40 @@
                 </div>
             {/if}
 
-            <!-- Fades in as another event or Pool is picked -->
-            {#key `${heats.event}:${heats.pool}`}
-                <div class="animate-fade-in motion-reduce:animate-none">
-                    {#if heats.grid && heats.grid.heats.length > 0}
-                        <div class="mt-4 overflow-x-auto">
-                            <table class="border-separate border-spacing-0 text-left text-sm">
-                                <thead>
-                                    <tr class="text-v2-muted *:border-b *:border-v2-border *:px-3 *:py-2 *:font-semibold">
-                                        <th scope="col" class="sticky left-0 z-10 w-px bg-v2-bg">Lane</th>
-                                        {#each heats.grid.heats as heat (heat.number)}
-                                            <th scope="col" class="min-w-44 whitespace-nowrap">Heat {heat.number}</th>
-                                        {/each}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {#each { length: heats.grid.lanes } as _, index (index)}
-                                        <tr class="*:border-b *:border-v2-border *:px-3 *:py-2">
-                                            <th scope="row" class="sticky left-0 z-10 bg-v2-bg font-semibold text-v2-muted tabular-nums">{index + 1}</th>
+            <!-- Fades in as another event or Pool is picked, the height easing to fit -->
+            <SmoothHeight>
+                {#key `${heats.event}:${heats.pool}`}
+                    <div class="animate-fade-in motion-reduce:animate-none">
+                        {#if heats.grid && heats.grid.heats.length > 0}
+                            <div class="mt-4 overflow-x-auto">
+                                <table class="border-separate border-spacing-0 text-left text-sm">
+                                    <thead>
+                                        <tr class="text-v2-muted *:border-b *:border-v2-border *:px-3 *:py-2 *:font-semibold">
+                                            <th scope="col" class="sticky left-0 z-10 w-px bg-v2-bg">Lane</th>
                                             {#each heats.grid.heats as heat (heat.number)}
-                                                {@const cell = heat.lanes[index]}
-                                                <td class={["wrap-anywhere", cell ? "font-semibold" : "text-v2-muted"]}>{cell?.name ?? "–"}</td>
+                                                <th scope="col" class="min-w-44 whitespace-nowrap">Heat {heat.number}</th>
                                             {/each}
                                         </tr>
-                                    {/each}
-                                </tbody>
-                            </table>
-                        </div>
-                    {:else if !heats.usePools || heats.generated}
-                        <p class={["mt-4", empty]}>No heats yet. They appear here once they're generated.</p>
-                    {/if}
-                </div>
-            {/key}
+                                    </thead>
+                                    <tbody>
+                                        {#each { length: heats.grid.lanes } as _, index (index)}
+                                            <tr class="*:border-b *:border-v2-border *:px-3 *:py-2">
+                                                <th scope="row" class="sticky left-0 z-10 bg-v2-bg font-semibold text-v2-muted tabular-nums">{index + 1}</th>
+                                                {#each heats.grid.heats as heat (heat.number)}
+                                                    {@const cell = heat.lanes[index]}
+                                                    <td class={["wrap-anywhere", cell ? "font-semibold" : "text-v2-muted"]}>{cell?.name ?? "–"}</td>
+                                                {/each}
+                                            </tr>
+                                        {/each}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {:else if !heats.usePools || heats.generated}
+                            <p class={["mt-4", empty]}>No heats yet. They appear here once they're generated.</p>
+                        {/if}
+                    </div>
+                {/key}
+            </SmoothHeight>
         {/if}
     </section>
 
