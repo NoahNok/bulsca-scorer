@@ -59,7 +59,9 @@ class HandleInertiaRequests extends Middleware
         if ($this->isManagementApp($request)) {
             return [
                 ...$shared,
-                'manage' => [
+                // always sent, so a partial reload (picking a Pool) brings an empty flash rather than keeping the
+                // last save's, which the layout would toast again
+                'manage' => Inertia::always([
                     'isAdmin' => (bool) $request->user()?->isAdmin(),
                     // the public site is on the main domain, and route() would build these on app.
                     'site' => [
@@ -73,7 +75,7 @@ class HandleInertiaRequests extends Middleware
                         'error' => $request->session()->get('alert-error'),
                         'success' => $request->session()->get('success'),
                     ],
-                ],
+                ]),
             ];
         }
 

@@ -115,6 +115,21 @@ class HeatEditorTest extends TestCase
                 ->where('canReset', true));
     }
 
+    public function test_picking_another_pool_or_event_after_a_save_brings_no_flash_to_toast_again(): void
+    {
+        $a = $this->team('A', 1, 1);
+        $b = $this->team('B', 1, 2);
+        $this->edit('swap', ['from' => $this->heatOf($a)->id, 'to' => $this->heatOf($b)->id]);
+
+        $this->actingAs($this->organiser)->get($this->url('/edit'))
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('manage.flash.success', fn ($success) => filled($success))
+                // the page's partial reload, which leaves shared props out unless they're always sent
+                ->reloadOnly('event,pool,grid,unassigned', fn (Assert $reload) => $reload
+                    ->where('manage.flash.success', null)
+                    ->missing('competition')));
+    }
+
     public function test_without_heats_per_event_another_events_editor_opens_the_first(): void
     {
         $this->actingAs($this->organiser)->get($this->url('/edit', $this->events[1]))
