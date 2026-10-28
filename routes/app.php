@@ -15,12 +15,13 @@ use App\Http\Controllers\Manage\CompetitionDashboardController;
 use App\Http\Controllers\Manage\CompetitionEntriesController;
 use App\Http\Controllers\Manage\CompetitionEventsController;
 use App\Http\Controllers\Manage\CompetitionOfficialsController;
+use App\Http\Controllers\Manage\HeatsAndDrawsController;
+use App\Http\Controllers\Manage\HeatsController;
+use App\Http\Controllers\Manage\DrawsController;
 use App\Http\Controllers\Manage\SercEventController;
 use App\Http\Controllers\Manage\SpeedEventController;
 use App\Http\Controllers\Manage\ManageController;
 use App\Http\Controllers\Manage\OrganisationCreateController;
-use App\Http\Controllers\Orders\DrawController;
-use App\Http\Controllers\Orders\HeatController;
 use App\Http\Controllers\Organisation\OrganisationController;
 use App\Http\Controllers\OverallResultsController;
 use App\Http\Controllers\PrintableController;
@@ -235,37 +236,37 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
             Route::prefix('/heats-and-draws')->middleware('can:access,comp,"heats_and_draws"')->group(function () {
 
 
-                Route::get('', [HeatController::class, 'index'])->name('comps.heats_and_draws');
+                Route::get('', [HeatsAndDrawsController::class, 'index'])->name('manage.competitions.heats_and_draws');
+                Route::post('visibility', [HeatsAndDrawsController::class, 'visibility'])->name('manage.competitions.heats_and_draws.visibility');
 
-                Route::prefix('heats')->group(function () {
-                    Route::get('generate', [HeatController::class, 'generate'])->name('comps.heats_and_draws.heats.generate');
+                Route::prefix('heats')->name('manage.competitions.heats_and_draws.heats.')->group(function () {
+                    Route::post('generate', [HeatsController::class, 'generate'])->name('generate');
 
-                    Route::get('hide', [HeatController::class, 'hide'])->name('comps.heats_and_draws.heats.hide');
-
-                    Route::get('{event}/edit', [HeatController::class, 'edit'])->name('comps.heats_and_draws.heats.edit');
-                    Route::get('{event}/reset', [HeatController::class, 'reset'])->name('comps.heats_and_draws.heats.reset');
-                    Route::post('{event}/swap', [HeatController::class, 'swap'])->name('comps.heats_and_draws.heats.swap');
-                    Route::post('{event}/swapHeats', [HeatController::class, 'swapHeats'])->name('comps.heats_and_draws.heats.swapHeats');
-                    Route::post('{event}/assign', [HeatController::class, 'assign'])->name('comps.heats_and_draws.heats.assign');
-                    Route::post('{event}/unassign', [HeatController::class, 'unassign'])->name('comps.heats_and_draws.heats.unassign');
-                    Route::post('{event}/insertHeat', [HeatController::class, 'insertHeat'])->name('comps.heats_and_draws.heats.insertHeat');
-                    Route::post('{event}/deleteHeat', [HeatController::class, 'deleteHeat'])->name('comps.heats_and_draws.heats.deleteHeats');
+                    Route::get('{event}/edit', [HeatsController::class, 'edit'])->name('edit');
+                    Route::post('{event}/reset', [HeatsController::class, 'reset'])->name('reset');
+                    Route::post('{event}/swap', [HeatsController::class, 'swap'])->name('swap');
+                    Route::post('{event}/swapHeats', [HeatsController::class, 'swapHeats'])->name('swapHeats');
+                    Route::post('{event}/assign', [HeatsController::class, 'assign'])->name('assign');
+                    Route::post('{event}/unassign', [HeatsController::class, 'unassign'])->name('unassign');
+                    Route::post('{event}/insertHeat', [HeatsController::class, 'insertHeat'])->name('insertHeat');
+                    Route::post('{event}/deleteHeat', [HeatsController::class, 'deleteHeat'])->name('deleteHeat');
                 });
 
-                Route::prefix('draws')->group(function () {
-                    Route::get('generate', [DrawController::class, 'generate'])->name('comps.heats_and_draws.draws.generate');
-                    Route::get('hide', [DrawController::class, 'hide'])->name('comps.heats_and_draws.draws.hide');
-                    Route::get('tank-setup', [DrawController::class, 'tankSetup'])->name('comps.heats_and_draws.draws.tank_setup');
-                    Route::post('tank-setup', [DrawController::class, 'tankSetupPost'])->name('comps.heats_and_draws.draws.tank_setup.post');
-                    Route::get('{serc}/edit', [DrawController::class, 'edit'])->name('comps.heats_and_draws.draws.edit');
-                    Route::post('{serc}/edit', [DrawController::class, 'swap'])->name('comps.heats_and_draws.draws.swap');
-                    Route::post('{serc}/remove', [DrawController::class, 'remove'])->name('comps.heats_and_draws.draws.remove');
-                    Route::post('{serc}/move', [DrawController::class, 'move'])->name('comps.heats_and_draws.draws.move');
-                    Route::post('{serc}/assign', [DrawController::class, 'assign'])->name('comps.heats_and_draws.draws.assign');
-                    Route::post('{serc}/add-tank', [DrawController::class, 'addTank'])->name('comps.heats_and_draws.draws.addTank');
-                    Route::post('{serc}/compact-tanks', [DrawController::class, 'compactTanks'])->name('comps.heats_and_draws.draws.compactTanks');
-                    Route::post('{serc}/remove-tank', [DrawController::class, 'removeTank'])->name('comps.heats_and_draws.draws.removeTank');
-                    Route::post('{serc}/reset', [DrawController::class, 'reset'])->name('comps.heats_and_draws.draws.reset');
+                Route::prefix('draws')->name('manage.competitions.heats_and_draws.draws.')->group(function () {
+                    Route::get('edit', [DrawsController::class, 'edit'])->name('edit');
+                    Route::get('{serc}/edit', fn (Competition $comp) => redirect()->route('manage.competitions.heats_and_draws.draws.edit', $comp, 301))->whereNumber('serc')->name('old.edit');
+                    Route::get('tank-setup', [DrawsController::class, 'tankSetup'])->name('tank_setup');
+                    Route::post('tank-setup', [DrawsController::class, 'saveTankSetup'])->name('tank_setup.save');
+
+                    Route::post('generate', [DrawsController::class, 'generate'])->name('generate');
+                    Route::post('regenerate', [DrawsController::class, 'regenerate'])->name('regenerate');
+                    Route::post('swap', [DrawsController::class, 'swap'])->name('swap');
+                    Route::post('move', [DrawsController::class, 'move'])->name('move');
+                    Route::post('assign', [DrawsController::class, 'assign'])->name('assign');
+                    Route::post('remove', [DrawsController::class, 'remove'])->name('remove');
+                    Route::post('add-tank', [DrawsController::class, 'addTank'])->name('addTank');
+                    Route::post('remove-tank', [DrawsController::class, 'removeTank'])->name('removeTank');
+                    Route::post('compact-tanks', [DrawsController::class, 'compactTanks'])->name('compactTanks');
                 });
             });
 

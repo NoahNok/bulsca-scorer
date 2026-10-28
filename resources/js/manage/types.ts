@@ -305,3 +305,17 @@ export type EventScoring = {
     /** Organisation schemas to start from, with their organisation's name */
     options: { id: number; name: string; organisation: string; schema: ScoringSchema }[];
 };
+
+/** An Entity in a lane (HeatService::grid) */
+export type HeatCell = { id: number; entity: number; name: string; seed: string | null };
+
+/** An event's Heats in one Pool: a cell per lane in each Heat, null for an open one */
+export type HeatGrid = { lanes: number; heats: { number: number; lanes: (HeatCell | null)[] }[] };
+
+/** An Entity not in the Heats or the Draw, to place */
+export type UnplacedEntity = { id: number; name: string; seed?: string | null };
+
+export type NamedOption = { id: number; name: string };
+
+/** One Tank's running order (DrawService::tanks); Tank 0 is the whole Draw without tanks */
+export type DrawTank = { number: number; draws: { id: number; entity: number; name: string; draw: number }[] };

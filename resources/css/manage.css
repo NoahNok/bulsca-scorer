@@ -37,6 +37,7 @@
     --animate-rise-fast: rise 200ms ease-out;
     --animate-fade-in: fade-in 200ms ease-out;
     --animate-spinner: spin 700ms linear infinite;
+    --animate-changed: changed 1200ms ease-out;
 
     /* Something arriving: fades in as it rises half a rem */
     @keyframes rise {
@@ -49,6 +50,14 @@
     @keyframes fade-in {
         from {
             opacity: 0;
+        }
+    }
+
+    /* Something an edit just changed: lit teal, fading back to its own background */
+    @keyframes changed {
+        from {
+            background-color: var(--v2-teal-soft);
+            border-color: var(--v2-teal);
         }
     }
 }

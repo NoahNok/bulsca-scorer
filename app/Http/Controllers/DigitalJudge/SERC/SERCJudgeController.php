@@ -120,7 +120,7 @@ class SERCJudgeController extends Controller
 
 
         // grab serc again as the draw is against the serc with the lowest id?
-        $tanks = SERC::where('competition', $competition->id)->first()->draw()->orderBy('tank')->distinct('tank')->get('tank')->pluck('tank')->toArray();
+        $tanks = $competition->drawSerc()->draw()->orderBy('tank')->distinct('tank')->get('tank')->pluck('tank')->toArray();
 
         return Inertia::render('Judge/Competition/SERC/SelectTank', ['competition' => $competition->jsonable(), 'serc' => $serc, 'tanks' => $tanks]);
     }

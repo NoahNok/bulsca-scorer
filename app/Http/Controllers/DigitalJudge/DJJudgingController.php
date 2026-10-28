@@ -95,7 +95,7 @@ class DJJudgingController extends Controller
         $serc = DigitalJudge::getClientJudges()[0]->getSERC;
         DigitalJudge::setStatus('Selecting Tank', $serc);
 
-        $tanks = SERC::where('competition', DigitalJudge::getClientCompetition()->id)->first()->draw()->orderBy('tank')->distinct('tank')->get('tank')->pluck('tank')->toArray();
+        $tanks = DigitalJudge::getClientCompetition()->drawSerc()->draw()->orderBy('tank')->distinct('tank')->get('tank')->pluck('tank')->toArray();
         //$tanks = DB::select("SELECT DISTINCT serc_tank FROM competition_teams WHERE competition=? AND serc_tank > 0 ORDER BY serc_tank ASC", [DigitalJudge::getClientCompetition()->id]);
 
         return view('digitaljudge.judging.select-tank', array_merge(DigitalJudge::getBladeProps(), ['head' => DigitalJudge::isClientHeadJudge(), 'tanks' => $tanks]));
@@ -106,7 +106,7 @@ class DJJudgingController extends Controller
 
         if ($tank < 1) $tank = 1;
 
-        $max = SERC::where('competition', DigitalJudge::getClientCompetition()->id)->first()->draw()->orderBy('tank')->distinct('tank')->get('tank')->pluck('tank')->max();
+        $max = DigitalJudge::getClientCompetition()->drawSerc()->draw()->orderBy('tank')->distinct('tank')->get('tank')->pluck('tank')->max();
 
 
         if ($tank > $max) $tank = $max;

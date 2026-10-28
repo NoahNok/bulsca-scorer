@@ -10,7 +10,6 @@ use App\Models\DigitalJudge\JudgeDQSubmission;
 use App\Models\DigitalJudge\JudgeLog;
 use App\Models\Interfaces\IInvitable;
 use App\Models\Interfaces\IJsonable;
-use App\Models\Orders\Draw;
 use App\Models\Orders\Heat;
 use App\Models\Organisation\Organisation;
 use App\Models\Pivots\CompetitionOfficial;
@@ -19,6 +18,7 @@ use App\Traits\Cloneable;
 use App\Traits\RecordActivity;
 use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -129,6 +129,27 @@ class Competition extends Model implements IInvitable, IJsonable
     {
         return $this->hasMany(SERC::class, 'competition', 'id');
         //return $this->hasMany(CompetitionSpeedEvent::class, 'event', 'id');
+    }
+
+    /**
+     * The speed events that hold Heats: every one with heats per event, otherwise only the first, whose
+     * Heats every event shares
+     *
+     * @return Collection<int, CompetitionSpeedEvent>
+     */
+    public function heatEvents(): Collection
+    {
+        $events = $this->getSpeedEvents()->orderBy('id');
+
+        return $this->heats_per_event ? $events->get() : $events->limit(1)->get();
+    }
+
+    /**
+     * The SERC that holds the competition's one set of Draws, shared by all its SERCs: the first one
+     */
+    public function drawSerc(): ?SERC
+    {
+        return $this->getSERCs()->orderBy('id')->first();
     }
 
     public function getLeagues()
@@ -297,50 +318,6 @@ class Competition extends Model implements IInvitable, IJsonable
         $manager->computeStats();
     }
 
-    public function getTargetEntitiesPerLeague()
-    {
-
-        // for now assume target type is competitor
-        $competitors = CompetitionTeam::where('competition', $this->id)->with('leagues')->get();
-
-        $grouped = $competitors->groupBy(function ($competitor) {
-            return $competitor->getLeague()?->id ?? -1;
-        });
-
-        // Transform into desired array format
-        $result = $grouped->map(function ($group, $leagueId) {
-            $leagueName = $group->first()->getLeague()?->name ?? 'No League';
-            return ['league' => $leagueId, 'name' => $leagueName, 'count' => $group->count()];
-        })->values()->toArray();
-
-        return $result;
-
-
-        //return DB::select('WITH totals AS (SELECT league, COUNT(*) as count FROM competition_teams WHERE competition=? GROUP BY league) SELECT t.league, l.name, t.count FROM totals t INNER JOIN leagues l ON l.id=t.league', [$this->id]);
-    }
-
-    public function getTanks()
-    {
-
-
-        $serc = SERC::where('competition', $this->id)->orderBy('id')->first();
-
-        return $serc->draw()->with('entity')->get()->sortBy('tank')->groupBy('tank')->map(function ($tank) {
-            return $tank->groupBy(function ($draw) {
-                return optional($draw->entity->getLeague())->id;
-            })->map(function ($competitors, $leagueId) {
-
-                return [
-                    'league' => $leagueId,
-                    'name' => $competitors->first()->entity->getLeague()->name ?? 'No League',
-                    'count' => $competitors->count()
-                ];
-            })->values();
-        })->values();
-
-        return [];
-    }
-
     /**
      * Returns heats for all events for the competition that have them
      * 
@@ -383,8 +360,11 @@ class Competition extends Model implements IInvitable, IJsonable
         return Cache::rememberForever("{$this->cacheKey()}.draws", function () {
 
 
-            return $this->hasManyThrough(Draw::class, SERC::class, 'competition', 'serc', 'id', 'id')->with('entity')->get()->groupBy('serc')->map(function ($draws, $sercId) {
-                $serc = SERC::find($sercId);
+            // One set of Draws, held by the first SERC: a list of it alone, or empty before there's a Draw
+            $serc = $this->drawSerc();
+            $draws = $serc ? $serc->draw()->with('entity')->get() : collect();
+
+            return $draws->isEmpty() ? [] : collect([$draws])->map(function ($draws) use ($serc) {
 
                 if ($serc->scorable_entity == 'team') {
 

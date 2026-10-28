@@ -191,9 +191,12 @@ class SERC extends Event
         return $this->hasManyThrough(SERCResult::class, SERCMarkingPoint::class, 'serc', 'marking_point', 'id', 'id');
     }
 
+    /**
+     * The Draws this SERC holds. Only the competition's first SERC holds any (Competition::drawSerc);
+     * read a SERC's running order with getDraw()
+     */
     public function draw()
     {
-        // if using seperate draws per SERC, this is where that would be handled
         return $this->hasMany(Draw::class, 'serc');
     }
 
@@ -202,12 +205,12 @@ class SERC extends Event
         return $this->hasMany(DrawTank::class, 'serc');
     }
 
+    /**
+     * The running order every SERC shares: the competition's one set of Draws
+     */
     public function getDraw()
     {
-        // if using seperate draws per SERC, this is where that would be handled
-
-        // OTHERWISE USE DRAW ROM SERC WITH LOWEST ID
-        return SERC::where('competition', $this->competition)->orderBy('id')->first()->draw()->with('entity')->orderBy('draw');
+        return $this->getCompetition->drawSerc()->draw()->with('entity')->orderBy('draw');
     }
 
     public function getPositionInDraw(Entity $entity)

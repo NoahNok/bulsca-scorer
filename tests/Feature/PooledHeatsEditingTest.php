@@ -10,6 +10,7 @@ use App\Models\Pool;
 use App\Models\SpeedEvent;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 /**
@@ -98,7 +99,9 @@ class PooledHeatsEditingTest extends TestCase
 
     private function postHeats(string $route, array $data)
     {
-        return $this->actingAs($this->admin)->postJson(route("comps.heats_and_draws.heats.$route", [$this->comp, $this->event]), $data);
+        return $this->actingAs($this->admin)
+            ->from(route('manage.competitions.heats_and_draws.heats.edit', [$this->comp, $this->event]))
+            ->post(route("manage.competitions.heats_and_draws.heats.$route", [$this->comp, $this->event]), $data);
     }
 
     public function test_generate_and_reset_are_refused_when_pools_are_in_use(): void
@@ -106,12 +109,10 @@ class PooledHeatsEditingTest extends TestCase
         $team = $this->team('A', $this->diving, 1, 2);
 
         $this->actingAs($this->admin)
-            ->get(route('comps.heats_and_draws.heats.generate', $this->comp))
-            ->assertSessionHas('alert-error');
+            ->post(route('manage.competitions.heats_and_draws.heats.generate', $this->comp))
+            ->assertSessionHasErrors('heats');
 
-        $this->actingAs($this->admin)
-            ->get(route('comps.heats_and_draws.heats.reset', [$this->comp, $this->event]))
-            ->assertSessionHas('alert-error');
+        $this->postHeats('reset', [])->assertSessionHasErrors('heats');
 
         $this->assertSame($this->diving->id, $this->heatOf($team)->pool);
     }
@@ -121,8 +122,8 @@ class PooledHeatsEditingTest extends TestCase
         $main = $this->team('A', $this->main, 1, 4);
         $diving = $this->team('B', $this->diving, 1, 2);
 
-        $this->postHeats('swap', ['team' => $this->heatOf($main)->id, 'target-heat' => $this->heatOf($diving)->id, 'target-heatlane' => '1:2', 'pool' => $this->main->id])
-            ->assertStatus(422);
+        $this->postHeats('swap', ['from' => $this->heatOf($main)->id, 'to' => $this->heatOf($diving)->id, 'pool' => $this->main->id])
+            ->assertSessionHasErrors('heats');
 
         $this->assertSame(4, $this->heatOf($main)->lane);
         $this->assertSame($this->main->id, $this->heatOf($main)->pool);
@@ -132,13 +133,20 @@ class PooledHeatsEditingTest extends TestCase
     {
         $main = $this->team('A', $this->main, 1, 4);
 
-        $this->postHeats('swap', ['team' => $this->heatOf($main)->id, 'target-heatlane' => '2:5', 'pool' => $this->main->id]);
+        $this->postHeats('assign', ['entity' => $main->id, 'heat' => 2, 'lane' => 5, 'pool' => $this->main->id]);
 
         $heat = $this->heatOf($main);
         $this->assertSame([2, 5, $this->main->id], [$heat->heat, $heat->lane, $heat->pool]);
 
-        $this->postHeats('swap', ['team' => $heat->id, 'target-heatlane' => '1:1', 'pool' => $this->diving->id])
-            ->assertStatus(422);
+        // An entry can't be moved into another Pool
+        $this->postHeats('assign', ['entity' => $main->id, 'heat' => 1, 'lane' => 3, 'pool' => $this->diving->id])
+            ->assertSessionHasErrors('heats');
+        $this->assertSame($this->main->id, $this->heatOf($main)->pool);
+
+        // The Diving Pool only has 4 lanes
+        $this->postHeats('assign', ['entity' => $main->id, 'heat' => 1, 'lane' => 5, 'pool' => $this->diving->id])
+            ->assertSessionHasErrors('heats');
+        $this->assertSame($this->main->id, $this->heatOf($main)->pool);
     }
 
     public function test_swapping_whole_heats_only_touches_the_chosen_pool(): void
@@ -147,7 +155,7 @@ class PooledHeatsEditingTest extends TestCase
         $mainTwo = $this->team('B', $this->main, 2, 4);
         $diving = $this->team('C', $this->diving, 1, 2);
 
-        $this->postHeats('swapHeats', ['first' => 1, 'second' => 2, 'pool' => $this->main->id])->assertOk();
+        $this->postHeats('swapHeats', ['first' => 1, 'second' => 2, 'pool' => $this->main->id])->assertSessionHasNoErrors();
 
         $this->assertSame(2, $this->heatOf($mainOne)->heat);
         $this->assertSame(1, $this->heatOf($mainTwo)->heat);
@@ -159,12 +167,12 @@ class PooledHeatsEditingTest extends TestCase
         $main = $this->team('A', $this->main, 1, 4);
         $diving = $this->team('B', $this->diving, 1, 2);
 
-        $this->postHeats('insertHeat', ['position' => 1, 'pool' => $this->main->id])->assertOk();
+        $this->postHeats('insertHeat', ['position' => 1, 'pool' => $this->main->id])->assertSessionHasNoErrors();
 
         $this->assertSame(2, $this->heatOf($main)->heat);
         $this->assertSame(1, $this->heatOf($diving)->heat);
 
-        $this->postHeats('deleteHeats', ['heat' => 1, 'pool' => $this->main->id])->assertOk();
+        $this->postHeats('deleteHeat', ['heat' => 1, 'pool' => $this->main->id])->assertSessionHasNoErrors();
 
         $this->assertSame(1, $this->heatOf($main)->heat);
         $this->assertSame(1, $this->heatOf($diving)->heat);
@@ -175,9 +183,9 @@ class PooledHeatsEditingTest extends TestCase
         $this->team('A', $this->main, 1, 2);
         $unassigned = $this->team('B');
 
-        $this->postHeats('assign', ['entity' => $unassigned->id, 'heat' => 1, 'lane' => 2])->assertStatus(422);
+        $this->postHeats('assign', ['entity' => $unassigned->id, 'heat' => 1, 'lane' => 2])->assertSessionHasErrors('pool');
 
-        $this->postHeats('assign', ['entity' => $unassigned->id, 'heat' => 1, 'lane' => 2, 'pool' => $this->diving->id])->assertOk();
+        $this->postHeats('assign', ['entity' => $unassigned->id, 'heat' => 1, 'lane' => 2, 'pool' => $this->diving->id])->assertSessionHasNoErrors();
 
         $heat = $this->heatOf($unassigned);
         $this->assertSame([1, 2, $this->diving->id], [$heat->heat, $heat->lane, $heat->pool]);
@@ -187,12 +195,12 @@ class PooledHeatsEditingTest extends TestCase
     {
         $team = $this->team('A', $this->main, 1, 2);
 
-        $this->postHeats('unassign', ['entity' => $team->id])->assertStatus(422);
+        $this->postHeats('unassign', ['entity' => $team->id])->assertSessionHasErrors('pool');
 
-        $this->postHeats('unassign', ['entity' => $team->id, 'pool' => $this->diving->id])->assertOk();
+        $this->postHeats('unassign', ['entity' => $team->id, 'pool' => $this->diving->id])->assertSessionHasErrors('heats');
         $this->assertSame($this->main->id, $this->heatOf($team)->pool);
 
-        $this->postHeats('unassign', ['entity' => $team->id, 'pool' => $this->main->id])->assertOk();
+        $this->postHeats('unassign', ['entity' => $team->id, 'pool' => $this->main->id])->assertSessionHasNoErrors();
         $this->assertFalse(Heat::whereMorphedTo('entity', $team)->exists());
     }
 
@@ -215,31 +223,39 @@ class PooledHeatsEditingTest extends TestCase
 
     public function test_the_edit_page_shows_one_pool_at_a_time(): void
     {
-        $this->team('Main Team', $this->main, 1, 4);
-        $this->team('Diving Team', $this->diving, 1, 2);
+        $main = $this->team('Main Team', $this->main, 1, 4);
+        $diving = $this->team('Diving Team', $this->diving, 1, 2);
+        $editor = route('manage.competitions.heats_and_draws.heats.edit', [$this->comp, $this->event]);
 
-        $this->actingAs($this->admin)
-            ->get(route('comps.heats_and_draws.heats.edit', [$this->comp, $this->event]) . '?pool=' . $this->diving->id)
-            ->assertOk()
-            ->assertSee('Diving Team')
-            ->assertDontSee('Main Team')
-            ->assertSee('Main Pool');
+        $this->actingAs($this->admin)->get($editor . '?pool=' . $this->diving->id)
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Manage/Competition/HeatEditor')
+                ->where('pools', [['id' => $this->main->id, 'name' => 'Main Pool'], ['id' => $this->diving->id, 'name' => 'Diving Pool']])
+                ->where('pool', $this->diving->id)
+                ->where('grid.lanes', 4)
+                ->where('grid.heats.0.lanes.1.name', $diving->getName($this->comp))
+                ->where('canReset', false));
 
-        $this->actingAs($this->admin)
-            ->get(route('comps.heats_and_draws.heats.edit', [$this->comp, $this->event]))
-            ->assertOk()
-            ->assertSee('Main Team');
+        $this->actingAs($this->admin)->get($editor)
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('pool', $this->main->id)
+                ->where('grid.lanes', 8)
+                ->where('grid.heats.0.lanes.3.name', $main->getName($this->comp)));
     }
 
-    public function test_the_heats_page_lists_heats_per_pool(): void
+    public function test_the_heats_page_shows_heats_one_pool_at_a_time(): void
     {
         $this->team('Main Team', $this->main, 1, 4);
-        $this->team('Diving Team', $this->diving, 1, 2);
+        $diving = $this->team('Diving Team', $this->diving, 1, 2);
 
         $this->actingAs($this->admin)
-            ->get(route('comps.heats_and_draws', $this->comp))
-            ->assertOk()
-            ->assertSeeInOrder(['Main Pool', 'Main Team', 'Diving Pool', 'Diving Team'])
-            ->assertDontSee('Generate Heats');
+            ->get(route('manage.competitions.heats_and_draws', $this->comp) . '?pool=' . $this->diving->id)
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Manage/Competition/HeatsAndDraws')
+                ->has('heats.pools', 2)
+                ->where('heats.pool', $this->diving->id)
+                ->where('heats.grid.heats.0.lanes.1.name', $diving->getName($this->comp))
+                ->where('heats.usePools', true)
+                ->where('heats.canGenerate', false));
     }
 }

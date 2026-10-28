@@ -168,9 +168,9 @@ class CompetitionOwnershipTest extends TestCase
         [$theirA, $theirB] = $this->theirs['heats'];
 
         $this->actingAs($this->admin)
-            ->post(route('comps.heats_and_draws.heats.swap', [$this->ours['comp'], $this->ours['event']]), [
-                'team' => $theirA->id,
-                'target-heat' => $theirB->id,
+            ->post(route('manage.competitions.heats_and_draws.heats.swap', [$this->ours['comp'], $this->ours['event']]), [
+                'from' => $theirA->id,
+                'to' => $theirB->id,
             ])
             ->assertNotFound();
 
@@ -179,9 +179,9 @@ class CompetitionOwnershipTest extends TestCase
         [$drawA, $drawB] = $this->theirs['draws'];
 
         $this->actingAs($this->admin)
-            ->postJson(route('comps.heats_and_draws.draws.swap', [$this->ours['comp'], $this->ours['serc']]), [
-                'swap_from' => $drawA->id,
-                'swap_to' => $drawB->id,
+            ->post(route('manage.competitions.heats_and_draws.draws.swap', $this->ours['comp']), [
+                'from' => $drawA->id,
+                'to' => $drawB->id,
             ])
             ->assertNotFound();
 
@@ -193,9 +193,9 @@ class CompetitionOwnershipTest extends TestCase
         [$ourA, $ourB] = $this->ours['heats'];
 
         $this->actingAs($this->admin)
-            ->post(route('comps.heats_and_draws.heats.swap', [$this->ours['comp'], $this->ours['event']]), [
-                'team' => $ourA->id,
-                'target-heat' => $ourB->id,
+            ->post(route('manage.competitions.heats_and_draws.heats.swap', [$this->ours['comp'], $this->ours['event']]), [
+                'from' => $ourA->id,
+                'to' => $ourB->id,
             ])
             ->assertRedirect();
 

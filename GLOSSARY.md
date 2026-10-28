@@ -18,6 +18,10 @@ _Avoid_: Participant, entrant
 A part of a SERC with its own marking points, e.g. a casualty, which an Official marks Entities against.
 _Avoid_: Judge (for the slot), casualty, position
 
+**League**:
+A grouping of Entities within a competition, e.g. A League or B League. Pools run heats for their assigned Leagues, and SERC tanks are set up by League.
+_Avoid_: Bracket
+
 **League Objectives**:
 A SERC setting where each League is assigned exactly one Objective, and every Entity is marked against its League's Objective instead of one the Official picks.
 _Avoid_: Restricted judges, restricted SERC

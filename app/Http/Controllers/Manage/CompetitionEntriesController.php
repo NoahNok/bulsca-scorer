@@ -70,7 +70,7 @@ class CompetitionEntriesController extends Controller
             'teams' => $comp->getCompetitionTeams()->whereNull('club')->orderBy('team')->with($teamRelations)->get()->map($team),
             'competitors' => $comp->getCompetitors()->whereNull('team')->orderBy('name')->with('leagues', 'getSeeds')->get()->map($entry),
             // Null without access to Heats & Draws, where they regenerate after adding entries
-            'heatsUrl' => Gate::allows('access', [$comp, 'heats_and_draws']) ? route('comps.heats_and_draws', $comp) : null,
+            'heatsUrl' => Gate::allows('access', [$comp, 'heats_and_draws']) ? route('manage.competitions.heats_and_draws', $comp) : null,
             // Null when the competition doesn't use seed times
             'seeds' => $comp->use_seeds ? [
                 'perEvent' => (bool) $comp->seed_per_event,
