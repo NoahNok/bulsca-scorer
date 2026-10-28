@@ -5,16 +5,14 @@
     options. One with nothing to print yet is muted and says why, linking to where that's fixed.
 -->
 <script lang="ts">
+    import LinkPicker from "@/manage/components/LinkPicker.svelte";
     import RowIcon from "@/manage/components/RowIcon.svelte";
     import type { CompetitionHeader } from "@/manage/types";
-    import { closeOnBackdrop } from "@/manage/ui";
     import { Link } from "@inertiajs/svelte";
-    import { tick } from "svelte";
 
     /** Why there's nothing to print yet, and the page that fixes it (null without access to it) */
     type Unavailable = { reason: string; url: string | null };
     type Pack = { url: string | null; unavailable: Unavailable | null };
-    type Option = { name: string; description?: string; url: string };
 
     let {
         competition,
@@ -31,28 +29,21 @@
         roughMarkSheets: { sercs: { id: number; name: string; url: string }[]; unavailable: Unavailable | null };
     } = $props();
 
-    let dialog: HTMLDialogElement;
-    let picking = $state<{ title: string; lead: string; options: Option[] } | null>(null);
-
-    async function pick(title: string, lead: string, options: Option[]) {
-        picking = { title, lead, options };
-        await tick();
-        dialog.showModal();
-    }
+    let picker: LinkPicker;
 
     const sercs = $derived(roughMarkSheets.sercs);
 
     function pickLayout() {
         const { url, packedUrl } = packs.chiefTimekeeper;
         if (!url || !packedUrl) return;
-        pick("Chief Timekeeper Pack", "How should the heats be laid out?", [
+        picker.open("Chief Timekeeper Pack", "How should the heats be laid out?", [
             { name: "One heat per page", description: "A sheet per heat, to hand out heat by heat", url },
             { name: "Packed", description: "Several heats to a page, to save paper", url: packedUrl },
         ]);
     }
 
     function pickSerc() {
-        pick("Rough mark sheets", "Which SERC are they for?", sercs.map((serc) => ({ name: serc.name, url: serc.url })));
+        picker.open("Rough mark sheets", "Which SERC are they for?", sercs.map((serc) => ({ name: serc.name, url: serc.url })));
     }
 
     const heading = "text-lg font-extrabold uppercase";
@@ -134,24 +125,4 @@
     </section>
 </div>
 
-<dialog bind:this={dialog} class="v2-modal" aria-labelledby="pr-pick-title" onclick={closeOnBackdrop} onclose={() => (picking = null)}>
-    {#if picking}
-        <h2 id="pr-pick-title">{picking.title}</h2>
-        <p>{picking.lead}</p>
-        <ul class="mt-4 {list}">
-            {#each picking.options as option (option.url)}
-                <li>
-                    <a href={option.url} target="_blank" rel="noopener" class={row} onclick={() => dialog.close()}>
-                        {@render label(option.name, option.description)}
-                        <RowIcon icon="external" />
-                    </a>
-                </li>
-            {/each}
-        </ul>
-        <div class="v2-modal-actions mt-6">
-            <!-- First focus goes to the safe choice, as in every v2 modal -->
-            <!-- svelte-ignore a11y_autofocus -->
-            <button type="button" class="v2-btn" autofocus onclick={() => dialog.close()}>Cancel</button>
-        </div>
-    {/if}
-</dialog>
+<LinkPicker bind:this={picker} />
