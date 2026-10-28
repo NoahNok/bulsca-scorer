@@ -167,7 +167,8 @@ about one field (wrong credentials, throttling) go on their own key (`auth`)
 and show as a danger `Alert` above the fields.
 
 Page changes between Svelte pages are view transitions: `manage.ts` turns `viewTransition` on for every
-GET visit (not form posts, whose error answer is the same page), and `v2.css` keeps the `.v2-header` and
+GET visit (not form posts, whose error answer is the same page, nor a visit with `only` or
+`preserveState` that swaps part of the page, like a pool or league chip), and `v2.css` keeps the `.v2-header` and
 `.v2-footer` still while the page between fades and rises in (about 250ms, off under reduced motion).
 Full page loads, like a form landing on a Blade page, don't animate. The theme toggle marks its own
 transition with `data-theme-switching` on `<html>`, which swaps this for its circular reveal.

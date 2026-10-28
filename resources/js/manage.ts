@@ -26,7 +26,11 @@ createInertiaApp({
               ? [ManageLayout, CompetitionLayout]
               : [ManageLayout],
     defaults: {
-        // Page changes animate (v2.css). Not form posts: an error answer is the same page, and shouldn't fade
-        visitOptions: (_href, options) => ({ viewTransition: (options.method ?? "get") === "get" }),
+        // Page changes animate (v2.css). Not form posts: an error answer is the same page, and shouldn't fade.
+        // Nor a visit that keeps the page and swaps some of its props (a pool chip): only that part changes.
+        // These options win over a visit's own, so this is the one place to decide
+        visitOptions: (_href, options) => ({
+            viewTransition: (options.method ?? "get") === "get" && !options.preserveState && !options.only?.length,
+        }),
     },
 });

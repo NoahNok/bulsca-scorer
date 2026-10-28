@@ -172,6 +172,17 @@
         saver.save(unassign(args).url, { entity: source.cell.entity, ...inPool }, [`entity:${source.cell.entity}`]);
     }
 
+    /** Swaps in another event's or Pool's Heats, keeping the rest of the page */
+    function show(eventId: number, poolId: number | null) {
+        if (saver.busy) return;
+        selection = null;
+        router.get(edit({ comp, event: eventId }, { query: poolId ? { pool: poolId } : {} }).url, {}, {
+            only: ["event", "pool", "grid", "unassigned"],
+            preserveState: true,
+            preserveScroll: true,
+        });
+    }
+
     async function resetHeats() {
         const ok = await confirm({
             title: "Reset the heats?",
@@ -217,14 +228,14 @@
         {#if perEvent && events.length > 1}
             <div class="flex flex-wrap gap-2" role="group" aria-label="Event">
                 {#each events as option (option.id)}
-                    <Link href={edit({ comp, event: option.id }, { query: inPool }).url} class="v2-chip" aria-pressed={option.id === event.id}>{option.name}</Link>
+                    <button type="button" class="v2-chip" aria-pressed={option.id === event.id} onclick={() => show(option.id, pool)}>{option.name}</button>
                 {/each}
             </div>
         {/if}
         {#if pools.length > 1}
             <div class="flex flex-wrap gap-2" role="group" aria-label="Pool">
                 {#each pools as option (option.id)}
-                    <Link href={edit(args, { query: { pool: option.id } }).url} class="v2-chip" aria-pressed={option.id === pool}>{option.name}</Link>
+                    <button type="button" class="v2-chip" aria-pressed={option.id === pool} onclick={() => show(event.id, option.id)}>{option.name}</button>
                 {/each}
             </div>
         {/if}
