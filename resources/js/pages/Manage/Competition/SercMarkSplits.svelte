@@ -6,7 +6,9 @@
 <script lang="ts">
     import { show } from "@/actions/App/Http/Controllers/Manage/SercEventController";
     import type { CompetitionHeader, SercEventHeader } from "@/manage/types";
-    import { Link, router } from "@inertiajs/svelte";
+    import { router } from "@inertiajs/svelte";
+    import ChipGroup from "@/manage/components/ChipGroup.svelte";
+    import PageHeading from "@/manage/components/PageHeading.svelte";
 
     let {
         competition,
@@ -38,20 +40,16 @@
     <title>Mark splits - {event.name} - {competition.name} - Scoring.Events</title>
 </svelte:head>
 
-<div class="mb-6">
-    <Link href={show({ comp: competition.id, serc: event.id }).url} class="v2-link-muted text-sm wrap-anywhere">← {event.name}</Link>
-    <h2 class="mt-1 text-2xl font-extrabold uppercase">Mark splits</h2>
-    <p class="mt-[0.35rem] text-[0.9375rem]/[1.6] text-v2-muted">Each entry's mark on every marking point of one Objective.</p>
-</div>
+<PageHeading
+    back={{ href: show({ comp: competition.id, serc: event.id }).url, label: event.name }}
+    title="Mark splits"
+    lead="Each entry's mark on every marking point of one Objective."
+/>
 
 {#if objectives.length === 0}
     <p class="text-[0.9375rem]/[1.6] text-v2-muted">It has no Objectives yet. Add them in its setup, and their marks show here.</p>
 {:else}
-    <div class="flex flex-wrap gap-2" role="group" aria-label="Objective">
-        {#each objectives as option (option.id)}
-            <button type="button" class="v2-chip" aria-pressed={objective === option.id} onclick={() => showObjective(option.id)}>{option.name}</button>
-        {/each}
-    </div>
+    <ChipGroup label="Objective" options={objectives} value={objective} onpick={(id) => id !== null && showObjective(id)} />
 
     {#if splits}
         <div class="mt-5 overflow-x-auto">

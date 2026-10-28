@@ -11,9 +11,10 @@
     import SideMenuPart from "@/manage/components/SideMenuPart.svelte";
     import Switch from "@/manage/components/Switch.svelte";
     import UnsavedChanges from "@/manage/components/UnsavedChanges.svelte";
+    import PageHeading from "@/manage/components/PageHeading.svelte";
     import ScoringSchemaEditor from "@/manage/events/ScoringSchemaEditor.svelte";
     import type { CompetitionHeader, EventScoring, EventTarget, SpeedEventHeader } from "@/manage/types";
-    import { Form, Link, router } from "@inertiajs/svelte";
+    import { Form, router } from "@inertiajs/svelte";
     import { TARGET_LABELS } from "@/manage/ui";
 
     let {
@@ -80,10 +81,7 @@
     <title>Settings - {event.name} - {competition.name} - Scoring.Events</title>
 </svelte:head>
 
-<div class="mb-6">
-    <Link href={show({ comp, event: event.id }).url} class="v2-link-muted text-sm wrap-anywhere">← {event.name}</Link>
-    <h2 class="mt-1 text-2xl font-extrabold uppercase">Settings</h2>
-</div>
+<PageHeading back={{ href: show({ comp, event: event.id }).url, label: event.name }} title="Settings" />
 
 <SideMenu items={PARTS} label="{event.name} settings">
     <SideMenuPart id="setup" labelledby="sp-setup" ondiscard={resetSetup}>

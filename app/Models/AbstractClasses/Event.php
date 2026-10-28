@@ -201,9 +201,25 @@ abstract class Event extends Model implements IJsonable
         $this->save();
     }
 
+    /**
+     * The competition's Entities of the kind this event scores
+     */
+    public function scorableEntities()
+    {
+        return $this->getScorableEntity()::where('competition', $this->competition);
+    }
+
     public function getScorableEntities()
     {
-        return $this->getScorableEntity()::where('competition', $this->competition)->get();
+        return $this->scorableEntities()->get();
+    }
+
+    /**
+     * One of the competition's Entities of the kind this event scores, or a 404
+     */
+    public function findScorableEntity(int $id): Entity
+    {
+        return $this->scorableEntities()->findOrFail($id);
     }
 
     #[Override]

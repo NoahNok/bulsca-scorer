@@ -53,7 +53,7 @@ class DJJudgingController extends Controller
     {
         DigitalJudge::setClientJudge($serc->getJudges->first());
 
-        if (DigitalJudge::getClientCompetition()->getScoringSettings->use_tanks) {
+        if (DigitalJudge::getClientCompetition()->usesTanks()) {
             return redirect()->route('dj.judging.tank');
         }
         DigitalJudge::setTank(null);
@@ -65,7 +65,7 @@ class DJJudgingController extends Controller
     {
         DigitalJudge::setClientJudge($judge);
 
-        if (DigitalJudge::getClientCompetition()->getScoringSettings->use_tanks) {
+        if (DigitalJudge::getClientCompetition()->usesTanks()) {
             return redirect()->route('dj.judging.tank');
         }
         DigitalJudge::setTank(null);

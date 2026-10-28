@@ -190,6 +190,19 @@ class HeatService
     }
 
     /**
+     * The chips Heats are picked by: the events that hold them, and the competition's Pools (none without)
+     *
+     * @return array{events: array<int, array{id: int, name: string}>, pools: array<int, array{id: int, name: string}>}
+     */
+    public function pickers(Competition $comp): array
+    {
+        return [
+            'events' => $comp->heatEvents()->map(fn (CompetitionSpeedEvent $event) => ['id' => $event->id, 'name' => $event->getName()])->values()->all(),
+            'pools' => $comp->use_pools ? $comp->getPools()->get()->map(fn (Pool $pool) => ['id' => $pool->id, 'name' => $pool->name])->values()->all() : [],
+        ];
+    }
+
+    /**
      * The Pool whose Heats to show or edit: null without pools, the first when none is asked for, and a
      * 404 for one that isn't the competition's
      */
@@ -248,7 +261,7 @@ class HeatService
         $seeds = $this->seeds($comp, $event);
         $assigned = $event->heats()->pluck('entity_id');
 
-        return $event->getScorableEntity()::where('competition', $comp->id)
+        return $event->scorableEntities()
             ->whereNotIn('id', $assigned)
             ->get()
             ->map(fn (Entity $entity) => [

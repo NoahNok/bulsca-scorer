@@ -197,7 +197,7 @@
 
         @if ($comp->show_draws)
             @php
-                $use_tanks = $comp->getScoringSettings->use_tanks;
+                $use_tanks = $comp->usesTanks();
             @endphp
 
             @forelse ($sercs as $heatevent)

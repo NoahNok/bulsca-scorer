@@ -63,13 +63,13 @@ class DrawService
 
             $entity = $sourceDraw
                 ? $sourceDraw->entity
-                : $serc->getScorableEntity()::where('competition', $comp->id)->findOrFail($data['source']);
+                : $serc->findScorableEntity($data['source']);
             $this->refuseIf(!$entity, 'That draw has no entry.');
             $this->refuseIf(!$sourceDraw && $serc->draw()->whereMorphedTo('entity', $entity)->exists(), 'That entry is already in the draw.');
 
             if ($targetTank !== null) {
                 $tankExists = $serc->drawTanks()->where('tank', $targetTank)->exists();
-                $this->refuseIf(!($tankExists || (!$comp->getScoringSettings->use_tanks && $targetTank === 0)), 'Tank does not exist.');
+                $this->refuseIf(!($tankExists || (!$comp->usesTanks() && $targetTank === 0)), 'Tank does not exist.');
 
                 if (($data['placement'] ?? null) === 'end') {
                     $targetItems = $draws->where('tank', $targetTank)->values();
@@ -188,7 +188,7 @@ class DrawService
             ->sort()
             ->values();
 
-        if ($numbers->isEmpty() && !$comp->getScoringSettings->use_tanks) {
+        if ($numbers->isEmpty() && !$comp->usesTanks()) {
             $numbers = collect([0]);
         }
 
@@ -210,7 +210,7 @@ class DrawService
      */
     public function unassigned(Competition $comp, SERC $serc): array
     {
-        return $serc->getScorableEntity()::where('competition', $comp->id)
+        return $serc->scorableEntities()
             ->whereNotIn('id', $serc->draw()->pluck('entity_id'))
             ->get()
             ->map(fn (Entity $entity) => ['id' => $entity->id, 'name' => $entity->getName($comp)])
@@ -226,7 +226,7 @@ class DrawService
         DB::transaction(function () use ($comp, $serc, $entity, $tank) {
             $this->lockSercForDrawMutation($serc);
             $this->refuseIf(
-                !$serc->drawTanks()->where('tank', $tank)->exists() && ($comp->getScoringSettings->use_tanks || $tank !== 0),
+                !$serc->drawTanks()->where('tank', $tank)->exists() && ($comp->usesTanks() || $tank !== 0),
                 'That tank does not exist.'
             );
             $this->refuseIf($serc->draw()->whereMorphedTo('entity', $entity)->exists(), "{$entity->getName($comp)} is already in the draw.");
@@ -302,7 +302,7 @@ class DrawService
         DB::transaction(function () use ($comp, $serc) {
             $this->lockSercForDrawMutation($serc);
 
-            if ($comp->getScoringSettings->use_tanks) {
+            if ($comp->usesTanks()) {
                 $numbers = $serc->drawTanks()->pluck('tank')
                     ->merge($serc->draw()->distinct()->pluck('tank'))
                     ->map(fn ($tank) => (int) $tank)

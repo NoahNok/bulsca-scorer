@@ -46,7 +46,7 @@ class ConfirmResultsController extends Controller
         return Inertia::render('Judge/Competition/ConfirmResults/SERC', [
             'competition' => $competition->jsonable(),
             'event' => $serc->jsonable(),
-            'useTanks' => (bool) $competition->getScoringSettings?->use_tanks,
+            'useTanks' => $competition->usesTanks(),
             'judges' => $judges->map(fn($judge) => [
                 'id' => $judge->id,
                 'name' => $judge->name,

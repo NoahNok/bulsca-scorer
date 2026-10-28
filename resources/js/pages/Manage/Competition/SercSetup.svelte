@@ -7,7 +7,7 @@
     import { index as events } from "@/actions/App/Http/Controllers/Manage/CompetitionEventsController";
     import SercSetupEditor from "@/manage/events/SercSetupEditor.svelte";
     import type { CompetitionHeader, SercEventHeader, SercSetup } from "@/manage/types";
-    import { Link } from "@inertiajs/svelte";
+    import PageHeading from "@/manage/components/PageHeading.svelte";
 
     let {
         competition,
@@ -34,10 +34,7 @@
     <title>{event ? `Edit setup - ${event.name}` : "New SERC"} - {competition.name} - Scoring.Events</title>
 </svelte:head>
 
-<div class="mb-6">
-    <Link href={backUrl} class="v2-link-muted text-sm wrap-anywhere">← {event ? event.name : "Events"}</Link>
-    <h2 class="mt-1 text-2xl font-extrabold uppercase">{event ? "Edit setup" : "New SERC"}</h2>
-</div>
+<PageHeading back={{ href: backUrl, label: event ? event.name : "Events" }} title={event ? "Edit setup" : "New SERC"} />
 
 <SercSetupEditor
     {setup}

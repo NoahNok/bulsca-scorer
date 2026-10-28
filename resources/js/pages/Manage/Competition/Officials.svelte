@@ -18,6 +18,8 @@
     import Alert from "@/manage/components/Alert.svelte";
     import Field from "@/manage/components/Field.svelte";
     import SidebarPage from "@/manage/components/SidebarPage.svelte";
+    import RowIcon from "@/manage/components/RowIcon.svelte";
+    import EmptyState from "@/manage/components/EmptyState.svelte";
     import type {
         CompetitionHeader,
         CompetitionOfficial,
@@ -300,19 +302,6 @@
     <title>Officials - {competition.name} - Scoring.Events</title>
 </svelte:head>
 
-{#snippet chevron()}
-    <svg
-        class="ml-auto size-4 shrink-0 text-v2-muted"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        aria-hidden="true"
-    >
-        <path d="m9 6 6 6-6 6" />
-    </svg>
-{/snippet}
-
 {#snippet status(official: CompetitionOfficial)}
     {@const now = statusOf(official)}
     {#if now === "online"}
@@ -488,7 +477,7 @@
                                 <td class="max-sm:hidden"
                                     >{@render status(official)}</td
                                 >
-                                <td class="w-px">{@render chevron()}</td>
+                                <td class="w-px"><RowIcon /></td>
                             </tr>
                         {/each}
                     </tbody>
@@ -504,11 +493,7 @@
                 {/if}
             </div>
         {:else}
-            <p
-                class="mt-5 rounded-xl border border-dashed border-v2-border px-5 py-8 text-center text-[0.9375rem]/[1.6] text-v2-muted"
-            >
-                No officials yet. Add one, or share the Digital Judge PIN.
-            </p>
+            <EmptyState class="mt-5">No officials yet. Add one, or share the Digital Judge PIN.</EmptyState>
         {/if}
     </section>
 

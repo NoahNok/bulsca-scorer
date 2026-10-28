@@ -5,7 +5,7 @@
 
 @php
     $sercDraw = $comp->getDraws()[0] ?? null;
-    $useTanks = $comp->getScoringSettings?->use_tanks;
+    $useTanks = $comp->usesTanks();
 
     $groups = collect($sercDraw['draws'] ?? [])
         ->map(fn($draws) => $draws->filter(fn($draw) => $draw->entity)->values())

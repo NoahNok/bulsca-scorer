@@ -233,7 +233,7 @@ class PublicResultsController extends Controller
     {
         abort_unless($comp->hasReleased($event), 404);
 
-        $entity = $event->getScorableEntity()::where('competition', $comp->id)->findOrFail($entity_id);
+        $entity = $event->findScorableEntity($entity_id);
 
         $notes = [];
 

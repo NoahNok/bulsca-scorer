@@ -139,7 +139,7 @@ class CompetitionPdfCreator
 
     private function sercMarshallingSections(): array
     {
-        $useTanks = $this->comp->getScoringSettings?->use_tanks ?? false;
+        $useTanks = $this->comp->usesTanks();
         $sections = [];
 
         foreach ($this->comp->getDraws() as $sercDraws) {

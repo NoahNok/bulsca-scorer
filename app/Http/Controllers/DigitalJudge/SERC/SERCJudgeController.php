@@ -107,7 +107,7 @@ class SERCJudgeController extends Controller
             }
         }
 
-        if ($competition->getScoringSettings->use_tanks) {
+        if ($competition->usesTanks()) {
             return to_route('judge.competition.serc.select-tank', compact('competition', 'serc'));
         }
         DigitalJudge::setTank(null);

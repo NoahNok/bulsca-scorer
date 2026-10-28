@@ -8,7 +8,11 @@
     import { edit as editDraw, generate as generateDraw, tankSetup } from "@/actions/App/Http/Controllers/Manage/DrawsController";
     import { visibility } from "@/actions/App/Http/Controllers/Manage/HeatsAndDrawsController";
     import { edit as editHeats, generate as generateHeats } from "@/actions/App/Http/Controllers/Manage/HeatsController";
+    import ActionSwitch from "@/manage/components/ActionSwitch.svelte";
     import Alert from "@/manage/components/Alert.svelte";
+    import ChipGroup from "@/manage/components/ChipGroup.svelte";
+    import EmptyState from "@/manage/components/EmptyState.svelte";
+    import RowIcon from "@/manage/components/RowIcon.svelte";
     import SmoothHeight from "@/manage/components/SmoothHeight.svelte";
     import SidebarPage, { sidebarRow } from "@/manage/components/SidebarPage.svelte";
     import type { CompetitionHeader, DrawTank, HeatGrid, NamedOption } from "@/manage/types";
@@ -48,8 +52,9 @@
 
     let generating = $state(false);
 
-    function pick(data: { event?: number; pool?: number }) {
-        router.reload({ data: { event: heats.event ?? undefined, pool: heats.pool ?? undefined, ...data }, only: ["heats"] });
+    function pick(data: { event?: number | null; pool?: number | null }) {
+        const picked = { event: heats.event, pool: heats.pool, ...data };
+        router.reload({ data: { event: picked.event ?? undefined, pool: picked.pool ?? undefined }, only: ["heats"] });
     }
 
     function post(url: string) {
@@ -61,25 +66,11 @@
     }
 
     const heading = "text-lg font-extrabold uppercase";
-    const empty = "rounded-md border border-dashed border-v2-border px-4 py-6 text-center text-[0.9375rem] text-v2-muted";
 </script>
 
 <svelte:head>
     <title>Heats & Draws - {competition.name} - Scoring.Events</title>
 </svelte:head>
-
-{#snippet chevron()}
-    <svg class="ml-auto size-4 shrink-0 text-v2-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-        <path d="m9 6 6 6-6 6" />
-    </svg>
-{/snippet}
-
-{#snippet visibilitySwitch(id: string, label: string, checked: boolean, field: "show_heats" | "show_draws")}
-    <label class="v2-check mt-4 first:mt-0">
-        <button type="button" class="v2-switch" role="switch" aria-checked={checked} aria-labelledby={id} onclick={() => setShown(field, !checked)}></button>
-        <span id={id} class="font-semibold">{label}</span>
-    </label>
-{/snippet}
 
 <SidebarPage sticky>
     <h2 class="mb-6 text-2xl font-extrabold uppercase">Heats & Draws</h2>
@@ -105,18 +96,10 @@
             {#if (heats.perEvent && heats.events.length > 1) || heats.pools.length > 1}
                 <div class="mt-3 flex flex-col gap-2">
                     {#if heats.perEvent && heats.events.length > 1}
-                        <div class="flex flex-wrap gap-2" role="group" aria-label="Event">
-                            {#each heats.events as option (option.id)}
-                                <button type="button" class="v2-chip" aria-pressed={heats.event === option.id} onclick={() => pick({ event: option.id })}>{option.name}</button>
-                            {/each}
-                        </div>
+                        <ChipGroup label="Event" options={heats.events} value={heats.event} onpick={(id) => pick({ event: id })} />
                     {/if}
                     {#if heats.pools.length > 1}
-                        <div class="flex flex-wrap gap-2" role="group" aria-label="Pool">
-                            {#each heats.pools as option (option.id)}
-                                <button type="button" class="v2-chip" aria-pressed={heats.pool === option.id} onclick={() => pick({ pool: option.id })}>{option.name}</button>
-                            {/each}
-                        </div>
+                        <ChipGroup label="Pool" options={heats.pools} value={heats.pool} onpick={(id) => pick({ pool: id })} />
                     {/if}
                 </div>
             {/if}
@@ -150,7 +133,7 @@
                                 </table>
                             </div>
                         {:else if !heats.usePools || heats.generated}
-                            <p class={["mt-4", empty]}>No heats yet. They appear here once they're generated.</p>
+                            <EmptyState class="mt-4">No heats yet. They appear here once they're generated.</EmptyState>
                         {/if}
                     </div>
                 {/key}
@@ -168,7 +151,7 @@
                 </Alert>
             </div>
         {:else if !draw.generated}
-            <p class={["mt-4", empty]}>No draw yet. The running order appears here once it's generated.</p>
+            <EmptyState class="mt-4">No draw yet. The running order appears here once it's generated.</EmptyState>
         {:else}
             <div class={["mt-4 grid gap-6", draw.useTanks && "sm:grid-cols-2 xl:grid-cols-3"]}>
                 {#each draw.tanks as tank (tank.number)}
@@ -196,7 +179,7 @@
                     <li>
                         <button type="button" class={sidebarRow} disabled={generating} onclick={() => post(generateHeats(comp).url)}>
                             Generate heats
-                            {@render chevron()}
+                            <RowIcon />
                         </button>
                     </li>
                 {:else if editHeatsUrl}
@@ -205,7 +188,7 @@
                         {#key editHeatsUrl}
                             <Link href={editHeatsUrl} class={sidebarRow}>
                                 Edit {poolName ? `${poolName} heats` : "heats"}
-                                {@render chevron()}
+                                <RowIcon />
                             </Link>
                         {/key}
                     </li>
@@ -214,14 +197,14 @@
                     <li>
                         <button type="button" class={sidebarRow} disabled={generating} onclick={() => post(generateDraw(comp).url)}>
                             Generate draw
-                            {@render chevron()}
+                            <RowIcon />
                         </button>
                     </li>
                 {:else if draw.generated}
                     <li>
                         <Link href={editDraw(comp).url} class={sidebarRow}>
                             Edit draw
-                            {@render chevron()}
+                            <RowIcon />
                         </Link>
                     </li>
                 {/if}
@@ -229,15 +212,15 @@
                     <li>
                         <Link href={tankSetup(comp).url} class={sidebarRow}>
                             Tank setup
-                            {@render chevron()}
+                            <RowIcon />
                         </Link>
                     </li>
                 {/if}
             </ul>
 
             <div class="mt-5">
-                {@render visibilitySwitch("hd-show-heats", "Show heats publicly", show.heats, "show_heats")}
-                {@render visibilitySwitch("hd-show-draws", "Show draw publicly", show.draws, "show_draws")}
+                <ActionSwitch label="Show heats publicly" checked={show.heats} onchange={(checked) => setShown("show_heats", checked)} />
+                <ActionSwitch label="Show draw publicly" checked={show.draws} onchange={(checked) => setShown("show_draws", checked)} />
             </div>
         </nav>
     {/snippet}

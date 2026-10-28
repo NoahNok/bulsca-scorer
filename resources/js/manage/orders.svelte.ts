@@ -8,6 +8,11 @@ import { toastError } from "@/lib/toast.svelte";
 import { router } from "@inertiajs/svelte";
 import type { FormDataConvertible } from "@inertiajs/core";
 
+/** A selected entry, lane or Heat */
+export const selectedClass = "border-v2-teal! bg-v2-teal-soft! ring-2 ring-v2-teal/30";
+/** What the last change moved, lit up for a moment (ChangeSaver.changed) */
+export const changedClass = "animate-changed motion-reduce:animate-none";
+
 /** An editor's save in flight: one at a time, so a second change can't land on a page still catching up */
 export class ChangeSaver {
     busy = $state(false);

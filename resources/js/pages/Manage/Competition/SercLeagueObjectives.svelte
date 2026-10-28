@@ -6,6 +6,7 @@
 <script lang="ts">
     import { setup, show } from "@/actions/App/Http/Controllers/Manage/SercEventController";
     import Alert from "@/manage/components/Alert.svelte";
+    import PageHeading from "@/manage/components/PageHeading.svelte";
     import type { CompetitionHeader, SercEventHeader } from "@/manage/types";
     import { Link } from "@inertiajs/svelte";
 
@@ -40,13 +41,11 @@
     <title>League Objectives - {event.name} - {competition.name} - Scoring.Events</title>
 </svelte:head>
 
-<div class="mb-6">
-    <Link href={show({ comp, serc: event.id }).url} class="v2-link-muted text-sm wrap-anywhere">← {event.name}</Link>
-    <h2 class="mt-1 text-2xl font-extrabold uppercase">League Objectives</h2>
-    <p class="mt-[0.35rem] text-[0.9375rem]/[1.6] text-v2-muted">
-        {entities.length - problems} of {entities.length} entries have one Objective to be marked against.
-    </p>
-</div>
+<PageHeading
+    back={{ href: show({ comp, serc: event.id }).url, label: event.name }}
+    title="League Objectives"
+    lead="{entities.length - problems} of {entities.length} entries have one Objective to be marked against."
+/>
 
 {#if !event.leagueObjectives}
     <div class="mb-6">

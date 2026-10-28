@@ -182,7 +182,7 @@ class LiveController extends Controller
                 'appealed' => $submission->status == 'APPEALED',
                 'placement' => $event->getType() == 'speed'
                     ? $this->heatPlacement($placement)
-                    : array_filter(['Tank' => $comp->getScoringSettings->use_tanks ? $placement?->tank : null, 'Draw' => $placement?->draw], fn($value) => $value !== null),
+                    : array_filter(['Tank' => $comp->usesTanks() ? $placement?->tank : null, 'Draw' => $placement?->draw], fn($value) => $value !== null),
                 'turn' => $submission->turn,
                 'length' => $submission->length,
                 'reporter' => [$submission->submitter?->name, $submission->submitter_position],

@@ -9,7 +9,10 @@
     import { index as overview } from "@/actions/App/Http/Controllers/Manage/HeatsAndDrawsController";
     import { confirm } from "@/lib/confirm";
     import { toastError } from "@/lib/toast.svelte";
+    import EmptyState from "@/manage/components/EmptyState.svelte";
+    import PageHeading from "@/manage/components/PageHeading.svelte";
     import UnsavedChanges from "@/manage/components/UnsavedChanges.svelte";
+    import RemoveButton from "@/manage/orders/RemoveButton.svelte";
     import type { CompetitionHeader } from "@/manage/types";
     import { Link, router } from "@inertiajs/svelte";
 
@@ -100,17 +103,15 @@
     {/if}
 {/snippet}
 
-<div class="mb-6 flex flex-wrap items-end gap-4">
-    <div class="min-w-0 flex-1">
-        <Link href={overview(comp).url} class="v2-link-muted text-sm">← Heats & Draws</Link>
-        <h2 class="mt-1 text-2xl font-extrabold uppercase">Tank setup</h2>
-        <p class="mt-[0.35rem] text-[0.9375rem]/[1.6] text-v2-muted">
-            Select Leagues, then put them in a tank. Saving draws everyone again, League by League, in the
-            <Link href={editDraw(comp).url} class="v2-link-inline">draw</Link>.
-        </p>
-    </div>
-    <button type="button" class="v2-btn v2-btn-primary" disabled={saving || !dirty} onclick={save}>Save</button>
-</div>
+<PageHeading back={{ href: overview(comp).url, label: "Heats & Draws" }} title="Tank setup">
+    {#snippet lead()}
+        Select Leagues, then put them in a tank. Saving draws everyone again, League by League, in the
+        <Link href={editDraw(comp).url} class="v2-link-inline">draw</Link>.
+    {/snippet}
+    {#snippet actions()}
+        <button type="button" class="v2-btn v2-btn-primary" disabled={saving || !dirty} onclick={save}>Save</button>
+    {/snippet}
+</PageHeading>
 
 <section aria-labelledby="ts-leagues">
     <h3 id="ts-leagues" class="text-lg font-extrabold uppercase">Not in a tank</h3>
@@ -143,13 +144,7 @@
                         <h4 class="font-bold">Tank {index + 1}</h4>
                         <p class="text-sm text-v2-muted tabular-nums">{entries(tank)} {entries(tank) === 1 ? "entry" : "entries"}</p>
                     </div>
-                    <button
-                        type="button"
-                        class="cursor-pointer rounded px-1.5 py-1 font-semibold text-v2-muted hover:bg-v2-danger-soft hover:text-v2-danger-text"
-                        aria-label="Remove Tank {index + 1}"
-                        title="Remove tank"
-                        onclick={() => removeTank(index)}>×</button
-                    >
+                    <RemoveButton label="Remove Tank {index + 1}" title="Remove tank" onclick={() => removeTank(index)} />
                 </div>
                 <div class="mt-3 flex flex-wrap gap-2">
                     {#each tank as id (id)}{@render league(id)}{/each}
@@ -163,6 +158,6 @@
         {/each}
     </div>
     {#if assigned.length === 0}
-        <p class="mt-3 rounded-md border border-dashed border-v2-border px-4 py-6 text-center text-[0.9375rem] text-v2-muted">No tanks yet. Add one to start.</p>
+        <EmptyState class="mt-3">No tanks yet. Add one to start.</EmptyState>
     {/if}
 </section>

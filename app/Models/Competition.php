@@ -586,6 +586,14 @@ class Competition extends Model implements IInvitable, IJsonable
         return $this->belongsTo(Organisation::class, 'organisation');
     }
 
+    /**
+     * Whether SERCs run in Tanks, each with its own part of the Draw
+     */
+    public function usesTanks(): bool
+    {
+        return (bool) $this->getScoringSettings?->use_tanks;
+    }
+
     public function getScoringSettings()
     {
         return $this->hasOne(CompetitionScoringSettings::class, 'competition');

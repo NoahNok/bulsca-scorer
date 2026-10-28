@@ -6,6 +6,7 @@
 <script lang="ts">
     import { confirm } from "@/lib/confirm";
     import SidebarPage from "@/manage/components/SidebarPage.svelte";
+    import RowIcon from "@/manage/components/RowIcon.svelte";
     import type { CompetitionEvent, CompetitionHeader } from "@/manage/types";
     import { Link, router } from "@inertiajs/svelte";
 
@@ -81,12 +82,6 @@
     <title>{competition.name} - Scoring.Events</title>
 </svelte:head>
 
-{#snippet chevron()}
-    <svg class="ml-auto size-4 shrink-0 text-v2-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-        <path d="m9 6 6 6-6 6" />
-    </svg>
-{/snippet}
-
 {#snippet heading(id: string, text: string)}
     <h2 {id} class="text-lg font-extrabold uppercase">{text}</h2>
 {/snippet}
@@ -112,7 +107,7 @@
                                             ><span class="v2-dot" aria-hidden="true"></span>Digital Judge</span
                                         >
                                     {/if}
-                                    {@render chevron()}
+                                    <RowIcon />
                                 </a>
                             </li>
                         {/each}
@@ -132,13 +127,13 @@
                     <li>
                         <Link href={links.settingsUrl} class={row}>
                             <span class="font-bold wrap-anywhere">Settings</span>
-                            {@render chevron()}
+                            <RowIcon />
                         </Link>
                     </li>
                     <li>
                         <a href={links.activityLogUrl} class={row}>
                             <span class="font-bold wrap-anywhere">Activity log</span>
-                            {@render chevron()}
+                            <RowIcon />
                         </a>
                     </li>
                 </ul>

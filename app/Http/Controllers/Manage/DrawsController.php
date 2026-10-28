@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Manage;
 
 use App\Helpers\CompetitionHeader;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Manage\Concerns\RecordsOrderEdits;
 use App\Models\Competition;
 use App\Models\SERC;
 use App\Services\DrawService;
-use App\Traits\RecordActivity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -20,7 +20,7 @@ use Inertia\Inertia;
  */
 class DrawsController extends Controller
 {
-    use RecordActivity;
+    use RecordsOrderEdits;
 
     public function __construct(private DrawService $draws) {}
 
@@ -30,43 +30,28 @@ class DrawsController extends Controller
 
         return Inertia::render('Manage/Competition/DrawEditor', [
             'competition' => CompetitionHeader::for($comp),
-            'useTanks' => $this->usesTanks($comp),
+            'useTanks' => $comp->usesTanks(),
             'tanks' => $this->draws->tanks($comp, $serc),
             'unassigned' => $this->draws->unassigned($comp, $serc),
         ]);
     }
 
     /**
-     * Draws every Entity at random, or with tanks, opens Tank setup to draw them by League
+     * Draws every Entity at random, or with tanks, opens Tank setup to draw them by League. Only while
+     * there's no Draw: drawing again is Regenerate, which confirms first.
      */
     public function generate(Competition $comp)
     {
-        if ($this->usesTanks($comp)) {
-            return redirect()->route('manage.competitions.heats_and_draws.draws.tank_setup', $comp);
-        }
-
-        $serc = $this->serc($comp);
-        // Once there's a Draw, drawing again is Regenerate, which confirms first
-        if ($serc->draw()->exists()) {
+        if (!$comp->usesTanks() && $this->serc($comp)->draw()->exists()) {
             throw ValidationException::withMessages(['draw' => 'There\'s a draw already. Regenerate it from the draw editor instead.']);
         }
 
-        $this->draws->generateDrawForSERC($serc);
-        $this->changed($comp, 'DRAW_GENERATED');
-
-        return back()->with('success', 'Draw generated');
+        return $this->drawAtRandom($comp, 'DRAW_GENERATED', 'Draw generated');
     }
 
     public function regenerate(Competition $comp)
     {
-        if ($this->usesTanks($comp)) {
-            return redirect()->route('manage.competitions.heats_and_draws.draws.tank_setup', $comp);
-        }
-
-        $this->draws->generateDrawForSERC($this->serc($comp));
-        $this->changed($comp, 'DRAW_RESET');
-
-        return back()->with('success', 'Draw regenerated');
+        return $this->drawAtRandom($comp, 'DRAW_RESET', 'Draw regenerated');
     }
 
     public function swap(Competition $comp, Request $request)
@@ -104,7 +89,7 @@ class DrawsController extends Controller
 
         $entity = $data['source_type'] === 'draw'
             ? $serc->draw()->with('entity')->findOrFail($data['source'])->entity
-            : $serc->getScorableEntity()::where('competition', $comp->id)->findOrFail($data['source']);
+            : $serc->findScorableEntity($data['source']);
         $target = isset($data['target']) ? $serc->draw()->with('entity')->findOrFail($data['target']) : null;
 
         $this->draws->moveDraw($comp, $serc, $data);
@@ -136,7 +121,7 @@ class DrawsController extends Controller
             'entity' => ['required', 'integer'],
             'tank' => ['required', 'integer'],
         ]);
-        $entity = $serc->getScorableEntity()::where('competition', $comp->id)->findOrFail($data['entity']);
+        $entity = $serc->findScorableEntity($data['entity']);
 
         $this->draws->assign($comp, $serc, $entity, $data['tank']);
         $this->changed($comp, 'DRAW_ENTRY_ADDED', "Added {$entity->getName($comp)} to Tank {$data['tank']}", ['entity_id' => $entity->id, 'tank' => (int) $data['tank']], [$entity]);
@@ -179,7 +164,7 @@ class DrawsController extends Controller
         $this->changed(
             $comp,
             'DRAW_TANK_REMOVED',
-            "Removed Tank {$tank} and unassigned {$unassigned} entr" . ($unassigned === 1 ? 'y' : 'ies'),
+            "Removed Tank {$tank} {$this->unassignedCount($unassigned)}",
             ['tank' => $tank, 'entries_unassigned' => $unassigned],
         );
 
@@ -196,7 +181,7 @@ class DrawsController extends Controller
 
     public function tankSetup(Competition $comp)
     {
-        abort_unless($this->usesTanks($comp), 404);
+        abort_unless($comp->usesTanks(), 404);
 
         return Inertia::render('Manage/Competition/TankSetup', [
             'competition' => CompetitionHeader::for($comp),
@@ -219,13 +204,24 @@ class DrawsController extends Controller
         return redirect()->route('manage.competitions.heats_and_draws.draws.edit', $comp)->with('success', 'Draw made from the tanks');
     }
 
-    /**
-     * Clears the cached Draw and records the edit as Activity
-     */
-    private function changed(Competition $comp, string $activity, ?string $description = null, array $context = [], array $entities = []): void
+    protected function clearCache(Competition $comp): void
     {
         $comp->clearDrawCache();
-        $this->recordActivity($activity, $description, context: $context, related: [$comp, ...array_filter($entities)]);
+    }
+
+    /**
+     * Draws every Entity at random, replacing the Draw; with tanks, Tank setup draws them by League instead
+     */
+    private function drawAtRandom(Competition $comp, string $activity, string $message)
+    {
+        if ($comp->usesTanks()) {
+            return redirect()->route('manage.competitions.heats_and_draws.draws.tank_setup', $comp);
+        }
+
+        $this->draws->generateDrawForSERC($this->serc($comp));
+        $this->changed($comp, $activity);
+
+        return back()->with('success', $message);
     }
 
     /**
@@ -236,14 +232,9 @@ class DrawsController extends Controller
         return $comp->drawSerc() ?? abort(404);
     }
 
-    private function usesTanks(Competition $comp): bool
-    {
-        return (bool) $comp->getScoringSettings->use_tanks;
-    }
-
     private function ensureTanks(Competition $comp): void
     {
-        if (!$this->usesTanks($comp)) {
+        if (!$comp->usesTanks()) {
             throw ValidationException::withMessages(['draw' => 'Tanks are not turned on for this competition.']);
         }
     }

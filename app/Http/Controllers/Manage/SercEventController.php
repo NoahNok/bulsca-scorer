@@ -148,7 +148,7 @@ class SercEventController extends Controller
             ->get()
             ->mapWithKeys(fn ($row) => ["{$row->entity_type}:{$row->entity_id}" => (int) $row->marks]);
 
-        $useTanks = $comp->getScoringSettings?->use_tanks;
+        $useTanks = $comp->usesTanks();
         $draw = $serc->getDraw()->get()->sortBy([['tank', 'asc'], ['draw', 'asc']])
             ->mapWithKeys(fn ($draw) => [
                 "{$draw->entity_type}:{$draw->entity_id}" => ($useTanks ? "Tank {$draw->tank}-" : '') . $draw->draw,
@@ -409,7 +409,7 @@ class SercEventController extends Controller
             return null;
         }
 
-        $useTanks = (bool) $comp->getScoringSettings?->use_tanks;
+        $useTanks = $comp->usesTanks();
 
         return [
             'tank' => $useTanks ? $draw->tank : null,
@@ -423,7 +423,7 @@ class SercEventController extends Controller
      */
     private function entityOf(Competition $comp, SERC $serc, int $id): Entity
     {
-        return $serc->getScorableEntity()::where('competition', $comp->id)->findOrFail($id);
+        return $serc->findScorableEntity($id);
     }
 
     /**

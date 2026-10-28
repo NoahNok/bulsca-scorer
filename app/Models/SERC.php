@@ -217,7 +217,7 @@ class SERC extends Event
     {
         $draw = $this->getDraw()->whereMorphedTo('entity', $entity)->first();
 
-        $use_tanks = $this->getCompetition->getScoringSettings->use_tanks;
+        $use_tanks = $this->getCompetition->usesTanks();
 
         $data = [];
 

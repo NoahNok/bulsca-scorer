@@ -7,6 +7,10 @@
     import { editResults, settings, visibility } from "@/actions/App/Http/Controllers/Manage/SpeedEventController";
     import Alert from "@/manage/components/Alert.svelte";
     import SidebarPage, { sidebarRow } from "@/manage/components/SidebarPage.svelte";
+    import RowIcon from "@/manage/components/RowIcon.svelte";
+    import ActionSwitch from "@/manage/components/ActionSwitch.svelte";
+    import ChipGroup from "@/manage/components/ChipGroup.svelte";
+    import PageHeading from "@/manage/components/PageHeading.svelte";
     import type { CompetitionHeader, SpeedEventHeader, SpeedResultRow } from "@/manage/types";
     import { Link, router } from "@inertiajs/svelte";
     import { tick } from "svelte";
@@ -70,25 +74,17 @@
     <title>{event.name} - {competition.name} - Scoring.Events</title>
 </svelte:head>
 
-{#snippet chevron()}
-    <svg class="ml-auto size-4 shrink-0 text-v2-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-        <path d="m9 6 6 6-6 6" />
-    </svg>
-{/snippet}
-
 <SidebarPage sticky>
-    <div class="mb-6">
-        <Link href={eventsUrl} class="v2-link-muted text-sm">← Events</Link>
-        <div class="mt-1 flex flex-wrap items-center gap-x-3 gap-y-2">
-            <h2 class="text-2xl font-extrabold uppercase wrap-anywhere">{event.name}</h2>
+    <PageHeading back={{ href: eventsUrl, label: "Events" }} title={event.name}>
+        {#snippet badges()}
             {#if event.complete}
                 <span class="v2-badge is-success">Complete</span>
             {:else}
                 <span class="v2-badge is-danger">Incomplete</span>
             {/if}
             {#if !event.viewable}<span class="v2-badge" title="Left out of the results">Hidden</span>{/if}
-        </div>
-    </div>
+        {/snippet}
+    </PageHeading>
 
     <!-- Under the event's name, so no heading of its own; the first block's top margin goes too -->
     <section aria-label="Results" class="*:first:mt-0">
@@ -115,12 +111,7 @@
         {:else}
             <div class="mt-5 flex flex-col gap-3">
                 {#if leagues.length > 0}
-                    <div class="flex flex-wrap gap-2" role="group" aria-label="League">
-                        <button type="button" class="v2-chip" aria-pressed={league === null} onclick={() => showLeague(null)}>Overall</button>
-                        {#each leagues as option (option.id)}
-                            <button type="button" class="v2-chip" aria-pressed={league === option.id} onclick={() => showLeague(option.id)}>{option.name}</button>
-                        {/each}
-                    </div>
+                    <ChipGroup label="League" options={leagues} value={league} all="Overall" onpick={showLeague} />
                 {/if}
                 {#if results.length > 0}
                     <input type="search" class="v2-input w-full" placeholder="Search entries" aria-label="Search results" bind:value={query} />
@@ -187,36 +178,24 @@
                 <li>
                     <Link href={resultsUrl} class={sidebarRow}>
                         Edit results
-                        {@render chevron()}
+                        <RowIcon />
                     </Link>
                 </li>
                 <li>
                     <Link href={settingsUrl} class={sidebarRow}>
                         Settings
-                        {@render chevron()}
+                        <RowIcon />
                     </Link>
                 </li>
             </ul>
 
-            <label class="v2-check mt-5">
-                <button
-                    type="button"
-                    class="v2-switch"
-                    role="switch"
-                    aria-checked={event.viewable}
-                    aria-labelledby="sp-viewable"
-                    onclick={() => setViewable(!event.viewable)}
-                ></button>
-                <span id="sp-viewable" class="font-semibold">Shown in results</span>
-            </label>
+            <ActionSwitch class="mt-5" label="Shown in results" checked={event.viewable} onchange={setViewable} />
 
             <ul class="mt-5 border-t border-v2-border *:border-b *:border-v2-border">
                 <li>
                     <a href={printUrl} target="_blank" rel="noopener" class={sidebarRow}>
                         Print results
-                        <svg class="ml-auto size-4 shrink-0 text-v2-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                            <path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />
-                        </svg>
+                        <RowIcon icon="external" />
                     </a>
                 </li>
             </ul>

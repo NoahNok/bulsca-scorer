@@ -9,8 +9,13 @@
     import { addTank, assign, compactTanks, move, regenerate, remove, removeTank, swap, tankSetup } from "@/actions/App/Http/Controllers/Manage/DrawsController";
     import { index as overview } from "@/actions/App/Http/Controllers/Manage/HeatsAndDrawsController";
     import { confirm } from "@/lib/confirm";
+    import EmptyState from "@/manage/components/EmptyState.svelte";
+    import PageHeading from "@/manage/components/PageHeading.svelte";
     import Tabs from "@/manage/components/Tabs.svelte";
-    import { ChangeSaver } from "@/manage/orders.svelte";
+    import { ChangeSaver, changedClass, selectedClass } from "@/manage/orders.svelte";
+    import RemoveButton from "@/manage/orders/RemoveButton.svelte";
+    import SelectionBar from "@/manage/orders/SelectionBar.svelte";
+    import UnassignedList from "@/manage/orders/UnassignedList.svelte";
     import type { CompetitionHeader, DrawTank, UnplacedEntity } from "@/manage/types";
     import { Link, router } from "@inertiajs/svelte";
 
@@ -250,8 +255,8 @@
                 <div
                     class={[
                         "flex min-w-0 flex-1 items-center gap-2 rounded-md border border-v2-border bg-v2-card text-sm transition-colors hover:border-v2-teal motion-reduce:transition-none",
-                        selected && "border-v2-teal bg-v2-teal-soft ring-2 ring-v2-teal/30",
-                        saver.changed.has(drawKey(entry.id)) && "animate-changed motion-reduce:animate-none",
+                        selected && selectedClass,
+                        saver.changed.has(drawKey(entry.id)) && changedClass,
                     ]}
                 >
                     <button
@@ -263,13 +268,7 @@
                         <span class="w-6 shrink-0 text-right text-v2-muted tabular-nums">{entry.draw}</span>
                         <span class="truncate font-semibold">{entry.name}</span>
                     </button>
-                    <button
-                        type="button"
-                        class="mr-1 shrink-0 cursor-pointer rounded px-1.5 py-1 font-semibold text-v2-muted hover:bg-v2-danger-soft hover:text-v2-danger-text"
-                        aria-label="Take {entry.name} out of the draw"
-                        title="Take out of the draw"
-                        onclick={() => removeEntry(entry)}>×</button
-                    >
+                    <RemoveButton class="mr-1" label="Take {entry.name} out of the draw" title="Take out of the draw" onclick={() => removeEntry(entry)} />
                 </div>
                 {#if sides}<button type="button" class={sideButton} disabled={saver.busy} onclick={() => moveTo(entry, "after")}>After</button>{/if}
             </li>
@@ -286,25 +285,17 @@
         {/if}
     </ol>
     {#if tank.draws.length === 0 && !selection}
-        <p class="rounded-md border border-dashed border-v2-border px-4 py-6 text-center text-[0.9375rem] text-v2-muted">
-            Nobody in {useTanks ? "this tank" : "the draw"} yet. Select an entry from Unassigned to add it.
-        </p>
+        <EmptyState>Nobody in {useTanks ? "this tank" : "the draw"} yet. Select an entry from Unassigned to add it.</EmptyState>
     {/if}
 {/snippet}
 
-<div class="mb-6">
-    <Link href={overview(comp).url} class="v2-link-muted text-sm">← Heats & Draws</Link>
-    <h2 class="mt-1 text-2xl font-extrabold uppercase">Edit draw</h2>
-    <p class="mt-[0.35rem] text-[0.9375rem]/[1.6] text-v2-muted">The running order every SERC shares. Every change saves as you make it.</p>
-</div>
+<PageHeading
+    back={{ href: overview(comp).url, label: "Heats & Draws" }}
+    title="Edit draw"
+    lead="The running order every SERC shares. Every change saves as you make it."
+/>
 
-<!-- What's selected and what to do next, kept in view while the Draw scrolls -->
-<div class="sticky top-0 z-20 -mx-1 mb-3 flex flex-wrap items-center gap-3 bg-v2-bg px-1 py-2" aria-live="polite">
-    <p class="min-w-0 flex-1 text-[0.9375rem] text-v2-muted">{hint}</p>
-    {#if selection}
-        <button type="button" class="v2-btn v2-btn-ghost v2-btn-sm" onclick={() => (selection = null)}>Clear selection</button>
-    {/if}
-</div>
+<SelectionBar {hint} selected={selection !== null} onclear={() => (selection = null)} />
 
 {#if useTanks}
     <div class="flex flex-wrap items-start gap-3">
@@ -331,31 +322,14 @@
     {@render tankPanel(activeTank)}
 {/if}
 
-<section aria-labelledby="de-unassigned" class="mt-8">
-    <div class="flex items-center gap-3">
-        <h3 id="de-unassigned" class="text-lg font-extrabold uppercase">Unassigned</h3>
-        <span class="v2-badge">{waiting.length}</span>
-    </div>
-    {#if waiting.length === 0}
-        <p class="mt-2 text-[0.9375rem] text-v2-muted">Every entry is in the draw.</p>
-    {:else}
-        <p class="mt-1 text-[0.9375rem] text-v2-muted">Select one, then where to put it.</p>
-        <div class="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-            {#each waiting as entity (entity.id)}
-                {@const selected = selection?.kind === "entity" && selection.id === entity.id}
-                <button
-                    type="button"
-                    class={[
-                        "cursor-pointer rounded-md border border-v2-border bg-v2-card px-3 py-2 text-left text-sm font-semibold wrap-anywhere hover:border-v2-teal",
-                        selected && "border-v2-teal bg-v2-teal-soft ring-2 ring-v2-teal/30",
-                    ]}
-                    aria-pressed={selected}
-                    onclick={() => selectEntity(entity.id)}>{entity.name}</button
-                >
-            {/each}
-        </div>
-    {/if}
-</section>
+<UnassignedList
+    id="de-unassigned"
+    entries={waiting}
+    selected={selection?.kind === "entity" ? selection.id : null}
+    onselect={selectEntity}
+    lead="Select one, then where to put it."
+    done="Every entry is in the draw."
+/>
 
 <section aria-labelledby="de-redraw" class="mt-10 max-w-xl border-t border-v2-border pt-6">
     {#if useTanks}

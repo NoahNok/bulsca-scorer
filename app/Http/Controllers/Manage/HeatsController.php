@@ -5,13 +5,12 @@ namespace App\Http\Controllers\Manage;
 use App\Exceptions\HeatException;
 use App\Helpers\CompetitionHeader;
 use App\Http\Controllers\Controller;
-use App\Models\AbstractClasses\Entity;
+use App\Http\Controllers\Manage\Concerns\RecordsOrderEdits;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\Orders\Heat;
 use App\Models\Pool;
 use App\Services\HeatService;
-use App\Traits\RecordActivity;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -23,7 +22,7 @@ use Inertia\Inertia;
  */
 class HeatsController extends Controller
 {
-    use RecordActivity;
+    use RecordsOrderEdits;
 
     const POOLED_HEATS_MESSAGE = 'Pooled heats are generated with the heats-and-draws:pool-heats command.';
 
@@ -43,9 +42,8 @@ class HeatsController extends Controller
         return Inertia::render('Manage/Competition/HeatEditor', [
             'competition' => CompetitionHeader::for($comp),
             'perEvent' => (bool) $comp->heats_per_event,
-            'events' => $events->map(fn ($option) => ['id' => $option->id, 'name' => $option->getName()])->values(),
+            ...$this->heats->pickers($comp),
             'event' => ['id' => $event->id, 'name' => $event->getName()],
-            'pools' => $comp->use_pools ? $comp->getPools()->get()->map(fn (Pool $option) => ['id' => $option->id, 'name' => $option->name])->values() : [],
             'pool' => $pool?->id,
             'grid' => $this->heats->grid($comp, $event, $pool),
             'unassigned' => $this->heats->unassigned($comp, $event),
@@ -121,7 +119,7 @@ class HeatsController extends Controller
             'lane' => ['required', 'integer', 'min:1'],
         ]);
         $pool = $this->requestedPool($comp, $request);
-        $entity = $this->entity($comp, $event, $data['entity']);
+        $entity = $event->findScorableEntity($data['entity']);
 
         $this->heats->assign($event, $pool, $entity, $data['heat'], $data['lane']);
         $this->changed(
@@ -140,7 +138,7 @@ class HeatsController extends Controller
         $this->ensureHoldsHeats($comp, $event);
         $id = $request->validate(['entity' => ['required', 'integer']])['entity'];
         $pool = $this->requestedPool($comp, $request);
-        $entity = $this->entity($comp, $event, $id);
+        $entity = $event->findScorableEntity($id);
 
         $lane = $event->heats()->whereMorphedTo('entity', $entity)->inPool($pool?->id)->with('entity')->first();
         if (!$lane) {
@@ -176,7 +174,7 @@ class HeatsController extends Controller
         $this->changed(
             $comp,
             'HEAT_REMOVED',
-            "Removed Heat {$heat}{$this->in($pool)} and unassigned {$unassigned} entr" . ($unassigned === 1 ? 'y' : 'ies'),
+            "Removed Heat {$heat}{$this->in($pool)} {$this->unassignedCount($unassigned)}",
             ['heat' => $heat, 'pool' => $pool?->id, 'entries_unassigned' => $unassigned],
         );
 
@@ -199,15 +197,9 @@ class HeatsController extends Controller
         }
     }
 
-    /**
-     * Clears the cached Heats and records the edit as Activity
-     *
-     * @param Entity[] $entities
-     */
-    private function changed(Competition $comp, string $activity, string $description, array $context, array $entities = []): void
+    protected function clearCache(Competition $comp): void
     {
         $comp->clearHeatCache();
-        $this->recordActivity($activity, $description, context: $context, related: [$comp, ...array_filter($entities)]);
     }
 
     /**
@@ -239,10 +231,6 @@ class HeatsController extends Controller
         abort_unless($comp->heatEvents()->contains($event), 404);
     }
 
-    private function entity(Competition $comp, CompetitionSpeedEvent $event, int $id): Entity
-    {
-        return $event->getScorableEntity()::where('competition', $comp->id)->findOrFail($id);
-    }
 
     /**
      * "Team A (Heat 2, Lane 3)", for Activity

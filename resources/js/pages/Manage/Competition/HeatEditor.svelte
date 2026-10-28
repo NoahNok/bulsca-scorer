@@ -9,10 +9,16 @@
     import { index as overview } from "@/actions/App/Http/Controllers/Manage/HeatsAndDrawsController";
     import { assign, deleteHeat, edit, insertHeat, reset, swap, swapHeats, unassign } from "@/actions/App/Http/Controllers/Manage/HeatsController";
     import { confirm } from "@/lib/confirm";
+    import ChipGroup from "@/manage/components/ChipGroup.svelte";
+    import EmptyState from "@/manage/components/EmptyState.svelte";
+    import PageHeading from "@/manage/components/PageHeading.svelte";
     import SmoothHeight from "@/manage/components/SmoothHeight.svelte";
-    import { ChangeSaver } from "@/manage/orders.svelte";
+    import { ChangeSaver, changedClass, selectedClass } from "@/manage/orders.svelte";
+    import RemoveButton from "@/manage/orders/RemoveButton.svelte";
+    import SelectionBar from "@/manage/orders/SelectionBar.svelte";
+    import UnassignedList from "@/manage/orders/UnassignedList.svelte";
     import type { CompetitionHeader, HeatCell, HeatGrid, NamedOption, UnplacedEntity } from "@/manage/types";
-    import { Link, router } from "@inertiajs/svelte";
+    import { router } from "@inertiajs/svelte";
 
     let {
         competition,
@@ -208,8 +214,8 @@
         return [
             "flex min-h-14 w-full cursor-pointer flex-col justify-center rounded-md border px-3 py-2 text-left text-sm transition-colors motion-reduce:transition-none",
             cell ? "border-v2-border bg-v2-card hover:border-v2-teal" : "border-dashed border-v2-border text-v2-muted hover:border-v2-teal hover:text-v2-ink",
-            selected && "border-v2-teal! bg-v2-teal-soft! ring-2 ring-v2-teal/30",
-            lit && "animate-changed motion-reduce:animate-none",
+            selected && selectedClass,
+            lit && changedClass,
         ];
     }
 </script>
@@ -218,51 +224,38 @@
     <title>Edit heats - {competition.name} - Scoring.Events</title>
 </svelte:head>
 
-<div class="mb-6">
-    <Link href={overview(comp).url} class="v2-link-muted text-sm">← Heats & Draws</Link>
-    <h2 class="mt-1 text-2xl font-extrabold uppercase wrap-anywhere">Edit heats{#if perEvent}: {event.name}{/if}</h2>
-    <p class="mt-[0.35rem] text-[0.9375rem]/[1.6] text-v2-muted">Every change saves as you make it.</p>
-</div>
+<PageHeading
+    back={{ href: overview(comp).url, label: "Heats & Draws" }}
+    title={perEvent ? `Edit heats: ${event.name}` : "Edit heats"}
+    lead="Every change saves as you make it."
+/>
 
 {#if (perEvent && events.length > 1) || pools.length > 1}
     <div class="mb-4 flex flex-col gap-2">
         {#if perEvent && events.length > 1}
-            <div class="flex flex-wrap gap-2" role="group" aria-label="Event">
-                {#each events as option (option.id)}
-                    <button type="button" class="v2-chip" aria-pressed={option.id === event.id} onclick={() => show(option.id, pool)}>{option.name}</button>
-                {/each}
-            </div>
+            <ChipGroup label="Event" options={events} value={event.id} onpick={(id) => id !== null && show(id, pool)} />
         {/if}
         {#if pools.length > 1}
-            <div class="flex flex-wrap gap-2" role="group" aria-label="Pool">
-                {#each pools as option (option.id)}
-                    <button type="button" class="v2-chip" aria-pressed={option.id === pool} onclick={() => show(event.id, option.id)}>{option.name}</button>
-                {/each}
-            </div>
+            <ChipGroup label="Pool" options={pools} value={pool} onpick={(id) => show(event.id, id)} />
         {/if}
     </div>
 {/if}
 
-<!-- What's selected and what to do next, kept in view while the table scrolls -->
-<div class="sticky top-0 z-20 -mx-1 mb-3 flex flex-wrap items-center gap-3 bg-v2-bg px-1 py-2" aria-live="polite">
-    <p class="min-w-0 flex-1 text-[0.9375rem] text-v2-muted">{hint}</p>
+<SelectionBar {hint} selected={selection !== null} onclear={() => (selection = null)}>
     {#if selectedIsPlaced}
         <button type="button" class="v2-btn v2-btn-sm" disabled={saver.busy} onclick={unassignSelected}>Unassign</button>
     {/if}
-    {#if selection}
-        <button type="button" class="v2-btn v2-btn-ghost v2-btn-sm" onclick={() => (selection = null)}>Clear selection</button>
-    {/if}
-</div>
+</SelectionBar>
 
 <!-- Fades in as another event or Pool is picked, the height easing to fit -->
 <SmoothHeight>
     {#key `${event.id}:${pool}`}
         <div class="animate-fade-in motion-reduce:animate-none">
             {#if heats.length === 0}
-                <div class="rounded-md border border-dashed border-v2-border px-4 py-8 text-center">
-                    <p class="text-[0.9375rem] text-v2-muted">No heats yet.</p>
+                <EmptyState>
+                    <p>No heats yet.</p>
                     <button type="button" class="v2-btn mt-3" disabled={saver.busy} onclick={() => addHeat(1)}>Add a heat</button>
-                </div>
+                </EmptyState>
             {:else}
                 <div class="overflow-x-auto pb-2" aria-busy={saver.busy}>
                     <table class="border-separate border-spacing-x-2 border-spacing-y-1.5 text-left">
@@ -276,7 +269,7 @@
                                                 type="button"
                                                 class={[
                                                     "v2-chip",
-                                                    saver.changed.has(heatKey(heat.number)) && "animate-changed motion-reduce:animate-none",
+                                                    saver.changed.has(heatKey(heat.number)) && changedClass,
                                                 ]}
                                                 aria-pressed={selection?.kind === "heat" && selection.number === heat.number}
                                                 onclick={() => selectHeat(heat.number)}>Heat {heat.number}</button
@@ -288,13 +281,12 @@
                                                 aria-label="Add a heat after Heat {heat.number}"
                                                 onclick={() => addHeat(heat.number + 1)}>+</button
                                             >
-                                            <button
-                                                type="button"
-                                                class="cursor-pointer rounded px-1.5 py-1 text-sm font-semibold text-v2-muted hover:bg-v2-danger-soft hover:text-v2-danger-text"
+                                            <RemoveButton
+                                                class="text-sm"
+                                                label="Remove Heat {heat.number}"
                                                 title="Remove Heat {heat.number}"
-                                                aria-label="Remove Heat {heat.number}"
-                                                onclick={() => removeHeat(heat.number)}>×</button
-                                            >
+                                                onclick={() => removeHeat(heat.number)}
+                                            />
                                         </div>
                                     </th>
                                 {/each}
@@ -328,34 +320,19 @@
     {/key}
 </SmoothHeight>
 
-<section aria-labelledby="he-unassigned" class="mt-8">
-    <div class="flex items-center gap-3">
-        <h3 id="he-unassigned" class="text-lg font-extrabold uppercase">Unassigned</h3>
-        <span class="v2-badge">{waiting.length}</span>
-    </div>
-    {#if waiting.length === 0}
-        <p class="mt-2 text-[0.9375rem] text-v2-muted">Every entry is in a lane.</p>
-    {:else}
-        <p class="mt-1 text-[0.9375rem] text-v2-muted">Select one, then an open lane to put it in.</p>
-        <div class="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-            {#each waiting as entity (entity.id)}
-                <button
-                    type="button"
-                    class={[
-                        "flex cursor-pointer flex-col rounded-md border border-v2-border bg-v2-card px-3 py-2 text-left text-sm hover:border-v2-teal",
-                        selection?.kind === "entity" && selection.entity === entity.id && "border-v2-teal bg-v2-teal-soft ring-2 ring-v2-teal/30",
-                        saver.changed.has(`entity:${entity.id}`) && "animate-changed motion-reduce:animate-none",
-                    ]}
-                    aria-pressed={selection?.kind === "entity" && selection.entity === entity.id}
-                    onclick={() => selectEntity(entity.id)}
-                >
-                    <span class="font-semibold wrap-anywhere">{entity.name}</span>
-                    {#if useSeeds && entity.seed}<span class="text-xs text-v2-muted tabular-nums">{entity.seed}</span>{/if}
-                </button>
-            {/each}
-        </div>
-    {/if}
-</section>
+<UnassignedList
+    id="he-unassigned"
+    entries={waiting}
+    selected={selection?.kind === "entity" ? selection.entity : null}
+    onselect={selectEntity}
+    lead="Select one, then an open lane to put it in."
+    done="Every entry is in a lane."
+    changed={(id) => saver.changed.has(`entity:${id}`)}
+>
+    {#snippet detail(entity)}
+        {#if useSeeds && entity.seed}<span class="text-xs text-v2-muted tabular-nums">{entity.seed}</span>{/if}
+    {/snippet}
+</UnassignedList>
 
 {#if canReset}
     <section aria-labelledby="he-reset" class="mt-10 max-w-xl border-t border-v2-border pt-6">

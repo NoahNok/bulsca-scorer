@@ -7,6 +7,7 @@
 <script lang="ts">
     import { saveResults } from "@/actions/App/Http/Controllers/Manage/SpeedEventController";
     import UnsavedChanges from "@/manage/components/UnsavedChanges.svelte";
+    import ChipGroup from "@/manage/components/ChipGroup.svelte";
     import type { SpeedGridRow } from "@/manage/types";
     import { router } from "@inertiajs/svelte";
     import type { MaskInputOptions } from "maska";
@@ -147,19 +148,10 @@
     <div class="flex flex-col gap-3">
         <input type="search" class="v2-input w-full" placeholder="Search {rows.length === 1 ? 'the entry' : 'entries'}" aria-label="Search entries" bind:value={query} />
         {#if pools.length > 1}
-            <div class="flex flex-wrap gap-2" role="group" aria-label="Pool">
-                {#each pools as { id, name } (id)}
-                    <button type="button" class="v2-chip" aria-pressed={activePool === id} onclick={() => choosePool(id)}>{name}</button>
-                {/each}
-            </div>
+            <ChipGroup label="Pool" options={pools} value={activePool} onpick={(id) => id !== null && choosePool(id)} />
         {/if}
         {#if heats.length > 0}
-            <div class="flex flex-wrap gap-2" role="group" aria-label="Heat">
-                <button type="button" class="v2-chip" aria-pressed={heat === null} onclick={() => (heat = null)}>All heats</button>
-                {#each heats as [key, label] (key)}
-                    <button type="button" class="v2-chip" aria-pressed={heat === key} onclick={() => (heat = key)}>{label}</button>
-                {/each}
-            </div>
+            <ChipGroup label="Heat" options={heats.map(([id, name]) => ({ id, name }))} value={heat} all="All heats" onpick={(id) => (heat = id)} />
         {/if}
         <p class="text-sm text-v2-muted">
             Enter DNS, DNF or OOT in place of a time.{#if ropeThrow}

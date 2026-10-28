@@ -6,7 +6,6 @@ use App\Helpers\CompetitionHeader;
 use App\Http\Controllers\Controller;
 use App\Models\Competition;
 use App\Models\Orders\Heat;
-use App\Models\Pool;
 use App\Services\DrawService;
 use App\Services\HeatService;
 use Illuminate\Http\Request;
@@ -35,9 +34,8 @@ class HeatsAndDrawsController extends Controller
             'heats' => [
                 'perEvent' => (bool) $comp->heats_per_event,
                 'usePools' => (bool) $comp->use_pools,
-                'events' => $events->map(fn ($option) => ['id' => $option->id, 'name' => $option->getName()])->values(),
+                ...$heatService->pickers($comp),
                 'event' => $event?->id,
-                'pools' => $comp->use_pools ? $comp->getPools()->get()->map(fn (Pool $option) => ['id' => $option->id, 'name' => $option->name])->values() : [],
                 'pool' => $pool?->id,
                 'grid' => $event ? $heatService->grid($comp, $event, $pool) : null,
                 'generated' => $heatsGenerated,
@@ -46,7 +44,7 @@ class HeatsAndDrawsController extends Controller
             ],
             'draw' => [
                 'hasSerc' => (bool) $serc,
-                'useTanks' => (bool) $comp->getScoringSettings->use_tanks,
+                'useTanks' => $comp->usesTanks(),
                 'tanks' => $drawn ? $drawService->tanks($comp, $serc) : [],
                 'generated' => $drawn,
             ],

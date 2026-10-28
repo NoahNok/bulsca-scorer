@@ -8,9 +8,10 @@
     import Field from "@/manage/components/Field.svelte";
     import SideMenu, { type SideMenuItem } from "@/manage/components/SideMenu.svelte";
     import SideMenuPart from "@/manage/components/SideMenuPart.svelte";
+    import PageHeading from "@/manage/components/PageHeading.svelte";
     import ScoringSchemaEditor from "@/manage/events/ScoringSchemaEditor.svelte";
     import type { CompetitionHeader, EventScoring, SercEventHeader } from "@/manage/types";
-    import { Form, Link } from "@inertiajs/svelte";
+    import { Form } from "@inertiajs/svelte";
 
     let {
         competition,
@@ -40,10 +41,7 @@
     <title>Settings - {event.name} - {competition.name} - Scoring.Events</title>
 </svelte:head>
 
-<div class="mb-6">
-    <Link href={show({ comp, serc: event.id }).url} class="v2-link-muted text-sm wrap-anywhere">← {event.name}</Link>
-    <h2 class="mt-1 text-2xl font-extrabold uppercase">Settings</h2>
-</div>
+<PageHeading back={{ href: show({ comp, serc: event.id }).url, label: event.name }} title="Settings" />
 
 <SideMenu items={PARTS} label="{event.name} settings">
     <SideMenuPart id="scoring" labelledby="se-scoring">

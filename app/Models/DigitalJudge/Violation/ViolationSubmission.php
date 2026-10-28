@@ -143,7 +143,7 @@ class ViolationSubmission extends Model implements IJsonable
 
     private function getTankDraw()
     {
-        $use_tanks = $this->competition->getScoringSettings->use_tanks;
+        $use_tanks = $this->competition->usesTanks();
 
         $tankdraw = $this->event->getDraw()->whereMorphedTo('entity', $this->entity)->first();
 

@@ -12,6 +12,7 @@
     } from "@/actions/App/Http/Controllers/Manage/SercEventController";
     import Alert from "@/manage/components/Alert.svelte";
     import UnsavedChanges from "@/manage/components/UnsavedChanges.svelte";
+    import PageHeading from "@/manage/components/PageHeading.svelte";
     import type {
         CompetitionHeader,
         SercEventHeader,
@@ -124,22 +125,15 @@
     >
 </svelte:head>
 
-<div class="mb-6">
-    <Link
-        href={show({ comp, serc: event.id }).url}
-        class="v2-link-muted text-sm wrap-anywhere">← {event.name}</Link
-    >
-    <h2 class="mt-1 text-2xl font-extrabold uppercase wrap-anywhere">
-        {entity.name}
-    </h2>
-    <p class="mt-[0.35rem] text-[0.9375rem]/[1.6] text-v2-muted">
+<PageHeading back={{ href: show({ comp, serc: event.id }).url, label: event.name }} title={entity.name}>
+    {#snippet lead()}
         {#if entity.draw}
             {#if entity.draw.tank !== null}Tank {entity.draw.tank}, Draw{:else}Draw{/if} {entity.draw.draw} of {entity.draw.of}
         {:else}
             Not in the draw
         {/if}
-    </p>
-</div>
+    {/snippet}
+</PageHeading>
 
 <form onsubmit={save} class="max-w-3xl" data-serc-marks novalidate>
     <UnsavedChanges {dirty} />
