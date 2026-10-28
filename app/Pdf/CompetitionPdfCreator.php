@@ -96,11 +96,11 @@ class CompetitionPdfCreator
     }
 
     /**
-     * Blank tables for judges to rough-mark every team against each of one SERC's Objectives.
+     * Blank tables for judges to rough-mark every team against each of one SERC's Objectives (#147: should be its Entities).
      */
-    public function rawMarkingSheets(SERC $serc): PdfBuilder
+    public function roughMarkSheets(SERC $serc): PdfBuilder
     {
-        return $this->pack('pdfs.sercs.raw-marking', "{$serc->getName()} Raw Marking Sheets", [
+        return $this->pack('pdfs.sercs.raw-marking', "{$serc->getName()} Rough Mark Sheets", [
             'serc' => $serc,
             'teams' => $this->comp->getCompetitionTeams,
         ]);

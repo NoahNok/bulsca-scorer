@@ -104,6 +104,10 @@ _Avoid_: Notification
 A printable PDF for one role on the day, e.g. the Chief Timekeeper Pack or a Marshalling Pack.
 _Avoid_: Printable, sheet (when meaning the whole document)
 
+**Rough mark sheet**:
+A blank table for a judge to rough-mark every Entity against one of a SERC's Objectives, before the marks are entered. Printed per SERC; not a Pack, as it serves a judge rather than a role.
+_Avoid_: Raw marking sheet
+
 ### Results
 
 **Mark**:

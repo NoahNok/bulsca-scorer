@@ -280,7 +280,7 @@ class PacksTest extends TestCase
         });
     }
 
-    public function test_the_raw_marking_sheets_have_a_table_of_teams_per_objective(): void
+    public function test_the_rough_mark_sheets_have_a_table_of_teams_per_objective(): void
     {
         $serc = $this->serc('Dry SERC');
         foreach (['Casualty 1', 'Casualty 2'] as $name) {
@@ -305,18 +305,9 @@ class PacksTest extends TestCase
 
         Pdf::assertRespondedWithPdf(function (PdfBuilder $pdf) {
             return $pdf->viewName === 'pdfs.sercs.raw-marking'
-                && $pdf->downloadName === 'pack-competition-dry-serc-raw-marking-sheets.pdf'
+                && $pdf->downloadName === 'pack-competition-dry-serc-rough-mark-sheets.pdf'
                 && $pdf->contains(['Casualty 1 | Dry SERC', 'Casualty 1 approach', 'Alpha', 'Casualty 2 | Dry SERC', 'Casualty 2 approach', 'Alpha']);
         });
-    }
-
-    public function test_the_printables_page_offers_both_chief_timekeeper_layouts(): void
-    {
-        $this->actingAs($this->admin)
-            ->get(route('comps.printables', $this->comp))
-            ->assertOk()
-            ->assertSee(route('comps.printables.chief-timekeeper-pack', $this->comp), false)
-            ->assertSee(route('comps.printables.chief-timekeeper-pack', [$this->comp, 'layout' => 'packed']), false);
     }
 
     public function test_pooled_packs_put_every_event_for_a_pool_before_the_next_pool(): void

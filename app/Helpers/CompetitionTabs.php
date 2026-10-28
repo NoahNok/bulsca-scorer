@@ -22,7 +22,7 @@ class CompetitionTabs
         ['Entries & Leagues', 'manage.competitions.entries', 'teams', ['manage.competitions.entries', 'manage.competitions.leagues'], true],
         ['Events', 'manage.competitions.events', 'serc|speed|serc_writer', ['manage.competitions.events'], true],
         ['Heats & Draws', 'manage.competitions.heats_and_draws', 'heats_and_draws', ['manage.competitions.heats_and_draws'], true],
-        ['Printables', 'comps.printables', 'printables', ['comps.printables'], false],
+        ['Printables', 'comps.printables', 'printables', ['comps.printables'], true],
         ['Results', 'comps.results', 'results', ['comps.results'], false],
         ['Officials', 'manage.competitions.officials', 'admin', ['manage.competitions.officials'], true],
         ['Settings', 'manage.competitions.settings', 'admin', ['manage.competitions.settings'], true],
