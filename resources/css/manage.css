@@ -76,6 +76,11 @@
 }
 
 @layer base {
+    /* Wider than the public v2 pages' 76rem, for the tables and grids; SidebarPage keeps its sidebar at 24rem */
+    :root {
+        --v2-page-width: 88rem;
+    }
+
     /* Always keep room for the scrollbar, so the page doesn't shift sideways between a page that
        scrolls and one that doesn't (a SERC, then one Entity's marks) */
     html {

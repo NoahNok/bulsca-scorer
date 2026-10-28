@@ -1,7 +1,8 @@
 <!--
     The Management app's two-column page (Overview, Entries & Leagues, an event's page): the page's main
-    content in the first column and a sidebar in the second, split 2:1 from 56rem, with nothing above
-    them, so the sidebar starts at the top beside the page's heading. On phones the sidebar follows the
+    content in the first column and a sidebar in the second, split 2:1 from 56rem until the sidebar
+    reaches 24rem, then the first column takes the rest. Nothing goes above them, so the sidebar starts
+    at the top beside the page's heading. On phones the sidebar follows the
     content. A sidebar of actions for the content beside it is `sticky`, so it stays in view.
 -->
 <script lang="ts" module>
@@ -27,7 +28,7 @@
     } = $props();
 </script>
 
-<div class="grid gap-10 min-[56rem]:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] min-[56rem]:items-start">
+<div class="grid gap-10 min-[56rem]:grid-cols-[minmax(0,1fr)_min(24rem,calc((100%_-_2.5rem)/3))] min-[56rem]:items-start">
     <div class="min-w-0">
         {@render children()}
     </div>
