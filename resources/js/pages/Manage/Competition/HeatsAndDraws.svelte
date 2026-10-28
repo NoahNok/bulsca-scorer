@@ -193,10 +193,13 @@
                     </li>
                 {:else if editHeatsUrl}
                     <li>
-                        <Link href={editHeatsUrl} class={sidebarRow}>
-                            Edit {poolName ? `${poolName} heats` : "heats"}
-                            {@render chevron()}
-                        </Link>
+                        <!-- Link keeps the url it was made with, so a new one for each event and Pool picked -->
+                        {#key editHeatsUrl}
+                            <Link href={editHeatsUrl} class={sidebarRow}>
+                                Edit {poolName ? `${poolName} heats` : "heats"}
+                                {@render chevron()}
+                            </Link>
+                        {/key}
                     </li>
                 {/if}
                 {#if draw.hasSerc && !draw.generated}
