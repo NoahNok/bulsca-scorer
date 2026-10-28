@@ -41,7 +41,9 @@
     } = $props();
 
     const comp = $derived(competition.id);
-    const query = $derived(heats.pool ? { pool: heats.pool } : {});
+    // The editor opens on the Pool picked here
+    const poolName = $derived(heats.pools.find((option) => option.id === heats.pool)?.name ?? null);
+    const editHeatsUrl = $derived(heats.event ? editHeats({ comp, event: heats.event }, { query: heats.pool ? { pool: heats.pool } : {} }).url : null);
 
     let generating = $state(false);
 
@@ -189,10 +191,10 @@
                             {@render chevron()}
                         </button>
                     </li>
-                {:else if heats.event}
+                {:else if editHeatsUrl}
                     <li>
-                        <Link href={editHeats({ comp, event: heats.event }, { query }).url} class={sidebarRow}>
-                            Edit heats
+                        <Link href={editHeatsUrl} class={sidebarRow}>
+                            Edit {poolName ? `${poolName} heats` : "heats"}
                             {@render chevron()}
                         </Link>
                     </li>
