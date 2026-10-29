@@ -83,7 +83,8 @@ class MasterSchema extends Model
             $final_results->add($master_result);
         }
 
-        $final_results = $final_results->sortBy('total');
+        // Fewest places wins, most points wins
+        $final_results = $sum_over == 'position' ? $final_results->sortBy('total') : $final_results->sortByDesc('total');
 
         $rankedResults = collect();
         $previousScore = null;

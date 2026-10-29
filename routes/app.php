@@ -18,6 +18,8 @@ use App\Http\Controllers\Manage\CompetitionOfficialsController;
 use App\Http\Controllers\Manage\HeatsAndDrawsController;
 use App\Http\Controllers\Manage\HeatsController;
 use App\Http\Controllers\Manage\DrawsController;
+use App\Http\Controllers\Manage\MasterSheetsController;
+use App\Http\Controllers\Manage\ResultSheetsController;
 use App\Http\Controllers\Manage\SercEventController;
 use App\Http\Controllers\Manage\SpeedEventController;
 use App\Http\Controllers\Manage\ManageController;
@@ -26,7 +28,6 @@ use App\Http\Controllers\Organisation\OrganisationController;
 use App\Http\Controllers\OverallResultsController;
 use App\Http\Controllers\PrintableController;
 use App\Http\Controllers\Push\PushController;
-use App\Http\Controllers\Result\MasterSchemaController;
 use App\Http\Controllers\SERCController;
 use App\Http\Controllers\SERC\MarkingPointTemplateController;
 use App\Http\Controllers\SpeedsEventController;
@@ -208,27 +209,40 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
             });
 
 
-            // RESULTS
+            // RESULTS: Svelte pages for the overview, each Results sheet and Master sheet, and their New/Edit
+            // forms. The print pages stay Blade.
             Route::prefix('/results')->middleware('can:access,comp,"results"')->group(function () {
+                Route::name('manage.competitions.results')->group(function () {
+                    Route::get('', [ResultSheetsController::class, 'index']);
+                    Route::post('/publish', [ResultSheetsController::class, 'publish'])->name('.publish');
+                    Route::post('/finalise', [ResultSheetsController::class, 'finalise'])->name('.finalise');
 
-                Route::prefix('/master')->group(function () {
-                    Route::get('add', [MasterSchemaController::class, 'add'])->name('comps.results.master.add');
-                    Route::post('add', [MasterSchemaController::class, 'addPost'])->name('comps.results.master.addPost');
-
-                    Route::get('{schema}', [MasterSchemaController::class, 'view'])->name('comps.results.master.view');
-
-                    Route::delete('/{schema}', [MasterSchemaController::class, 'delete'])->name('comps.results.master.delete');
-                    Route::get('/{schema}/hide', [MasterSchemaController::class, 'hide'])->name('comps.results.master.hide');
+                    Route::get('/create', [ResultSheetsController::class, 'create'])->name('.create');
+                    Route::post('', [ResultSheetsController::class, 'store'])->name('.store');
+                    Route::prefix('/{sheet}')->whereNumber('sheet')->group(function () {
+                        Route::get('', [ResultSheetsController::class, 'show'])->name('.show');
+                        Route::get('/edit', [ResultSheetsController::class, 'edit'])->name('.edit');
+                        Route::post('', [ResultSheetsController::class, 'update'])->name('.update');
+                        Route::post('/visibility', [ResultSheetsController::class, 'visibility'])->name('.visibility');
+                        Route::delete('', [ResultSheetsController::class, 'destroy'])->name('.destroy');
+                    });
                 });
 
-                Route::get('', [OverallResultsController::class, 'view'])->name('comps.results');
-                Route::get('/add', [OverallResultsController::class, 'add'])->name('comps.results.add');
-                Route::get('/qg', [OverallResultsController::class, 'quickGen'])->name('comps.results.quickGen');
-                Route::get('/pt', [OverallResultsController::class, 'publishToggle'])->name('comps.results.publishToggle');
-                Route::get('/prt', [OverallResultsController::class, 'provToggle'])->name('comps.results.provToggle');
-                Route::post('', [OverallResultsController::class, 'addPost'])->name('comps.results.addPost');
-                Route::delete('/{schema}', [OverallResultsController::class, 'delete'])->name('comps.results.delete');
-                Route::get('/{schema}/hide', [OverallResultsController::class, 'hide'])->name('comps.results.hide');
+                Route::prefix('/master')->name('manage.competitions.results.master.')->group(function () {
+                    Route::get('/create', [MasterSheetsController::class, 'create'])->name('create');
+                    Route::post('', [MasterSheetsController::class, 'store'])->name('store');
+                    Route::get('/add', fn (Competition $comp) => redirect(route('manage.competitions.results.master.create', $comp), 301))->name('old.add');
+                    Route::prefix('/{master}')->whereNumber('master')->group(function () {
+                        Route::get('', [MasterSheetsController::class, 'show'])->name('show');
+                        Route::get('/edit', [MasterSheetsController::class, 'edit'])->name('edit');
+                        Route::post('', [MasterSheetsController::class, 'update'])->name('update');
+                        Route::post('/visibility', [MasterSheetsController::class, 'visibility'])->name('visibility');
+                        Route::delete('', [MasterSheetsController::class, 'destroy'])->name('destroy');
+                    });
+                });
+
+                Route::get('/add', fn (Competition $comp) => redirect(route('manage.competitions.results.create', $comp), 301))->name('manage.competitions.results.old.add');
+
                 Route::get('/print-all', [OverallResultsController::class, 'printAll'])->name('comps.results.print-all');
             });
 
@@ -376,7 +390,7 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
 
 
 
-        Route::get('/comp/results/view-schema/{schema}', [OverallResultsController::class, 'computeResults'])->name("comps.results.view-schema");
+        Route::get('/comp/results/view-schema/{sheet}', [ResultSheetsController::class, 'old'])->name('manage.competitions.results.old.view-schema');
         Route::get('/comp/results/view-schema/{schema}/print', [OverallResultsController::class, 'viewForPrint'])->name("comps.results.view-schema-print");
         Route::get('/comp/results/view-schema/{schema}/print-basic', [OverallResultsController::class, 'viewForPrintBasic'])->name("comps.results.view-schema-print-basic");
     });

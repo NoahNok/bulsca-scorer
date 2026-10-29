@@ -122,6 +122,18 @@ _Avoid_: Result
 A team's position in a heat's order of finish (OOF).
 _Avoid_: OOF (when meaning the value)
 
+**Results sheet**:
+An overall ranking for the whole competition or one League, built from chosen Events, each with a weight, and a Formula.
+_Avoid_: Schema, result schema (fine in code, not in the UI)
+
+**Master sheet**:
+An overall ranking made by combining several Results sheets, e.g. one overall from each League's sheet.
+_Avoid_: Master schema, master results
+
+**Formula**:
+How a Results sheet turns each Event's results into points: built-in, an Organisation's saved Formula, or custom.
+_Avoid_: Result schema, result adjustment
+
 **Activity**:
 Any recorded action someone took on a competition, e.g. generating heats, swapping lanes, entering a Mark or submitting a DQ.
 _Avoid_: Event (that's a SERC or speed event), audit, log entry

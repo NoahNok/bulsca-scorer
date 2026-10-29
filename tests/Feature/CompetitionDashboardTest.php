@@ -59,7 +59,7 @@ class CompetitionDashboardTest extends TestCase
                 ->where('competition.tabs.2.svelte', true)
                 ->where('competition.tabs.3.svelte', true)
                 ->where('competition.tabs.4.svelte', true)
-                ->where('competition.tabs.5.svelte', false)
+                ->where('competition.tabs.5.svelte', true)
                 ->where('digitalJudge.enabled', false)
                 ->has('links.settingsUrl')
                 ->has('events', 0)

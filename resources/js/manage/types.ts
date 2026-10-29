@@ -319,3 +319,40 @@ export type NamedOption = { id: number; name: string };
 
 /** One Tank's running order (DrawService::tanks); Tank 0 is the whole Draw without tanks */
 export type DrawTank = { number: number; draws: { id: number; entity: number; name: string; draw: number }[] };
+
+/** A Digitally Judged Event still waiting for its Head Judge to confirm it, which holds up Results sheets */
+export type UnconfirmedEvent = { name: string; url: string };
+
+/** A Results sheet as the Results overview lists it (Manage\ResultSheetsController::index) */
+export type ResultSheetRow = {
+    id: number;
+    name: string;
+    /** The League's name, null for the whole competition */
+    league: string | null;
+    viewable: boolean;
+};
+
+/** A built-in Formula: the equation it sets and whether highest wins */
+export type BuiltInFormula = { key: string; label: string; equation: string; rankHigher: boolean };
+
+/** A Results sheet Formula's global variable */
+export type FormulaVariable = { name: string; expression: string; order?: number | null };
+
+/** An Event a Results sheet can include, `type` and `id` naming it together */
+export type SheetEventRef = { type: "speed" | "serc"; id: number };
+
+/** What New/Edit Results sheet edits (Manage\ResultSheetsController::form) */
+export type ResultSheetSettings = {
+    id: number;
+    name: string;
+    league: number | null;
+    events: SheetEventRef[];
+    equation: string;
+    global_variables: FormulaVariable[];
+    group_on: "club" | "team" | "competitor";
+    rank_higher: boolean;
+    ignore_dq: boolean;
+    break_ties: SheetEventRef[];
+    /** The built-in Formula it matches, null for a custom one */
+    builtIn: string | null;
+};

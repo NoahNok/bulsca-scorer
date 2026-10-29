@@ -23,7 +23,7 @@ class CompetitionTabs
         ['Events', 'manage.competitions.events', 'serc|speed|serc_writer', ['manage.competitions.events'], true],
         ['Heats & Draws', 'manage.competitions.heats_and_draws', 'heats_and_draws', ['manage.competitions.heats_and_draws'], true],
         ['Printables', 'comps.printables', 'printables', ['comps.printables'], true],
-        ['Results', 'comps.results', 'results', ['comps.results'], false],
+        ['Results', 'manage.competitions.results', 'results', ['manage.competitions.results'], true],
         ['Officials', 'manage.competitions.officials', 'admin', ['manage.competitions.officials'], true],
         ['Settings', 'manage.competitions.settings', 'admin', ['manage.competitions.settings'], true],
     ];
