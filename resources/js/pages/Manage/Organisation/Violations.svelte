@@ -144,11 +144,11 @@
     <form onsubmit={save}>
         {#if !editing}
             <div class={["v2-field", form.errors.code && "is-invalid"]}>
-                <label for="v-code">Code</label>
                 <div class="flex items-center gap-2">
-                    <span class="font-bold">{PREFIX[form.type]}</span>
+                    <span class="font-bold" aria-hidden="true">{PREFIX[form.type]}</span>
                     <input
                         id="v-code"
+                        aria-label="{PREFIX[form.type]} code number"
                         type="number"
                         min="1"
                         step="1"
