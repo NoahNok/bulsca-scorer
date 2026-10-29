@@ -56,7 +56,7 @@
         weights: Object.fromEntries(events.map((event) => [keyOf(event), event.weight])) as Record<string, number>,
         selected: (sheet?.events ?? []).map(keyOf),
         equation: sheet?.equation ?? "",
-        global_variables: structuredClone(sheet?.global_variables ?? []) as FormulaVariable[],
+        global_variables: structuredClone($state.snapshot(sheet?.global_variables ?? [])) as FormulaVariable[],
         group_on: sheet?.group_on ?? "team",
         rank_higher: sheet?.rank_higher ?? true,
         ignore_dq: sheet?.ignore_dq ?? false,
