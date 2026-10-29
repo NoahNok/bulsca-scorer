@@ -11,7 +11,8 @@ use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 /**
- * Someone without an account accepts an Invite to become an Organiser, which creates their account.
+ * Someone accepts an Invite to become an Organiser: signed in to their account if they have one, or creating
+ * one if not.
  */
 class AccountInviteTest extends TestCase
 {
@@ -96,6 +97,86 @@ class AccountInviteTest extends TestCase
     {
         $this->post(route('manage.invite.decline-new-account', [$this->invite, 'someone@example.com']))
             ->assertRedirect();
+
+        $this->assertModelExists($this->invite);
+    }
+
+    private function existingAccount(): User
+    {
+        $this->invite->email = 'sam@example.com';
+        $this->invite->save();
+
+        return User::factory()->create(['email' => 'sam@example.com']);
+    }
+
+    public function test_an_existing_account_gets_the_accept_page(): void
+    {
+        $user = $this->existingAccount();
+
+        $this->actingAs($user)
+            ->get(route('invite.show', [$this->invite, 'sam@example.com']))
+            ->assertOk()
+            ->assertViewIs('manage')
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Manage/Auth/InviteExistingAccount')
+                ->where('invite.id', $this->invite->id)
+                ->where('invite.name', 'Cardiff Classic')
+                ->where('invite.to', 'competition'));
+    }
+
+    public function test_an_existing_account_signs_in_before_seeing_the_invite(): void
+    {
+        $this->existingAccount();
+
+        $this->get(route('invite.show', [$this->invite, 'sam@example.com']))
+            ->assertRedirect(route('login'));
+    }
+
+    public function test_an_existing_account_accepts_and_becomes_an_organiser(): void
+    {
+        $user = $this->existingAccount();
+
+        $this->actingAs($user)
+            ->post(route('manage.invite.accept', [$this->invite, 'sam@example.com']))
+            ->assertRedirect(route('comps.view', $this->comp));
+
+        $this->assertModelMissing($this->invite);
+        $this->assertDatabaseHas('user_competition_accesses', ['user' => $user->id, 'competition' => $this->comp->id, 'access_to' => 'admin']);
+    }
+
+    public function test_an_existing_account_declines_back_to_home(): void
+    {
+        $user = $this->existingAccount();
+
+        $this->actingAs($user)
+            ->post(route('manage.invite.decline', [$this->invite, 'sam@example.com']))
+            ->assertRedirect(route('manage.home'))
+            ->assertSessionHas('success', 'Invite declined');
+
+        $this->assertModelMissing($this->invite);
+    }
+
+    public function test_another_account_cant_accept_or_decline(): void
+    {
+        $this->existingAccount();
+        $other = User::factory()->create();
+
+        $this->actingAs($other)
+            ->post(route('manage.invite.accept', [$this->invite, 'sam@example.com']))
+            ->assertSessionHas('alert-error');
+        $this->actingAs($other)
+            ->post(route('manage.invite.decline', [$this->invite, 'sam@example.com']))
+            ->assertSessionHas('alert-error');
+
+        $this->assertModelExists($this->invite);
+    }
+
+    public function test_accepting_needs_signing_in(): void
+    {
+        $this->existingAccount();
+
+        $this->post(route('manage.invite.accept', [$this->invite, 'sam@example.com']))
+            ->assertRedirect(route('login'));
 
         $this->assertModelExists($this->invite);
     }

@@ -18,6 +18,7 @@
         "Manage/Auth/SignIn": "Run the day. We'll keep the score.",
         "Manage/Auth/Register": "Accounts come by invite.",
         "Manage/Auth/InviteNewAccount": "You're on the team.",
+        "Manage/Auth/InviteExistingAccount": "You're on the team.",
         "Manage/Auth/ForgotPassword": "Happens to the best of us.",
         "Manage/Auth/ResetPassword": "Fresh start.",
     };

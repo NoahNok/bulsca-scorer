@@ -40,16 +40,12 @@ class AccountInviteController extends Controller
                 session()->flash('alert-error', 'You cannot use that invite!');
                 return redirect('/');
             }
-
-            return view('account.invite', compact(['invite', 'user']));
-        }
-
-        if (Auth::check()) {
+        } elseif (Auth::check()) {
             session()->flash('alert-error', 'You cannot use that invite!');
             return redirect('/');
         }
 
-        return Inertia::render('Manage/Auth/InviteNewAccount', [
+        return Inertia::render($user ? 'Manage/Auth/InviteExistingAccount' : 'Manage/Auth/InviteNewAccount', [
             'invite' => [
                 'id' => $invite->id,
                 'email' => $invite->email,
@@ -59,35 +55,12 @@ class AccountInviteController extends Controller
         ]);
     }
 
-    public function resolve(AccountInvite $invite, string $email, string $resolution)
+    public function accept(AccountInvite $invite, string $email)
     {
-
-        if ($invite->email != $email) {
-            return redirect('/')->with('alert-error', 'Invalid invite');
+        if ($redirect = $this->rejectForExistingAccount($invite, $email)) {
+            return $redirect;
         }
 
-        if (!Auth::check()) {
-            return redirect()->guest(route('login'));
-        }
-
-        $user = $invite->getUser();
-
-        if (Auth::user()->id != $user->id) {
-            session()->flash('alert-error', 'You cannot use that invite!');
-            return redirect('/');
-        }
-
-
-        if (!in_array($resolution, ['accept', 'decline'])) {
-            return redirect('/');
-        }
-
-        if ($resolution == 'decline') {
-            $invite->delete();
-            return redirect('/');
-        }
-
-        // Accepted
         if (!$invite->to instanceof IInvitable) {
             $type = get_class($invite->to);
             throw new Exception("Model {$type} not instance of IInvitable");
@@ -97,6 +70,17 @@ class AccountInviteController extends Controller
         $invite->delete();
 
         return $redirect;
+    }
+
+    public function decline(AccountInvite $invite, string $email)
+    {
+        if ($redirect = $this->rejectForExistingAccount($invite, $email)) {
+            return $redirect;
+        }
+
+        $invite->delete();
+
+        return redirect()->route('manage.home')->with('success', 'Invite declined');
     }
 
     public function acceptNewAccount(AccountInviteNewAccountRequest $request, AccountInvite $invite, string $email)
@@ -123,7 +107,7 @@ class AccountInviteController extends Controller
 
         Auth::login($user, true);
 
-        // a full visit: the competition and organisation pages are still Blade
+        // a full visit, so the page loads fresh for the account they're now signed in to
         return Inertia::location($redirect->getTargetUrl());
     }
 
@@ -137,6 +121,27 @@ class AccountInviteController extends Controller
 
         // they have no account, so back to the public site: / on app. would ask them to sign in
         return Inertia::location(RouteHelpers::mainRoute('home'));
+    }
+
+    /**
+     * Only the invite's own account, signed in, can accept or decline it.
+     */
+    private function rejectForExistingAccount(AccountInvite $invite, string $email)
+    {
+        if ($invite->email != $email) {
+            return redirect('/')->with('alert-error', 'Invalid invite');
+        }
+
+        if (!Auth::check()) {
+            return redirect()->guest(route('login'));
+        }
+
+        if (Auth::user()->id != $invite->getUser()?->id) {
+            session()->flash('alert-error', 'You cannot use that invite!');
+            return redirect('/');
+        }
+
+        return null;
     }
 
     /**

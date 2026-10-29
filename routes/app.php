@@ -413,7 +413,8 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
 
     Route::prefix('invite/{invite}/{email}')->group(function () {
         Route::get('', [AccountInviteController::class, 'show'])->name('invite.show');
-        Route::get('resolve/{resolution}', [AccountInviteController::class, 'resolve'])->name('invite.resolve');
+        Route::post('accept', [AccountInviteController::class, 'accept'])->name('manage.invite.accept');
+        Route::post('decline', [AccountInviteController::class, 'decline'])->name('manage.invite.decline');
         Route::post('accept/new-acc', [AccountInviteController::class, 'acceptNewAccount'])->name('manage.invite.accept-new-account');
         Route::post('decline/new-acc', [AccountInviteController::class, 'declineNewAccount'])->name('manage.invite.decline-new-account');
     });
