@@ -28,7 +28,7 @@
     <title>Accounts - {organisation.name} - Scoring.Events</title>
 </svelte:head>
 
-<section aria-labelledby="a-accounts" class="max-w-3xl">
+<section aria-labelledby="a-accounts">
     <Accounts
         {accounts}
         {invites}

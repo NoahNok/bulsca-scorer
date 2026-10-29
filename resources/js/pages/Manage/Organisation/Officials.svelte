@@ -72,7 +72,7 @@
     <title>Officials - {organisation.name} - Scoring.Events</title>
 </svelte:head>
 
-<section aria-labelledby="of-heading" class="max-w-3xl">
+<section aria-labelledby="of-heading">
     <div class="flex flex-wrap items-center justify-between gap-4">
         <h2 id="of-heading" class="text-lg font-extrabold uppercase">
             Officials <span class="text-v2-muted tabular-nums">{officials.length}</span>
