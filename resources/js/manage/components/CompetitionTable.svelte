@@ -1,13 +1,15 @@
 <!--
     Competitions an Organiser can manage, one whole-row link each, in the order given (upcoming soonest
     first, then past): the date, the name (with its organisation, muted, when given), and any status
-    beside Manage. Past rows sit back like results on the fixtures sheet.
+    beside Manage. Past rows sit back like results on the fixtures sheet. `actions` adds to the end of a
+    row, e.g. a Championship's Remove; give anything clickable in it .v2-over-row.
 -->
-<script lang="ts">
+<script lang="ts" generics="T extends ManagedCompetition & { organisationName?: string | null }">
     import { shortDate } from "@/lib/dates";
     import type { ManagedCompetition } from "@/manage/types";
+    import type { Snippet } from "svelte";
 
-    let { competitions }: { competitions: (ManagedCompetition & { organisationName?: string | null })[] } = $props();
+    let { competitions, actions }: { competitions: T[]; actions?: Snippet<[T]> } = $props();
 </script>
 
 <table class="w-full border-collapse">
@@ -47,8 +49,8 @@
                         {/if}
                         {#if comp.private}<span class="v2-badge">Private</span>{/if}
                         {#if comp.limited}<span class="v2-badge">Limited access</span>{/if}
-                        <!-- A plain link: competition pages are still Blade -->
                         <a href={comp.url} class="v2-link v2-row-link">Manage<span class="sr-only"> {comp.name}</span></a>
+                        {@render actions?.(comp)}
                     </span>
                 </td>
             </tr>

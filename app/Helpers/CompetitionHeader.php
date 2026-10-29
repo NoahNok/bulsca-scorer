@@ -23,11 +23,11 @@ class CompetitionHeader
             'organisation' => $org ? [
                 'name' => $org->name,
                 'logo' => $org->getLogo() ?: null,
-                'url' => route('orgs.show', $org->name),
+                'url' => route('manage.organisations.show', $org->name),
             ] : null,
             'championship' => $org && $comp->championship ? [
                 'name' => $comp->championship->name,
-                'url' => route('orgs.championship.view', [$org->name, $comp->championship->slug()]),
+                'url' => route('manage.organisations.championships.show', [$org, $comp->championship]),
             ] : null,
             'private' => !$comp->show_competition,
             // As on the Management home: no flag says a competition is running

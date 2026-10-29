@@ -78,6 +78,10 @@ _Avoid_: Admin, dashboard, backend
 A site-wide administrator who runs the site itself (seasons, users, speed records), as opposed to an Organiser of one competition.
 _Avoid_: Organiser, superuser
 
+**Championship**:
+An Organisation's series of competitions over a season, between a start and end date. Each competition in it is a Regional, Qualifier or Final; one outside any Championship is Standalone.
+_Avoid_: Series, league (that's a grouping of Entities)
+
 **Personal Competition**:
 A competition that belongs to no organisation. Anyone signed in can create one, and becomes its first Organiser.
 _Avoid_: Owned competition, private competition
@@ -121,6 +125,18 @@ _Avoid_: Result
 **Place**:
 A team's position in a heat's order of finish (OOF).
 _Avoid_: OOF (when meaning the value)
+
+**Violation**:
+A DQ or penalty given to an Entity in an Event, by its Violation code.
+_Avoid_: Infraction, offence
+
+**Violation code**:
+One of the kinds of Violation an Organisation's competitions can give, e.g. DQ12 or P3: its number, a description, and for each event what kind of call it is (lane, turn, changeover…).
+_Avoid_: Infraction, DQ/penalty type
+
+**Scoring template**:
+An Organisation's saved way of scoring an event (its equation, variables, auto penalties and ranking) that a speed event or SERC can start its scoring from. Copied in, not linked: changing a template doesn't change an event already using it.
+_Avoid_: Scoring schema, scoring profile (fine in code, not in the UI)
 
 **Results sheet**:
 An overall ranking for the whole competition or one League, built from chosen Events, each with a weight, and a Formula.

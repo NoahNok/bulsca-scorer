@@ -37,7 +37,6 @@ class OrganisationCreateController extends Controller
             return $org;
         });
 
-        // The organisation's page is still Blade
-        return Inertia::location(route('orgs.show', $org));
+        return redirect()->route('manage.organisations.show', $org);
     }
 }

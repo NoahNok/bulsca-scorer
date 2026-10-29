@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Manage;
 
+use App\Helpers\ManagedCompetitions;
 use App\Http\Controllers\Controller;
 use App\Models\Competition;
 use App\Models\CompetitionVisit;
@@ -9,7 +10,6 @@ use App\Models\Organisation\Organisation;
 use App\Models\Organisation\OrganisationUserAccess;
 use App\Models\User;
 use App\Models\UserCompetitionAccess;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
@@ -32,7 +32,7 @@ class ManageController extends Controller
         $directIds = UserCompetitionAccess::where('user', $user->id)->where('access_to', '!=', 'none')->select('competition');
 
         // Every competition in your organisations, and any others you were given access to, each once
-        [$upcoming, $past] = $this->upcomingThenPast(Competition::whereIn('id', $directIds)->orWhereIn('organisation', $orgIds)->get());
+        [$upcoming, $past] = ManagedCompetitions::upcomingThenPast(Competition::whereIn('id', $directIds)->orWhereIn('organisation', $orgIds)->get());
 
         // Admins can open any competition, so theirs all stay
         $recent = CompetitionVisit::where('user_id', $user->id)
@@ -44,7 +44,7 @@ class ManageController extends Controller
         // Everything an Organiser with full access can do, looked up once rather than per row
         $fullComps = UserCompetitionAccess::where('user', $user->id)->whereIn('access_to', ['admin', 'owner'])->pluck('competition');
         $fullOrgs = OrganisationUserAccess::where('user', $user->id)->whereIn('access_to', ['admin', 'owner'])->pluck('organisation');
-        $row = fn (Competition $comp) => $this->row($comp, limited: !$user->isAdmin()
+        $row = fn (Competition $comp) => ManagedCompetitions::row($comp, limited: !$user->isAdmin()
             && !$fullComps->contains($comp->id) && !$fullOrgs->contains($comp->organisation));
 
         return Inertia::render('Manage/Home', [
@@ -56,41 +56,10 @@ class ManageController extends Controller
                     'id' => $org->id,
                     'name' => $org->name,
                     'logo' => $org->getLogo() ?: null,
-                    'url' => $orgIds->contains($org->id) ? route('orgs.show', $org) : null,
+                    'url' => $orgIds->contains($org->id) ? route('manage.organisations.show', $org) : null,
                 ]),
             // All of them: the page filters by organisation (none is Personal) and shows the upcoming and latest past until "Show all"
             'competitions' => $upcoming->concat($past)->map(fn (Competition $comp) => [...$row($comp), 'organisation' => $comp->organisation]),
         ]);
-    }
-
-    private function row(Competition $comp, bool $limited): array
-    {
-        $today = $comp->when->isToday();
-
-        return [
-            'id' => $comp->id,
-            'name' => $comp->name,
-            'when' => $comp->when->toDateString(),
-            'where' => $comp->where,
-            'url' => route('comps.view', $comp),
-            'past' => $comp->when->lt(today()),
-            // From today, so it agrees with past and today whatever the browser's clock says
-            'days' => (int) round(today()->diffInDays($comp->when->copy()->startOfDay())),
-            'today' => $today,
-            // No flag says a competition is running, so Live is today with the live site turned on
-            'live' => $today && (bool) $comp->can_be_live,
-            'private' => !$comp->show_competition,
-            'limited' => $limited,
-        ];
-    }
-
-    /**
-     * Splits competitions into those today or later (soonest first) and past ones (latest first).
-     */
-    private function upcomingThenPast(Collection $comps): array
-    {
-        [$upcoming, $past] = $comps->partition(fn (Competition $comp) => $comp->when->gte(today()));
-
-        return [$upcoming->sortBy('when')->values(), $past->sortByDesc('when')->values()];
     }
 }

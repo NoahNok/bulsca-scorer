@@ -136,8 +136,7 @@
                     </button>
                 {/if}
                 {#if selected?.url}
-                    <!-- A plain link: organisation pages are still Blade -->
-                    <a href={selected.url} class="v2-link">{selected.name}'s page</a>
+                    <Link href={selected.url} class="v2-link">{selected.name}'s page</Link>
                 {/if}
             </div>
         {/if}

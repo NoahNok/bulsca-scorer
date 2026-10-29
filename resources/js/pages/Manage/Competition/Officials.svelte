@@ -18,6 +18,7 @@
     import Alert from "@/manage/components/Alert.svelte";
     import Field from "@/manage/components/Field.svelte";
     import SidebarPage from "@/manage/components/SidebarPage.svelte";
+    import OfficialRoleBadge from "@/manage/components/OfficialRoleBadge.svelte";
     import RowIcon from "@/manage/components/RowIcon.svelte";
     import EmptyState from "@/manage/components/EmptyState.svelte";
     import type {
@@ -464,15 +465,7 @@
                                     </button>
                                 </td>
                                 <td class="whitespace-nowrap">
-                                    <span
-                                        class={[
-                                            "v2-badge",
-                                            official.role === "referee" &&
-                                                "is-live",
-                                        ]}
-                                        >{roles[official.role] ??
-                                            official.role}</span
-                                    >
+                                    <OfficialRoleBadge role={official.role} {roles} />
                                 </td>
                                 <td class="max-sm:hidden"
                                     >{@render status(official)}</td

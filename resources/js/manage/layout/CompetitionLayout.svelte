@@ -7,18 +7,13 @@
 <script lang="ts">
     import { shortDate } from "@/lib/dates";
     import type { CompetitionHeader } from "@/manage/types";
-    import { Link, page } from "@inertiajs/svelte";
+    import PageTabs from "@/manage/components/PageTabs.svelte";
+    import { page } from "@inertiajs/svelte";
     import type { Snippet } from "svelte";
 
     let { children }: { children?: Snippet } = $props();
 
     const comp = $derived(page.props.competition as CompetitionHeader);
-
-    // On phones the tabs scroll sideways, so start with the current one in view
-    function showCurrent(nav: HTMLElement) {
-        const current = nav.querySelector<HTMLElement>("[aria-current='page']");
-        if (current) nav.scrollLeft = current.offsetLeft - (nav.clientWidth - current.offsetWidth) / 2;
-    }
 </script>
 
 <header class="flex items-start justify-between gap-6">
@@ -54,15 +49,7 @@
 </header>
 
 {#key comp.id}
-    <nav class="v2-pagetabs" aria-label="Competition" use:showCurrent>
-        {#each comp.tabs as tab (tab.url)}
-            {#if tab.svelte}
-                <Link href={tab.url} aria-current={tab.current ? "page" : undefined}>{tab.label}</Link>
-            {:else}
-                <a href={tab.url} aria-current={tab.current ? "page" : undefined}>{tab.label}</a>
-            {/if}
-        {/each}
-    </nav>
+    <PageTabs tabs={comp.tabs} label="Competition" />
 {/key}
 
 {#if comp.statusMessage}

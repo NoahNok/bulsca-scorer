@@ -25,38 +25,12 @@
     </div>
 
 
-    <div class="  tabbed-bar mt-2 mb-4 ">
-
-        @can('access', [$org, '*'])
-            <a href="{{ route('orgs.show', $org->name) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'orgs.show')) active @endif">Overview</a>
-        @endcan
-
-        @can('access', [$org, 'admin'])
-            <a href="{{ route('orgs.championships', $org->name) }}"
-                class="@if (Str::startsWith(Route::currentRouteName(), 'orgs.championship')) active @endif">Championships</a>
-
-
-            <a href="{{ route('orgs.accounts', $org->name) }}"
-                class="@if (Str::startsWith(Route::currentRouteName(), 'orgs.accounts')) active @endif">Accounts</a>
-
-            <a href="{{ route('orgs.officials', $org->name) }}"
-                class="@if (Str::startsWith(Route::currentRouteName(), 'orgs.officials')) active @endif">Officials</a>
-
-            <a href="{{ route('orgs.scoring', $org->name) }}"
-                class="@if (Str::startsWith(Route::currentRouteName(), 'orgs.scoring')) active @endif">Scoring</a>
-
-
-            <a href="{{ route('orgs.infractions', $org->name) }}"
-                class="@if (Str::startsWith(Route::currentRouteName(), 'orgs.infractions')) active @endif">Infractions</a>
-
-            <a href="{{ route('orgs.edit', $org->name) }}" class="@if (Str::startsWith(Route::currentRouteName(), 'orgs.edit')) active @endif">Settings</a>
-        @endcan
-
-
-
+    {{-- The same tabs as the Svelte pages' (App\Helpers\OrganisationTabs) --}}
+    <div class="tabbed-bar mt-2 mb-4">
+        @foreach (App\Helpers\OrganisationTabs::for($org) as $tab)
+            <a href="{{ $tab['url'] }}" class="@if ($tab['current']) active @endif">{{ $tab['label'] }}</a>
+        @endforeach
     </div>
-
-
 
     @yield('content')
 @endsection

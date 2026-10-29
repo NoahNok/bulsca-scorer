@@ -198,6 +198,13 @@ class CompetitionController extends Controller
         return back()->with('success', 'Account removed');
     }
 
+    public function cancelCompetitionInvite(Competition $comp, string $invite)
+    {
+        $comp->getInvites()->whereKey($invite)->firstOrFail()->delete();
+
+        return back()->with('success', 'Invite cancelled');
+    }
+
     public function deleteComp(Competition $comp, DeleteCompetitionRequest $request)
     {
         $validated = $request->validated();

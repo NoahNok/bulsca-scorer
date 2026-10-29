@@ -134,6 +134,11 @@ class Organisation extends Model implements IInvitable
         return false;
     }
 
+    public function isOwner(User $user): bool
+    {
+        return OrganisationUserAccess::where('organisation', $this->id)->where('user', $user->id)->where('access_to', 'owner')->exists();
+    }
+
     public function userBelongsToOrganisation(User $user): bool
     {
         $access = OrganisationUserAccess::where('user', $user->id)
@@ -259,7 +264,7 @@ class Organisation extends Model implements IInvitable
 
         $this->addAccount($user, $details['access']);
 
-        return redirect()->route('orgs.show', $this->name);
+        return redirect()->route('manage.organisations.show', $this->name);
     }
 
     public function removeAccount(User $account)

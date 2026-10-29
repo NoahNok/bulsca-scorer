@@ -127,6 +127,7 @@ class CompetitionDashboardController extends Controller
                 ]))->values(),
             ],
             'accounts' => $accounts,
+            'invites' => $comp->getInvites()->orderBy('email')->get(['id', 'email']),
             'accessTypes' => Competition::$accessTypes,
         ]);
     }

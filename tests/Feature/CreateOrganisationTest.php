@@ -45,7 +45,7 @@ class CreateOrganisationTest extends TestCase
         $response = $this->create([]);
 
         $org = Organisation::sole();
-        $response->assertRedirect(route('orgs.show', $org));
+        $response->assertRedirect(route('manage.organisations.show', $org));
         $this->assertSame(['Cardiff ULSC', null], [$org->name, $org->logo]);
         $this->assertTrue($this->organiser->can('access', [$org, 'owner']));
     }
@@ -79,19 +79,20 @@ class CreateOrganisationTest extends TestCase
         $this->assertSame(0, Organisation::count());
     }
 
-    public function test_changing_the_logo_on_the_edit_page_stores_webp_and_deletes_the_old_one(): void
+    public function test_changing_the_logo_in_settings_stores_webp_and_deletes_the_old_one(): void
     {
         $this->create(['logo' => UploadedFile::fake()->image('one.png', 300, 300)]);
         $org = Organisation::sole();
         $old = $org->logo;
 
+        // A form with a file posts, with the method spoofed
         $this->actingAs($this->organiser)
-            ->postJson($this->appUrl('/organisation/' . $org->id), [
+            ->post($this->appUrl('/organisation/' . $org->id), [
                 '_method' => 'PATCH',
                 'name' => 'Cardiff ULSC',
                 'logo' => UploadedFile::fake()->image('two.jpg', 300, 300),
             ])
-            ->assertOk();
+            ->assertRedirect(route('manage.organisations.settings', $org));
 
         $new = $org->fresh()->logo;
         $this->assertNotSame($old, $new);
@@ -110,14 +111,6 @@ class CreateOrganisationTest extends TestCase
         imagepng($image, $path);
 
         return new UploadedFile($path, 'logo.png', 'image/png', null, true);
-    }
-
-    public function test_an_inertia_visit_is_sent_on_to_the_organisation_page(): void
-    {
-        $this->actingAs($this->organiser)
-            ->post($this->appUrl('/organisation'), ['name' => 'Cardiff ULSC'], ['X-Inertia' => 'true'])
-            ->assertStatus(409)
-            ->assertHeader('X-Inertia-Location', route('orgs.show', Organisation::sole()));
     }
 
     public function test_a_logo_that_cannot_be_read_leaves_no_organisation_behind(): void

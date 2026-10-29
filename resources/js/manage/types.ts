@@ -29,8 +29,8 @@ export type ManagedOrganisation = {
     url: string | null;
 };
 
-/** A competition page's tab (App\Helpers\CompetitionTabs), only the ones you can open */
-export type CompetitionTab = {
+/** A competition's or organisation's page tab (App\Helpers\CompetitionTabs, OrganisationTabs), only the ones you can open */
+export type PageTab = {
     label: string;
     url: string;
     current: boolean;
@@ -53,7 +53,15 @@ export type CompetitionHeader = {
     live: boolean;
     /** The Organisers' note above every page, as HTML from the Status settings */
     statusMessage: string | null;
-    tabs: CompetitionTab[];
+    tabs: PageTab[];
+};
+
+/** What OrganisationLayout draws above every organisation page (App\Helpers\OrganisationHeader::for) */
+export type OrganisationHeader = {
+    id: number;
+    name: string;
+    logo: string | null;
+    tabs: PageTab[];
 };
 
 /** A speed event (key `sp:<id>`) or SERC (`se:<id>`) */
@@ -63,16 +71,19 @@ export type CompetitionEvent = {
     serc: boolean;
 };
 
-/** Someone who can manage a competition, on its Settings page */
-export type CompetitionAccount = {
+/** Someone who can manage a competition or organisation, in its Accounts */
+export type Account = {
     id: number;
     name: string;
     email: string;
-    /** Keys of Competition::$accessTypes */
+    /** Keys of the competition's or organisation's $accessTypes, without owner */
     access: string[];
     owner: boolean;
     you: boolean;
 };
+
+/** An invite to manage a competition or organisation that hasn't been accepted yet */
+export type PendingInvite = { id: string; email: string };
 
 /**
  * Where an official is with Digital Judge: their account not signed in to yet (made by an Organiser),

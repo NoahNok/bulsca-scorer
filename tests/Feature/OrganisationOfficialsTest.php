@@ -8,8 +8,13 @@ use App\Models\Organisation\Organisation;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
+/**
+ * An organisation's Officials (Svelte): everyone who has officiated at its competitions, the CSV export,
+ * and adding one of them to an upcoming competition.
+ */
 class OrganisationOfficialsTest extends TestCase
 {
     use RefreshDatabase;
@@ -67,12 +72,18 @@ class OrganisationOfficialsTest extends TestCase
         $this->assertEquals(['official'], $officials['Sam Once']['roles']->all());
 
         $this->actingAs($this->admin)
-            ->get(route('orgs.officials', $this->org))
+            ->get(route('manage.organisations.officials', $this->org))
             ->assertOk()
-            ->assertSee('Jo Both')
-            ->assertSee('Sam Once')
-            ->assertSee('REFEREE')
-            ->assertSee('2 competitions');
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Manage/Organisation/Officials')
+                ->where('organisation.tabs.3.current', true)
+                ->where('officials.0.name', 'Jo Both')
+                ->where('officials.0.roles', ['official', 'referee'])
+                ->where('officials.0.count', 2)
+                ->where('officials.0.last.name', 'Newer Comp')
+                ->where('officials.0.last.when', $newer->when->toDateString())
+                ->where('officials.1.name', 'Sam Once')
+                ->where('roles', ['official' => 'Official', 'referee' => 'Referee']));
     }
 
     public function test_officials_of_other_organisations_are_not_listed(): void
@@ -88,10 +99,9 @@ class OrganisationOfficialsTest extends TestCase
         $unowned->addOfficial(User::factory()->create(['name' => 'Also Not Ours']), 'official');
 
         $this->actingAs($this->admin)
-            ->get(route('orgs.officials', $this->org))
+            ->get(route('manage.organisations.officials', $this->org))
             ->assertOk()
-            ->assertDontSee('Not Ours')
-            ->assertSee('No one has officiated');
+            ->assertInertia(fn (Assert $page) => $page->where('officials', []));
     }
 
     public function test_users_without_admin_access_cannot_see_officials(): void
@@ -99,31 +109,8 @@ class OrganisationOfficialsTest extends TestCase
         $member = User::factory()->create();
         $this->org->addAccount($member, 'view');
 
-        $this->actingAs($member)->get(route('orgs.officials', $this->org))->assertForbidden();
-        $this->actingAs(User::factory()->create())->get(route('orgs.officials', $this->org))->assertForbidden();
-    }
-
-    public function test_officials_can_be_searched_and_filtered_by_role(): void
-    {
-        $comp = $this->makeComp('Comp', $this->org, now()->subWeek());
-        $comp->addOfficial(User::factory()->create(['name' => 'Jo Referee', 'email' => 'jo@example.com']), 'referee');
-        $comp->addOfficial(User::factory()->create(['name' => 'Sam Official', 'email' => 'sam@club.org']), 'official');
-
-        $this->actingAs($this->admin)
-            ->get(route('orgs.officials', [$this->org, 'q' => 'CLUB.ORG']))
-            ->assertOk()
-            ->assertSee('Sam Official')
-            ->assertDontSee('Jo Referee')
-            ->assertSee('Showing 1 of 2');
-
-        $this->actingAs($this->admin)
-            ->get(route('orgs.officials', [$this->org, 'role' => 'referee']))
-            ->assertSee('Jo Referee')
-            ->assertDontSee('Sam Official');
-
-        $this->actingAs($this->admin)
-            ->get(route('orgs.officials', [$this->org, 'q' => 'nobody']))
-            ->assertSee('No officials match');
+        $this->actingAs($member)->get(route('manage.organisations.officials', $this->org))->assertForbidden();
+        $this->actingAs(User::factory()->create())->get(route('manage.organisations.officials', $this->org))->assertForbidden();
     }
 
     public function test_the_last_competition_links_to_its_officials_tab(): void
@@ -132,8 +119,8 @@ class OrganisationOfficialsTest extends TestCase
         $comp->addOfficial(User::factory()->create(), 'official');
 
         $this->actingAs($this->admin)
-            ->get(route('orgs.officials', $this->org))
-            ->assertSee(route('manage.competitions.officials', $comp->id));
+            ->get(route('manage.organisations.officials', $this->org))
+            ->assertInertia(fn (Assert $page) => $page->where('officials.0.last.url', route('manage.competitions.officials', $comp->id)));
     }
 
     public function test_the_csv_export_lists_the_filtered_officials(): void
@@ -143,7 +130,7 @@ class OrganisationOfficialsTest extends TestCase
         $comp->addOfficial(User::factory()->create(['name' => 'Sam Official']), 'official');
 
         $response = $this->actingAs($this->admin)
-            ->get(route('orgs.officials.export', [$this->org, 'role' => 'referee']))
+            ->get(route('manage.organisations.officials.export', [$this->org, 'role' => 'referee']))
             ->assertOk()
             ->assertDownload('test-org-officials.csv');
 
@@ -154,7 +141,7 @@ class OrganisationOfficialsTest extends TestCase
 
         $member = User::factory()->create();
         $this->org->addAccount($member, 'view');
-        $this->actingAs($member)->get(route('orgs.officials.export', $this->org))->assertForbidden();
+        $this->actingAs($member)->get(route('manage.organisations.officials.export', $this->org))->assertForbidden();
     }
 
     public function test_admins_can_add_a_past_official_to_an_upcoming_competition(): void
@@ -167,18 +154,17 @@ class OrganisationOfficialsTest extends TestCase
         $past->addOfficial($official, 'official');
 
         $this->actingAs($this->admin)
-            ->get(route('orgs.officials', $this->org))
-            ->assertSee('Add to a competition')
-            ->assertViewHas('upcomingCompetitions', fn ($comps) => $comps->pluck('id')->all() === [$upcoming->id]);
+            ->get(route('manage.organisations.officials', $this->org))
+            ->assertInertia(fn (Assert $page) => $page->where('upcomingCompetitions', fn ($comps) => collect($comps)->pluck('id')->all() === [$upcoming->id]));
 
         $this->actingAs($this->admin)
-            ->from(route('orgs.officials', $this->org))
-            ->post(route('orgs.officials.add', $this->org), [
+            ->from(route('manage.organisations.officials', $this->org))
+            ->post(route('manage.organisations.officials.add', $this->org), [
                 'user_id' => $official->id,
                 'competition_id' => $upcoming->id,
                 'role' => 'referee',
             ])
-            ->assertRedirect(route('orgs.officials', $this->org))
+            ->assertRedirect(route('manage.organisations.officials', $this->org))
             ->assertSessionHasNoErrors()
             ->assertSessionHas('success', 'Jo Past added to Upcoming Comp as a referee');
 
@@ -187,12 +173,12 @@ class OrganisationOfficialsTest extends TestCase
 
         // adding them again doesn't send another email
         $this->actingAs($this->admin)
-            ->post(route('orgs.officials.add', $this->org), [
+            ->post(route('manage.organisations.officials.add', $this->org), [
                 'user_id' => $official->id,
                 'competition_id' => $upcoming->id,
                 'role' => 'official',
             ])
-            ->assertSessionHasErrorsIn('addToCompetition', 'competition_id');
+            ->assertSessionHasErrors('competition_id');
         Mail::assertSentCount(1);
     }
 
@@ -210,14 +196,14 @@ class OrganisationOfficialsTest extends TestCase
         $other->save();
         $theirs = $this->makeComp('Their Comp', $other, now()->addWeek());
 
-        $post = fn (array $data) => $this->actingAs($this->admin)->post(route('orgs.officials.add', $this->org), $data + ['role' => 'official']);
+        $post = fn (array $data) => $this->actingAs($this->admin)->post(route('manage.organisations.officials.add', $this->org), $data + ['role' => 'official']);
 
         $post(['user_id' => User::factory()->create()->id, 'competition_id' => $upcoming->id])
-            ->assertSessionHasErrorsIn('addToCompetition', 'user_id');
+            ->assertSessionHasErrors('user_id');
         $post(['user_id' => $official->id, 'competition_id' => $past->id])
-            ->assertSessionHasErrorsIn('addToCompetition', 'competition_id');
+            ->assertSessionHasErrors('competition_id');
         $post(['user_id' => $official->id, 'competition_id' => $theirs->id])
-            ->assertSessionHasErrorsIn('addToCompetition', 'competition_id');
+            ->assertSessionHasErrors('competition_id');
 
         $this->assertFalse($theirs->officials()->exists());
         $this->assertFalse($upcoming->officials()->exists());
@@ -225,7 +211,7 @@ class OrganisationOfficialsTest extends TestCase
 
         $member = User::factory()->create();
         $this->org->addAccount($member, 'view');
-        $this->actingAs($member)->post(route('orgs.officials.add', $this->org), [
+        $this->actingAs($member)->post(route('manage.organisations.officials.add', $this->org), [
             'user_id' => $official->id,
             'competition_id' => $upcoming->id,
             'role' => 'official',

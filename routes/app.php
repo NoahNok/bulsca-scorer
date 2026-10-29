@@ -6,7 +6,7 @@ use App\Http\Controllers\AccountInviteController;
 use App\Http\Controllers\Activity\ActivityController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminUsersController;
-use App\Http\Controllers\ChampionshipController;
+use App\Http\Controllers\Manage\ChampionshipController;
 use App\Http\Controllers\CompetitionController;
 use App\Http\Controllers\DigitalJudge\DigitalJudgeController;
 use App\Http\Controllers\LeagueController;
@@ -23,7 +23,10 @@ use App\Http\Controllers\Manage\ResultSheetsController;
 use App\Http\Controllers\Manage\SercEventController;
 use App\Http\Controllers\Manage\SpeedEventController;
 use App\Http\Controllers\Manage\ManageController;
+use App\Http\Controllers\Manage\OrganisationController as ManageOrganisationController;
+use App\Http\Controllers\Manage\OrganisationAccountsController;
 use App\Http\Controllers\Manage\OrganisationCreateController;
+use App\Http\Controllers\Manage\OrganisationOfficialsController;
 use App\Http\Controllers\Organisation\OrganisationController;
 use App\Http\Controllers\OverallResultsController;
 use App\Http\Controllers\PrintableController;
@@ -96,6 +99,7 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
                 Route::post('/account/{account}', [CompetitionController::class, 'editCompetitionAccount'])->name('comps.accounts.edit');
                 Route::delete('/account/{account}', [CompetitionController::class, 'deleteCompetitionAccount'])->name('comps.accounts.delete');
                 Route::post('/accounts/invitee', [CompetitionController::class, 'inviteCompetitionAccount'])->name('comps.accounts.invite');
+                Route::delete('/invites/{invite}', [CompetitionController::class, 'cancelCompetitionInvite'])->name('comps.accounts.invites.destroy');
                 Route::post('/account/serc-writer/new-password', [CompetitionController::class, 'resetSercWriterAccountPassword'])->name('comps.accounts.serc-writer.new-password');
 
                 Route::get('/officials', [CompetitionOfficialsController::class, 'index'])->name('manage.competitions.officials');
@@ -305,23 +309,32 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
         });
 
 
-        // Before the resource, whose show route would otherwise take /organisation/create
+        // ORGANISATIONS: Svelte pages in OrganisationLayout, but for Scoring and Infractions (still Blade).
+        // Before the organisation's routes, whose {organisation} would otherwise take /organisation/create
         Route::get('/organisation/create', [OrganisationCreateController::class, 'create'])->name('manage.organisations.create');
         Route::post('/organisation', [OrganisationCreateController::class, 'store'])->name('manage.organisations.store');
-        Route::resource('organisation', OrganisationController::class)->except(['create', 'store'])->names('orgs');
+        Route::get('/organisation/{organisation}', [ManageOrganisationController::class, 'show'])->name('manage.organisations.show');
         Route::prefix('organisation/{organisation}')->middleware('can:access,organisation,"admin"')->group(function () {
-            Route::get('/accounts', [OrganisationController::class, 'accounts'])->name('orgs.accounts');
-            Route::post('/accounts', [OrganisationController::class, 'accountsPost'])->name('orgs.accounts.post');
-            Route::get('/officials', [OrganisationController::class, 'officials'])->name('orgs.officials');
-            Route::get('/officials/export', [OrganisationController::class, 'officialsExport'])->name('orgs.officials.export');
-            Route::post('/officials/add', [OrganisationController::class, 'officialsAddToCompetition'])->name('orgs.officials.add');
+            Route::get('/edit', [ManageOrganisationController::class, 'settings'])->name('manage.organisations.settings');
+            Route::patch('', [ManageOrganisationController::class, 'update'])->name('manage.organisations.update');
 
-            Route::get('/accounts/{account}', [OrganisationController::class, 'account'])->name('orgs.accounts.view');
-            Route::post('/accounts/{account}', [OrganisationController::class, 'accountEditPost'])->name('orgs.accounts.edit');
+            Route::name('manage.organisations.')->group(function () {
+                Route::get('/accounts', [OrganisationAccountsController::class, 'index'])->name('accounts');
+                Route::post('/accounts', [OrganisationAccountsController::class, 'invite'])->name('accounts.invite');
+                Route::post('/accounts/{account}', [OrganisationAccountsController::class, 'update'])->name('accounts.update');
+                Route::delete('/accounts/{account}', [OrganisationAccountsController::class, 'destroy'])->name('accounts.destroy');
+                Route::delete('/invites/{invite}', [OrganisationAccountsController::class, 'cancelInvite'])->name('accounts.invites.destroy');
 
-            Route::get('/invite/{inviteId}/cancel', [OrganisationController::class, 'cancelInvite'])->name('orgs.invite.cancel');
+                Route::get('/officials', [OrganisationOfficialsController::class, 'index'])->name('officials');
+                Route::get('/officials/export', [OrganisationOfficialsController::class, 'export'])->name('officials.export');
+                Route::post('/officials/add', [OrganisationOfficialsController::class, 'store'])->name('officials.add');
 
-            Route::delete('/accounts/remove', [OrganisationController::class, 'accountRemove'])->name('orgs.account.remove');
+                Route::get('/championships', [ChampionshipController::class, 'index'])->name('championships');
+                Route::post('/championships', [ChampionshipController::class, 'store'])->name('championships.store');
+                Route::get('/championships/{championship}', [ChampionshipController::class, 'show'])->name('championships.show');
+                Route::post('/championships/{championship}/competitions', [ChampionshipController::class, 'addCompetition'])->name('championships.competitions.store');
+                Route::delete('/championships/{championship}/competitions/{competition}', [ChampionshipController::class, 'removeCompetition'])->name('championships.competitions.destroy');
+            });
 
             Route::prefix('infractions')->group(function () {
                 Route::get('', [OrganisationController::class, 'infractions'])->name('orgs.infractions');
@@ -354,25 +367,6 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
                     Route::get('/edit', [OrganisationController::class, 'editScoringSchema'])->name('orgs.scoring.edit');
                     Route::post('/edit', [OrganisationController::class, 'editScoringSchemaPost'])->name('orgs.scoring.edit.post');
                     Route::delete('', [OrganisationController::class, 'deleteScoringSchema'])->name('orgs.scoring.delete');
-                });
-            });
-
-            Route::prefix('championships')->group(function () {
-
-                Route::get('', [ChampionshipController::class, 'view'])->name('orgs.championships');
-
-                Route::get('/create', [ChampionshipController::class, 'create'])->name('orgs.championship.create');
-                Route::post('/create', [ChampionshipController::class, 'store'])->name('orgs.championship.store');
-
-                Route::prefix('/{championship}')->group(function () {
-                    Route::get('', [ChampionshipController::class, 'show'])->name('orgs.championship.view');
-
-                    Route::get('/add-competition', [ChampionshipController::class, 'addCompetition'])->name('orgs.championship.add-competition');
-                    Route::post('/associate-competition', [ChampionshipController::class, 'associateCompetition'])->name('orgs.championship.associate-competition');
-                    Route::post('/deassociate-competition', [ChampionshipController::class, 'deassociateCompetition'])->name('orgs.championship.deassociate-competition');
-                    // Route::get('/edit', [ChampionshipController::class, 'edit'])->name('championship.edit');
-                    // Route::post('/edit', [ChampionshipController::class, 'editPost'])->name('championship.edit.post');
-                    // Route::delete('', [ChampionshipController::class, 'delete'])->name('championship.delete');
                 });
             });
         });

@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\AccountInviteController;
+use App\Models\AccountInvite;
 use App\Models\Competition;
 use App\Models\User;
 use App\Models\UserCompetitionAccess;
@@ -199,6 +201,30 @@ class CompetitionDashboardTest extends TestCase
         $invite()->assertSessionHasErrors('email');
     }
 
+    public function test_settings_lists_pending_invites_and_one_can_be_cancelled(): void
+    {
+        Mail::fake();
+        AccountInviteController::invite('new@example.com', $this->comp, ['access' => ['results']]);
+        $invite = AccountInvite::sole();
+
+        $this->actingAs($this->organiser)->get(route('manage.competitions.settings', $this->comp))
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('invites', [['id' => $invite->id, 'email' => 'new@example.com']]));
+
+        $other = $this->makeOtherComp();
+        AccountInviteController::invite('theirs@example.com', $other, ['access' => ['results']]);
+        $theirs = AccountInvite::where('email', 'theirs@example.com')->sole();
+        $this->actingAs($this->organiser)
+            ->delete($this->appUrl("/comps/{$this->comp->id}/invites/{$theirs->id}"))
+            ->assertNotFound();
+
+        $this->actingAs($this->organiser)
+            ->from(route('manage.competitions.settings', $this->comp))
+            ->delete($this->appUrl("/comps/{$this->comp->id}/invites/{$invite->id}"))
+            ->assertSessionHas('success', 'Invite cancelled');
+        $this->assertSame(['theirs@example.com'], AccountInvite::pluck('email')->all());
+    }
+
     public function test_an_accounts_access_can_be_changed(): void
     {
         $helper = User::factory()->create();
@@ -238,5 +264,14 @@ class CompetitionDashboardTest extends TestCase
             ->assertSessionHas('success', 'Competition deleted');
 
         $this->assertNull(Competition::find($this->comp->id));
+    }
+
+    private function makeOtherComp(): Competition
+    {
+        $comp = $this->comp->replicate();
+        $comp->name = 'Other Champs';
+        $comp->save();
+
+        return $comp;
     }
 }

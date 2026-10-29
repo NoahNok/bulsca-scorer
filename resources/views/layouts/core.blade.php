@@ -228,7 +228,7 @@
                             <div
                                 class="absolute top-6 -left-[25%] w-[150%]  bg-white border-2 rounded-md hidden group-hover:block group-focus:block group-focus-within:block">
                                 @foreach ($orgs as $orgg)
-                                    <a href="{{ route('orgs.show', $orgg->name) }}"
+                                    <a href="{{ route('manage.organisations.show', $orgg->name) }}"
                                         class="hover:bg-gray-200 px-2 py-1 text-sm/6 flex items-center justify-between">
                                         {{ $orgg->name }}
 
@@ -325,7 +325,7 @@
                                     <div
                                         class="absolute top-9 w-[104%] -left-[2%] bg-white border-2 rounded-md hidden group-hover:block group-focus:block group-focus-within:block group-active:block">
                                         @foreach ($orgs as $orgg)
-                                            <a href="{{ route('orgs.show', $orgg->name) }}"
+                                            <a href="{{ route('manage.organisations.show', $orgg->name) }}"
                                                 class="hover:bg-gray-200 px-3 py-2 text-sm/6 flex items-center justify-between">
                                                 {{ $orgg->name }}
 

@@ -6,6 +6,7 @@
 -->
 <script lang="ts">
     import {
+        cancelCompetitionInvite,
         deleteComp,
         deleteCompetitionAccount,
         editCompetitionAccount,
@@ -15,23 +16,22 @@
     import { settingsPost } from "@/actions/App/Http/Controllers/DigitalJudge/DigitalJudgeController";
     import type { PendingVisit } from "@inertiajs/core";
     import { confirm } from "@/lib/confirm";
+    import Accounts from "@/manage/components/Accounts.svelte";
     import Field from "@/manage/components/Field.svelte";
     import RichText from "@/manage/components/RichText.svelte";
     import SideMenu, { type SideMenuItem } from "@/manage/components/SideMenu.svelte";
     import SideMenuPart from "@/manage/components/SideMenuPart.svelte";
     import UnsavedChanges from "@/manage/components/UnsavedChanges.svelte";
     import Switch from "@/manage/components/Switch.svelte";
-    import type { CompetitionAccount, CompetitionEvent, CompetitionHeader } from "@/manage/types";
-    import { search } from "@/routes/accounts";
-    import { Form, router } from "@inertiajs/svelte";
-    import { tick } from "svelte";
-    import { closeOnBackdrop } from "@/manage/ui";
+    import type { Account, CompetitionEvent, CompetitionHeader, PendingInvite } from "@/manage/types";
+    import { Form } from "@inertiajs/svelte";
 
     let {
         competition,
         settings,
         digitalJudge,
         accounts,
+        invites,
         accessTypes,
     }: {
         competition: CompetitionHeader;
@@ -57,7 +57,8 @@
             status_message: string | null;
         };
         digitalJudge: { enabled: boolean; showTeams: boolean; events: (CompetitionEvent & { enabled: boolean })[] };
-        accounts: CompetitionAccount[];
+        accounts: Account[];
+        invites: PendingInvite[];
         /** Access key to its name */
         accessTypes: Record<string, string>;
     } = $props();
@@ -136,59 +137,6 @@
         if (field) document.getElementById(`s-${field.replace(":", "-")}`)?.focus();
     }
 
-    function accessSummary(account: CompetitionAccount) {
-        if (account.owner) return "Owner";
-        if (account.access.includes("admin")) return "Everything";
-        return account.access.map((key) => accessTypes[key] ?? key).join(", ") || "None";
-    }
-
-    // Accounts: one dialog to edit an account's access, one to invite someone
-
-    let editing = $state<CompetitionAccount | null>(null);
-    let editDialog: HTMLDialogElement;
-    let inviteDialog: HTMLDialogElement;
-    let removeError = $state<string | null>(null);
-
-    async function edit(account: CompetitionAccount) {
-        editing = account;
-        removeError = null;
-        await tick();
-        editDialog.showModal();
-    }
-
-    async function remove(account: CompetitionAccount) {
-        const ok = await confirm({
-            title: `Remove ${account.name}?`,
-            description: "They won't be able to manage this competition any more.",
-            confirmLabel: "Remove",
-            confirmVariant: "danger",
-        });
-        if (!ok) return;
-
-        router.delete(deleteCompetitionAccount({ comp: competition.id, account: account.id }).url, {
-            preserveScroll: true,
-            onSuccess: () => editDialog.close(),
-            onError: (errors) => (removeError = errors.account ?? "They couldn't be removed."),
-        });
-    }
-
-    // Existing accounts as you type an email, as the browser's own suggestions
-    let suggestions = $state<{ name: string; email: string }[]>([]);
-    let searchTimer: ReturnType<typeof setTimeout>;
-
-    function suggest(event: Event) {
-        const email = (event.currentTarget as HTMLInputElement).value.trim();
-        clearTimeout(searchTimer);
-        if (email.length < 3) {
-            suggestions = [];
-            return;
-        }
-        searchTimer = setTimeout(async () => {
-            const response = await fetch(search(email).url, { headers: { Accept: "application/json" } });
-            suggestions = response.ok ? await response.json() : [];
-        }, 200);
-    }
-
     // Deleting needs the name typed out
     let confirmName = $state("");
 
@@ -198,7 +146,6 @@
     const fieldGrid = "grid gap-4 *:mt-0 sm:grid-cols-2";
     const heading = "text-lg font-extrabold uppercase";
     const fieldset = "mb-5 flex flex-col gap-[0.6rem] *:mt-0";
-    const accessGrid = "grid grid-cols-2 gap-x-4 gap-y-[0.6rem] *:mt-0";
 
 </script>
 
@@ -396,33 +343,20 @@
     </SideMenuPart>
 
     <SideMenuPart id="accounts" labelledby="s-accounts">
-        <div class="flex items-center justify-between gap-4">
-            <h2 id="s-accounts" class={heading}>Accounts</h2>
-            <button type="button" class="v2-btn v2-btn-sm" onclick={() => inviteDialog.showModal()}>Invite someone</button>
-        </div>
-        <p class={lead}>People who can manage this competition, and what they can open.</p>
-
-        <table class="w-full border-t border-v2-border">
-            <thead class="sr-only">
-                <tr>
-                    <th>Name</th>
-                    <th>Access</th>
-                </tr>
-            </thead>
-            <tbody>
-                {#each accounts as account (account.id)}
-                    <tr class="v2-row *:border-b *:border-v2-border *:px-2 *:py-3 *:align-middle">
-                        <td>
-                            <button type="button" class="v2-row-link flex cursor-pointer flex-col items-start text-left focus-visible:outline-none" onclick={() => edit(account)}>
-                                <span class="font-bold">{account.name}{account.you ? " (you)" : ""}</span>
-                                <span class="text-sm text-v2-muted">{account.email}</span>
-                            </button>
-                        </td>
-                        <td class="text-right text-sm text-v2-muted">{accessSummary(account)}</td>
-                    </tr>
-                {/each}
-            </tbody>
-        </table>
+        <Accounts
+            {accounts}
+            {invites}
+            accessGroups={[{ label: null, types: accessTypes }]}
+            of="this competition"
+            adminHint="Admin gives them everything."
+            routes={{
+                invite: inviteCompetitionAccount(competition.id),
+                update: (account) => editCompetitionAccount({ comp: competition.id, account }),
+                remove: (account) => deleteCompetitionAccount({ comp: competition.id, account }).url,
+                cancelInvite: (invite) => cancelCompetitionInvite({ comp: competition.id, invite }).url,
+            }}
+            headingId="s-accounts"
+        />
     </SideMenuPart>
 
     <SideMenuPart id="delete" labelledby="s-delete">
@@ -449,100 +383,3 @@
         </Form>
     </SideMenuPart>
 </SideMenu>
-
-<dialog bind:this={editDialog} class="v2-modal" aria-labelledby="s-edit-title" onclick={closeOnBackdrop}>
-    {#if editing}
-        {@const account = editing}
-        <h2 id="s-edit-title">{account.name}</h2>
-        <p>{account.email}</p>
-
-        {#if account.owner}
-            <p class="mt-5">They own this competition, so they can do everything.</p>
-            <div class="v2-modal-actions">
-                <button type="button" class="v2-btn" onclick={() => editDialog.close()}>Close</button>
-            </div>
-        {:else}
-            {#key account.id}
-                <Form
-                    action={editCompetitionAccount({ comp: competition.id, account: account.id })}
-                    options={{ preserveScroll: true }}
-                    onSuccess={() => editDialog.close()}
-                >
-                    {#snippet children({ errors, processing })}
-                        <fieldset class="mt-5 {fieldset}">
-                            <legend class="mb-[0.6rem] text-sm font-semibold">What they can open</legend>
-                            <div class={accessGrid}>
-                                {#each Object.entries(accessTypes) as [key, label] (key)}
-                                    <label class="v2-check">
-                                        <input type="checkbox" name="access[]" value={key} checked={account.access.includes(key)} />
-                                        {label}
-                                    </label>
-                                {/each}
-                            </div>
-                            <span class="v2-hint">Admin gives them everything.</span>
-                            {#if errors.access}<span class="v2-error">{errors.access}</span>{/if}
-                            {#if removeError}<span class="v2-error">{removeError}</span>{/if}
-                        </fieldset>
-                        <div class="v2-modal-actions">
-                            {#if !account.you}
-                                <button type="button" class="v2-btn v2-btn-ghost mr-auto text-v2-danger-text" onclick={() => remove(account)}>Remove</button>
-                            {/if}
-                            <button type="button" class="v2-btn" onclick={() => editDialog.close()}>Cancel</button>
-                            <button type="submit" class="v2-btn v2-btn-primary" disabled={processing}>Save access</button>
-                        </div>
-                    {/snippet}
-                </Form>
-            {/key}
-        {/if}
-    {/if}
-</dialog>
-
-<dialog bind:this={inviteDialog} class="v2-modal" aria-labelledby="s-invite-title" onclick={closeOnBackdrop}>
-    <h2 id="s-invite-title">Invite someone</h2>
-    <p>We'll email them a link. If they don't have an account yet, they'll make one.</p>
-
-    <Form
-        action={inviteCompetitionAccount(competition.id)}
-        options={{ preserveScroll: true }}
-        resetOnSuccess
-        onSuccess={() => inviteDialog.close()}
-    >
-        {#snippet children({ errors, processing })}
-            <div class="mt-5">
-                <Field
-                    id="s-invite-email"
-                    name="email"
-                    type="email"
-                    label="Email"
-                    required
-                    autocomplete="off"
-                    list="s-invite-suggestions"
-                    error={errors.email}
-                    oninput={suggest}
-                />
-                <datalist id="s-invite-suggestions">
-                    {#each suggestions as suggestion (suggestion.email)}
-                        <option value={suggestion.email}>{suggestion.name}</option>
-                    {/each}
-                </datalist>
-            </div>
-            <fieldset class="mt-5 {fieldset}">
-                <legend class="mb-[0.6rem] text-sm font-semibold">What they can open</legend>
-                <div class={accessGrid}>
-                    {#each Object.entries(accessTypes) as [key, label] (key)}
-                        <label class="v2-check">
-                            <input type="checkbox" name="access[]" value={key} />
-                            {label}
-                        </label>
-                    {/each}
-                </div>
-                <span class="v2-hint">Admin gives them everything.</span>
-                {#if errors.access}<span class="v2-error">Choose what they can open.</span>{/if}
-            </fieldset>
-            <div class="v2-modal-actions">
-                <button type="button" class="v2-btn" onclick={() => inviteDialog.close()}>Cancel</button>
-                <button type="submit" class="v2-btn v2-btn-primary" disabled={processing}>Send invite</button>
-            </div>
-        {/snippet}
-    </Form>
-</dialog>

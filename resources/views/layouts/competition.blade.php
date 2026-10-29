@@ -17,7 +17,7 @@
                 <h1 class="" x-text="global_state.competition_name ?? '{{ $comp->name }}'">{{ $comp->name }}</h1>
                 <p class="font-archivo text-sm! text-gray-700! uppercase -mb-1 ">{{ $comp->when->format('M jS Y') }}
                     @if ($comp->championship_id)
-                        | <a href="{{ route('orgs.championship.view', [$comp->getOrganisation->name, $comp->championship->slug()]) }}"
+                        | <a href="{{ route('manage.organisations.championships.show', [$comp->getOrganisation, $comp->championship]) }}"
                             class="hover:underline">{{ $comp->championship->name }}</a>
                     @endif
                 </p>
@@ -36,7 +36,7 @@
         </div>
 
         @if ($comp->getOrganisation)
-            <a href="{{ route('orgs.show', $comp->getOrganisation->name) }}">
+            <a href="{{ route('manage.organisations.show', $comp->getOrganisation->name) }}">
                 <img src="{{ $comp->getOrganisation->getLogo() }}" alt="{{ $comp->getOrganisation->name }}'s logo"
                     class="size-14 min-w-14 rounded-full">
             </a>
