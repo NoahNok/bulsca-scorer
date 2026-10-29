@@ -163,6 +163,35 @@ class OrganisationChampionshipsTest extends TestCase
         $this->assertSame(0, $league->competitions()->count());
     }
 
+    public function test_deleting_one_keeps_its_competitions_as_standalone(): void
+    {
+        $league = $this->makeChampionship('Student League');
+        $comp = $this->makeComp('Round 1');
+        $comp->championship()->associate($league);
+        $comp->type = 'FINAL';
+        $comp->save();
+
+        $this->actingAs($this->organiser)->delete($this->url("/{$league->id}"))
+            ->assertRedirect(route('manage.organisations.championships', $this->org))
+            ->assertSessionHas('success', 'Student League deleted');
+
+        $this->assertSame(0, Championship::count());
+        $this->assertSame([null, 'STANDALONE'], [$comp->fresh()->championship_id, $comp->fresh()->type]);
+    }
+
+    public function test_only_its_organisers_can_delete_one_of_its_championships(): void
+    {
+        $theirs = $this->makeChampionship('Their League', $this->makeOrg('Swansea'));
+        $this->actingAs($this->organiser)->delete($this->url("/{$theirs->id}"))->assertNotFound();
+
+        $member = User::factory()->create();
+        $this->org->addAccount($member, 'view');
+        $ours = $this->makeChampionship('Student League');
+        $this->actingAs($member)->delete($this->url("/{$ours->id}"))->assertForbidden();
+
+        $this->assertSame(2, Championship::count());
+    }
+
     public function test_an_old_link_by_its_hyphenated_name_still_opens_it(): void
     {
         $this->makeChampionship('Student League');

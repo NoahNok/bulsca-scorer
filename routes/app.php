@@ -332,6 +332,7 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
                 Route::get('/championships', [ChampionshipController::class, 'index'])->name('championships');
                 Route::post('/championships', [ChampionshipController::class, 'store'])->name('championships.store');
                 Route::get('/championships/{championship}', [ChampionshipController::class, 'show'])->name('championships.show');
+                Route::delete('/championships/{championship}', [ChampionshipController::class, 'destroy'])->name('championships.destroy');
                 Route::post('/championships/{championship}/competitions', [ChampionshipController::class, 'addCompetition'])->name('championships.competitions.store');
                 Route::delete('/championships/{championship}/competitions/{competition}', [ChampionshipController::class, 'removeCompetition'])->name('championships.competitions.destroy');
             });

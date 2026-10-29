@@ -29,7 +29,7 @@
     <title>Championships - {organisation.name} - Scoring.Events</title>
 </svelte:head>
 
-<section aria-labelledby="c-heading" class="max-w-3xl">
+<section aria-labelledby="c-heading">
     <div class="flex flex-wrap items-center justify-between gap-4">
         <h2 id="c-heading" class="text-lg font-extrabold uppercase">Championships</h2>
         {#if championships.length > 0}

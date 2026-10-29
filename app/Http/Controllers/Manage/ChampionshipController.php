@@ -10,12 +10,13 @@ use App\Models\Championship;
 use App\Models\Competition;
 use App\Models\Organisation\Organisation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 /**
  * An organisation's Championships (Svelte, its Organisers only): the list, making one, and a
- * Championship's page, where its competitions are added with their type and removed.
+ * Championship's page, where its competitions are added with their type and removed, and it's deleted.
  */
 class ChampionshipController extends Controller
 {
@@ -66,6 +67,22 @@ class ChampionshipController extends Controller
             ]),
             'types' => collect($this->types())->mapWithKeys(fn ($type) => [$type => ucfirst(strtolower($type))]),
         ]);
+    }
+
+    /**
+     * Deletes it, its competitions going back to standalone. Their foreign key cascades, so they're let
+     * go first, or deleting it would delete them too.
+     */
+    public function destroy(Organisation $organisation, Championship $championship)
+    {
+        $this->ensureOwns($organisation, $championship);
+
+        DB::transaction(function () use ($championship) {
+            Competition::where('championship_id', $championship->id)->update(['championship_id' => null, 'type' => 'STANDALONE']);
+            $championship->delete();
+        });
+
+        return redirect()->route('manage.organisations.championships', $organisation)->with('success', "{$championship->name} deleted");
     }
 
     public function addCompetition(Request $request, Organisation $organisation, Championship $championship)

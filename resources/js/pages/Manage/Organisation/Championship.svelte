@@ -2,10 +2,10 @@
     A Championship's page (manage.organisations.championships.show, Organisers only), in OrganisationLayout:
     its name and dates under a link back to Championships, then its competitions in date order, each with
     its type and Remove. Add competition opens a dialog to pick one of the organisation's competitions
-    not in a championship yet, and its type.
+    not in a championship yet, and its type. Delete (confirmed) keeps its competitions, as standalone ones.
 -->
 <script lang="ts">
-    import { addCompetition, index, removeCompetition } from "@/actions/App/Http/Controllers/Manage/ChampionshipController";
+    import { addCompetition, destroy, index, removeCompetition } from "@/actions/App/Http/Controllers/Manage/ChampionshipController";
     import { confirm } from "@/lib/confirm";
     import { shortDate } from "@/lib/dates";
     import CompetitionTable from "@/manage/components/CompetitionTable.svelte";
@@ -46,6 +46,19 @@
         });
         if (ok) router.delete(removeCompetition({ ...ids, competition: comp.id }).url, { preserveScroll: true });
     }
+
+    async function deleteChampionship() {
+        const ok = await confirm({
+            title: `Delete ${championship.name}?`,
+            description:
+                competitions.length > 0
+                    ? `Its ${competitions.length === 1 ? "competition stays" : `${competitions.length} competitions stay`}, as standalone ones. It can't be undone.`
+                    : "It can't be undone.",
+            confirmLabel: "Delete championship",
+            confirmVariant: "danger",
+        });
+        if (ok) router.delete(destroy(ids).url);
+    }
 </script>
 
 <svelte:head>
@@ -58,9 +71,12 @@
     lead="{shortDate(championship.start)} – {shortDate(championship.end)}"
 >
     {#snippet actions()}
-        {#if available.length > 0 && competitions.length > 0}
-            <button type="button" class="v2-btn v2-btn-sm" onclick={() => addDialog.showModal()}>Add competition</button>
-        {/if}
+        <div class="flex flex-wrap gap-2">
+            <button type="button" class="v2-btn v2-btn-ghost v2-btn-sm text-v2-danger-text" onclick={deleteChampionship}>Delete</button>
+            {#if available.length > 0 && competitions.length > 0}
+                <button type="button" class="v2-btn v2-btn-sm" onclick={() => addDialog.showModal()}>Add competition</button>
+            {/if}
+        </div>
     {/snippet}
 </PageHeading>
 
