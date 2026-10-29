@@ -27,7 +27,8 @@ use App\Http\Controllers\Manage\OrganisationController as ManageOrganisationCont
 use App\Http\Controllers\Manage\OrganisationAccountsController;
 use App\Http\Controllers\Manage\OrganisationCreateController;
 use App\Http\Controllers\Manage\OrganisationOfficialsController;
-use App\Http\Controllers\Organisation\OrganisationController;
+use App\Http\Controllers\Manage\OrganisationScoringController;
+use App\Http\Controllers\Manage\ViolationCodesController;
 use App\Http\Controllers\OverallResultsController;
 use App\Http\Controllers\PrintableController;
 use App\Http\Controllers\Push\PushController;
@@ -309,7 +310,7 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
         });
 
 
-        // ORGANISATIONS: Svelte pages in OrganisationLayout, but for Scoring and Infractions (still Blade).
+        // ORGANISATIONS: Svelte pages in OrganisationLayout.
         // Before the organisation's routes, whose {organisation} would otherwise take /organisation/create
         Route::get('/organisation/create', [OrganisationCreateController::class, 'create'])->name('manage.organisations.create');
         Route::post('/organisation', [OrganisationCreateController::class, 'store'])->name('manage.organisations.store');
@@ -335,40 +336,26 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
                 Route::delete('/championships/{championship}', [ChampionshipController::class, 'destroy'])->name('championships.destroy');
                 Route::post('/championships/{championship}/competitions', [ChampionshipController::class, 'addCompetition'])->name('championships.competitions.store');
                 Route::delete('/championships/{championship}/competitions/{competition}', [ChampionshipController::class, 'removeCompetition'])->name('championships.competitions.destroy');
-            });
 
-            Route::prefix('infractions')->group(function () {
-                Route::get('', [OrganisationController::class, 'infractions'])->name('orgs.infractions');
-                Route::post('create', [OrganisationController::class, 'createInfraction'])->name('orgs.infractions.create');
-                Route::get('{type}/{id}', [OrganisationController::class, 'getInfraction'])->name('orgs.infractions.view');
-                Route::post('{type}/{id}', [OrganisationController::class, 'updateInfraction'])->name('orgs.infractions.update');
-                Route::delete('{type}/{id}', [OrganisationController::class, 'deleteInfraction'])->name('orgs.infractions.delete');
-            });
+                // Formulas before Scoring templates, whose {template} would otherwise take result-schemas
+                Route::get('/scoring', [OrganisationScoringController::class, 'index'])->name('scoring');
+                Route::get('/scoring/result-schemas/create', [OrganisationScoringController::class, 'createFormula'])->name('scoring.formulas.create');
+                Route::post('/scoring/result-schemas', [OrganisationScoringController::class, 'storeFormula'])->name('scoring.formulas.store');
+                Route::get('/scoring/result-schemas/{formula}/edit', [OrganisationScoringController::class, 'editFormula'])->name('scoring.formulas.edit');
+                Route::post('/scoring/result-schemas/{formula}', [OrganisationScoringController::class, 'updateFormula'])->name('scoring.formulas.update');
+                Route::delete('/scoring/result-schemas/{formula}', [OrganisationScoringController::class, 'destroyFormula'])->name('scoring.formulas.destroy');
 
-            Route::prefix('scoring')->group(function () {
-                Route::get('', [OrganisationController::class, 'scoringSettings'])->name('orgs.scoring');
+                Route::get('/scoring/create', [OrganisationScoringController::class, 'createTemplate'])->name('scoring.templates.create');
+                Route::post('/scoring', [OrganisationScoringController::class, 'storeTemplate'])->name('scoring.templates.store');
+                Route::get('/scoring/{template}/edit', [OrganisationScoringController::class, 'editTemplate'])->whereNumber('template')->name('scoring.templates.edit');
+                Route::post('/scoring/{template}', [OrganisationScoringController::class, 'updateTemplate'])->whereNumber('template')->name('scoring.templates.update');
+                Route::delete('/scoring/{template}', [OrganisationScoringController::class, 'destroyTemplate'])->whereNumber('template')->name('scoring.templates.destroy');
 
-
-                Route::prefix('result-schemas')->group(function () {
-                    Route::post('/create', [OrganisationController::class, 'createResultSchemaTemplatePost'])->name('orgs.scoring.result-schema.create.post');
-                    Route::get('/create', [OrganisationController::class, 'createResultSchemaTemplate'])->name('orgs.scoring.result-schema.create');
-
-                    Route::prefix('{schema}')->group(function () {
-                        Route::get('/edit', [OrganisationController::class, 'editResultSchemaTemplate'])->name('orgs.scoring.result-schema.edit');
-                        Route::post('/edit', [OrganisationController::class, 'editResultSchemaTemplatePost'])->name('orgs.scoring.result-schema.edit.post');
-                        Route::delete('', [OrganisationController::class, 'deleteResultSchemaTemplate'])->name('orgs.scoring.result-schema.delete');
-                    });
-                });
-
-
-                Route::post('/create', [OrganisationController::class, 'createScoringSchemaPost'])->name('orgs.scoring.create.post');
-                Route::get('/create', [OrganisationController::class, 'createScoringSchema'])->name('orgs.scoring.create');
-
-                Route::prefix('{schema}')->group(function () {
-                    Route::get('/edit', [OrganisationController::class, 'editScoringSchema'])->name('orgs.scoring.edit');
-                    Route::post('/edit', [OrganisationController::class, 'editScoringSchemaPost'])->name('orgs.scoring.edit.post');
-                    Route::delete('', [OrganisationController::class, 'deleteScoringSchema'])->name('orgs.scoring.delete');
-                });
+                // Still /infractions, so old links work
+                Route::get('/infractions', [ViolationCodesController::class, 'index'])->name('violations');
+                Route::post('/infractions', [ViolationCodesController::class, 'store'])->name('violations.store');
+                Route::patch('/infractions/{type}/{code}', [ViolationCodesController::class, 'update'])->whereIn('type', ['dq', 'pen'])->whereNumber('code')->name('violations.update');
+                Route::delete('/infractions/{type}/{code}', [ViolationCodesController::class, 'destroy'])->whereIn('type', ['dq', 'pen'])->whereNumber('code')->name('violations.destroy');
             });
         });
 

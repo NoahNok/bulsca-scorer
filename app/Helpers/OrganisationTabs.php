@@ -8,8 +8,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
 /**
- * An organisation's page tabs, for whoever's signed in: the Blade layout (layouts/organisation.blade.php)
- * and the Svelte one (manage/layout/OrganisationLayout.svelte) both draw these, so they always agree.
+ * An organisation's page tabs, for whoever's signed in, which OrganisationLayout.svelte draws.
  */
 class OrganisationTabs
 {
@@ -22,8 +21,8 @@ class OrganisationTabs
         ['Championships', 'manage.organisations.championships', 'admin', ['manage.organisations.championships'], true],
         ['Accounts', 'manage.organisations.accounts', 'admin', ['manage.organisations.accounts'], true],
         ['Officials', 'manage.organisations.officials', 'admin', ['manage.organisations.officials'], true],
-        ['Scoring', 'orgs.scoring', 'admin', ['orgs.scoring'], false],
-        ['Infractions', 'orgs.infractions', 'admin', ['orgs.infractions'], false],
+        ['Scoring', 'manage.organisations.scoring', 'admin', ['manage.organisations.scoring'], true],
+        ['Violations', 'manage.organisations.violations', 'admin', ['manage.organisations.violations'], true],
         ['Settings', 'manage.organisations.settings', 'admin', ['manage.organisations.settings'], true],
     ];
 

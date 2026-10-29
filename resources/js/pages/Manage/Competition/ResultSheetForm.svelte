@@ -8,6 +8,7 @@
 <script lang="ts">
     import { index, show, store, update } from "@/actions/App/Http/Controllers/Manage/ResultSheetsController";
     import Alert from "@/manage/components/Alert.svelte";
+    import FormulaEditor from "@/manage/components/FormulaEditor.svelte";
     import PageHeading from "@/manage/components/PageHeading.svelte";
     import UnconfirmedAlert from "@/manage/results/UnconfirmedAlert.svelte";
     import Switch from "@/manage/components/Switch.svelte";
@@ -249,40 +250,8 @@
 
         {#if formula === "custom"}
             <div class="mt-5 flex flex-col gap-5 rounded-xl border border-v2-border bg-v2-card px-4 py-4">
-                <div>
-                    <h3 class="text-sm font-extrabold uppercase">Global variables</h3>
-                    <p class="mt-1 mb-3 text-sm/[1.6] text-v2-muted">Worked out once per event, for the result equation.</p>
-                    <ul class="flex flex-col gap-2">
-                        {#each form.global_variables as variable, i (i)}
-                            <li class="flex items-center gap-2">
-                                <input class="{code} w-32" placeholder="name" aria-label="Global variable {i + 1} name" bind:value={variable.name} />
-                                <span class="text-sm text-v2-muted">=</span>
-                                <input class="{code} flex-1" placeholder="MINIMUM(results, 'points')" aria-label="Global variable {i + 1} expression" bind:value={variable.expression} />
-                                <button type="button" class="v2-btn v2-btn-sm v2-btn-ghost" aria-label="Remove global variable {i + 1}" onclick={() => form.global_variables.splice(i, 1)}>Remove</button>
-                            </li>
-                        {/each}
-                    </ul>
-                    <button
-                        type="button"
-                        class="v2-btn v2-btn-sm mt-3"
-                        onclick={() => form.global_variables.push({ name: "", expression: "", order: Math.max(0, ...form.global_variables.map((v) => v.order ?? 0)) + 1 })}
-                    >
-                        Add global variable
-                    </button>
-                </div>
-                <div>
-                    <h3 class="text-sm font-extrabold uppercase">Result equation</h3>
-                    <p class="mt-1 mb-3 text-sm/[1.6] text-v2-muted">Gives each event result its points on this sheet. It can use the variables above.</p>
-                    <input
-                        class={[code, "w-full", form.errors.equation && "is-invalid"]}
-                        placeholder="item.points"
-                        aria-label="Result equation"
-                        aria-invalid={form.errors.equation ? "true" : undefined}
-                        aria-describedby={form.errors.equation ? "sf-equation-error" : undefined}
-                        bind:value={form.equation}
-                    />
-                    {#if form.errors.equation}<span id="sf-equation-error" class="v2-error">{form.errors.equation}</span>{/if}
-                </div>
+                <FormulaEditor bind:variables={form.global_variables} bind:equation={form.equation} error={form.errors.equation} id="sf"
+                    equationLead="Gives each event result its points on this sheet. It can use the variables above." />
                 <label class="v2-check mt-0"><input type="checkbox" bind:checked={form.rank_higher} /> Highest points total wins</label>
             </div>
         {/if}

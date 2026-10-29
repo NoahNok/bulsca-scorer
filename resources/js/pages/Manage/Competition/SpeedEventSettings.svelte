@@ -12,7 +12,7 @@
     import Switch from "@/manage/components/Switch.svelte";
     import UnsavedChanges from "@/manage/components/UnsavedChanges.svelte";
     import PageHeading from "@/manage/components/PageHeading.svelte";
-    import ScoringSchemaEditor from "@/manage/events/ScoringSchemaEditor.svelte";
+    import ScoringSchemaEditor from "@/manage/components/ScoringSchemaEditor.svelte";
     import type { CompetitionHeader, EventScoring, EventTarget, SpeedEventHeader } from "@/manage/types";
     import { Form, router } from "@inertiajs/svelte";
     import { TARGET_LABELS } from "@/manage/ui";

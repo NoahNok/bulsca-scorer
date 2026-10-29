@@ -1,14 +1,29 @@
 <!--
-    An event page's Scoring part: how its results become points and a ranking. Before it has any, pick an
-    organisation's schema to start from or start blank; after that, start again from one at any time.
-    Nothing is saved until Save, and rows left half filled in are dropped then.
+    How an event's results become points and a ranking: an event page's Scoring part, and an organisation's
+    Scoring template page. Given `options` (an event's), before it has any scoring pick an organisation's
+    Scoring template to start from or start blank, and after that start again from one at any time. Without
+    them (a Scoring template) it opens straight on the editor. Given a `name`, it edits that too (a Scoring
+    template's). Nothing is saved until Save, and rows left half filled in are dropped then.
 -->
 <script lang="ts">
     import UnsavedChanges from "@/manage/components/UnsavedChanges.svelte";
     import type { EventScoring, ScoringSchema, ScoringVariable, ScoringViolation } from "@/manage/types";
     import { useForm } from "@inertiajs/svelte";
 
-    let { scoring, url }: { scoring: EventScoring; /** Where it saves */ url: string } = $props();
+    let {
+        scoring,
+        url,
+        name,
+        saveLabel = "Save scoring",
+    }: {
+        /** The schema (null for none yet), and an event's Scoring templates to start from */
+        scoring: { schema: ScoringSchema | null; options?: EventScoring["options"] };
+        /** Where it saves */
+        url: string;
+        /** A Scoring template's name, to edit with it. Left out, there's no Name field */
+        name?: string;
+        saveLabel?: string;
+    } = $props();
 
     const BLANK: ScoringSchema = {
         equation: "",
@@ -31,22 +46,29 @@
     ];
 
     // svelte-ignore state_referenced_locally
-    const form = useForm<ScoringSchema>(structuredClone($state.snapshot(scoring.schema) ?? BLANK));
+    const form = useForm<ScoringSchema & { name?: string }>({
+        ...structuredClone($state.snapshot(scoring.schema) ?? BLANK),
+        ...(name !== undefined ? { name } : {}),
+    });
     // svelte-ignore state_referenced_locally
-    let started = $state(scoring.schema !== null);
+    const options = scoring.options ?? [];
+    // svelte-ignore state_referenced_locally
+    const canPick = scoring.options !== undefined;
+    // svelte-ignore state_referenced_locally
+    let started = $state(scoring.schema !== null || !canPick);
     let template = $state("");
 
     // The schemas to start from, a group per organisation
     const groups = $derived.by(() => {
         const byOrganisation = new Map<string, EventScoring["options"]>();
-        for (const option of scoring.options) {
+        for (const option of options) {
             byOrganisation.set(option.organisation, [...(byOrganisation.get(option.organisation) ?? []), option]);
         }
         return [...byOrganisation];
     });
 
     function startFrom(id: string) {
-        const option = scoring.options.find((option) => String(option.id) === id);
+        const option = options.find((option) => String(option.id) === id);
         const schema = structuredClone($state.snapshot(option?.schema ?? BLANK));
         for (const key of Object.keys(BLANK) as (keyof ScoringSchema)[]) {
             (form as unknown as Record<string, unknown>)[key] = schema[key];
@@ -151,11 +173,29 @@
     <form onsubmit={save} class="flex flex-col gap-6">
         <UnsavedChanges dirty={form.isDirty} />
 
+        {#if name !== undefined}
+            <div class={["v2-field mt-0 max-w-md", form.errors.name && "is-invalid"]}>
+                <label for="sc-name">Name</label>
+                <input
+                    id="sc-name"
+                    class="v2-input w-full"
+                    bind:value={form.name}
+                    maxlength="255"
+                    autocomplete="off"
+                    aria-invalid={form.errors.name ? "true" : undefined}
+                    aria-describedby={form.errors.name ? "sc-name-error" : undefined}
+                />
+                {#if form.errors.name}<span id="sc-name-error" class="v2-error">{form.errors.name}</span>{/if}
+            </div>
+        {/if}
+
+        {#if canPick}
         <details class="rounded-xl border border-v2-border bg-v2-card px-4 py-3">
             <summary class="cursor-pointer text-sm font-semibold">Start again from another schema</summary>
             <p class="mt-2 mb-3 text-sm text-v2-muted">Replaces everything below. Nothing changes until you save.</p>
             {@render templatePicker("Schema")}
         </details>
+        {/if}
 
         <section>
             <h3 class={heading}>Result equation</h3>
@@ -224,7 +264,7 @@
         <div class="flex items-center justify-end gap-4 border-t border-v2-border pt-5">
             {#if form.hasErrors}<span class="mr-auto text-sm font-semibold text-v2-danger-text">Check the fields above.</span>{/if}
             {#if form.isDirty}<span class="text-sm font-semibold text-v2-muted">Unsaved changes</span>{/if}
-            <button type="submit" class="v2-btn v2-btn-primary" disabled={form.processing}>Save scoring</button>
+            <button type="submit" class="v2-btn v2-btn-primary" disabled={form.processing}>{saveLabel}</button>
         </div>
     </form>
 {/if}

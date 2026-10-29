@@ -33,13 +33,6 @@ actions, and an "Add" button that opens a modal form) and `account.blade.php`.
   can show full emails; the masking rule below is for pages any user can reach.
   Reference page: `admin/users/index.blade.php` (a paginated, searchable
   `.se-table`).
-- `layouts.organisation` is for organisation pages under
-  `/organisation/{organisation}` (the view gets `$org`). A new area gets a tab
-  in its `.tabbed-bar`, inside the `@can('access', [$org, 'admin'])` block that
-  matches the route group's middleware, marked `active` with
-  `Str::startsWith(Route::currentRouteName(), 'orgs.<area>')`. Reference page:
-  `organisation/officials.blade.php` (a searchable, filterable `.se-card` list
-  with badges, a CSV export and a per-row action that opens a modal).
 - `layouts.guest` is for account pages outside a competition.
 - `layouts.core` is the shell. It loads Alpine, the `modals` state, the
   `showSuccess()` / `showAlert()` toasts and the site footer.
@@ -76,7 +69,7 @@ actions, and an "Add" button that opens a modal form) and `account.blade.php`.
 - A standalone page that writes its own `<head>` (public results, live,
   what-if, print views) adds `<x-favicon />` after the charset meta, so it
   gets the site's "S." icon (`public/favicon.svg`, `favicon.ico`,
-  `apple-touch-icon.png`). `layouts.organisation` keeps the organisation's logo.
+  `apple-touch-icon.png`).
 - The maintenance page (`errors/503.blade.php`) is the exception. `deploy.sh`
   pre-renders it with `artisan down --render` while `vendor/` and
   `public/build` are being replaced, so it uses inline styles and no `@vite`,

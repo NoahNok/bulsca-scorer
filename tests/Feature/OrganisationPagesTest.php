@@ -69,7 +69,7 @@ class OrganisationPagesTest extends TestCase
                 ->component('Manage/Organisation/Overview')
                 ->where('organisation.name', 'Cardiff ULSC')
                 ->where('organisation.tabs', fn ($tabs) => collect($tabs)->pluck('label')->all() === [
-                    'Overview', 'Championships', 'Accounts', 'Officials', 'Scoring', 'Infractions', 'Settings',
+                    'Overview', 'Championships', 'Accounts', 'Officials', 'Scoring', 'Violations', 'Settings',
                 ])
                 ->where('organisation.tabs.0.current', true)
                 ->where('competitions', fn ($comps) => collect($comps)->pluck('name')->all() === [
@@ -98,7 +98,7 @@ class OrganisationPagesTest extends TestCase
 
         $championship = $this->org->championships()->create(['name' => 'League', 'start_date' => '2026-10-01', 'end_date' => '2027-03-31']);
 
-        foreach (['edit', 'accounts', 'officials', 'championships', "championships/{$championship->id}"] as $tab) {
+        foreach (['edit', 'accounts', 'officials', 'championships', "championships/{$championship->id}", 'scoring', 'scoring/create', 'scoring/result-schemas/create', 'infractions'] as $tab) {
             $this->actingAs($member)->get($this->appUrl("/organisation/{$this->org->id}/{$tab}"))->assertForbidden();
         }
     }

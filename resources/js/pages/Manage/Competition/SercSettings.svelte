@@ -9,7 +9,7 @@
     import SideMenu, { type SideMenuItem } from "@/manage/components/SideMenu.svelte";
     import SideMenuPart from "@/manage/components/SideMenuPart.svelte";
     import PageHeading from "@/manage/components/PageHeading.svelte";
-    import ScoringSchemaEditor from "@/manage/events/ScoringSchemaEditor.svelte";
+    import ScoringSchemaEditor from "@/manage/components/ScoringSchemaEditor.svelte";
     import type { CompetitionHeader, EventScoring, SercEventHeader } from "@/manage/types";
     import { Form } from "@inertiajs/svelte";
 

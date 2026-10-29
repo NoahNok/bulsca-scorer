@@ -2,9 +2,11 @@
 
 namespace App\Exceptions;
 
+use App\Helpers\OrganisationHeader;
 use App\Models\Organisation\Organisation;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Inertia\Inertia;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -74,7 +76,9 @@ class Handler extends ExceptionHandler
                     $org = Organisation::where('name', $org)->firstOrFail();
                 }
 
-                return response()->view('organisation.403', ['org' => $org], 403);
+                return Inertia::render('Manage/Organisation/Forbidden', ['organisation' => OrganisationHeader::for($org)])
+                    ->toResponse($request)
+                    ->setStatusCode(403);
             }
         }
 
