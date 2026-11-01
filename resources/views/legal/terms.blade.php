@@ -37,7 +37,7 @@
     <ul>
         <li>you have a lawful basis under UK data protection law to share the data with us and to publish results;</li>
         <li>you've told competitors that their names, clubs and results will be published on
-            {{ config('legal.trading_as') }}, and pointed them to our <a class="link"
+            {{ config('legal.trading_as') }}, and pointed them to our <a class="v2-link-inline"
                 href="{{ route('legal.privacy') }}">Privacy Policy</a>;</li>
         <li>for competitors under 18, you have consent from a parent or guardian, including consent to publish their
             name with their results;</li>
@@ -53,7 +53,7 @@
     <h3>6. Acceptable use</h3>
     <p>Don't use {{ config('legal.trading_as') }} to break the law, enter false or offensive data, harass anyone, try
         to get into accounts or competitions you don't have access to, disrupt the service, or scrape it at scale. If
-        you find a security problem, please tell us at <a class="link"
+        you find a security problem, please tell us at <a class="v2-link-inline"
             href="mailto:{{ config('legal.contact_email') }}">{{ config('legal.contact_email') }}</a> instead of using
         it.</p>
 

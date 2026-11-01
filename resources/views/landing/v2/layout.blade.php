@@ -9,9 +9,9 @@
     <meta charset="UTF-8">
     <x-favicon />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="robots" content="noindex">
     <meta name="color-scheme" content="light dark">
-    <title>Scoring.Events</title>
+    <title>{{ trim(View::yieldContent('title')) ? trim(View::yieldContent('title')) . ' | ' : '' }}Scoring.Events</title>
+    @yield('v2-meta')
 
     @include('landing.v2.partials.theme-script')
 
@@ -36,11 +36,8 @@
         <nav class="v2-nav" aria-label="Main">
             <a href="{{ route('explore') }}" class="v2-nav-wide">Explore</a>
             <a href="{{ route('dj.home') }}" class="v2-nav-wide">Officials</a>
-            @auth
-                <a href="{{ route('manage.home') }}">Management</a>
-            @else
-                <a href="{{ route('login') }}">Sign in</a>
-            @endauth
+            {{-- The main domain has no session (ADR 0002): app.'s home sends anyone signed in straight to Management --}}
+            <a href="{{ route('manage.home') }}">Sign in</a>
             {{-- Flips between light and dark, starting from whatever is showing (the OS setting until it's used) --}}
             {{-- window.v2Theme is resources/js/lib/theme.ts, shared with the Management app's toggle --}}
             <button type="button" class="v2-theme-toggle" x-data="{

@@ -63,7 +63,7 @@ Organiser pages (competitions, events, entries, results, officials) live in
 
 ### v2 redesign
 
-Pages being redesigned onto `landing.v2.layout` (starting with `/v2`,
+Pages being redesigned onto `landing.v2.layout` (starting with the home page at `/`,
 `resources/views/landing/v2/`) follow `docs/v2-ui-style-guide.md` instead of
 the main-site guide: light/dark tokens, no `se-` classes. Update that guide
 when you add or change a v2 component, token or pattern.

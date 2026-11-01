@@ -17,7 +17,6 @@ use App\Http\Controllers\Landing\LandingController;
 use App\Http\Controllers\Landing\ResultsController;
 use App\Models\Competition;
 use App\Models\DQCode;
-use Carbon\Carbon;
 use App\Helpers\RouteHelpers;
 use Illuminate\Http\Request;
 
@@ -61,17 +60,10 @@ require __DIR__ . '/stats.php';
 */
 
 // The public home page. Signed-in pages, the Management home included, are on app. (routes/app.php)
-Route::get('/', function () {
-    $ongoing = Competition::where('show_competition', true)->where('when', Carbon::today())->first();
-    $upcoming = Competition::where('show_competition', true)->where('when', '>=', Carbon::today())->orderBy('when')->limit(10)->get();
-
-    if ($upcoming->count() < 10) {
-        $extra = Competition::where('show_competition', true)->where('when', '<', Carbon::today())->orderByDesc('when')->limit(10 - $upcoming->count())->get();
-        $upcoming = $upcoming->merge($extra);
-    }
-
-    return view('welcome', compact('ongoing', 'upcoming'));
-})->name('home');
+Route::get('/', [LandingController::class, 'home'])->name('home');
+// The redesign was previewed at /v2; its component catalogue stays there, unlinked
+Route::permanentRedirect('v2', '/');
+Route::get('v2/kit', [LandingController::class, 'kit'])->name('landing.kit');
 
 
 
@@ -112,7 +104,6 @@ Route::get('dq', function () {
 
 
 Route::get('explore', [LandingController::class, 'explore'])->name('explore');
-Route::get('v2', [LandingController::class, 'v2'])->name('landing.v2');
 Route::get('search/{search}', [LandingController::class, 'search'])->name('search');
 
 Route::prefix('competition/{comp}')->group(function () {

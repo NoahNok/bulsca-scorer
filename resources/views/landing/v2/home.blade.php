@@ -446,7 +446,7 @@
                                             class="v2-link v2-row-link"><span class="f-hide-sm"
                                                 aria-hidden="true">Details</span><span class="sr-only">Details for
                                                 {{ $comp->name }}</span></a>
-                                        @if ($comp->canBeViewedLive())
+                                        @if ($comp->isLiveToday())
                                             <a href="{{ route('live', ['comp' => $comp->id]) }}"
                                                 class="v2-btn v2-btn-primary v2-over-row">Follow live</a>
                                         @endif
@@ -499,9 +499,7 @@
                     <p>Set up SERCs and speed events, take entries, generate heats and draws, and publish results as soon
                         as they're in. Give other organisers just the access they need, and group competitions under your
                         organisation.</p>
-                    @guest
-                        <a href="{{ route('register') }}" class="v2-link">Create an account</a>
-                    @endguest
+                    <a href="{{ route('register') }}" class="v2-link">Create an account</a>
                 </div>
                 <div>
                     <h3>Competitors</h3>
@@ -517,6 +515,5 @@
             </div>
         </section>
 
-        @include('landing.v2.partials.kit')
     </div>
 @endsection

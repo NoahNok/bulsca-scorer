@@ -1,10 +1,10 @@
 # v2 UI style guide
 
-How redesigned main-site pages look and are built. The v2 home page at `/v2`
+How redesigned main-site pages look and are built. The home page at `/`
 (`resources/views/landing/v2/home.blade.php`) is the reference
-implementation, and `/v2` ends in a sample sheet of every control in this
-theme (`landing/v2/partials/kit.blade.php`). Use both as the example when you
-redesign a page.
+implementation, and `/v2/kit` (unlinked, not indexed) is a sample sheet of
+every control in this theme (`landing/v2/partials/kit.blade.php`). Use both as
+the example when you redesign a page.
 
 **Scope:** pages that have been redesigned onto `landing.v2.layout`. Pages that
 haven't moved yet still follow
@@ -32,14 +32,17 @@ page: redesign the whole page or leave it alone.
 
 | Layer | File | Provides |
 |---|---|---|
-| Shell | `landing/v2/layout.blade.php` | The favicon, fonts, Vite CSS/JS, Alpine (with the focus plugin), the header (brand, Explore, Officials, Sign in/Management, theme toggle) and the footer's legal links |
+| Shell | `landing/v2/layout.blade.php` | The favicon, fonts, Vite CSS/JS, Alpine (with the focus plugin), the header (brand, Explore, Officials, Sign in, theme toggle) and the footer's legal links. Sign in goes to `app.`'s home, which sends anyone signed in straight to Management: the main domain has no session, so don't use `@auth`/`@guest` on it |
 | Shared styles | `resources/css/v2.css` | Every token, component and pattern below, plus the dark re-skin of `<x-search-all />`. Loaded by the layout |
 | Brand mark | `landing/v2/partials/mark.blade.php` | The favicon's "S." as inline SVG: `@include('landing.v2.partials.mark', ['size' => 32, 'live' => true])`. With `live`, its dot pulses |
-| Samples | `landing/v2/partials/kit.blade.php` | The catalogue: every shared component in use. Only the sheet's own layout (`k-` classes) is styled there |
+| Samples | `landing/v2/partials/kit.blade.php`, shown at `/v2/kit` | The catalogue: every shared component in use. Only the sheet's own layout (`k-` classes) is styled there |
 | Theme | `landing/v2/partials/theme-script.blade.php`, `resources/js/lib/theme.ts` | The script that applies a saved theme before the first paint (in the `<head>` of every v2 page), and the toggle logic. Blade's Alpine toggle reaches it as `window.v2Theme` (set in `basic-app.js`) |
 
-A page `@extends('landing.v2.layout')`, puts styles only it uses in
-`@section('v2-styles')` and its markup in `@section('content')`. Once a
+A page `@extends('landing.v2.layout')`, names itself in `@section('title')`
+(the tab reads "Title | Scoring.Events"), puts styles only it uses in
+`@section('v2-styles')`, extra `<head>` tags (like `noindex`) in
+`@section('v2-meta')`, and its markup in `@section('content')`. Public pages
+are indexed, so only add `noindex` to pages that shouldn't be found. Once a
 second page needs a style, move it into `v2.css` with a `v2-` name. The layout
 is standalone, not `layouts.core`, because core's header and footer can't do
 dark mode. So it doesn't get core's toasts, `modals` state or `customConfirm`.
@@ -278,6 +281,7 @@ each one in use; copy its markup.
 | Tabs | `.v2-tabs` with a sliding `.v2-tabs-pill` (equal-width tabs; set `--v2-tabs` to the count if it isn't 3) |
 | Toast | `.v2-toasts` > `.v2-toast-slot` > `.v2-toast-clip` > `.v2-toast`, stacked bottom-right, newest nearest the corner. They slide up in and slide out right, and the stack closes the gap. The Alpine that fires them is in the kit for now |
 | Modal | `.v2-modal-backdrop` + `.v2-modal` with `x-trap.noscroll`: it traps Tab, locks page scroll and focuses the first button, so put the safe one first. Close on Escape and backdrop click. In Svelte, use a native `<dialog class="v2-modal">` opened with `showModal()` instead (it traps focus, closes on Escape and gets the backdrop from `v2.css`); close it on a click on the dialog itself |
+| Long-form text | `.v2-prose` on an `<article>` (legal policies): a readable measure, `h1`/`h3`, lists and `p` spacing. `.v2-prose-meta` for a muted line (last updated), `.v2-prose-table` around a plain table |
 | Whole-row link | `.v2-row` on the `<tr>`, `.v2-row-link` on its link, `.v2-over-row` on anything else clickable in it (see Patterns) |
 
 ## Patterns
@@ -296,6 +300,8 @@ each one in use; copy its markup.
   (like **Follow live**) gets `.v2-over-row` to sit above it. Add `sr-only` text so the link says what it's for ("Results for Cardiff
   Classic"). Hover and `:focus-within` tint every cell in the row teal, a `<th scope="row">` included, and underline the link.
 - **Live:** a pulsing teal dot plus the words "Live now". Never colour alone.
+- **Follow live** links to `live.` (`route('live', ['comp' => $comp->id])`, same tab) and shows only when
+  `$comp->isLiveToday()`: it's on today and the live pages will open it. Every page uses that one check.
 - **Empty states** say what will appear and when ("Results appear here once
   an organiser publishes them"), in an `EmptyState` (the dashed box) or a muted line.
 - **Dates** read as people say them: "Tomorrow", "In 5 days", `Sunday 25
