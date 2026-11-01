@@ -269,7 +269,7 @@ each one in use; copy its markup.
 | Switch | `<label class="v2-check"><button class="v2-switch" role="switch" :aria-checked="…"></button><span>Text</span></label>`. The label lets the text toggle it |
 | Badge | `.v2-badge` + `is-provisional`, `is-success`, `is-danger`, `is-live` |
 | Chip | `<button class="v2-chip" aria-pressed="…">` for a row of pills that filter (leagues, an Objective, an organisation), in a `role="group"` with an `aria-label`. The chosen one is `aria-pressed="true"` (ink, inverts in dark) |
-| Alert | `.v2-alert` + `is-info`, `is-success`, `is-danger`, with an icon and a `<strong>` title |
+| Alert | `.v2-alert` + `is-info`, `is-success`, `is-warning` (something left out or worth checking, not an error), `is-danger`, with an icon and a `<strong>` title |
 | Tabs | `.v2-tabs` with a sliding `.v2-tabs-pill` (equal-width tabs; set `--v2-tabs` to the count if it isn't 3) |
 | Toast | `.v2-toasts` > `.v2-toast-slot` > `.v2-toast-clip` > `.v2-toast`, stacked bottom-right, newest nearest the corner. They slide up in and slide out right, and the stack closes the gap. The Alpine that fires them is in the kit for now |
 | Modal | `.v2-modal-backdrop` + `.v2-modal` with `x-trap.noscroll`: it traps Tab, locks page scroll and focuses the first button, so put the safe one first. Close on Escape and backdrop click. In Svelte, use a native `<dialog class="v2-modal">` opened with `showModal()` instead (it traps focus, closes on Escape and gets the backdrop from `v2.css`); close it on a click on the dialog itself |

@@ -659,6 +659,12 @@ select.v2-input {
     color: var(--v2-danger-text);
 }
 
+.v2-alert.is-warning {
+    background: var(--v2-warning-soft);
+    border-color: color-mix(in srgb, var(--v2-warning-text) 30%, transparent);
+    color: var(--v2-warning-text);
+}
+
 .v2-alert.is-success {
     background: var(--v2-success-soft);
     border-color: color-mix(in srgb, var(--v2-success) 35%, transparent);

@@ -44,6 +44,8 @@ class MasterSheetsController extends Controller
                 'total' => round($result->total, 1),
                 'position' => $result->position,
             ])->values(),
+            // Set by getResults(), so after it
+            'withoutClub' => collect($master->withoutClub)->map(fn ($names, $sheet) => ['sheet' => $sheet, 'names' => $names])->values(),
             ...ResultSheetsController::confirmation($comp),
         ]);
     }

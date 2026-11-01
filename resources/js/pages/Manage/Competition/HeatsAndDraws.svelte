@@ -19,6 +19,7 @@
     import SidebarPage, { sidebarRow } from "@/manage/components/SidebarPage.svelte";
     import PlacementSearch, { dimClass, matchClass, matcher } from "@/manage/orders/PlacementSearch.svelte";
     import type { CompetitionHeader, DrawTank, HeatGrid, NamedOption } from "@/manage/types";
+    import { toastError } from "@/lib/toast.svelte";
     import { Link, router } from "@inertiajs/svelte";
 
     let {
@@ -75,7 +76,13 @@
     }
 
     function post(url: string) {
-        router.post(url, {}, { preserveScroll: true, onStart: () => (generating = true), onFinish: () => (generating = false) });
+        router.post(url, {}, {
+            preserveScroll: true,
+            onStart: () => (generating = true),
+            // Why it can't generate (no seed times, already generated, pooled heats)
+            onError: (errors) => toastError(Object.values(errors)[0] ?? "That couldn't be generated."),
+            onFinish: () => (generating = false),
+        });
     }
 
     function setShown(field: "show_heats" | "show_draws", value: boolean) {

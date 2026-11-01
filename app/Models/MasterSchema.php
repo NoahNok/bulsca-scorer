@@ -37,12 +37,42 @@ class MasterSchema extends Model
         return $sheets;
     }
 
+    /**
+     * Who getResults() left out for having no Club to count for, by sheet name: `[sheet => [names]]`
+     *
+     * @var array<string, string[]>
+     */
+    public array $withoutClub = [];
+
+    /**
+     * The id of the Club an entry counts for: its own as a Club, a team's, or a competitor's team's
+     */
+    private static function clubOf(Model $entity): ?int
+    {
+        return match (true) {
+            $entity instanceof Club => $entity->id,
+            $entity instanceof CompetitionTeam => $entity->club,
+            $entity instanceof Competitor => $entity->getTeam?->club,
+            default => null,
+        };
+    }
+
     public function getResults()
     {
 
         $sheets = $this->getSheets()->each(function ($sheet) {
             $sheet->results = $sheet->getResults();
         });
+
+        $this->withoutClub = [];
+        foreach ($sheets as $sheet) {
+            $names = $sheet->results->filter(fn ($result) => $result->entity && self::clubOf($result->entity) === null)
+                ->map(fn ($result) => $result->entity->getName($this->getCompetition))
+                ->unique()->values()->all();
+            if ($names) {
+                $this->withoutClub[$sheet->name] = $names;
+            }
+        }
         $schema = $this->schema;
 
         $group_on = $schema['group_on'] ?? 'club';;
@@ -67,7 +97,9 @@ class MasterSchema extends Model
 
             foreach ($sheets as $sheet) {
                 $resultForSheet = $sheet->results->first(function ($result) use ($entity) {
-                    return $result->entity->getClub->id === $entity->id;
+                    // An entry without a Club counts for none
+                    $club = $result->entity ? self::clubOf($result->entity) : null;
+                    return $club !== null && $club === $entity->id;
                 });
 
                 $resultForSheet = $resultForSheet ? $resultForSheet->{$sum_over} : $default_value;

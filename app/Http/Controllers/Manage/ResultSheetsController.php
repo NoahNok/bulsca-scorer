@@ -12,6 +12,7 @@ use App\Exceptions\ScoringException;
 use App\Models\ResultSchema;
 use App\Models\ResultSchemaEvent;
 use App\Services\ResultSheetFormulas;
+use App\Support\ScoringExpressions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -212,6 +213,11 @@ class ResultSheetsController extends Controller
         ], [
             'events.required' => 'Pick at least one event.',
         ]);
+
+        // A badly written expression would break the sheet and every master sheet it's in
+        if ($error = ScoringExpressions::firstError($data)) {
+            throw ValidationException::withMessages(['equation' => $error]);
+        }
 
         foreach ($data['events'] as $index => $event) {
             if (!ResultSheetFormulas::findEvent($comp, $event['type'], $event['id'])) {

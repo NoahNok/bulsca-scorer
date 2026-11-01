@@ -161,6 +161,9 @@
         const empty = { number: position, lanes: Array<HeatCell | null>(grid.lanes).fill(null) };
         heats = renumber([...heats.slice(0, position - 1), empty, ...heats.slice(position - 1)]);
         selection = null;
+        // Heats are saved as their lanes, so one after the last saved Heat stays on the page only, and is
+        // saved once an entry goes in it
+        if (position > grid.heats.length) return saver.highlight([heatKey(position)]);
         saver.save(insertHeat(args).url, { position, ...inPool }, [heatKey(position)]);
     }
 
@@ -179,6 +182,8 @@
         heats = renumber(heats.filter((heat) => heat.number !== number));
         waiting = [...waiting, ...entries.map((cell) => ({ id: cell.entity, name: cell.name, seed: cell.seed }))];
         selection = null;
+        // An empty Heat after the last saved one was never saved (addHeat)
+        if (number > grid.heats.length && entries.length === 0) return;
         saver.save(deleteHeat(args).url, { heat: number, ...inPool });
     }
 
