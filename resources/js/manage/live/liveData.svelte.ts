@@ -1,6 +1,6 @@
 /**
- * The live pages' one poll of a competition's SERC progress (LiveController::liveData) every 5s, and a
- * clock ticking every second. LiveLayout's status pill and the page's SERC order read the same one, so
+ * The live pages' one poll of a competition's SERC progress and status message (LiveController::liveData)
+ * every 5s, and a clock ticking every second. LiveLayout's status pill and the page's SERC order read the same one, so
  * calling follow() again with the same url doesn't start a second poll.
  */
 import type { LiveTeam } from "@/manage/types";
@@ -11,6 +11,8 @@ class LiveData {
     /** null until the first answer, then whether the last poll worked */
     connected = $state<boolean | null>(null);
     teams = $state<Record<number, LiveTeam>>({});
+    /** The Organisers' status message as HTML, undefined until the first poll answers */
+    statusMessage = $state<string | null | undefined>(undefined);
     now = $state(new Date());
 
     constructor(private url: string) {
@@ -25,7 +27,9 @@ class LiveData {
                 headers: { Accept: "application/json" },
             });
             if (!response.ok) throw new Error(String(response.status));
-            this.teams = (await response.json()).teams ?? {};
+            const data = await response.json();
+            this.teams = data.teams ?? {};
+            this.statusMessage = data.statusMessage ?? null;
             this.connected = true;
         } catch {
             this.connected = false;

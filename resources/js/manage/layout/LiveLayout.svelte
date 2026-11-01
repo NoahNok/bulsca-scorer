@@ -1,14 +1,15 @@
 <!--
     Shell for the live pages (pages/Live/*, on live., public and signed out) but the full-screen display: the
     v2 header with the brand (to Explore), the live status and clock, and the theme toggle; the
-    competition's name, date, venue and logo with the live tabs; and the footer. It reads the page's
-    `competition` prop (LiveController::header). The Unavailable page has none, so gets just the shell.
+    competition's name, date, venue and logo with the live tabs and the Organisers' status message
+    (LiveStatusMessage); and the footer. It reads the page's `competition` prop (LiveController::header). The Unavailable page has none, so gets just the shell.
 -->
 <script lang="ts">
     import BrandMark from "@/manage/components/BrandMark.svelte";
     import PageTabs from "@/manage/components/PageTabs.svelte";
     import ThemeToggle from "@/manage/components/ThemeToggle.svelte";
     import LiveStatus from "@/manage/live/LiveStatus.svelte";
+    import LiveStatusMessage from "@/manage/live/LiveStatusMessage.svelte";
     import type { LiveHeader, PageTab } from "@/manage/types";
     import { page } from "@inertiajs/svelte";
     import type { Snippet } from "svelte";
@@ -66,6 +67,7 @@
 
             {#key comp.id}
                 <PageTabs {tabs} label="Live" />
+                <LiveStatusMessage url={comp.dataUrl} initial={comp.statusMessage} class="pt-6" />
             {/key}
 
             <div class="mt-8">

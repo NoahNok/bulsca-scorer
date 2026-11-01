@@ -197,6 +197,18 @@ class LivePagesTest extends TestCase
             ->assertJsonPath("teams.{$this->team->id}.start", $this->comp->serc_start_time->timestamp);
     }
 
+    public function test_the_status_message_shows_on_the_live_pages_and_comes_with_each_poll(): void
+    {
+        $this->get(route('live.data', ['comp' => $this->comp]))->assertOk()->assertJsonPath('statusMessage', null);
+        $this->get($this->url('live'))->assertInertia(fn (Assert $page) => $page->where('competition.statusMessage', null));
+
+        $this->comp->status_message = '<p>Warm-up moved to 9:30</p>';
+        $this->comp->save();
+
+        $this->get(route('live.data', ['comp' => $this->comp]))->assertJsonPath('statusMessage', '<p>Warm-up moved to 9:30</p>');
+        $this->get($this->url('live.display'))->assertInertia(fn (Assert $page) => $page->where('competition.statusMessage', '<p>Warm-up moved to 9:30</p>'));
+    }
+
     private function mark(SERC $serc, CompetitionTeam $team): void
     {
         $judge = new SERCJudge();

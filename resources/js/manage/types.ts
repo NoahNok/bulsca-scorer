@@ -453,6 +453,8 @@ export type LiveHeader = {
     logo: string | null;
     /** The live page polls this for each Team's progress (LiveController::liveData) */
     dataUrl: string;
+    /** The Organisers' note from Settings → Status, as HTML. The poll keeps it current (LiveStatusMessage) */
+    statusMessage: string | null;
     links: { live: string; dqs: string; display: string; heatsDraws: string };
 };
 

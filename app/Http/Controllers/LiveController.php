@@ -62,6 +62,7 @@ class LiveController extends Controller
             'where' => $comp->where,
             'logo' => $comp->getOrganisation?->getLogo(),
             'dataUrl' => route('live.data', $comp->id),
+            'statusMessage' => $comp->status_message ?: null,
             'links' => [
                 'live' => route('live', $query),
                 'dqs' => route('live.dqs', $query),
@@ -137,7 +138,8 @@ class LiveController extends Controller
 
     /**
      * Each Team's SERC progress and Estimated start (SercOrderEstimate), polled every 5s by the live pages.
-     * Starts are unix seconds.
+     * Starts are unix seconds. The Organisers' status message comes too, read fresh each poll, so it shows up
+     * and goes away without a reload.
      */
     public function liveData(Competition $comp)
     {
@@ -145,7 +147,7 @@ class LiveController extends Controller
 
         $teams = Cache::remember('live.' . $comp->id . '.sercOrder', 10, fn () => SercOrderEstimate::for($comp)->teams());
 
-        return response()->json(['teams' => (object) $teams]);
+        return response()->json(['teams' => (object) $teams, 'statusMessage' => $comp->status_message ?: null]);
     }
 
     public function dqs(Request $request)

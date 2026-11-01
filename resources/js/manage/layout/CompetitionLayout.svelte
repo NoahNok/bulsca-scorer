@@ -58,7 +58,7 @@
             <circle cx="12" cy="12" r="9" />
             <path d="M12 11v5M12 8h.01" />
         </svg>
-        <!-- Written by this competition's Organisers in Settings, and only shown to them -->
+        <!-- Written by this competition's Organisers in Settings; the public and live pages show it too -->
         <div class="[&_a]:text-v2-teal-text [&_a]:underline">{@html comp.statusMessage}</div>
     </div>
 {/if}
