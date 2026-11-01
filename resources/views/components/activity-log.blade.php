@@ -79,10 +79,10 @@
                             <a href="{{ $filter['url'] }}" aria-pressed="{{ $filter['active'] ? 'true' : 'false' }}"
                                 title="{{ $filter['active'] ? 'Stop filtering by this' : 'Filter by this' }}"
                                 @class(['rounded-md px-1 -mx-1 hover:bg-gray-200', 'bg-se/10 ring-1 ring-se' => $filter['active']])>
-                                {!! $relation->render($activity) !!}
+                                {!! $relation->render() !!}
                             </a>
                         @else
-                            {!! $relation->render($activity) !!}
+                            {!! $relation->render() !!}
                         @endif
                         @if ($link)
                             <a href="{{ $link }}" class="text-gray-500 hover:text-se" title="Open page"

@@ -2,20 +2,10 @@
 
 namespace App\Services;
 
-use App\Models\AbstractClasses\Entity;
-use App\Models\AbstractClasses\Event;
-use App\Models\AbstractClasses\Violation;
 use App\Models\Activity\Activity;
 use App\Models\Activity\ActivityRelation;
 use App\Models\Competition;
-use App\Models\CompetitionSpeedEvent;
-use App\Models\CompetitionTeam;
-use App\Models\Competitor;
-use App\Models\DigitalJudge\JudgeDQSubmission;
 use App\Models\DigitalJudge\Violation\ViolationSubmission;
-use App\Models\Event\Disqualification;
-use App\Models\Event\Penalty;
-use App\Models\SERC;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Str;
@@ -33,19 +23,6 @@ class ActivityFeed
 
     /** The Activity about Marks, Times and Places: the History shortcut */
     public const HISTORY = ['SERC_MARKED', 'SERC_RESULT_UPDATED', 'SPEED_RESULT_MARKED', 'SPEED_RESULT_UPDATED', 'OOF_MARKED'];
-
-    // Short names for related models in ?related= filters, e.g. related=serc:3|team:12
-    private const RELATED_ALIASES = [
-        'speed' => CompetitionSpeedEvent::class,
-        'serc' => SERC::class,
-        'comp' => Competition::class,
-        'team' => CompetitionTeam::class,
-        'competitor' => Competitor::class,
-        'submission' => JudgeDQSubmission::class,
-        'dq' => Disqualification::class,
-        'penalty' => Penalty::class,
-        'violation' => ViolationSubmission::class,
-    ];
 
     // The chip group each alias belongs to, in the order the groups show
     private const RELATED_KINDS = [
@@ -71,19 +48,6 @@ class ActivityFeed
         'dq' => 'All DQs',
         'penalty' => 'All penalties',
         'violation' => 'All submissions',
-    ];
-
-    // What a related item shows once it's gone
-    private const DELETED_NAMES = [
-        'speed' => 'Speed event deleted',
-        'serc' => 'SERC deleted',
-        'comp' => 'Competition deleted',
-        'team' => 'Team deleted',
-        'competitor' => 'Competitor deleted',
-        'submission' => 'Submission removed',
-        'violation' => 'Submission removed',
-        'dq' => 'DQ removed',
-        'penalty' => 'Penalty removed',
     ];
 
     private const TITLES = [
@@ -308,35 +272,25 @@ class ActivityFeed
      */
     public function relatedItem(ActivityRelation $relation): ?array
     {
-        $alias = array_search($relation->related_type, self::RELATED_ALIASES);
+        $alias = $relation->alias();
 
-        if ($alias === false) {
+        if ($alias === null) {
             return null;
         }
 
-        $related = $relation->related;
         $value = "{$alias}:{$relation->related_id}";
         $forced = $alias === 'comp' && $this->comp && $relation->related_id == $this->comp->id;
         $kind = $alias === 'violation' ? 'submission' : $alias;
 
-        if ($related === null) {
-            return ['kind' => $kind, 'name' => self::DELETED_NAMES[$alias], 'detail' => null, 'state' => 'deleted', 'link' => null, 'filter' => null];
+        if ($relation->related === null) {
+            return ['kind' => $kind, 'name' => $relation->name(), 'detail' => null, 'state' => 'deleted', 'link' => null, 'filter' => null];
         }
-
-        [$name, $detail, $appealed] = match (true) {
-            $related instanceof Competition => [$related->name, $related->getOrganisation?->name, false],
-            $related instanceof Event => [$related->getName(), null, false],
-            $related instanceof Entity => [$related->getName(), null, false],
-            $related instanceof Violation => ["{$related}", $related->getMessage(), false],
-            $related instanceof JudgeDQSubmission => ["{$related->name} ({$related->position})", $related->code, (bool) $related->appealed],
-            $related instanceof ViolationSubmission => ["{$related->code()} for {$related->entity?->getName()}", null, $related->status === 'APPEALED'],
-        };
 
         return [
             'kind' => $kind,
-            'name' => $name,
-            'detail' => $detail,
-            'state' => $appealed ? 'appealed' : 'present',
+            'name' => $relation->name(),
+            'detail' => $relation->detail(),
+            'state' => $relation->appealed() ? 'appealed' : 'present',
             'link' => $forced ? null : $relation->link(),
             'filter' => $forced ? null : ['value' => $value, 'active' => in_array($value, $this->selected('related'))],
         ];
@@ -389,13 +343,7 @@ class ActivityFeed
 
         $inComp = $this->comp === null || $modelCompId == $this->comp->id;
 
-        return match (true) {
-            $model === null || !$inComp => "#{$rel['id']}",
-            $model instanceof Competition => $model->name,
-            $model instanceof ViolationSubmission => "{$model->code()} for {$model->entity?->getName()}",
-            method_exists($model, 'getName') => $model->getName(),
-            default => "#{$rel['id']}",
-        };
+        return $model === null || !$inComp ? "#{$rel['id']}" : ActivityRelation::nameOf($model);
     }
 
     /**
@@ -491,7 +439,7 @@ class ActivityFeed
     {
         return collect($related)->map(function ($raw) {
             $split = explode(':', $raw);
-            $class = self::RELATED_ALIASES[$split[0]] ?? null;
+            $class = ActivityRelation::ALIASES[$split[0]] ?? null;
 
             return $class ? ['alias' => $split[0], 'class' => $class, 'id' => count($split) > 1 && $split[1] !== '' ? $split[1] : null, 'raw' => $raw] : null;
         })->filter()->values()->all();
