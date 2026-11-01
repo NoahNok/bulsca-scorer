@@ -8,10 +8,11 @@
     import AccountBadges from "@/manage/admin/AccountBadges.svelte";
     import EmptyState from "@/manage/components/EmptyState.svelte";
     import Pagination from "@/manage/components/Pagination.svelte";
+    import SearchForm from "@/manage/components/SearchForm.svelte";
     import RowTable, { rowLink } from "@/manage/components/RowTable.svelte";
     import type { Pagination as Page } from "@/manage/types";
     import { index } from "@/routes/manage/admin/users";
-    import { Link, router } from "@inertiajs/svelte";
+    import { Link } from "@inertiajs/svelte";
 
     type User = {
         id: number;
@@ -27,15 +28,6 @@
     };
 
     let { q, users, pagination }: { q: string; users: User[]; pagination: Page } = $props();
-
-    // Seeded from the url's search, then the box's own
-    // svelte-ignore state_referenced_locally
-    let query = $state(q);
-
-    function search(event: SubmitEvent) {
-        event.preventDefault();
-        router.get(index().url, query.trim() ? { q: query.trim() } : {}, { preserveState: true });
-    }
 </script>
 
 <svelte:head>
@@ -48,10 +40,7 @@
     </h2>
     <p class="mt-[0.35rem] mb-5 text-[0.9375rem]/[1.6] text-v2-muted">Every account on the site, by name.</p>
 
-    <form role="search" class="mb-4 flex gap-2" onsubmit={search}>
-        <input type="search" class="v2-input w-full" placeholder="Search by name or email" aria-label="Search users" bind:value={query} />
-        <button type="submit" class="v2-btn">Search</button>
-    </form>
+    <SearchForm url={index().url} {q} placeholder="Search by name or email" label="Search users" />
 
     {#if users.length > 0}
         <RowTable rows={users} columns={["User", "Account", "Competitions", "Officiating", "Joined"]}>

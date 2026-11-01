@@ -7,9 +7,10 @@
     import CompetitionTable from "@/manage/components/CompetitionTable.svelte";
     import EmptyState from "@/manage/components/EmptyState.svelte";
     import Pagination from "@/manage/components/Pagination.svelte";
+    import SearchForm from "@/manage/components/SearchForm.svelte";
     import type { ManagedCompetition, Pagination as Page } from "@/manage/types";
     import { index } from "@/routes/manage/admin/competitions";
-    import { Link, router } from "@inertiajs/svelte";
+    import { Link } from "@inertiajs/svelte";
 
     let {
         q,
@@ -22,15 +23,6 @@
         pagination: Page;
         newUrl: string;
     } = $props();
-
-    // Seeded from the url's search, then the box's own
-    // svelte-ignore state_referenced_locally
-    let query = $state(q);
-
-    function search(event: SubmitEvent) {
-        event.preventDefault();
-        router.get(index().url, query.trim() ? { q: query.trim() } : {}, { preserveState: true });
-    }
 </script>
 
 <svelte:head>
@@ -46,10 +38,7 @@
     </div>
     <p class="mt-[0.35rem] mb-5 text-[0.9375rem]/[1.6] text-v2-muted">Every competition on the site, newest first.</p>
 
-    <form role="search" class="mb-4 flex gap-2" onsubmit={search}>
-        <input type="search" class="v2-input w-full" placeholder="Search by name" aria-label="Search competitions" bind:value={query} />
-        <button type="submit" class="v2-btn">Search</button>
-    </form>
+    <SearchForm url={index().url} {q} placeholder="Search by name" label="Search competitions" />
 
     {#if competitions.length > 0}
         <CompetitionTable {competitions} />

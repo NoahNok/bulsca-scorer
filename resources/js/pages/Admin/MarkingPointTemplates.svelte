@@ -18,7 +18,7 @@
 </script>
 
 <svelte:head>
-    <title>SERC templates - Admin - Scoring.Events</title>
+    <title>Marking point templates - Admin - Scoring.Events</title>
 </svelte:head>
 
 <section aria-labelledby="mpt-heading">

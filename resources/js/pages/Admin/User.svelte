@@ -1,6 +1,6 @@
 <!--
     A user's Admin page (manage.admin.users.show), in AdminLayout: their name, account badges, email and
-    when they joined, verified and were last active, a line of their Judge submissions when they have
+    when they joined, verified and were last active, a line of their DQ and penalty submissions when they have
     any, then Tabs between their Competitions (directly or through an organisation), Organisations and
     Officiating, each a RowTable. It opens on the first with anything in it.
 -->
@@ -101,7 +101,7 @@
         <span class="block text-sm">{meta}</span>
         {#if submissions}
             <span class="block text-sm tabular-nums">
-                Judge submissions: {submissions.pending} pending · {submissions.accepted} accepted · {submissions.rejected} rejected
+                DQ and penalty submissions: {submissions.pending} pending · {submissions.accepted} accepted · {submissions.rejected} rejected
             </span>
         {/if}
     {/snippet}

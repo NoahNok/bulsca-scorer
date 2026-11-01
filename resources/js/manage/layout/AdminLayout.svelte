@@ -18,7 +18,7 @@
     const sections: { label: string; url: string; pages: string[] }[] = [
         { label: "Competitions", url: competitions().url, pages: ["Admin/Competition"] },
         { label: "Users", url: users().url, pages: ["Admin/User"] },
-        { label: "SERC templates", url: templates().url, pages: ["Admin/MarkingPointTemplate"] },
+        { label: "Marking point templates", url: templates().url, pages: ["Admin/MarkingPointTemplate"] },
         { label: "Activity", url: activity().url, pages: ["Admin/Activity"] },
     ];
 

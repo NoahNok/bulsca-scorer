@@ -85,10 +85,10 @@
 </script>
 
 <svelte:head>
-    <title>{template ? template.name : "New template"} - SERC templates - Admin - Scoring.Events</title>
+    <title>{template ? template.name : "New template"} - Marking point templates - Admin - Scoring.Events</title>
 </svelte:head>
 
-<PageHeading back={{ href: index().url, label: "SERC templates" }} title={template ? template.name : "New template"} />
+<PageHeading back={{ href: index().url, label: "Marking point templates" }} title={template ? template.name : "New template"} />
 
 <form onsubmit={save} class="flex max-w-2xl flex-col gap-6">
     {#if template}<UnsavedChanges dirty={form.isDirty} />{/if}

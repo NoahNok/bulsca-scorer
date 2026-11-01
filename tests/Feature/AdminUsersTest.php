@@ -167,4 +167,33 @@ class AdminUsersTest extends TestCase
                 // an Official made by an Admin hasn't signed in until they verify
                 ->where('user.neverSignedIn', true));
     }
+
+    public function test_users_are_paged_keeping_the_search(): void
+    {
+        foreach (range(1, 25) as $i) {
+            User::factory()->create(['name' => sprintf('Paged %02d', $i)]);
+        }
+
+        $this->actingAs($this->admin)
+            ->get($this->appUrl('/admin/users?q=paged'))
+            ->assertInertia(fn (Assert $page) => $page
+                ->has('users', 25)
+                ->where('pagination.last', 1));
+
+        User::factory()->create(['name' => 'Paged 26']);
+
+        $this->actingAs($this->admin)
+            ->get($this->appUrl('/admin/users?q=paged'))
+            ->assertInertia(fn (Assert $page) => $page
+                ->has('users', 25)
+                ->where('pagination.total', 26)
+                ->where('pagination.next', fn ($url) => str_contains($url, 'page=2') && str_contains($url, 'q=paged')));
+
+        $this->actingAs($this->admin)
+            ->get($this->appUrl('/admin/users?q=paged&page=2'))
+            ->assertInertia(fn (Assert $page) => $page
+                ->has('users', 1)
+                ->where('users.0.name', 'Paged 26')
+                ->where('pagination.prev', fn ($url) => str_contains($url, 'q=paged')));
+    }
 }
