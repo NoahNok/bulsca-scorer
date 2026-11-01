@@ -153,7 +153,7 @@ Pages set `@section('title')` and fill `@section('content')`.
     modal lists people from the organisation's other competitions). Mask their
     emails the same way.
 - **Search and filter a list** with a `get` form posting back to the same
-  route: a search input like the admin users page's (`q`), plus a `<select>`
+  route: a search input (`q`), plus a `<select>`
   filter that submits `onchange`. Show "Showing X of Y" and a "Clear" link
   while a filter is on, and an empty state for no matches. The controller
   reads both from the query string and ignores unknown filter values.
@@ -162,15 +162,13 @@ Pages set `@section('title')` and fill `@section('content')`.
   value from the query string (and the `page`), under a "Showing activity for"
   label, with one "Clear" link for all of them. When a filter can hold several
   values, group the chips under a small kind label, with "or" between chips in
-  a group and "and" between groups (see `components/activity-log.blade.php`).
+  a group and "and" between groups.
 - **Let a list filter take several values** with an "Add …" `<select>` per
   kind. Picking an option adds it to a `|`-separated query param and reloads,
   and the select goes back to its placeholder. Leave already-picked values out
   of its options. Toggle buttons for a short fixed list are plain links whose
-  URL adds or removes their value, with `aria-pressed`. (A competition's
-  Activity, which had these, is now a Management page; the Admin Activity
-  Monitor keeps the chips and type toggles.)
-- **Filter from a list item:** in the Admin Activity Monitor, each related item in a
+  URL adds or removes their value, with `aria-pressed`.
+- **Filter from a list item:** each related item in a
   card's footer links to the log with that item added as a filter, or removed
   if it's already on (shown pressed). Something that also has its own page
   gets a small ↗ link beside it, since links can't nest.

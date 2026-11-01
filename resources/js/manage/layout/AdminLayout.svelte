@@ -8,6 +8,7 @@
     import type { PageTab } from "@/manage/types";
     import { index as competitions } from "@/routes/manage/admin/competitions";
     import { index as users } from "@/routes/manage/admin/users";
+    import { activity } from "@/routes/manage/admin";
     import { page } from "@inertiajs/svelte";
     import type { Snippet } from "svelte";
 
@@ -16,6 +17,7 @@
     const sections: { label: string; url: string; pages: string[] }[] = [
         { label: "Competitions", url: competitions().url, pages: ["Admin/Competition"] },
         { label: "Users", url: users().url, pages: ["Admin/User"] },
+        { label: "Activity", url: activity().url, pages: ["Admin/Activity"] },
     ];
 
     const tabs: PageTab[] = $derived(

@@ -3,12 +3,12 @@
 use App\Helpers\RouteHelpers;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AccountInviteController;
-use App\Http\Controllers\Activity\ActivityController;
 use App\Http\Controllers\Manage\ChampionshipController;
 use App\Http\Controllers\CompetitionController;
 use App\Http\Controllers\DigitalJudge\DigitalJudgeController;
 use App\Http\Controllers\LeagueController;
 use App\Http\Controllers\Manage\CompetitionActivityController;
+use App\Http\Controllers\Manage\Admin\AdminActivityController;
 use App\Http\Controllers\Manage\Admin\AdminCompetitionsController;
 use App\Http\Controllers\Manage\Admin\AdminUsersController;
 use App\Http\Controllers\Manage\CompetitionCreateController;
@@ -385,7 +385,7 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
         Route::get('/competition/{comp}', [AdminCompetitionsController::class, 'show'])->name('manage.admin.competitions.show');
         Route::post('/competition/{comp}/update', [AdminCompetitionsController::class, 'update'])->name('manage.admin.competitions.update');
 
-        Route::get('/activity', [ActivityController::class, 'admin'])->name('admin.activity');
+        Route::get('/activity', [AdminActivityController::class, 'show'])->name('manage.admin.activity');
 
         Route::get('/users', [AdminUsersController::class, 'index'])->name('manage.admin.users.index');
         Route::get('/users/{user}', [AdminUsersController::class, 'show'])->name('manage.admin.users.show');

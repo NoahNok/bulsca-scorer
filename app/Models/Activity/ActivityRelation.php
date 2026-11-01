@@ -141,23 +141,4 @@ class ActivityRelation extends Model
             default => null,
         };
     }
-
-    /**
-     * The Admin Activity Monitor's Blade partial for it
-     */
-    public function render()
-    {
-        $related = $this->related;
-        $name = $this->name();
-
-        return match (true) {
-            $related === null => view('components.activity-log.null', ['name' => $name, 'description' => $name]),
-            $related instanceof Competition => view('components.activity-log.competition', ['name' => $name, 'org' => $related->getOrganisation]),
-            $related instanceof Event => view('components.activity-log.event', ['name' => $name, 'is_serc' => $related instanceof SERC]),
-            $related instanceof Entity => view('components.activity-log.entity', ['name' => $name, 'type' => class_basename($related)]),
-            $related instanceof Violation => view('components.activity-log.violation', ['name' => $name, 'description' => $this->detail()]),
-            $related instanceof JudgeDQSubmission, $related instanceof ViolationSubmission => view('components.activity-log.violation-submission', ['name' => $name, 'appealed' => $this->appealed()]),
-            default => $name,
-        };
-    }
 }

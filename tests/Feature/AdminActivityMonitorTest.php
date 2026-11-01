@@ -7,11 +7,12 @@ use App\Models\CompetitionTeam;
 use App\Models\User;
 use App\Traits\RecordActivity;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 /**
- * The Admin Activity Monitor stays Blade until Admin's redesign, on the same ActivityFeed as a
- * competition's Activity page
+ * The Admin Activity Monitor: the same ActivityFeed as a competition's Activity page, across every
+ * competition
  */
 class AdminActivityMonitorTest extends TestCase
 {
@@ -42,17 +43,27 @@ class AdminActivityMonitorTest extends TestCase
         $this->recordActivity('OOF_MARKED', 'Places for A', user: $organiser, related: [$team, $comp]);
         $this->recordActivity('HEATS_RESET', 'Reset by someone else', user: $siteAdmin, related: $comp);
 
-        $this->actingAs($siteAdmin)->get(route('admin.activity', ['by' => $organiser->id]))
+        $this->actingAs(User::factory()->create())
+            ->get($this->appUrl('/admin/activity'))
+            ->assertRedirect('/');
+
+        $this->actingAs($siteAdmin)->get($this->appUrl("/admin/activity?by={$organiser->id}"))
             ->assertOk()
-            ->assertSee('Places for A')
-            ->assertDontSee('Reset by someone else')
-            ->assertSee('Places entered')
-            ->assertSeeInOrder(['Actioned by', 'Orla Organiser', 'Clear'])
-            // a related item filters by itself, and the competition opens its page
-            ->assertSee('href="' . e(route('admin.activity', ['by' => $organiser->id, 'related' => "comp:{$comp->id}"])) . '"', false)
-            ->assertSee('href="' . route('comps.view', $comp) . '"', false)
-            // removing the chip clears the filter
-            ->assertSee('href="' . route('admin.activity') . '"', false)
-            ->assertDontSee('Add team');
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Admin/Activity')
+                ->where('url', route('manage.admin.activity'))
+                ->has('entries', 1)
+                ->where('entries.0.description', 'Places for A')
+                ->where('entries.0.title', 'Places entered')
+                // the competition is named, links to its page and filters by itself
+                ->where('entries.0.related', fn ($related) => collect($related)->contains(fn ($item) => $item['kind'] === 'comp'
+                    && $item['name'] === 'Our Competition'
+                    && $item['link'] === route('comps.view', $comp)
+                    && $item['filter']['value'] === "comp:{$comp->id}"))
+                ->where('filters.by', [(string) $organiser->id])
+                ->where('chipGroups.0.label', 'Actioned by')
+                ->where('chipGroups.0.chips.0.label', 'Orla Organiser')
+                // pickers name things in one competition, so there are none site-wide
+                ->where('pickers', []));
     }
 }
