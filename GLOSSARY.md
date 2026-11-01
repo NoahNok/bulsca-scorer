@@ -22,10 +22,6 @@ _Avoid_: Judge (for the slot), casualty, position
 How a marking point is marked, picked for each one in a SERC: a range of numbers with a step, or a set of labelled choices. Admins look after the list.
 _Avoid_: Marking scheme, scale, preset
 
-**Season**:
-A year of competitions, e.g. 2025-2026, that public results are grouped by. Not the same as a Championship, which an Organisation runs between its own dates.
-_Avoid_: Year, series
-
 **Speed record**:
 The best Time on record for a speed event. A competition's event copies it when the event is added.
 _Avoid_: Best time, record time
@@ -103,11 +99,11 @@ The signed-in area where Organisers edit their competitions and organisations.
 _Avoid_: Admin, dashboard, backend
 
 **Admin**:
-A site-wide administrator who runs the site itself (seasons, users, speed records), as opposed to an Organiser of one competition.
+A site-wide administrator who runs the site itself (users, speed records), as opposed to an Organiser of one competition.
 _Avoid_: Organiser, superuser
 
 **Championship**:
-An Organisation's series of competitions over a season, between a start and end date. Each competition in it is a Regional, Qualifier or Final; one outside any Championship is Standalone.
+An Organisation's series of competitions between a start and end date. Each competition in it is a Regional, Qualifier or Final; one outside any Championship is Standalone.
 _Avoid_: Series, league (that's a grouping of Entities)
 
 **Personal Competition**:
