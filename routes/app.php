@@ -10,6 +10,7 @@ use App\Http\Controllers\LeagueController;
 use App\Http\Controllers\Manage\CompetitionActivityController;
 use App\Http\Controllers\Manage\Admin\AdminActivityController;
 use App\Http\Controllers\Manage\Admin\AdminCompetitionsController;
+use App\Http\Controllers\Manage\Admin\AdminMarkingPointTemplatesController;
 use App\Http\Controllers\Manage\Admin\AdminUsersController;
 use App\Http\Controllers\Manage\CompetitionCreateController;
 use App\Http\Controllers\Manage\CompetitionDashboardController;
@@ -34,7 +35,6 @@ use App\Http\Controllers\OverallResultsController;
 use App\Http\Controllers\PrintableController;
 use App\Http\Controllers\Push\PushController;
 use App\Http\Controllers\SERCController;
-use App\Http\Controllers\SERC\MarkingPointTemplateController;
 use App\Http\Controllers\SpeedsEventController;
 use App\Http\Middleware\CompetitionOwnsRouteModels;
 use App\Http\Middleware\RecordCompetitionVisit;
@@ -390,14 +390,7 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
         Route::get('/users', [AdminUsersController::class, 'index'])->name('manage.admin.users.index');
         Route::get('/users/{user}', [AdminUsersController::class, 'show'])->name('manage.admin.users.show');
 
-        Route::resource('serc/marking-points', MarkingPointTemplateController::class)->except(['show'])->names([
-            'index' => 'admin.serc.marking-point-template.index',
-            'create' => 'admin.serc.marking-point-template.create',
-            'store' => 'admin.serc.marking-point-template.store',
-            'edit' => 'admin.serc.marking-point-template.edit',
-            'update' => 'admin.serc.marking-point-template.update',
-            'destroy' => 'admin.serc.marking-point-template.destroy',
-        ]);
+        Route::resource('serc/marking-points', AdminMarkingPointTemplatesController::class)->except(['show'])->names('manage.admin.marking-point-templates');
     });
 
     Route::prefix('invite/{invite}/{email}')->group(function () {
