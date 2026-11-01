@@ -110,13 +110,26 @@ class SercOrderEstimateTest extends TestCase
     public function test_a_skipped_team_gets_no_estimate_and_doesnt_hold_up_the_rest(): void
     {
         $t = self::NOON - 100;
-        // Team 2 hasn't turned up, so Team 3 went
-        $teams = $this->estimate([[1, 2, 3, 4]], [1 => $t - 300, 3 => $t])->teams();
+        // Team 2 hasn't turned up, so Teams 3 and 4 went
+        $teams = $this->estimate([[1, 2, 3, 4, 5]], [1 => $t - 600, 3 => $t - 300, 4 => $t])->teams();
 
         $this->assertNull($teams[2]['start']);
         $this->assertFalse($teams[2]['next']);
-        $this->assertTrue($teams[4]['next']);
-        $this->assertSame($t + SercOrderEstimate::RESET, $teams[4]['start']);
+        $this->assertTrue($teams[5]['next']);
+        $this->assertSame($t + SercOrderEstimate::RESET, $teams[5]['start']);
+    }
+
+    public function test_one_mark_for_the_wrong_team_further_down_doesnt_skip_everyone_ahead_of_it(): void
+    {
+        $t = self::NOON - 60;
+        // Teams 1 and 2 have gone, and a judge put a mark against Team 9 by mistake
+        $teams = $this->estimate([range(1, 10)], [1 => $t - 300, 2 => $t - 10, 9 => $t])->teams();
+
+        $this->assertTrue($teams[3]['next']);
+        $this->assertNotNull($teams[3]['start']);
+        foreach (range(4, 8) as $id) $this->assertNotNull($teams[$id]['start'], "Team $id has an estimate");
+        $this->assertNull($teams[9]['start']);
+        $this->assertNotNull($teams[10]['start']);
     }
 
     public function test_each_team_says_how_many_sercs_it_has_finished(): void

@@ -25,6 +25,9 @@ class SercOrderEstimate
     /** The pace before any Tank has two Teams started */
     const DEFAULT_PACE = 360;
 
+    /** How many Teams behind one that hasn't started must have started for it to count as skipped */
+    const SKIPPED_AFTER = 2;
+
     /** From a Team's first mark to the next Team starting, as the old live page assumed */
     const RESET = 120;
 
@@ -82,7 +85,7 @@ class SercOrderEstimate
 
     /**
      * Every Team in the SERC order: how many SERCs it has finished, whether it's next in its Tank, and its
-     * Estimated start (null once started, or when it was skipped: it's ahead of a Team that has started).
+     * Estimated start (null once started, or when it was skipped).
      *
      * @return array<int, array{finished: int, next: bool, start: int|null}>
      */
@@ -91,19 +94,14 @@ class SercOrderEstimate
         $teams = [];
 
         foreach ($this->tanks as $tank) {
-            // Teams before the last one to start that haven't started were skipped (late, withdrawn)
-            $lastStarted = -1;
-            foreach ($tank as $i => $id) {
-                if ($this->started($id)) $lastStarted = $i;
-            }
-
             $time = $this->anchor($tank);
             $pace = $this->pace($tank);
+            $next = true;
 
             foreach ($tank as $i => $id) {
                 $start = null;
 
-                if (!$this->started($id) && $i > $lastStarted) {
+                if (!$this->started($id) && !$this->skipped($tank, $i)) {
                     // Passed: due now, and the rest follow on from now
                     $start = max($time, $this->now);
                     $time = $start + $pace;
@@ -111,13 +109,25 @@ class SercOrderEstimate
 
                 $teams[$id] = [
                     'finished' => $this->finished[$id] ?? 0,
-                    'next' => $i == $lastStarted + 1 && $start !== null,
+                    'next' => $start !== null && $next,
                     'start' => $start,
                 ];
+
+                if ($start !== null) $next = false;
             }
         }
 
         return $teams;
+    }
+
+    /**
+     * Whether a Team that hasn't started was skipped (late, withdrawn): SKIPPED_AFTER Teams behind it in its
+     * Tank have started. Not just one, so a single mark entered for the wrong Team further down doesn't blank
+     * the estimates of everyone ahead of it.
+     */
+    private function skipped(array $tank, int $index): bool
+    {
+        return count(array_filter(array_slice($tank, $index + 1), fn ($id) => $this->started($id))) >= self::SKIPPED_AFTER;
     }
 
     /** A Tank's seconds between Teams: its own recent gaps, or every Tank's while it has none */
