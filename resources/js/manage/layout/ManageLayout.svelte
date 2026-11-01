@@ -12,7 +12,7 @@
     import { account, logout } from "@/routes";
     import manage from "@/routes/manage";
     import { index as adminHome } from "@/routes/manage/admin/competitions";
-    import { page, router } from "@inertiajs/svelte";
+    import { Link, page, router } from "@inertiajs/svelte";
     import { onMount, type Snippet } from "svelte";
 
     let { children }: { children?: Snippet } = $props();
@@ -33,16 +33,17 @@
 
 <div class="flex min-h-dvh flex-col">
     <header class="v2-header">
-        <a href={manage.home().url} class="v2-brand">
+        <Link href={manage.home().url} class="v2-brand">
             <BrandMark size={32} />
             Scoring.Events
-        </a>
+        </Link>
+        <!-- Explore (the public site) and Sign out stay full page loads -->
         <nav class="v2-nav" aria-label="Main">
             <a href={page.props.manage?.site.explore} class="v2-nav-wide">Explore</a>
             {#if page.props.manage?.isAdmin}
-                <a href={adminHome().url}>Admin</a>
+                <Link href={adminHome().url}>Admin</Link>
             {/if}
-            <a href={account().url}>Account</a>
+            <Link href={account().url}>Account</Link>
             <a href={logout().url}>Sign out</a>
             <ThemeToggle />
         </nav>
