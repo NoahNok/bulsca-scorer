@@ -26,13 +26,6 @@ actions, and an "Add" button that opens a modal form) and `account.blade.php`.
   - wrap it in the `@can('access', [$comp, '<access>'])` that matches its route
     middleware;
   - mark it `active` with `Str::startsWith(Route::currentRouteName(), 'comps.<area>')`.
-- `layouts.admin` is for site admin pages under `/admin` (routes in the
-  `isAdmin` middleware group). A new admin area gets a tab in its
-  `.tabbed-bar`, marked `active` with
-  `Str::startsWith(Route::currentRouteName(), 'admin.<area>')`. Admin pages
-  can show full emails; the masking rule below is for pages any user can reach.
-  Reference page: `admin/users/index.blade.php` (a paginated, searchable
-  `.se-table`).
 - `layouts.guest` is for account pages outside a competition.
 - `layouts.core` is the shell. It loads Alpine, the `modals` state, the
   `showSuccess()` / `showAlert()` toasts and the site footer.
@@ -96,7 +89,6 @@ Pages set `@section('title')` and fill `@section('content')`.
 | Hint under a field | `<small class="info">` inside the wrapper. A bare `<small>` is red, for errors, and the wrapper's rule beats plain utilities like `text-gray-500`. |
 | Select | `<x-form-select>` takes models with `id` and `name`. For a fixed list, write a `<select>` inside a `div.se-form-input`, as the officials page does. |
 | Modal | `<x-s-e-modal id="…" title="…">`, opened with `modals.<id> = true` |
-| "Add" tile in a grid | `<x-add-card link="…" text="…" />` |
 | "By continuing you agree to…" line under a form that signs someone in or gives them an account | `<x-legal-notice />` |
 
 ## Behaviour
