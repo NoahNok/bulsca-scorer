@@ -1,8 +1,8 @@
-@extends('layouts.landing-comp')
+@extends('landing.competition.layout')
 
-@section('title', 'Results')
+@section('title', 'Results | ' . $comp->name)
 
-@section('content')
+@section('comp-content')
 
     <div x-data="{
         leagues: {{ $comp->getLeagues }},

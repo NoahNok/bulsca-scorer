@@ -133,6 +133,114 @@ class PublicPagesTest extends TestCase
             ->assertDontSee('se-card');
     }
 
+    public function test_a_competitions_pages_share_its_heading_and_tabs(): void
+    {
+        $org = $this->organisation();
+        $championship = $org->championships()->create(['name' => 'Winter Series', 'start_date' => '2026-10-01', 'end_date' => '2027-03-31']);
+        $comp = $this->competition([
+            'organisation' => $org->id,
+            'championship_id' => $championship->id,
+            'type' => 'QUALIFIER',
+            'status_message' => '<p>Lunch until <strong>1pm</strong></p>',
+            'can_be_live' => true,
+        ]);
+
+        foreach ([
+            'landing.competition' => 'Info',
+            'landing.competition.heats-draws' => 'Heats &amp; Draws',
+            'landing.competition.results' => 'Results',
+        ] as $route => $tab) {
+            $this->get(route($route, $comp->getSlug()))
+                ->assertOk()
+                ->assertSee('Test Competition')
+                ->assertSee(Carbon::today()->format('l j F'))
+                ->assertSee('href="' . route('landing.championship', 'Winter-Series') . '"', false)
+                ->assertSee('Qualifier')
+                ->assertSee('href="' . route('landing.organisation', 'Test Club') . '"', false)
+                ->assertSee('aria-current="page">' . $tab . '</a>', false)
+                ->assertSee('Lunch until <strong>1pm</strong>', false)
+                ->assertSee('href="' . route('live', ['comp' => $comp->id]) . '"', false);
+        }
+    }
+
+    public function test_a_competition_that_isnt_live_today_has_no_follow_live(): void
+    {
+        $comp = $this->competition(['when' => Carbon::tomorrow(), 'can_be_live' => true]);
+
+        $this->get(route('landing.competition', $comp->getSlug()))
+            ->assertOk()
+            ->assertDontSee('Follow live');
+    }
+
+    public function test_info_lists_the_events_without_registration(): void
+    {
+        $comp = $this->competition();
+        $serc = new \App\Models\SERC();
+        $serc->forceFill(['name' => 'Car Crash', 'competition' => $comp->id, 'scorable_entity' => 'team'])->save();
+
+        $this->get(route('landing.competition', $comp->getSlug()))
+            ->assertOk()
+            ->assertSee('Car Crash')
+            ->assertSee('Test Pool')
+            ->assertSee('google.com/maps', false)
+            ->assertDontSee('Register')
+            ->assertDontSee('se-btn');
+    }
+
+    private function sercWithDraw(Competition $comp): array
+    {
+        $serc = new \App\Models\SERC();
+        $serc->forceFill(['name' => 'Dry SERC', 'type' => 'DRY', 'scorable_entity' => 'team', 'competition' => $comp->id])->save();
+
+        $teams = [];
+        foreach ([['A', 0, 1], ['B', 1, 1]] as [$letter, $tank, $draw]) {
+            $team = \App\Models\CompetitionTeam::create(['competition' => $comp->id, 'team' => $letter]);
+            $serc->draw()->create(['entity_id' => $team->id, 'entity_type' => $team->getMorphClass(), 'tank' => $tank, 'draw' => $draw]);
+            $teams[] = $team;
+        }
+
+        return $teams;
+    }
+
+    public function test_the_draw_shows_only_once_released(): void
+    {
+        $comp = $this->competition(['show_draws' => false, 'team_format' => 'Team :N']);
+        $this->sercWithDraw($comp);
+
+        $this->get(route('landing.competition.heats-draws', $comp->getSlug()))
+            ->assertOk()
+            ->assertSee('The Draw appears here once the Organisers release it.')
+            ->assertDontSee('Team A');
+    }
+
+    public function test_the_draw_is_split_into_tanks_when_the_competition_uses_them(): void
+    {
+        $comp = $this->competition(['show_draws' => true, 'team_format' => 'Team :N']);
+        $this->sercWithDraw($comp);
+        $settings = $comp->getScoringSettings;
+        $settings->use_tanks = true;
+        $settings->save();
+
+        $this->get(route('landing.competition.heats-draws', $comp->getSlug()))
+            ->assertOk()
+            ->assertSeeInOrder(['Tank 1', 'Team A', 'Tank 2', 'Team B'])
+            ->assertDontSee('se-card');
+    }
+
+    public function test_heats_show_only_once_released(): void
+    {
+        $comp = $this->competition(['show_heats' => false]);
+        $base = new \App\Models\SpeedEvent();
+        $base->name = 'Swim & Tow';
+        $base->save();
+        $event = new \App\Models\CompetitionSpeedEvent();
+        $event->forceFill(['competition' => $comp->id, 'event' => $base->id, 'record' => 0])->save();
+
+        $this->get(route('landing.competition.heats-draws', $comp->getSlug()))
+            ->assertOk()
+            ->assertSee('Heats appear here once the Organisers release them.');
+    }
+
     public function test_the_home_page_is_the_v2_home(): void
     {
         $this->get('/')->assertOk()->assertViewIs('landing.v2.home');

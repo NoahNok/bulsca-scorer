@@ -313,6 +313,19 @@ each one in use; copy its markup.
   (Explore's Organisations). An Organisation's Championships use it too.
 - **Pages of a long list:** `.v2-pager` under it, with "← Newer" and
   "Older →" as small buttons (Explore's past competitions, 20 a page).
+- **A competition's public pages** extend `landing.competition.layout` and
+  fill `@section('comp-content')`. It gives them the heading (name, the date as
+  "Sunday 25 October" in Anton, venue, the Championship link and type badge,
+  the Organisation's logo linking to its page), `.v2-pagetabs` for Info /
+  Heats & Draws / Results (the SERC breakdown counts as Results) with
+  **Follow live** at their end when `isLiveToday()`, and the Organisers'
+  `status_message` as an info `.v2-alert`. Set the tab title to "Page | {name}".
+- **Labelled facts** (a competition's When and Where): `dl.v2-details`, muted
+  `dt` labels over their `dd` values.
+- **Heats & Draws** (`.v2-hd-*`): `.v2-tabs` between Heats and Draws, event
+  chips when heats are per event, a card per heat or Tank (lanes or Draw
+  places numbered down it), and a search that hides heats and Tanks without
+  the Team and lights its rows teal (`is-match`), across every event.
 - **Whole-row links:** `.v2-row` on the row, and `.v2-row-link` on its own
   link, whose `::after` covers the row. Anything else clickable in the row
   (like **Follow live**) gets `.v2-over-row` to sit above it. Add `sr-only` text so the link says what it's for ("Results for Cardiff

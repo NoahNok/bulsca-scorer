@@ -1,10 +1,10 @@
-@extends('layouts.landing-comp')
+@extends('landing.competition.layout')
 
 @section('title')
     Breakdown | {{ $event->getName() }}
 @endsection
 
-@section('content')
+@section('comp-content')
 
     <div class="flex items-center space-x-3 ">
         <a href="{{ route('landing.competition.results', [$comp->getSlug()]) }}?event=serc-{{ $event->id }}"
