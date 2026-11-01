@@ -1031,3 +1031,286 @@ dialog.v2-modal::backdrop {
         transition: none;
     }
 }
+
+/*
+ * Page sections: an uppercase heading with an optional link at its right end (.v2-section-head),
+ * used by the public pages' sheets and lists.
+ */
+.v2-section {
+    padding: 3rem 0 1rem;
+}
+
+.v2-section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.v2-section-head h2 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+/* A page's own title, under the header: uppercase, with a muted line under it */
+.v2-page-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    text-transform: uppercase;
+}
+
+.v2-page-lead {
+    margin-top: 0.5rem;
+    color: var(--v2-muted);
+}
+
+/*
+ * Fixtures sheet (<x-v2.fixtures>): one table of competitions in date order, split by a teal line at today.
+ * Past rows are muted, upcoming ones count down, today's sit on the line.
+ */
+.v2-fixtures {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.v2-fixtures th {
+    text-align: left;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--v2-muted);
+    padding: 0 1rem 0.75rem 0;
+}
+
+.v2-fixtures td {
+    padding: 1rem 1rem 1rem 0;
+    border-top: 1px solid var(--v2-border);
+    vertical-align: middle;
+}
+
+/* Inset the rows a little, so a hovered row's shading doesn't sit flush with its text */
+.v2-fixtures th:first-child,
+.v2-fixtures td:first-child {
+    padding-left: 0.75rem;
+}
+
+.v2-fixtures td:last-child {
+    padding-right: 0.75rem;
+    text-align: right;
+}
+
+.v2-fixtures-date {
+    font-family: 'Anton', 'Archivo', sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    font-size: 1.5rem;
+    white-space: nowrap;
+    width: 6rem;
+}
+
+.v2-fixtures-year {
+    display: block;
+    margin-top: 0.2rem;
+    font-size: 0.8125rem;
+    color: var(--v2-muted);
+}
+
+.v2-fixtures-name {
+    font-weight: 700;
+}
+
+.v2-fixtures-name + .v2-badge {
+    margin-left: 0.4rem;
+}
+
+.v2-fixtures-where {
+    color: var(--v2-muted);
+}
+
+.v2-fixtures-where-sm {
+    display: none;
+    font-size: 0.875rem;
+    color: var(--v2-muted);
+}
+
+.v2-fixtures img {
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 9999px;
+}
+
+/* Live and upcoming rows say when, in words, where results show a badge */
+.v2-fixtures-when {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    white-space: nowrap;
+    color: var(--v2-muted);
+}
+
+.v2-fixtures-when.is-live {
+    color: var(--v2-teal-text);
+}
+
+/* Results are history, so they sit back a little */
+.v2-fixtures .is-past .v2-fixtures-date,
+.v2-fixtures .is-past .v2-fixtures-name {
+    color: var(--v2-muted);
+}
+
+/* Each row is one link (.v2-row). Results keep their faded name and date; only upcoming names turn teal */
+.v2-fixtures .is-ahead:hover .v2-fixtures-name,
+.v2-fixtures .is-ahead:focus-within .v2-fixtures-name {
+    color: var(--v2-teal-text);
+}
+
+/* Today's row: Details covers the row, Follow live sits above it */
+.v2-fixtures-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.v2-fixtures .v2-btn {
+    white-space: nowrap;
+}
+
+/* Today: a teal line, with today's competitions on it */
+.v2-fixtures .v2-fixtures-today td {
+    border-top: 0;
+    padding: 0.25rem 0;
+}
+
+/* The line sits at the label's baseline, so the gap down to the live row is the same under the label and under the line */
+.v2-fixtures-rope {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* Drop the label onto the line: about half its cap height, so the line runs through its middle */
+.v2-fixtures-rope-label {
+    transform: translateY(0.35em);
+}
+
+.v2-fixtures-rope::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: var(--v2-teal);
+}
+
+/* A touch less on top: the Today row above already adds its own spacing */
+.v2-fixtures .is-live td {
+    border-top: 0;
+    padding-top: 1rem;
+    padding-bottom: 1.25rem;
+}
+
+.v2-fixtures .is-live .v2-fixtures-name {
+    font-size: 1.375rem;
+}
+
+.v2-fixtures .v2-fixtures-today + .is-ahead td,
+.v2-fixtures .is-live + .v2-fixtures-today td {
+    border-top: 0;
+}
+
+@media (max-width: 640px) {
+    .v2-fixtures-wide {
+        display: none;
+    }
+
+    .v2-fixtures-where-sm {
+        display: block;
+    }
+
+    .v2-fixtures-date {
+        width: 4.5rem;
+        font-size: 1.25rem;
+    }
+
+    .v2-fixtures .is-live .v2-fixtures-name {
+        font-size: 1.125rem;
+    }
+}
+
+/* What a list shows before it has anything */
+.v2-fixtures-empty,
+.v2-empty {
+    padding: 2rem;
+    border: 1px dashed var(--v2-border);
+    border-radius: 1rem;
+    color: var(--v2-muted);
+}
+
+/*
+ * A plain list of whole-row links (Organisations on Explore, an Organisation's Championships): a logo or
+ * badge, a name, a muted detail and a chevron. Each <li> is a .v2-row with its name as the .v2-row-link.
+ */
+.v2-list {
+    border-top: 1px solid var(--v2-border);
+}
+
+.v2-list > li {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.875rem 0.75rem;
+    border-bottom: 1px solid var(--v2-border);
+    transition: background-color 150ms;
+}
+
+.v2-list > li.v2-row:hover,
+.v2-list > li.v2-row:focus-within {
+    background: var(--v2-row-hover);
+}
+
+.v2-list img {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 9999px;
+    flex-shrink: 0;
+}
+
+.v2-list-name {
+    font-weight: 700;
+}
+
+.v2-list li:hover .v2-list-name,
+.v2-list li:focus-within .v2-list-name {
+    color: var(--v2-teal-text);
+}
+
+.v2-list-detail {
+    margin-left: auto;
+    color: var(--v2-muted);
+    font-size: 0.875rem;
+    white-space: nowrap;
+}
+
+.v2-list-columns {
+    display: grid;
+    column-gap: 2rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+}
+
+.v2-list-columns.v2-list {
+    border-top: 0;
+}
+
+/* Older and Newer under a sheet split into pages */
+.v2-pager {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1.25rem;
+}

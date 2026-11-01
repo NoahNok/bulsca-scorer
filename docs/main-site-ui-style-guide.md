@@ -35,7 +35,7 @@ actions, and an "Add" button that opens a modal form) and `account.blade.php`.
   pages and after the content on long ones. A standalone page that writes its own
   `<body>` adds it just before `</body>`. Print views, PDFs, the live full-screen display and the
   maintenance page don't get it.
-- **Legal pages** (`/terms`, `/privacy`, `/cookies`) extend `legal.layout`. The
+- **Legal pages** (`/terms`, `/privacy`, `/cookies`) extend `legal.layout`, a v2 page (`.v2-prose`). The
   operator's name, contact email and "last updated" date come from
   `config/legal.php`. Change `updated` whenever a policy's wording changes, and
   keep the retention periods in the privacy policy in step with the

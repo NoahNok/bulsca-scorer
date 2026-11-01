@@ -1,54 +1,56 @@
-@extends('layouts.landing')
+{{-- An Organisation: its Championships, then its competitions (coming up, then results) --}}
+@extends('landing.v2.layout')
 
 @section('title', $org->name)
 
 @section('content')
-
-    <div class="flex flex-col-reverse md:flex-row md:items-center justify-between gap-2 md:gap-0 py-8 ">
-        <h1 class="text-5xl! -mb-1 ">{{ $org->name }}</h1>
-        <img src="{{ $org->getLogo() }}" alt="" class="size-16 rounded-full">
-
-    </div>
-
-
-
-    @isset($ongoing)
-        <div class="se-card se-card-body se-card-hover cursor-default! mb-6">
-            <div class="se-card-body">
-                <h3 class="text-se animate-pulse">Live</h3>
-                <h1>{{ $ongoing->name }}</h1>
-                <p class="font-archivo text-xs! text-gray-700! uppercase -mb-1">{{ $ongoing->when->format('M jS Y') }}</p>
-
-                <div class="mt-5">
-                    <a href="{{ route('live', ['comp' => $ongoing->id]) }}" class="se-btn se-btn-outline-primary">Live</a>
-
-                    <a href="{{ route('landing.competition.heats-draws', $ongoing->getSlug()) }}" class="se-btn">Heats &
-                        Draws</a>
-                    <a href="{{ route('landing.competition.results', $ongoing->getSlug()) }}"
-                        class="se-btn @if (!$ongoing->public_results) se-btn-disabled @endif">
-                        Results
-                    </a>
-                </div>
+    <div class="v2-container pb-16">
+        <div class="flex items-center gap-5 pt-12">
+            @if ($org->getLogo())
+                <img src="{{ $org->getLogo() }}" alt="" class="size-16 shrink-0 rounded-full">
+            @endif
+            <div>
+                <h1 class="v2-page-title">{{ $org->name }}</h1>
+                <p class="v2-page-lead">Organisation</p>
             </div>
-
         </div>
-    @endisset
 
+        @if ($championships->isNotEmpty())
+            <section class="v2-section" aria-labelledby="org-championships">
+                <div class="v2-section-head">
+                    <h2 id="org-championships">Championships</h2>
+                </div>
+                <ul class="v2-list">
+                    @foreach ($championships as $championship)
+                        <li class="v2-row">
+                            <a href="{{ route('landing.championship', $championship->slug()) }}"
+                                class="v2-list-name v2-row-link">{{ $championship->name }}</a>
+                            @if ($championship->isCurrent())
+                                <span class="v2-badge is-live">Current</span>
+                            @endif
+                            <span class="v2-list-detail">{{ $championship->start_date->format('j M Y') }} &ndash;
+                                {{ $championship->end_date->format('j M Y') }}</span>
+                        </li>
+                    @endforeach
+                </ul>
+            </section>
+        @endif
 
-    <h2>Competitions</h2>
-
-
-
-    <div class="grid-4  mt-2">
-        @forelse ($org->getCompetitions as $comp)
-            <x-competition-card url="{{ route('landing.competition', $comp->getSlug()) }}" :comp="$comp"
-                :org="$org"></x-competition-card>
-        @empty
-            <div class="alert-box col-span-full">
-                <h1>No Competitions</h1>
-                <p>{{ $org->name }} doesn't have any competitions.</p>
+        <section class="v2-section" aria-labelledby="org-ahead">
+            <div class="v2-section-head">
+                <h2 id="org-ahead">Coming up</h2>
             </div>
-        @endforelse
+            <x-v2.fixtures :live="$live" :upcoming="$upcoming" :types="true"
+                empty="Nothing coming up. {{ $org->name }}'s next competitions appear here once they're set up." />
+        </section>
 
+        @if ($past->isNotEmpty())
+            <section class="v2-section" aria-labelledby="org-past">
+                <div class="v2-section-head">
+                    <h2 id="org-past">Results</h2>
+                </div>
+                <x-v2.fixtures :past="$past" :today="false" :types="true" />
+            </section>
+        @endif
     </div>
 @endsection

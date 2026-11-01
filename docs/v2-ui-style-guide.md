@@ -286,15 +286,33 @@ each one in use; copy its markup.
 
 ## Patterns
 
-- **Fixtures sheet** (`.f-sheet` in `home.blade.php`): one table in date
-  order, with recent results above, a teal "Today" line, today's live
-  competitions on it, and upcoming ones below.
-  - **Past rows:** muted name and date, a Final/Provisional badge and "Results".
+- **Fixtures sheet** (`<x-v2.fixtures>`, `.v2-fixtures`): one table of
+  competitions, with past ones above, a teal "Today" line, today's
+  competitions on it, and upcoming ones below. Pass `past` (in the order to
+  show them), `live` and `upcoming` collections; `:today="false"` drops the
+  Today line for a sheet of results only, `:types="true"` badges each
+  competition with its Championship type, and `empty` says what goes there.
+  Home, Explore, Organisation and Championship use it. Explore and
+  Organisation show "Coming up" (today and upcoming) and "Results" (past,
+  newest first) as two sheets; Home and Championship show one, oldest first.
+  - **Past rows:** muted name and date (with the year when it isn't this
+    year), a Final/Provisional badge and "Results", or "No results yet" and
+    "Details" before they're published.
   - **Upcoming rows:** an "In N days" countdown and "Details".
-  - **Live row:** the name takes the date column (the Today line already gives
-    the date), with "Live now", "Details" and a primary **Follow live** button.
+  - **Today's rows:** the name takes the date column (the Today line already
+    gives the date), with "Live now", "Details" and a primary **Follow live**
+    button when it's live today, or "Today" when it isn't.
   - **On phones:** the venue moves under the name, and the logo and status
     columns hide.
+- **Sections:** `.v2-section` with a `.v2-section-head` (an uppercase `h2`
+  and an optional link at its right end). A page's own title under the header
+  is `.v2-page-title` with a muted `.v2-page-lead`.
+- **Plain lists:** `ul.v2-list` of whole-row links (`li.v2-row`, the name as
+  `.v2-list-name.v2-row-link`, a logo `img`, badges, a muted
+  `.v2-list-detail` at the end). `.v2-list-columns` flows it into columns
+  (Explore's Organisations). An Organisation's Championships use it too.
+- **Pages of a long list:** `.v2-pager` under it, with "← Newer" and
+  "Older →" as small buttons (Explore's past competitions, 20 a page).
 - **Whole-row links:** `.v2-row` on the row, and `.v2-row-link` on its own
   link, whose `::after` covers the row. Anything else clickable in the row
   (like **Follow live**) gets `.v2-over-row` to sit above it. Add `sr-only` text so the link says what it's for ("Results for Cardiff
@@ -303,7 +321,8 @@ each one in use; copy its markup.
 - **Follow live** links to `live.` (`route('live', ['comp' => $comp->id])`, same tab) and shows only when
   `$comp->isLiveToday()`: it's on today and the live pages will open it. Every page uses that one check.
 - **Empty states** say what will appear and when ("Results appear here once
-  an organiser publishes them"), in an `EmptyState` (the dashed box) or a muted line.
+  an organiser publishes them"), in the dashed box (`EmptyState` in Svelte,
+  `.v2-empty` in Blade) or a muted line.
 - **Dates** read as people say them: "Tomorrow", "In 5 days", `Sunday 25
   October`. Results use `j M`.
 
