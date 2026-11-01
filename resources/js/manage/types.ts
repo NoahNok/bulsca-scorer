@@ -412,3 +412,20 @@ export type ActivityPicker = {
 
 /** The active filters of one kind, shown as removable chips */
 export type ActivityChipGroup = { label: string; chips: { label: string; param: ActivityParam; value: string }[] };
+
+/** A device you're signed in on (ManagesDevices), this one first */
+export type Device = {
+    id: number;
+    /** desktop, phone or tablet */
+    type: string;
+    name: string;
+    /** "Chrome on Windows", or empty */
+    browser: string;
+    ip: string | null;
+    /** "2 hours ago" */
+    lastActive: string;
+    /** "1 Nov 2026" */
+    signedIn: string | null;
+    current: boolean;
+    remembered: boolean;
+};

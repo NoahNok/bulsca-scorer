@@ -367,6 +367,7 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
         Route::prefix('account')->group(function () {
             Route::get('', [AccountController::class, 'edit'])->name('account');
             Route::post('', [AccountController::class, 'update'])->name('account.update');
+            Route::put('password', [AccountController::class, 'updatePassword'])->name('account.password.update');
             Route::delete('devices/{login}', [AccountController::class, 'signOutDevice'])->whereNumber('login')->name('account.devices.destroy');
             Route::delete('devices', [AccountController::class, 'signOutOtherDevices'])->name('account.devices.destroy-others');
         });

@@ -9,7 +9,7 @@
     import Toasts from "@/manage/components/Toasts.svelte";
     import { toastSuccess } from "@/lib/toast.svelte";
     import { guardUnsaved } from "@/manage/unsaved";
-    import { logout } from "@/routes";
+    import { account, logout } from "@/routes";
     import manage from "@/routes/manage";
     import admin from "@/routes/admin";
     import { page, router } from "@inertiajs/svelte";
@@ -42,6 +42,7 @@
             {#if page.props.manage?.isAdmin}
                 <a href={admin.index().url}>Admin</a>
             {/if}
+            <a href={account().url}>Account</a>
             <a href={logout().url}>Sign out</a>
             <ThemeToggle />
         </nav>

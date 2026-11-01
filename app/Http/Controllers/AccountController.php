@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Concerns\ManagesDevices;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
+use Inertia\Inertia;
 
 class AccountController extends Controller
 {
@@ -28,8 +31,8 @@ class AccountController extends Controller
 
     public function edit(Request $request)
     {
-        return view('account', [
-            'user'    => $request->user(),
+        return Inertia::render('Manage/Account', [
+            'user'    => $request->user()->only(['name', 'email']),
             'devices' => $this->devicesFor($request->user()),
         ]);
     }
@@ -43,6 +46,22 @@ class AccountController extends Controller
         $request->user()->update(['name' => $validated['name']]);
 
         return back()->with('success', 'Details saved');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $validated = $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password'         => ['required', 'confirmed', Password::defaults()],
+        ]);
+
+        $request->user()->update([
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        $request->user()->logoutOtherDevices();
+
+        return back()->with('success', 'Password changed');
     }
 
     public function signOutDevice(Request $request, int $login)
