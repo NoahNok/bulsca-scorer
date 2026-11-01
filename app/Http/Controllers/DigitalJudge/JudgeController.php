@@ -24,7 +24,7 @@ class JudgeController extends Controller
         $judge = Auth::user();
 
         return Inertia::render("Judge/Dashboard", [
-            "competitions" => $judge->officiating->map(function ($comp) {
+            "competitions" => $judge->officiating()->orderBy('when', 'DESC')->get()->map(function ($comp) {
                 return ["id" => $comp->id, "name" => $comp->name, "where" => $comp->where, "when" => $comp->when->format('M jS Y')];
             }),
         ]);
@@ -103,7 +103,7 @@ class JudgeController extends Controller
      */
     public function officials(Competition $competition)
     {
-        return $competition->officials()->orderBy('name')->get()->map(fn ($official) => [
+        return $competition->officials()->orderBy('name')->get()->map(fn($official) => [
             'id' => $official->id,
             'name' => $official->name,
             'role' => Competition::officialRoleName($official->pivot->role),
