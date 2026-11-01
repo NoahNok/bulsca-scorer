@@ -6,6 +6,7 @@ use App\Models\Club;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\CompetitionTeam;
+use App\Models\Competitor;
 use App\Models\Event\ScoringSchema;
 use App\Models\League;
 use App\Models\SERC\MarkingPointTemplate;
@@ -543,6 +544,50 @@ class ResultsPagesTest extends TestCase
         $sheet = $this->sheet('Places', ['break_ties' => [['type' => 'serc', 'id' => $this->serc->id]]]);
 
         $this->assertEquals([['Swansea', 1, 1], ['Cardiff', 2, 2]], $this->masterRanking($this->master('By place', [$sheet])));
+    }
+
+    public function test_a_master_sheet_counts_competitors_for_their_teams_club(): void
+    {
+        $this->secondClub();
+        $event = $this->speedEvent('Individual swim', []);
+        $event->scorable_entity = 'competitor';
+        $event->save();
+        // Swansea's competitor (in team B) is faster
+        foreach ([[0, 70000], [1, 60000]] as [$team, $time]) {
+            $competitor = Competitor::create(['team' => $this->teams[$team]->id, 'competition' => $this->comp->id, 'name' => "Swimmer {$team}"]);
+            $result = new SpeedResult();
+            $result->event = $event->id;
+            $result->entity()->associate($competitor);
+            $result->result = $time;
+            $result->save();
+        }
+        $sheet = $this->sheet('Individuals', ['group_on' => 'competitor'], [$event]);
+
+        $this->assertEquals([['Swansea', 1, 1], ['Cardiff', 2, 2]], $this->masterRanking($this->master('Clubs', [$sheet])));
+    }
+
+    public function test_a_master_sheet_counts_entries_without_a_club_for_none(): void
+    {
+        // Team A (first in the speed event) has no club, so Cardiff only has team B's second place
+        $this->teams[0]->club = null;
+        $this->teams[0]->save();
+        $sheet = $this->sheet('Swim', events: [$this->speed]);
+
+        $master = $this->master('Clubs', [$sheet]);
+
+        $this->assertEquals([['Cardiff', 2, 1]], $this->masterRanking($master));
+        $this->actingAs($this->organiser)->get($this->url('/master/' . $master->id))
+            ->assertInertia(fn (Assert $page) => $page->where('withoutClub', [['sheet' => 'Swim', 'names' => [$this->teams[0]->getName($this->comp)]]]));
+    }
+
+    public function test_a_badly_written_equation_isnt_saved(): void
+    {
+        $this->actingAs($this->organiser)->from($this->url('/create'))
+            ->post($this->url(), $this->sheetData(['equation' => 'item.points / (']))
+            ->assertRedirect($this->url('/create'))
+            ->assertSessionHasErrors(['equation']);
+
+        $this->assertSame(0, ResultSchema::count());
     }
 
     public function test_a_master_sheet_shows_how_its_built(): void

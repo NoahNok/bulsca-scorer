@@ -286,7 +286,7 @@
                     {:else}
                         <div class="v2-field">
                             <span id="s-status-label" class="text-sm font-semibold">Status message</span>
-                            <span class="v2-hint">Shown to Organisers above every page of this competition. Leave it empty to hide it.</span>
+                            <span class="v2-hint">Shown above every page of this competition, here, on its public pages and on the live pages and full-screen display. Leave it empty to hide it.</span>
                             <RichText
                                 id="s-status_message"
                                 name="status_message"

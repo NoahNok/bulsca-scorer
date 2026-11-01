@@ -56,6 +56,20 @@ class HandleInertiaRequests extends Middleware
             ],
         ];
 
+        // The live pages are public, so nothing about whoever is signed in (a TV left signed in at the pool
+        // would show it in the page source): just the legal links and the main site's urls
+        if ($this->isLive($request)) {
+            return [
+                ...collect($shared)->except(['auth', 'errors'])->all(),
+                'live' => [
+                    'site' => [
+                        'home' => RouteHelpers::mainRoute('home'),
+                        'explore' => RouteHelpers::mainRoute('explore'),
+                    ],
+                ],
+            ];
+        }
+
         if ($this->isManagementApp($request)) {
             return [
                 ...$shared,
@@ -99,16 +113,22 @@ class HandleInertiaRequests extends Middleware
     }
 
     /**
-     * The Management app (Management and Admin pages, resources/js/manage.ts) has its own root view
-     * and shared props, separate from the Digital Judge. See docs/adr/0002-public-blade-management-svelte.md.
+     * The Management app (Management and Admin pages, and the live pages, resources/js/manage.ts) has its own
+     * root view and shared props, separate from the Digital Judge. See docs/adr/0002-public-blade-management-svelte.md.
      */
     public function rootView(Request $request): string
     {
         return $this->isManagementApp($request) ? 'manage' : $this->rootView;
     }
 
+    /** Management and Admin on app., and the live pages on live., which the Management app also serves */
     private function isManagementApp(Request $request): bool
     {
-        return $request->getHost() === RouteHelpers::domainRemap('app.');
+        return $request->getHost() === RouteHelpers::domainRemap('app.') || $this->isLive($request);
+    }
+
+    private function isLive(Request $request): bool
+    {
+        return $request->getHost() === RouteHelpers::domainRemap('live.');
     }
 }

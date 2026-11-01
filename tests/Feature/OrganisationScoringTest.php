@@ -139,6 +139,21 @@ class OrganisationScoringTest extends TestCase
         $this->assertSame(0, ScoringSchema::count());
     }
 
+    public function test_a_scoring_template_with_a_badly_written_expression_isnt_saved(): void
+    {
+        foreach ([
+            ['equation' => '1000 / ('],
+            ['penalty_func' => 'result -'],
+            ['global_variables' => [['name' => 'best', 'expression' => 'MINIMUM(results,', 'order' => 1]]],
+        ] as $broken) {
+            $this->actingAs($this->organiser)->from($this->url('/create'))
+                ->post($this->url(), $this->templateData($broken))
+                ->assertSessionHasErrors(['equation']);
+        }
+
+        $this->assertSame(0, ScoringSchema::count());
+    }
+
     public function test_a_scoring_template_opens_with_its_schema(): void
     {
         $template = $this->makeTemplate('Swim');
@@ -219,6 +234,15 @@ class OrganisationScoringTest extends TestCase
             ->post($this->url('/result-schemas'), ['name' => '', 'equation' => '', 'global_variables' => []])
             ->assertRedirect($this->url('/result-schemas/create'))
             ->assertSessionHasErrors(['name', 'equation']);
+
+        $this->assertSame(0, ResultSchemaTemplate::count());
+    }
+
+    public function test_a_formula_with_a_badly_written_equation_isnt_saved(): void
+    {
+        $this->actingAs($this->organiser)
+            ->post($this->url('/result-schemas'), ['name' => 'Points', 'equation' => 'item.points +', 'global_variables' => []])
+            ->assertSessionHasErrors(['equation']);
 
         $this->assertSame(0, ResultSchemaTemplate::count());
     }

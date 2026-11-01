@@ -245,7 +245,7 @@
                 {/if}
                 <option value="custom">Custom</option>
             </select>
-            {#if form.errors.equation && formula !== "custom"}<span class="v2-error">Pick a Formula.</span>{/if}
+            {#if form.errors.equation && formula !== "custom"}<span class="v2-error">{form.equation ? form.errors.equation : "Pick a Formula."}</span>{/if}
         </div>
 
         {#if formula === "custom"}

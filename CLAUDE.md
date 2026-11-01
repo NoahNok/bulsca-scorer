@@ -43,7 +43,10 @@ separate from the Digital Judge. See
 - Link from `app.` to public pages with `RouteHelpers::mainRoute()`, not
   `route()`, which builds domain-less routes on the current host.
 - Tests that hit signed-in pages by path use `$this->appUrl('/path')`.
-- Port a page only as part of its v2 redesign. Public pages stay Blade.
+- Port a page only as part of its v2 redesign. Public pages stay Blade, except
+  the live pages on `live.` (`routes/live.php`, `pages/Live/`, `LiveLayout`):
+  the Management app serves them signed out, with only the `live` shared prop.
+  Their routes stay `live.*`.
 - Say Organiser for competition/organisation `"admin"` access, and Admin only
   for `isAdmin`. See `GLOSSARY.md`.
 

@@ -29,6 +29,7 @@
     --v2-success: #059669;
     --v2-success-soft: #ecfdf5;
     --v2-success-text: #047857;
+    --v2-warning: #b45309;
     --v2-warning-soft: #fef3c7;
     --v2-warning-text: #92400e;
 }
@@ -52,6 +53,7 @@
             --v2-success: #10b981;
             --v2-success-soft: rgb(16 185 129 / 0.12);
             --v2-success-text: #6ee7b7;
+            --v2-warning: #f59e0b;
         }
 
         .v2-toast {
@@ -79,6 +81,7 @@ html[data-theme="dark"] {
         --v2-success: #10b981;
         --v2-success-soft: rgb(16 185 129 / 0.12);
         --v2-success-text: #6ee7b7;
+        --v2-warning: #f59e0b;
     }
 
     .v2-toast {
@@ -657,6 +660,12 @@ select.v2-input {
     background: var(--v2-danger-soft);
     border-color: color-mix(in srgb, var(--v2-danger) 35%, transparent);
     color: var(--v2-danger-text);
+}
+
+.v2-alert.is-warning {
+    background: var(--v2-warning-soft);
+    border-color: color-mix(in srgb, var(--v2-warning-text) 30%, transparent);
+    color: var(--v2-warning-text);
 }
 
 .v2-alert.is-success {

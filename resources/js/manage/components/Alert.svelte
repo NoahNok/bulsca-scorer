@@ -6,7 +6,7 @@
     import { prefersReducedMotion } from "svelte/motion";
     import { slide } from "svelte/transition";
 
-    let { tone, title, children }: { tone: "info" | "success" | "danger"; title?: string; children?: Snippet } = $props();
+    let { tone, title, children }: { tone: "info" | "success" | "warning" | "danger"; title?: string; children?: Snippet } = $props();
 </script>
 
 <div
@@ -15,7 +15,7 @@
     in:slide={{ duration: prefersReducedMotion.current ? 0 : 200 }}
 >
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-        {#if tone === "danger"}
+        {#if tone === "danger" || tone === "warning"}
             <path d="M12 9v4M12 17h.01" />
             <path d="M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" />
         {:else if tone === "success"}

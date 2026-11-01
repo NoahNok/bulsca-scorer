@@ -158,6 +158,12 @@ class HeatsController extends Controller
         $position = (int) $request->validate(['position' => ['required', 'integer', 'min:1']])['position'];
         $pool = $this->requestedPool($comp, $request);
 
+        // Heats are saved as their lanes, so there's no empty Heat to save after the last one: the editor
+        // keeps that one on the page until an entry goes in it
+        if ($position > (int) $event->heats()->inPool($pool?->id)->max('heat')) {
+            throw ValidationException::withMessages(['position' => 'A heat after the last one is saved once an entry goes in it.']);
+        }
+
         $this->heats->insertHeat($event, $pool, $position);
         $this->changed($comp, 'HEAT_ADDED', "Added Heat {$position}{$this->in($pool)}", ['heat' => $position, 'pool' => $pool?->id]);
 

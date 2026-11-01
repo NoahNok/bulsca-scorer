@@ -208,6 +208,15 @@ class HeatEditorTest extends TestCase
         $this->assertSame('Added Heat 2', $this->activity('HEAT_ADDED'));
     }
 
+    public function test_a_heat_after_the_last_one_isnt_saved_until_an_entry_goes_in_it(): void
+    {
+        $this->team('A', 1, 1);
+
+        // Heats are saved as their lanes, so there's no empty one to save: the editor keeps it on the page
+        $this->edit('insertHeat', ['position' => 2])->assertSessionHasErrors(['position']);
+        $this->assertNull($this->activity('HEAT_ADDED'));
+    }
+
     public function test_removing_a_heat_unassigns_its_entities_and_moves_later_ones_down(): void
     {
         $a = $this->team('A', 1, 1);
@@ -256,6 +265,8 @@ class HeatEditorTest extends TestCase
         $event = $this->events[1]->replicate();
         $event->competition = $other->id;
         $event->save();
+
+        $this->team('A', 1, 1);
 
         $this->actingAs($this->organiser)->get($this->url('/edit', $event))->assertNotFound();
         $this->edit('insertHeat', ['position' => 1])->assertSessionHasNoErrors();

@@ -7,6 +7,7 @@
     import { destroy, edit, visibility } from "@/actions/App/Http/Controllers/Manage/MasterSheetsController";
     import { index } from "@/actions/App/Http/Controllers/Manage/ResultSheetsController";
     import ActionSwitch from "@/manage/components/ActionSwitch.svelte";
+    import Alert from "@/manage/components/Alert.svelte";
     import PageHeading from "@/manage/components/PageHeading.svelte";
     import RowIcon from "@/manage/components/RowIcon.svelte";
     import SidebarPage, { sidebarRow } from "@/manage/components/SidebarPage.svelte";
@@ -19,6 +20,7 @@
         competition,
         master,
         results,
+        withoutClub,
         canCreate,
         unconfirmed,
     }: {
@@ -37,6 +39,8 @@
         };
         /** `sheetResults` follows `master.sheets` */
         results: { key: string; name: string; sheetResults: number[]; total: number; position: number }[];
+        /** Entries on its sheets with no Club, so counted for none */
+        withoutClub: { sheet: string; names: string[] }[];
         /** False while a Digitally Judged Event waits to be confirmed */
         canCreate: boolean;
         unconfirmed: UnconfirmedEvent[];
@@ -63,6 +67,19 @@
             {#if !master.viewable}<span class="v2-badge" title="Left out of the public results">Hidden</span>{/if}
         {/snippet}
     </PageHeading>
+
+    {#if withoutClub.length > 0}
+        <div class="mt-5">
+            <Alert tone="warning" title="Some entries aren't counted">
+                <p>They have no Club, so their results don't count for one. Give them (or their team) a Club on Entries & Leagues to count them.</p>
+                <ul class="mt-2 list-disc pl-5">
+                    {#each withoutClub as { sheet, names } (sheet)}
+                        <li><span class="font-semibold">{sheet}:</span> {names.join(", ")}</li>
+                    {/each}
+                </ul>
+            </Alert>
+        </div>
+    {/if}
 
     <div class="mt-5 overflow-x-auto">
         <table class="w-full border-t border-v2-border text-left">

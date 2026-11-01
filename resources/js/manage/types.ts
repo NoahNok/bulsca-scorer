@@ -36,6 +36,8 @@ export type PageTab = {
     current: boolean;
     /** A Management app page, so an Inertia visit; the rest are Blade, and load in full */
     svelte: boolean;
+    /** Opens in a new tab, marked ↗ (the live full-screen display) */
+    newTab?: boolean;
 };
 
 /** What CompetitionLayout draws above every competition page (App\Helpers\CompetitionHeader::for) */
@@ -439,4 +441,34 @@ export type Pagination = {
     prev: string | null;
     /** Null on the last page */
     next: string | null;
+};
+
+/** What LiveLayout draws above every live page (LiveController::header) */
+export type LiveHeader = {
+    id: number;
+    name: string;
+    /** Y-m-d */
+    when: string;
+    where: string;
+    logo: string | null;
+    /** The live page polls this for each Team's progress (LiveController::liveData) */
+    dataUrl: string;
+    /** The Organisers' note from Settings → Status, as HTML. The poll keeps it current (LiveStatusMessage) */
+    statusMessage: string | null;
+    links: { live: string; dqs: string; display: string; heatsDraws: string };
+};
+
+/** The SERC order's Tanks, each Team in Draw order (LiveController::sercOrder) */
+export type SercOrder = {
+    tanks: { label: string | null; teams: { id: number; draw: number; name: string }[] }[];
+    sercCount: number;
+};
+
+/** A Team's SERC progress and Estimated start (App\Services\SercOrderEstimate::teams) */
+export type LiveTeam = {
+    finished: number;
+    /** First not-started Team in its Tank */
+    next: boolean;
+    /** Unix seconds, or null once started or skipped */
+    start: number | null;
 };

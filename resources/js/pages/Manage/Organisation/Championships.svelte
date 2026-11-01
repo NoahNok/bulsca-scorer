@@ -79,7 +79,7 @@
     <h2 id="c-new-title">New championship</h2>
     <p>You can add competitions to it once it's made.</p>
 
-    <Form action={store(organisation.id)} resetOnSuccess onSuccess={() => newDialog.close()}>
+    <Form action={store(organisation.id)} resetOnSuccess onSuccess={() => newDialog?.close()}>
         {#snippet children({ errors, processing })}
             <Field id="c-new-name" name="name" label="Name" required maxlength={255} error={errors.name} />
             <div class="grid gap-4 *:mt-0 sm:grid-cols-2">
