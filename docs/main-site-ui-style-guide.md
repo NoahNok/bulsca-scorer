@@ -167,8 +167,10 @@ Pages set `@section('title')` and fill `@section('content')`.
   kind. Picking an option adds it to a `|`-separated query param and reloads,
   and the select goes back to its placeholder. Leave already-picked values out
   of its options. Toggle buttons for a short fixed list are plain links whose
-  URL adds or removes their value, with `aria-pressed`.
-- **Filter from a list item:** in the activity log, each related item in a
+  URL adds or removes their value, with `aria-pressed`. (A competition's
+  Activity, which had these, is now a Management page; the Admin Activity
+  Monitor keeps the chips and type toggles.)
+- **Filter from a list item:** in the Admin Activity Monitor, each related item in a
   card's footer links to the log with that item added as a filter, or removed
   if it's already on (shown pressed). Something that also has its own page
   gets a small ↗ link beside it, since links can't nest.

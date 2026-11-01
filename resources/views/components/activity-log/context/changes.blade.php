@@ -7,17 +7,17 @@
         <table>
             <thead>
                 <tr>
-                    <th>{{ $label }}</th>
-                    <th>Old {{ $value }}</th>
-                    <th>New {{ $value }}</th>
+                    <th>{{ $changes['columns']['label'] }}</th>
+                    <th>{{ $changes['columns']['old'] }}</th>
+                    <th>{{ $changes['columns']['new'] }}</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($context['changes'] as $change)
+                @foreach ($changes['rows'] as $change)
                     <tr>
-                        <th>{{ $change['name'] }}</th>
-                        <td>{{ array_key_exists('old', $change) ? $change['old'] : 'N/A' }}</td>
-                        <td>{{ array_key_exists('new', $change) ? $change['new'] : 'N/A' }}</td>
+                        <th>{{ $change['label'] }}</th>
+                        <td>{{ $change['old'] ?? 'N/A' }}</td>
+                        <td>{{ $change['new'] ?? 'N/A' }}</td>
                     </tr>
                 @endforeach
             </tbody>

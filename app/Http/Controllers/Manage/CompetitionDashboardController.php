@@ -62,7 +62,7 @@ class CompetitionDashboardController extends Controller
             ] : null,
             'links' => $can('admin') ? [
                 'settingsUrl' => route('manage.competitions.settings', $comp),
-                'activityLogUrl' => route('comps.activityLog', $comp),
+                'activityUrl' => route('manage.competitions.activity', $comp),
             ] : null,
         ]);
     }

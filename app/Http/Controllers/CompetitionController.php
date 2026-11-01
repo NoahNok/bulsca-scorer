@@ -12,7 +12,6 @@ use App\Models\User;
 use App\Models\UserCompetitionAccess;
 use App\Traits\RecordActivity;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -31,12 +30,6 @@ class CompetitionController extends Controller
 
 
         return view('competitions', ['comps' => $c]);
-    }
-
-    public function activityLog(Competition $comp, Request $request)
-    {
-
-        return view('competition.activity-log', ['comp' => $comp]);
     }
 
     public function createCompetitionStats(Competition $comp)

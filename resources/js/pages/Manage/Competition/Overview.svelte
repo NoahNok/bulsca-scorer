@@ -34,7 +34,7 @@
             sercsReleasedAt: string | null;
         } | null;
         /** Organisers only */
-        links: { settingsUrl: string; activityLogUrl: string } | null;
+        links: { settingsUrl: string; activityUrl: string } | null;
     } = $props();
 
     const MANUAL_URL = "https://docs.google.com/document/d/1HKTR9HUzgTKadyE7vyVqDWXeaheK4XFmzlw9Hrn1Q1s/edit?usp=sharing";
@@ -63,12 +63,11 @@
 
     // RowTable keys its rows by id
     const eventRows = $derived(events?.map((event) => ({ ...event, id: event.key })) ?? []);
-    // Settings is a Svelte page (an Inertia visit), the activity log is still Blade
     const compRows = $derived(
         links
             ? [
-                  { id: "settings", name: "Settings", url: links.settingsUrl, inertia: true },
-                  { id: "activity", name: "Activity log", url: links.activityLogUrl, inertia: false },
+                  { id: "settings", name: "Settings", url: links.settingsUrl },
+                  { id: "activity", name: "Activity", url: links.activityUrl },
               ]
             : [],
     );
@@ -132,13 +131,7 @@
                 <div class="mb-3">{@render heading("o-comp", "Competition")}</div>
                 <RowTable rows={compRows} columns={["Page"]}>
                     {#snippet row(page)}
-                        <td>
-                            {#if page.inertia}
-                                <Link href={page.url} class={rowLink}>{page.name}</Link>
-                            {:else}
-                                <a href={page.url} class={rowLink}>{page.name}</a>
-                            {/if}
-                        </td>
+                        <td><Link href={page.url} class={rowLink}>{page.name}</Link></td>
                     {/snippet}
                 </RowTable>
             </section>

@@ -10,6 +10,7 @@ use App\Http\Controllers\Manage\ChampionshipController;
 use App\Http\Controllers\CompetitionController;
 use App\Http\Controllers\DigitalJudge\DigitalJudgeController;
 use App\Http\Controllers\LeagueController;
+use App\Http\Controllers\Manage\CompetitionActivityController;
 use App\Http\Controllers\Manage\CompetitionCreateController;
 use App\Http\Controllers\Manage\CompetitionDashboardController;
 use App\Http\Controllers\Manage\CompetitionEntriesController;
@@ -78,7 +79,7 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
         Route::prefix('/comps/{comp}')->middleware([CompetitionOwnsRouteModels::class, RecordCompetitionVisit::class])->group(function () {
             Route::get('', [CompetitionDashboardController::class, 'overview'])->middleware('can:access,comp,"view"')->name('comps.view');
 
-            Route::get('/activity-log', [CompetitionController::class, 'activityLog'])->middleware('can:access,comp,"admin"')->name('comps.activityLog');
+            Route::get('/activity-log', [CompetitionActivityController::class, 'show'])->middleware('can:access,comp,"admin"')->name('manage.competitions.activity');
 
             Route::middleware('can:access,comp,"admin"')->group(function () {
                 Route::post('/digital-judge-toggle', [DigitalJudgeController::class, 'toggle'])->name('dj.toggle');

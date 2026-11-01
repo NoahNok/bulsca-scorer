@@ -1,43 +1,5 @@
 <div class="flex-col space-y-3 mb-3">
 
-    @if (count($pickers) > 0)
-        <div class="flex flex-col md:flex-row md:flex-wrap gap-2" x-data="{
-            addFilter(param, value) {
-                if (!value) return;
-
-                const url = new URL(window.location.href);
-                const values = (url.searchParams.get(param) ?? '').split('|').filter(v => v !== '');
-
-                if (!values.includes(value)) values.push(value);
-
-                url.searchParams.set(param, values.join('|'));
-                url.searchParams.delete('page');
-                window.location.href = url.toString();
-            }
-        }">
-            @foreach ($pickers as $picker)
-                <select aria-label="Filter by {{ strtolower($picker['label']) }}"
-                    @change="addFilter('{{ $picker['param'] }}', $el.value)"
-                    class="border-2 rounded-md py-2 px-2 bg-white">
-                    <option value="" selected>{{ $picker['placeholder'] }}</option>
-                    @foreach ($picker['groups'] as $group => $options)
-                        @if ($group === '')
-                            @foreach ($options as $option)
-                                <option value="{{ $option['value'] }}">{{ $option['label'] }}</option>
-                            @endforeach
-                        @elseif (count($options) > 0)
-                            <optgroup label="{{ $group }}">
-                                @foreach ($options as $option)
-                                    <option value="{{ $option['value'] }}">{{ $option['label'] }}</option>
-                                @endforeach
-                            </optgroup>
-                        @endif
-                    @endforeach
-                </select>
-            @endforeach
-        </div>
-    @endif
-
     @if (count($chipGroups) > 0)
         <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
             <p class="font-semibold uppercase text-xs!">Showing activity for</p>
@@ -93,11 +55,13 @@
                         <p class="font-semibold uppercase text-xs!">{{ $activity->created_at->format('H:i:s d/m/Y') }}
                         </p>
 
-                        <h3 class=" capitalize!">{{ strtolower(str_replace('_', ' ', $activity->activity)) }}</h3>
+                        <h3>{{ $entries[$activity->id]['title'] }}</h3>
                         <p>{{ $activity->description ?? 'N/A' }}</p>
 
 
-                        {!! $activity->renderContext() !!}
+                        @if ($entries[$activity->id]['changes'])
+                            @include('components.activity-log.context.changes', ['changes' => $entries[$activity->id]['changes']])
+                        @endif
 
                     </div>
                     <div class="flex-col self-center items-center justify-center">
