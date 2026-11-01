@@ -6,7 +6,7 @@
 <script lang="ts">
     import { confirm } from "@/lib/confirm";
     import SidebarPage from "@/manage/components/SidebarPage.svelte";
-    import RowIcon from "@/manage/components/RowIcon.svelte";
+    import RowTable, { rowLink } from "@/manage/components/RowTable.svelte";
     import type { CompetitionEvent, CompetitionHeader } from "@/manage/types";
     import { Link, router } from "@inertiajs/svelte";
 
@@ -61,9 +61,17 @@
         });
     }
 
-    // A list row that leads somewhere: the whole row is the link
-    const row =
-        "flex items-center gap-3 px-2 py-[0.8rem] transition-colors hover:bg-v2-row-hover focus-visible:bg-v2-row-hover motion-reduce:transition-none";
+    // RowTable keys its rows by id
+    const eventRows = $derived(events?.map((event) => ({ ...event, id: event.key })) ?? []);
+    // Settings is a Svelte page (an Inertia visit), the activity log is still Blade
+    const compRows = $derived(
+        links
+            ? [
+                  { id: "settings", name: "Settings", url: links.settingsUrl, inertia: true },
+                  { id: "activity", name: "Activity log", url: links.activityLogUrl, inertia: false },
+              ]
+            : [],
+    );
     // Links in the Digital Judge panel: plain ink, underlined
     const judgeLink = "text-v2-ink underline underline-offset-2";
 
@@ -90,16 +98,16 @@
     <div class="flex flex-col gap-10">
         {#if events}
             <section aria-labelledby="o-events">
-                <div class="mb-2 flex items-baseline justify-between gap-4">
+                <div class="mb-3 flex flex-wrap items-center justify-between gap-4">
                     {@render heading("o-events", "Events")}
-                    <a href={addEventUrl} class="v2-link">Add event</a>
+                    <a href={addEventUrl} class="v2-btn v2-btn-accent v2-btn-sm">Add event</a>
                 </div>
                 {#if events.length > 0}
-                    <ul class="border-t border-v2-border *:border-b *:border-v2-border">
-                        {#each events as event (event.key)}
-                            <li>
-                                <a href={event.url} class={row}>
-                                    <span class="font-bold wrap-anywhere">{event.name}</span>
+                    <RowTable rows={eventRows} columns={["Event"]}>
+                        {#snippet row(event)}
+                            <td>
+                                <span class="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+                                    <a href={event.url} class={rowLink}>{event.name}</a>
                                     {#if event.serc}<span class="v2-badge">SERC</span>{/if}
                                     {#if event.digitalJudge}
                                         <span
@@ -107,11 +115,10 @@
                                             ><span class="v2-dot" aria-hidden="true"></span>Digital Judge</span
                                         >
                                     {/if}
-                                    <RowIcon />
-                                </a>
-                            </li>
-                        {/each}
-                    </ul>
+                                </span>
+                            </td>
+                        {/snippet}
+                    </RowTable>
                 {:else}
                     <p class="pt-1 text-[0.9375rem]/[1.6] text-v2-muted">
                         No events yet. Add speed events and SERCs from <a href={addEventUrl} class="v2-link-inline">Events</a>.
@@ -122,21 +129,18 @@
 
         {#if links}
             <section aria-labelledby="o-comp">
-                {@render heading("o-comp", "Competition")}
-                <ul class="border-t border-v2-border *:border-b *:border-v2-border">
-                    <li>
-                        <Link href={links.settingsUrl} class={row}>
-                            <span class="font-bold wrap-anywhere">Settings</span>
-                            <RowIcon />
-                        </Link>
-                    </li>
-                    <li>
-                        <a href={links.activityLogUrl} class={row}>
-                            <span class="font-bold wrap-anywhere">Activity log</span>
-                            <RowIcon />
-                        </a>
-                    </li>
-                </ul>
+                <div class="mb-3">{@render heading("o-comp", "Competition")}</div>
+                <RowTable rows={compRows} columns={["Page"]}>
+                    {#snippet row(page)}
+                        <td>
+                            {#if page.inertia}
+                                <Link href={page.url} class={rowLink}>{page.name}</Link>
+                            {:else}
+                                <a href={page.url} class={rowLink}>{page.name}</a>
+                            {/if}
+                        </td>
+                    {/snippet}
+                </RowTable>
             </section>
         {/if}
     </div>

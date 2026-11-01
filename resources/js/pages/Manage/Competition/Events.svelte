@@ -1,12 +1,15 @@
 <!--
     A competition's Events (manage.competitions.events), in CompetitionLayout: its speed events and SERCs
-    as cards, each type only with the access for it. "Add speed event" opens a dialog that adds one and
-    opens it; "Add SERC" goes to the SERC setup page.
+    side by side (stacked on phones) as whole-row links with their badges beside the name, each type only
+    with the access for it. "Add speed event" opens a dialog that adds one and opens it; "Add SERC" goes
+    to the SERC setup page.
 -->
 <script lang="ts">
     import { storeSpeed } from "@/actions/App/Http/Controllers/Manage/CompetitionEventsController";
     import type { CompetitionHeader, EventTarget, SercCard, SpeedEventCard } from "@/manage/types";
-    import { Form } from "@inertiajs/svelte";
+    import EmptyState from "@/manage/components/EmptyState.svelte";
+    import RowTable, { rowLink } from "@/manage/components/RowTable.svelte";
+    import { Form, Link } from "@inertiajs/svelte";
     import { tick } from "svelte";
     import { closeOnBackdrop, TARGET_LABELS } from "@/manage/ui";
 
@@ -37,76 +40,73 @@
     }
 
     const heading = "text-lg font-extrabold uppercase";
-    const grid = "grid grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] gap-3";
-    const card =
-        "group flex h-full flex-col gap-2 rounded-xl border border-v2-border bg-v2-card px-4 py-3.5 transition-colors hover:bg-v2-row-hover focus-visible:bg-v2-row-hover motion-reduce:transition-none";
-    // The add card: dashed, with the label in the middle
-    const addCard =
-        "flex h-full min-h-[5.5rem] w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-v2-border px-4 py-3.5 font-semibold text-v2-muted transition-colors hover:border-v2-teal hover:text-v2-teal-text focus-visible:border-v2-teal focus-visible:text-v2-teal-text motion-reduce:transition-none";
+    const lead = "mt-[0.35rem] mb-5 text-[0.9375rem]/[1.6] text-v2-muted";
 </script>
 
 <svelte:head>
     <title>Events - {competition.name} - Scoring.Events</title>
 </svelte:head>
 
-{#snippet eventCard(event: SpeedEventCard | SercCard)}
-    <li>
-        <a href={event.url} class={card}>
-            <span class="font-bold wrap-anywhere group-hover:text-v2-teal-text">{event.name}</span>
-            <span class="flex flex-wrap items-center gap-1.5">
-                {#if event.complete}
-                    <span class="v2-badge is-success">Complete</span>
-                {:else}
-                    <span class="v2-badge is-danger">Incomplete</span>
-                {/if}
-                {#if event.confirmed}<span class="v2-badge is-live">Confirmed by Referee</span>{/if}
-                {#if event.hidden}<span class="v2-badge" title="Left out of the results">Hidden</span>{/if}
-            </span>
-        </a>
-    </li>
+{#snippet list(events: (SpeedEventCard | SercCard)[], label: string)}
+    <RowTable rows={events} columns={[label]}>
+        {#snippet row(event)}
+            <td>
+                <span class="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+                    <Link href={event.url} class={rowLink}>{event.name}</Link>
+                    <span class="flex flex-wrap items-center gap-1.5">
+                        {#if event.complete}
+                            <span class="v2-badge is-success">Complete</span>
+                        {:else}
+                            <span class="v2-badge is-danger">Incomplete</span>
+                        {/if}
+                        {#if event.confirmed}<span class="v2-badge is-live">Confirmed by Referee</span>{/if}
+                        {#if event.hidden}<span class="v2-badge" title="Left out of the results">Hidden</span>{/if}
+                    </span>
+                </span>
+            </td>
+        {/snippet}
+    </RowTable>
 {/snippet}
 
-{#snippet plus()}
-    <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-        <path d="M12 5v14M5 12h14" />
-    </svg>
-{/snippet}
-
-<div class="flex flex-col gap-10">
+<div class={["grid gap-10", speeds && sercs && "lg:grid-cols-2"]}>
     {#if speeds}
         <section aria-labelledby="ev-speeds">
-            <h2 id="ev-speeds" class="mb-3 {heading}">Speed events</h2>
-            <ul class={grid}>
-                {#each speeds as event (event.id)}
-                    {@render eventCard(event)}
-                {/each}
-                <li>
-                    <button type="button" class={addCard} onclick={openSpeed}>{@render plus()}Add speed event</button>
-                </li>
-            </ul>
-            {#if speeds.length === 0}
-                <p class="mt-3 text-[0.9375rem]/[1.6] text-v2-muted">
-                    No speed events yet. Each one you add gets a result for every Entity it scores.
-                </p>
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <h2 id="ev-speeds" class={heading}>Speed events</h2>
+                {#if speeds.length > 0}
+                    <button type="button" class="v2-btn v2-btn-sm" onclick={openSpeed}>Add speed event</button>
+                {/if}
+            </div>
+            <p class={lead}>Timed events. Each one gets a result for every Entity it scores.</p>
+
+            {#if speeds.length > 0}
+                {@render list(speeds, "Speed event")}
+            {:else}
+                <EmptyState>
+                    <p>No speed events yet.</p>
+                    <button type="button" class="v2-btn mt-4" onclick={openSpeed}>Add speed event</button>
+                </EmptyState>
             {/if}
         </section>
     {/if}
 
     {#if sercs}
         <section aria-labelledby="ev-sercs">
-            <h2 id="ev-sercs" class="mb-3 {heading}">SERCs</h2>
-            <ul class={grid}>
-                {#each sercs as event (event.id)}
-                    {@render eventCard(event)}
-                {/each}
-                <li>
-                    <a href={newSercUrl} class={addCard}>{@render plus()}Add SERC</a>
-                </li>
-            </ul>
-            {#if sercs.length === 0}
-                <p class="mt-3 text-[0.9375rem]/[1.6] text-v2-muted">
-                    No SERCs yet. Set one up with its Objectives and marking points, and Officials can mark it.
-                </p>
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <h2 id="ev-sercs" class={heading}>SERCs</h2>
+                {#if sercs.length > 0}
+                    <Link href={newSercUrl} class="v2-btn v2-btn-sm">Add SERC</Link>
+                {/if}
+            </div>
+            <p class={lead}>Set one up with its Objectives and marking points, and Officials can mark it.</p>
+
+            {#if sercs.length > 0}
+                {@render list(sercs, "SERC")}
+            {:else}
+                <EmptyState>
+                    <p>No SERCs yet.</p>
+                    <Link href={newSercUrl} class="v2-btn mt-4">Add SERC</Link>
+                </EmptyState>
             {/if}
         </section>
     {/if}

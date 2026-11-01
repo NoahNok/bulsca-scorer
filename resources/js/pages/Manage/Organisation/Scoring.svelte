@@ -6,7 +6,7 @@
 <script lang="ts">
     import { createFormula, createTemplate } from "@/actions/App/Http/Controllers/Manage/OrganisationScoringController";
     import EmptyState from "@/manage/components/EmptyState.svelte";
-    import RowIcon from "@/manage/components/RowIcon.svelte";
+    import RowTable, { rowLink } from "@/manage/components/RowTable.svelte";
     import type { OrganisationHeader } from "@/manage/types";
     import { Link } from "@inertiajs/svelte";
 
@@ -33,26 +33,11 @@
 </svelte:head>
 
 {#snippet list(items: Item[], label: string)}
-    <table class="w-full border-collapse">
-        <thead class="sr-only">
-            <tr>
-                <th>{label}</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {#each items as item (item.id)}
-                <tr class="v2-row group *:border-t *:border-v2-border *:py-3.5 *:pr-4 *:align-middle *:first:pl-3 *:last:pr-3">
-                    <td>
-                        <Link href={item.url} class="v2-row-link font-bold wrap-anywhere group-hover:text-v2-teal-text group-focus-within:text-v2-teal-text">
-                            {item.name}
-                        </Link>
-                    </td>
-                    <td class="w-px"><RowIcon /></td>
-                </tr>
-            {/each}
-        </tbody>
-    </table>
+    <RowTable rows={items} columns={[label]}>
+        {#snippet row(item)}
+            <td><Link href={item.url} class={rowLink}>{item.name}</Link></td>
+        {/snippet}
+    </RowTable>
 {/snippet}
 
 <div class="grid gap-10 lg:grid-cols-2">

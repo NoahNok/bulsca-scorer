@@ -9,7 +9,7 @@
     import { destroy, store, update } from "@/actions/App/Http/Controllers/Manage/ViolationCodesController";
     import { confirm } from "@/lib/confirm";
     import EmptyState from "@/manage/components/EmptyState.svelte";
-    import RowIcon from "@/manage/components/RowIcon.svelte";
+    import RowTable from "@/manage/components/RowTable.svelte";
     import type { OrganisationHeader } from "@/manage/types";
     import { closeOnBackdrop } from "@/manage/ui";
     import { router, useForm } from "@inertiajs/svelte";
@@ -97,32 +97,20 @@
         <p class="mt-[0.35rem] mb-5 text-[0.9375rem]/[1.6] text-v2-muted">{lead}</p>
 
         {#if codes.length > 0}
-            <table class="w-full border-collapse">
-                <thead class="sr-only">
-                    <tr>
-                        <th>Code</th>
-                        <th>Description</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {#each codes as code (code.id)}
-                        <tr class="v2-row group *:border-t *:border-v2-border *:py-3 *:pr-4 *:align-middle *:first:pl-3 *:last:pr-3">
-                            <td class="w-px whitespace-nowrap">
-                                <button
-                                    type="button"
-                                    class="v2-row-link cursor-pointer font-bold group-hover:text-v2-teal-text group-focus-within:text-v2-teal-text"
-                                    onclick={() => open(type, code)}
-                                >
-                                    {PREFIX[type]}{code.code}
-                                </button>
-                            </td>
-                            <td class="text-sm text-v2-muted"><span class="line-clamp-2 wrap-anywhere">{code.description}</span></td>
-                            <td class="w-px"><RowIcon /></td>
-                        </tr>
-                    {/each}
-                </tbody>
-            </table>
+            <RowTable rows={codes} columns={["Code", "Description"]}>
+                {#snippet row(code)}
+                    <td class="w-px whitespace-nowrap">
+                        <button
+                            type="button"
+                            class="v2-row-link cursor-pointer font-bold group-hover:text-v2-teal-text group-focus-within:text-v2-teal-text"
+                            onclick={() => open(type, code)}
+                        >
+                            {PREFIX[type]}{code.code}
+                        </button>
+                    </td>
+                    <td class="text-sm text-v2-muted"><span class="line-clamp-2 wrap-anywhere">{code.description}</span></td>
+                {/snippet}
+            </RowTable>
         {:else}
             <EmptyState>
                 <p>No {NAME[type]}s yet.</p>

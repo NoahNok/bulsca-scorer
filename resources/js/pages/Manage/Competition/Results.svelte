@@ -1,6 +1,6 @@
 <!--
     A competition's Results (manage.competitions.results), in CompetitionLayout: its Results sheets, then
-    its Master sheets, each a whole-row link to its page. The sticky actions column makes new sheets,
+    its Master sheets, each in a RowTable. The sticky actions column makes new sheets,
     prints them all, and publishes and finalises the results. While a Digitally Judged Event waits for the
     Referee, a danger alert names it and no sheet can be made or edited.
 -->
@@ -10,6 +10,7 @@
     import ActionSwitch from "@/manage/components/ActionSwitch.svelte";
     import EmptyState from "@/manage/components/EmptyState.svelte";
     import RowIcon from "@/manage/components/RowIcon.svelte";
+    import RowTable, { rowLink } from "@/manage/components/RowTable.svelte";
     import SidebarPage, { sidebarRow } from "@/manage/components/SidebarPage.svelte";
     import UnconfirmedAlert from "@/manage/results/UnconfirmedAlert.svelte";
     import type { CompetitionHeader, ResultSheetRow, UnconfirmedEvent } from "@/manage/types";
@@ -59,15 +60,14 @@
     <title>Results - {competition.name} - Scoring.Events</title>
 </svelte:head>
 
-{#snippet sheetRow(href: string, name: string, detail: string | null, viewable: boolean)}
-    <li>
-        <Link {href} class={sidebarRow}>
-            <span class="min-w-0 wrap-anywhere">{name}</span>
-            {#if detail}<span class="text-sm font-normal text-v2-muted">{detail}</span>{/if}
+{#snippet sheetCell(href: string, name: string, detail: string | null, viewable: boolean)}
+    <td>
+        <span class="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+            <Link {href} class={rowLink}>{name}</Link>
+            {#if detail}<span class="text-sm text-v2-muted">{detail}</span>{/if}
             {#if !viewable}<span class="v2-badge" title="Left out of the public results">Hidden</span>{/if}
-            <RowIcon />
-        </Link>
-    </li>
+        </span>
+    </td>
 {/snippet}
 
 <SidebarPage sticky>
@@ -80,11 +80,11 @@
             <h2 id="rs-sheets" class="mb-1 {heading}">Results sheets</h2>
             <p class="mb-4 text-[0.9375rem]/[1.6] text-v2-muted">Overall rankings, for the whole competition or a League, from the events you pick.</p>
             {#if sheets.length > 0}
-                <ul class={list}>
-                    {#each sheets as sheet (sheet.id)}
-                        {@render sheetRow(show({ comp, sheet: sheet.id }).url, sheet.name, sheet.league ?? "Whole competition", sheet.viewable)}
-                    {/each}
-                </ul>
+                <RowTable rows={sheets} columns={["Results sheet"]}>
+                    {#snippet row(sheet)}
+                        {@render sheetCell(show({ comp, sheet: sheet.id }).url, sheet.name, sheet.league ?? "Whole competition", sheet.viewable)}
+                    {/snippet}
+                </RowTable>
             {:else}
                 <EmptyState>
                     No Results sheets yet. Make one to rank Entities across your events.
@@ -99,11 +99,11 @@
             <h2 id="rs-masters" class="mb-1 {heading}">Master sheets</h2>
             <p class="mb-4 text-[0.9375rem]/[1.6] text-v2-muted">Rank Clubs by combining Results sheets, like an overall from each League's sheet.</p>
             {#if masters.length > 0}
-                <ul class={list}>
-                    {#each masters as master (master.id)}
-                        {@render sheetRow(showMaster({ comp, master: master.id }).url, master.name, null, master.viewable)}
-                    {/each}
-                </ul>
+                <RowTable rows={masters} columns={["Master sheet"]}>
+                    {#snippet row(master)}
+                        {@render sheetCell(showMaster({ comp, master: master.id }).url, master.name, null, master.viewable)}
+                    {/snippet}
+                </RowTable>
             {:else}
                 <p class="text-[0.9375rem]/[1.6] text-v2-muted">No Master sheets yet.</p>
             {/if}
