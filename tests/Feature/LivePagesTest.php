@@ -10,6 +10,10 @@ use App\Models\DQCode;
 use App\Models\Orders\Draw;
 use App\Models\Orders\Heat;
 use App\Models\SERC;
+use App\Models\SERCJudge;
+use App\Models\SERCMarkingPoint;
+use App\Models\SERCResult;
+use App\Models\User;
 use App\Models\SpeedEvent;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
@@ -191,6 +195,89 @@ class LivePagesTest extends TestCase
             ->assertJsonPath("teams.{$this->team->id}.finished", 0)
             ->assertJsonPath("teams.{$this->team->id}.next", true)
             ->assertJsonPath("teams.{$this->team->id}.start", $this->comp->serc_start_time->timestamp);
+    }
+
+    private function mark(SERC $serc, CompetitionTeam $team): void
+    {
+        $judge = new SERCJudge();
+        $judge->name = 'Casualty';
+        $judge->description = '';
+        $judge->serc = $serc->id;
+        $judge->save();
+
+        $point = new SERCMarkingPoint();
+        $point->name = 'Approach';
+        $point->weight = 1;
+        $point->judge = $judge->id;
+        $point->serc = $serc->id;
+        $point->save();
+
+        $mark = new SERCResult();
+        $mark->marking_point = $point->id;
+        $mark->entity()->associate($team);
+        $mark->result = 5;
+        $mark->save();
+    }
+
+    public function test_only_dry_serc_marks_start_a_team_in_the_serc_order(): void
+    {
+        $wet = new SERC();
+        $wet->name = 'Wet SERC';
+        $wet->type = 'WET';
+        $wet->competition = $this->comp->id;
+        $wet->scorable_entity = 'team';
+        $wet->save();
+
+        $later = new CompetitionTeam();
+        $later->competition = $this->comp->id;
+        $later->team = 'B';
+        $later->save();
+
+        $draw = new Draw();
+        $draw->serc = $this->serc->id;
+        $draw->entity()->associate($later);
+        $draw->tank = 1;
+        $draw->draw = 4;
+        $draw->save();
+        $this->comp->clearDrawCache();
+
+        // The later Team has done the wet SERC, run in another order: it's still to start the dry one, and
+        // the Team ahead of it isn't skipped
+        $this->mark($wet, $later);
+
+        $this->get(route('live.data', ['comp' => $this->comp]))
+            ->assertOk()
+            ->assertJsonPath("teams.{$this->team->id}.next", true)
+            ->assertJsonPath("teams.{$this->team->id}.start", fn ($start) => $start !== null)
+            ->assertJsonPath("teams.{$later->id}.finished", 1)
+            ->assertJsonPath("teams.{$later->id}.start", fn ($start) => $start !== null);
+    }
+
+    public function test_the_live_pages_share_nothing_about_who_is_signed_in(): void
+    {
+        $this->actingAs(User::factory()->create(['email' => 'organiser@example.com']))
+            ->get($this->url('live.display'))
+            ->assertOk()
+            ->assertDontSee('organiser@example.com')
+            ->assertInertia(fn (Assert $page) => $page->missing('auth')->has('legal')->has('live'));
+    }
+
+    public function test_the_past_competitions_pages_keep_the_comp_in_the_url(): void
+    {
+        $this->comp->can_be_live = false;
+        $this->comp->public_results = true;
+        $this->comp->when = now()->subWeek();
+        $this->comp->save();
+
+        foreach (range(1, 10) as $i) {
+            $this->comp->replicate()->save();
+        }
+
+        $this->get(route('live', ['comp' => 999999]))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Live/Unavailable')
+                ->where('pagination.next', fn ($next) => str_contains($next, 'comp=999999') && str_contains($next, 'page=2')));
     }
 
     public function test_several_devices_on_one_ip_can_poll_the_live_data(): void

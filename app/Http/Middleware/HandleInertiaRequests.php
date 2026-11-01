@@ -56,10 +56,11 @@ class HandleInertiaRequests extends Middleware
             ],
         ];
 
-        // The live pages are public and have no session: just the main site's urls
+        // The live pages are public, so nothing about whoever is signed in (a TV left signed in at the pool
+        // would show it in the page source): just the legal links and the main site's urls
         if ($this->isLive($request)) {
             return [
-                ...$shared,
+                ...collect($shared)->except(['auth', 'errors'])->all(),
                 'live' => [
                     'site' => [
                         'home' => RouteHelpers::mainRoute('home'),

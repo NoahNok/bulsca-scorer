@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Competition;
+use App\Models\SERC;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -29,7 +30,7 @@ class SercOrderEstimate
 
     /**
      * @param  array<int, int[]>  $tanks  each Tank's entity ids, in Draw order
-     * @param  array<int, int>  $firstMarks  when each started entity got its first SERC mark
+     * @param  array<int, int>  $firstMarks  when each started entity got its first mark in the dry SERC
      * @param  array<int, int>  $finished  how many SERCs each entity has marks in
      */
     public function __construct(
@@ -50,15 +51,33 @@ class SercOrderEstimate
             ->values()
             ->all();
 
-        $rows = DB::select('SELECT sr.entity_id, UNIX_TIMESTAMP(MIN(sr.created_at)) AS first_mark, COUNT(DISTINCT smp.serc) AS finished FROM serc_results sr INNER JOIN serc_marking_points smp ON smp.id=sr.marking_point INNER JOIN sercs s ON s.id=smp.serc WHERE s.competition=? GROUP BY sr.entity_id', [$comp->id]);
+        // How many SERCs each entity has marks in, and when it got its first mark in the dry SERC. Only the dry
+        // one: the SERC order is its running order, and a wet SERC run in another order would make Teams look
+        // started (and those ahead of them skipped) and its gaps would muddle the pace
+        $finished = DB::select('SELECT sr.entity_id, COUNT(DISTINCT smp.serc) AS finished FROM serc_results sr INNER JOIN serc_marking_points smp ON smp.id=sr.marking_point INNER JOIN sercs s ON s.id=smp.serc WHERE s.competition=? GROUP BY sr.entity_id', [$comp->id]);
+
+        $dry = self::drySerc($comp);
+        $firstMarks = $dry ? DB::select('SELECT sr.entity_id, UNIX_TIMESTAMP(MIN(sr.created_at)) AS first_mark FROM serc_results sr INNER JOIN serc_marking_points smp ON smp.id=sr.marking_point WHERE smp.serc=? GROUP BY sr.entity_id', [$dry->id]) : [];
 
         return new self(
             $tanks,
-            collect($rows)->mapWithKeys(fn ($row) => [$row->entity_id => (int) $row->first_mark])->all(),
-            collect($rows)->mapWithKeys(fn ($row) => [$row->entity_id => (int) $row->finished])->all(),
+            collect($firstMarks)->mapWithKeys(fn ($row) => [$row->entity_id => (int) $row->first_mark])->all(),
+            collect($finished)->mapWithKeys(fn ($row) => [$row->entity_id => (int) $row->finished])->all(),
             $comp->serc_start_time?->timestamp,
             $now ?? now()->timestamp,
         );
+    }
+
+    /**
+     * The SERC the SERC order runs: one named Dry, else the first of type DRY (the default type), else the first
+     */
+    public static function drySerc(Competition $comp): ?SERC
+    {
+        $sercs = $comp->getSERCs()->orderBy('id')->get();
+
+        return $sercs->first(fn (SERC $serc) => stripos($serc->name, 'dry') !== false)
+            ?? $sercs->firstWhere('type', 'DRY')
+            ?? $sercs->first();
     }
 
     /**

@@ -76,7 +76,9 @@ class LiveController extends Controller
         $past = Competition::where('when', '<=', now())
             ->where(fn ($query) => $query->where('public_results', true)->orWhere('can_be_live', true))
             ->orderBy('when', 'desc')
-            ->paginate(10);
+            ->paginate(10)
+            // keeping ?comp=, so page 2 of a bad id's list isn't the live competition's page
+            ->withQueryString();
 
         return Inertia::render('Live/Unavailable', [
             'message' => $message,
