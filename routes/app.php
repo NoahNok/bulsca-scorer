@@ -4,7 +4,6 @@ use App\Helpers\RouteHelpers;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AccountInviteController;
 use App\Http\Controllers\Activity\ActivityController;
-use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminUsersController;
 use App\Http\Controllers\Manage\ChampionshipController;
 use App\Http\Controllers\CompetitionController;
@@ -383,21 +382,8 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
 
     Route::prefix('/admin')->middleware('isAdmin')->group(function () {
         Route::get('', [AdminCompetitionsController::class, 'index'])->name('manage.admin.competitions.index');
-        Route::get('/competition/create', [AdminController::class, 'createComp'])->name('admin.comp.create');
-        Route::get('/competition/{comp}', [AdminController::class, 'viewComp'])->name('manage.admin.competitions.show');
-        Route::post('/competition/create', [AdminController::class, 'createCompPost'])->name('admin.comp.create.post');
-        Route::post('/competition/{comp}/update', [AdminController::class, 'updateCompPost'])->name('admin.comp.update.post');
-        Route::post('/competition/{comp}/updateUser', [AdminController::class, 'updateCompUserPassword'])->name('admin.comp.update.userPassword');
-        Route::get('/records', [AdminController::class, 'records'])->name('admin.records');
-        Route::post('/records', [AdminController::class, 'updateRecords'])->name('admin.records.update');
-
-        Route::get('seasons', [AdminController::class, 'seasons'])->name('admin.seasons');
-        Route::get('season/create', [AdminController::class, 'seasonCreate'])->name('admin.seasons.create');
-        Route::post('season/create', [AdminController::class, 'seasonCreatePost'])->name('admin.seasons.create.post');
-        Route::get('season/edit/{season}', [AdminController::class, 'seasonEdit'])->name('admin.seasons.edit');
-        Route::post('season/edit/{season}', [AdminController::class, 'seasonEditPost'])->name('admin.seasons.edit.post');
-
-        Route::delete('/competition/{comp}/delete', [AdminController::class, 'deleteCompPost'])->name('admin.comp.delete');
+        Route::get('/competition/{comp}', [AdminCompetitionsController::class, 'show'])->name('manage.admin.competitions.show');
+        Route::post('/competition/{comp}/update', [AdminCompetitionsController::class, 'update'])->name('manage.admin.competitions.update');
 
         Route::get('/activity', [ActivityController::class, 'admin'])->name('admin.activity');
 
