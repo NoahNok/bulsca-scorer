@@ -1,7 +1,12 @@
 # Main site UI style guide
 
-How the main site pages look and are built. These are the pages organisers use
-to set up competitions, events, entries, heats, results and officials.
+How the Blade pages that haven't been redesigned look and are built: the
+signed-in Blade pages still on `app.` (the ones not yet ported to the
+Management app), the `results.`, `stats.` and `whatif.` subdomains, and print
+views. Every public page on the main domain (home, Explore, Organisation,
+Championship, a competition's pages and the legal policies) is a v2 page and
+follows [`v2-ui-style-guide.md`](v2-ui-style-guide.md) instead, and the live
+pages are Svelte in the Management app.
 
 The site is split in two, and the halves don't share styling:
 
@@ -40,26 +45,7 @@ actions, and an "Add" button that opens a modal form) and `account.blade.php`.
   `config/legal.php`. Change `updated` whenever a policy's wording changes, and
   keep the retention periods in the privacy policy in step with the
   `retention:prune` command.
-- **Live pages** (`live.` subdomain, `resources/views/live`) extend
-  `live.layout`, not `layouts.core`.
-  - **Why not core:** core's header uses `route()` for routes that have no
-    domain, which builds the link on the current host, so on `live.` those
-    links would hit the live catch-all routes. Link to main site pages with
-    `RouteHelpers::mainRoute()` instead.
-  - **What the layout gives you:** the competition heading (as on
-    `layouts.landing-comp`), the SERC order / DQs & Penalties / Full screen /
-    Heats & Draws (the competition's main site page) tabs, and the connection pill and clock. Keep
-    `request()->all()` on live links so `?comp=` carries through.
-  - **Live data:** `live.partials.store` defines `$store.live`, which polls
-    `live.data` every 5s. `<x-live.serc-order :comp="$comp" />` renders the
-    order from it:
-    - a white `se-card` tile per team;
-    - solid amber once it's done the dry SERC, solid green once it's done both;
-    - an inset teal ring and "Up next" badge on the next team in each tank (a
-      ring, so the tile doesn't change size).
-  - **The full-screen page:** `live/display.blade.php` is a standalone screen
-    for a TV at the pool. It has no header or footer and never scrolls.
-- A standalone page that writes its own `<head>` (public results, live,
+- A standalone page that writes its own `<head>` (public results,
   what-if, print views) adds `<x-favicon />` after the charset meta, so it
   gets the site's "S." icon (`public/favicon.svg`, `favicon.ico`,
   `apple-touch-icon.png`).
@@ -67,8 +53,8 @@ actions, and an "Add" button that opens a modal form) and `account.blade.php`.
   pre-renders it with `artisan down --render` while `vendor/` and
   `public/build` are being replaced, so it uses inline styles and no `@vite`,
   and its favicon links are root-relative rather than `<x-favicon />`.
-- **Redesigned (v2) pages**, starting with the home page at `/`, extend
-  `landing.v2.layout` and follow
+- **Redesigned (v2) pages**, the home page at `/` and every public page on
+  the main domain, extend `landing.v2.layout` and follow
   [`v2-ui-style-guide.md`](v2-ui-style-guide.md) instead of this guide.
 
 Pages set `@section('title')` and fill `@section('content')`.

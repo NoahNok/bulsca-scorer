@@ -1481,3 +1481,300 @@ dialog.v2-modal::backdrop {
 .v2-hd-empty {
     color: var(--v2-muted);
 }
+
+/*
+ * A plain data table (a competition's results, the SERC breakdown): muted headings, rules between rows, the
+ * first column (the name) bold. Wrap it in .v2-table-scroll so a wide one scrolls sideways on its own.
+ */
+.v2-table-scroll {
+    overflow-x: auto;
+    border: 1px solid var(--v2-border);
+    border-radius: 0.75rem;
+    background: var(--v2-card);
+}
+
+.v2-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+}
+
+.v2-table th {
+    text-align: left;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--v2-muted);
+    white-space: nowrap;
+    padding: 0.75rem 1rem;
+    background: var(--v2-sunk);
+}
+
+.v2-table td {
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--v2-border);
+    vertical-align: top;
+}
+
+.v2-table .v2-table-name {
+    font-weight: 700;
+    min-width: 12rem;
+}
+
+/*
+ * The Results tab (landing/competition/results.blade.php): the tabs, rows of chips to pick from, the picked
+ * table's heading, and what's in its cells.
+ */
+.v2-results-tabs {
+    max-width: 30rem;
+    margin-bottom: 1.25rem;
+}
+
+.v2-results-picks {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.v2-results-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.v2-results-chips + .v2-results-chips {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--v2-border);
+}
+
+.v2-results-chips .v2-badge {
+    margin-left: 0.25rem;
+}
+
+.v2-results-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem 1.5rem;
+    margin: 1.75rem 0 1rem;
+}
+
+.v2-results-head h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.v2-results-status {
+    padding: 1.5rem 1rem;
+    color: var(--v2-muted);
+}
+
+.v2-results-violations {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.6rem;
+}
+
+.v2-results-violations button {
+    cursor: pointer;
+}
+
+.v2-results-was {
+    display: block;
+    color: var(--v2-muted);
+}
+
+.v2-results-combined {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.v2-results-combined > div {
+    padding-right: 0.75rem;
+    border-right: 2px solid var(--v2-border);
+}
+
+.v2-modal .v2-results-for {
+    margin-top: -0.25rem;
+    margin-bottom: 0.5rem;
+    color: var(--v2-ink);
+    font-weight: 600;
+}
+
+/*
+ * A SERC's breakdown (landing/competition/serc-breakdown.blade.php): a wide .v2-table with sticky headings and
+ * Team column, marking points written sideways, the Judges' columns ruled off, the top three tinted, and the
+ * pointer's column lit. "Analysis" colours each mark itself (public/js/analysis.js).
+ */
+.v2-results-head-title {
+    margin-top: 0.75rem;
+    font-size: 1.5rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.v2-breakdown-feedback {
+    margin-top: 1.5rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--v2-border);
+    border-radius: 0.75rem;
+}
+
+.v2-breakdown-feedback summary {
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.v2-breakdown-feedback > div,
+.v2-breakdown-notes {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.v2-breakdown-feedback > div {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+}
+
+.v2-breakdown-feedback p,
+.v2-breakdown-notes p {
+    margin-top: 0.2rem;
+    color: var(--v2-muted);
+}
+
+.v2-breakdown-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+    margin: 1.5rem 0 1rem;
+}
+
+.v2-breakdown-tools .v2-field {
+    width: min(100%, 20rem);
+}
+
+.v2-breakdown-tools .v2-btn {
+    margin-left: auto;
+}
+
+.v2-breakdown {
+    max-height: 80vh;
+    overflow: auto;
+}
+
+.v2-breakdown:fullscreen {
+    max-height: none;
+    border-radius: 0;
+    padding: 0.5rem;
+}
+
+.v2-breakdown .v2-table {
+    font-size: 0.875rem;
+}
+
+/* The headings stay put as the marks scroll under them */
+.v2-breakdown thead {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+.v2-breakdown thead th {
+    text-align: center;
+}
+
+.v2-breakdown thead th:first-child,
+.v2-breakdown tbody th {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    text-align: left;
+    background: var(--v2-card);
+}
+
+.v2-breakdown thead th:first-child {
+    z-index: 3;
+    background: var(--v2-sunk);
+}
+
+.v2-breakdown tbody th {
+    border-top: 1px solid var(--v2-border);
+    padding: 0.75rem 1rem;
+    white-space: nowrap;
+}
+
+.v2-breakdown .is-point {
+    height: var(--v2-breakdown-points, 12rem);
+    writing-mode: vertical-rl;
+    text-align: left;
+    vertical-align: bottom;
+    white-space: nowrap;
+}
+
+.v2-breakdown .is-point span {
+    display: block;
+    max-height: calc(var(--v2-breakdown-points, 12rem) - 1.5rem);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.v2-breakdown .is-judge,
+.v2-breakdown .is-judge-start {
+    border-left: 1px solid var(--v2-border);
+}
+
+.v2-breakdown .is-judge-total {
+    border-right: 1px solid var(--v2-border);
+    font-weight: 700;
+}
+
+.v2-breakdown td {
+    text-align: center;
+    vertical-align: middle;
+    transition: background-color 150ms;
+}
+
+.v2-breakdown tbody:not(.analysis) tr:is(.place-1, .place-2, .place-3) :is(td, th) {
+    background: var(--v2-row-hover);
+}
+
+.v2-breakdown tbody:not(.analysis) tr.place-1 th {
+    color: var(--v2-teal-text);
+}
+
+.v2-breakdown tbody:not(.analysis) td.is-col,
+.v2-breakdown tbody:not(.analysis) tr:hover :is(td, th) {
+    background: var(--v2-row-hover);
+}
+
+/* Analysis paints marks red to green, so they're read in ink whatever the theme */
+.v2-breakdown tbody.analysis td.is-mark {
+    color: #111827;
+    font-weight: 600;
+}
+
+/* Sorttable marks the column it sorts with reverse="false|true" */
+.v2-breakdown th[data-sortable] {
+    cursor: pointer;
+}
+
+.v2-breakdown th[reverse='false']::after {
+    content: ' ↑';
+}
+
+.v2-breakdown th[reverse='true']::after {
+    content: ' ↓';
+}
+
+.v2-breakdown-more {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: var(--v2-muted);
+}
+
+.v2-modal.v2-breakdown-dq {
+    max-width: 36rem;
+}

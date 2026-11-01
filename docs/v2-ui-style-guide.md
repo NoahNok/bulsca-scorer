@@ -6,8 +6,8 @@ implementation, and `/v2/kit` (unlinked, not indexed) is a sample sheet of
 every control in this theme (`landing/v2/partials/kit.blade.php`). Use both as
 the example when you redesign a page.
 
-**Scope:** pages that have been redesigned onto `landing.v2.layout`. Pages that
-haven't moved yet still follow
+**Scope:** every public page on the main domain, on `landing.v2.layout`,
+plus the Management app below. Blade pages that haven't moved yet still follow
 [`main-site-ui-style-guide.md`](main-site-ui-style-guide.md), and the Digital
 Judge follows [`judge-ui-style-guide.md`](judge-ui-style-guide.md). Don't mix
 v2 classes into an un-migrated page, and don't use the old `se-` classes on a v2
@@ -326,6 +326,25 @@ each one in use; copy its markup.
   chips when heats are per event, a card per heat or Tank (lanes or Draw
   places numbered down it), and a search that hides heats and Tanks without
   the Team and lights its rows teal (`is-match`), across every event.
+- **Data tables** (results, the SERC breakdown): `.v2-table` inside
+  `.v2-table-scroll`, which scrolls sideways on its own; muted headings on a
+  sunk row, rules between rows, the first column (`.v2-table-name`) bold.
+- **Results** (`.v2-results-*`): `LandingController::showResults` sends only
+  what's published, in three groups: Overall (Master sheets), Results sheets
+  and Events. Each group with anything in it is a `.v2-tabs` tab, the bar
+  hides with one, and the page opens on the first. Sheets are `.v2-chip`s
+  (hidden with one); Events are League chips over Event chips (SERC badged),
+  starting on All Leagues unless the competition chooses a League first, when
+  it asks for one. The view lives in the url (`tab`, `sheet`, `event`,
+  `league`, `display`). One warning `.v2-alert` above the tabs says results are
+  provisional, and one dashed box replaces the tabs when nothing is published.
+  Violations open in a `.v2-modal`. A SERC's table links to its breakdown in
+  the same tab, which links back with its League.
+- **SERC breakdown** (`.v2-breakdown`): the marking points sideways in a
+  sticky header, the Team column sticky, each Judge's columns ruled off, the
+  top three tinted teal and the pointer's column lit. Sorting is
+  `public/js/sorttable.js`; Analysis (`public/js/analysis.js`) colours each
+  mark, read in ink in both themes.
 - **Whole-row links:** `.v2-row` on the row, and `.v2-row-link` on its own
   link, whose `::after` covers the row. Anything else clickable in the row
   (like **Follow live**) gets `.v2-over-row` to sit above it. Add `sr-only` text so the link says what it's for ("Results for Cardiff

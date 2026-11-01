@@ -104,9 +104,36 @@ class LandingController extends Controller
         return view('landing.competition.heats-draws', ['comp' => $comp]);
     }
 
+    /**
+     * A competition's Results tab: what's published, in three groups (Overall: Master sheets; Results sheets;
+     * Events), each left out when it has nothing published.
+     */
     public function showResults(Competition $comp)
     {
-        return view('landing.competition.results', ['comp' => $comp]);
+        $released = fn($items) => collect($items)->filter(fn($item) => $comp->hasReleased($item))->values();
+
+        $groups = [
+            'overall' => $released($comp->getMasterSchemas)->map(fn($s) => ['id' => $s->id, 'name' => $s->name]),
+            'sheets' => $released($comp->getResultSchemas)->map(fn($s) => ['id' => $s->id, 'name' => $s->name]),
+            // concat, not getAllEvents(): an Eloquent merge keys by id, so a SERC and a speed event with the same id collide
+            'events' => $released($comp->getSpeedEvents->concat($comp->getSERCs))->map(fn($e) => [
+                'key' => $e->getType() . '-' . $e->id,
+                'id' => $e->id,
+                'type' => $e->getType(),
+                'name' => $e->getName(),
+            ]),
+        ];
+
+        $tabs = collect(['overall' => 'Overall', 'sheets' => 'Results sheets', 'events' => 'Events'])
+            ->filter(fn($label, $key) => $groups[$key]->isNotEmpty());
+
+        return view('landing.competition.results', [
+            'comp' => $comp,
+            'tabs' => $tabs,
+            'groups' => $groups,
+            'leagues' => collect([['id' => 'all', 'name' => 'All Leagues']])
+                ->concat($comp->getLeagues->map(fn($l) => ['id' => $l->id, 'name' => $l->name])),
+        ]);
     }
 
     public function search(string $search)

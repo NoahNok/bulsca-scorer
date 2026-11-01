@@ -241,6 +241,106 @@ class PublicPagesTest extends TestCase
             ->assertSee('Heats appear here once the Organisers release them.');
     }
 
+    private function publishedSerc(Competition $comp, string $name = 'Dry SERC', bool $viewable = true): \App\Models\SERC
+    {
+        $serc = new \App\Models\SERC();
+        $serc->forceFill(['name' => $name, 'type' => 'DRY', 'scorable_entity' => 'team', 'competition' => $comp->id, 'viewable' => $viewable])->save();
+
+        return $serc;
+    }
+
+    private function publishedSheet(Competition $comp, string $name, bool $viewable = true): \App\Models\ResultSchema
+    {
+        $sheet = new \App\Models\ResultSchema();
+        $sheet->forceFill([
+            'name' => $name,
+            'competition' => $comp->id,
+            'viewable' => $viewable,
+            'schema' => ['equation' => 'item.position', 'global_variables' => [], 'league' => null, 'ignore_dq' => false, 'group_on' => 'team', 'rank_higher' => false, 'break_ties' => []],
+        ])->save();
+
+        return $sheet;
+    }
+
+    public function test_results_say_when_theyll_appear_until_theyre_published(): void
+    {
+        $comp = $this->competition(['public_results' => false]);
+        $this->publishedSerc($comp);
+
+        $this->get(route('landing.competition.results', $comp->getSlug()))
+            ->assertOk()
+            ->assertSee('Results appear here once an Organiser publishes them.')
+            ->assertDontSee('role="tablist"', false)
+            ->assertDontSee('Dry SERC');
+    }
+
+    public function test_results_show_only_the_tabs_with_something_published(): void
+    {
+        $comp = $this->competition(['public_results' => true]);
+        $this->publishedSerc($comp);
+        $this->publishedSerc($comp, 'Wet SERC', viewable: false);
+
+        // Only Events has anything, so there's no tab bar to choose from
+        $this->get(route('landing.competition.results', $comp->getSlug()))
+            ->assertOk()
+            ->assertSee('Dry SERC')
+            ->assertDontSee('Wet SERC')
+            ->assertDontSee('role="tablist"', false)
+            ->assertDontSee('Results appear here once');
+
+        $this->publishedSheet($comp, 'Overall Standings');
+        $this->publishedSheet($comp, 'Working Sheet', viewable: false);
+
+        // Results sheets comes before Events, so it opens first; Overall has no Master sheets, so it's left out
+        $this->get(route('landing.competition.results', $comp->getSlug()))
+            ->assertOk()
+            ->assertSee('role="tablist"', false)
+            ->assertSeeInOrder(['aria-selected="true">Results sheets', 'aria-selected="false">Events'], false)
+            ->assertDontSee('>Overall<', false)
+            ->assertSee('Overall Standings')
+            ->assertDontSee('Working Sheet')
+            ->assertDontSee('se-card');
+    }
+
+    public function test_results_ask_for_a_league_first_when_the_competition_says_to(): void
+    {
+        $comp = $this->competition(['public_results' => true, 'select_league_first' => true]);
+        $this->publishedSerc($comp);
+
+        $this->get(route('landing.competition.results', $comp->getSlug()))
+            ->assertOk()
+            ->assertSee('Choose a League to see the results.');
+
+        $comp->forceFill(['select_league_first' => false])->save();
+
+        $this->get(route('landing.competition.results', $comp->getSlug()))
+            ->assertOk()
+            ->assertDontSee('Choose a League to see the results.');
+    }
+
+    public function test_provisional_results_are_flagged_once(): void
+    {
+        $comp = $this->competition(['public_results' => true, 'results_provisional' => true]);
+        $this->publishedSerc($comp);
+        $this->publishedSheet($comp, 'Overall Standings');
+
+        $response = $this->get(route('landing.competition.results', $comp->getSlug()))->assertOk();
+        $this->assertSame(1, substr_count($response->getContent(), 'These results are provisional'));
+    }
+
+    public function test_the_serc_breakdown_sits_under_results_and_leads_back_to_its_league(): void
+    {
+        $comp = $this->competition(['public_results' => true]);
+        $serc = $this->publishedSerc($comp);
+
+        $this->get(route('landing.competition.results.breakdown.serc', [$comp->getSlug(), $serc, 'league' => 7]))
+            ->assertOk()
+            ->assertSee('aria-current="page">Results</a>', false)
+            ->assertSee('Dry SERC breakdown')
+            ->assertSee('href="' . e(route('landing.competition.results', [$comp->getSlug(), 'tab' => 'events', 'event' => 'serc-' . $serc->id, 'league' => 7])) . '"', false)
+            ->assertDontSee('se-table');
+    }
+
     public function test_the_home_page_is_the_v2_home(): void
     {
         $this->get('/')->assertOk()->assertViewIs('landing.v2.home');
