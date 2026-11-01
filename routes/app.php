@@ -4,13 +4,13 @@ use App\Helpers\RouteHelpers;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AccountInviteController;
 use App\Http\Controllers\Activity\ActivityController;
-use App\Http\Controllers\AdminUsersController;
 use App\Http\Controllers\Manage\ChampionshipController;
 use App\Http\Controllers\CompetitionController;
 use App\Http\Controllers\DigitalJudge\DigitalJudgeController;
 use App\Http\Controllers\LeagueController;
 use App\Http\Controllers\Manage\CompetitionActivityController;
 use App\Http\Controllers\Manage\Admin\AdminCompetitionsController;
+use App\Http\Controllers\Manage\Admin\AdminUsersController;
 use App\Http\Controllers\Manage\CompetitionCreateController;
 use App\Http\Controllers\Manage\CompetitionDashboardController;
 use App\Http\Controllers\Manage\CompetitionEntriesController;
@@ -387,8 +387,8 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
 
         Route::get('/activity', [ActivityController::class, 'admin'])->name('admin.activity');
 
-        Route::get('/users', [AdminUsersController::class, 'index'])->name('admin.users.index');
-        Route::get('/users/{user}', [AdminUsersController::class, 'show'])->name('admin.users.show');
+        Route::get('/users', [AdminUsersController::class, 'index'])->name('manage.admin.users.index');
+        Route::get('/users/{user}', [AdminUsersController::class, 'show'])->name('manage.admin.users.show');
 
         Route::resource('serc/marking-points', MarkingPointTemplateController::class)->except(['show'])->names([
             'index' => 'admin.serc.marking-point-template.index',

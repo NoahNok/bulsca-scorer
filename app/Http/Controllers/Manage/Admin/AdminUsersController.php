@@ -1,13 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Manage\Admin;
 
+use App\Helpers\Pagination;
+use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use App\Models\Competition;
 use App\Models\Organisation\Organisation;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class AdminUsersController extends Controller
 {
@@ -36,9 +39,20 @@ class AdminUsersController extends Controller
             ->paginate(25)
             ->withQueryString();
 
-        return view('admin.users.index', [
-            'users' => $users,
+        return Inertia::render('Admin/Users', [
             'q' => $q,
+            'users' => collect($users->items())->map(fn (User $user) => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'officialOnly' => $user->isJudgeOnly(),
+                'admin' => (bool) $user->isAdmin(),
+                'competitions' => (int) $user->competitions_count,
+                'officiating' => (int) $user->officiating_count,
+                'joined' => $user->created_at?->toDateString(),
+                'url' => route('manage.admin.users.show', $user),
+            ]),
+            'pagination' => Pagination::props($users),
         ]);
     }
 
@@ -66,13 +80,14 @@ class AdminUsersController extends Controller
             ->map(fn ($rows) => [
                 'id' => $rows->first()->id,
                 'name' => $rows->first()->name,
-                'when' => $rows->first()->when ? Carbon::parse($rows->first()->when) : null,
+                'when' => $rows->first()->when ? Carbon::parse($rows->first()->when)->toDateString() : null,
+                'url' => route('manage.admin.competitions.show', $rows->first()->id),
                 'access' => $rows->whereNull('organisation')->pluck('access_to')
                     ->map(fn ($access) => $accessNames[$access] ?? $access)->values()->all(),
                 'via' => $rows->whereNotNull('organisation')->groupBy('organisation')
-                    ->map(fn ($orgRows) => $orgRows->pluck('access_to')
-                        ->map(fn ($access) => $orgAccessNames[$access] ?? $access)->implode(', '))
-                    ->all(),
+                    ->map(fn ($orgRows, $org) => "Via {$org} (" . $orgRows->pluck('access_to')
+                        ->map(fn ($access) => $orgAccessNames[$access] ?? $access)->implode(', ') . ')')
+                    ->values()->all(),
             ])
             ->sortByDesc('when')
             ->values();
@@ -85,7 +100,9 @@ class AdminUsersController extends Controller
             ->get(['organisations.id', 'organisations.name', 'access_to'])
             ->groupBy('id')
             ->map(fn ($rows) => [
+                'id' => $rows->first()->id,
                 'name' => $rows->first()->name,
+                'url' => route('manage.organisations.show', $rows->first()->id),
                 'access' => $rows->pluck('access_to')->map(fn ($access) => $orgAccessNames[$access] ?? $access)->all(),
             ])
             ->values();
@@ -98,10 +115,11 @@ class AdminUsersController extends Controller
             ->map(fn (Competition $comp) => [
                 'id' => $comp->id,
                 'name' => $comp->name,
-                'when' => $comp->when,
+                'when' => $comp->when?->toDateString(),
+                'url' => route('manage.admin.competitions.show', $comp),
                 'role' => $comp->pivot->role,
                 'roleName' => Competition::$officialRoles[$comp->pivot->role] ?? $comp->pivot->role,
-                'added' => $comp->pivot->created_at,
+                'added' => $comp->pivot->created_at?->toDateString(),
             ]);
 
         $submissions = $user->violations()
@@ -114,15 +132,27 @@ class AdminUsersController extends Controller
 
         $lastActive = $user->logins()->withExpired()->max('last_activity_at');
 
-        return view('admin.users.show', [
-            'user' => $user,
+        return Inertia::render('Admin/User', [
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'officialOnly' => $user->isJudgeOnly(),
+                'admin' => (bool) $user->isAdmin(),
+                'joined' => $user->created_at?->toDateString(),
+                'verified' => $user->email_verified_at?->toDateString(),
+                // admin-made official accounts stay unverified until they first sign in with a PIN
+                'neverSignedIn' => $user->isJudgeOnly() && !$user->hasVerifiedEmail(),
+                'lastActive' => $lastActive ? Carbon::parse($lastActive)->diffForHumans() : null,
+            ],
             'competitions' => $competitions,
             'organisations' => $organisations,
             'officiating' => $officiating,
-            'submissions' => $submissions,
-            // admin-made official accounts stay unverified until they first sign in with a PIN
-            'neverSignedIn' => $user->isJudgeOnly() && !$user->hasVerifiedEmail(),
-            'lastActive' => $lastActive ? Carbon::parse($lastActive) : null,
+            'submissions' => $submissions?->total > 0 ? [
+                'pending' => (int) $submissions->pending,
+                'accepted' => (int) $submissions->accepted,
+                'rejected' => (int) $submissions->rejected,
+            ] : null,
         ]);
     }
 }
