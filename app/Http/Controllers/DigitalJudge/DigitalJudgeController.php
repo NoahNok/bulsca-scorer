@@ -10,7 +10,6 @@ use App\Http\Requests\DigitalJudge\LoginRequest;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\DigitalJudge\JudgeDQSubmission;
-use App\Models\DigitalJudge\JudgeLog;
 use App\Models\SERC;
 use App\Models\SERCJudge;
 use Carbon\Carbon;
@@ -160,45 +159,6 @@ class DigitalJudgeController extends Controller
         $speed->digitalJudgeConfirmed = true;
         $speed->save();
         return redirect()->route('dj.home')->with('success', 'Results Confirmed');
-    }
-
-    function judgeLog(Request $request, Competition $comp)
-    {
-        $log = JudgeLog::WHERE('competition', $comp->id);
-
-        if ($request->filled('filterEvent')) {
-            if (str_starts_with($request->input('filterEvent'), 'se')) {
-                $log = $log->where('judge', substr($request->input('filterEvent'), 2));
-            } else {
-                $log = $log->where('speed_event', substr($request->input('filterEvent'), 2));
-            }
-        }
-
-        if ($request->filled('filterJudge')) {
-            $log = $log->where('judgeName', $request->input('filterJudge'));
-        }
-
-        if ($request->filled('filterTeam')) {
-            $log = $log->where('team', $request->input('filterTeam'));
-        }
-
-
-
-        $log = $log->orderBy('created_at', 'DESC')->paginate(15);
-
-        if ($request->filled('filterEvent')) {
-            $log->appends(['filterEvent' => $request->input('filterEvent')]);
-        }
-        if ($request->filled('filterJudge')) {
-            $log->appends(['filterJudge' => $request->input('filterJudge')]);
-        }
-        if ($request->filled('filterTeam')) {
-            $log->appends(['filterTeam' => $request->input('filterTeam')]);
-        }
-
-
-
-        return view('digitaljudge.judge-log', ['comp' => $comp, 'log' => $log]);
     }
 
     public function help()

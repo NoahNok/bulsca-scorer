@@ -84,6 +84,19 @@ class CompetitionDashboardTest extends TestCase
         $this->get(route('manage.competitions.settings', $this->comp))->assertForbidden();
     }
 
+    public function test_a_tab_without_access_shows_forbidden_under_the_tabs_they_can_open(): void
+    {
+        $results = User::factory()->create();
+        $this->comp->addAccount($results, ['view', 'results']);
+
+        $this->actingAs($results)->get(route('manage.competitions.settings', $this->comp))
+            ->assertForbidden()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Manage/Competition/Forbidden')
+                ->where('competition.name', 'Dashboard Champs')
+                ->where('competition.tabs', fn ($tabs) => collect($tabs)->pluck('label')->all() === ['Overview', 'Results']));
+    }
+
     public function test_settings_lists_the_accounts_with_their_access(): void
     {
         $this->actingAs($this->organiser)->get(route('manage.competitions.settings', $this->comp))

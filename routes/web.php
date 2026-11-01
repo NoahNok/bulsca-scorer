@@ -34,7 +34,7 @@ Route::domain(config('app.subdomain_base'))->group(function () {
     Route::get('{path}', fn (Request $request, string $path) => redirect()->away(
         $request->getScheme() . '://' . RouteHelpers::domainRemap('app.') . '/' . $path . ($request->getQueryString() ? '?' . $request->getQueryString() : ''),
         301
-    ))->where('path', '(comps|create|organisation|accounts?|admin|invite|comp/results|login|register|forgot-password|reset-password|verify-email|confirm-password|logout|dashboard)(/.*)?');
+    ))->where('path', '(comps|create|organisation|accounts?|admin|invite|comp/results|login|register|forgot-password|reset-password|logout|dashboard)(/.*)?');
 });
 
 // Import judge routes first so results. overrides

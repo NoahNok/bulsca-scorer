@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
 /**
- * A competition's page tabs, for whoever's signed in: the Blade layout (layouts/competition.blade.php)
- * and the Svelte one (manage/layout/CompetitionLayout.svelte) both draw these, so they always agree.
+ * A competition's page tabs, for whoever's signed in, drawn by the Svelte CompetitionLayout
+ * (manage/layout/CompetitionLayout.svelte).
  */
 class CompetitionTabs
 {

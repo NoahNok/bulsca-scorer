@@ -2,7 +2,9 @@
 
 namespace App\Exceptions;
 
+use App\Helpers\CompetitionHeader;
 use App\Helpers\OrganisationHeader;
+use App\Models\Competition;
 use App\Models\Organisation\Organisation;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -64,8 +66,10 @@ class Handler extends ExceptionHandler
                 ], 403);
             }
 
-            if ($request->is('comps/*')) {
-                return response()->view('competition.403', ['comp' => $request->route('comp')], 403);
+            if ($request->is('comps/*') && $request->route('comp') instanceof Competition) {
+                return Inertia::render('Manage/Competition/Forbidden', ['competition' => CompetitionHeader::for($request->route('comp'))])
+                    ->toResponse($request)
+                    ->setStatusCode(403);
             }
 
             if ($request->is('organisation/*')) {

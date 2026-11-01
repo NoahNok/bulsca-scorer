@@ -33,7 +33,6 @@ use App\Http\Controllers\Manage\OrganisationScoringController;
 use App\Http\Controllers\Manage\ViolationCodesController;
 use App\Http\Controllers\OverallResultsController;
 use App\Http\Controllers\PrintableController;
-use App\Http\Controllers\Push\PushController;
 use App\Http\Controllers\SERCController;
 use App\Http\Controllers\SpeedsEventController;
 use App\Http\Middleware\CompetitionOwnsRouteModels;
@@ -64,12 +63,6 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
     });
 
     Route::middleware(['auth', 'not.judge-only'])->group(function () {
-
-
-        // Route::get('/comps', [CompetitionController::class, 'index'])->name('comps');
-
-
-        //Route::get('push-test', [PushController::class, 'push'])->name('push.test');
 
         Route::redirect('/comps', '/')->name('comps');
 
@@ -300,13 +293,6 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
                 Route::get('serc-marking-pack', [PrintableController::class, 'printSMS'])->name('comps.printables.serc-marking-pack');
                 Route::get('chief-timekeeper-pack', [PrintableController::class, 'printCTP'])->name('comps.printables.chief-timekeeper-pack');
                 Route::get('marshalling', [PrintableController::class, 'printMarshalling'])->name('comps.printables.marshalling');
-            });
-
-            // NOTIFICATIONS
-            Route::prefix('notifications')->middleware('can:access,comp')->group(function () {
-                Route::get('', [PushController::class, 'userSettingsPage'])->name('comps.notifications.user-settings');
-
-                Route::post('push', [PushController::class, 'store'])->name('comps.notifications.push-store');
             });
         });
 

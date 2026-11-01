@@ -21,17 +21,6 @@ class CompetitionController extends Controller
 {
     use RecordActivity;
 
-    public function index()
-    {
-        $c = Competition::orderBy('when')->paginate(12);
-
-
-        if (!auth()->user()->isAdmin()) return back();
-
-
-        return view('competitions', ['comps' => $c]);
-    }
-
     public function createCompetitionStats(Competition $comp)
     {
 
