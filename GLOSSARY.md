@@ -18,6 +18,18 @@ _Avoid_: Participant, entrant
 A part of a SERC with its own marking points, e.g. a casualty, which an Official marks Entities against.
 _Avoid_: Judge (for the slot), casualty, position
 
+**Marking point template**:
+How a marking point is marked, picked for each one in a SERC: a range of numbers with a step, or a set of labelled choices. Admins look after the list.
+_Avoid_: Marking scheme, scale, preset
+
+**Season**:
+A year of competitions, e.g. 2025-2026, that public results are grouped by. Not the same as a Championship, which an Organisation runs between its own dates.
+_Avoid_: Year, series
+
+**Speed record**:
+The best Time on record for a speed event. A competition's event copies it when the event is added.
+_Avoid_: Best time, record time
+
 **League**:
 A grouping of Entities within a competition, e.g. A League or B League. Pools run heats for their assigned Leagues, and SERC tanks are set up by League.
 _Avoid_: Bracket
@@ -59,6 +71,14 @@ _Avoid_: v2, new judge app
 **Legacy Digital Judge**:
 The older Digital Judge that Officials join with only a PIN and a name. It still works, but it gets no new features.
 _Avoid_: v1, classic, old judge app
+
+**Official-only account**:
+An account an Official made in the Digital Judge. It can judge, time and referee, but can't use Management.
+_Avoid_: Judge-only, judge account
+
+**Full account**:
+An account that can use Management as well as the Digital Judge.
+_Avoid_: Normal account, main account
 
 ### Organising
 
