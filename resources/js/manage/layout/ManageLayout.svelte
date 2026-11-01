@@ -11,7 +11,7 @@
     import { guardUnsaved } from "@/manage/unsaved";
     import { account, logout } from "@/routes";
     import manage from "@/routes/manage";
-    import admin from "@/routes/admin";
+    import { index as adminHome } from "@/routes/manage/admin/competitions";
     import { page, router } from "@inertiajs/svelte";
     import { onMount, type Snippet } from "svelte";
 
@@ -40,7 +40,7 @@
         <nav class="v2-nav" aria-label="Main">
             <a href={page.props.manage?.site.explore} class="v2-nav-wide">Explore</a>
             {#if page.props.manage?.isAdmin}
-                <a href={admin.index().url}>Admin</a>
+                <a href={adminHome().url}>Admin</a>
             {/if}
             <a href={account().url}>Account</a>
             <a href={logout().url}>Sign out</a>

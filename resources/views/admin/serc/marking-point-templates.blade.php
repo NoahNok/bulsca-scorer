@@ -10,7 +10,7 @@
             class="w-3 h-3">
             <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
         </svg>
-        <a href="{{ route('admin.index') }}">Admin</a>
+        <a href="{{ route('manage.admin.competitions.index') }}">Admin</a>
     </div>
 @endsection
 

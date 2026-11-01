@@ -20,7 +20,7 @@
     <div class="  tabbed-bar mt-2 mb-4 ">
 
 
-        <a href="{{ route('admin.index') }}" class="@if (Route::currentRouteName() == 'admin.index') active @endif">Admin</a>
+        <a href="{{ route('manage.admin.competitions.index') }}" class="@if (Route::currentRouteName() == 'manage.admin.competitions.index') active @endif">Admin</a>
         <a href="{{ route('admin.users.index') }}"
             class="@if (Str::startsWith(Route::currentRouteName(), 'admin.users')) active @endif">Users</a>
         <a href="{{ route('admin.serc.marking-point-template.index') }}"

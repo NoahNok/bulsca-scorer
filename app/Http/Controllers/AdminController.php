@@ -18,7 +18,7 @@ class AdminController extends Controller
     //
     public function index()
     {
-        return view('admin.index');
+        return view('manage.admin.competitions.index');
     }
 
     public function createComp()
@@ -142,7 +142,7 @@ class AdminController extends Controller
 
         $c->delete();
 
-        return redirect()->route('admin.index')->with('success', "Competition deleted!");
+        return redirect()->route('manage.admin.competitions.index')->with('success', "Competition deleted!");
     }
 
     public function seasons()

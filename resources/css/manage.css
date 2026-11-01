@@ -11,6 +11,7 @@
 
 @source "../js/manage";
 @source "../js/pages/Manage";
+@source "../js/pages/Admin";
 @source "../views/manage.blade.php";
 
 /* dark: matches v2.css: the OS setting unless the header toggle forces a theme with data-theme */

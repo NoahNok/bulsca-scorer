@@ -11,6 +11,7 @@ use App\Http\Controllers\CompetitionController;
 use App\Http\Controllers\DigitalJudge\DigitalJudgeController;
 use App\Http\Controllers\LeagueController;
 use App\Http\Controllers\Manage\CompetitionActivityController;
+use App\Http\Controllers\Manage\Admin\AdminCompetitionsController;
 use App\Http\Controllers\Manage\CompetitionCreateController;
 use App\Http\Controllers\Manage\CompetitionDashboardController;
 use App\Http\Controllers\Manage\CompetitionEntriesController;
@@ -381,9 +382,9 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
 
 
     Route::prefix('/admin')->middleware('isAdmin')->group(function () {
-        Route::get('', [AdminController::class, 'index'])->name('admin.index');
+        Route::get('', [AdminCompetitionsController::class, 'index'])->name('manage.admin.competitions.index');
         Route::get('/competition/create', [AdminController::class, 'createComp'])->name('admin.comp.create');
-        Route::get('/competition/{comp}', [AdminController::class, 'viewComp'])->name('admin.comp.view');
+        Route::get('/competition/{comp}', [AdminController::class, 'viewComp'])->name('manage.admin.competitions.show');
         Route::post('/competition/create', [AdminController::class, 'createCompPost'])->name('admin.comp.create.post');
         Route::post('/competition/{comp}/update', [AdminController::class, 'updateCompPost'])->name('admin.comp.update.post');
         Route::post('/competition/{comp}/updateUser', [AdminController::class, 'updateCompUserPassword'])->name('admin.comp.update.userPassword');

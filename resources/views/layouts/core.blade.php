@@ -243,7 +243,7 @@
                 <a href="{{ route('manage.home') }}"
                     class="text-sm/6 font-semibold text-gray-900 hover:text-se transition-colors">Management</a>
                 @if (Auth::user()->isAdmin())
-                    <a href="{{ route('admin.index') }}"
+                    <a href="{{ route('manage.admin.competitions.index') }}"
                         class="text-sm/6 font-semibold text-gray-900 hover:text-se transition-colors">Admin</a>
                 @endif
                 <a href="{{ route('account') }}"
@@ -353,7 +353,7 @@
                             class="-mx-3 block rounded-lg px-3  text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Management</a>
 
                         @if (Auth::user()->isAdmin())
-                            <a href="{{ route('admin.index') }}"
+                            <a href="{{ route('manage.admin.competitions.index') }}"
                                 class="-mx-3 block rounded-lg px-3 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Admin</a>
                         @endif
 

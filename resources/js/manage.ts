@@ -1,4 +1,5 @@
 import { createInertiaApp, type ResolvedComponent } from "@inertiajs/svelte";
+import AdminLayout from "./manage/layout/AdminLayout.svelte";
 import AuthLayout from "./manage/layout/AuthLayout.svelte";
 import CompetitionLayout from "./manage/layout/CompetitionLayout.svelte";
 import ManageLayout from "./manage/layout/ManageLayout.svelte";
@@ -19,7 +20,7 @@ createInertiaApp({
         return module;
     },
     // Sign in, register and invites get the split-screen frame instead of the header and footer, and a
-    // competition's or organisation's pages get its header and tabs inside the shell
+    // competition's or organisation's pages, and Admin's, get its header and tabs inside the shell
     layout: (name) =>
         name.startsWith("Manage/Auth/")
             ? [AuthLayout]
@@ -27,7 +28,9 @@ createInertiaApp({
               ? [ManageLayout, CompetitionLayout]
               : name.startsWith("Manage/Organisation/")
                 ? [ManageLayout, OrganisationLayout]
-                : [ManageLayout],
+                : name.startsWith("Admin/")
+                  ? [ManageLayout, AdminLayout]
+                  : [ManageLayout],
     defaults: {
         // Page changes animate (v2.css). Not form posts: an error answer is the same page, and shouldn't fade.
         // Nor a visit that keeps the page and swaps some of its props (a pool chip): only that part changes.

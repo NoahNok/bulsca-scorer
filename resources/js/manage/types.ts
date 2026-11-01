@@ -429,3 +429,14 @@ export type Device = {
     current: boolean;
     remembered: boolean;
 };
+
+/** A page of a long list (App\Helpers\Pagination::props), for Pagination */
+export type Pagination = {
+    current: number;
+    last: number;
+    total: number;
+    /** Null on the first page */
+    prev: string | null;
+    /** Null on the last page */
+    next: string | null;
+};

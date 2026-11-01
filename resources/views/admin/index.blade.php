@@ -10,7 +10,7 @@
             class="w-3 h-3">
             <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
         </svg>
-        <a href="{{ route('admin.index') }}">Admin</a>
+        <a href="{{ route('manage.admin.competitions.index') }}">Admin</a>
     </div>
 @endsection
 
@@ -33,7 +33,7 @@
                             </td>
                             <td>
                                 <div class="flex justify-end">
-                                    <a href="{{ route('admin.comp.view', $comp) }}" class="text-black hover:text-se!"><svg
+                                    <a href="{{ route('manage.admin.competitions.show', $comp) }}" class="text-black hover:text-se!"><svg
                                             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="size-6">
                                             <path stroke-linecap="round" stroke-linejoin="round"
