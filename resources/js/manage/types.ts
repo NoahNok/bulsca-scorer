@@ -367,3 +367,48 @@ export type ResultSheetSettings = {
     /** The built-in Formula it matches, null for a custom one */
     builtIn: string | null;
 };
+
+/** An Activity filter's url parameter, each |-separated */
+export type ActivityParam = "related" | "by" | "activity";
+export type ActivityFilters = Record<ActivityParam, string[]>;
+
+export type ActivityKind = "comp" | "serc" | "speed" | "team" | "competitor" | "submission" | "dq" | "penalty";
+
+/** Something an Activity entry is related to (App\Services\ActivityFeed::relatedItem) */
+export type ActivityRelated = {
+    kind: ActivityKind;
+    name: string;
+    detail: string | null;
+    state: "present" | "deleted" | "appealed";
+    /** Its own page; null when deleted or what the page is forced to */
+    link: string | null;
+    /** The `related` value it toggles; null when deleted or what the page is forced to */
+    filter: { value: string; active: boolean } | null;
+};
+
+export type ActivityEntry = {
+    id: string;
+    /** ISO */
+    at: string;
+    type: string;
+    title: string;
+    description: string | null;
+    /** Null for the System */
+    by: string | null;
+    related: ActivityRelated[];
+    changes: {
+        columns: { label: string; old: string; new: string };
+        rows: { label: string; old: string | null; new: string | null }[];
+    } | null;
+};
+
+/** An "Add …" select on the Activity filter bar */
+export type ActivityPicker = {
+    label: string;
+    param: ActivityParam;
+    placeholder: string;
+    groups: { label: string | null; options: { value: string; label: string }[] }[];
+};
+
+/** The active filters of one kind, shown as removable chips */
+export type ActivityChipGroup = { label: string; chips: { label: string; param: ActivityParam; value: string }[] };
