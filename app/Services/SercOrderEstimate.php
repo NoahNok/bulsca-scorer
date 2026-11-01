@@ -9,8 +9,9 @@ use Illuminate\Support\Facades\DB;
 /**
  * The SERC order's Estimated starts (see GLOSSARY.md), for the live pages.
  *
- * Each Tank is its own queue. Its pace is the median of its last few gaps between Teams' first marks, so
- * one long gap (lunch, a re-run) doesn't move it and it follows the session as it speeds up or slows down.
+ * Each Tank is its own queue. Its pace is the median of its last few gaps between Teams' first marks (made
+ * up with the overall pace while there are only a few), so one long gap (lunch, a re-run) doesn't move it,
+ * and it follows the session as it speeds up or slows down.
  * The Tank's next Team starts a reset after the last Team's first mark, and the ones after it a pace apart.
  * An estimate that has passed is "Due now", and the Teams after it count on from now, rather than every
  * estimate creeping forward through a break.
@@ -21,6 +22,9 @@ class SercOrderEstimate
 {
     /** How many of a Tank's latest gaps its pace is the median of */
     const RECENT_GAPS = 8;
+
+    /** How many gaps a pace needs before it's only its own (see pace()) */
+    const MIN_GAPS = 5;
 
     /** The pace before any Tank has two Teams started */
     const DEFAULT_PACE = 360;
@@ -130,13 +134,33 @@ class SercOrderEstimate
         return count(array_filter(array_slice($tank, $index + 1), fn ($id) => $this->started($id))) >= self::SKIPPED_AFTER;
     }
 
-    /** A Tank's seconds between Teams: its own recent gaps, or every Tank's while it has none */
+    /**
+     * A Tank's seconds between Teams: the median of its last RECENT_GAPS gaps. While it has fewer than
+     * MIN_GAPS, copies of every Tank's pace (or DEFAULT_PACE) make up the number, so one long gap early on
+     * (lunch after two Teams) can't drag the median, and the real gaps take over as they come in.
+     */
     public function pace(array $tank): int
     {
-        $gaps = $this->gaps($tank) ?: array_merge(...array_map(fn ($tank) => $this->gaps($tank), $this->tanks ?: [[]]));
+        return $this->paddedMedian($this->recent($this->gaps($tank)), $this->overallPace());
+    }
+
+    /** Every Tank's gaps together, made up with DEFAULT_PACE */
+    private function overallPace(): int
+    {
+        return $this->paddedMedian($this->recent(array_merge([], ...array_map(fn ($tank) => $this->gaps($tank), $this->tanks))), self::DEFAULT_PACE);
+    }
+
+    /** @return int[] the latest RECENT_GAPS gaps' lengths */
+    private function recent(array $gaps): array
+    {
         usort($gaps, fn ($a, $b) => $a[0] <=> $b[0]);
 
-        return $gaps ? $this->median(array_column(array_slice($gaps, -self::RECENT_GAPS), 1)) : self::DEFAULT_PACE;
+        return array_column(array_slice($gaps, -self::RECENT_GAPS), 1);
+    }
+
+    private function paddedMedian(array $values, int $fill): int
+    {
+        return $this->median(array_pad($values, max(count($values), self::MIN_GAPS), $fill));
     }
 
     /** When a Tank's next Team starts: a reset after its last first mark, or the SERC start time */

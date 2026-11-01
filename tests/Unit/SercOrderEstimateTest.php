@@ -47,14 +47,17 @@ class SercOrderEstimateTest extends TestCase
 
     public function test_a_tank_runs_at_its_own_pace(): void
     {
-        $t = self::NOON - 3600;
-        $estimate = $this->estimate(
-            [[1, 2, 3, 4], [5, 6, 7, 8]],
-            [1 => $t, 2 => $t + 300, 3 => $t + 600, 5 => $t, 6 => $t + 480, 7 => $t + 960],
-        );
+        $t = self::NOON - 7200;
+        $marks = [];
+        // Six Teams started in each: 300s apart in one Tank, 480s in the other
+        foreach (range(0, 5) as $i) {
+            $marks[1 + $i] = $t + $i * 300;
+            $marks[11 + $i] = $t + $i * 480;
+        }
+        $estimate = $this->estimate([range(1, 8), range(11, 18)], $marks);
 
-        $this->assertSame(300, $estimate->pace([1, 2, 3, 4]));
-        $this->assertSame(480, $estimate->pace([5, 6, 7, 8]));
+        $this->assertSame(300, $estimate->pace(range(1, 8)));
+        $this->assertSame(480, $estimate->pace(range(11, 18)));
     }
 
     public function test_one_long_gap_doesnt_change_the_pace(): void
@@ -80,31 +83,43 @@ class SercOrderEstimateTest extends TestCase
     public function test_a_tank_with_too_few_teams_started_borrows_the_other_tanks_pace(): void
     {
         $t = self::NOON - 3600;
-        $estimate = $this->estimate([[1, 2, 3], [4, 5]], [1 => $t, 2 => $t + 420, 3 => $t + 840, 4 => $t]);
+        $marks = array_combine(range(1, 6), array_map(fn ($i) => $t + $i * 420, range(0, 5)));
+        $estimate = $this->estimate([range(1, 7), [11, 12]], [...$marks, 11 => $t]);
 
-        $this->assertSame(420, $estimate->pace([4, 5]));
+        $this->assertSame(420, $estimate->pace([11, 12]));
+    }
+
+    public function test_one_long_gap_early_on_doesnt_drag_the_pace(): void
+    {
+        $t = self::NOON - 3600;
+        // 300s, then a 45 minute lunch: on their own the median would be about 25 minutes
+        $estimate = $this->estimate([[1, 2, 3, 4]], [1 => $t, 2 => $t + 300, 3 => $t + 3000]);
+
+        $this->assertSame(SercOrderEstimate::DEFAULT_PACE, $estimate->pace([1, 2, 3, 4]));
     }
 
     public function test_the_next_team_starts_a_reset_after_the_last_first_mark(): void
     {
         $t = self::NOON - 60;
-        $teams = $this->estimate([[1, 2, 3, 4]], [1 => $t - 300, 2 => $t])->teams();
+        $estimate = $this->estimate([[1, 2, 3, 4]], [1 => $t - 300, 2 => $t]);
+        $teams = $estimate->teams();
 
         $this->assertNull($teams[1]['start']);
         $this->assertNull($teams[2]['start']);
         $this->assertSame($t + SercOrderEstimate::RESET, $teams[3]['start']);
-        $this->assertSame($t + SercOrderEstimate::RESET + 300, $teams[4]['start']);
+        $this->assertSame($t + SercOrderEstimate::RESET + $estimate->pace([1, 2, 3, 4]), $teams[4]['start']);
     }
 
     public function test_a_passed_estimate_is_due_now_and_the_rest_count_on_from_now(): void
     {
         // The last Team started an hour ago: lunch
         $t = self::NOON - 3600;
-        $teams = $this->estimate([[1, 2, 3, 4]], [1 => $t - 300, 2 => $t])->teams();
+        $estimate = $this->estimate([[1, 2, 3, 4]], [1 => $t - 300, 2 => $t]);
+        $teams = $estimate->teams();
 
         $this->assertSame(self::NOON, $teams[3]['start']);
         $this->assertTrue($teams[3]['next']);
-        $this->assertSame(self::NOON + 300, $teams[4]['start']);
+        $this->assertSame(self::NOON + $estimate->pace([1, 2, 3, 4]), $teams[4]['start']);
     }
 
     public function test_a_skipped_team_gets_no_estimate_and_doesnt_hold_up_the_rest(): void
