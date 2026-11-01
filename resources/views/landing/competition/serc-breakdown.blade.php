@@ -1,6 +1,6 @@
 {{--
-    A SERC's breakdown, under the competition's Results tab: every Judge's marking points for every Team, sortable,
-    with the Judges' overall feedback, each Team's notes and Violations in modals, a filter, an analysis view that
+    A SERC's breakdown, under the competition's Results tab: every Objective's marking points for every Team, sortable,
+    with the Officials' overall feedback, each Team's notes and Violations in modals, a filter, an analysis view that
     colours each mark against the rest, and full screen.
 --}}
 @extends('landing.competition.layout')
@@ -16,7 +16,7 @@
         $comp->getSlug(),
         'tab' => 'events',
         'event' => 'serc-' . $event->id,
-        ...(request('league') && request('league') !== 'all' ? ['league' => request('league')] : []),
+        ...(request('league') ? ['league' => request('league')] : []),
     ]);
 @endphp
 

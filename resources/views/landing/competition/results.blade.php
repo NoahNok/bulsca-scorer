@@ -286,7 +286,8 @@
                         if (this.tab !== this.tabs[0]) url.searchParams.set('tab', this.tab);
                         if (this.tab === 'events') {
                             if (this.picks.events) url.searchParams.set('event', this.picks.events);
-                            if (this.league !== null && this.league !== 'all') url.searchParams.set('league', this.league);
+                            // All Leagues is the default, so it's left out, unless the competition makes you choose
+                            if (this.league !== null && (this.league !== 'all' || this.leagueFirst)) url.searchParams.set('league', this.league);
                         } else if (this.picks[this.tab]) {
                             url.searchParams.set('sheet', this.picks[this.tab]);
                         }
@@ -355,7 +356,7 @@
 
                     breakdownUrl() {
                         const url = this.urls.breakdown.replace('_id', this.current?.id);
-                        return this.league && this.league !== 'all' ? `${url}?league=${this.league}` : url;
+                        return this.league !== null ? `${url}?league=${this.league}` : url;
                     },
 
                     async openViolation(violation, name = '') {

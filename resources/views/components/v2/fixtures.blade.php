@@ -19,7 +19,7 @@
 ])
 
 @php
-    $typeName = fn($comp) => $types && $comp->type && $comp->type !== 'STANDALONE' ? ucfirst(strtolower($comp->type)) : null;
+    $typeName = fn($comp) => $types ? $comp->typeLabel() : null;
 @endphp
 
 @if ($past->isEmpty() && $live->isEmpty() && $upcoming->isEmpty())

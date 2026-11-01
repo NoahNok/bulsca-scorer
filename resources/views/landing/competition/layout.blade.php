@@ -30,8 +30,8 @@
                     @if ($championship)
                         &middot; <a href="{{ route('landing.championship', $championship->slug()) }}"
                             class="v2-link">{{ $championship->name }}</a>
-                        @if ($comp->type && $comp->type !== 'STANDALONE')
-                            <span class="v2-badge">{{ ucfirst(strtolower($comp->type)) }}</span>
+                        @if ($comp->typeLabel())
+                            <span class="v2-badge">{{ $comp->typeLabel() }}</span>
                         @endif
                     @endif
                 </p>

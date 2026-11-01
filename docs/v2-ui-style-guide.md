@@ -341,7 +341,7 @@ each one in use; copy its markup.
   Violations open in a `.v2-modal`. A SERC's table links to its breakdown in
   the same tab, which links back with its League.
 - **SERC breakdown** (`.v2-breakdown`): the marking points sideways in a
-  sticky header, the Team column sticky, each Judge's columns ruled off, the
+  sticky header, the Team column sticky, each Objective's columns ruled off, the
   top three tinted teal and the pointer's column lit. Sorting is
   `public/js/sorttable.js`; Analysis (`public/js/analysis.js`) colours each
   mark, read in ink in both themes.

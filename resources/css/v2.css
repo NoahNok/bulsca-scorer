@@ -1576,7 +1576,9 @@ dialog.v2-modal::backdrop {
     gap: 0.25rem 0.6rem;
 }
 
-.v2-results-violations button {
+/* Links that are buttons (Notes, a Violation's code) still get the pointer */
+button.v2-link,
+button.v2-link-inline {
     cursor: pointer;
 }
 
@@ -1605,7 +1607,7 @@ dialog.v2-modal::backdrop {
 
 /*
  * A SERC's breakdown (landing/competition/serc-breakdown.blade.php): a wide .v2-table with sticky headings and
- * Team column, marking points written sideways, the Judges' columns ruled off, the top three tinted, and the
+ * Team column, marking points written sideways, each Objective's columns ruled off, the top three tinted, and the
  * pointer's column lit. "Analysis" colours each mark itself (public/js/analysis.js).
  */
 .v2-results-head-title {
@@ -1752,7 +1754,7 @@ dialog.v2-modal::backdrop {
 
 /* Analysis paints marks red to green, so they're read in ink whatever the theme */
 .v2-breakdown tbody.analysis td.is-mark {
-    color: #111827;
+    color: var(--v2-tile);
     font-weight: 600;
 }
 
