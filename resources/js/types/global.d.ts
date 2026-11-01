@@ -43,6 +43,13 @@ declare module '@inertiajs/core' {
                     success: string | null
                 }
             }
+            // The live pages only (on live., served by manage.ts): full urls of the public site
+            live?: {
+                site: {
+                    home: string
+                    explore: string
+                }
+            }
             env_local: boolean
             // full urls of the Terms, Privacy and Cookie policies (Blade pages on the main domain)
             legal: {

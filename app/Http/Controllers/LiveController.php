@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Pagination;
+use App\Helpers\RouteHelpers;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\DigitalJudge\JudgeDQSubmission;
@@ -10,130 +12,174 @@ use App\Models\DQCode;
 use App\Models\Orders\Heat;
 use App\Models\PenaltyCode;
 use App\Models\SERC;
-use Carbon\Carbon;
-use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use App\Services\SercOrderEstimate;
+use Inertia\Inertia;
+use Inertia\Response as InertiaResponse;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class LiveController extends Controller
 {
 
-    private function resolveComp(Request $request)
+    /**
+     * The competition the live pages are for: the one in `?comp=`, or the nearest live one. A message saying why,
+     * when there isn't one.
+     */
+    private function resolveComp(Request $request): Competition|string
     {
-        $comp = Competition::where(DB::raw('DATEDIFF(competitions.when, NOW())'), '>', -2)->where('can_be_live', true)->orderBy(DB::raw('DATEDIFF(competitions.when, NOW())'), 'asc')->first();
-
         if ($request->has('comp')) {
             $comp = Competition::find($request->input('comp'));
-            if (!$comp) return view('live.unavailable', ['message' => 'No competitions with that ID exists!']);
+            if (!$comp) return 'No competition with that ID exists.';
             abort_unless($comp->canBeViewedLive(), 404);
-            $comp->can_be_live = true;
+
+            return $comp;
         }
 
-        if (!$comp) return view('live.unavailable', ['message' => 'No competitions are currently available to view live.']);
+        return Competition::where(DB::raw('DATEDIFF(competitions.when, NOW())'), '>', -2)->where('can_be_live', true)->orderBy(DB::raw('DATEDIFF(competitions.when, NOW())'), 'asc')->first()
+            ?? 'No competition is live right now. One shows here on the day it runs.';
+    }
 
+    /** A live page, or the Unavailable page when there's no competition to show */
+    private function page(Request $request, string $component, callable $props): InertiaResponse
+    {
+        $comp = $this->resolveComp($request);
+        if (is_string($comp)) return $this->unavailable($comp);
 
+        return Inertia::render($component, ['competition' => $this->header($comp, $request), ...$props($comp)]);
+    }
 
-        return $comp;
+    /** What LiveLayout draws above every live page, and its tabs' urls (keeping `?comp=`) */
+    private function header(Competition $comp, Request $request): array
+    {
+        $query = $request->only('comp');
+
+        return [
+            'id' => $comp->id,
+            'name' => $comp->name,
+            'when' => $comp->when->toDateString(),
+            'where' => $comp->where,
+            'logo' => $comp->getOrganisation?->getLogo(),
+            'dataUrl' => route('live.data', $comp->id),
+            'links' => [
+                'live' => route('live', $query),
+                'dqs' => route('live.dqs', $query),
+                'display' => route('live.display', $query),
+                'heatsDraws' => RouteHelpers::mainRoute('landing.competition.heats-draws', $comp->getSlug()),
+            ],
+        ];
+    }
+
+    private function unavailable(string $message): InertiaResponse
+    {
+        $past = Competition::where('when', '<=', now())
+            ->where(fn ($query) => $query->where('public_results', true)->orWhere('can_be_live', true))
+            ->orderBy('when', 'desc')
+            ->paginate(10);
+
+        return Inertia::render('Live/Unavailable', [
+            'message' => $message,
+            'competitions' => $past->getCollection()->map(fn (Competition $comp) => [
+                'id' => $comp->id,
+                'name' => $comp->name,
+                'when' => $comp->when->toDateString(),
+                'where' => $comp->where,
+                'url' => route('live', ['comp' => $comp->id]),
+            ]),
+            'pagination' => Pagination::props($past),
+        ]);
+    }
+
+    /** The SERC order's Tanks, each Team's Draw and name, for the Live and Display pages */
+    private function sercOrder(Competition $comp): array
+    {
+        $useTanks = $comp->usesTanks();
+
+        $tanks = collect($comp->getDraws()[0]['draws'] ?? [])
+            ->map(fn ($draws) => collect($draws)->filter(fn ($draw) => $draw->entity)->values())
+            ->filter(fn ($draws) => $draws->isNotEmpty())
+            ->values()
+            ->map(fn ($draws, $i) => [
+                'label' => $useTanks ? 'Tank ' . ($i + 1) : null,
+                'teams' => $draws->map(fn ($draw) => [
+                    'id' => $draw->entity->id,
+                    'draw' => $draw->draw,
+                    'name' => $draw->entity->getName($comp),
+                ]),
+            ]);
+
+        return [
+            'tanks' => $tanks,
+            'sercCount' => $comp->getSERCs->count(),
+        ];
     }
 
     public function index(Request $request)
     {
-
-
-        $comp = $this->resolveComp($request);
-        if ($comp instanceof \Illuminate\View\View) return $comp;
-
-
-        return view('live.index', ['comp' => $comp]);
+        return $this->page($request, 'Live/Index', fn ($comp) => ['sercOrder' => $this->sercOrder($comp)]);
     }
 
     public function display(Request $request)
     {
-        $comp = $this->resolveComp($request);
-        if ($comp instanceof \Illuminate\View\View) return $comp;
-
-        return view('live.display', ['comp' => $comp]);
+        return $this->page($request, 'Live/Display', fn ($comp) => [
+            'sercOrder' => $this->sercOrder($comp),
+            'qr' => (string) QrCode::size(112)->margin(0)->generate(route('live', $request->only('comp'))),
+        ]);
     }
 
     public function all()
     {
-        return view('live.unavailable', ['message' => 'No competitions are currently available to view live.']);
+        return $this->unavailable('No competition is live right now. One shows here on the day it runs.');
     }
 
+    /**
+     * Each Team's SERC progress and Estimated start (SercOrderEstimate), polled every 5s by the live pages.
+     * Starts are unix seconds.
+     */
     public function liveData(Competition $comp)
     {
         abort_unless($comp->canBeViewedLive(), 404);
 
-        $serc = Cache::remember('live.' . $comp->id . '.drySerc', 60 * 60, function () use ($comp) {
-            $serc = SERC::where('competition', $comp->id)->where(function ($query) {
-                $query->where('type', 'DRY')->orWhere('name', 'LIKE', '%Dry%');
-            })->first();
+        $teams = Cache::remember('live.' . $comp->id . '.sercOrder', 10, fn () => SercOrderEstimate::for($comp)->teams());
 
-            if (!$serc) {
-                return SERC::where('competition', $comp->id)->first();
-            }
-
-            return $serc;
-        });
-
-
-
-
-
-
-        $sercsFinished = Cache::remember('live.' . $comp->id . '.howManySercsHasEachTeamFinished', 10, function () use ($comp) {
-            return $comp->howManySercsHasEachTeamFinished();
-        });
-        $avgTime = Cache::remember('live.' . $comp->id . '.getAverageSercTime', 10, function () use ($serc) {
-            // This is not ideal, should make comp org select which serc is dry
-
-            if (!$serc) return 360;
-
-            return $serc->getAverageTimeBetweenTeams();
-        });
-
-
-        $startTime = $comp->serc_start_time ? $comp->serc_start_time->timestamp * 1000 : null;
-        if (!empty($sercsFinished)) {
-            $startTime = Cache::remember('live.' . $comp->id . '.getStartTime', 10, function () use ($serc) {
-                $t =  new Carbon(DB::select(' SELECT MAX(sr.created_at) AS start_time FROM serc_results sr INNER JOIN serc_marking_points smp on smp.id=sr.marking_point WHERE serc=?;', [$serc->id])[0]->start_time);
-                $t->addMinutes(2); // Assume max 2m reset time
-                return $t->timestamp * 1000;
-            });
-        }
-
-        return response()->json(['sercsFinished' => $sercsFinished, 'avgTime' => (float) $avgTime, 'sercStartTime' => (int) $startTime]);
+        return response()->json(['teams' => (object) $teams]);
     }
 
     public function dqs(Request $request)
     {
-        $comp = $this->resolveComp($request);
-        if ($comp instanceof \Illuminate\View\View) return $comp;
-        return view('live.dqs.index', ['comp' => $comp]);
+        return $this->page($request, 'Live/Dqs', fn ($comp) => [
+            'groups' => collect([
+                'SERCs' => $comp->getSERCs->map(fn ($serc) => ['key' => 'se:' . $serc->id, 'name' => $serc->getName()]),
+                'Speeds' => $comp->getSpeedEvents->map(fn ($speed) => ['key' => 'sp:' . $speed->id, 'name' => $speed->getName()]),
+            ])
+                ->filter(fn ($events) => $events->isNotEmpty())
+                ->map(fn ($events, $title) => [
+                    'title' => $title,
+                    'events' => $events->map(fn ($event) => [...$event, 'url' => route('live.dqs.event', [$event['key'], ...$request->only('comp')])]),
+                ])
+                ->values(),
+        ]);
     }
 
     public function eventDqs(Request $request, string $event)
     {
-        $comp = $this->resolveComp($request);
-        if ($comp instanceof \Illuminate\View\View) return $comp;
+        return $this->page($request, 'Live/EventDqs', function (Competition $comp) use ($event, $request) {
+            $realEvent = str_starts_with($event, 'sp')
+                ? CompetitionSpeedEvent::where('id', substr($event, 3))->first()
+                : SERC::where('id', substr($event, 3))->first();
 
-        $realEvent = null;
+            abort_unless($realEvent?->competition == $comp->id, 404);
 
-        if (str_starts_with($event, 'sp')) {
-            $realEvent = CompetitionSpeedEvent::where('id', substr($event, 3))->first();
-        } else {
-            $realEvent = SERC::where('id', substr($event, 3))->first();
-        }
+            // DQs come from both the old JudgeDQSubmission flow and the newer ViolationSubmission one
+            $dqs = $this->judgeDqRows($comp, $realEvent)->concat($this->violationRows($comp, $realEvent))->values();
 
-        abort_unless($realEvent?->competition == $comp->id, 404);
-
-
-        // DQs come from both the old JudgeDQSubmission flow and the newer ViolationSubmission one
-        $dqs = $this->judgeDqRows($comp, $realEvent)->concat($this->violationRows($comp, $realEvent))->values();
-
-        return view('live.dqs.event', ['comp' => $comp, 'event' => $realEvent, 'dqs' => $dqs]);
+            return [
+                'event' => ['name' => $realEvent->getName()],
+                'dqs' => $dqs->map(fn ($dq, $i) => ['id' => $i, ...$dq]),
+                'back' => route('live.dqs', $request->only('comp')),
+            ];
+        });
     }
 
     /**

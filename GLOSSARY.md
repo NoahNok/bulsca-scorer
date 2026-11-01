@@ -54,6 +54,14 @@ _Avoid_: Pool (that's for speed events), station
 An Entity's place in a Tank's running order. A competition has one set of Draws, shared by all its SERCs.
 _Avoid_: Heat (that's for speed events), slot
 
+**SERC order**:
+The competition's Draws in each Tank, shown publicly on the day with how many SERCs each Team has finished and when the unfinished ones are expected to start.
+_Avoid_: Running order, start list
+
+**Estimated start**:
+When a Team that hasn't started its SERCs is expected to start in its Tank: after the Teams ahead of it in that Tank's Draws, at the pace that Tank has been running. A Team whose estimate has already passed is "Due now". It's an estimate only.
+_Avoid_: Start time (sounds guaranteed)
+
 ### Officials
 
 **Official**:

@@ -8,6 +8,7 @@ use App\Models\DigitalJudge\Violation\ViolationSubmission;
 use App\Models\DQCode;
 use App\Models\SERC;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 /**
@@ -114,8 +115,10 @@ class LiveDqsTest extends TestCase
 
         $this->get($this->eventDqsUrl())
             ->assertOk()
-            ->assertSee('DQ100')->assertSee('Description 100')
-            ->assertSee('DQ101')->assertSee('Appealed')
-            ->assertDontSee('DQ102')->assertDontSee('DQ103')->assertDontSee('DQ104');
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Live/EventDqs')
+                ->has('dqs', 2)
+                ->where('dqs.0.code', 'DQ100')->where('dqs.0.description', 'Description 100')->where('dqs.0.appealed', false)
+                ->where('dqs.1.code', 'DQ101')->where('dqs.1.appealed', true));
     }
 }

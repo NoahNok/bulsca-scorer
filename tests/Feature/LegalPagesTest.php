@@ -70,7 +70,14 @@ class LegalPagesTest extends TestCase
 
     public function test_live_site_has_the_footer(): void
     {
-        $this->assertLinksToPolicies($this->get(route('live') . '?comp=' . $this->comp->id)->assertOk());
+        // A Management app page: LiveLayout draws the footer from the shared `legal` urls
+        $this->get(route('live') . '?comp=' . $this->comp->id)
+            ->assertOk()
+            ->assertInertia(fn (AssertableInertia $page) => $page
+                ->component('Live/Index')
+                ->where('legal.terms', config('app.url') . '/terms')
+                ->where('legal.privacy', config('app.url') . '/privacy')
+                ->where('legal.cookies', config('app.url') . '/cookies'));
     }
 
     public function test_results_site_has_the_footer(): void

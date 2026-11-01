@@ -12,6 +12,7 @@ use App\Models\Orders\Heat;
 use App\Models\SERC;
 use App\Models\SpeedEvent;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 /**
@@ -90,36 +91,45 @@ class LivePagesTest extends TestCase
     {
         $this->get($this->url('live'))
             ->assertOk()
-            ->assertSee('3. ' . $this->team->getName($this->comp))
-            ->assertDontSee('Heat 2')
-            ->assertDontSee(route('live.dqs.event', ['se:' . $this->serc->id]), false)
-            ->assertSee(route('live.dqs'), false)
-            ->assertSee(route('live.display'), false);
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Live/Index')
+                ->where('competition.name', 'Test Competition')
+                ->where('competition.links.dqs', route('live.dqs', ['comp' => $this->comp->id]))
+                ->where('competition.links.display', route('live.display', ['comp' => $this->comp->id]))
+                ->where('competition.dataUrl', route('live.data', $this->comp->id))
+                ->where('sercOrder.tanks.0.teams.0', ['id' => $this->team->id, 'draw' => 3, 'name' => $this->team->getName($this->comp)])
+                ->where('sercOrder.sercCount', 1)
+                ->missing('auth.user.email'));
+    }
+
+    public function test_the_hub_links_to_the_heats_and_draws_on_the_main_site(): void
+    {
+        $this->get($this->url('live'))
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('competition.links.heatsDraws', config('app.url') . '/competition/' . $this->comp->getSlug() . '/heats-and-draws')
+                ->where('live.site.explore', config('app.url') . '/explore'));
     }
 
     public function test_the_dqs_tab_lists_each_event(): void
     {
         $this->get($this->url('live.dqs'))
             ->assertOk()
-            ->assertSee(route('live.dqs.event', ['se:' . $this->serc->id]), false)
-            ->assertSee(route('live.dqs.event', ['sp:' . $this->speed->id]), false);
-    }
-
-    public function test_the_hub_links_to_the_heats_and_draws_on_the_main_site(): void
-    {
-        $this->get($this->url('live'))
-            ->assertSee('href="' . config('app.url') . '/competition/' . $this->comp->getSlug() . '/heats-and-draws"', false)
-            ->assertSee('Heats & Draws &nearr;', false);
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Live/Dqs')
+                ->where('groups.0.title', 'SERCs')
+                ->where('groups.0.events.0.url', route('live.dqs.event', ['se:' . $this->serc->id, 'comp' => $this->comp->id]))
+                ->where('groups.1.title', 'Speeds')
+                ->where('groups.1.events.0.url', route('live.dqs.event', ['sp:' . $this->speed->id, 'comp' => $this->comp->id])));
     }
 
     public function test_the_display_shows_only_the_serc_order(): void
     {
         $this->get($this->url('live.display'))
             ->assertOk()
-            ->assertSee('3. ' . $this->team->getName($this->comp))
-            ->assertSee('<svg', false)
-            ->assertDontSee('Heat 2')
-            ->assertDontSee('<footer', false);
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Live/Display')
+                ->where('sercOrder.tanks.0.teams.0.draw', 3)
+                ->where('qr', fn ($qr) => str_contains($qr, '<svg')));
     }
 
     public function test_an_event_lists_its_resolved_dqs_with_the_code_description(): void
@@ -142,15 +152,45 @@ class LivePagesTest extends TestCase
 
         $this->get($this->url('live.dqs.event', ['sp:' . $this->speed->id]))
             ->assertOk()
-            ->assertSee('Did not touch the wall')
-            ->assertSee('Judge Person');
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Live/EventDqs')
+                ->where('dqs.0.description', 'Did not touch the wall')
+                ->where('dqs.0.reporter', ['Judge Person', 'Turn judge'])
+                ->where('dqs.0.placement', ['Heat' => 2, 'Lane' => 5]));
     }
 
     public function test_an_event_with_no_dqs_says_so(): void
     {
         $this->get($this->url('live.dqs.event', ['se:' . $this->serc->id]))
             ->assertOk()
-            ->assertSee('No DQs or penalties for this event');
+            ->assertInertia(fn (Assert $page) => $page->component('Live/EventDqs')->where('dqs', []));
+    }
+
+    public function test_without_a_live_competition_the_past_ones_are_listed(): void
+    {
+        $this->comp->can_be_live = false;
+        $this->comp->public_results = true;
+        $this->comp->when = now()->subWeek();
+        $this->comp->save();
+
+        $this->get(route('live'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Live/Unavailable')
+                ->where('competitions.0.url', route('live', ['comp' => $this->comp->id]))
+                ->where('pagination.current', 1));
+    }
+
+    public function test_the_live_data_estimates_when_each_team_starts(): void
+    {
+        $this->comp->serc_start_time = now()->addHour();
+        $this->comp->save();
+
+        $this->get(route('live.data', ['comp' => $this->comp]))
+            ->assertOk()
+            ->assertJsonPath("teams.{$this->team->id}.finished", 0)
+            ->assertJsonPath("teams.{$this->team->id}.next", true)
+            ->assertJsonPath("teams.{$this->team->id}.start", $this->comp->serc_start_time->timestamp);
     }
 
     public function test_several_devices_on_one_ip_can_poll_the_live_data(): void

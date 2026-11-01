@@ -12,6 +12,7 @@
 @source "../js/manage";
 @source "../js/pages/Manage";
 @source "../js/pages/Admin";
+@source "../js/pages/Live";
 @source "../views/manage.blade.php";
 
 /* dark: matches v2.css: the OS setting unless the header toggle forces a theme with data-theme */
@@ -97,6 +98,7 @@
     --color-v2-success: var(--v2-success);
     --color-v2-success-soft: var(--v2-success-soft);
     --color-v2-success-text: var(--v2-success-text);
+    --color-v2-warning: var(--v2-warning);
     --color-v2-warning-soft: var(--v2-warning-soft);
     --color-v2-warning-text: var(--v2-warning-text);
 }
