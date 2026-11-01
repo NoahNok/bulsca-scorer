@@ -49,7 +49,7 @@
         {:else}
             <span class={["rounded-md px-3 py-0.5", display ? "bg-v2-success text-v2-bg" : "bg-v2-success-soft text-v2-success-text"]}>Finished</span>
         {/if}
-        <span class="ml-2 font-normal text-v2-muted">Start times are an estimate only.</span>
+        <span class="ml-2 font-normal text-v2-muted">Estimates only: teams may start earlier or later.</span>
     </div>
 
     <div class={display ? "flex min-h-0 flex-1 gap-6" : "flex flex-col gap-8"}>

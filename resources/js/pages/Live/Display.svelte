@@ -20,8 +20,8 @@
             <LiveStatus url={competition.dataUrl} display />
             <div class="flex items-center gap-3">
                 <!-- Always on white, so phones can read it in dark mode -->
-                <div class="rounded-md bg-white p-1.5" aria-hidden="true">{@html qr}</div>
-                <p class="w-32 text-base font-semibold text-v2-muted">Scan for your team's start time</p>
+                <div class="rounded-md bg-[#fff] p-1.5" aria-hidden="true">{@html qr}</div>
+                <p class="w-32 text-base font-semibold text-v2-muted">Scan to see when your team starts</p>
             </div>
         </div>
     </header>

@@ -23,7 +23,7 @@
                   { label: "Live", url: comp.links.live, current: page.component == "Live/Index", svelte: true },
                   { label: "DQs & Penalties", url: comp.links.dqs, current: page.component.startsWith("Live/") && page.component.includes("Dqs"), svelte: true },
                   { label: "Full screen", url: comp.links.display, current: false, svelte: false, newTab: true },
-                  { label: "Heats & Draws", url: comp.links.heatsDraws, current: false, svelte: false },
+                  { label: "Heats & Draws", url: comp.links.heatsDraws, current: false, svelte: false, newTab: true },
               ]
             : [],
     );
