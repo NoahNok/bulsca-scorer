@@ -31,8 +31,8 @@
             "rounded-xl border whitespace-nowrap transition-colors motion-reduce:transition-none",
             display ? "flex items-center gap-4 px-5" : "flex flex-col gap-1 p-3",
             state == "waiting" && "border-v2-border bg-v2-card",
-            state == "part" && (display ? "border-v2-warning bg-v2-warning text-v2-bg" : "border-transparent bg-v2-warning-soft text-v2-warning-text"),
-            state == "done" && (display ? "border-v2-success bg-v2-success text-v2-bg" : "border-transparent bg-v2-success-soft text-v2-success-text"),
+            state == "part" && "border-transparent bg-v2-warning-soft text-v2-warning-text",
+            state == "done" && "border-transparent bg-v2-success-soft text-v2-success-text",
             live.teams[id]?.next && "ring-2 ring-v2-teal ring-inset",
         ];
     }
@@ -44,10 +44,10 @@
     <div class={["mb-3 flex flex-wrap items-center gap-2 font-semibold", display ? "shrink-0 text-lg" : "text-sm"]}>
         {#if order.sercCount > 1}
             <span>Finished:</span>
-            <span class={["rounded-md px-3 py-0.5", display ? "bg-v2-warning text-v2-bg" : "bg-v2-warning-soft text-v2-warning-text"]}>Dry</span>
-            <span class={["rounded-md px-3 py-0.5", display ? "bg-v2-success text-v2-bg" : "bg-v2-success-soft text-v2-success-text"]}>Both</span>
+            <span class="rounded-md bg-v2-warning-soft px-3 py-0.5 text-v2-warning-text">Dry</span>
+            <span class="rounded-md bg-v2-success-soft px-3 py-0.5 text-v2-success-text">Both</span>
         {:else}
-            <span class={["rounded-md px-3 py-0.5", display ? "bg-v2-success text-v2-bg" : "bg-v2-success-soft text-v2-success-text"]}>Finished</span>
+            <span class="rounded-md bg-v2-success-soft px-3 py-0.5 text-v2-success-text">Finished</span>
         {/if}
         <span class="ml-2 font-normal text-v2-muted">Estimates only: teams may start earlier or later.</span>
     </div>
