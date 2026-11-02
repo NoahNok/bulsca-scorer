@@ -57,7 +57,8 @@ class HeatsAndDrawsController extends Controller
     }
 
     /**
-     * Shows the Heats or the Draw publicly, or hides them: whichever of `show_heats` and `show_draws` is sent
+     * Shows the Heats or the Draw publicly, or hides them: whichever of `show_heats` and `show_draws` is sent.
+     * Says what changed, which the Management app toasts
      */
     public function visibility(Competition $comp, Request $request)
     {
@@ -68,6 +69,10 @@ class HeatsAndDrawsController extends Controller
 
         $comp->forceFill($data)->save();
 
-        return back();
+        $said = collect(['show_heats' => 'Heats', 'show_draws' => 'Draw'])
+            ->filter(fn($label, $field) => array_key_exists($field, $data))
+            ->map(fn($label, $field) => $label . ($data[$field] ? ' shown publicly' : ' hidden'));
+
+        return back()->with('success', $said->implode(', '));
     }
 }

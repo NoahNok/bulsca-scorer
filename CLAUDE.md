@@ -52,7 +52,8 @@ separate from the Digital Judge. See
 
 ## Main site (Blade)
 
-Organiser pages (competitions, events, entries, results, officials) live in
+Blade pages not yet redesigned (signed-in Blade pages on `app.`, the
+`results.`, `stats.` and `whatif.` subdomains, print views) live in
 `resources/views` (Blade + Alpine, global classes in `resources/css/app.css`).
 
 - **Follow `docs/main-site-ui-style-guide.md` for Blade UI work.** The judge
@@ -63,10 +64,13 @@ Organiser pages (competitions, events, entries, results, officials) live in
 
 ### v2 redesign
 
-Pages being redesigned onto `landing.v2.layout` (starting with `/v2`,
-`resources/views/landing/v2/`) follow `docs/v2-ui-style-guide.md` instead of
-the main-site guide: light/dark tokens, no `se-` classes. Update that guide
-when you add or change a v2 component, token or pattern.
+Every public page on the main domain (home at `/`, Explore, Organisation,
+Championship, a competition's Info, Heats & Draws, Results and SERC
+breakdown, and the legal policies) is on `landing.v2.layout`
+(`resources/views/landing/`) and follows `docs/v2-ui-style-guide.md`, not the
+main-site guide: light/dark tokens, no `se-` classes. The component catalogue
+is at `/v2/kit`. Update that guide when you add or change a v2 component,
+token or pattern.
 
 ## frontend-design plugin
 

@@ -1,76 +1,70 @@
-@extends('layouts.landing')
+{{-- Every public competition (today's, upcoming, then past ones a page at a time) and every Organisation --}}
+@extends('landing.v2.layout')
 
 @section('title', 'Explore')
 
 @section('content')
-
-
-
-
-    @isset($ongoing)
-        <div class="se-card se-card-body se-card-hover cursor-default! mb-6"
-            @click="window.location='{{ route('landing.competition', $ongoing->getSlug()) }}'">
-            <div class="se-card-body">
-                <h3 class="text-se animate-pulse">Live</h3>
-                <h1>{{ $ongoing->name }}</h1>
-                <p class="font-archivo text-xs! text-gray-700! uppercase -mb-1">{{ $ongoing->when->format('M jS Y') }}</p>
-
-                <div class="mt-5">
-                    {{-- <a href="{{ route('live', ['comp' => $ongoing->id]) }}" class="se-btn se-btn-outline-primary">Live</a> --}}
-
-
-                    @if ($ongoing->can_be_live)
-                        <a href="{{ route('live') }}?comp={{ $ongoing->id }}"
-                            class="se-btn se-btn-primary animate-pulse">Live</a>
-                    @endif
-
-                    <a href="{{ route('landing.competition.heats-draws', $ongoing->getSlug()) }}"
-                        class="se-btn se-btn-outline-primary">Heats &
-                        Draws</a>
-                    <a href="{{ route('landing.competition.results', $ongoing->getSlug()) }}"
-                        class="se-btn @if (!$ongoing->public_results) se-btn-disabled @endif">
-                        Results
-                    </a>
-                </div>
+    <div class="v2-container pb-16">
+        <div class="pt-12">
+            <h1 class="v2-page-title">Explore</h1>
+            <p class="v2-page-lead">Every competition on Scoring.Events, and the organisations that run them.</p>
+            <div class="mt-6 max-w-2xl">
+                <x-v2.search />
             </div>
-
         </div>
-    @endisset
 
-    <div>
-        <x-search-all />
-    </div>
-
-
-    <h2>Competitions</h2>
-    <div class="grid-4  mt-2">
-        @foreach ($comps as $comp)
-            <x-competition-card url="{{ route('landing.competition', $comp->getSlug()) }}" :comp="$comp"
-                class=" "></x-competition-card>
-        @endforeach
-
-    </div>
-
-
-    {{ $comps->appends(['orgs_page' => $orgs->currentPage()])->links() }}
-
-    <br>
-    <hr class="spacer mt-3!">
-    <br>
-
-    <h2>Organisations</h2>
-    <div class="grid-4  mt-2">
-        @foreach ($orgs as $org)
-            <a href="{{ route('landing.organisation', $org) }}" class="se-card se-card-hover se-card-body ">
-                <div class="flex items-center justify-between">
-                    <h2>{{ $org->name }}</h2>
-                    <img src="{{ $org->getLogo() }}" alt="" class="size-8 rounded-full">
+        {{-- Past ones page on their own, so the first page's Today and upcoming rows stay put --}}
+        @if ($past->onFirstPage())
+            <section class="v2-section" aria-labelledby="explore-ahead">
+                <div class="v2-section-head">
+                    <h2 id="explore-ahead">Coming up</h2>
                 </div>
-            </a>
-        @endforeach
+                <x-v2.fixtures :live="$live" :upcoming="$upcoming"
+                    empty="Nothing coming up yet. Organisers add competitions here as soon as they're set up." />
+            </section>
+        @endif
 
+        <section class="v2-section" aria-labelledby="explore-past">
+            <div class="v2-section-head">
+                <h2 id="explore-past">Results</h2>
+            </div>
+            <x-v2.fixtures :past="collect($past->items())" :today="false" empty="No past competitions yet." />
+
+            @if ($past->hasPages())
+                <nav class="v2-pager" aria-label="Past competitions">
+                    @if ($past->previousPageUrl())
+                        <a href="{{ $past->previousPageUrl() }}" class="v2-btn v2-btn-sm">&larr; Newer</a>
+                    @else
+                        <span></span>
+                    @endif
+                    @if ($past->nextPageUrl())
+                        <a href="{{ $past->nextPageUrl() }}" class="v2-btn v2-btn-sm">Older &rarr;</a>
+                    @endif
+                </nav>
+            @endif
+        </section>
+
+        @if ($past->onFirstPage())
+            <section class="v2-section" aria-labelledby="explore-orgs">
+                <div class="v2-section-head">
+                    <h2 id="explore-orgs">Organisations</h2>
+                </div>
+                @if ($orgs->isEmpty())
+                    <p class="v2-empty">No organisations yet.</p>
+                @else
+                    <ul class="v2-list v2-list-columns">
+                        @foreach ($orgs as $org)
+                            <li class="v2-row">
+                                @if ($org->getLogo())
+                                    <img src="{{ $org->getLogo() }}" alt="">
+                                @endif
+                                <a href="{{ route('landing.organisation', $org->name) }}"
+                                    class="v2-list-name v2-row-link">{{ $org->name }}</a>
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+            </section>
+        @endif
     </div>
-    <br>
-
-    {{ $orgs->appends(['page' => $comps->currentPage()])->links() }}
 @endsection

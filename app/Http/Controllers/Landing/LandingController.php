@@ -12,22 +12,27 @@ use Illuminate\Http\Request;
 class LandingController extends Controller
 {
 
+    /**
+     * Every public competition: today's, all upcoming ones, then past ones newest first, 20 a page.
+     * Then every Organisation.
+     */
     public function explore()
     {
+        $visible = fn() => Competition::where('show_competition', true)->with('getOrganisation');
 
-        $comps = Competition::where('show_competition', true)->orderBy('when', 'desc')->paginate(12);
-        $orgs = Organisation::orderBy('name')->paginate(12, ['*'], 'orgs_page');
-        $ongoing = Competition::where('show_competition', true)->whereDate('when', Carbon::today())->first();
+        $live = $visible()->whereDate('when', Carbon::today())->orderBy('name')->get();
+        $upcoming = $visible()->whereDate('when', '>', Carbon::today())->orderBy('when')->get();
+        $past = $visible()->whereDate('when', '<', Carbon::today())->orderByDesc('when')->simplePaginate(20);
+        $orgs = Organisation::orderBy('name')->get();
 
-
-        return view('landing.explore', compact(['comps', 'orgs', 'ongoing']));
+        return view('landing.explore', compact('live', 'upcoming', 'past', 'orgs'));
     }
 
     /**
-     * The redesigned home page: today's competitions with the last couple of results before them and
-     * the next few competitions after.
+     * The home page: today's competitions with the last couple of results before them and the next
+     * few competitions after.
      */
-    public function v2()
+    public function home()
     {
         $visible = fn() => Competition::where('show_competition', true)->with('getOrganisation');
 
@@ -38,15 +43,55 @@ class LandingController extends Controller
         return view('landing.v2.home', compact('live', 'upcoming', 'recent'));
     }
 
-    public function showOrganisation(Organisation $organisation)
+    /**
+     * The catalogue of every v2 component, for reference while building pages. Unlinked and not indexed.
+     */
+    public function kit()
     {
-        return view('landing.organisation', ['org' => $organisation, 'ongoing' => $organisation->getOngoingCompetition()]);
+        return view('landing.v2.kit');
     }
 
+    /**
+     * An Organisation's Championships (current ones first) and all its public competitions.
+     */
+    public function showOrganisation(Organisation $organisation)
+    {
+        $comps = $organisation->getCompetitions()->where('show_competition', true)->with('getOrganisation')->get();
+        $championships = $organisation->championships()->get()
+            ->sortBy(fn(Championship $c) => $c->isCurrent() ? 0 : 1, SORT_NUMERIC)->values();
+
+        return view('landing.organisation', [
+            'org' => $organisation,
+            'championships' => $championships,
+            ...$this->splitAtToday($comps),
+        ]);
+    }
+
+    /**
+     * A Championship's public competitions, in date order.
+     */
     public function showChampionship(Championship $championship)
     {
-        $organisation = $championship->organisation;
-        return view('landing.championship', ['org' => $organisation, 'championship' => $championship]);
+        $comps = $championship->competitions()->where('show_competition', true)->with('getOrganisation')->get();
+
+        return view('landing.championship', [
+            'championship' => $championship,
+            ...$this->splitAtToday($comps),
+        ]);
+    }
+
+    /**
+     * Splits competitions for the fixtures sheet: past ones newest first, today's, and upcoming ones soonest first.
+     *
+     * @return array{past: \Illuminate\Support\Collection, live: \Illuminate\Support\Collection, upcoming: \Illuminate\Support\Collection}
+     */
+    private function splitAtToday($comps): array
+    {
+        return [
+            'past' => $comps->filter(fn($c) => $c->when->lt(Carbon::today()))->sortByDesc('when')->values(),
+            'live' => $comps->filter(fn($c) => $c->when->isToday())->sortBy('name')->values(),
+            'upcoming' => $comps->filter(fn($c) => $c->when->gte(Carbon::tomorrow()))->sortBy('when')->values(),
+        ];
     }
 
     public function showCompetition(Competition $comp)
@@ -59,9 +104,36 @@ class LandingController extends Controller
         return view('landing.competition.heats-draws', ['comp' => $comp]);
     }
 
+    /**
+     * A competition's Results tab: what's published, in three groups (Overall: Master sheets; Results sheets;
+     * Events), each left out when it has nothing published.
+     */
     public function showResults(Competition $comp)
     {
-        return view('landing.competition.results', ['comp' => $comp]);
+        $released = fn($items) => collect($items)->filter(fn($item) => $comp->hasReleased($item))->values();
+
+        $groups = [
+            'overall' => $released($comp->getMasterSchemas)->map(fn($s) => ['id' => $s->id, 'name' => $s->name]),
+            'sheets' => $released($comp->getResultSchemas)->map(fn($s) => ['id' => $s->id, 'name' => $s->name]),
+            // concat, not getAllEvents(): an Eloquent merge keys by id, so a SERC and a speed event with the same id collide
+            'events' => $released($comp->getSpeedEvents->concat($comp->getSERCs))->map(fn($e) => [
+                'key' => $e->getType() . '-' . $e->id,
+                'id' => $e->id,
+                'type' => $e->getType(),
+                'name' => $e->getName(),
+            ]),
+        ];
+
+        $tabs = collect(['overall' => 'Overall', 'sheets' => 'Results sheets', 'events' => 'Events'])
+            ->filter(fn($label, $key) => $groups[$key]->isNotEmpty());
+
+        return view('landing.competition.results', [
+            'comp' => $comp,
+            'tabs' => $tabs,
+            'groups' => $groups,
+            'leagues' => collect([['id' => 'all', 'name' => 'All Leagues']])
+                ->concat($comp->getLeagues->map(fn($l) => ['id' => $l->id, 'name' => $l->name])),
+        ]);
     }
 
     public function search(string $search)

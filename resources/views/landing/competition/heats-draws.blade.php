@@ -1,296 +1,163 @@
-@extends('layouts.landing-comp')
+{{--
+    A competition's Heats & Draws tab: the speed events' Heats (one event at a time when heats are per event) and
+    the SERCs' Draw, each only once the Organisers release it. Searching finds a Team in every event's Heats and
+    in the Draw: heats and Tanks without it hide, and its lanes and places light up.
+--}}
+@extends('landing.competition.layout')
 
-@section('title', 'Heats & Draws')
+@section('title', 'Heats & Draws | ' . $comp->name)
 
-@section('content')
+@php
+    $events = $comp->getHeats();
+    $sercs = $comp->getDraws();
+    $use_tanks = $comp->usesTanks();
 
+    // Without heats per event, every speed event swims the first one's Heats
+    $heatEvents = $comp->heats_per_event ? $events : array_slice($events, 0, 1);
+    $hasHeats = $comp->getSpeedEvents()->exists();
+    $hasDraws = $comp->getSERCs()->exists();
+    $first = $comp->show_heats && count($heatEvents) > 0 ? 'heats' : ($hasDraws ? 'draws' : 'heats');
+    // Searching only helps once there's something released to search
+    $searchable = ($comp->show_heats && count($heatEvents) > 0) || ($comp->show_draws && count($sercs) > 0);
+    $name = fn($entity) => $entity?->getName($comp) ?? '';
+@endphp
 
-    @php
-        $events = $comp->getHeats();
-        $sercs = $comp->getDraws();
-
-        $first_item = 'heats';
-
-        if ($comp->heats_per_event && count($events) > 0 && $comp->show_heats) {
-            $event = $events[0]['event'];
-            $first_item = "sp:{$event->id}";
-        } elseif (count($events) == 0 || !$comp->show_heats) {
-            $first_item = 'sercs';
-        }
-
-    @endphp
-
-    <div class="flex flex-col space-y-4" x-data="{
-        open: '{{ $first_item }}',
+@section('comp-content')
+    <div x-data="{
+        view: '{{ $first }}',
+        event: {{ count($heatEvents) > 0 ? $heatEvents[0]['event']->id : 'null' }},
         search: '',
-    
-        matchesSearch(term) {
-            return term.trim().startsWith(this.search.trim())
-        },
-    
-        displayMode: $persist('grid')
-    
+        get term() { return this.search.trim().toLowerCase() },
+        matches(name) { return this.term !== '' && name.includes(this.term) },
+        // A heat or Tank shows while nothing's searched, or when it holds a match
+        holds(names) { return this.term === '' || names.includes(this.term) },
     }">
-
-        <div class="flex md:space-x-3 w-full items-center md:flex-row flex-col">
-            <div class="se-form-input w-full imb-0! mb-0!">
-                <input type="text" x-model="search" placeholder="Search name, club, team...">
-            </div>
-
-            <div class="flex space-x-2 items-center  ">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor"
-                    class="size-8 cursor-pointer transition-colors ease-in-out hover:text-se hover:bg-gray-100 rounded-md p-1"
-                    :class="displayMode == 'grid' ? 'se-bg-se/10 text-se bg-gray-100' : 'text-gray-600'"
-                    @click="displayMode = 'grid'">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
-                </svg>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor"
-                    class="size-8 cursor-pointer transition-colors ease-in-out hover:text-se hover:bg-gray-100 rounded-md p-1"
-                    :class="displayMode == 'list' ? 'se-bg-se/10 text-se bg-gray-100' : 'text-gray-600'"
-                    @click="displayMode = 'list'">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                </svg>
-
-            </div>
-        </div>
-
-
-
-        <div class="tabbed-bar mb-4 ">
-            @if ($comp->show_heats)
-                @if ($comp->heats_per_event)
-                    @foreach ($events as $heatevent)
-                        <div @click="open = 'sp:{{ $heatevent['event']->id }}'"
-                            :class="open == 'sp:{{ $heatevent['event']->id }}' ? 'active' : ''">
-                            {{ $heatevent['event']->getName() }}</div>
-                    @endforeach
-                @else
-                    <div @click="open = 'heats'" :class="open == 'heats' ? 'active' : ''">Heats</div>
-                @endif
+        <div class="v2-hd-bar">
+            @if ($hasHeats && $hasDraws)
+                <div class="v2-tabs" role="tablist" aria-label="Heats or Draws" style="--v2-tabs: 2">
+                    <span class="v2-tabs-pill" aria-hidden="true"
+                        :style="`transform: translateX(${view === 'draws' ? 100 : 0}%)`"></span>
+                    <button type="button" role="tab" :aria-selected="(view === 'heats').toString()"
+                        @click="view = 'heats'">Heats</button>
+                    <button type="button" role="tab" :aria-selected="(view === 'draws').toString()"
+                        @click="view = 'draws'">Draws</button>
+                </div>
             @endif
 
-            @if (count($sercs) > 0 && $comp->show_draws)
-                <div @click="open = 'sercs'" :class="open == 'sercs' ? 'active' : ''">
-                    Draws</div>
+            @if ($searchable)
+                <div class="v2-field v2-hd-search">
+                    <label for="hd-search" class="sr-only">Find a Team or competitor</label>
+                    <input id="hd-search" type="search" class="v2-input" x-model="search"
+                        placeholder="Find a Team or competitor">
+                </div>
             @endif
-
-            {{-- @foreach ($sercs as $heatevent)
-                <div @click="open = 'se:{{ $heatevent['serc']->id }}'"
-                    :class="open == 'se:{{ $heatevent['serc']->id }}' ? 'active' : ''">
-                    {{ $heatevent['serc']->getName() }}</div>
-            @endforeach --}}
-
         </div>
 
-
-        @if ($comp->show_heats)
-            @php
-                $allHeats = $events;
-
-                if (count($allHeats) > 0 && !$comp->heats_per_event) {
-                    $allHeats = [$allHeats[0]];
-                }
-            @endphp
-
-            @forelse ($allHeats as $heatevent)
-                @php
-
-                    $speed_key = $comp->heats_per_event ? "sp:{$heatevent['event']->id}" : 'heats';
-                @endphp
-
-
-
-                <div class=" hidden" :class="displayMode == 'grid' ? 'grid-4' : 'flex! flex-col space-y-5'"
-                    x-data="{
-                    
-                        children: [],
-                    
-                        shouldShow() {
-                            return open == '{{ $speed_key }}' || (search.trim() != '' && this.children.some(Boolean))
-                    
-                    
-                        }
-                    }" x-show.important="shouldShow" x-transition>
-
-
-
-
-
-
-                    @foreach ($heatevent['pools'] as $poolHeats)
-                    @foreach ($poolHeats['heats'] as $heat_no => $lanes)
-                        @php
-                            $names = $lanes->map(fn($lane) => $lane->entity?->getName($comp))->filter()->implode(' ');
-                            $heatKey = \App\Models\Orders\Heat::keyFor($poolHeats['pool']?->id, $heat_no);
-                            $laneCount = $poolHeats['pool']?->lanes ?? $comp->max_lanes;
-                        @endphp
-
-                        <div class="flex flex-col space-x-2 " x-data="{
-                            shouldShow() {
-                                let show = search.trim() === '' || `{{ strtolower($names) }}`.includes(search.trim().toLowerCase())
-                                children['{{ $heatKey }}'] = show
-                                return show;
-                            }
-                        }" x-show="shouldShow">
-
-                            <div class="flex space-x-3">
-                                <h3 class="font-bold mb-2">L</h3>
-                                <h3 class="font-bold  mb-2">{{ \App\Models\Pool::heatLabel($poolHeats['pool'], $heat_no) }}</h3>
-                            </div>
-
-                            <div class="space-y-2">
-
-                                @for ($i = 0; $i < $laneCount; $i++)
-                                    @php
-                                        $lane = $lanes->where('lane', $i + 1)->first();
-                                    @endphp
-                                    <div class="flex items-center w-full space-x-3" x-data="{
-                                        shouldShow() {
-                                            let show = search.trim() === '' || `{{ strtolower($lane?->entity?->getName($comp) ?? '-') }}`.includes(search.trim().toLowerCase())
-                                    
-                                            return show;
-                                        }
-                                    }"
-                                        x-show="shouldShow()">
-                                        <h4 class="font-bold ">{{ $i + 1 }}</h4>
-                                        <div class="se-card  se-card-body min-w-56 p-2! px-4! rounded w-full"
-                                            :class="(search.trim() !== '' &&
-                                                `{{ strtolower($lane?->entity?->getName($comp) ?? '-') }}`
-                                                .includes(search.trim().toLowerCase())) ? 'se-card-success' : ''">
-                                            {{ $lane?->entity?->getName($comp) ?? '-' }}
-                                        </div>
-                                    </div>
-                                @endfor
-
-
-                            </div>
-
-
-
-
-                        </div>
-                    @endforeach
-                    @endforeach
-
-
-                </div>
-
-            @empty
-                <div class="alert-box alert-warning md:w-1/3">
-                    <p>Heats are not currently available, please check back later.</p>
-                </div>
-            @endforelse
-        @else
-            <div class="alert-box alert-warning md:w-1/3">
-                <p>Heats have not been released, please check back later.</p>
-            </div>
-        @endif
-
-
-
-
-
-
-
-        @if ($comp->show_draws)
-            @php
-                $use_tanks = $comp->usesTanks();
-            @endphp
-
-            @forelse ($sercs as $heatevent)
-                <div class="hidden" :class="displayMode == 'grid' ? 'grid-4' : 'flex! flex-col space-y-5'">
-
-
-
-                    @foreach ($heatevent['draws'] as $tank_no => $draw)
-                        @php
-                            $names = $draw->map(fn($lane) => $lane->entity?->getName($comp))->filter()->implode(' ');
-                        @endphp
-
-                        <div x-data="{
-                        
-                            children: [],
-                        
-                            shouldShow() {
-                        
-                                if (search.trim() != '') {
-                                    return this.children.some(Boolean)
-                                }
-                        
-                                return open == 'sercs'
-                        
-                        
-                            }
-                        }" x-show="shouldShow" x-transition>
-                            @if ($use_tanks)
-                                <h2 class="-mb-1!">Tank {{ $tank_no + 1 }}</h2>
-
-                                @php
-                                    $uniqueLeagues = $draw
-                                        ->map(function ($drawEntry) {
-                                            return $drawEntry->entity?->getLeague()->name ?? null;
-                                        })
-                                        ->filter()
-                                        ->unique()
-                                        ->values()
-                                        ->implode(', ');
-
-                                @endphp
-
-                                <small class="text-gray-600 font-semibold">{{ $uniqueLeagues }}</small>
-                            @else
-                                <h2 class="-mb-1!">
-                                    Draw
-                                </h2>
+        {{-- Eases the height as Heats and Draws, events and search results swap, instead of the page jumping --}}
+        <div x-smooth-height>
+            <div>
+                @if ($hasHeats)
+                    <section x-show="view === 'heats'" x-transition:enter="v2-fade-in" x-transition:enter-start="v2-fade-from" @if ($first !== 'heats') x-cloak @endif aria-label="Heats" class="mt-6">
+                        @if (!$comp->show_heats)
+                            <p class="v2-empty">Heats appear here once the Organisers release them.</p>
+                        @elseif (count($heatEvents) === 0)
+                            <p class="v2-empty">There are no heats yet. They appear here once the Organisers set them.</p>
+                        @else
+                            @if (count($heatEvents) > 1)
+                                <div class="mb-6 flex flex-wrap gap-2" role="group" aria-label="Event" x-show="term === ''">
+                                    @foreach ($heatEvents as $heatEvent)
+                                        <button type="button" class="v2-chip" @click="event = {{ $heatEvent['event']->id }}"
+                                            :aria-pressed="(event === {{ $heatEvent['event']->id }}).toString()">{{ $heatEvent['event']->getName() }}</button>
+                                    @endforeach
+                                </div>
                             @endif
 
+                            @foreach ($heatEvents as $heatEvent)
+                                @php
+                                    $eventNames = collect($heatEvent['pools'])
+                                        ->flatMap(fn($p) => collect($p['heats'])->flatten())
+                                        ->map(fn($lane) => strtolower($name($lane->entity)))
+                                        ->implode('|');
+                                @endphp
+                                {{-- While searching, every event's heats show, so a Team is found in all of them --}}
+                                <div x-show="term === '' ? event === {{ $heatEvent['event']->id }} : holds(@js($eventNames))"
+                                    x-transition:enter="v2-fade-in" x-transition:enter-start="v2-fade-from"
+                                    @if (!$loop->first) x-cloak @endif>
+                                    @if (count($heatEvents) > 1)
+                                        <h3 class="v2-hd-event" x-show="term !== ''" x-cloak>{{ $heatEvent['event']->getName() }}</h3>
+                                    @endif
+                                    <div class="v2-hd-grid">
+                                        @foreach ($heatEvent['pools'] as $poolHeats)
+                                            @foreach ($poolHeats['heats'] as $heat_no => $lanes)
+                                                @php
+                                                    $names = collect($lanes)->map(fn($lane) => strtolower($name($lane->entity)))->implode('|');
+                                                    $laneCount = $poolHeats['pool']?->lanes ?? $comp->max_lanes;
+                                                @endphp
+                                                <div class="v2-hd-card" x-show="holds(@js($names))">
+                                                    <h4>{{ \App\Models\Pool::heatLabel($poolHeats['pool'], $heat_no) }}</h4>
+                                                    <ol>
+                                                        @for ($i = 1; $i <= $laneCount; $i++)
+                                                            @php
+                                                                $laneName = $name(collect($lanes)->firstWhere('lane', $i)?->entity);
+                                                            @endphp
+                                                            <li :class="matches(@js(strtolower($laneName))) && 'is-match'">
+                                                                <span class="v2-hd-num">{{ $i }}</span>
+                                                                <span @class(['v2-hd-empty' => $laneName === ''])>{{ $laneName ?: 'Empty' }}</span>
+                                                            </li>
+                                                        @endfor
+                                                    </ol>
+                                                </div>
+                                            @endforeach
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endforeach
+                        @endif
+                    </section>
+                @endif
 
-
-                            <div class="flex flex-col space-y-2 mt-2">
-                                @foreach ($draw as $drawEntry)
-                                    <div class="se-card  se-card-body min-w-56 p-2! px-4! rounded " x-data="{
-                                        shouldShow() {
-                                            let show = search.trim() === '' || `{{ strtolower($drawEntry->entity?->getName($comp) ?? '-') }}`.includes(search.trim().toLowerCase())
-                                            children['{{ $drawEntry->draw }}'] = show
-                                            return show;
-                                        }
-                                    }"
-                                        x-show="shouldShow"
-                                        :class="(shouldShow && search.trim()) != '' ? 'se-card-success' : ''">
-                                        {{ $drawEntry->draw }}.
-                                        {{ $drawEntry->entity?->getName($comp) ?? '-' }}</div>
+                @if ($hasDraws)
+                    <section x-show="view === 'draws'" x-transition:enter="v2-fade-in" x-transition:enter-start="v2-fade-from" @if ($first !== 'draws') x-cloak @endif aria-label="Draws" class="mt-6">
+                        @if (!$comp->show_draws)
+                            <p class="v2-empty">The Draw appears here once the Organisers release it.</p>
+                        @elseif (count($sercs) === 0)
+                            <p class="v2-empty">There's no Draw yet. It appears here once the Organisers make it.</p>
+                        @else
+                            <div class="v2-hd-grid">
+                                @foreach ($sercs as $drawSet)
+                                    @foreach ($drawSet['draws'] as $tank_no => $draw)
+                                        @php
+                                            $names = collect($draw)->map(fn($entry) => strtolower($name($entry->entity)))->implode('|');
+                                        @endphp
+                                        <div class="v2-hd-card" x-show="holds(@js($names))">
+                                            @if ($use_tanks)
+                                                <h4>Tank {{ $tank_no + 1 }}</h4>
+                                                <p class="v2-hd-leagues">
+                                                    {{ collect($draw)->map(fn($entry) => $entry->entity?->getLeague()->name ?? null)->filter()->unique()->implode(', ') }}
+                                                </p>
+                                            @else
+                                                <h4>Draw</h4>
+                                            @endif
+                                            <ol>
+                                                @foreach ($draw as $entry)
+                                                    <li :class="matches(@js(strtolower($name($entry->entity)))) && 'is-match'">
+                                                        <span class="v2-hd-num">{{ $entry->draw }}</span>
+                                                        <span>{{ $name($entry->entity) ?: '-' }}</span>
+                                                    </li>
+                                                @endforeach
+                                            </ol>
+                                        </div>
+                                    @endforeach
                                 @endforeach
                             </div>
+                        @endif
+                    </section>
+                @endif
 
-
-
-
-                        </div>
-                    @endforeach
-
-
-                </div>
-            @empty
-                <div class="alert-box alert-warning md:w-1/3">
-
-                    <p>Draws are not currently available, please check back later.</p>
-                </div>
-            @endforelse
-        @else
-            <div class="alert-box alert-warning md:w-1/3">
-                <p>Draws have not been released, please check back later.</p>
+                @if (!$hasHeats && !$hasDraws)
+                    <p class="v2-empty">Heats and the Draw appear here once the Organisers add the Events.</p>
+                @endif
             </div>
-        @endif
-
-
-
-
-
-
-
+        </div>
     </div>
-
 @endsection

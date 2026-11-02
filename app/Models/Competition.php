@@ -234,6 +234,22 @@ class Competition extends Model implements IInvitable, IJsonable
     }
 
     /**
+     * The competition's place in its Championship (Regional, Qualifier, Final), or null when it's Standalone.
+     */
+    public function typeLabel(): ?string
+    {
+        return $this->type && $this->type !== 'STANDALONE' ? ucfirst(strtolower($this->type)) : null;
+    }
+
+    /**
+     * Whether the public pages should offer "Follow live": it's on today and the live pages will open it.
+     */
+    public function isLiveToday(): bool
+    {
+        return $this->when->isToday() && $this->canBeViewedLive();
+    }
+
+    /**
      * Whether the public can see an event's or result sheet's results: it belongs to this
      * competition, and the organiser has published the competition's results and that item.
      */

@@ -1,13 +1,13 @@
 # v2 UI style guide
 
-How redesigned main-site pages look and are built. The v2 home page at `/v2`
+How redesigned main-site pages look and are built. The home page at `/`
 (`resources/views/landing/v2/home.blade.php`) is the reference
-implementation, and `/v2` ends in a sample sheet of every control in this
-theme (`landing/v2/partials/kit.blade.php`). Use both as the example when you
-redesign a page.
+implementation, and `/v2/kit` (unlinked, not indexed) is a sample sheet of
+every control in this theme (`landing/v2/partials/kit.blade.php`). Use both as
+the example when you redesign a page.
 
-**Scope:** pages that have been redesigned onto `landing.v2.layout`. Pages that
-haven't moved yet still follow
+**Scope:** every public page on the main domain, on `landing.v2.layout`,
+plus the Management app below. Blade pages that haven't moved yet still follow
 [`main-site-ui-style-guide.md`](main-site-ui-style-guide.md), and the Digital
 Judge follows [`judge-ui-style-guide.md`](judge-ui-style-guide.md). Don't mix
 v2 classes into an un-migrated page, and don't use the old `se-` classes on a v2
@@ -32,14 +32,17 @@ page: redesign the whole page or leave it alone.
 
 | Layer | File | Provides |
 |---|---|---|
-| Shell | `landing/v2/layout.blade.php` | The favicon, fonts, Vite CSS/JS, Alpine (with the focus plugin), the header (brand, Explore, Officials, Sign in/Management, theme toggle) and the footer's legal links |
-| Shared styles | `resources/css/v2.css` | Every token, component and pattern below, plus the dark re-skin of `<x-search-all />`. Loaded by the layout |
+| Shell | `landing/v2/layout.blade.php` | The favicon, fonts, Vite CSS/JS, Alpine (with the focus plugin), the header (brand, Explore, Officials, Sign in, theme toggle) and the footer's legal links. Sign in goes to `app.`'s home, which sends anyone signed in straight to Management: the main domain has no session, so don't use `@auth`/`@guest` on it |
+| Shared styles | `resources/css/v2.css` | Every token, component and pattern below. Loaded by the layout. It gives `html` `scrollbar-gutter: stable` (here and in the Management app), so the page doesn't jolt sideways when a scrollbar appears |
 | Brand mark | `landing/v2/partials/mark.blade.php` | The favicon's "S." as inline SVG: `@include('landing.v2.partials.mark', ['size' => 32, 'live' => true])`. With `live`, its dot pulses |
-| Samples | `landing/v2/partials/kit.blade.php` | The catalogue: every shared component in use. Only the sheet's own layout (`k-` classes) is styled there |
+| Samples | `landing/v2/partials/kit.blade.php`, shown at `/v2/kit` | The catalogue: every shared component in use. Only the sheet's own layout (`k-` classes) is styled there |
 | Theme | `landing/v2/partials/theme-script.blade.php`, `resources/js/lib/theme.ts` | The script that applies a saved theme before the first paint (in the `<head>` of every v2 page), and the toggle logic. Blade's Alpine toggle reaches it as `window.v2Theme` (set in `basic-app.js`) |
 
-A page `@extends('landing.v2.layout')`, puts styles only it uses in
-`@section('v2-styles')` and its markup in `@section('content')`. Once a
+A page `@extends('landing.v2.layout')`, names itself in `@section('title')`
+(the tab reads "Title | Scoring.Events"), puts styles only it uses in
+`@section('v2-styles')`, extra `<head>` tags (like `noindex`) in
+`@section('v2-meta')`, and its markup in `@section('content')`. Public pages
+are indexed, so only add `noindex` to pages that shouldn't be found. Once a
 second page needs a style, move it into `v2.css` with a `v2-` name. The layout
 is standalone, not `layouts.core`, because core's header and footer can't do
 dark mode. So it doesn't get core's toasts, `modals` state or `customConfirm`.
@@ -60,7 +63,7 @@ components.
 | Layer | File | Provides |
 |---|---|---|
 | Root view | `resources/views/manage.blade.php` | The theme script, fonts, `manage.css` and `manage.ts` |
-| Styles | `resources/css/manage.css` | The app's own Tailwind build, separate from `app.css` (see Tailwind below). It imports `v2.css` into Tailwind's `components` layer, so utilities beat v2 classes, and has none of `app.css`'s global rules (`se-` classes, `h1`–`h4`, the `[title]` tooltip). `html` has `scrollbar-gutter: stable`, so pages that scroll and pages that don't line up |
+| Styles | `resources/css/manage.css` | The app's own Tailwind build, separate from `app.css` (see Tailwind below). It imports `v2.css` into Tailwind's `components` layer, so utilities beat v2 classes, and has none of `app.css`'s global rules (`se-` classes, `h1`–`h4`, the `[title]` tooltip). |
 | Entry | `resources/js/manage.ts` | The Inertia app. Resolves only `pages/Manage/**`, `pages/Admin/**` and `pages/Live/**` (`app.ts` leaves them out) |
 | Shell | `resources/js/manage/layout/ManageLayout.svelte` | The same `.v2-header` and `.v2-footer` as the Blade layout, with Explore, Admin (for Admins), Sign out and the theme toggle, and a `.v2-container` for the page (88rem wide here, 76rem on the public pages, so the tables and grids have room; the header widens with it), with 0.5625rem above it (0.75rem from `sm`) so every page's title has room under the header. Pages don't add their own top space |
 | Competition frame | `resources/js/manage/layout/CompetitionLayout.svelte` | Inside the shell for `pages/Manage/Competition/*`: the competition's name (`clamp(1.75rem, 3.5vw, 2.5rem)`, smaller than a page statement), its date (Archivo, not Anton), venue, championship and Live/Private badges, the organisation logo, its page tabs (`PageTabs`) and the Organisers' status message as an info alert. It reads the page's `competition` prop, which `App\Helpers\CompetitionHeader::for()` builds, so every page in it sends that. The tabs come from `App\Helpers\CompetitionTabs`; each tab says whether it's Svelte (an Inertia `<Link>`) or Blade (a plain `<a>`). A tab someone can't open shows `Manage/Competition/Forbidden` in this frame (a 403 from `App\Exceptions\Handler`) |
@@ -268,36 +271,104 @@ each one in use; copy its markup.
 | Button | `.v2-btn` (plain: card background, border). `.v2-btn-primary` for the one main action (ink, inverts in dark), `.v2-btn-accent` (teal, for a "create" call to action), `.v2-btn-danger`, `.v2-btn-ghost`, `.v2-btn-sm`, and `disabled` |
 | Link | `.v2-link` (teal-text, 600, no wrap), `.v2-link-muted` (secondary), `.v2-link-inline` (underlined, inside a sentence) |
 | Live / status dot | `<span class="v2-dot is-live" aria-hidden="true"></span>`. Drop `is-live` for a still dot |
-| Search | `<x-search-all />`, re-skinned on the tokens. On a photo, give its input a fixed light surface (see `.f-hero` in `home.blade.php`) |
+| Search | `<x-v2.search />` (`.v2-search`): a `.v2-input` over the `/search/{search}` endpoint, with a `.v2-search-results` panel grouped into Competitions, Organisations and Championships. On a photo, give `.v2-search-input` a fixed light surface (see `.f-hero` in `home.blade.php`) |
 | Field | `div.v2-field` with a `<label>` and `.v2-input` (input, `select`, `textarea`). Add `.is-invalid` with `aria-invalid` and a `.v2-error` message linked by `aria-describedby`; `.v2-hint` for help text |
 | Checkbox / radio | `<label class="v2-check"><input type="checkbox"> Text</label>` (native, teal `accent-color`) |
 | Switch | `<label class="v2-check"><button class="v2-switch" role="switch" :aria-checked="…"></button><span>Text</span></label>`. The label lets the text toggle it |
 | Badge | `.v2-badge` + `is-provisional`, `is-success`, `is-danger`, `is-live` |
-| Chip | `<button class="v2-chip" aria-pressed="…">` for a row of pills that filter (leagues, an Objective, an organisation), in a `role="group"` with an `aria-label`. The chosen one is `aria-pressed="true"` (ink, inverts in dark) |
+| Chip | `<button class="v2-chip" aria-pressed="…">` for a row of pills that filter (leagues, an Objective, an organisation), in a `role="group"` with an `aria-label`. The chosen one is `aria-pressed="true"` (ink, inverts in dark); a `.v2-badge` inside flips with it |
 | Alert | `.v2-alert` + `is-info`, `is-success`, `is-warning` (something left out or worth checking, not an error), `is-danger`, with an icon and a `<strong>` title |
 | Tabs | `.v2-tabs` with a sliding `.v2-tabs-pill` (equal-width tabs; set `--v2-tabs` to the count if it isn't 3) |
 | Toast | `.v2-toasts` > `.v2-toast-slot` > `.v2-toast-clip` > `.v2-toast`, stacked bottom-right, newest nearest the corner. They slide up in and slide out right, and the stack closes the gap. The Alpine that fires them is in the kit for now |
 | Modal | `.v2-modal-backdrop` + `.v2-modal` with `x-trap.noscroll`: it traps Tab, locks page scroll and focuses the first button, so put the safe one first. Close on Escape and backdrop click. In Svelte, use a native `<dialog class="v2-modal">` opened with `showModal()` instead (it traps focus, closes on Escape and gets the backdrop from `v2.css`); close it on a click on the dialog itself |
+| Long-form text | `.v2-prose` on an `<article>` (legal policies): a readable measure, `h1`/`h3`, lists and `p` spacing. `.v2-prose-meta` for a muted line (last updated), `.v2-prose-table` around a plain table |
 | Whole-row link | `.v2-row` on the `<tr>`, `.v2-row-link` on its link, `.v2-over-row` on anything else clickable in it (see Patterns) |
 
 ## Patterns
 
-- **Fixtures sheet** (`.f-sheet` in `home.blade.php`): one table in date
-  order, with recent results above, a teal "Today" line, today's live
-  competitions on it, and upcoming ones below.
-  - **Past rows:** muted name and date, a Final/Provisional badge and "Results".
+- **Fixtures sheet** (`<x-v2.fixtures>`, `.v2-fixtures`): one table of
+  competitions, with past ones above, a teal "Today" line, today's
+  competitions on it, and upcoming ones below. Pass `past` (in the order to
+  show them), `live` and `upcoming` collections; `:today="false"` drops the
+  Today line for a sheet of results only, `:types="true"` badges each
+  competition with its Championship type, and `empty` says what goes there.
+  Home, Explore, Organisation and Championship use it. Explore and
+  Organisation show "Coming up" (today and upcoming) and "Results" (past,
+  newest first) as two sheets; Home and Championship show one, oldest first.
+  - **Past rows:** muted name and date (with the year when it isn't this
+    year), a Final/Provisional badge and "Results", or "No results yet" and
+    "Details" before they're published.
   - **Upcoming rows:** an "In N days" countdown and "Details".
-  - **Live row:** the name takes the date column (the Today line already gives
-    the date), with "Live now", "Details" and a primary **Follow live** button.
+  - **Today's rows:** the name takes the date column (the Today line already
+    gives the date), with "Live now", "Details" and a primary **Follow live**
+    button when it's live today, or "Today" when it isn't.
   - **On phones:** the venue moves under the name, and the logo and status
     columns hide.
+- **Sections:** `.v2-section` with a `.v2-section-head` (an uppercase `h2`
+  and an optional link at its right end). A page's own title under the header
+  is `.v2-page-title` with a muted `.v2-page-lead`.
+- **Plain lists:** `ul.v2-list` of whole-row links (`li.v2-row`, the name as
+  `.v2-list-name.v2-row-link`, a logo `img`, badges, a muted
+  `.v2-list-detail` at the end). `.v2-list-columns` flows it into columns
+  (Explore's Organisations). An Organisation's Championships use it too.
+- **Pages of a long list:** `.v2-pager` under it, with "← Newer" and
+  "Older →" as small buttons (Explore's past competitions, 20 a page).
+- **A competition's public pages** extend `landing.competition.layout` and
+  fill `@section('comp-content')`. It gives them the heading (name, the date as
+  "Sunday 25th October" in semibold Archivo (`.v2-comp-date`), venue, the Championship link and type badge,
+  the Organisation's logo linking to its page), `.v2-pagetabs` for Info /
+  Heats & Draws / Results (the SERC breakdown counts as Results) with
+  **Follow live** at their end when `isLiveToday()`, and the Organisers'
+  `status_message` as an info `.v2-alert`. Set the tab title to "Page | {name}".
+- **Labelled facts** (a competition's When and Where): `dl.v2-details`, muted
+  `dt` labels over their `dd` values.
+- **Heats & Draws** (`.v2-hd-*`): `.v2-tabs` between Heats and Draws, event
+  chips when heats are per event, a card per heat or Tank (lanes or Draw
+  places numbered down it), and a search that hides heats and Tanks without
+  the Team and lights its rows teal (`is-match`), across every event. The
+  search shows only once heats or the Draw are released and set.
+- **Data tables** (results, the SERC breakdown): `.v2-table` inside
+  `.v2-table-scroll`, which scrolls sideways on its own; muted headings on a
+  sunk row, rules between rows, the first column (`.v2-table-name`) bold.
+- **Results** (`.v2-results-*`): `LandingController::showResults` sends only
+  what's published, in three groups: Overall (Master sheets), Results sheets
+  and Events. Each group with anything in it is a `.v2-tabs` tab, the bar
+  runs the full width and hides with one, and the page opens on the first. Sheets are `.v2-chip`s
+  (hidden with one); Events are League chips over Event chips (SERC badged),
+  starting on All Leagues unless the competition chooses a League first, when
+  it asks for one. The view lives in the url (`tab`, `sheet`, `event`,
+  `league`, `display`). One warning `.v2-alert` above the tabs says results are
+  provisional, and one dashed box replaces the tabs when nothing is published.
+  Violations open in a `.v2-modal`. A SERC's table links to its breakdown in
+  the same tab, which links back with its League.
+  Picking keeps the last table up, dimmed (`.v2-table-scroll.is-loading`),
+  until the next one arrives and fades in, and the picks and table sit in an
+  `x-smooth-height`, so the page doesn't collapse and jump between tables.
+- **Smooth height** (`x-smooth-height`, `.v2-smooth-height`): an Alpine
+  directive the v2 layout registers
+  (`landing/v2/partials/smooth-height-script.blade.php`), the Blade counterpart
+  of the Management app's `SmoothHeight`. Put it on a wrapper around one child
+  and the wrapper's height eases to fit that child as it changes (chips shown
+  or hidden, a longer table swapped in), clipping only while it moves. Off
+  with reduced motion. Results and Heats & Draws use it. Give a panel that
+  swaps in `x-transition:enter="v2-fade-in"
+  x-transition:enter-start="v2-fade-from"` so it fades in as the height
+  eases (enter only, so the old panel goes at once and they never stack).
+- **SERC breakdown** (`.v2-breakdown`): the marking points sideways in a
+  sticky header, the Team column sticky, each Objective's columns ruled off, the
+  top three tinted teal and the pointer's column lit. Sorting is
+  `public/js/sorttable.js`; Analysis (`public/js/analysis.js`) colours each
+  mark, read in ink in both themes.
 - **Whole-row links:** `.v2-row` on the row, and `.v2-row-link` on its own
   link, whose `::after` covers the row. Anything else clickable in the row
   (like **Follow live**) gets `.v2-over-row` to sit above it. Add `sr-only` text so the link says what it's for ("Results for Cardiff
   Classic"). Hover and `:focus-within` tint every cell in the row teal, a `<th scope="row">` included, and underline the link.
 - **Live:** a pulsing teal dot plus the words "Live now". Never colour alone.
+- **Follow live** links to `live.` (`route('live', ['comp' => $comp->id])`, same tab) and shows only when
+  `$comp->isLiveToday()`: it's on today and the live pages will open it. Every page uses that one check.
 - **Empty states** say what will appear and when ("Results appear here once
-  an organiser publishes them"), in an `EmptyState` (the dashed box) or a muted line.
+  an organiser publishes them"), in the dashed box (`EmptyState` in Svelte,
+  `.v2-empty` in Blade) or a muted line.
 - **Dates** read as people say them: "Tomorrow", "In 5 days", `Sunday 25
   October`. Results use `j M`.
 
@@ -315,6 +386,14 @@ each one in use; copy its markup.
   `clip-path`, and turn them off under `prefers-reduced-motion`. Alpine's
   `x-for` removes items before a leave transition can run, so mark an item as
   leaving, then remove it (see the toasts).
+- **Moving between Blade pages:** they stay full page loads, but the Blade
+  layout turns on cross-document view transitions (`@view-transition`), so
+  they get the Management app's page fade with the header and footer held
+  still, and a speculation rule prefetches a same-origin page when its link
+  is hovered or pressed. Mark a link that mustn't be fetched early, like a
+  download, `data-no-prefetch` (`[download]` and `target="_blank"` are
+  skipped already). Both are in the layout, not `v2.css`, which the
+  Management app loads too.
 
 ## Writing
 

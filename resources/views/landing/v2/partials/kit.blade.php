@@ -140,6 +140,9 @@
                 <label for="k-notes">Notes for officials</label>
                 <textarea id="k-notes" class="v2-input" placeholder="Parking, start times, anything officials should know"></textarea>
             </div>
+
+            <h3>Search</h3>
+            <x-v2.search />
         </div>
 
         <div class="k-panel">

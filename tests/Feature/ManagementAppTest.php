@@ -77,7 +77,7 @@ class ManagementAppTest extends TestCase
         $this->actingAs(User::factory()->create())
             ->get('/')
             ->assertOk()
-            ->assertViewIs('welcome');
+            ->assertViewIs('landing.v2.home');
     }
 
     public function test_signing_out_returns_to_the_public_site(): void

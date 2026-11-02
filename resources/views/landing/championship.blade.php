@@ -1,56 +1,35 @@
-@extends('layouts.landing')
+{{-- A Championship: its Organisation and dates, then its competitions in date order --}}
+@extends('landing.v2.layout')
 
 @section('title', $championship->name)
 
 @section('content')
-
-    <div class="flex flex-col-reverse md:flex-row md:items-center justify-between gap-2 md:gap-0 py-8 ">
-        <h1 class="text-5xl! -mb-1 ">{{ $championship->name }}</h1>
-           <a href="{{ route('landing.organisation', $championship->organisation->name) }}" class="mb-4 md:mb-0">
-                <img src="{{ $org->getLogo() }}" alt="" class="size-16 rounded-full">
-            </a>
-
-    </div>
-
-
-
-    @isset($ongoing)
-        <div class="se-card se-card-body se-card-hover cursor-default! mb-6">
-            <div class="se-card-body">
-                <h3 class="text-se animate-pulse">Live</h3>
-                <h1>{{ $ongoing->name }}</h1>
-                <p class="font-archivo text-xs! text-gray-700! uppercase -mb-1">{{ $ongoing->when->format('M jS Y') }}</p>
-
-                <div class="mt-5">
-                    <a href="{{ route('live', ['comp' => $ongoing->id]) }}" class="se-btn se-btn-outline-primary">Live</a>
-
-                    <a href="{{ route('landing.competition.heats-draws', $ongoing->getSlug()) }}" class="se-btn">Heats &
-                        Draws</a>
-                    <a href="{{ route('landing.competition.results', $ongoing->getSlug()) }}"
-                        class="se-btn @if (!$ongoing->public_results) se-btn-disabled @endif">
-                        Results
-                    </a>
-                </div>
+    <div class="v2-container pb-16">
+        <div class="flex items-center gap-5 pt-12">
+            @if ($championship->organisation->getLogo())
+                <a href="{{ route('landing.organisation', $championship->organisation->name) }}" class="shrink-0">
+                    <img src="{{ $championship->organisation->getLogo() }}" alt="{{ $championship->organisation->name }}"
+                        class="size-16 rounded-full">
+                </a>
+            @endif
+            <div>
+                <h1 class="v2-page-title">{{ $championship->name }}</h1>
+                <p class="v2-page-lead">
+                    <a href="{{ route('landing.organisation', $championship->organisation->name) }}"
+                        class="v2-link">{{ $championship->organisation->name }}</a>
+                    &middot; {{ $championship->start_date->format('j F Y') }} &ndash;
+                    {{ $championship->end_date->format('j F Y') }}
+                </p>
             </div>
-
         </div>
-    @endisset
 
-
-    <h2>Competitions</h2>
-
-
-
-    <div class="grid-4  mt-2">
-        @forelse ($championship->competitions as $comp)
-            <x-competition-card url="{{ route('landing.competition', $comp->getSlug()) }}" :comp="$comp"
-                :org="$org"></x-competition-card>
-        @empty
-            <div class="alert-box col-span-full">
-                <h1>No Competitions</h1>
-                <p>{{ $championship->name }} doesn't have any competitions.</p>
+        <section class="v2-section" aria-labelledby="championship-sheet">
+            <div class="v2-section-head">
+                <h2 id="championship-sheet">Competitions</h2>
             </div>
-        @endforelse
-
+            {{-- Oldest first, so the sheet reads through the Championship to today and on --}}
+            <x-v2.fixtures :past="$past->reverse()" :live="$live" :upcoming="$upcoming" :types="true"
+                empty="No competitions in this Championship yet." />
+        </section>
     </div>
 @endsection

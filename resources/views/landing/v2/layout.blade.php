@@ -9,11 +9,12 @@
     <meta charset="UTF-8">
     <x-favicon />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="robots" content="noindex">
     <meta name="color-scheme" content="light dark">
-    <title>Scoring.Events</title>
+    <title>{{ trim(View::yieldContent('title')) ? trim(View::yieldContent('title')) . ' | ' : '' }}Scoring.Events</title>
+    @yield('v2-meta')
 
     @include('landing.v2.partials.theme-script')
+    @include('landing.v2.partials.smooth-height-script')
 
     <link rel="stylesheet" href="/fonts/google/fonts.css">
     @vite('resources/js/basic-app.js')
@@ -23,6 +24,36 @@
     {{-- Plugins load before Alpine itself; focus gives modals x-trap --}}
     <script defer src="/vendor/alpinejs-focus@3.13.3/cdn.min.js"></script>
     <script defer src="/vendor/alpinejs@3.13.3/cdn.min.js"></script>
+
+    {{--
+        Moving between these pages animates like a Management app visit: v2.css's page fade, with the header and
+        footer held still. Here rather than in v2.css, which the Management app loads too. Browsers without
+        cross-document view transitions just load the page.
+    --}}
+    <style>
+        @view-transition {
+            navigation: auto;
+        }
+    </style>
+
+    {{--
+        Fetch a public page as soon as a link to it is hovered or pressed, so the click opens it from cache.
+        Prefetch only, not prerender, so no page's scripts run before it's opened. Same-origin links only;
+        data-no-prefetch opts a link out. Browsers without speculation rules ignore this.
+    --}}
+    <script type="speculationrules">
+        {
+            "prefetch": [{
+                "where": {
+                    "and": [
+                        { "href_matches": "/*" },
+                        { "not": { "selector_matches": "[data-no-prefetch], [download], [target=_blank]" } }
+                    ]
+                },
+                "eagerness": "moderate"
+            }]
+        }
+    </script>
 
     @yield('v2-styles')
 </head>
@@ -36,11 +67,8 @@
         <nav class="v2-nav" aria-label="Main">
             <a href="{{ route('explore') }}" class="v2-nav-wide">Explore</a>
             <a href="{{ route('dj.home') }}" class="v2-nav-wide">Officials</a>
-            @auth
-                <a href="{{ route('manage.home') }}">Management</a>
-            @else
-                <a href="{{ route('login') }}">Sign in</a>
-            @endauth
+            {{-- The main domain has no session (ADR 0002): app.'s home sends anyone signed in straight to Management --}}
+            <a href="{{ route('manage.home') }}">Sign in</a>
             {{-- Flips between light and dark, starting from whatever is showing (the OS setting until it's used) --}}
             {{-- window.v2Theme is resources/js/lib/theme.ts, shared with the Management app's toggle --}}
             <button type="button" class="v2-theme-toggle" x-data="{

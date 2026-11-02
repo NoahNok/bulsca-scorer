@@ -174,8 +174,10 @@ class HeatsAndDrawsPageTest extends TestCase
     public function test_heats_and_the_draw_can_be_shown_publicly(): void
     {
         $this->actingAs($this->organiser)->from($this->url())->post($this->url('/visibility'), ['show_heats' => true])
-            ->assertRedirect($this->url());
-        $this->actingAs($this->organiser)->post($this->url('/visibility'), ['show_draws' => false]);
+            ->assertRedirect($this->url())
+            ->assertSessionHas('success', 'Heats shown publicly');
+        $this->actingAs($this->organiser)->post($this->url('/visibility'), ['show_draws' => false])
+            ->assertSessionHas('success', 'Draw hidden');
 
         $this->comp->refresh();
         $this->assertTrue((bool) $this->comp->show_heats);
