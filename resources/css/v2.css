@@ -152,6 +152,12 @@ html[data-theme-switching] .v2-footer {
     }
 }
 
+/* Always keep room for the scrollbar, so the page doesn't jolt sideways when it appears: moving
+   between a page that scrolls and one that doesn't, or when a panel (search results) makes it scroll */
+html {
+    scrollbar-gutter: stable;
+}
+
 body.v2 {
     background: var(--v2-bg);
     color: var(--v2-ink);
