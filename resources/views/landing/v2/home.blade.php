@@ -43,13 +43,32 @@
             white-space: nowrap;
         }
 
-        .f-marquee>div {
+        /* Two identical runs of words: sliding one run's width brings the second exactly where the first
+           started, so the loop never shows a seam or runs out */
+        .f-marquee-track {
             position: absolute;
             top: 0;
-            right: 100%;
-            width: 100%;
+            left: 0;
             display: flex;
-            gap: 9rem;
+            width: max-content;
+            animation: f-marquee 240s linear infinite;
+        }
+
+        .f-marquee-track>.f-word {
+            flex-shrink: 0;
+            padding-right: 9rem;
+        }
+
+        @keyframes f-marquee {
+            to {
+                transform: translateX(-50%);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .f-marquee-track {
+                animation: none;
+            }
         }
 
         .f-word {
@@ -153,8 +172,9 @@
 
         <h1 class="sr-only">Scoring.Events</h1>
         <div class="f-marquee" aria-hidden="true">
-            <div class="animate-marquee">
-                @for ($i = 0; $i < 14; $i++)
+            <div class="f-marquee-track">
+                {{-- 8 words a run (even, so the flips line up across the seam), wider than any screen --}}
+                @for ($i = 0; $i < 16; $i++)
                     <p @class(['f-word', 'is-flip' => $i % 2])>Scoring.<span>Events</span></p>
                 @endfor
             </div>

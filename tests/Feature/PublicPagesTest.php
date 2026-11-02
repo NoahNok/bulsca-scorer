@@ -153,7 +153,7 @@ class PublicPagesTest extends TestCase
             $this->get(route($route, $comp->getSlug()))
                 ->assertOk()
                 ->assertSee('Test Competition')
-                ->assertSee(Carbon::today()->format('l j F'))
+                ->assertSee(Carbon::today()->format('l jS F'))
                 ->assertSee('href="' . route('landing.championship', 'Winter-Series') . '"', false)
                 ->assertSee('Qualifier')
                 ->assertSee('href="' . route('landing.organisation', 'Test Club') . '"', false)
@@ -210,7 +210,9 @@ class PublicPagesTest extends TestCase
         $this->get(route('landing.competition.heats-draws', $comp->getSlug()))
             ->assertOk()
             ->assertSee('The Draw appears here once the Organisers release it.')
-            ->assertDontSee('Team A');
+            ->assertDontSee('Team A')
+            // Nothing's released, so there's nothing to search
+            ->assertDontSee('Find a Team or competitor');
     }
 
     public function test_the_draw_is_split_into_tanks_when_the_competition_uses_them(): void
@@ -224,6 +226,7 @@ class PublicPagesTest extends TestCase
         $this->get(route('landing.competition.heats-draws', $comp->getSlug()))
             ->assertOk()
             ->assertSeeInOrder(['Tank 1', 'Team A', 'Tank 2', 'Team B'])
+            ->assertSee('Find a Team or competitor')
             ->assertDontSee('se-card');
     }
 

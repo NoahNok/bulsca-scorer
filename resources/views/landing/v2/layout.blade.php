@@ -24,6 +24,36 @@
     <script defer src="/vendor/alpinejs-focus@3.13.3/cdn.min.js"></script>
     <script defer src="/vendor/alpinejs@3.13.3/cdn.min.js"></script>
 
+    {{--
+        Moving between these pages animates like a Management app visit: v2.css's page fade, with the header and
+        footer held still. Here rather than in v2.css, which the Management app loads too. Browsers without
+        cross-document view transitions just load the page.
+    --}}
+    <style>
+        @view-transition {
+            navigation: auto;
+        }
+    </style>
+
+    {{--
+        Fetch a public page as soon as a link to it is hovered or pressed, so the click opens it from cache.
+        Prefetch only, not prerender, so no page's scripts run before it's opened. Same-origin links only;
+        data-no-prefetch opts a link out. Browsers without speculation rules ignore this.
+    --}}
+    <script type="speculationrules">
+        {
+            "prefetch": [{
+                "where": {
+                    "and": [
+                        { "href_matches": "/*" },
+                        { "not": { "selector_matches": "[data-no-prefetch], [download], [target=_blank]" } }
+                    ]
+                },
+                "eagerness": "moderate"
+            }]
+        }
+    </script>
+
     @yield('v2-styles')
 </head>
 

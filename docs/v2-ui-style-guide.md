@@ -276,7 +276,7 @@ each one in use; copy its markup.
 | Checkbox / radio | `<label class="v2-check"><input type="checkbox"> Text</label>` (native, teal `accent-color`) |
 | Switch | `<label class="v2-check"><button class="v2-switch" role="switch" :aria-checked="…"></button><span>Text</span></label>`. The label lets the text toggle it |
 | Badge | `.v2-badge` + `is-provisional`, `is-success`, `is-danger`, `is-live` |
-| Chip | `<button class="v2-chip" aria-pressed="…">` for a row of pills that filter (leagues, an Objective, an organisation), in a `role="group"` with an `aria-label`. The chosen one is `aria-pressed="true"` (ink, inverts in dark) |
+| Chip | `<button class="v2-chip" aria-pressed="…">` for a row of pills that filter (leagues, an Objective, an organisation), in a `role="group"` with an `aria-label`. The chosen one is `aria-pressed="true"` (ink, inverts in dark); a `.v2-badge` inside flips with it |
 | Alert | `.v2-alert` + `is-info`, `is-success`, `is-warning` (something left out or worth checking, not an error), `is-danger`, with an icon and a `<strong>` title |
 | Tabs | `.v2-tabs` with a sliding `.v2-tabs-pill` (equal-width tabs; set `--v2-tabs` to the count if it isn't 3) |
 | Toast | `.v2-toasts` > `.v2-toast-slot` > `.v2-toast-clip` > `.v2-toast`, stacked bottom-right, newest nearest the corner. They slide up in and slide out right, and the stack closes the gap. The Alpine that fires them is in the kit for now |
@@ -315,7 +315,7 @@ each one in use; copy its markup.
   "Older →" as small buttons (Explore's past competitions, 20 a page).
 - **A competition's public pages** extend `landing.competition.layout` and
   fill `@section('comp-content')`. It gives them the heading (name, the date as
-  "Sunday 25 October" in Anton, venue, the Championship link and type badge,
+  "Sunday 25th October" in semibold Archivo (`.v2-comp-date`), venue, the Championship link and type badge,
   the Organisation's logo linking to its page), `.v2-pagetabs` for Info /
   Heats & Draws / Results (the SERC breakdown counts as Results) with
   **Follow live** at their end when `isLiveToday()`, and the Organisers'
@@ -325,14 +325,15 @@ each one in use; copy its markup.
 - **Heats & Draws** (`.v2-hd-*`): `.v2-tabs` between Heats and Draws, event
   chips when heats are per event, a card per heat or Tank (lanes or Draw
   places numbered down it), and a search that hides heats and Tanks without
-  the Team and lights its rows teal (`is-match`), across every event.
+  the Team and lights its rows teal (`is-match`), across every event. The
+  search shows only once heats or the Draw are released and set.
 - **Data tables** (results, the SERC breakdown): `.v2-table` inside
   `.v2-table-scroll`, which scrolls sideways on its own; muted headings on a
   sunk row, rules between rows, the first column (`.v2-table-name`) bold.
 - **Results** (`.v2-results-*`): `LandingController::showResults` sends only
   what's published, in three groups: Overall (Master sheets), Results sheets
   and Events. Each group with anything in it is a `.v2-tabs` tab, the bar
-  hides with one, and the page opens on the first. Sheets are `.v2-chip`s
+  runs the full width and hides with one, and the page opens on the first. Sheets are `.v2-chip`s
   (hidden with one); Events are League chips over Event chips (SERC badged),
   starting on All Leagues unless the competition chooses a League first, when
   it asks for one. The view lives in the url (`tab`, `sheet`, `event`,
@@ -372,6 +373,14 @@ each one in use; copy its markup.
   `clip-path`, and turn them off under `prefers-reduced-motion`. Alpine's
   `x-for` removes items before a leave transition can run, so mark an item as
   leaving, then remove it (see the toasts).
+- **Moving between Blade pages:** they stay full page loads, but the Blade
+  layout turns on cross-document view transitions (`@view-transition`), so
+  they get the Management app's page fade with the header and footer held
+  still, and a speculation rule prefetches a same-origin page when its link
+  is hovered or pressed. Mark a link that mustn't be fetched early, like a
+  download, `data-no-prefetch` (`[download]` and `target="_blank"` are
+  skipped already). Both are in the layout, not `v2.css`, which the
+  Management app loads too.
 
 ## Writing
 

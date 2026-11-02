@@ -22,7 +22,7 @@
             <div class="min-w-0">
                 <h1 class="v2-comp-title">{{ $comp->name }}</h1>
                 <p class="v2-comp-meta">
-                    <span class="v2-comp-date">{{ $comp->when->format('l j F') }}</span>
+                    <span class="v2-comp-date">{{ $comp->when->format('l jS F') }}</span>
                     @if (!$comp->when->isCurrentYear())
                         {{ $comp->when->format('Y') }}
                     @endif

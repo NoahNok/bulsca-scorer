@@ -17,6 +17,8 @@
     $hasHeats = $comp->getSpeedEvents()->exists();
     $hasDraws = $comp->getSERCs()->exists();
     $first = $comp->show_heats && count($heatEvents) > 0 ? 'heats' : ($hasDraws ? 'draws' : 'heats');
+    // Searching only helps once there's something released to search
+    $searchable = ($comp->show_heats && count($heatEvents) > 0) || ($comp->show_draws && count($sercs) > 0);
     $name = fn($entity) => $entity?->getName($comp) ?? '';
 @endphp
 
@@ -42,11 +44,13 @@
                 </div>
             @endif
 
-            <div class="v2-field v2-hd-search">
-                <label for="hd-search" class="sr-only">Find a Team or competitor</label>
-                <input id="hd-search" type="search" class="v2-input" x-model="search"
-                    placeholder="Find a Team or competitor">
-            </div>
+            @if ($searchable)
+                <div class="v2-field v2-hd-search">
+                    <label for="hd-search" class="sr-only">Find a Team or competitor</label>
+                    <input id="hd-search" type="search" class="v2-input" x-model="search"
+                        placeholder="Find a Team or competitor">
+                </div>
+            @endif
         </div>
 
         @if ($hasHeats)

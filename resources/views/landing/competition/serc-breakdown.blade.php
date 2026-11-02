@@ -165,7 +165,7 @@
         @if (!$comp->areResultsProvisional())
             <p class="v2-breakdown-more">
                 <a href="{{ route('whatif') }}" class="v2-link-inline">Edit in WhatIf</a> to see how changes would
-                affect the overall results, or <a href="{{ Request::url() }}?dlCSV" class="v2-link-inline">download it as
+                affect the overall results, or <a href="{{ Request::url() }}?dlCSV" class="v2-link-inline" data-no-prefetch>download it as
                     a CSV</a>.
             </p>
         @endif

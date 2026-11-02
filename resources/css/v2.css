@@ -708,6 +708,12 @@ select.v2-input {
     color: var(--v2-bg);
 }
 
+/* A badge in a chip flips with it, so it stays readable on the pressed chip's ink */
+.v2-chip[aria-pressed='true'] .v2-badge {
+    background: color-mix(in srgb, var(--v2-bg) 20%, transparent);
+    color: inherit;
+}
+
 @media (prefers-reduced-motion: reduce) {
     .v2-chip {
         transition: none;
@@ -1345,9 +1351,10 @@ dialog.v2-modal::backdrop {
     margin-left: 0.25rem;
 }
 
+/* Semibold Archivo like the Management competition frame; Anton was too heavy at this size */
 .v2-comp-date {
-    font-family: 'Anton', 'Archivo', sans-serif;
-    letter-spacing: 0.025em;
+    font-weight: 600;
+    color: var(--v2-ink);
 }
 
 .v2-comp-org {
@@ -1525,7 +1532,6 @@ dialog.v2-modal::backdrop {
  * table's heading, and what's in its cells.
  */
 .v2-results-tabs {
-    max-width: 30rem;
     margin-bottom: 1.25rem;
 }
 
