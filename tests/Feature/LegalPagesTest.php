@@ -116,7 +116,10 @@ class LegalPagesTest extends TestCase
         $existing->email = 'existing@example.com';
         $existing->save();
 
-        $this->actingAs($user)->get(route('invite.show', [$existing, 'existing@example.com']))->assertOk()->assertSee('By continuing you agree to');
+        $this->actingAs($user)->get(route('invite.show', [$existing, 'existing@example.com']))->assertOk()->assertInertia(fn (AssertableInertia $page) => $page
+            ->component('Manage/Auth/InviteExistingAccount')
+            ->where('legal.terms', config('app.url') . '/terms')
+            ->where('legal.privacy', config('app.url') . '/privacy'));
     }
 
     public function test_digital_judge_gets_the_policy_links(): void

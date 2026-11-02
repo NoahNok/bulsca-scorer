@@ -5,6 +5,7 @@
 <script lang="ts">
     import { accept, decline } from "@/actions/App/Http/Controllers/AccountInviteController";
     import DeclineInviteDialog from "@/manage/components/DeclineInviteDialog.svelte";
+    import LegalNotice from "@/manage/components/LegalNotice.svelte";
     import SubmitButton from "@/manage/components/SubmitButton.svelte";
     import { Form } from "@inertiajs/svelte";
 
@@ -31,6 +32,7 @@
 <Form action={accept(args)} class="a-form">
     {#snippet children({ processing })}
         <SubmitButton {processing}>Accept invite</SubmitButton>
+        <LegalNotice />
     {/snippet}
 </Form>
 
