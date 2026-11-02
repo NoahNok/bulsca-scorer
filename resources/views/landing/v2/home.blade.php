@@ -106,7 +106,7 @@
         }
 
         /* The search box sits on the photo, so give it the light surface whatever the theme */
-        .f-hero .se-form-input input {
+        .f-hero .v2-search-input {
             background: rgb(255 255 255 / 0.95);
             color: #111827;
             border-color: transparent;
@@ -182,7 +182,7 @@
 
         <div class="f-hero-inner ">
             <div class="f-hero-search">
-                <x-search-all />
+                <x-v2.search />
             </div>
         </div>
     </section>

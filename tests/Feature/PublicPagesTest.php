@@ -349,6 +349,13 @@ class PublicPagesTest extends TestCase
         $this->get('/')->assertOk()->assertViewIs('landing.v2.home');
     }
 
+    public function test_the_home_page_and_explore_search_with_the_v2_search(): void
+    {
+        foreach (['/', route('explore')] as $url) {
+            $this->get($url)->assertOk()->assertSee('class="v2-search"', false)->assertDontSee('se-form-input', false);
+        }
+    }
+
     public function test_the_old_preview_address_redirects_home(): void
     {
         $this->get('/v2')->assertStatus(301)->assertRedirect('/');

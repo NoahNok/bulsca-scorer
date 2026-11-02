@@ -9,7 +9,7 @@
             <h1 class="v2-page-title">Explore</h1>
             <p class="v2-page-lead">Every competition on Scoring.Events, and the organisations that run them.</p>
             <div class="mt-6 max-w-2xl">
-                <x-search-all />
+                <x-v2.search />
             </div>
         </div>
 

@@ -33,7 +33,7 @@ page: redesign the whole page or leave it alone.
 | Layer | File | Provides |
 |---|---|---|
 | Shell | `landing/v2/layout.blade.php` | The favicon, fonts, Vite CSS/JS, Alpine (with the focus plugin), the header (brand, Explore, Officials, Sign in, theme toggle) and the footer's legal links. Sign in goes to `app.`'s home, which sends anyone signed in straight to Management: the main domain has no session, so don't use `@auth`/`@guest` on it |
-| Shared styles | `resources/css/v2.css` | Every token, component and pattern below, plus the dark re-skin of `<x-search-all />`. Loaded by the layout |
+| Shared styles | `resources/css/v2.css` | Every token, component and pattern below. Loaded by the layout |
 | Brand mark | `landing/v2/partials/mark.blade.php` | The favicon's "S." as inline SVG: `@include('landing.v2.partials.mark', ['size' => 32, 'live' => true])`. With `live`, its dot pulses |
 | Samples | `landing/v2/partials/kit.blade.php`, shown at `/v2/kit` | The catalogue: every shared component in use. Only the sheet's own layout (`k-` classes) is styled there |
 | Theme | `landing/v2/partials/theme-script.blade.php`, `resources/js/lib/theme.ts` | The script that applies a saved theme before the first paint (in the `<head>` of every v2 page), and the toggle logic. Blade's Alpine toggle reaches it as `window.v2Theme` (set in `basic-app.js`) |
@@ -271,7 +271,7 @@ each one in use; copy its markup.
 | Button | `.v2-btn` (plain: card background, border). `.v2-btn-primary` for the one main action (ink, inverts in dark), `.v2-btn-accent` (teal, for a "create" call to action), `.v2-btn-danger`, `.v2-btn-ghost`, `.v2-btn-sm`, and `disabled` |
 | Link | `.v2-link` (teal-text, 600, no wrap), `.v2-link-muted` (secondary), `.v2-link-inline` (underlined, inside a sentence) |
 | Live / status dot | `<span class="v2-dot is-live" aria-hidden="true"></span>`. Drop `is-live` for a still dot |
-| Search | `<x-search-all />`, re-skinned on the tokens. On a photo, give its input a fixed light surface (see `.f-hero` in `home.blade.php`) |
+| Search | `<x-v2.search />` (`.v2-search`): a `.v2-input` over the `/search/{search}` endpoint, with a `.v2-search-results` panel grouped into Competitions, Organisations and Championships. On a photo, give `.v2-search-input` a fixed light surface (see `.f-hero` in `home.blade.php`) |
 | Field | `div.v2-field` with a `<label>` and `.v2-input` (input, `select`, `textarea`). Add `.is-invalid` with `aria-invalid` and a `.v2-error` message linked by `aria-describedby`; `.v2-hint` for help text |
 | Checkbox / radio | `<label class="v2-check"><input type="checkbox"> Text</label>` (native, teal `accent-color`) |
 | Switch | `<label class="v2-check"><button class="v2-switch" role="switch" :aria-checked="…"></button><span>Text</span></label>`. The label lets the text toggle it |
