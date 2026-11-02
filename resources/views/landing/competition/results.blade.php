@@ -52,142 +52,149 @@
                 </div>
             @endif
 
-            {{-- Picking: a sheet in Overall and Results sheets; a League, then an Event, in Events --}}
-            <div class="v2-results-picks">
-                @foreach (['overall' => 'Master sheet', 'sheets' => 'Results sheet'] as $key => $label)
-                    @if ($tabs->has($key) && $groups[$key]->count() > 1)
-                        <div class="v2-results-chips" role="group" aria-label="{{ $label }}"
-                            x-show="tab === '{{ $key }}'" @if ($key !== $first) x-cloak @endif>
-                            @foreach ($groups[$key] as $sheet)
-                                <button type="button" class="v2-chip" @click="pick('{{ $key }}', {{ $sheet['id'] }})"
-                                    :aria-pressed="(picks.{{ $key }} == {{ $sheet['id'] }}).toString()">{{ $sheet['name'] }}</button>
-                            @endforeach
-                        </div>
-                    @endif
-                @endforeach
+            {{-- Eases the height as chips show and hide and tables swap, instead of the page jumping --}}
+            <div x-smooth-height>
+                <div>
+                    {{-- Picking: a sheet in Overall and Results sheets; a League, then an Event, in Events --}}
+                    <div class="v2-results-picks">
+                        @foreach (['overall' => 'Master sheet', 'sheets' => 'Results sheet'] as $key => $label)
+                            @if ($tabs->has($key) && $groups[$key]->count() > 1)
+                                <div class="v2-results-chips" role="group" aria-label="{{ $label }}"
+                                    x-show="tab === '{{ $key }}'" @if ($key !== $first) x-cloak @endif>
+                                    @foreach ($groups[$key] as $sheet)
+                                        <button type="button" class="v2-chip" @click="pick('{{ $key }}', {{ $sheet['id'] }})"
+                                            :aria-pressed="(picks.{{ $key }} == {{ $sheet['id'] }}).toString()">{{ $sheet['name'] }}</button>
+                                    @endforeach
+                                </div>
+                            @endif
+                        @endforeach
 
-                @if ($tabs->has('events'))
-                    <div x-show="tab === 'events'" @if ($first !== 'events') x-cloak @endif>
-                        @if ($leagues->count() > 1)
-                            <div class="v2-results-chips" role="group" aria-label="League">
-                                @foreach ($leagues as $league)
-                                    <button type="button" class="v2-chip" @click="league = @js($league['id'])"
-                                        :aria-pressed="(league == @js($league['id'])).toString()">{{ $league['name'] }}</button>
-                                @endforeach
+                        @if ($tabs->has('events'))
+                            <div x-show="tab === 'events'" @if ($first !== 'events') x-cloak @endif>
+                                @if ($leagues->count() > 1)
+                                    <div class="v2-results-chips" role="group" aria-label="League">
+                                        @foreach ($leagues as $league)
+                                            <button type="button" class="v2-chip" @click="league = @js($league['id'])"
+                                                :aria-pressed="(league == @js($league['id'])).toString()">{{ $league['name'] }}</button>
+                                        @endforeach
+                                    </div>
+                                @endif
+                                <div class="v2-results-chips" role="group" aria-label="Event">
+                                    @foreach ($groups['events'] as $event)
+                                        <button type="button" class="v2-chip" @click="pick('events', @js($event['key']))"
+                                            :aria-pressed="(picks.events === @js($event['key'])).toString()">{{ $event['name'] }}
+                                            @if ($event['type'] === 'serc')
+                                                <span class="v2-badge">SERC</span>
+                                            @endif
+                                        </button>
+                                    @endforeach
+                                </div>
                             </div>
                         @endif
-                        <div class="v2-results-chips" role="group" aria-label="Event">
-                            @foreach ($groups['events'] as $event)
-                                <button type="button" class="v2-chip" @click="pick('events', @js($event['key']))"
-                                    :aria-pressed="(picks.events === @js($event['key'])).toString()">{{ $event['name'] }}
-                                    @if ($event['type'] === 'serc')
-                                        <span class="v2-badge">SERC</span>
-                                    @endif
-                                </button>
-                            @endforeach
+                    </div>
+
+                    <div class="v2-results-head" x-show="current" x-cloak>
+                        <h2 x-text="current?.name"></h2>
+                        <div class="flex flex-wrap items-center gap-4">
+                            {{-- A Results sheet's columns per event: its place and points in each --}}
+                            <label class="v2-check" x-show="tab === 'sheets' && hasDetail">
+                                <input type="checkbox" x-model="detailed"> Show each event
+                            </label>
+                            <a class="v2-link" x-show="tab === 'events' && current?.type === 'serc' && league !== null && !error"
+                                :href="breakdownUrl()">Breakdown</a>
                         </div>
                     </div>
-                @endif
-            </div>
 
-            <div class="v2-results-head" x-show="current" x-cloak>
-                <h2 x-text="current?.name"></h2>
-                <div class="flex flex-wrap items-center gap-4">
-                    {{-- A Results sheet's columns per event: its place and points in each --}}
-                    <label class="v2-check" x-show="tab === 'sheets' && hasDetail">
-                        <input type="checkbox" x-model="detailed"> Show each event
-                    </label>
-                    <a class="v2-link" x-show="tab === 'events' && current?.type === 'serc' && league !== null && !error"
-                        :href="breakdownUrl()">Breakdown</a>
-                </div>
-            </div>
+                    @if ($comp->select_league_first && $tabs->has('events'))
+                        <p class="v2-empty" x-show="tab === 'events' && league === null" @if ($first !== 'events') x-cloak @endif>
+                            Choose a League to see the results.</p>
+                    @endif
 
-            @if ($comp->select_league_first && $tabs->has('events'))
-                <p class="v2-empty" x-show="tab === 'events' && league === null" @if ($first !== 'events') x-cloak @endif>
-                    Choose a League to see the results.</p>
-            @endif
+                    {{-- Only before the first table: after that the last one stays, dimmed, until the next arrives --}}
+                    <p class="v2-results-status" x-show="loading && !table" x-cloak role="status">Loading results&hellip;</p>
+                    <div class="v2-alert is-warning" x-show="error" x-cloak role="alert">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <circle cx="12" cy="12" r="9" />
+                            <path d="M12 8v5M12 16h.01" />
+                        </svg>
+                        <div><strong>Results unavailable</strong><span x-text="error"></span></div>
+                    </div>
 
-            <p class="v2-results-status" x-show="loading" x-cloak role="status">Loading results&hellip;</p>
-            <div class="v2-alert is-warning" x-show="error" x-cloak role="alert">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                    <circle cx="12" cy="12" r="9" />
-                    <path d="M12 8v5M12 16h.01" />
-                </svg>
-                <div><strong>Results unavailable</strong><span x-text="error"></span></div>
-            </div>
-
-            <div class="v2-table-scroll" x-show="table && !loading" x-cloak>
-                <table class="v2-table">
-                    <thead>
-                        <tr>
-                            <template x-for="column in visibleColumns" :key="column.id">
-                                <th scope="col" x-text="column.label"></th>
-                            </template>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <template x-for="(row, r) in table?.rows ?? []" :key="r">
-                            <tr>
-                                <template x-for="(column, c) in visibleColumns" :key="column.id">
-                                    <td :class="c === 0 && 'v2-table-name'">
-                                        <template x-if="row[column.id].type === 'string'">
-                                            <span x-text="row[column.id].data ?? '-'"></span>
-                                        </template>
-                                        <template x-if="row[column.id].type === 'string-array'">
-                                            <div>
-                                                <template x-for="item in row[column.id].data">
-                                                    <div x-text="item"></div>
+                    <div class="v2-table-scroll" x-show="table" x-cloak x-ref="table" :class="loading && 'is-loading'"
+                        :aria-busy="loading.toString()">
+                        <table class="v2-table">
+                            <thead>
+                                <tr>
+                                    <template x-for="column in visibleColumns" :key="column.id">
+                                        <th scope="col" x-text="column.label"></th>
+                                    </template>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template x-for="(row, r) in table?.rows ?? []" :key="r">
+                                    <tr>
+                                        <template x-for="(column, c) in visibleColumns" :key="column.id">
+                                            <td :class="c === 0 && 'v2-table-name'">
+                                                <template x-if="row[column.id].type === 'string'">
+                                                    <span x-text="row[column.id].data ?? '-'"></span>
                                                 </template>
-                                            </div>
-                                        </template>
-                                        <template x-if="row[column.id].type === 'violation'">
-                                            <div class="v2-results-violations">
-                                                <template x-for="violation in row[column.id].data">
-                                                    <button type="button" class="v2-link-inline" x-text="violation.display"
-                                                        @click="openViolation(violation, row.name?.data)"></button>
-                                                </template>
-                                            </div>
-                                        </template>
-                                        <template x-if="row[column.id].type === 'violation-combined'">
-                                            <div>
-                                                <template x-for="item in row[column.id].data">
-                                                    <div class="v2-results-violations">
-                                                        <template x-if="typeof item === 'string'">
-                                                            <span x-text="item"></span>
-                                                        </template>
-                                                        <template x-for="violation in (typeof item === 'string' ? [] : item)">
-                                                            <button type="button" class="v2-link-inline" x-text="violation.display"
-                                                                @click="openViolation(violation)"></button>
+                                                <template x-if="row[column.id].type === 'string-array'">
+                                                    <div>
+                                                        <template x-for="item in row[column.id].data">
+                                                            <div x-text="item"></div>
                                                         </template>
                                                     </div>
                                                 </template>
-                                            </div>
-                                        </template>
-                                        <template x-if="row[column.id].type === 'result'">
-                                            <div>
-                                                <span x-text="row[column.id].data.is"></span>
-                                                <template x-if="row[column.id].data.is != row[column.id].data.was">
-                                                    <small class="v2-results-was">Was <span x-text="row[column.id].data.was"></span></small>
+                                                <template x-if="row[column.id].type === 'violation'">
+                                                    <div class="v2-results-violations">
+                                                        <template x-for="violation in row[column.id].data">
+                                                            <button type="button" class="v2-link-inline" x-text="violation.display"
+                                                                @click="openViolation(violation, row.name?.data)"></button>
+                                                        </template>
+                                                    </div>
                                                 </template>
-                                            </div>
+                                                <template x-if="row[column.id].type === 'violation-combined'">
+                                                    <div>
+                                                        <template x-for="item in row[column.id].data">
+                                                            <div class="v2-results-violations">
+                                                                <template x-if="typeof item === 'string'">
+                                                                    <span x-text="item"></span>
+                                                                </template>
+                                                                <template x-for="violation in (typeof item === 'string' ? [] : item)">
+                                                                    <button type="button" class="v2-link-inline" x-text="violation.display"
+                                                                        @click="openViolation(violation)"></button>
+                                                                </template>
+                                                            </div>
+                                                        </template>
+                                                    </div>
+                                                </template>
+                                                <template x-if="row[column.id].type === 'result'">
+                                                    <div>
+                                                        <span x-text="row[column.id].data.is"></span>
+                                                        <template x-if="row[column.id].data.is != row[column.id].data.was">
+                                                            <small class="v2-results-was">Was <span x-text="row[column.id].data.was"></span></small>
+                                                        </template>
+                                                    </div>
+                                                </template>
+                                                <template x-if="row[column.id].type === 'result-combined'">
+                                                    <div class="v2-results-combined">
+                                                        <div>
+                                                            <template x-for="time in row[column.id].data.combined.results">
+                                                                <div x-text="time"></div>
+                                                            </template>
+                                                        </div>
+                                                        <span x-text="row[column.id].data.is"></span>
+                                                    </div>
+                                                </template>
+                                            </td>
                                         </template>
-                                        <template x-if="row[column.id].type === 'result-combined'">
-                                            <div class="v2-results-combined">
-                                                <div>
-                                                    <template x-for="time in row[column.id].data.combined.results">
-                                                        <div x-text="time"></div>
-                                                    </template>
-                                                </div>
-                                                <span x-text="row[column.id].data.is"></span>
-                                            </div>
-                                        </template>
-                                    </td>
+                                    </tr>
                                 </template>
-                            </tr>
-                        </template>
-                    </tbody>
-                </table>
-                <p class="v2-results-status" x-show="table && table.rows.length === 0">No results in this yet.</p>
+                            </tbody>
+                        </table>
+                        <p class="v2-results-status" x-show="table && table.rows.length === 0">No results in this yet.</p>
+                    </div>
+                </div>
             </div>
 
             <div class="v2-modal-backdrop" x-show="modal" x-cloak x-transition.opacity @click.self="modal = false"
@@ -297,11 +304,15 @@
 
                     async load() {
                         this.remember();
-                        this.table = null;
                         this.error = null;
 
                         const item = this.current;
-                        if (!item || (this.tab === 'events' && this.league === null)) return;
+                        if (!item || (this.tab === 'events' && this.league === null)) {
+                            this.request++;
+                            this.table = null;
+                            this.loading = false;
+                            return;
+                        }
 
                         const url = this.tab === 'events'
                             ? this.urls.events.replace('_league', this.league).replace('_id', item.id).replace('_type', item.type)
@@ -316,14 +327,25 @@
                             if (request !== this.request) return;
                             if (response.ok) {
                                 this.table = this.tab === 'events' ? this.fromEvent(json) : this.fromSheet(json);
+                                this.$nextTick(() => this.fadeIn());
                             } else {
+                                this.table = null;
                                 this.error = json.error || 'Try again in a minute.';
                             }
                         } catch {
-                            if (request === this.request) this.error = 'Check your connection and try again.';
+                            if (request === this.request) {
+                                this.table = null;
+                                this.error = 'Check your connection and try again.';
+                            }
                         } finally {
                             if (request === this.request) this.loading = false;
                         }
+                    },
+
+                    // The new table fades in over the dimmed one it replaces
+                    fadeIn() {
+                        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+                        this.$refs.table?.animate([{ opacity: 0.4 }, { opacity: 1 }], { duration: 200, easing: 'ease-out' });
                     },
 
                     // An Event's table: columns starting "_" are for the page, and a cell is a value or {type, data}

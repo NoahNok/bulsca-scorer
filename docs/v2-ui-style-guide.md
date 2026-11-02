@@ -341,6 +341,16 @@ each one in use; copy its markup.
   provisional, and one dashed box replaces the tabs when nothing is published.
   Violations open in a `.v2-modal`. A SERC's table links to its breakdown in
   the same tab, which links back with its League.
+  Picking keeps the last table up, dimmed (`.v2-table-scroll.is-loading`),
+  until the next one arrives and fades in, and the picks and table sit in an
+  `x-smooth-height`, so the page doesn't collapse and jump between tables.
+- **Smooth height** (`x-smooth-height`, `.v2-smooth-height`): an Alpine
+  directive the v2 layout registers
+  (`landing/v2/partials/smooth-height-script.blade.php`), the Blade counterpart
+  of the Management app's `SmoothHeight`. Put it on a wrapper around one child
+  and the wrapper's height eases to fit that child as it changes (chips shown
+  or hidden, a longer table swapped in), clipping only while it moves. Off
+  with reduced motion.
 - **SERC breakdown** (`.v2-breakdown`): the marking points sideways in a
   sticky header, the Team column sticky, each Objective's columns ruled off, the
   top three tinted teal and the pointer's column lit. Sorting is

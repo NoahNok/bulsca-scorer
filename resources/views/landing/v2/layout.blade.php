@@ -14,6 +14,7 @@
     @yield('v2-meta')
 
     @include('landing.v2.partials.theme-script')
+    @include('landing.v2.partials.smooth-height-script')
 
     <link rel="stylesheet" href="/fonts/google/fonts.css">
     @vite('resources/js/basic-app.js')

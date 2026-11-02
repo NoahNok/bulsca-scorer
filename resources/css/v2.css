@@ -420,6 +420,29 @@ body.v2 {
     color: var(--v2-muted);
 }
 
+/*
+ * x-smooth-height (landing/v2/partials/smooth-height-script.blade.php): eases the height to fit its one
+ * child, clipping only while it moves so wide tables still scroll and nothing is cut off at rest.
+ */
+.v2-smooth-height {
+    transition: height 250ms ease;
+}
+
+.v2-smooth-height.is-resizing {
+    overflow-y: clip;
+}
+
+/* So a child's margins count towards the height being measured */
+.v2-smooth-height > * {
+    display: flow-root;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .v2-smooth-height {
+        transition: none;
+    }
+}
+
 /* Buttons */
 .v2-btn {
     display: inline-flex;
@@ -1580,6 +1603,13 @@ dialog.v2-modal::backdrop {
     border: 1px solid var(--v2-border);
     border-radius: 0.75rem;
     background: var(--v2-card);
+}
+
+/* Kept on screen while the next table loads, so the page doesn't collapse and jump */
+.v2-table-scroll.is-loading {
+    opacity: 0.5;
+    pointer-events: none;
+    transition: opacity 150ms;
 }
 
 .v2-table {
