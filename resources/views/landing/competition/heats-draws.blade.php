@@ -53,105 +53,111 @@
             @endif
         </div>
 
-        @if ($hasHeats)
-            <section x-show="view === 'heats'" @if ($first !== 'heats') x-cloak @endif aria-label="Heats" class="mt-6">
-                @if (!$comp->show_heats)
-                    <p class="v2-empty">Heats appear here once the Organisers release them.</p>
-                @elseif (count($heatEvents) === 0)
-                    <p class="v2-empty">There are no heats yet. They appear here once the Organisers set them.</p>
-                @else
-                    @if (count($heatEvents) > 1)
-                        <div class="mb-6 flex flex-wrap gap-2" role="group" aria-label="Event" x-show="term === ''">
-                            @foreach ($heatEvents as $heatEvent)
-                                <button type="button" class="v2-chip" @click="event = {{ $heatEvent['event']->id }}"
-                                    :aria-pressed="(event === {{ $heatEvent['event']->id }}).toString()">{{ $heatEvent['event']->getName() }}</button>
-                            @endforeach
-                        </div>
-                    @endif
-
-                    @foreach ($heatEvents as $heatEvent)
-                        @php
-                            $eventNames = collect($heatEvent['pools'])
-                                ->flatMap(fn($p) => collect($p['heats'])->flatten())
-                                ->map(fn($lane) => strtolower($name($lane->entity)))
-                                ->implode('|');
-                        @endphp
-                        {{-- While searching, every event's heats show, so a Team is found in all of them --}}
-                        <div x-show="term === '' ? event === {{ $heatEvent['event']->id }} : holds(@js($eventNames))"
-                            @if (!$loop->first) x-cloak @endif>
+        {{-- Eases the height as Heats and Draws, events and search results swap, instead of the page jumping --}}
+        <div x-smooth-height>
+            <div>
+                @if ($hasHeats)
+                    <section x-show="view === 'heats'" x-transition:enter="v2-fade-in" x-transition:enter-start="v2-fade-from" @if ($first !== 'heats') x-cloak @endif aria-label="Heats" class="mt-6">
+                        @if (!$comp->show_heats)
+                            <p class="v2-empty">Heats appear here once the Organisers release them.</p>
+                        @elseif (count($heatEvents) === 0)
+                            <p class="v2-empty">There are no heats yet. They appear here once the Organisers set them.</p>
+                        @else
                             @if (count($heatEvents) > 1)
-                                <h3 class="v2-hd-event" x-show="term !== ''" x-cloak>{{ $heatEvent['event']->getName() }}</h3>
+                                <div class="mb-6 flex flex-wrap gap-2" role="group" aria-label="Event" x-show="term === ''">
+                                    @foreach ($heatEvents as $heatEvent)
+                                        <button type="button" class="v2-chip" @click="event = {{ $heatEvent['event']->id }}"
+                                            :aria-pressed="(event === {{ $heatEvent['event']->id }}).toString()">{{ $heatEvent['event']->getName() }}</button>
+                                    @endforeach
+                                </div>
                             @endif
+
+                            @foreach ($heatEvents as $heatEvent)
+                                @php
+                                    $eventNames = collect($heatEvent['pools'])
+                                        ->flatMap(fn($p) => collect($p['heats'])->flatten())
+                                        ->map(fn($lane) => strtolower($name($lane->entity)))
+                                        ->implode('|');
+                                @endphp
+                                {{-- While searching, every event's heats show, so a Team is found in all of them --}}
+                                <div x-show="term === '' ? event === {{ $heatEvent['event']->id }} : holds(@js($eventNames))"
+                                    x-transition:enter="v2-fade-in" x-transition:enter-start="v2-fade-from"
+                                    @if (!$loop->first) x-cloak @endif>
+                                    @if (count($heatEvents) > 1)
+                                        <h3 class="v2-hd-event" x-show="term !== ''" x-cloak>{{ $heatEvent['event']->getName() }}</h3>
+                                    @endif
+                                    <div class="v2-hd-grid">
+                                        @foreach ($heatEvent['pools'] as $poolHeats)
+                                            @foreach ($poolHeats['heats'] as $heat_no => $lanes)
+                                                @php
+                                                    $names = collect($lanes)->map(fn($lane) => strtolower($name($lane->entity)))->implode('|');
+                                                    $laneCount = $poolHeats['pool']?->lanes ?? $comp->max_lanes;
+                                                @endphp
+                                                <div class="v2-hd-card" x-show="holds(@js($names))">
+                                                    <h4>{{ \App\Models\Pool::heatLabel($poolHeats['pool'], $heat_no) }}</h4>
+                                                    <ol>
+                                                        @for ($i = 1; $i <= $laneCount; $i++)
+                                                            @php
+                                                                $laneName = $name(collect($lanes)->firstWhere('lane', $i)?->entity);
+                                                            @endphp
+                                                            <li :class="matches(@js(strtolower($laneName))) && 'is-match'">
+                                                                <span class="v2-hd-num">{{ $i }}</span>
+                                                                <span @class(['v2-hd-empty' => $laneName === ''])>{{ $laneName ?: 'Empty' }}</span>
+                                                            </li>
+                                                        @endfor
+                                                    </ol>
+                                                </div>
+                                            @endforeach
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endforeach
+                        @endif
+                    </section>
+                @endif
+
+                @if ($hasDraws)
+                    <section x-show="view === 'draws'" x-transition:enter="v2-fade-in" x-transition:enter-start="v2-fade-from" @if ($first !== 'draws') x-cloak @endif aria-label="Draws" class="mt-6">
+                        @if (!$comp->show_draws)
+                            <p class="v2-empty">The Draw appears here once the Organisers release it.</p>
+                        @elseif (count($sercs) === 0)
+                            <p class="v2-empty">There's no Draw yet. It appears here once the Organisers make it.</p>
+                        @else
                             <div class="v2-hd-grid">
-                                @foreach ($heatEvent['pools'] as $poolHeats)
-                                    @foreach ($poolHeats['heats'] as $heat_no => $lanes)
+                                @foreach ($sercs as $drawSet)
+                                    @foreach ($drawSet['draws'] as $tank_no => $draw)
                                         @php
-                                            $names = collect($lanes)->map(fn($lane) => strtolower($name($lane->entity)))->implode('|');
-                                            $laneCount = $poolHeats['pool']?->lanes ?? $comp->max_lanes;
+                                            $names = collect($draw)->map(fn($entry) => strtolower($name($entry->entity)))->implode('|');
                                         @endphp
                                         <div class="v2-hd-card" x-show="holds(@js($names))">
-                                            <h4>{{ \App\Models\Pool::heatLabel($poolHeats['pool'], $heat_no) }}</h4>
+                                            @if ($use_tanks)
+                                                <h4>Tank {{ $tank_no + 1 }}</h4>
+                                                <p class="v2-hd-leagues">
+                                                    {{ collect($draw)->map(fn($entry) => $entry->entity?->getLeague()->name ?? null)->filter()->unique()->implode(', ') }}
+                                                </p>
+                                            @else
+                                                <h4>Draw</h4>
+                                            @endif
                                             <ol>
-                                                @for ($i = 1; $i <= $laneCount; $i++)
-                                                    @php
-                                                        $laneName = $name(collect($lanes)->firstWhere('lane', $i)?->entity);
-                                                    @endphp
-                                                    <li :class="matches(@js(strtolower($laneName))) && 'is-match'">
-                                                        <span class="v2-hd-num">{{ $i }}</span>
-                                                        <span @class(['v2-hd-empty' => $laneName === ''])>{{ $laneName ?: 'Empty' }}</span>
+                                                @foreach ($draw as $entry)
+                                                    <li :class="matches(@js(strtolower($name($entry->entity)))) && 'is-match'">
+                                                        <span class="v2-hd-num">{{ $entry->draw }}</span>
+                                                        <span>{{ $name($entry->entity) ?: '-' }}</span>
                                                     </li>
-                                                @endfor
+                                                @endforeach
                                             </ol>
                                         </div>
                                     @endforeach
                                 @endforeach
                             </div>
-                        </div>
-                    @endforeach
+                        @endif
+                    </section>
                 @endif
-            </section>
-        @endif
 
-        @if ($hasDraws)
-            <section x-show="view === 'draws'" @if ($first !== 'draws') x-cloak @endif aria-label="Draws" class="mt-6">
-                @if (!$comp->show_draws)
-                    <p class="v2-empty">The Draw appears here once the Organisers release it.</p>
-                @elseif (count($sercs) === 0)
-                    <p class="v2-empty">There's no Draw yet. It appears here once the Organisers make it.</p>
-                @else
-                    <div class="v2-hd-grid">
-                        @foreach ($sercs as $drawSet)
-                            @foreach ($drawSet['draws'] as $tank_no => $draw)
-                                @php
-                                    $names = collect($draw)->map(fn($entry) => strtolower($name($entry->entity)))->implode('|');
-                                @endphp
-                                <div class="v2-hd-card" x-show="holds(@js($names))">
-                                    @if ($use_tanks)
-                                        <h4>Tank {{ $tank_no + 1 }}</h4>
-                                        <p class="v2-hd-leagues">
-                                            {{ collect($draw)->map(fn($entry) => $entry->entity?->getLeague()->name ?? null)->filter()->unique()->implode(', ') }}
-                                        </p>
-                                    @else
-                                        <h4>Draw</h4>
-                                    @endif
-                                    <ol>
-                                        @foreach ($draw as $entry)
-                                            <li :class="matches(@js(strtolower($name($entry->entity)))) && 'is-match'">
-                                                <span class="v2-hd-num">{{ $entry->draw }}</span>
-                                                <span>{{ $name($entry->entity) ?: '-' }}</span>
-                                            </li>
-                                        @endforeach
-                                    </ol>
-                                </div>
-                            @endforeach
-                        @endforeach
-                    </div>
+                @if (!$hasHeats && !$hasDraws)
+                    <p class="v2-empty">Heats and the Draw appear here once the Organisers add the Events.</p>
                 @endif
-            </section>
-        @endif
-
-        @if (!$hasHeats && !$hasDraws)
-            <p class="v2-empty">Heats and the Draw appear here once the Organisers add the Events.</p>
-        @endif
+            </div>
+        </div>
     </div>
 @endsection

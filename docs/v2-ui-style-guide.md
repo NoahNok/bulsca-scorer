@@ -350,7 +350,10 @@ each one in use; copy its markup.
   of the Management app's `SmoothHeight`. Put it on a wrapper around one child
   and the wrapper's height eases to fit that child as it changes (chips shown
   or hidden, a longer table swapped in), clipping only while it moves. Off
-  with reduced motion.
+  with reduced motion. Results and Heats & Draws use it. Give a panel that
+  swaps in `x-transition:enter="v2-fade-in"
+  x-transition:enter-start="v2-fade-from"` so it fades in as the height
+  eases (enter only, so the old panel goes at once and they never stack).
 - **SERC breakdown** (`.v2-breakdown`): the marking points sideways in a
   sticky header, the Team column sticky, each Objective's columns ruled off, the
   top three tinted teal and the pointer's column lit. Sorting is

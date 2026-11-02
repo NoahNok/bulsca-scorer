@@ -437,8 +437,18 @@ body.v2 {
     display: flow-root;
 }
 
+/* A panel fading in as it's shown (x-transition:enter="v2-fade-in" x-transition:enter-start="v2-fade-from") */
+.v2-fade-in {
+    transition: opacity 200ms ease-out;
+}
+
+.v2-fade-from {
+    opacity: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
-    .v2-smooth-height {
+    .v2-smooth-height,
+    .v2-fade-in {
         transition: none;
     }
 }
