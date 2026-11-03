@@ -3,7 +3,8 @@
     painted big behind it, and a big line under it. The mouse swims it: up and down the window picks lane
     1 to 8, left to right takes the swimmer from one wall to the other, leaving bubbles and ripples behind.
     It treads water when the mouse stops, now and then dives and swims a few strokes underwater, and stays
-    under, looking away, while a password field has focus. Dark in both themes. Desktop only: beside the form, and left out on phones.
+    under, looking away, while a password field has focus. Pale teal water in light mode, the favicon's
+    tile in dark. Desktop only: beside the form, and left out on phones.
 -->
 <script lang="ts">
     import BrandMark from "@/manage/components/BrandMark.svelte";
@@ -112,6 +113,8 @@
         const at = swimmer.getBoundingClientRect();
         const x = at.right - box.left;
         const y = at.top - box.top;
+        // the water's colour follows the theme (.p-water's color)
+        const water = getComputedStyle(canvas).color;
 
         // the same ease at any refresh rate: about 90% of the way there in 0.2s
         const before = progress;
@@ -148,7 +151,7 @@
         swimmer.classList.toggle("is-swimming", swimming);
         swimmer.classList.toggle("is-backwards", backwards);
         swimmer.classList.toggle("is-under", under > 0);
-        draw(box.width, box.height, dt);
+        draw(box.width, box.height, dt, water);
 
         frame = progress !== target || splashes.length || under ? requestAnimationFrame(step) : 0;
     }
@@ -220,7 +223,7 @@
         }
     }
 
-    function draw(width: number, height: number, dt: number) {
+    function draw(width: number, height: number, dt: number, water: string) {
         const ctx = canvas.getContext("2d");
 
         if (!ctx) {
@@ -236,6 +239,9 @@
 
         ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
         ctx.clearRect(0, 0, width, height);
+        ctx.strokeStyle = water;
+        ctx.fillStyle = water;
+        ctx.lineWidth = 1.25;
 
         for (let i = splashes.length - 1; i >= 0; i--) {
             const s = splashes[i];
@@ -257,15 +263,16 @@
             if (s.ring) {
                 // spreads out and fades, quick at first
                 ctx.arc(s.x, s.y, s.r + s.grow * (1 - (1 - t) ** 2), 0, Math.PI * 2);
-                ctx.strokeStyle = `rgb(255 255 255 / ${0.22 * (1 - t)})`;
-                ctx.lineWidth = 1.25;
+                ctx.globalAlpha = 0.22 * (1 - t);
                 ctx.stroke();
             } else {
                 ctx.arc(s.x, s.y, s.r * (1 + t), 0, Math.PI * 2);
-                ctx.fillStyle = `rgb(255 255 255 / ${0.4 * (1 - t)})`;
+                ctx.globalAlpha = 0.4 * (1 - t);
                 ctx.fill();
             }
         }
+
+        ctx.globalAlpha = 1;
     }
 
     $effect(() => {
@@ -303,7 +310,7 @@
                 <svg viewBox="0 0 48 24">
                     <line class="p-leg" x1="14" y1="10" x2="3" y2="8.5" />
                     <line class="p-leg p-leg-other" x1="14" y1="14" x2="3" y2="15.5" />
-                    <ellipse cx="22" cy="12" rx="10" ry="5.5" fill="#fff" />
+                    <ellipse class="p-body" cx="22" cy="12" rx="10" ry="5.5" />
                     <line class="p-arm" x1="27" y1="7" x2="43" y2="7" />
                     <line class="p-arm p-arm-other" x1="27" y1="17" x2="43" y2="17" />
                     <circle cx="34" cy="12" r="4.5" fill="var(--v2-teal)" />
@@ -331,8 +338,29 @@
         height: 100dvh;
         padding: 2.5rem;
         overflow: hidden;
+        /* What's drawn on the water: the lines, the number, the swimmer and its splashes */
+        --p-ink: var(--v2-ink);
+        --p-splash: var(--v2-teal-text);
+        background: linear-gradient(var(--v2-teal-soft), var(--v2-teal-soft)), var(--v2-card);
+        border-right: 1px solid color-mix(in srgb, var(--v2-teal) 35%, transparent);
+        color: var(--p-ink);
+    }
+
+    /* Dark: the favicon's tile, as before the toggle existed. Written twice, like v2.css's dark rules */
+    @media (prefers-color-scheme: dark) {
+        :global(html:not([data-theme="light"])) .p-band {
+            --p-ink: #fff;
+            --p-splash: #fff;
+            background: var(--v2-tile);
+            border-right-color: transparent;
+        }
+    }
+
+    :global(html[data-theme="dark"]) .p-band {
+        --p-ink: #fff;
+        --p-splash: #fff;
         background: var(--v2-tile);
-        color: #fff;
+        border-right-color: transparent;
     }
 
     /* The pool fills the band between the brand and the line, wall to wall. Its lanes split its height;
@@ -353,7 +381,7 @@
         font-family: "Anton", sans-serif;
         font-size: min(24rem, 55dvh);
         line-height: 0.8;
-        color: rgb(255 255 255 / 0.05);
+        color: color-mix(in srgb, var(--p-ink) 5%, transparent);
         transition: top 400ms var(--ease);
     }
 
@@ -374,7 +402,7 @@
         right: 0;
         top: -0.25rem;
         height: 0.5rem;
-        background: linear-gradient(90deg, var(--v2-teal) 0 10%, rgb(255 255 255 / 0.22) 10% 90%, var(--v2-teal) 90%);
+        background: linear-gradient(90deg, var(--v2-teal) 0 10%, color-mix(in srgb, var(--p-ink) 22%, transparent) 10% 90%, var(--v2-teal) 90%);
         mask: repeating-linear-gradient(90deg, #000 0 1.125rem, transparent 1.125rem 1.625rem);
         animation: p-rope-in 900ms var(--ease) both;
     }
@@ -391,6 +419,7 @@
         inset: 0;
         width: 100%;
         height: 100%;
+        color: var(--p-splash);
     }
 
     /* The swimmer, across the lane between the walls. It's the lane's full width with the figure at its far
@@ -424,9 +453,13 @@
         transform: scaleX(-1);
     }
 
+    .p-body {
+        fill: var(--p-ink);
+    }
+
     .p-leg,
     .p-arm {
-        stroke: rgb(255 255 255 / 0.85);
+        stroke: color-mix(in srgb, var(--p-ink) 85%, transparent);
         stroke-linecap: round;
         transform-box: fill-box;
     }
