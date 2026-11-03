@@ -96,9 +96,55 @@ class AccountInviteTest extends TestCase
     public function test_an_invite_cant_be_used_with_another_email(): void
     {
         $this->post(route('manage.invite.decline-new-account', [$this->invite, 'someone@example.com']))
-            ->assertRedirect();
+            ->assertRedirect(RouteHelpers::mainRoute('home', ['notice' => 'invite-invalid']));
 
         $this->assertModelExists($this->invite);
+    }
+
+    public function test_a_gone_invite_sends_a_guest_to_the_public_home_with_a_notice(): void
+    {
+        $link = route('invite.show', [$this->invite, 'new@example.com']);
+        $this->invite->delete();
+
+        $this->get($link)->assertRedirect(RouteHelpers::mainRoute('home', ['notice' => 'invite-invalid']));
+    }
+
+    public function test_a_gone_invite_sends_someone_signed_in_to_their_home_with_an_error(): void
+    {
+        $user = $this->existingAccount();
+        $link = route('invite.show', [$this->invite, 'sam@example.com']);
+        $this->invite->delete();
+
+        $this->actingAs($user)->get($link)
+            ->assertRedirect(route('manage.home'))
+            ->assertSessionHas('alert-error', 'That invite is no longer valid');
+    }
+
+    public function test_an_invite_to_a_deleted_competition_is_no_longer_valid(): void
+    {
+        $this->comp->delete();
+
+        $this->get(route('invite.show', [$this->invite, 'new@example.com']))
+            ->assertRedirect(RouteHelpers::mainRoute('home', ['notice' => 'invite-invalid']));
+    }
+
+    public function test_the_public_home_toasts_the_invite_notice(): void
+    {
+        $this->get(RouteHelpers::mainRoute('home', ['notice' => 'invite-invalid']))
+            ->assertOk()
+            ->assertSee('That invite is no longer valid');
+
+        $this->get(RouteHelpers::mainRoute('home', ['notice' => 'anything-else']))
+            ->assertOk()
+            ->assertDontSee('v2-toast-slot', false);
+    }
+
+    public function test_someone_signed_in_cant_use_an_invite_for_a_new_account(): void
+    {
+        $this->actingAs(User::factory()->create())
+            ->get(route('invite.show', [$this->invite, 'new@example.com']))
+            ->assertRedirect(route('manage.home'))
+            ->assertSessionHas('alert-error', 'That invite is for a different account');
     }
 
     private function existingAccount(): User
@@ -163,10 +209,12 @@ class AccountInviteTest extends TestCase
 
         $this->actingAs($other)
             ->post(route('manage.invite.accept', [$this->invite, 'sam@example.com']))
-            ->assertSessionHas('alert-error');
+            ->assertRedirect(route('manage.home'))
+            ->assertSessionHas('alert-error', 'That invite is for a different account');
         $this->actingAs($other)
             ->post(route('manage.invite.decline', [$this->invite, 'sam@example.com']))
-            ->assertSessionHas('alert-error');
+            ->assertRedirect(route('manage.home'))
+            ->assertSessionHas('alert-error', 'That invite is for a different account');
 
         $this->assertModelExists($this->invite);
     }

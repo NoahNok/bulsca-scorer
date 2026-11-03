@@ -7,7 +7,7 @@
     import ConfirmDialog from "@/manage/components/ConfirmDialog.svelte";
     import ThemeToggle from "@/manage/components/ThemeToggle.svelte";
     import Toasts from "@/manage/components/Toasts.svelte";
-    import { toastSuccess } from "@/lib/toast.svelte";
+    import { toastError, toastSuccess } from "@/lib/toast.svelte";
     import { guardUnsaved } from "@/manage/unsaved";
     import { account, logout } from "@/routes";
     import manage from "@/routes/manage";
@@ -20,14 +20,17 @@
     // Forms with UnsavedChanges in them ask before you leave
     onMount(guardUnsaved);
 
-    // A save's "Settings saved" and so on: on the first page, then after every visit (each brings its own flash)
-    onMount(() => {
-        if (page.props.manage?.flash.success) toastSuccess(page.props.manage.flash.success);
+    // A save's "Settings saved", or an error a redirect brought (like an invite that's no longer valid): on the
+    // first page, then after every visit (each brings its own flash)
+    function toastFlash(flash: { success?: string | null; error?: string | null } | undefined) {
+        if (flash?.success) toastSuccess(flash.success);
+        if (flash?.error) toastError(flash.error);
+    }
 
-        return router.on("success", (event) => {
-            const success = event.detail.page.props.manage?.flash.success;
-            if (success) toastSuccess(success);
-        });
+    onMount(() => {
+        toastFlash(page.props.manage?.flash);
+
+        return router.on("success", (event) => toastFlash(event.detail.page.props.manage?.flash));
     });
 </script>
 

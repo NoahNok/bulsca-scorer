@@ -104,6 +104,8 @@
             <a href="mailto:{{ config('legal.contact_email') }}">Contact</a>
         </nav>
     </footer>
+
+    @include('landing.v2.partials.notice-toast')
 </body>
 
 </html>

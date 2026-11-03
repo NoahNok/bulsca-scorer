@@ -379,7 +379,8 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
         Route::resource('serc/marking-points', AdminMarkingPointTemplatesController::class)->except(['show'])->names('manage.admin.marking-point-templates');
     });
 
-    Route::prefix('invite/{invite}/{email}')->group(function () {
+    // an accepted, declined or cancelled invite no longer exists, so it's sent on like any other invalid one
+    Route::prefix('invite/{invite}/{email}')->missing(fn () => AccountInviteController::invalidInvite())->group(function () {
         Route::get('', [AccountInviteController::class, 'show'])->name('invite.show');
         Route::post('accept', [AccountInviteController::class, 'accept'])->name('manage.invite.accept');
         Route::post('decline', [AccountInviteController::class, 'decline'])->name('manage.invite.decline');

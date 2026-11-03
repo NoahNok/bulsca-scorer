@@ -24,8 +24,8 @@ class AccountInviteController extends Controller
     public function show(AccountInvite $invite, string $email)
     {
 
-        if ($invite->email != $email) {
-            return redirect('/')->with('alert-error', 'Invalid invite');
+        if (!self::isUsable($invite, $email)) {
+            return self::invalidInvite();
         }
 
         $user = $invite->getUser();
@@ -37,12 +37,10 @@ class AccountInviteController extends Controller
             }
 
             if (Auth::user()->id != $user->id) {
-                session()->flash('alert-error', 'You cannot use that invite!');
-                return redirect('/');
+                return self::wrongAccount();
             }
         } elseif (Auth::check()) {
-            session()->flash('alert-error', 'You cannot use that invite!');
-            return redirect('/');
+            return self::wrongAccount();
         }
 
         return Inertia::render($user ? 'Manage/Auth/InviteExistingAccount' : 'Manage/Auth/InviteNewAccount', [
@@ -128,8 +126,8 @@ class AccountInviteController extends Controller
      */
     private function rejectForExistingAccount(AccountInvite $invite, string $email)
     {
-        if ($invite->email != $email) {
-            return redirect('/')->with('alert-error', 'Invalid invite');
+        if (!self::isUsable($invite, $email)) {
+            return self::invalidInvite();
         }
 
         if (!Auth::check()) {
@@ -137,8 +135,7 @@ class AccountInviteController extends Controller
         }
 
         if (Auth::user()->id != $invite->getUser()?->id) {
-            session()->flash('alert-error', 'You cannot use that invite!');
-            return redirect('/');
+            return self::wrongAccount();
         }
 
         return null;
@@ -149,16 +146,47 @@ class AccountInviteController extends Controller
      */
     private function rejectForNewAccount(AccountInvite $invite, string $email)
     {
-        if ($invite->email != $email) {
-            return redirect('/')->with('alert-error', 'Invalid invite');
+        if (!self::isUsable($invite, $email)) {
+            return self::invalidInvite();
         }
 
         if (Auth::check()) {
-            session()->flash('alert-error', 'You cannot use that invite!');
-            return redirect('/');
+            return self::wrongAccount();
         }
 
         return null;
+    }
+
+    /**
+     * The link's email is the invite's, and what it invites them to still exists
+     */
+    private static function isUsable(AccountInvite $invite, string $email): bool
+    {
+        return $invite->email == $email && $invite->to !== null;
+    }
+
+    /**
+     * A link to an invite that's gone (accepted, declined, cancelled, or its competition or organisation deleted)
+     * or never matched: signed in, to their home with a toast; signed out, to the public home, which toasts the
+     * notice. The session cookie is per host, so a flash set on app. wouldn't reach the main domain.
+     * Also the route group's `missing` handler, for invites that no longer exist.
+     */
+    public static function invalidInvite()
+    {
+        if (Auth::check()) {
+            return redirect()->route('manage.home')->with('alert-error', 'That invite is no longer valid');
+        }
+
+        // Inertia::location, as the accept and decline forms post with Inertia and the home is on another host
+        return Inertia::location(RouteHelpers::mainRoute('home', ['notice' => 'invite-invalid']));
+    }
+
+    /**
+     * Signed in to another account than the invite's (or signed in at all, for an invite to a new account)
+     */
+    private static function wrongAccount()
+    {
+        return redirect()->route('manage.home')->with('alert-error', 'That invite is for a different account');
     }
 
     /**
