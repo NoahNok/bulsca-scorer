@@ -196,4 +196,24 @@ class AdminUsersTest extends TestCase
                 ->where('users.0.name', 'Paged 26')
                 ->where('pagination.prev', fn ($url) => str_contains($url, 'q=paged')));
     }
+
+    public function test_admins_can_make_an_official_only_account_a_full_one(): void
+    {
+        $this->actingAs($this->admin)
+            ->from($this->appUrl("/admin/users/{$this->official->id}"))
+            ->post($this->appUrl("/admin/users/{$this->official->id}/full-account"))
+            ->assertRedirect($this->appUrl("/admin/users/{$this->official->id}"))
+            ->assertSessionHas('success', 'Jamie Judge now has a full account');
+
+        $this->assertFalse($this->official->fresh()->isJudgeOnly());
+    }
+
+    public function test_non_admins_cannot_make_full_accounts(): void
+    {
+        $this->actingAs($this->organiser)
+            ->post($this->appUrl("/admin/users/{$this->official->id}/full-account"))
+            ->assertRedirect('/');
+
+        $this->assertTrue($this->official->fresh()->isJudgeOnly());
+    }
 }

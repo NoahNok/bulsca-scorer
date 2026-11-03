@@ -155,4 +155,20 @@ class AdminUsersController extends Controller
             ] : null,
         ]);
     }
+
+    /**
+     * Turn an official-only account into a full one, so it can sign in to the Management app as well as
+     * Digital Judge.
+     */
+    public function makeFullAccount(User $user)
+    {
+        if (!$user->isJudgeOnly()) {
+            return back()->with('success', "{$user->name} already has a full account");
+        }
+
+        $user->judge_only = false;
+        $user->save();
+
+        return back()->with('success', "{$user->name} now has a full account");
+    }
 }

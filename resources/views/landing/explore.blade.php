@@ -7,8 +7,8 @@
     <div class="v2-container pb-16">
         <div class="pt-12">
             <h1 class="v2-page-title">Explore</h1>
-            <p class="v2-page-lead">Every competition on Scoring.Events, and the organisations that run them.</p>
-            <div class="mt-6 max-w-2xl">
+            <p class="v2-page-lead">Everything in one place.</p>
+            <div class="mt-6">
                 <x-v2.search />
             </div>
         </div>

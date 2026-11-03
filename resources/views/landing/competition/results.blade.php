@@ -132,7 +132,7 @@
                             </thead>
                             <tbody>
                                 <template x-for="(row, r) in table?.rows ?? []" :key="r">
-                                    <tr>
+                                    <tr :class="`is-place-${row.position?.data}`">
                                         <template x-for="(column, c) in visibleColumns" :key="column.id">
                                             <td :class="c === 0 && 'v2-table-name'">
                                                 <template x-if="row[column.id].type === 'string'">

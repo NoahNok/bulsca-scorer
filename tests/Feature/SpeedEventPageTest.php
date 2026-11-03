@@ -175,7 +175,7 @@ class SpeedEventPageTest extends TestCase
         $this->saveRows([
             $a->id => ['result' => '01:02.50', 'disqualification' => 'dq101'],
             $b->id => ['result' => 'DNS', 'disqualification' => ''],
-        ])->assertRedirect($this->url('/results'))->assertSessionHas('success');
+        ])->assertRedirect($this->url())->assertSessionHas('success');
 
         $this->assertEquals(62500, $a->fresh()->result);
         $this->assertEquals([101], $this->event->disqualifications()->where('entity_id', $a->entity_id)->pluck('code')->all());

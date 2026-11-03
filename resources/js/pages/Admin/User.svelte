@@ -2,9 +2,11 @@
     A user's Admin page (manage.admin.users.show), in AdminLayout: their name, account badges, email and
     when they joined, verified and were last active, a line of their DQ and penalty submissions when they have
     any, then Tabs between their Competitions (directly or through an organisation), Organisations and
-    Officiating, each a RowTable. It opens on the first with anything in it.
+    Officiating, each a RowTable. It opens on the first with anything in it. An official-only account has a
+    Make full account button at the heading's right end, confirmed first.
 -->
 <script lang="ts">
+    import { confirm } from "@/lib/confirm";
     import { shortDate } from "@/lib/dates";
     import AccountBadges from "@/manage/admin/AccountBadges.svelte";
     import EmptyState from "@/manage/components/EmptyState.svelte";
@@ -12,8 +14,8 @@
     import PageHeading from "@/manage/components/PageHeading.svelte";
     import RowTable, { rowLink } from "@/manage/components/RowTable.svelte";
     import Tabs from "@/manage/components/Tabs.svelte";
-    import { index } from "@/routes/manage/admin/users";
-    import { Link } from "@inertiajs/svelte";
+    import { fullAccount, index } from "@/routes/manage/admin/users";
+    import { Link, router } from "@inertiajs/svelte";
 
     type Competition = {
         id: number;
@@ -79,6 +81,28 @@
     // svelte-ignore state_referenced_locally
     let tab = $state(lists.find((list) => list.count > 0)?.id ?? "competitions");
 
+    let converting = $state(false);
+
+    async function makeFullAccount() {
+        const ok = await confirm({
+            title: `Give ${user.name} a full account?`,
+            description: [
+                "They'll be able to sign in here to run competitions and organisations, as well as Digital Judge. You can't turn it back into an official-only account.",
+                user.neverSignedIn ? "They haven't signed in yet, so they'll need to reset their password before they can sign in here." : null,
+            ]
+                .filter(Boolean)
+                .join(" "),
+            confirmLabel: "Make full account",
+        });
+        if (!ok) return;
+
+        router.post(fullAccount(user.id).url, {}, {
+            preserveScroll: true,
+            onStart: () => (converting = true),
+            onFinish: () => (converting = false),
+        });
+    }
+
     const meta = $derived(
         [
             user.joined ? `Joined ${shortDate(user.joined)}` : null,
@@ -103,6 +127,11 @@
             <span class="block text-sm tabular-nums">
                 DQ and penalty submissions: {submissions.pending} pending · {submissions.accepted} accepted · {submissions.rejected} rejected
             </span>
+        {/if}
+    {/snippet}
+    {#snippet actions()}
+        {#if user.officialOnly}
+            <button type="button" class="v2-btn" disabled={converting} onclick={makeFullAccount}>Make full account</button>
         {/if}
     {/snippet}
 </PageHeading>

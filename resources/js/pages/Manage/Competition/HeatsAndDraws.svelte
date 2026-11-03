@@ -6,9 +6,16 @@
     right generates and edits them, opens Tank setup, and holds the switches that show them publicly.
 -->
 <script lang="ts">
-    import { edit as editDraw, generate as generateDraw, tankSetup } from "@/actions/App/Http/Controllers/Manage/DrawsController";
+    import {
+        edit as editDraw,
+        generate as generateDraw,
+        tankSetup,
+    } from "@/actions/App/Http/Controllers/Manage/DrawsController";
     import { visibility } from "@/actions/App/Http/Controllers/Manage/HeatsAndDrawsController";
-    import { edit as editHeats, generate as generateHeats } from "@/actions/App/Http/Controllers/Manage/HeatsController";
+    import {
+        edit as editHeats,
+        generate as generateHeats,
+    } from "@/actions/App/Http/Controllers/Manage/HeatsController";
     import ActionSwitch from "@/manage/components/ActionSwitch.svelte";
     import Alert from "@/manage/components/Alert.svelte";
     import ChipGroup from "@/manage/components/ChipGroup.svelte";
@@ -16,9 +23,20 @@
     import RowIcon from "@/manage/components/RowIcon.svelte";
     import SmoothHeight from "@/manage/components/SmoothHeight.svelte";
     import WideScroll from "@/manage/components/WideScroll.svelte";
-    import SidebarPage, { sidebarRow } from "@/manage/components/SidebarPage.svelte";
-    import PlacementSearch, { dimClass, matchClass, matcher } from "@/manage/orders/PlacementSearch.svelte";
-    import type { CompetitionHeader, DrawTank, HeatGrid, NamedOption } from "@/manage/types";
+    import SidebarPage, {
+        sidebarRow,
+    } from "@/manage/components/SidebarPage.svelte";
+    import PlacementSearch, {
+        dimClass,
+        matchClass,
+        matcher,
+    } from "@/manage/orders/PlacementSearch.svelte";
+    import type {
+        CompetitionHeader,
+        DrawTank,
+        HeatGrid,
+        NamedOption,
+    } from "@/manage/types";
     import { toastError } from "@/lib/toast.svelte";
     import { Link, router } from "@inertiajs/svelte";
 
@@ -44,15 +62,29 @@
             generated: boolean;
             canGenerate: boolean;
         };
-        draw: { hasSerc: boolean; useTanks: boolean; tanks: DrawTank[]; generated: boolean };
+        draw: {
+            hasSerc: boolean;
+            useTanks: boolean;
+            tanks: DrawTank[];
+            generated: boolean;
+        };
         show: { heats: boolean; draws: boolean };
         eventsUrl: string;
     } = $props();
 
     const comp = $derived(competition.id);
     // The editor opens on the Pool picked here
-    const poolName = $derived(heats.pools.find((option) => option.id === heats.pool)?.name ?? null);
-    const editHeatsUrl = $derived(heats.event ? editHeats({ comp, event: heats.event }, { query: heats.pool ? { pool: heats.pool } : {} }).url : null);
+    const poolName = $derived(
+        heats.pools.find((option) => option.id === heats.pool)?.name ?? null,
+    );
+    const editHeatsUrl = $derived(
+        heats.event
+            ? editHeats(
+                  { comp, event: heats.event },
+                  { query: heats.pool ? { pool: heats.pool } : {} },
+              ).url
+            : null,
+    );
 
     let generating = $state(false);
 
@@ -61,10 +93,16 @@
     let query = $state("");
     const matches = $derived(matcher(query));
     const searching = $derived(query.trim() !== "");
-    const searchable = $derived((heats.grid?.heats.length ?? 0) > 0 || draw.tanks.some((tank) => tank.draws.length > 0));
+    const searchable = $derived(
+        (heats.grid?.heats.length ?? 0) > 0 ||
+            draw.tanks.some((tank) => tank.draws.length > 0),
+    );
     // The heats shown are one event's, or one Pool's, so say which
     const heatsLabel = $derived.by(() => {
-        const eventName = heats.perEvent && heats.events.length > 1 ? heats.events.find((option) => option.id === heats.event)?.name : null;
+        const eventName =
+            heats.perEvent && heats.events.length > 1
+                ? heats.events.find((option) => option.id === heats.event)?.name
+                : null;
         const context = [eventName, poolName].filter(Boolean).join(", ");
         return context ? `Heats (${context})` : "Heats";
     });
@@ -72,21 +110,39 @@
 
     function pick(data: { event?: number | null; pool?: number | null }) {
         const picked = { event: heats.event, pool: heats.pool, ...data };
-        router.reload({ data: { event: picked.event ?? undefined, pool: picked.pool ?? undefined }, only: ["heats"] });
-    }
-
-    function post(url: string) {
-        router.post(url, {}, {
-            preserveScroll: true,
-            onStart: () => (generating = true),
-            // Why it can't generate (no seed times, already generated, pooled heats)
-            onError: (errors) => toastError(Object.values(errors)[0] ?? "That couldn't be generated."),
-            onFinish: () => (generating = false),
+        router.reload({
+            data: {
+                event: picked.event ?? undefined,
+                pool: picked.pool ?? undefined,
+            },
+            only: ["heats"],
         });
     }
 
+    function post(url: string) {
+        router.post(
+            url,
+            {},
+            {
+                preserveScroll: true,
+                onStart: () => (generating = true),
+                // Why it can't generate (no seed times, already generated, pooled heats)
+                onError: (errors) =>
+                    toastError(
+                        Object.values(errors)[0] ??
+                            "That couldn't be generated.",
+                    ),
+                onFinish: () => (generating = false),
+            },
+        );
+    }
+
     function setShown(field: "show_heats" | "show_draws", value: boolean) {
-        router.post(visibility(comp).url, { [field]: value }, { preserveScroll: true, preserveState: true });
+        router.post(
+            visibility(comp).url,
+            { [field]: value },
+            { preserveScroll: true, preserveState: true },
+        );
     }
 
     const heading = "text-lg font-extrabold uppercase";
@@ -104,7 +160,9 @@
             <PlacementSearch
                 bind:query
                 heats={{ list: heats.grid?.heats ?? [], label: heatsLabel }}
-                draw={draw.generated ? { tanks: draw.tanks, useTanks: draw.useTanks } : undefined}
+                draw={draw.generated
+                    ? { tanks: draw.tanks, useTanks: draw.useTanks }
+                    : undefined}
                 scroll={heatsBox}
             />
         </div>
@@ -116,14 +174,24 @@
         {#if heats.events.length === 0}
             <div class="mt-3">
                 <Alert tone="info" title="No speed events">
-                    <p class="mt-1">Add a speed event on <Link href={eventsUrl} class="v2-link-inline">Events</Link> to generate heats for it.</p>
+                    <p class="mt-1">
+                        Add a speed event on <Link
+                            href={eventsUrl}
+                            class="v2-link-inline">Events</Link
+                        > to generate heats for it.
+                    </p>
                 </Alert>
             </div>
         {:else}
             {#if heats.usePools}
                 <div class="mt-3">
-                    <Alert tone="info" title="Heats in pools">
-                        <p class="mt-1">This competition uses pools. Pooled heats are generated, and generated again, with the <code>heats-and-draws:pool-heats</code> command. Edit heats changes them a pool at a time.</p>
+                    <Alert tone="info" title="Pools">
+                        <p class="mt-1">
+                            This competition uses pools. Please contact <a
+                                href="mailto:support@scoring.events"
+                                class="v2-link">support@scoring.events</a
+                            > for initial setup.
+                        </p>
                     </Alert>
                 </div>
             {/if}
@@ -131,10 +199,20 @@
             {#if (heats.perEvent && heats.events.length > 1) || heats.pools.length > 1}
                 <div class="mt-3 flex flex-col gap-2">
                     {#if heats.perEvent && heats.events.length > 1}
-                        <ChipGroup label="Event" options={heats.events} value={heats.event} onpick={(id) => pick({ event: id })} />
+                        <ChipGroup
+                            label="Event"
+                            options={heats.events}
+                            value={heats.event}
+                            onpick={(id) => pick({ event: id })}
+                        />
                     {/if}
                     {#if heats.pools.length > 1}
-                        <ChipGroup label="Pool" options={heats.pools} value={heats.pool} onpick={(id) => pick({ pool: id })} />
+                        <ChipGroup
+                            label="Pool"
+                            options={heats.pools}
+                            value={heats.pool}
+                            onpick={(id) => pick({ pool: id })}
+                        />
                     {/if}
                 </div>
             {/if}
@@ -145,31 +223,58 @@
                     <div class="animate-fade-in motion-reduce:animate-none">
                         {#if heats.grid && heats.grid.heats.length > 0}
                             <WideScroll class="mt-4" bind:element={heatsBox}>
-                                <table class="border-separate border-spacing-0 text-left text-sm">
+                                <table
+                                    class="border-separate border-spacing-0 text-left text-sm"
+                                >
                                     <thead>
-                                        <tr class="text-v2-muted *:border-b *:border-v2-border *:px-3 *:py-2 *:font-semibold">
-                                            <th scope="col" class="sticky left-0 z-10 w-px bg-v2-bg">Lane</th>
+                                        <tr
+                                            class="text-v2-muted *:border-b *:border-v2-border *:px-3 *:py-2 *:font-semibold"
+                                        >
+                                            <th
+                                                scope="col"
+                                                class="sticky left-0 z-10 w-px bg-v2-bg"
+                                                >Lane</th
+                                            >
                                             {#each heats.grid.heats as heat (heat.number)}
-                                                <th scope="col" class="min-w-44 whitespace-nowrap">Heat {heat.number}</th>
+                                                <th
+                                                    scope="col"
+                                                    class="min-w-44 whitespace-nowrap"
+                                                    >Heat {heat.number}</th
+                                                >
                                             {/each}
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {#each { length: heats.grid.lanes } as _, index (index)}
-                                            <tr class="*:border-b *:border-v2-border *:px-3 *:py-2">
-                                                <th scope="row" class="sticky left-0 z-10 bg-v2-bg font-semibold text-v2-muted tabular-nums">{index + 1}</th>
+                                            <tr
+                                                class="*:border-b *:border-v2-border *:px-3 *:py-2"
+                                            >
+                                                <th
+                                                    scope="row"
+                                                    class="sticky left-0 z-10 bg-v2-bg font-semibold text-v2-muted tabular-nums"
+                                                    >{index + 1}</th
+                                                >
                                                 {#each heats.grid.heats as heat (heat.number)}
-                                                    {@const cell = heat.lanes[index]}
-                                                    {@const hit = matches(cell?.name)}
+                                                    {@const cell =
+                                                        heat.lanes[index]}
+                                                    {@const hit = matches(
+                                                        cell?.name,
+                                                    )}
                                                     <td
                                                         class={[
                                                             "wrap-anywhere transition-[opacity,background-color] motion-reduce:transition-none",
-                                                            cell ? "font-semibold" : "text-v2-muted",
+                                                            cell
+                                                                ? "font-semibold"
+                                                                : "text-v2-muted",
                                                             hit && matchClass,
-                                                            searching && !hit && dimClass,
+                                                            searching &&
+                                                                !hit &&
+                                                                dimClass,
                                                         ]}
-                                                        data-match={hit || undefined}
-                                                        data-place="heat:{heat.number}:{index + 1}"
+                                                        data-match={hit ||
+                                                            undefined}
+                                                        data-place="heat:{heat.number}:{index +
+                                                            1}"
                                                     >
                                                         {cell?.name ?? "–"}
                                                     </td>
@@ -180,7 +285,10 @@
                                 </table>
                             </WideScroll>
                         {:else if !heats.usePools || heats.generated}
-                            <EmptyState class="mt-4">No heats yet. They appear here once they're generated.</EmptyState>
+                            <EmptyState class="mt-4"
+                                >No heats yet. They appear here once they're
+                                generated.</EmptyState
+                            >
                         {/if}
                     </div>
                 {/key}
@@ -194,17 +302,39 @@
         {#if !draw.hasSerc}
             <div class="mt-3">
                 <Alert tone="info" title="No SERCs">
-                    <p class="mt-1">Add a SERC on <Link href={eventsUrl} class="v2-link-inline">Events</Link> to make a draw. It can be empty: every SERC shares the one draw.</p>
+                    <p class="mt-1">
+                        Add a SERC on <Link
+                            href={eventsUrl}
+                            class="v2-link-inline">Events</Link
+                        > to make a draw. It can be empty: every SERC shares the
+                        one draw.
+                    </p>
                 </Alert>
             </div>
         {:else if !draw.generated}
-            <EmptyState class="mt-4">No draw yet. The running order appears here once it's generated.</EmptyState>
+            <EmptyState class="mt-4"
+                >No draw yet. The running order appears here once it's
+                generated.</EmptyState
+            >
         {:else}
-            <div class={["mt-4 grid gap-6", draw.useTanks && "sm:grid-cols-2 xl:grid-cols-3"]}>
+            <div
+                class={[
+                    "mt-4 grid gap-6",
+                    draw.useTanks && "sm:grid-cols-2 xl:grid-cols-3",
+                ]}
+            >
                 {#each draw.tanks as tank (tank.number)}
                     <div>
-                        {#if draw.useTanks}<h4 class="mb-2 font-bold">Tank {tank.number}</h4>{/if}
-                        <ol class={["border-t border-v2-border", !draw.useTanks && "sm:columns-2 xl:columns-3 sm:gap-6"]}>
+                        {#if draw.useTanks}<h4 class="mb-2 font-bold">
+                                Tank {tank.number}
+                            </h4>{/if}
+                        <ol
+                            class={[
+                                "border-t border-v2-border",
+                                !draw.useTanks &&
+                                    "sm:columns-2 xl:columns-3 sm:gap-6",
+                            ]}
+                        >
                             {#each tank.draws as entry (entry.id)}
                                 {@const hit = matches(entry.name)}
                                 <li
@@ -215,12 +345,21 @@
                                     ]}
                                     data-place="draw:{entry.id}"
                                 >
-                                    <span class="w-6 shrink-0 text-right text-v2-muted tabular-nums">{entry.draw}</span>
-                                    <span class="font-semibold wrap-anywhere">{entry.name}</span>
+                                    <span
+                                        class="w-6 shrink-0 text-right text-v2-muted tabular-nums"
+                                        >{entry.draw}</span
+                                    >
+                                    <span class="font-semibold wrap-anywhere"
+                                        >{entry.name}</span
+                                    >
                                 </li>
                             {/each}
                         </ol>
-                        {#if tank.draws.length === 0}<p class="py-3 text-sm text-v2-muted">Nobody in this tank yet.</p>{/if}
+                        {#if tank.draws.length === 0}<p
+                                class="py-3 text-sm text-v2-muted"
+                            >
+                                Nobody in this tank yet.
+                            </p>{/if}
                     </div>
                 {/each}
             </div>
@@ -232,7 +371,12 @@
             <ul class="border-t border-v2-border *:border-b *:border-v2-border">
                 {#if heats.canGenerate}
                     <li>
-                        <button type="button" class={sidebarRow} disabled={generating} onclick={() => post(generateHeats(comp).url)}>
+                        <button
+                            type="button"
+                            class={sidebarRow}
+                            disabled={generating}
+                            onclick={() => post(generateHeats(comp).url)}
+                        >
                             Generate heats
                             <RowIcon />
                         </button>
@@ -250,7 +394,12 @@
                 {/if}
                 {#if draw.hasSerc && !draw.generated}
                     <li>
-                        <button type="button" class={sidebarRow} disabled={generating} onclick={() => post(generateDraw(comp).url)}>
+                        <button
+                            type="button"
+                            class={sidebarRow}
+                            disabled={generating}
+                            onclick={() => post(generateDraw(comp).url)}
+                        >
                             Generate draw
                             <RowIcon />
                         </button>
@@ -274,8 +423,16 @@
             </ul>
 
             <div class="mt-5">
-                <ActionSwitch label="Show heats publicly" checked={show.heats} onchange={(checked) => setShown("show_heats", checked)} />
-                <ActionSwitch label="Show draw publicly" checked={show.draws} onchange={(checked) => setShown("show_draws", checked)} />
+                <ActionSwitch
+                    label="Show heats publicly"
+                    checked={show.heats}
+                    onchange={(checked) => setShown("show_heats", checked)}
+                />
+                <ActionSwitch
+                    label="Show draw publicly"
+                    checked={show.draws}
+                    onchange={(checked) => setShown("show_draws", checked)}
+                />
             </div>
         </nav>
     {/snippet}

@@ -14,7 +14,10 @@
 </svelte:head>
 
 <h1 class="a-title">Forgot your password?</h1>
-<p class="a-lead">Enter your account's email and we'll send you a link to choose a new one.</p>
+<p class="a-lead">
+    Enter your account's email and we'll send you a link to choose a new
+    password.
+</p>
 
 <Form action={store()} resetOnSuccess class="a-form">
     {#snippet children({ errors, processing })}

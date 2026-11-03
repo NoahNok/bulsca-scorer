@@ -38,7 +38,7 @@ class LiveController extends Controller
         }
 
         return Competition::where(DB::raw('DATEDIFF(competitions.when, NOW())'), '>', -2)->where('can_be_live', true)->orderBy(DB::raw('DATEDIFF(competitions.when, NOW())'), 'asc')->first()
-            ?? 'No competition is live right now. One shows here on the day it runs.';
+            ?? 'No competitions are live right now. Check back later.';
     }
 
     /** A live page, or the Unavailable page when there's no competition to show */
@@ -75,7 +75,7 @@ class LiveController extends Controller
     private function unavailable(string $message): InertiaResponse
     {
         $past = Competition::where('when', '<=', now())
-            ->where(fn ($query) => $query->where('public_results', true)->orWhere('can_be_live', true))
+            ->where(fn($query) => $query->where('public_results', true)->orWhere('can_be_live', true))
             ->orderBy('when', 'desc')
             ->paginate(10)
             // keeping ?comp=, so page 2 of a bad id's list isn't the live competition's page
@@ -83,7 +83,7 @@ class LiveController extends Controller
 
         return Inertia::render('Live/Unavailable', [
             'message' => $message,
-            'competitions' => $past->getCollection()->map(fn (Competition $comp) => [
+            'competitions' => $past->getCollection()->map(fn(Competition $comp) => [
                 'id' => $comp->id,
                 'name' => $comp->name,
                 'when' => $comp->when->toDateString(),
@@ -100,12 +100,12 @@ class LiveController extends Controller
         $useTanks = $comp->usesTanks();
 
         $tanks = collect($comp->getDraws()[0]['draws'] ?? [])
-            ->map(fn ($draws) => collect($draws)->filter(fn ($draw) => $draw->entity)->values())
-            ->filter(fn ($draws) => $draws->isNotEmpty())
+            ->map(fn($draws) => collect($draws)->filter(fn($draw) => $draw->entity)->values())
+            ->filter(fn($draws) => $draws->isNotEmpty())
             ->values()
-            ->map(fn ($draws, $i) => [
+            ->map(fn($draws, $i) => [
                 'label' => $useTanks ? 'Tank ' . ($i + 1) : null,
-                'teams' => $draws->map(fn ($draw) => [
+                'teams' => $draws->map(fn($draw) => [
                     'id' => $draw->entity->id,
                     'draw' => $draw->draw,
                     'name' => $draw->entity->getName($comp),
@@ -120,12 +120,12 @@ class LiveController extends Controller
 
     public function index(Request $request)
     {
-        return $this->page($request, 'Live/Index', fn ($comp) => ['sercOrder' => $this->sercOrder($comp)]);
+        return $this->page($request, 'Live/Index', fn($comp) => ['sercOrder' => $this->sercOrder($comp)]);
     }
 
     public function display(Request $request)
     {
-        return $this->page($request, 'Live/Display', fn ($comp) => [
+        return $this->page($request, 'Live/Display', fn($comp) => [
             'sercOrder' => $this->sercOrder($comp),
             'qr' => (string) QrCode::size(112)->margin(0)->generate(route('live', $request->only('comp'))),
         ]);
@@ -133,7 +133,7 @@ class LiveController extends Controller
 
     public function all()
     {
-        return $this->unavailable('No competition is live right now. One shows here on the day it runs.');
+        return $this->unavailable('No competitions are live right now. Check back later.');
     }
 
     /**
@@ -145,22 +145,22 @@ class LiveController extends Controller
     {
         abort_unless($comp->canBeViewedLive(), 404);
 
-        $teams = Cache::remember('live.' . $comp->id . '.sercOrder', 10, fn () => SercOrderEstimate::for($comp)->teams());
+        $teams = Cache::remember('live.' . $comp->id . '.sercOrder', 10, fn() => SercOrderEstimate::for($comp)->teams());
 
         return response()->json(['teams' => (object) $teams, 'statusMessage' => $comp->status_message ?: null]);
     }
 
     public function dqs(Request $request)
     {
-        return $this->page($request, 'Live/Dqs', fn ($comp) => [
+        return $this->page($request, 'Live/Dqs', fn($comp) => [
             'groups' => collect([
-                'SERCs' => $comp->getSERCs->map(fn ($serc) => ['key' => 'se:' . $serc->id, 'name' => $serc->getName()]),
-                'Speeds' => $comp->getSpeedEvents->map(fn ($speed) => ['key' => 'sp:' . $speed->id, 'name' => $speed->getName()]),
+                'SERCs' => $comp->getSERCs->map(fn($serc) => ['key' => 'se:' . $serc->id, 'name' => $serc->getName()]),
+                'Speeds' => $comp->getSpeedEvents->map(fn($speed) => ['key' => 'sp:' . $speed->id, 'name' => $speed->getName()]),
             ])
-                ->filter(fn ($events) => $events->isNotEmpty())
-                ->map(fn ($events, $title) => [
+                ->filter(fn($events) => $events->isNotEmpty())
+                ->map(fn($events, $title) => [
                     'title' => $title,
-                    'events' => $events->map(fn ($event) => [...$event, 'url' => route('live.dqs.event', [$event['key'], ...$request->only('comp')])]),
+                    'events' => $events->map(fn($event) => [...$event, 'url' => route('live.dqs.event', [$event['key'], ...$request->only('comp')])]),
                 ])
                 ->values(),
         ]);
@@ -180,7 +180,7 @@ class LiveController extends Controller
 
             return [
                 'event' => ['name' => $realEvent->getName()],
-                'dqs' => $dqs->map(fn ($dq, $i) => ['id' => $i, ...$dq]),
+                'dqs' => $dqs->map(fn($dq, $i) => ['id' => $i, ...$dq]),
                 'back' => route('live.dqs', $request->only('comp')),
             ];
         });

@@ -99,7 +99,8 @@
         );
 
         router.post(saveResults({ comp, event }).url, { rows: data }, {
-            preserveScroll: true,
+            // A good save goes back to the event page, so only keep the scroll when cells fail
+            preserveScroll: "errors",
             onStart: () => (processing = true),
             onFinish: () => (processing = false),
             onSuccess: () => {
@@ -174,9 +175,10 @@
                 {#each shown.filter((row) => values[row.id]) as row (row.id)}
                     {@const cells = values[row.id]}
                     <tr class="*:border-b *:border-v2-border *:px-2 *:py-2 *:align-top">
-                        <th scope="row" class="pt-3.5 font-semibold wrap-anywhere">{row.name}</th>
+                        <!-- As tall as an input (.v2-input), so the text centres on it even with an error under the input -->
+                        <th scope="row" class="font-semibold wrap-anywhere"><span class="flex min-h-11 items-center">{row.name}</span></th>
                         {#if hasHeats}
-                            <td class="pt-3.5 text-sm whitespace-nowrap text-v2-muted">{row.heatLane ?? "–"}</td>
+                            <td class="text-sm whitespace-nowrap text-v2-muted"><span class="flex min-h-11 items-center">{row.heatLane ?? "–"}</span></td>
                         {/if}
                         {#each [["result", ropeThrow ? "0-3 or 00:00.00" : "00:00.00"], ["disqualification", "DQ000"], ...(penalties ? [["penalties", "P000, P000"]] : [])] as [name, placeholder] (name)}
                             {@const key = name as keyof Cells}

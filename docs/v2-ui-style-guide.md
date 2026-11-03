@@ -208,6 +208,7 @@ dark mode follows.
 | `--v2-border` | `#e5e7eb` | `#1f2937` | Borders and row dividers |
 | `--v2-teal` | `#00d5be` | `#00d5be` | The accent: live dot, today line, focus ring, accent button |
 | `--v2-teal-text` | `#0f766e` | `#2dd4bf` | Teal *text* (links, "Live now"). `--v2-teal` is too light for small text on white |
+| `--v2-on-teal` | `#ffffff` | `#111827` | Text on a teal fill (accent button) |
 | `--v2-tile` | `#111827` | `#111827` | The favicon tile colour, for dark bands that stay dark in both themes |
 
 | `--v2-teal-soft` | teal 8% | teal 12% | Info alerts, live badge |
@@ -216,6 +217,7 @@ dark mode follows.
 | `--v2-success`, `-soft`, `-text` | `#059669`, `#ecfdf5`, `#047857` | `#10b981`, 12%, `#6ee7b7` | Approved, published |
 | `--v2-warning` | `#b45309` | `#f59e0b` | A solid amber, like the connecting dot. For a fill use the soft pair |
 | `--v2-warning-soft`, `-text` | `#fef3c7`, `#92400e` | same | Provisional |
+| `--v2-gold`, `-silver`, `-bronze` | `#d4a017`, `#9ca3af`, `#c27a3a` | same | 1st, 2nd and 3rd: only the podium rows' strip and tint |
 
 ## Dark mode
 
@@ -276,7 +278,7 @@ each one in use; copy its markup.
 | Checkbox / radio | `<label class="v2-check"><input type="checkbox"> Text</label>` (native, teal `accent-color`) |
 | Switch | `<label class="v2-check"><button class="v2-switch" role="switch" :aria-checked="…"></button><span>Text</span></label>`. The label lets the text toggle it |
 | Badge | `.v2-badge` + `is-provisional`, `is-success`, `is-danger`, `is-live` |
-| Chip | `<button class="v2-chip" aria-pressed="…">` for a row of pills that filter (leagues, an Objective, an organisation), in a `role="group"` with an `aria-label`. The chosen one is `aria-pressed="true"` (ink, inverts in dark); a `.v2-badge` inside flips with it |
+| Chip | `<button class="v2-chip" aria-pressed="…">` for a row of pills that filter (leagues, an Objective, an organisation), in a `role="group"` with an `aria-label`. The chosen one is `aria-pressed="true"` (ink, inverts in dark); a `.v2-badge` inside flips with it. To jump straight to what a chip filters by (an organisation's page), wrap it and a link chip with an arrow in `.v2-chip-split`: one pill, the link inverting with its chip |
 | Alert | `.v2-alert` + `is-info`, `is-success`, `is-warning` (something left out or worth checking, not an error), `is-danger`, with an icon and a `<strong>` title |
 | Tabs | `.v2-tabs` with a sliding `.v2-tabs-pill` (equal-width tabs; set `--v2-tabs` to the count if it isn't 3) |
 | Toast | `.v2-toasts` > `.v2-toast-slot` > `.v2-toast-clip` > `.v2-toast`, stacked bottom-right, newest nearest the corner. They slide up in and slide out right, and the stack closes the gap. The Alpine that fires them is in the kit for now. To toast on a public page from another host (the session cookie is per host, so `app.` can't flash onto the main domain), redirect with `?notice=<key>`: `landing.v2.partials.notice-toast`, in the v2 layout, shows only the keys it lists (like `invite-invalid`) and drops the param from the address |
@@ -309,8 +311,8 @@ each one in use; copy its markup.
   is `.v2-page-title` with a muted `.v2-page-lead`.
 - **Plain lists:** `ul.v2-list` of whole-row links (`li.v2-row`, the name as
   `.v2-list-name.v2-row-link`, a logo `img`, badges, a muted
-  `.v2-list-detail` at the end). `.v2-list-columns` flows it into columns
-  (Explore's Organisations). An Organisation's Championships use it too.
+  `.v2-list-detail` at the end). `.v2-list-columns` flows it into columns,
+  without row borders (Explore's Organisations). An Organisation's Championships use it too.
 - **Pages of a long list:** `.v2-pager` under it, with "← Newer" and
   "Older →" as small buttons (Explore's past competitions, 20 a page).
 - **A competition's public pages** extend `landing.competition.layout` and
@@ -327,6 +329,10 @@ each one in use; copy its markup.
   places numbered down it), and a search that hides heats and Tanks without
   the Team and lights its rows teal (`is-match`), across every event. The
   search shows only once heats or the Draw are released and set.
+- **Podium rows:** `.is-place-1`, `-2` or `-3` on a `.v2-table` row runs a
+  gold, silver or bronze strip down its first cell and tints the row in that
+  medal. Every public results table and the SERC breakdown mark their top
+  three; joint places share the medal.
 - **Data tables** (results, the SERC breakdown): `.v2-table` inside
   `.v2-table-scroll`, which scrolls sideways on its own; muted headings on a
   sunk row, rules between rows, the first column (`.v2-table-name`) bold.
@@ -356,9 +362,16 @@ each one in use; copy its markup.
   eases (enter only, so the old panel goes at once and they never stack).
 - **SERC breakdown** (`.v2-breakdown`): the marking points sideways in a
   sticky header, the Team column sticky, each Objective's columns ruled off, the
-  top three tinted teal and the pointer's column lit. Sorting is
+  top three as podium rows and the pointer's column lit. Sorting is
   `public/js/sorttable.js`; Analysis (`public/js/analysis.js`) colours each
-  mark, read in ink in both themes.
+  mark, read in ink in both themes. Above it, a search for a Team's name and a
+  Show dropdown (All Teams, one of the competition's Leagues, or a Team letter,
+  each listed only when the table has more than one)
+  narrow the rows together; the table sits in `x-smooth-height`, so its
+  height eases as rows are hidden, and fades in when Show changes. The
+  Overall feedback `<details>` eases open and
+  shut through `::details-content` with `interpolate-size`, instant where
+  that isn't supported.
 - **Whole-row links:** `.v2-row` on the row, and `.v2-row-link` on its own
   link, whose `::after` covers the row. Anything else clickable in the row
   (like **Follow live**) gets `.v2-over-row` to sit above it. Add `sr-only` text so the link says what it's for ("Results for Cardiff

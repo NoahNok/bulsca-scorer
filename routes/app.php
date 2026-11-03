@@ -376,6 +376,7 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
 
         Route::get('/users', [AdminUsersController::class, 'index'])->name('manage.admin.users.index');
         Route::get('/users/{user}', [AdminUsersController::class, 'show'])->name('manage.admin.users.show');
+        Route::post('/users/{user}/full-account', [AdminUsersController::class, 'makeFullAccount'])->name('manage.admin.users.full-account');
 
         Route::resource('serc/marking-points', AdminMarkingPointTemplatesController::class)->except(['show'])->names('manage.admin.marking-point-templates');
     });

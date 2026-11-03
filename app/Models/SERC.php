@@ -479,6 +479,8 @@ class SERC extends Event
             $results[$placeResult->entity->id]['raw'] = $placeResult->resolvedResult;
             $results[$placeResult->entity->id]['tid'] = $placeResult->entity->id;
             $results[$placeResult->entity->id]['disqualification'] = "{$placeResult->disqualifications->first()}";
+            $results[$placeResult->entity->id]['leagues'] = $placeResult->entity->leagues->pluck('id')->all();
+            $results[$placeResult->entity->id]['letter'] = $placeResult->entity instanceof CompetitionTeam ? $placeResult->entity->team : null;
         }
 
 

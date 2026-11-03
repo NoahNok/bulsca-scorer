@@ -20,6 +20,8 @@
     /* teal dark enough for small text on --v2-card */
     --v2-teal-text: #0f766e;
     --v2-tile: #111827;
+    /* text on a teal fill (the accent button): white in light, ink in dark */
+    --v2-on-teal: #ffffff;
 
     --v2-teal-soft: rgb(0 213 190 / 0.08);
     --v2-row-hover: rgb(0 213 190 / 0.08);
@@ -32,6 +34,11 @@
     --v2-warning: #b45309;
     --v2-warning-soft: #fef3c7;
     --v2-warning-text: #92400e;
+
+    /* Medals for 1st, 2nd and 3rd: the strip down a podium row's edge, and its faint tint */
+    --v2-gold: #d4a017;
+    --v2-silver: #9ca3af;
+    --v2-bronze: #c27a3a;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -44,6 +51,7 @@
             --v2-muted: #9ca3af;
             --v2-border: #1f2937;
             --v2-teal-text: #2dd4bf;
+            --v2-on-teal: #111827;
 
             --v2-teal-soft: rgb(0 213 190 / 0.12);
             --v2-row-hover: rgb(0 213 190 / 0.14);
@@ -72,6 +80,7 @@ html[data-theme="dark"] {
         --v2-muted: #9ca3af;
         --v2-border: #1f2937;
         --v2-teal-text: #2dd4bf;
+        --v2-on-teal: #111827;
 
         --v2-teal-soft: rgb(0 213 190 / 0.12);
         --v2-row-hover: rgb(0 213 190 / 0.14);
@@ -290,7 +299,8 @@ body.v2 {
     width: 100%;
     max-width: var(--v2-page-width, 76rem);
     margin: 0 auto;
-    padding: 0 1rem;
+    /* Inline only: on the public pages v2.css isn't layered, so a shorthand would beat utilities like pb-16 */
+    padding-inline: 1rem;
 }
 
 .v2-footer {
@@ -493,7 +503,7 @@ body.v2 {
 .v2-btn-accent {
     background: var(--v2-teal);
     border-color: var(--v2-teal);
-    color: var(--v2-tile);
+    color: var(--v2-on-teal);
 }
 
 .v2-btn-accent:hover {
@@ -827,6 +837,42 @@ select.v2-input {
 .v2-chip[aria-pressed='true'] .v2-badge {
     background: color-mix(in srgb, var(--v2-bg) 20%, transparent);
     color: inherit;
+}
+
+/* A split chip: the filter chip, then a link chip on its end (an arrow to the thing it filters by),
+   joined into one pill. The link takes the pressed look with its chip, divided by a hairline. */
+.v2-chip-split {
+    display: inline-flex;
+}
+
+.v2-chip-split > .v2-chip:first-child {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    padding-right: 0.6rem;
+}
+
+.v2-chip-split > .v2-chip:last-child {
+    margin-left: -1px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    padding-left: 0.5rem;
+    padding-right: 0.6rem;
+    color: var(--v2-muted);
+}
+
+.v2-chip-split > .v2-chip:last-child:hover {
+    color: var(--v2-ink);
+}
+
+.v2-chip-split:has([aria-pressed='true']) > .v2-chip:last-child {
+    border-color: var(--v2-ink);
+    border-left-color: color-mix(in srgb, var(--v2-bg) 30%, var(--v2-ink));
+    background: var(--v2-ink);
+    color: var(--v2-bg);
+}
+
+.v2-chip-split:has([aria-pressed='true']) > .v2-chip:last-child:hover {
+    background: color-mix(in srgb, var(--v2-bg) 18%, var(--v2-ink));
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1428,6 +1474,10 @@ dialog.v2-modal::backdrop {
     border-top: 0;
 }
 
+.v2-list-columns.v2-list > li {
+    border-bottom: 0;
+}
+
 /* Older and Newer under a sheet split into pages */
 .v2-pager {
     display: flex;
@@ -1650,6 +1700,32 @@ dialog.v2-modal::backdrop {
 }
 
 /*
+ * Podium rows: .is-place-1/2/3 on a <tr> runs a gold, silver or bronze strip down its first cell and tints the
+ * row. The tint is layered over the card so a sticky first cell stays opaque.
+ */
+.v2-table tr.is-place-1 {
+    --v2-medal: var(--v2-gold);
+}
+
+.v2-table tr.is-place-2 {
+    --v2-medal: var(--v2-silver);
+}
+
+.v2-table tr.is-place-3 {
+    --v2-medal: var(--v2-bronze);
+}
+
+.v2-table tr:is(.is-place-1, .is-place-2, .is-place-3) > :is(td, th) {
+    --v2-medal-tint: color-mix(in srgb, var(--v2-medal) 12%, transparent);
+    background: linear-gradient(var(--v2-medal-tint), var(--v2-medal-tint)), var(--v2-card);
+}
+
+/* The first cell, not :first-child, which is the <template> in a row Alpine's x-for builds */
+.v2-table tr:is(.is-place-1, .is-place-2, .is-place-3) > :nth-child(1 of td, th) {
+    box-shadow: inset 4px 0 0 var(--v2-medal);
+}
+
+/*
  * The Results tab (landing/competition/results.blade.php): the tabs, rows of chips to pick from, the picked
  * table's heading, and what's in its cells.
  */
@@ -1735,7 +1811,7 @@ button.v2-link-inline {
 
 /*
  * A SERC's breakdown (landing/competition/serc-breakdown.blade.php): a wide .v2-table with sticky headings and
- * Team column, marking points written sideways, each Objective's columns ruled off, the top three tinted, and the
+ * Team column, marking points written sideways, each Objective's columns ruled off, the top three as podium rows, and the
  * pointer's column lit. "Analysis" colours each mark itself (public/js/analysis.js).
  */
 .v2-results-head-title {
@@ -1766,6 +1842,31 @@ button.v2-link-inline {
 
 .v2-breakdown-feedback > div {
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+    margin-top: 0;
+    padding-top: 1rem;
+}
+
+/* Opening and closing ease its height and fade it (where ::details-content is supported; elsewhere it's instant) */
+.v2-breakdown-feedback {
+    interpolate-size: allow-keywords;
+}
+
+.v2-breakdown-feedback::details-content {
+    block-size: 0;
+    overflow: clip;
+    opacity: 0;
+    transition: block-size 250ms ease, opacity 250ms ease, content-visibility 250ms allow-discrete;
+}
+
+.v2-breakdown-feedback[open]::details-content {
+    block-size: auto;
+    opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .v2-breakdown-feedback::details-content {
+        transition: none;
+    }
 }
 
 .v2-breakdown-feedback p,
@@ -1784,6 +1885,16 @@ button.v2-link-inline {
 
 .v2-breakdown-tools .v2-field {
     width: min(100%, 20rem);
+}
+
+.v2-breakdown-tools .v2-field+.v2-field {
+    margin-top: 0;
+}
+
+/* The Show dropdown beside the search: All Teams, one of the competition's Leagues or a Team letter */
+.v2-breakdown-tools .v2-breakdown-show {
+    width: auto;
+    min-width: 10rem;
 }
 
 .v2-breakdown-tools .v2-btn {
@@ -1867,21 +1978,26 @@ button.v2-link-inline {
     transition: background-color 150ms;
 }
 
-.v2-breakdown tbody:not(.analysis) tr:is(.place-1, .place-2, .place-3) :is(td, th) {
-    background: var(--v2-row-hover);
-}
-
-.v2-breakdown tbody:not(.analysis) tr.place-1 th {
-    color: var(--v2-teal-text);
-}
-
 .v2-breakdown tbody:not(.analysis) td.is-col,
 .v2-breakdown tbody:not(.analysis) tr:hover :is(td, th) {
-    background: var(--v2-row-hover);
+    /* Over the card, so the sticky Team column stays opaque */
+    background: linear-gradient(var(--v2-row-hover), var(--v2-row-hover)), var(--v2-card);
 }
 
-/* Analysis paints marks red to green, so they're read in ink whatever the theme */
+/* Analysis fades the marks' colours in and out */
+.v2-breakdown td.is-mark {
+    transition: background-color 200ms ease, color 200ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .v2-breakdown td.is-mark {
+        transition: none;
+    }
+}
+
+/* Analysis paints marks red to green (the page sets --analysis), so they're read in ink whatever the theme */
 .v2-breakdown tbody.analysis td.is-mark {
+    background: var(--analysis);
     color: var(--v2-tile);
     font-weight: 600;
 }

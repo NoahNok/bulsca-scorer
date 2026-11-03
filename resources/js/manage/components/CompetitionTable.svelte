@@ -8,6 +8,7 @@
     import { shortDate } from "@/lib/dates";
     import RowTable, { rowLink } from "@/manage/components/RowTable.svelte";
     import type { ManagedCompetition } from "@/manage/types";
+    import { Link } from "@inertiajs/svelte";
     import type { Snippet } from "svelte";
 
     let { competitions, actions }: { competitions: T[]; actions?: Snippet<[T]> } = $props();
@@ -17,7 +18,7 @@
     {#snippet row(comp)}
         <td class="w-28 text-sm font-semibold whitespace-nowrap text-v2-muted max-sm:w-22">{shortDate(comp.when)}</td>
         <td>
-            <a href={comp.url} class={comp.past ? "v2-row-link font-bold wrap-anywhere text-v2-muted" : rowLink}>{comp.name}</a>
+            <Link href={comp.url} class={comp.past ? "v2-row-link font-bold wrap-anywhere text-v2-muted" : rowLink}>{comp.name}</Link>
             {#if comp.organisationName}<span class="ml-2 text-sm text-v2-muted max-sm:hidden">{comp.organisationName}</span>{/if}
         </td>
         <td>

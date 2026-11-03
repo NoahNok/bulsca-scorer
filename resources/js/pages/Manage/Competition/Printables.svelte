@@ -26,7 +26,10 @@
             sercMarking: Pack;
             sercMarshalling: Pack;
         };
-        roughMarkSheets: { sercs: { id: number; name: string; url: string }[]; unavailable: Unavailable | null };
+        roughMarkSheets: {
+            sercs: { id: number; name: string; url: string }[];
+            unavailable: Unavailable | null;
+        };
     } = $props();
 
     let picker: LinkPicker;
@@ -36,14 +39,30 @@
     function pickLayout() {
         const { url, packedUrl } = packs.chiefTimekeeper;
         if (!url || !packedUrl) return;
-        picker.open("Chief Timekeeper Pack", "How should the heats be laid out?", [
-            { name: "One heat per page", description: "A sheet per heat, to hand out heat by heat", url },
-            { name: "Packed", description: "Several heats to a page, to save paper", url: packedUrl },
-        ]);
+        picker.open(
+            "Chief Timekeeper Pack",
+            "How should the heats be laid out?",
+            [
+                {
+                    name: "One heat per page",
+                    description: "A sheet per heat, to hand out heat by heat",
+                    url,
+                },
+                {
+                    name: "Packed",
+                    description: "Several heats per page, reducing paper usage",
+                    url: packedUrl,
+                },
+            ],
+        );
     }
 
     function pickSerc() {
-        picker.open("Rough mark sheets", "Which SERC are they for?", sercs.map((serc) => ({ name: serc.name, url: serc.url })));
+        picker.open(
+            "Rough mark sheets",
+            "Which SERC are they for?",
+            sercs.map((serc) => ({ name: serc.name, url: serc.url })),
+        );
     }
 
     const heading = "text-lg font-extrabold uppercase";
@@ -59,26 +78,40 @@
 {#snippet label(name: string, description?: string)}
     <span class="min-w-0">
         <span class="block font-bold wrap-anywhere">{name}</span>
-        {#if description}<span class="block text-sm text-v2-muted">{description}</span>{/if}
+        {#if description}<span class="block text-sm text-v2-muted"
+                >{description}</span
+            >{/if}
     </span>
 {/snippet}
 
 <!-- A row that opens its PDF, or a dialog of options when `onpick` is given -->
-{#snippet printable(name: string, description: string, pack: Pack, onpick?: () => void)}
+{#snippet printable(
+    name: string,
+    description: string,
+    pack: Pack,
+    onpick?: () => void,
+)}
     <li>
         {#if pack.unavailable}
             <div class="flex items-center gap-3 px-2 py-[0.8rem] text-v2-muted">
                 {@render label(name, description)}
                 <span class="ml-auto shrink-0 text-sm font-semibold">
                     {#if pack.unavailable.url}
-                        <Link href={pack.unavailable.url} class="v2-link-inline">{pack.unavailable.reason}</Link>
+                        <Link href={pack.unavailable.url} class="v2-link-inline"
+                            >{pack.unavailable.reason}</Link
+                        >
                     {:else}
                         {pack.unavailable.reason}
                     {/if}
                 </span>
             </div>
         {:else if onpick}
-            <button type="button" class={row} aria-haspopup="dialog" onclick={onpick}>
+            <button
+                type="button"
+                class={row}
+                aria-haspopup="dialog"
+                onclick={onpick}
+            >
                 {@render label(name, description)}
                 <RowIcon />
             </button>
@@ -93,7 +126,8 @@
 
 <h2 class="text-2xl font-extrabold uppercase">Printables</h2>
 <p class="mt-[0.35rem] mb-6 text-[0.9375rem]/[1.6] text-v2-muted">
-    Packs for the officials on the day, filled in from your heats and draw. Each opens as a PDF in a new tab.
+    Packs for the officials on the day, filled in from your heats and draw. Each
+    opens as a PDF in a new tab.
 </p>
 
 <div class="grid gap-10 min-[56rem]:grid-cols-2 min-[56rem]:items-start">
@@ -106,19 +140,34 @@
                 packs.chiefTimekeeper,
                 pickLayout,
             )}
-            {@render printable("Marshalling Pack", "Entity names grouped and ordered by heat", packs.speedMarshalling)}
+            {@render printable(
+                "Marshalling Pack",
+                "Entity names grouped and ordered by heat",
+                packs.speedMarshalling,
+            )}
         </ul>
     </section>
 
     <section aria-labelledby="pr-sercs">
         <h3 id="pr-sercs" class="mb-2 {heading}">SERCs</h3>
         <ul class={list}>
-            {@render printable("Marking Pack", "Marking sheets for every Entity in every SERC, in draw order", packs.sercMarking)}
-            {@render printable("Marshalling Pack", "Entity names grouped and ordered by draw", packs.sercMarshalling)}
+            {@render printable(
+                "Marking Pack",
+                "Marking sheets for every Entity in every SERC, in draw order",
+                packs.sercMarking,
+            )}
+            {@render printable(
+                "Marshalling Pack",
+                "Entity names grouped and ordered by draw",
+                packs.sercMarshalling,
+            )}
             {@render printable(
                 "Rough mark sheets",
                 "Blank tables for judges to rough-mark against one SERC's Objectives",
-                { url: sercs.length === 1 ? sercs[0].url : null, unavailable: roughMarkSheets.unavailable },
+                {
+                    url: sercs.length === 1 ? sercs[0].url : null,
+                    unavailable: roughMarkSheets.unavailable,
+                },
                 sercs.length > 1 ? pickSerc : undefined,
             )}
         </ul>

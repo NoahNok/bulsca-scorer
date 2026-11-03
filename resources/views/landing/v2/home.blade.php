@@ -44,7 +44,7 @@
         }
 
         /* Two identical runs of words: sliding one run's width brings the second exactly where the first
-           started, so the loop never shows a seam or runs out */
+                       started, so the loop never shows a seam or runs out */
         .f-marquee-track {
             position: absolute;
             top: 0;
@@ -204,19 +204,19 @@
                 <div>
                     <h3>Organisers</h3>
                     <p>Set up SERCs and speed events, take entries, generate heats and draws, and publish results as soon
-                        as they're in. Give other organisers just the access they need, and group competitions under your
+                        as they're in. Invite collaborators, and group competitions under your
                         organisation.</p>
                     <a href="{{ route('register') }}" class="v2-link">Create an account</a>
                 </div>
                 <div>
                     <h3>Competitors</h3>
-                    <p>Follow the day live, see results the moment they're released, and use WhatIf to see how a
-                        different time or mark would have changed the standings.</p>
+                    <p>Follow live, see your results as soon as they are released, and use WhatIf to see how you could have
+                        done.</p>
                 </div>
                 <div>
                     <h3>Officials</h3>
-                    <p>Judge, time and referee from your phone with Digital Judge. Submit DQs and penalties poolside and
-                        get the referee's announcements as they happen.</p>
+                    <p>Judge, time and mark events from your phone with Digital Judge. Submit DQs and penalties poolside in
+                        real-time.</p>
                     <a href="{{ route('dj.home') }}" class="v2-link">Open Digital Judge</a>
                 </div>
             </div>

@@ -105,7 +105,12 @@
                     {/snippet}
                 </RowTable>
             {:else}
-                <p class="text-[0.9375rem]/[1.6] text-v2-muted">No Master sheets yet.</p>
+                <EmptyState>
+                    No Master sheets yet. Make one to rank Clubs across your Results sheets.
+                    {#if canCreate}
+                        <div class="mt-4"><Link href={createMaster(comp).url} class="v2-btn">New Master sheet</Link></div>
+                    {/if}
+                </EmptyState>
             {/if}
         </section>
     </div>

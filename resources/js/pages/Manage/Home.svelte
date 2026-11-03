@@ -59,6 +59,13 @@
     }
 </script>
 
+{#snippet orgChip(org: ManagedOrganisation)}
+    <button type="button" class="v2-chip" aria-pressed={filter === org.id} onclick={() => choose(org.id)}>
+        {#if org.logo}<img src={org.logo} alt="" class="size-5 rounded-full" />{/if}
+        {org.name}
+    </button>
+{/snippet}
+
 <svelte:head>
     <title>Management - Scoring.Events</title>
 </svelte:head>
@@ -79,7 +86,7 @@
         <ul class="grid grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] gap-3">
             {#each recent as comp (comp.id)}
                 <li>
-                    <a
+                    <Link
                         href={comp.url}
                         class="group flex h-full flex-col gap-1 rounded-xl border border-v2-border bg-v2-card px-4 py-3.5 transition-colors hover:bg-v2-row-hover focus-visible:bg-v2-row-hover motion-reduce:transition-none"
                     >
@@ -96,7 +103,7 @@
                             {/if}
                             · {comp.where}
                         </span>
-                    </a>
+                    </Link>
                 </li>
             {/each}
         </ul>
@@ -111,10 +118,18 @@
             <div class="mb-4 flex flex-wrap gap-2" role="group" aria-label="Filter by organisation">
                 <button type="button" class="v2-chip" aria-pressed={filter === "all"} onclick={() => choose("all")}>All</button>
                 {#each organisations as org (org.id)}
-                    <button type="button" class="v2-chip" aria-pressed={filter === org.id} onclick={() => choose(org.id)}>
-                        {#if org.logo}<img src={org.logo} alt="" class="size-5 rounded-full" />{/if}
-                        {org.name}
-                    </button>
+                    {#if org.url}
+                        <span class="v2-chip-split">
+                            {@render orgChip(org)}
+                            <Link href={org.url} class="v2-chip" aria-label="Open {org.name}" title="Open {org.name}">
+                                <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <path d="M5 12h14M13 6l6 6-6 6" />
+                                </svg>
+                            </Link>
+                        </span>
+                    {:else}
+                        {@render orgChip(org)}
+                    {/if}
                 {/each}
                 {#if hasPersonal}
                     <button type="button" class="v2-chip" aria-pressed={filter === "personal"} onclick={() => choose("personal")}>Personal</button>

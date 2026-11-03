@@ -5,6 +5,7 @@
 -->
 <script lang="ts">
     import { confirm } from "@/lib/confirm";
+    import EmptyState from "@/manage/components/EmptyState.svelte";
     import SidebarPage from "@/manage/components/SidebarPage.svelte";
     import RowTable, { rowLink } from "@/manage/components/RowTable.svelte";
     import type { CompetitionEvent, CompetitionHeader } from "@/manage/types";
@@ -95,11 +96,19 @@
 
 <SidebarPage>
     <div class="flex flex-col gap-10">
+        {#if !events && !links}
+            <!-- Access that covers only the Overview: nothing else here to show -->
+            <EmptyState>
+                Your access to this competition doesn't include anything shown here. Ask one of its Organisers if you need
+                more.
+            </EmptyState>
+        {/if}
+
         {#if events}
             <section aria-labelledby="o-events">
                 <div class="mb-3 flex flex-wrap items-center justify-between gap-4">
                     {@render heading("o-events", "Events")}
-                    <a href={addEventUrl} class="v2-btn v2-btn-accent v2-btn-sm">Add event</a>
+                    <a href={addEventUrl} class="v2-btn v2-btn-sm">Add event</a>
                 </div>
                 {#if events.length > 0}
                     <RowTable rows={eventRows} columns={["Event"]}>

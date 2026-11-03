@@ -4,7 +4,12 @@
     itself: `onchange` gets the filters to show, so the page decides how they reach the url.
 -->
 <script lang="ts">
-    import type { ActivityChipGroup, ActivityFilters, ActivityParam, ActivityPicker } from "@/manage/types";
+    import type {
+        ActivityChipGroup,
+        ActivityFilters,
+        ActivityParam,
+        ActivityPicker,
+    } from "@/manage/types";
     import { History, X } from "@lucide/svelte";
 
     let {
@@ -23,11 +28,15 @@
     } = $props();
 
     function add(param: ActivityParam, value: string) {
-        if (value && !filters[param].includes(value)) onchange({ ...filters, [param]: [...filters[param], value] });
+        if (value && !filters[param].includes(value))
+            onchange({ ...filters, [param]: [...filters[param], value] });
     }
 
     function remove(param: ActivityParam, value: string) {
-        onchange({ ...filters, [param]: filters[param].filter((v) => v !== value) });
+        onchange({
+            ...filters,
+            [param]: filters[param].filter((v) => v !== value),
+        });
     }
 
     const muted = "text-xs font-semibold text-v2-muted";
@@ -53,7 +62,9 @@
                     {:else if group.options.length > 0}
                         <optgroup label={group.label}>
                             {#each group.options as option (option.value)}
-                                <option value={option.value}>{option.label}</option>
+                                <option value={option.value}
+                                    >{option.label}</option
+                                >
                             {/each}
                         </optgroup>
                     {/if}
@@ -68,17 +79,27 @@
             class="v2-chip inline-flex items-center gap-1.5"
             aria-pressed={history.active}
             title="Marks, Times and Places"
-            onclick={() => onchange({ ...filters, activity: history.active ? [] : history.value })}
+            onclick={() =>
+                onchange({
+                    ...filters,
+                    activity: history.active ? [] : history.value,
+                })}
         >
-            <History size={14} aria-hidden="true" />History
+            <History size={14} aria-hidden="true" />Event History
         </button>
         {#each chipGroups as group, g (group.label)}
             {#if g > 0}<span class={muted}>and</span>{/if}
-            <span class="flex flex-wrap items-center gap-1.5" role="group" aria-label={group.label}>
+            <span
+                class="flex flex-wrap items-center gap-1.5"
+                role="group"
+                aria-label={group.label}
+            >
                 <span class={muted}>{group.label}</span>
                 {#each group.chips as chip, c (chip.value)}
                     {#if c > 0}<span class={muted}>or</span>{/if}
-                    <span class="inline-flex items-center gap-1 rounded-md bg-v2-sunk py-0.5 pr-1 pl-2 text-sm font-semibold">
+                    <span
+                        class="inline-flex items-center gap-1 rounded-md bg-v2-sunk py-0.5 pr-1 pl-2 text-sm font-semibold"
+                    >
                         {chip.label}
                         <button
                             type="button"
@@ -93,7 +114,11 @@
             </span>
         {/each}
         {#if chipGroups.length > 0}
-            <button type="button" class="v2-link-muted cursor-pointer text-sm" onclick={() => onchange({ related: [], by: [], activity: [] })}>
+            <button
+                type="button"
+                class="v2-link-muted cursor-pointer text-sm"
+                onclick={() => onchange({ related: [], by: [], activity: [] })}
+            >
                 Clear
             </button>
         {/if}

@@ -168,7 +168,7 @@ class SpeedEventController extends Controller
 
         (new SpeedResultEntry($comp, $event))->save($rows);
 
-        return back()->with('success', 'Results saved');
+        return redirect()->route('manage.competitions.events.speeds.show', [$comp, $event])->with('success', 'Results saved');
     }
 
     /**

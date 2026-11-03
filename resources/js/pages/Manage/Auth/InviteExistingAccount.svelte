@@ -3,7 +3,10 @@
     the competition or organisation. Someone without one gets InviteNewAccount.
 -->
 <script lang="ts">
-    import { accept, decline } from "@/actions/App/Http/Controllers/AccountInviteController";
+    import {
+        accept,
+        decline,
+    } from "@/actions/App/Http/Controllers/AccountInviteController";
     import DeclineInviteDialog from "@/manage/components/DeclineInviteDialog.svelte";
     import LegalNotice from "@/manage/components/LegalNotice.svelte";
     import SubmitButton from "@/manage/components/SubmitButton.svelte";
@@ -12,7 +15,12 @@
     let {
         invite,
     }: {
-        invite: { id: string; email: string; name: string; to: "competition" | "organisation" };
+        invite: {
+            id: string;
+            email: string;
+            name: string;
+            to: "competition" | "organisation";
+        };
     } = $props();
 
     const args = $derived({ invite: invite.id, email: invite.email });
@@ -26,7 +34,8 @@
 
 <h1 class="a-title">Join {invite.name}</h1>
 <p class="a-lead">
-    You've been invited as an Organiser of this {invite.to}. Accepting adds it to your account, {invite.email}.
+    You've been invited to this {invite.to}. Accepting this invite will add it
+    to your account: <strong>{invite.email}</strong>.
 </p>
 
 <Form action={accept(args)} class="a-form">
@@ -37,7 +46,11 @@
 </Form>
 
 <p class="a-aside">
-    Not for you? <button type="button" class="v2-link cursor-pointer" onclick={() => declineDialog?.open()}>Decline invite</button>
+    Not for you? <button
+        type="button"
+        class="v2-link cursor-pointer"
+        onclick={() => declineDialog?.open()}>Decline invite</button
+    >
 </p>
 
 <DeclineInviteDialog bind:this={declineDialog} action={decline(args)} />

@@ -81,7 +81,8 @@
         return official.status === "online" ? "seen" : official.status;
     }
 
-    const isOnline = (status: Status) => status === "online" || status === "idle";
+    const isOnline = (status: Status) =>
+        status === "online" || status === "idle";
     const joinedYet = (status: Status) => isOnline(status) || status === "seen";
 
     const counts = $derived({
@@ -309,13 +310,17 @@
         <span
             class="inline-flex items-center gap-2 text-sm font-semibold whitespace-nowrap text-v2-teal-text"
         >
-            <span class="v2-dot is-live relative -top-px" aria-hidden="true"></span>Online now
+            <span class="v2-dot is-live relative -top-px" aria-hidden="true"
+            ></span>Online now
         </span>
     {:else if now === "idle"}
         <span
             class="inline-flex items-center gap-2 text-sm font-semibold whitespace-nowrap text-v2-muted"
         >
-            <span class="v2-dot relative -top-px bg-[#fb923c]" aria-hidden="true"></span>Online, idle
+            <span
+                class="v2-dot relative -top-px bg-[#fb923c]"
+                aria-hidden="true"
+            ></span>Online, idle
         </span>
     {:else if now === "seen"}
         <span class="text-sm whitespace-nowrap text-v2-muted"
@@ -465,7 +470,10 @@
                                     </button>
                                 </td>
                                 <td class="whitespace-nowrap">
-                                    <OfficialRoleBadge role={official.role} {roles} />
+                                    <OfficialRoleBadge
+                                        role={official.role}
+                                        {roles}
+                                    />
                                 </td>
                                 <td class="max-sm:hidden"
                                     >{@render status(official)}</td
@@ -486,7 +494,9 @@
                 {/if}
             </div>
         {:else}
-            <EmptyState class="mt-5">No officials yet. Add one, or share the Digital Judge PIN.</EmptyState>
+            <EmptyState class="mt-5"
+                >No officials yet. Add one, or share the Digital Judge PIN.</EmptyState
+            >
         {/if}
     </section>
 
@@ -506,28 +516,28 @@
                         {digitalJudge.pin}
                     </p>
                     <p class="mt-3 text-sm/[1.6] text-v2-muted">
-                        They sign in at <a
+                        Officials sign in at <a
                             href={digitalJudge.judgeUrl}
                             target="_blank"
                             rel="noopener"
                             class="v2-link-inline">{judgeHost}</a
                         >
-                        and enter it, or scan the
+                        and enterthe pin, or scan the
                         <a
                             href={digitalJudge.qrUrl}
                             target="_blank"
                             rel="noopener"
                             class="v2-link-inline">printable QR code</a
-                        >. People you add here don't need it.
+                        >. Invited officials don't need to do this.
                     </p>
                 {:else}
                     <p class="mt-3 text-sm/[1.6] text-v2-muted">
-                        Officials can join with the Digital Judge PIN once it's
-                        on. Turn it on from the
+                        Officials can join with the DigtialJudge pin once
+                        enabled on the
                         <a
                             href={digitalJudge.overviewUrl}
                             class="v2-link-inline">Overview</a
-                        >. You can add people here before then.
+                        > page. You can add people here before then.
                     </p>
                 {/if}
             </section>

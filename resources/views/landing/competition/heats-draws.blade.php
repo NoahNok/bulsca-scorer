@@ -1,7 +1,7 @@
 {{--
     A competition's Heats & Draws tab: the speed events' Heats (one event at a time when heats are per event) and
     the SERCs' Draw, each only once the Organisers release it. Searching finds a Team in every event's Heats and
-    in the Draw: heats and Tanks without it hide, and its lanes and places light up.
+    in the Draw: heats and Tanks without it hide, and within the rest only its lanes and places stay.
 --}}
 @extends('landing.competition.layout')
 
@@ -29,6 +29,8 @@
         search: '',
         get term() { return this.search.trim().toLowerCase() },
         matches(name) { return this.term !== '' && name.includes(this.term) },
+        // A lane or place shows while nothing's searched, or when it's a match
+        shows(name) { return this.term === '' || name.includes(this.term) },
         // A heat or Tank shows while nothing's searched, or when it holds a match
         holds(names) { return this.term === '' || names.includes(this.term) },
     }">
@@ -100,7 +102,7 @@
                                                             @php
                                                                 $laneName = $name(collect($lanes)->firstWhere('lane', $i)?->entity);
                                                             @endphp
-                                                            <li :class="matches(@js(strtolower($laneName))) && 'is-match'">
+                                                            <li x-show="shows(@js(strtolower($laneName)))" :class="matches(@js(strtolower($laneName))) && 'is-match'">
                                                                 <span class="v2-hd-num">{{ $i }}</span>
                                                                 <span @class(['v2-hd-empty' => $laneName === ''])>{{ $laneName ?: 'Empty' }}</span>
                                                             </li>
@@ -140,7 +142,7 @@
                                             @endif
                                             <ol>
                                                 @foreach ($draw as $entry)
-                                                    <li :class="matches(@js(strtolower($name($entry->entity)))) && 'is-match'">
+                                                    <li x-show="shows(@js(strtolower($name($entry->entity))))" :class="matches(@js(strtolower($name($entry->entity)))) && 'is-match'">
                                                         <span class="v2-hd-num">{{ $entry->draw }}</span>
                                                         <span>{{ $name($entry->entity) ?: '-' }}</span>
                                                     </li>
