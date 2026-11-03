@@ -31,10 +31,9 @@ use App\Http\Controllers\Manage\OrganisationCreateController;
 use App\Http\Controllers\Manage\OrganisationOfficialsController;
 use App\Http\Controllers\Manage\OrganisationScoringController;
 use App\Http\Controllers\Manage\ViolationCodesController;
-use App\Http\Controllers\OverallResultsController;
 use App\Http\Controllers\PrintableController;
+use App\Http\Controllers\ResultsPrintoutController;
 use App\Http\Controllers\SERCController;
-use App\Http\Controllers\SpeedsEventController;
 use App\Http\Middleware\CompetitionOwnsRouteModels;
 use App\Http\Middleware\RecordCompetitionVisit;
 use App\Models\Competition;
@@ -158,7 +157,7 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
                         }
                     });
 
-                    Route::get('/{event}/print-results', [SpeedsEventController::class, 'printResults'])->name('comps.view.events.speeds.printResults');
+                    Route::get('/{event}/print-results', [ResultsPrintoutController::class, 'speedEvent'])->name('comps.view.events.speeds.printResults');
                     Route::get('/{event}/digital-judge-toggle', [DigitalJudgeController::class, 'speedToggle'])->name('dj.speedToggle');
                 });
 
@@ -195,7 +194,7 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
                             }
                         });
 
-                        Route::get('/print-results', [SERCController::class, 'printResults'])->name('comps.view.events.sercs.printResults');
+                        Route::get('/print-results', [ResultsPrintoutController::class, 'serc'])->name('comps.view.events.sercs.printResults');
 
                         Route::middleware('can:access,comp,"serc"')->group(function () {
                             Route::get('/digital-judge-toggle', [DigitalJudgeController::class, 'sercToggle'])->name('dj.sercToggle');
@@ -209,7 +208,7 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
 
 
             // RESULTS: Svelte pages for the overview, each Results sheet and Master sheet, and their New/Edit
-            // forms. The print pages stay Blade.
+            // forms, and the sheets' Results printouts (PDFs).
             Route::prefix('/results')->middleware('can:access,comp,"results"')->group(function () {
                 Route::name('manage.competitions.results')->group(function () {
                     Route::get('', [ResultSheetsController::class, 'index']);
@@ -224,6 +223,8 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
                         Route::post('', [ResultSheetsController::class, 'update'])->name('.update');
                         Route::post('/visibility', [ResultSheetsController::class, 'visibility'])->name('.visibility');
                         Route::delete('', [ResultSheetsController::class, 'destroy'])->name('.destroy');
+                        Route::get('/print/standings', [ResultsPrintoutController::class, 'standings'])->name('.print.standings');
+                        Route::get('/print/breakdown', [ResultsPrintoutController::class, 'breakdown'])->name('.print.breakdown');
                     });
                 });
 
@@ -242,7 +243,7 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
 
                 Route::get('/add', fn (Competition $comp) => redirect(route('manage.competitions.results.create', $comp), 301))->name('manage.competitions.results.old.add');
 
-                Route::get('/print-all', [OverallResultsController::class, 'printAll'])->name('comps.results.print-all');
+                Route::get('/print-all', [ResultsPrintoutController::class, 'allSheets'])->name('comps.results.print-all');
             });
 
             // HEATS AND SERC ORDER
@@ -361,8 +362,8 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
 
 
         Route::get('/comp/results/view-schema/{sheet}', [ResultSheetsController::class, 'old'])->name('manage.competitions.results.old.view-schema');
-        Route::get('/comp/results/view-schema/{schema}/print', [OverallResultsController::class, 'viewForPrint'])->name("comps.results.view-schema-print");
-        Route::get('/comp/results/view-schema/{schema}/print-basic', [OverallResultsController::class, 'viewForPrintBasic'])->name("comps.results.view-schema-print-basic");
+        Route::get('/comp/results/view-schema/{sheet}/print', [ResultsPrintoutController::class, 'old'])->defaults('kind', 'breakdown')->name('manage.competitions.results.old.print-breakdown');
+        Route::get('/comp/results/view-schema/{sheet}/print-basic', [ResultsPrintoutController::class, 'old'])->defaults('kind', 'standings')->name('manage.competitions.results.old.print-standings');
     });
 
 

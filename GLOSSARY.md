@@ -136,6 +136,18 @@ _Avoid_: Printable, sheet (when meaning the whole document)
 A blank table for a judge to rough-mark every Entity against one of a SERC's Objectives, before the marks are entered. Printed per SERC; not a Pack, as it serves a judge rather than a role.
 _Avoid_: Raw marking sheet
 
+**Results printout**:
+A PDF of the rankings for one Event or Results sheet, for noticeboards, teams and the record. Not a Pack, as it serves no role on the day.
+_Avoid_: Pack, sheet (when meaning the PDF), printable
+
+**Standings**:
+A Results sheet's final positions and points, without the per-Event breakdown.
+_Avoid_: Places
+
+**Breakdown**:
+A Results sheet with every Event's points and position beside the totals.
+_Avoid_: Detailed
+
 ### Results
 
 **Mark**:
@@ -147,7 +159,7 @@ A team's recorded time in a speed event.
 _Avoid_: Result
 
 **Place**:
-A team's position in a heat's order of finish (OOF).
+A team's position in a heat's order of finish (OOF). Not a final position on a Results sheet or Event.
 _Avoid_: OOF (when meaning the value)
 
 **Violation**:

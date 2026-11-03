@@ -5,14 +5,10 @@ namespace App\Pdf;
 use App\Models\Competition;
 use App\Models\Pool;
 use App\Models\SERC;
-use Illuminate\Support\Str;
-use Spatie\Browsershot\Browsershot;
-use Spatie\LaravelPdf\Enums\Format;
-use Spatie\LaravelPdf\Facades\Pdf;
 use Spatie\LaravelPdf\PdfBuilder;
 
 /**
- * Builds each Pack as a PDF. See docs/adr/0002-browsershot-for-pdf-packs.md.
+ * Builds each Pack as a PDF, through CompetitionPdf.
  */
 class CompetitionPdfCreator
 {
@@ -65,17 +61,7 @@ class CompetitionPdfCreator
 
     private function pack(string $view, string $packName, array $data): PdfBuilder
     {
-        $shared = ['comp' => $this->comp, 'packName' => $packName];
-
-        return Pdf::view($view, [...$data, ...$shared])
-            ->headerView('pdfs.partials.header', $shared)
-            ->footerView('pdfs.partials.footer')
-            ->format(Format::A4)
-            ->margins(20, 10, 15, 10)
-            // Packs need no JavaScript, and Chrome may run without its sandbox (LARAVEL_PDF_NO_SANDBOX),
-            // so don't run any script that organiser-entered HTML might carry
-            ->withBrowsershot(fn(Browsershot $browsershot) => $browsershot->disableJavascript())
-            ->inline(Str::slug("{$this->comp->name} {$packName}") . '.pdf');
+        return CompetitionPdf::make($this->comp, $view, $packName, $data);
     }
 
     public function chiefTimekeeper(bool $onePerPage = true): PdfBuilder

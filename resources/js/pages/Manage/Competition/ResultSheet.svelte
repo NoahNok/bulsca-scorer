@@ -1,8 +1,9 @@
 <!--
     A Results sheet's page (manage.competitions.results.show), in CompetitionLayout: "← Results", its name,
     then its ranking with a search (or what went wrong working it out). The sticky actions column has
-    Edit, the "Shown in results" switch, the two print pages, Refresh cache for Admins and Delete (the
-    name typed out, in a dialog naming any Master sheets it's taken out of), then how the sheet is built.
+    Edit, the "Shown in results" switch, its Standings and Breakdown printouts (PDFs), Refresh cache
+    for Admins and Delete (the name typed out, in a dialog naming any Master sheets it's taken out
+    of), then how the sheet is built.
 -->
 <script lang="ts">
     import { destroy, edit, index, visibility } from "@/actions/App/Http/Controllers/Manage/ResultSheetsController";
@@ -23,8 +24,8 @@
         error,
         isAdmin,
         masters,
-        printPlacesUrl,
-        printDetailedUrl,
+        printStandingsUrl,
+        printBreakdownUrl,
         canCreate,
         unconfirmed,
     }: {
@@ -46,8 +47,8 @@
         isAdmin: boolean;
         /** Master sheets built on it */
         masters: string[];
-        printPlacesUrl: string;
-        printDetailedUrl: string;
+        printStandingsUrl: string;
+        printBreakdownUrl: string;
         /** False while a Digitally Judged Event waits to be confirmed */
         canCreate: boolean;
         unconfirmed: UnconfirmedEvent[];
@@ -142,14 +143,14 @@
 
             <ul class="mt-5 border-t border-v2-border *:border-b *:border-v2-border">
                 <li>
-                    <a href={printPlacesUrl} target="_blank" rel="noopener" class={sidebarRow}>
-                        <span>Print places<span class="block text-sm font-normal text-v2-muted">Final places and points only</span></span>
+                    <a href={printStandingsUrl} target="_blank" rel="noopener" class={sidebarRow}>
+                        <span>Print standings<span class="block text-sm font-normal text-v2-muted">Final positions and points only</span></span>
                         <RowIcon icon="external" />
                     </a>
                 </li>
                 <li>
-                    <a href={printDetailedUrl} target="_blank" rel="noopener" class={sidebarRow}>
-                        <span>Print detailed<span class="block text-sm font-normal text-v2-muted">Every event's places and points, with the totals</span></span>
+                    <a href={printBreakdownUrl} target="_blank" rel="noopener" class={sidebarRow}>
+                        <span>Print breakdown<span class="block text-sm font-normal text-v2-muted">Every Event's points and position, with the totals</span></span>
                         <RowIcon icon="external" />
                     </a>
                 </li>

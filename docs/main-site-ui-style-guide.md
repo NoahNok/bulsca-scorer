@@ -91,19 +91,26 @@ Pages set `@section('title')` and fill `@section('content')`.
   `QrCode` facade). The Digital Judge one lives on the printable
   `digitaljudge/qrs.blade.php` page (`dj.qrs`); link to that rather than
   building another.
-- **Packs (printable PDFs):** build them in `App\Pdf\CompetitionPdfCreator`
-  with its `pack()` helper, which renders a view extending
-  `pdfs/layout.blade.php` to an inline A4 PDF with a running header and page
-  numbers. Don't call `window.print()`. In the view, wrap each new-page group
-  (a Pool, event or SERC) in `.pack-section` and each heat or draw in
-  `.pack-block` so it never splits across pages; add `.pack-page` for one block
-  per page. `npm install` downloads Chrome into `.cache/puppeteer`; if it won't
+- **PDFs (Packs and Results printouts):** every PDF goes through
+  `App\Pdf\CompetitionPdf::make()`, which renders a view extending
+  `pdfs/layout.blade.php` to an inline A4 PDF (portrait or landscape) with a
+  running header (the title, and PROVISIONAL when asked) and page numbers.
+  Don't call `window.print()`. Packs are built in `App\Pdf\CompetitionPdfCreator`
+  and fill `@section('cover')` for a cover page; Results printouts (an Event's
+  or a Results sheet's rankings) are built in `App\Pdf\ResultsPdfCreator`, have
+  no cover, say PROVISIONAL while results are, and show
+  `pdfs/results/empty.blade.php` ("No results yet") when there's nothing to
+  rank. In the view, wrap each new-page group (a Pool, event, SERC, League or
+  sheet) in `.pack-section` and each heat or draw in `.pack-block` so it never
+  splits across pages; add `.pack-page` for one block per page. Without a
+  cover, put the sections in a `.pack-sections` wrapper so the first one
+  doesn't leave a blank first page. `npm install` downloads Chrome into `.cache/puppeteer`; if it won't
   start, install its system libraries
   (https://pptr.dev/troubleshooting#chrome-doesnt-launch-on-linux). PHP-FPM
   doesn't get your shell's `PATH` (e.g. nvm), so set
   `LARAVEL_PDF_NODE_BINARY` in `.env` to the output of `which node`. Where
   Chrome fails with "No usable sandbox" (WSL, or Ubuntu 23.10+ restricting user
-  namespaces), set `LARAVEL_PDF_NO_SANDBOX=true`. Packs render with JavaScript
+  namespaces), set `LARAVEL_PDF_NO_SANDBOX=true`. PDFs render with JavaScript
   off, so keep it that way: Objective descriptions are organiser-entered HTML.
 - **Heats and pools:** when a competition uses pools, heat numbers restart in
   each pool, so name heats with `Pool::heatLabel($pool, $heat)` ("Main Pool ·

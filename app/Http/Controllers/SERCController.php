@@ -7,7 +7,7 @@ use App\Models\SERC;
 use Illuminate\Http\Request;
 
 /**
- * What's left of a SERC's Blade routes: its printed results and the marking sheet image (hidden for now).
+ * What's left of a SERC's Blade routes: the marking sheet image (hidden for now).
  * Its pages are Manage\SercEventController.
  */
 class SERCController extends Controller
@@ -45,28 +45,4 @@ class SERCController extends Controller
         $serc->save();
         return redirect()->back();
     }
-
-
-
-
-    public function printResults(Competition $comp, SERC $serc)
-    {
-        $data = [[
-            'league' => 'Overall',
-            'results' => $serc->getRankedResults(),
-        ]];
-
-        foreach ($comp->getLeagues->sortBy('name') as $league) {
-            $results = $serc->getRankedResults($league);
-
-            $data[] = [
-                'league' => $league->name,
-                'results' => $results,
-            ];
-        }
-
-        return view('competition.events.sercs.print', ['comp' => $comp, 'serc' => $serc, 'data' => $data]);
-    }
-
-
 }

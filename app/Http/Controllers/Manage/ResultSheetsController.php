@@ -314,8 +314,8 @@ class ResultSheetsController extends Controller
             'isAdmin' => $isAdmin,
             // The Master sheets built on it, which deleting it takes it out of
             'masters' => $this->mastersUsing($comp, $sheet)->pluck('name'),
-            'printPlacesUrl' => route('comps.results.view-schema-print-basic', $sheet),
-            'printDetailedUrl' => route('comps.results.view-schema-print', $sheet),
+            'printStandingsUrl' => route('manage.competitions.results.print.standings', [$comp, $sheet]),
+            'printBreakdownUrl' => route('manage.competitions.results.print.breakdown', [$comp, $sheet]),
             ...self::confirmation($comp),
         ]);
     }
