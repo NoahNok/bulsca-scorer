@@ -294,12 +294,12 @@ class PublicPagesTest extends TestCase
         $this->publishedSheet($comp, 'Overall Standings');
         $this->publishedSheet($comp, 'Working Sheet', viewable: false);
 
-        // Results sheets comes before Events, so it opens first; Overall has no Master sheets, so it's left out
+        // League Results comes before Events, so it opens first; Overall Results has no Master sheets, so it's left out
         $this->get(route('landing.competition.results', $comp->getSlug()))
             ->assertOk()
             ->assertSee('role="tablist"', false)
-            ->assertSeeInOrder(['aria-selected="true">Results sheets', 'aria-selected="false">Events'], false)
-            ->assertDontSee('>Overall<', false)
+            ->assertSeeInOrder(['aria-selected="true">League Results', 'aria-selected="false">Events'], false)
+            ->assertDontSee('>Overall Results<', false)
             ->assertSee('Overall Standings')
             ->assertDontSee('Working Sheet')
             ->assertDontSee('se-card');

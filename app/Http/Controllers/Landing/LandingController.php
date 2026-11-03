@@ -124,7 +124,7 @@ class LandingController extends Controller
             ]),
         ];
 
-        $tabs = collect(['overall' => 'Overall', 'sheets' => 'Results sheets', 'events' => 'Events'])
+        $tabs = collect(['overall' => 'Overall Results', 'sheets' => 'League Results', 'events' => 'Events'])
             ->filter(fn($label, $key) => $groups[$key]->isNotEmpty());
 
         return view('landing.competition.results', [
