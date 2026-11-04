@@ -4,7 +4,10 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build",
-        "watch": "mix watch"
+        "watch": "mix watch",
+        "access": "bash scripts/dev-access.sh status",
+        "access:local": "bash scripts/dev-access.sh local",
+        "access:lan": "bash scripts/dev-access.sh lan"
     },
     "devDependencies": {
         "@laravel/vite-plugin-wayfinder": "^0.1.7",
