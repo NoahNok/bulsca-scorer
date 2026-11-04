@@ -1,7 +1,7 @@
 {{--
     A competition's Results tab. Up to three tabs (Overall: Master sheets; Results sheets; Events), each only when
-    something in it is published (LandingController::showResults). A row of chips picks the sheet, or the League
-    and Event; the table loads from the results endpoints. The tab and picks live in the url, so a link opens the
+    something in it is published (LandingController::showResults). A row of chips picks the sheet, or the Event; Leagues
+    are chips, or a select when there are more than three and on phones; the table loads from the results endpoints. The tab and picks live in the url, so a link opens the
     same table. Violations and penalties open in a modal.
 --}}
 @extends('landing.competition.layout')
@@ -72,14 +72,29 @@
                         @if ($tabs->has('events'))
                             <div x-show="tab === 'events'" @if ($first !== 'events') x-cloak @endif>
                                 @if ($leagues->count() > 1)
-                                    <div class="v2-results-chips" role="group" aria-label="League">
-                                        @foreach ($leagues as $league)
-                                            <button type="button" class="v2-chip" @click="league = @js($league['id'])"
-                                                :aria-pressed="(league == @js($league['id'])).toString()">{{ $league['name'] }}</button>
-                                        @endforeach
+                                    {{-- Chips for up to three, or a select when there are more, and always on phones --}}
+                                    <div @class(['v2-field v2-results-league', 'is-phone-only' => $leagues->count() <= 3])>
+                                        <label for="results-league" class="sr-only">League</label>
+                                        <select id="results-league" class="v2-input" :value="league ?? ''"
+                                            @change="league = $event.target.value">
+                                            @if ($comp->select_league_first)
+                                                <option value="" disabled>Choose a League</option>
+                                            @endif
+                                            @foreach ($leagues as $league)
+                                                <option value="{{ $league['id'] }}">{{ $league['name'] }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
+                                    @if ($leagues->count() <= 3)
+                                        <div class="v2-results-chips v2-results-league-chips" role="group" aria-label="League">
+                                            @foreach ($leagues as $league)
+                                                <button type="button" class="v2-chip" @click="league = @js($league['id'])"
+                                                    :aria-pressed="(league == @js($league['id'])).toString()">{{ $league['name'] }}</button>
+                                            @endforeach
+                                        </div>
+                                    @endif
                                 @endif
-                                <div class="v2-results-chips" role="group" aria-label="Event">
+                                <div @class(['v2-results-chips', 'is-under-leagues' => $leagues->count() > 1]) role="group" aria-label="Event">
                                     @foreach ($groups['events'] as $event)
                                         <button type="button" class="v2-chip" @click="pick('events', @js($event['key']))"
                                             :aria-pressed="(picks.events === @js($event['key'])).toString()">{{ $event['name'] }}

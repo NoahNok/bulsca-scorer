@@ -1,7 +1,8 @@
 <!--
     The sliding-pill tabs (.v2-tabs) over a set of panels, for a choice within a page: the pill slides to the
     chosen tab, arrow keys move between tabs, and the panels' wrapper animates to the chosen one's height
-    as it fades in, so what's below glides rather than jumps.
+    as it fades in, so what's below glides rather than jumps. Too many tabs to fit scroll sideways, keeping
+    the chosen one in view.
 
     Only the chosen panel is mounted, so a form sends only its fields (New competition's organisation or
     Personal).
@@ -27,6 +28,7 @@
         panel: Snippet<[string]>;
     } = $props();
 
+    let scroller: HTMLDivElement | undefined = $state();
     let buttons: HTMLButtonElement[] = $state([]);
     let height = $state(0);
     // Panels fade in when you switch, not when the page loads
@@ -36,6 +38,13 @@
 
     onMount(() => {
         ready = true;
+    });
+
+    // Scrolls only the tabs, where scrollIntoView could also move the page
+    $effect(() => {
+        const button = buttons[index];
+        if (!scroller || !button) return;
+        scroller.scrollTo({ left: button.offsetLeft - (scroller.clientWidth - button.offsetWidth) / 2 });
     });
 
     function onKey(event: KeyboardEvent) {
@@ -48,21 +57,23 @@
     }
 </script>
 
-<div class="v2-tabs" role="tablist" aria-labelledby={labelledby} aria-label={label} style="--v2-tabs: {tabs.length}">
-    <span class="v2-tabs-pill" aria-hidden="true" style="transform: translateX({index * 100}%)"></span>
-    {#each tabs as tab, i (tab.id)}
-        <button
-            bind:this={buttons[i]}
-            type="button"
-            role="tab"
-            id="{id}-tab-{tab.id}"
-            aria-selected={tab.id === value}
-            aria-controls="{id}-panel-{tab.id}"
-            tabindex={tab.id === value ? 0 : -1}
-            onclick={() => (value = tab.id)}
-            onkeydown={onKey}>{tab.label}</button
-        >
-    {/each}
+<div class="v2-tabs-scroll" bind:this={scroller}>
+    <div class="v2-tabs" role="tablist" aria-labelledby={labelledby} aria-label={label} style="--v2-tabs: {tabs.length}">
+        <span class="v2-tabs-pill" aria-hidden="true" style="transform: translateX({index * 100}%)"></span>
+        {#each tabs as tab, i (tab.id)}
+            <button
+                bind:this={buttons[i]}
+                type="button"
+                role="tab"
+                id="{id}-tab-{tab.id}"
+                aria-selected={tab.id === value}
+                aria-controls="{id}-panel-{tab.id}"
+                tabindex={tab.id === value ? 0 : -1}
+                onclick={() => (value = tab.id)}
+                onkeydown={onKey}>{tab.label}</button
+            >
+        {/each}
+    </div>
 </div>
 
 <!-- Padding out and back in, so overflow doesn't clip the fields' focus rings -->

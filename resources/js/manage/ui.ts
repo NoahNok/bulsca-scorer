@@ -11,6 +11,14 @@ export function closeOnBackdrop(click: MouseEvent) {
     if (click.target === click.currentTarget) (click.currentTarget as HTMLDialogElement).close();
 }
 
+/** For a <table class="v2-lead-table">: keeps --v2-lead-width at its first column's width, as the name sticks beside it */
+export function leadTable(table: HTMLTableElement) {
+    const first = table.rows[0].cells[0];
+    const observer = new ResizeObserver(() => table.style.setProperty("--v2-lead-width", `${first.getBoundingClientRect().width}px`));
+    observer.observe(first);
+    return { destroy: () => observer.disconnect() };
+}
+
 /** An input's oninput for codes (DQ101, P100), which are capitals however they're typed */
 export function upperCase(input: Event & { currentTarget: HTMLInputElement }) {
     const field = input.currentTarget;

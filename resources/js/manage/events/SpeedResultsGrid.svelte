@@ -141,6 +141,7 @@
     };
 
     const cell = "v2-input w-full min-w-[6.5rem] px-2 py-1.5 font-mono text-sm";
+    const entryColumn = "sticky left-0 z-10 min-w-32 bg-v2-bg max-sm:shadow-[inset_-1px_0_0_var(--v2-border)]";
 </script>
 
 <form onsubmit={save}>
@@ -160,11 +161,12 @@
         </p>
     </div>
 
-    <div class="mt-4 overflow-x-auto">
-        <table class="w-full border-t border-v2-border text-left">
+    <!-- scroll-pl: an input tabbed back to stops clear of the sticky Entry column -->
+    <div class="mt-4 overflow-x-auto scroll-pl-32">
+        <table class="w-full border-separate border-spacing-0 border-t border-v2-border text-left">
             <thead>
                 <tr class="text-sm text-v2-muted *:border-b *:border-v2-border *:px-2 *:py-2 *:font-semibold">
-                    <th scope="col">Entry</th>
+                    <th scope="col" class={entryColumn}>Entry</th>
                     {#if hasHeats}<th scope="col" class="w-px whitespace-nowrap">Heat</th>{/if}
                     <th scope="col">{ropeThrow ? "Ropes or time" : "Time"}</th>
                     <th scope="col">DQ</th>
@@ -176,7 +178,7 @@
                     {@const cells = values[row.id]}
                     <tr class="*:border-b *:border-v2-border *:px-2 *:py-2 *:align-top">
                         <!-- As tall as an input (.v2-input), so the text centres on it even with an error under the input -->
-                        <th scope="row" class="font-semibold wrap-anywhere"><span class="flex min-h-11 items-center">{row.name}</span></th>
+                        <th scope="row" class={[entryColumn, "font-semibold wrap-anywhere"]}><span class="flex min-h-11 items-center">{row.name}</span></th>
                         {#if hasHeats}
                             <td class="text-sm whitespace-nowrap text-v2-muted"><span class="flex min-h-11 items-center">{row.heatLane ?? "–"}</span></td>
                         {/if}

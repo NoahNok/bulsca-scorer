@@ -104,8 +104,8 @@
 
         <ul class="mt-4 border-t border-v2-border">
             {#each shown as official (official.id)}
-                <li class="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-v2-border px-2 py-3">
-                    <div class="min-w-0 flex-1">
+                <li class="flex flex-col items-start gap-x-4 gap-y-2 border-b border-v2-border px-2 py-3 sm:flex-row sm:items-center">
+                    <div class="min-w-0 sm:flex-1">
                         <p class="font-bold wrap-anywhere">{official.name}</p>
                         <p class="text-sm text-v2-muted wrap-anywhere">{official.email}</p>
                         <p class="mt-1 text-[0.8125rem] text-v2-muted">

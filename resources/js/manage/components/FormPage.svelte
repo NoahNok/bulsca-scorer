@@ -1,5 +1,5 @@
 <!--
-    A page that's one form (new competition, new organisation): a "Home" link back, the title and a lead,
+    A page that's one form (new competition, new organisation): a "Home" link back, the title and an optional lead,
     then the form, in a narrow column centred in the container. End the form with a .p-actions row: the
     SubmitButton, and a muted Cancel link under it.
 -->
@@ -9,13 +9,15 @@
     import { ArrowLeft } from "@lucide/svelte";
     import type { Snippet } from "svelte";
 
-    let { title, lead, children }: { title: string; lead: string; children: Snippet } = $props();
+    let { title, lead, children }: { title: string; lead?: string; children: Snippet } = $props();
 </script>
 
 <div class="p-page mx-auto max-w-lg">
     <Link href={home()} class="v2-link-muted inline-flex items-center gap-1 text-sm"><ArrowLeft size={16} aria-hidden="true" /> Home</Link>
     <h1 class="mt-4 text-[1.75rem] leading-[1.1] font-extrabold wrap-anywhere uppercase">{title}</h1>
-    <p class="mt-2 leading-[1.6] text-v2-muted">{lead}</p>
+    {#if lead}
+        <p class="mt-2 leading-[1.6] text-v2-muted">{lead}</p>
+    {/if}
 
     {@render children()}
 </div>

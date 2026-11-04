@@ -74,7 +74,7 @@
 
 <PageHeading back={{ href: index().url, label: "Competitions" }} title={competition.name} lead={shortDate(competition.when)}>
     {#snippet actions()}
-        <div class="flex flex-wrap gap-2">
+        <div class="flex w-full flex-wrap gap-2 sm:w-auto">
             <a href={publicUrl} class="v2-btn v2-btn-sm">Public page</a>
             <Link href={manageUrl} class="v2-btn v2-btn-accent v2-btn-sm">Open in Management</Link>
         </div>

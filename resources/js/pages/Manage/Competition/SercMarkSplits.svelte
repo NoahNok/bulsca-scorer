@@ -9,6 +9,7 @@
     import { router } from "@inertiajs/svelte";
     import ChipGroup from "@/manage/components/ChipGroup.svelte";
     import PageHeading from "@/manage/components/PageHeading.svelte";
+    import { leadTable } from "@/manage/ui";
 
     let {
         competition,
@@ -53,7 +54,7 @@
 
     {#if splits}
         <div class="mt-5 overflow-x-auto">
-            <table class="w-full border-t border-v2-border text-left">
+            <table use:leadTable class="v2-lead-table w-full border-t border-v2-border text-left">
                 <thead>
                     <tr class={tableHead}>
                         <th scope="col" class="w-px whitespace-nowrap">Draw</th>

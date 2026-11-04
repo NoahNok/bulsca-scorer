@@ -131,7 +131,9 @@
     {/snippet}
     {#snippet actions()}
         {#if user.officialOnly}
-            <button type="button" class="v2-btn" disabled={converting} onclick={makeFullAccount}>Make full account</button>
+            <div class="w-full sm:w-auto">
+                <button type="button" class="v2-btn" disabled={converting} onclick={makeFullAccount}>Make full account</button>
+            </div>
         {/if}
     {/snippet}
 </PageHeading>

@@ -520,7 +520,7 @@
 />
 
 {#if useTanks}
-    <div class="flex flex-wrap items-start gap-3">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-start">
         {#if list.length > 0}
             <div class="min-w-0 flex-1">
                 <Tabs
@@ -550,7 +550,7 @@
         {/if}
         <button
             type="button"
-            class="v2-btn v2-btn-sm"
+            class="v2-btn v2-btn-sm self-start"
             disabled={saver.busy}
             onclick={newTank}>Add tank</button
         >

@@ -272,7 +272,8 @@ body.v2 {
     }
 }
 
-.v2-theme-toggle {
+.v2-theme-toggle,
+.v2-nav-icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -285,13 +286,79 @@ body.v2 {
     transition: border-color 150ms;
 }
 
-.v2-theme-toggle:hover {
+.v2-theme-toggle:hover,
+.v2-nav-icon:hover {
     border-color: var(--v2-muted);
 }
 
-.v2-theme-toggle svg {
+.v2-theme-toggle svg,
+.v2-nav-icon svg {
     width: 1.125rem;
     height: 1.125rem;
+}
+
+/* The panel the Management header's burger slides in on phones (NavDrawer), a native <dialog> */
+.v2-drawer {
+    position: fixed;
+    inset: 0 0 0 auto;
+    width: min(18rem, calc(100vw - 3rem));
+    max-width: none;
+    height: 100dvh;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    color: var(--v2-ink);
+    background: var(--v2-card);
+    border-left: 1px solid var(--v2-border);
+    transform: translateX(100%);
+    transition: transform 250ms cubic-bezier(0.3, 0.7, 0.4, 1), display 250ms allow-discrete, overlay 250ms allow-discrete;
+}
+
+.v2-drawer[open] {
+    transform: none;
+}
+
+.v2-drawer::backdrop {
+    background: rgb(3 7 18 / 0);
+    transition: background-color 250ms, display 250ms allow-discrete, overlay 250ms allow-discrete;
+}
+
+.v2-drawer[open]::backdrop {
+    background: rgb(3 7 18 / 0.6);
+}
+
+@starting-style {
+    .v2-drawer[open] {
+        transform: translateX(100%);
+    }
+
+    .v2-drawer[open]::backdrop {
+        background: rgb(3 7 18 / 0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .v2-drawer,
+    .v2-drawer::backdrop {
+        transition: none;
+    }
+}
+
+.v2-drawer-links {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 1rem;
+    font-size: 1rem;
+}
+
+.v2-drawer-links a {
+    padding: 0.75rem 1.25rem;
+}
+
+.v2-drawer-links hr {
+    margin-block: 0.5rem;
+    border: 0;
+    border-top: 1px solid var(--v2-border);
 }
 
 /* The content column, lined up with the header. --v2-page-width widens both (the Management app's 88rem) */
@@ -1066,6 +1133,27 @@ select.v2-input {
     }
 }
 
+/* Wrap .v2-tabs in this when there could be many: each tab keeps a usable width and the row scrolls sideways */
+.v2-tabs-scroll {
+    border-radius: 0.625rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.v2-tabs-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.v2-tabs-scroll .v2-tabs {
+    min-width: calc(var(--v2-tabs, 3) * 4rem + 0.5rem);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .v2-tabs-scroll {
+        scroll-behavior: smooth;
+    }
+}
+
 /*
  * Page tabs: links to a set of pages (a competition's Overview, Events, Results...), with a teal
  * underline under the current one (aria-current="page"). They scroll sideways when they don't fit.
@@ -1166,6 +1254,16 @@ dialog.v2-modal::backdrop {
     cursor: pointer;
 }
 
+/*
+ * Browsers that ignore position: relative on a <tr> (older Safari) would stretch the link's ::after over the
+ * page, on top of everything. A transform holds it to the row's top, but on iPhones the last row's ::after still
+ * ran past the table, catching taps on whatever came next, so the clip-path cuts it (and its taps) off at the row.
+ */
+tr.v2-row {
+    transform: translate(0);
+    clip-path: inset(0);
+}
+
 /* th too: a row's header cell (its name) is tinted with the rest */
 .v2-row :is(td, th) {
     transition: background-color 150ms;
@@ -1189,6 +1287,50 @@ dialog.v2-modal::backdrop {
 .v2-over-row {
     position: relative;
     z-index: 1;
+}
+
+/*
+ * A Management table whose first two columns (a place or draw, then the name) stay in view as the rest scroll under
+ * them. Put use:leadTable on it (manage/ui.ts), which sets --v2-lead-width to the first column's width so the name
+ * sticks beside it. Separate borders: collapsed ones would scroll away from a sticky cell.
+ */
+.v2-lead-table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.v2-lead-table tr > :nth-child(-n + 2) {
+    position: sticky;
+    z-index: 1;
+    background: var(--v2-bg);
+}
+
+.v2-lead-table tr > :nth-child(1) {
+    left: 0;
+}
+
+.v2-lead-table tr > :nth-child(2) {
+    left: var(--v2-lead-width, 0);
+    min-width: 8rem;
+}
+
+/* Layered over the page, so the rest of the row doesn't show through a sticky cell while it's tinted */
+.v2-lead-table tr.v2-row:is(:hover, :focus-within) > :nth-child(-n + 2) {
+    background: linear-gradient(var(--v2-row-hover), var(--v2-row-hover)), var(--v2-bg);
+}
+
+/*
+ * A sticky cell would hold a .v2-row-link's ::after to itself, so a whole-row link lives in a later cell (the
+ * chevron), and sits over the sticky cells to catch taps on them too.
+ */
+.v2-lead-table .v2-row-link::after {
+    z-index: 2;
+}
+
+@media (max-width: 640px) {
+    .v2-lead-table tr > :nth-child(2) {
+        box-shadow: inset -1px 0 0 var(--v2-border);
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1601,6 +1743,17 @@ dialog.v2-modal::backdrop {
     margin-left: auto;
 }
 
+/* On phones, the tabs and search each take a full-width line */
+@media (max-width: 640px) {
+    .v2-hd-bar .v2-tabs {
+        width: 100%;
+    }
+
+    .v2-hd-search {
+        max-width: none;
+    }
+}
+
 .v2-hd-event {
     margin: 1.5rem 0 0.75rem;
     font-weight: 800;
@@ -1656,7 +1809,7 @@ dialog.v2-modal::backdrop {
 
 /*
  * A plain data table (a competition's results, the SERC breakdown): muted headings, rules between rows, the
- * first column (the name) bold. Wrap it in .v2-table-scroll so a wide one scrolls sideways on its own.
+ * first column (the name) bold and sticky. Wrap it in .v2-table-scroll so a wide one scrolls sideways on its own.
  */
 .v2-table-scroll {
     overflow-x: auto;
@@ -1672,9 +1825,11 @@ dialog.v2-modal::backdrop {
     transition: opacity 150ms;
 }
 
+/* Separate borders: collapsed ones belong to the table, so a sticky cell's rule would scroll away from it */
 .v2-table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     font-size: 0.9375rem;
 }
 
@@ -1700,6 +1855,29 @@ dialog.v2-modal::backdrop {
 }
 
 /*
+ * The first column stays in view as the rest scroll under it, so you can always see whose results they are. Its
+ * first cell, not :first-child, which is the <template> in a row Alpine's x-for builds.
+ */
+.v2-table tr > :nth-child(1 of td, th) {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: var(--v2-card);
+    box-shadow: inset -1px 0 0 var(--v2-border);
+}
+
+.v2-table thead tr > :nth-child(1 of td, th) {
+    background: var(--v2-sunk);
+}
+
+/* On phones it takes less of the screen, and long names wrap */
+@media (max-width: 640px) {
+    .v2-table .v2-table-name {
+        min-width: 8rem;
+    }
+}
+
+/*
  * Podium rows: .is-place-1/2/3 on a <tr> runs a gold, silver or bronze strip down its first cell and tints the
  * row. The tint is layered over the card so a sticky first cell stays opaque.
  */
@@ -1720,9 +1898,8 @@ dialog.v2-modal::backdrop {
     background: linear-gradient(var(--v2-medal-tint), var(--v2-medal-tint)), var(--v2-card);
 }
 
-/* The first cell, not :first-child, which is the <template> in a row Alpine's x-for builds */
 .v2-table tr:is(.is-place-1, .is-place-2, .is-place-3) > :nth-child(1 of td, th) {
-    box-shadow: inset 4px 0 0 var(--v2-medal);
+    box-shadow: inset 4px 0 0 var(--v2-medal), inset -1px 0 0 var(--v2-border);
 }
 
 /*
@@ -1744,10 +1921,33 @@ dialog.v2-modal::backdrop {
     gap: 0.5rem;
 }
 
-.v2-results-chips + .v2-results-chips {
+.v2-results-chips.is-under-leagues {
     margin-top: 0.75rem;
     padding-top: 0.75rem;
     border-top: 1px solid var(--v2-border);
+}
+
+/* The League select: alone when there are more than three, otherwise it takes over from the chips on phones */
+.v2-results-league {
+    max-width: 20rem;
+}
+
+.v2-results-league.is-phone-only {
+    display: none;
+}
+
+@media (max-width: 640px) {
+    .v2-results-league {
+        max-width: none;
+    }
+
+    .v2-results-league.is-phone-only {
+        display: block;
+    }
+
+    .v2-results-league-chips {
+        display: none;
+    }
 }
 
 .v2-results-chips .v2-badge {
@@ -1901,6 +2101,13 @@ button.v2-link-inline {
     margin-left: auto;
 }
 
+/* On phones, the search and Show each take a full-width line */
+@media (max-width: 640px) {
+    .v2-breakdown-tools .v2-field {
+        width: 100%;
+    }
+}
+
 .v2-breakdown {
     max-height: 80vh;
     overflow: auto;
@@ -1912,7 +2119,9 @@ button.v2-link-inline {
     padding: 0.5rem;
 }
 
+/* Collapsed, so a judge's closing rule and the next judge's opening rule draw as one */
 .v2-breakdown .v2-table {
+    border-collapse: collapse;
     font-size: 0.875rem;
 }
 
@@ -1929,22 +2138,21 @@ button.v2-link-inline {
 
 .v2-breakdown thead th:first-child,
 .v2-breakdown tbody th {
-    position: sticky;
-    left: 0;
-    z-index: 1;
     text-align: left;
-    background: var(--v2-card);
-}
-
-.v2-breakdown thead th:first-child {
-    z-index: 3;
-    background: var(--v2-sunk);
 }
 
 .v2-breakdown tbody th {
     border-top: 1px solid var(--v2-border);
     padding: 0.75rem 1rem;
     white-space: nowrap;
+}
+
+/* As .v2-table-name: on phones the Team column takes less of the screen, and long names wrap */
+@media (max-width: 640px) {
+    .v2-breakdown tbody th {
+        min-width: 8rem;
+        white-space: normal;
+    }
 }
 
 .v2-breakdown .is-point {

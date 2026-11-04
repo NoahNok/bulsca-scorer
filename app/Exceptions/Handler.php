@@ -86,6 +86,13 @@ class Handler extends ExceptionHandler
             }
         }
 
-        return parent::render($request, $exception);
+        $response = parent::render($request, $exception);
+
+        // An Inertia visit would show the Blade 404 in a modal over the page it came from, so load it as a full page
+        if ($response->getStatusCode() === 404 && $request->isMethod('GET') && $request->header('X-Inertia')) {
+            return Inertia::location($request->fullUrl());
+        }
+
+        return $response;
     }
 }

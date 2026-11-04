@@ -13,7 +13,7 @@
     import ChipGroup from "@/manage/components/ChipGroup.svelte";
     import PageHeading from "@/manage/components/PageHeading.svelte";
     import type { CompetitionHeader, SercEntity, SercEventHeader, SercResultRow } from "@/manage/types";
-    import { TARGET_LABELS } from "@/manage/ui";
+    import { leadTable, TARGET_LABELS } from "@/manage/ui";
     import { Link, router } from "@inertiajs/svelte";
 
     let {
@@ -91,6 +91,11 @@
     {/if}
 {/snippet}
 
+<!-- The row's chevron and its whole-row link: the name's cell is sticky, which would hold the link to that cell -->
+{#snippet rowChevron(entity: SercEntity)}
+    <Link href={marksUrl(entity)} class="v2-row-link block" tabindex={-1} aria-hidden="true"><RowIcon /></Link>
+{/snippet}
+
 <SidebarPage sticky>
     <PageHeading back={{ href: eventsUrl, label: "Events" }} title={event.name}>
         {#snippet badges()}
@@ -131,7 +136,7 @@
 
         {#if results !== null}
             <div class="mt-4 overflow-x-auto">
-                <table class="w-full border-t border-v2-border text-left">
+                <table use:leadTable class="v2-lead-table w-full border-t border-v2-border text-left">
                     <thead>
                         <tr class={tableHead}>
                             <th scope="col" class="w-px">#</th>
@@ -151,7 +156,7 @@
                                 <td class="font-semibold tabular-nums">{row.position ?? "–"}</td>
                                 <th scope="row" class="font-bold wrap-anywhere">
                                     {#if entity}
-                                        <Link href={marksUrl(entity)} class="v2-row-link focus-visible:outline-none">
+                                        <Link href={marksUrl(entity)} class="focus-visible:outline-none">
                                             {entity.name}<span class="sr-only">: enter marks</span>
                                         </Link>
                                     {:else}
@@ -164,7 +169,7 @@
                                     {#if row.disqualified}<s class="font-normal text-v2-muted">{row.points}</s> DQ{:else}{row.points}{/if}
                                 </td>
                                 <td class="text-right">{@render status(byKey.get(row.key))}</td>
-                                {#if event.canManage}<td class="align-middle!">{#if entity}<RowIcon />{/if}</td>{/if}
+                                {#if event.canManage}<td class="align-middle!">{#if entity}{@render rowChevron(entity)}{/if}</td>{/if}
                             </tr>
                         {/each}
                     </tbody>
@@ -191,7 +196,7 @@
         {/if}
 
         <div class="mt-4 overflow-x-auto">
-            <table class="w-full border-t border-v2-border text-left">
+            <table use:leadTable class="v2-lead-table w-full border-t border-v2-border text-left">
                 <thead>
                     <tr class={tableHead}>
                         <th scope="col" class="w-px whitespace-nowrap">Draw</th>
@@ -206,7 +211,7 @@
                             <td class="whitespace-nowrap text-v2-muted tabular-nums">{entity.draw ?? "–"}</td>
                             <th scope="row" class="font-bold wrap-anywhere">
                                 {#if event.canManage}
-                                    <Link href={marksUrl(entity)} class="v2-row-link focus-visible:outline-none">
+                                    <Link href={marksUrl(entity)} class="focus-visible:outline-none">
                                         {entity.name}<span class="sr-only">: enter marks</span>
                                     </Link>
                                 {:else}
@@ -214,7 +219,7 @@
                                 {/if}
                             </th>
                             <td class="text-right">{@render status(entity)}</td>
-                            {#if event.canManage}<td><RowIcon /></td>{/if}
+                            {#if event.canManage}<td>{@render rowChevron(entity)}</td>{/if}
                         </tr>
                     {/each}
                 </tbody>

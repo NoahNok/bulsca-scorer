@@ -321,6 +321,30 @@ class PublicPagesTest extends TestCase
             ->assertDontSee('Choose a League to see the results.');
     }
 
+    public function test_results_swap_league_chips_for_a_select_past_three(): void
+    {
+        $comp = $this->competition(['public_results' => true]);
+        $this->publishedSerc($comp);
+        $chips = 'role="group" aria-label="League"';
+
+        foreach (['A League', 'B League'] as $name) {
+            $comp->getLeagues()->forceCreate(['name' => $name]);
+        }
+
+        // All Leagues and two more: chips, with the select kept for phones
+        $this->get(route('landing.competition.results', $comp->getSlug()))
+            ->assertSee($chips, false)
+            ->assertSee('v2-results-league is-phone-only', false)
+            ->assertSee('<option value="all">All Leagues</option>', false);
+
+        $comp->getLeagues()->forceCreate(['name' => 'C League']);
+
+        $this->get(route('landing.competition.results', $comp->getSlug()))
+            ->assertDontSee($chips, false)
+            ->assertDontSee('is-phone-only', false)
+            ->assertSee('C League</option>', false);
+    }
+
     public function test_provisional_results_are_flagged_once(): void
     {
         $comp = $this->competition(['public_results' => true, 'results_provisional' => true]);

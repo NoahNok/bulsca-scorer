@@ -14,7 +14,7 @@
     import type { CompetitionHeader, SpeedEventHeader, SpeedResultRow } from "@/manage/types";
     import { Link, router } from "@inertiajs/svelte";
     import { tick } from "svelte";
-    import { closeOnBackdrop } from "@/manage/ui";
+    import { closeOnBackdrop, leadTable } from "@/manage/ui";
 
     let {
         competition,
@@ -119,7 +119,7 @@
             </div>
 
             <div class="mt-4 overflow-x-auto">
-                <table class="w-full border-t border-v2-border text-left">
+                <table use:leadTable class="v2-lead-table w-full border-t border-v2-border text-left">
                     <thead>
                         <tr class={tableHead}>
                             <th scope="col" class="w-px">#</th>

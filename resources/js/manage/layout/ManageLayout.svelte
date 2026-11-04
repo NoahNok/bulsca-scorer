@@ -5,6 +5,7 @@
 <script lang="ts">
     import BrandMark from "@/manage/components/BrandMark.svelte";
     import ConfirmDialog from "@/manage/components/ConfirmDialog.svelte";
+    import NavDrawer from "@/manage/components/NavDrawer.svelte";
     import ThemeToggle from "@/manage/components/ThemeToggle.svelte";
     import Toasts from "@/manage/components/Toasts.svelte";
     import { toastError, toastSuccess } from "@/lib/toast.svelte";
@@ -41,14 +42,34 @@
             Scoring.Events
         </Link>
         <!-- Explore (the public site) and Sign out stay full page loads -->
-        <nav class="v2-nav" aria-label="Main">
-            <a href={page.props.manage?.site.explore} class="v2-nav-wide">Explore</a>
+        {#snippet explore()}
+            <a href={page.props.manage?.site.explore}>Explore</a>
+        {/snippet}
+        {#snippet yourLinks()}
             {#if page.props.manage?.isAdmin}
                 <Link href={adminHome().url}>Admin</Link>
             {/if}
             <Link href={account().url}>Account</Link>
+        {/snippet}
+        {#snippet signOut()}
             <a href={logout().url}>Sign out</a>
+        {/snippet}
+        <nav class="v2-nav" aria-label="Main">
+            <!-- In the header from `sm`, in the burger's panel on phones -->
+            <div class="hidden sm:contents">
+                {@render explore()}
+                {@render yourLinks()}
+                {@render signOut()}
+            </div>
             <ThemeToggle />
+            <NavDrawer>
+                <Link href={manage.home().url}>Dashboard</Link>
+                {@render yourLinks()}
+                <hr />
+                {@render explore()}
+                <hr />
+                {@render signOut()}
+            </NavDrawer>
         </nav>
     </header>
 

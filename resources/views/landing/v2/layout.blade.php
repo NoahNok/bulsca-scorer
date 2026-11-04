@@ -60,12 +60,13 @@
 
 <body class="v2 flex min-h-dvh flex-col overflow-x-hidden selection:bg-se selection:text-white">
     <header class="v2-header">
-        <a href="{{ route('home') }}" class="v2-brand">
+        {{-- mainRoute: the 404 page uses this shell on every subdomain --}}
+        <a href="{{ \App\Helpers\RouteHelpers::mainRoute('home') }}" class="v2-brand">
             @include('landing.v2.partials.mark', ['size' => 32])
             Scoring.Events
         </a>
         <nav class="v2-nav" aria-label="Main">
-            <a href="{{ route('explore') }}" class="v2-nav-wide">Explore</a>
+            <a href="{{ \App\Helpers\RouteHelpers::mainRoute('explore') }}" class="v2-nav-wide">Explore</a>
             <a href="{{ route('dj.home') }}" class="v2-nav-wide">Officials</a>
             {{-- The main domain has no session (ADR 0002): app.'s home sends anyone signed in straight to Management --}}
             <a href="{{ route('manage.home') }}">Sign in</a>
