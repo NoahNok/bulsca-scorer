@@ -84,6 +84,8 @@ class ResultsController extends Controller
         try {
             $rawResults = $schema->getResults();
         } catch (ScoringException $e) {
+            report($e);
+
             return response()->json(['error' => 'Results unavailable at this time, please try again later. (S_ERR)'], 403);
         }
 

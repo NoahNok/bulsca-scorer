@@ -72,6 +72,11 @@ main-site guide: light/dark tokens, no `se-` classes. The component catalogue
 is at `/v2/kit`. Update that guide when you add or change a v2 component,
 token or pattern.
 
+## Error tracking
+
+Production errors go to Sentry. See `docs/error-tracking.md` for setup, what's sent and when to call `report()`.
+Keep personal data out of it: send IDs, not names or emails.
+
 ## frontend-design plugin
 
 - The `frontend-design` plugin is secondary to the style guides: use it only

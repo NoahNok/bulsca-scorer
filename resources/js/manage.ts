@@ -5,10 +5,13 @@ import LiveLayout from "./manage/layout/LiveLayout.svelte";
 import CompetitionLayout from "./manage/layout/CompetitionLayout.svelte";
 import ManageLayout from "./manage/layout/ManageLayout.svelte";
 import OrganisationLayout from "./manage/layout/OrganisationLayout.svelte";
+import { initSentry } from "./lib/sentry";
 
 // The Management app (Management and Admin, and the public live pages on live.), separate from the Digital
 // Judge in app.ts.
 // See docs/adr/0002-public-blade-management-svelte.md.
+
+initSentry("manage");
 
 const appName = "Scoring.Events";
 

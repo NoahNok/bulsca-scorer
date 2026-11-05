@@ -346,6 +346,8 @@ class DJDQController extends Controller
 
             return response()->json(['success' => true]);
         } catch (\Throwable $th) {
+            report($th);
+
             return response()->json(['success' => false]);
         }
     }
@@ -369,6 +371,8 @@ class DJDQController extends Controller
 
             return response()->json(['success' => true]);
         } catch (\Throwable $th) {
+            report($th);
+
             return response()->json(['success' => false]);
         }
     }

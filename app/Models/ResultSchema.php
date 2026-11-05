@@ -82,7 +82,7 @@ class ResultSchema extends Model
                 return ScaledResult::fromRanked($result, -1);
             });
 
-            Log::info("Processing event '{$event->getActualEVENT->getName()}' with " . $eventResults->count() . " results.");
+            Log::debug("Processing event '{$event->getActualEVENT->getName()}' with " . $eventResults->count() . " results.");
             $eventResults = $scoringEngine->process($this->schema, $eventResults, 'adjustedPoints');
 
             // mutiply by event weight

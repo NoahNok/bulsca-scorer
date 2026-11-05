@@ -303,9 +303,9 @@ class ScoringEngine
             // only debug no array values as these can be large collections
             if (is_array($globalContext[$name]) || $this->isCollection($globalContext[$name])) {
 
-                Log::info("Global variable '{$name}' evaluated to a collection/array of size " . count($globalContext[$name]));
+                Log::debug("Global variable '{$name}' evaluated to a collection/array of size " . count($globalContext[$name]));
             } else {
-                Log::info("Global variable '{$name}' evaluated to: " . $globalContext[$name]);
+                Log::debug("Global variable '{$name}' evaluated to: " . $globalContext[$name]);
             }
         }
 
