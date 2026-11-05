@@ -305,9 +305,9 @@ each one in use; copy its markup.
   show them), `live` and `upcoming` collections; `:today="false"` drops the
   Today line for a sheet of results only, `:types="true"` badges each
   competition with its Championship type, and `empty` says what goes there.
-  Home, Explore, Organisation and Championship use it. Explore and
+  Home, Explore, Organisation and Championship use it. Home, Explore and
   Organisation show "Coming up" (today and upcoming) and "Results" (past,
-  newest first) as two sheets; Home and Championship show one, oldest first.
+  newest first) as two sheets; Championship shows one, oldest first.
   - **Past rows:** muted name and date (with the year when it isn't this
     year), a Final/Provisional badge and "Results", or "No results yet" and
     "Details" before they're published.
@@ -352,10 +352,10 @@ each one in use; copy its markup.
 - **Results** (`.v2-results-*`): `LandingController::showResults` sends only
   what's published, in three groups: Overall (Master sheets), Results sheets
   and Events. Each group with anything in it is a `.v2-tabs` tab, the bar
-  runs the full width and hides with one, and the page opens on the first. Sheets are `.v2-chip`s
-  (hidden with one); Events are a League picker over Event chips (SERC badged). The picker is
-  `.v2-chip`s for up to three choices (All Leagues counts) and a `select.v2-input` for more, and always the select on phones,
-  starting on All Leagues unless the competition chooses a League first, when
+  runs the full width and hides with one, and the page opens on the first. Master sheets are `.v2-chip`s
+  (hidden with one), Results sheets a picker (also hidden with one), and Events a League picker over Event chips (SERC badged). A picker is
+  `.v2-chip`s for up to three choices (All Leagues counts) and a `select.v2-input` for more, and always the select on phones.
+  The League picker starts on All Leagues unless the competition chooses a League first, when
   it asks for one. The view lives in the url (`tab`, `sheet`, `event`,
   `league`, `display`). One warning `.v2-alert` above the tabs says results are
   provisional, and one dashed box replaces the tabs when nothing is published.

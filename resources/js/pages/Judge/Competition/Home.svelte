@@ -258,7 +258,7 @@
         class="mt-8 cursor-pointer self-center text-sm text-gray-500 underline hover:text-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-se"
         onclick={leaveCompetition}
     >
-        Leave competition
+        Exit competition
     </button>
 </section>
 

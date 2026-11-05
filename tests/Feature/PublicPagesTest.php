@@ -334,7 +334,7 @@ class PublicPagesTest extends TestCase
         // All Leagues and two more: chips, with the select kept for phones
         $this->get(route('landing.competition.results', $comp->getSlug()))
             ->assertSee($chips, false)
-            ->assertSee('v2-results-league is-phone-only', false)
+            ->assertSee('v2-results-select is-phone-only', false)
             ->assertSee('<option value="all">All Leagues</option>', false);
 
         $comp->getLeagues()->forceCreate(['name' => 'C League']);
@@ -343,6 +343,29 @@ class PublicPagesTest extends TestCase
             ->assertDontSee($chips, false)
             ->assertDontSee('is-phone-only', false)
             ->assertSee('C League</option>', false);
+    }
+
+    public function test_results_swap_sheet_chips_for_a_select_past_three(): void
+    {
+        $comp = $this->competition(['public_results' => true]);
+        $chips = 'role="group" aria-label="Results sheet"';
+
+        foreach (['A League', 'B League', 'C League'] as $name) {
+            $this->publishedSheet($comp, $name);
+        }
+
+        // Up to three: chips, with the select kept for phones
+        $this->get(route('landing.competition.results', $comp->getSlug()))
+            ->assertSee($chips, false)
+            ->assertSee('v2-results-select is-phone-only', false)
+            ->assertSee('C League</option>', false);
+
+        $this->publishedSheet($comp, 'D League');
+
+        $this->get(route('landing.competition.results', $comp->getSlug()))
+            ->assertDontSee($chips, false)
+            ->assertDontSee('is-phone-only', false)
+            ->assertSee('D League</option>', false);
     }
 
     public function test_provisional_results_are_flagged_once(): void
@@ -371,6 +394,18 @@ class PublicPagesTest extends TestCase
     public function test_the_home_page_is_the_v2_home(): void
     {
         $this->get('/')->assertOk()->assertViewIs('landing.v2.home');
+    }
+
+    public function test_the_home_page_shows_whats_coming_up_before_results(): void
+    {
+        $this->competition(['name' => 'Older Cup', 'when' => Carbon::today()->subMonth(), 'public_results' => true]);
+        $this->competition(['name' => 'Newer Cup', 'when' => Carbon::today()->subWeek(), 'public_results' => true]);
+        $this->competition(['name' => 'Today Classic']);
+        $this->competition(['name' => 'Next Week Open', 'when' => Carbon::today()->addWeek()]);
+
+        $this->get('/')
+            ->assertOk()
+            ->assertSeeInOrder(['Coming up', 'Today Classic', 'Next Week Open', 'Results', 'Newer Cup', 'Older Cup']);
     }
 
     public function test_the_home_page_and_explore_search_with_the_v2_search(): void

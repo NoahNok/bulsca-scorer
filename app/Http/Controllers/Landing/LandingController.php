@@ -29,8 +29,7 @@ class LandingController extends Controller
     }
 
     /**
-     * The home page: today's competitions with the last couple of results before them and the next
-     * few competitions after.
+     * The home page: today's competitions and the next few after them, then the last couple of results.
      */
     public function home()
     {

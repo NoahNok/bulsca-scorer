@@ -1,4 +1,4 @@
-{{-- The v2 home page: the pool marquee and search, one sheet of fixtures and results split at today, then what Scoring.Events is. --}}
+{{-- The v2 home page: the pool marquee and search, what's coming up, recent results, then what Scoring.Events is. --}}
 @extends('landing.v2.layout')
 
 @section('v2-styles')
@@ -188,15 +188,23 @@
     </section>
 
     <div class="f-wrap">
-        <section class="v2-section" aria-labelledby="f-sheet">
+        <section class="v2-section" aria-labelledby="f-ahead">
             <div class="v2-section-head">
-                <h2 id="f-sheet">Fixtures and results</h2>
+                <h2 id="f-ahead">Coming up</h2>
                 <a href="{{ route('explore') }}" class="v2-link">All competitions</a>
             </div>
-
-            {{-- Oldest first, so the sheet reads down to today and on --}}
-            <x-v2.fixtures :past="$recent->reverse()" :live="$live" :upcoming="$upcoming" />
+            <x-v2.fixtures :live="$live" :upcoming="$upcoming"
+                empty="Nothing coming up yet. Organisers add competitions here as soon as they're set up." />
         </section>
+
+        @if ($recent->isNotEmpty())
+            <section class="v2-section" aria-labelledby="f-past">
+                <div class="v2-section-head">
+                    <h2 id="f-past">Results</h2>
+                </div>
+                <x-v2.fixtures :past="$recent" :today="false" />
+            </section>
+        @endif
 
         <section class="f-about" aria-labelledby="f-about">
             <h2 id="f-about" class="f-about-statement">One scoring system for the whole pool</h2>

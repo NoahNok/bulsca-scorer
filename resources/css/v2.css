@@ -1927,25 +1927,25 @@ tr.v2-row {
     border-top: 1px solid var(--v2-border);
 }
 
-/* The League select: alone when there are more than three, otherwise it takes over from the chips on phones */
-.v2-results-league {
+/* The Results sheet and League selects: alone when there are more than three, otherwise they take over from the chips on phones */
+.v2-results-select {
     max-width: 20rem;
 }
 
-.v2-results-league.is-phone-only {
+.v2-results-select.is-phone-only {
     display: none;
 }
 
 @media (max-width: 640px) {
-    .v2-results-league {
+    .v2-results-select {
         max-width: none;
     }
 
-    .v2-results-league.is-phone-only {
+    .v2-results-select.is-phone-only {
         display: block;
     }
 
-    .v2-results-league-chips {
+    .v2-results-select-chips {
         display: none;
     }
 }
