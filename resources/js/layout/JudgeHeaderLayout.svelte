@@ -65,7 +65,7 @@
     <Icon class="bg-se/20 rounded-full text-se p-2 shadow-md " size={40} />
 {/snippet}
 
-<section class="flex flex-col absolute top-0 left-0 w-full p-6 z-10">
+<section class="flex flex-col absolute top-0 left-0 w-full p-6 pt-[calc(1.5rem+env(safe-area-inset-top))] z-10">
     {#if href}
         <Link {href} class="flex w-full justify-between items-center">
             {@render content()}

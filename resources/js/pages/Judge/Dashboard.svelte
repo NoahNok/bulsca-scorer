@@ -12,6 +12,7 @@
     import AppHead from "@/components/AppHead.svelte";
     import Button from "@/components/Button.svelte";
     import EmptyState from "@/components/EmptyState.svelte";
+    import InstallAppCard from "@/components/InstallAppCard.svelte";
     import Input from "@/components/input.svelte";
     import SectionLabel from "@/components/SectionLabel.svelte";
     import type { Competition } from "@/types/base";
@@ -109,6 +110,8 @@
             {/snippet}
         </Form>
     {/if}
+
+    <InstallAppCard class="mt-6" />
 
     <SectionLabel class="mt-6 mb-2">Your competitions</SectionLabel>
     {#if competitions.length === 0}
