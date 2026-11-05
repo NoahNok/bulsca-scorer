@@ -8,6 +8,8 @@ use App\Models\CompetitionVisit;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Mockery;
 use Tests\TestCase;
 
 /**
@@ -128,5 +130,19 @@ class RetentionPruneTest extends TestCase
             @unlink($old);
             @unlink($recent);
         }
+    }
+
+    public function test_a_run_logs_what_it_deleted(): void
+    {
+        Log::spy();
+
+        $user = User::factory()->create();
+        $this->login($user, now()->subMonths(13));
+
+        $this->artisan('retention:prune')->assertSuccessful();
+
+        Log::shouldHaveReceived('info')->once()->with('Retained data pruned', Mockery::on(
+            fn (array $context) => $context['retention.logins'] === 1 && $context['retention.visits'] === 0
+        ));
     }
 }

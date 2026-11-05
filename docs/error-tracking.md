@@ -18,7 +18,12 @@ nothing is sent, so local development and tests stay out of it.
    SENTRY_ORG=             # the organisation's slug
    SENTRY_PROJECT=         # the project's slug
 
-   LOG_LEVEL=warning       # keeps scoring's debug logs out of the production log files
+   LOG_LEVEL=warning       # keeps scoring's debug logs and routine info logs out of the log files
+
+   # Logs in Sentry, as well as the log files
+   SENTRY_ENABLE_LOGS=true
+   SENTRY_LOG_LEVEL=info   # separate from LOG_LEVEL, or Sentry would miss the info logs. Unset, it follows LOG_LEVEL
+   LOG_STACK=daily,sentry_logs
    ```
 
 3. Run `./deploy.sh`. The DSNs and token are read while it caches config and builds the frontend.
@@ -37,8 +42,8 @@ The code can't set these:
 
 ## What's sent
 
-Only errors. Tracing, session replay, profiling, logs and metrics are off, as they're what use quota per request or
-session.
+Errors, and backend logs at `SENTRY_LOG_LEVEL` and above if logs are turned on. Tracing, session replay, profiling and metrics
+are off, as they're what use quota per request or session. Frontend logs aren't sent.
 
 Each error has its stack trace, the url without its query string, the release (the git commit) and these tags. To see
 one side, filter on a tag only it has: `has:app` for the frontend, `has:subdomain` for the backend.
@@ -58,6 +63,38 @@ Request bodies, query strings, headers, cookies, IP addresses, SQL bindings and 
 
 An exception's message is still sent, and can hold personal data: a `QueryException`'s includes the query's values.
 Keep names and emails out of messages you write.
+
+## Logs
+
+Logs are searchable in Sentry's Logs view, and use their own quota, separate from errors. Each reported exception is
+also logged, so it appears in both.
+
+Each log gets `subdomain`, `competition` and `user_role` attributes, the same as the error tags above, and `user.id`
+(`ErrorContext::applyToLog`).
+
+A log's message and context are sent as they are, unlike an error's request data. To keep something personal in the log
+file only, use `Log::channel('daily')`, as `ResultSheetsController` does.
+
+### Writing a log
+
+Use the `Log` facade, and log what would answer a question in production: not every step, as a log still has to be
+useful thousands of times over.
+
+| Level | For | Example |
+| --- | --- | --- |
+| `info` | Something changed, or a job's summary | `ResultSheetsController::publish`, `PruneRetainedData` |
+| `warning` | A failure that was handled | `ResultSheetsController::show` |
+| `error` | Don't write these by hand: `report($e)`, which logs it too and opens an issue with a stack trace | |
+
+```php
+Log::info('Competition results publishing changed', ['results.published' => true]);
+```
+
+- Keep the message the same each time, and put what varies in the context. Only the context can be filtered on.
+- Name context keys `domain.field`, and reuse existing ones.
+- Send IDs, never names or emails. Leave out exceptions' messages, which can hold personal data.
+- Don't repeat what's added for you, like the competition on a request. A command has no request, so its logs need to
+  pass any competition themselves.
 
 ## Not covered
 

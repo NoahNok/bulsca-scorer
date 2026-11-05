@@ -14,13 +14,18 @@ use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Exceptions;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
+use Sentry\ClientBuilder;
 use Sentry\Event;
 use Sentry\Integration\RequestFetcherInterface;
 use Sentry\Integration\RequestIntegration;
+use Sentry\Logs\Logs;
 use Sentry\Options;
+use Sentry\SentrySdk;
+use Sentry\State\Hub;
 use Sentry\State\Scope;
 use Tests\TestCase;
 
@@ -188,13 +193,38 @@ class ErrorReportingTest extends TestCase
         $this->assertNull($event->getUser()?->getIpAddress());
     }
 
-    public function test_the_sdk_only_sends_errors(): void
+    public function test_logs_reach_sentry_with_the_same_context_as_errors(): void
     {
-        $options = new Options(array_intersect_key(config('sentry'), array_flip(['traces_sample_rate', 'profiles_sample_rate', 'enable_logs', 'enable_metrics'])));
+        $user = User::factory()->create();
+        $this->actingAs($user);
 
-        $this->assertNull($options->getTracesSampleRate());
-        $this->assertNull($options->getProfilesSampleRate());
-        $this->assertFalse($options->getEnableLogs());
-        $this->assertFalse($options->getEnableMetrics());
+        SentrySdk::getCurrentHub()->bindClient(ClientBuilder::create([
+            'dsn' => 'http://key@example.test/1',
+            'enable_logs' => true,
+            'before_send_log' => config('sentry.before_send_log'),
+        ])->getClient());
+
+        try {
+            Log::channel('sentry_logs')->warning('Something handled', ['sheet.id' => 5]);
+
+            $logs = Logs::getInstance()->aggregator()->all();
+            $this->assertCount(1, $logs);
+            $this->assertSame('Something handled', $logs[0]->getBody());
+
+            $attributes = $logs[0]->attributes()->toSimpleArray();
+            $this->assertSame(5, $attributes['sheet.id']);
+            $this->assertSame('console', $attributes['subdomain']);
+            $this->assertSame('user', $attributes['user_role']);
+            $this->assertSame((string) $user->id, $attributes['user.id']);
+        } finally {
+            // A hub with no client empties the buffer without sending anything
+            Logs::getInstance()->aggregator()->flush(new Hub());
+            SentrySdk::init();
+        }
+    }
+
+    public function test_sentry_logs_has_its_own_level(): void
+    {
+        $this->assertSame(config('sentry.logs_channel_level'), config('logging.channels.sentry_logs.level'));
     }
 }

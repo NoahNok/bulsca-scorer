@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Exceptions\ScoringException;
 use App\Models\Club;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
@@ -21,7 +22,11 @@ use App\Models\SpeedEvent;
 use App\Models\SpeedResult;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Route;
 use Inertia\Testing\AssertableInertia as Assert;
+use Mockery;
+use Psr\Log\LoggerInterface;
 use Tests\TestCase;
 
 /**
@@ -482,6 +487,44 @@ class ResultsPagesTest extends TestCase
         $this->comp->refresh();
         $this->assertTrue((bool) $this->comp->public_results);
         $this->assertFalse((bool) $this->comp->results_provisional);
+    }
+
+    public function test_publishing_and_finalising_are_logged(): void
+    {
+        Log::spy();
+
+        $this->actingAs($this->organiser)->post($this->url('/publish'), ['published' => true]);
+        $this->actingAs($this->organiser)->post($this->url('/finalise'), ['provisional' => false]);
+
+        Log::shouldHaveReceived('info')->with('Competition results publishing changed', ['results.published' => true])->once();
+        Log::shouldHaveReceived('info')->with('Competition results finalisation changed', ['results.provisional' => false])->once();
+    }
+
+    public function test_a_sheet_that_fails_to_score_sends_sentry_its_id_and_no_names(): void
+    {
+        $sheet = $this->sheet('Overall');
+
+        $failing = new class extends ResultSchema {
+            protected $table = 'result_schemas';
+
+            public function getResults($refreshCache = false): \Illuminate\Support\Collection
+            {
+                throw new ScoringException('Error evaluating formula', ['team' => 'Cardiff A']);
+            }
+        };
+        $failing->setRawAttributes($sheet->getAttributes(), true);
+        $failing->exists = true;
+        Route::bind('sheet', fn () => $failing);
+
+        $sentryLogs = Mockery::spy(LoggerInterface::class);
+        Log::shouldReceive('channel')->with('daily')->andReturn(Mockery::spy(LoggerInterface::class));
+        Log::shouldReceive('channel')->with('sentry_logs')->andReturn($sentryLogs);
+
+        $this->actingAs($this->organiser)->get($this->url('/' . $sheet->id))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page->where('error.message', 'Error evaluating formula'));
+
+        $sentryLogs->shouldHaveReceived('warning')->once()->with('Results sheet failed to score', ['sheet.id' => $sheet->id]);
     }
 
     public function test_old_results_urls_go_to_the_new_pages(): void

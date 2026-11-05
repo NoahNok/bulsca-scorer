@@ -280,7 +280,9 @@ class ResultSheetsController extends Controller
         try {
             $results = $sheet->getResults($isAdmin && $request->boolean('refresh_cache'));
         } catch (ScoringException $e) {
-            Log::error('ScoringException on a Results sheet: ' . $e->getMessage(), $e->getContext());
+            // To the log file only: the context has team and competitor names, which stay out of Sentry
+            Log::channel('daily')->error('ScoringException on a Results sheet: ' . $e->getMessage(), $e->getContext());
+            Log::channel('sentry_logs')->warning('Results sheet failed to score', ['sheet.id' => $sheet->id]);
             $error = ['message' => $e->getMessage(), 'context' => $e->getContext()];
             $results = collect();
         }
@@ -359,6 +361,8 @@ class ResultSheetsController extends Controller
         $comp->public_results = $request->validate(['published' => ['required', 'boolean']])['published'];
         $comp->save();
 
+        Log::info('Competition results publishing changed', ['results.published' => (bool) $comp->public_results]);
+
         return back()->with('success', $comp->public_results ? 'Results published' : 'Results unpublished');
     }
 
@@ -366,6 +370,8 @@ class ResultSheetsController extends Controller
     {
         $comp->results_provisional = $request->validate(['provisional' => ['required', 'boolean']])['provisional'];
         $comp->save();
+
+        Log::info('Competition results finalisation changed', ['results.provisional' => (bool) $comp->results_provisional]);
 
         return back()->with('success', $comp->results_provisional ? 'Results are provisional again' : 'Results finalised');
     }

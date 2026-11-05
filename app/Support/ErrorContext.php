@@ -5,12 +5,14 @@ namespace App\Support;
 use App\Helpers\RouteHelpers;
 use App\Models\Competition;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Sentry\Logs\Log;
 use Sentry\State\Scope;
 use Throwable;
 
 /**
- * Where an error happened and who hit it, as Sentry tags. IDs only: no names or emails leave the app.
+ * Where an error or log happened and who hit it, for Sentry. IDs only: no names or emails leave the app.
  * See docs/error-tracking.md.
  */
 class ErrorContext
@@ -20,25 +22,54 @@ class ErrorContext
     /** @param Request|null $request null when not handling a request (a command or queued job) */
     public static function applyTo(Scope $scope, ?Request $request): void
     {
-        // Runs while reporting another error, perhaps with the database or session down: tags aren't worth losing
-        // the report over
+        $context = self::read($request);
+        $userId = Arr::pull($context, 'user.id');
+
+        $scope->setTags($context);
+
+        if ($userId) {
+            $scope->setUser(['id' => $userId]);
+        }
+    }
+
+    /**
+     * The same context as attributes on a log, so logs and errors filter the same way. Sentry's before_send_log.
+     */
+    public static function applyToLog(Log $log): Log
+    {
+        foreach (self::read(app()->runningInConsole() ? null : request()) as $key => $value) {
+            $log->setAttribute($key, $value);
+        }
+
+        return $log;
+    }
+
+    /** @return array<string, string> */
+    private static function read(?Request $request): array
+    {
+        $context = [];
+
+        // Runs while reporting another error, perhaps with the database or session down: this context isn't worth
+        // losing the report over
         try {
-            $scope->setTag('subdomain', $request ? self::subdomain($request) : 'console');
+            $context['subdomain'] = $request ? self::subdomain($request) : 'console';
 
             if ($competition = $request ? self::competitionId($request) : null) {
-                $scope->setTag('competition', (string) $competition);
+                $context['competition'] = (string) $competition;
             }
 
             // hasUser, not user: this must not query the database, which may be why we're here
             $user = Auth::hasUser() ? Auth::user() : null;
-            $scope->setTag('user_role', self::role($user, $request));
+            $context['user_role'] = self::role($user, $request);
 
             if ($user) {
-                $scope->setUser(['id' => $user->getAuthIdentifier()]);
+                $context['user.id'] = (string) $user->getAuthIdentifier();
             }
         } catch (Throwable) {
             //
         }
+
+        return $context;
     }
 
     private static function subdomain(Request $request): string

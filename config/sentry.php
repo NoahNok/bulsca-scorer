@@ -41,6 +41,9 @@ return [
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#enable_logs
     'enable_logs' => env('SENTRY_ENABLE_LOGS', false),
 
+    // Gives logs the same context as errors. A class method, as config:cache can't serialise a closure
+    'before_send_log' => [App\Support\ErrorContext::class, 'applyToLog'],
+
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#enable_metrics
     'enable_metrics' => env('SENTRY_ENABLE_METRICS', false),
 
