@@ -37,7 +37,7 @@ class LandingController extends Controller
 
         $live = $visible()->whereDate('when', Carbon::today())->orderBy('name')->get();
         $upcoming = $visible()->whereDate('when', '>', Carbon::today())->orderBy('when')->limit(3)->get();
-        $recent = $visible()->where('public_results', true)->whereDate('when', '<', Carbon::today())->orderByDesc('when')->limit(2)->get();
+        $recent = $visible()->where('public_results', true)->whereDate('when', '<', Carbon::today())->orderByDesc('when')->limit(4)->get();
 
         return view('landing.v2.home', compact('live', 'upcoming', 'recent'));
     }
