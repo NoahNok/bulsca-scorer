@@ -8,6 +8,7 @@ use App\Models\CompetitionVisit;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Deletes personal data once the privacy policy says it's no longer kept. Keep the periods here
@@ -35,19 +36,22 @@ class PruneRetainedData extends Command
     public function handle()
     {
         // logins unused for a year, and ones signed out over a month ago
-        Login::withoutGlobalScopes()->withTrashed()
+        $logins = Login::withoutGlobalScopes()->withTrashed()
             ->where(fn($query) => $query
                 ->where('last_activity_at', '<', now()->subYear())
                 ->orWhere('deleted_at', '<', now()->subMonth()))
             ->forceDelete();
 
         // "Recent" on the Management home only needs the last year
-        CompetitionVisit::where('visited_at', '<', now()->subYear())->delete();
+        $visits = CompetitionVisit::where('visited_at', '<', now()->subYear())->delete();
 
         // log files not written to for 14 days; the daily channel prunes its own, this also catches the old single laravel.log
+        $logFiles = 0;
+
         foreach (glob(storage_path('logs/*.log')) as $log) {
             if (filemtime($log) < now()->subDays(14)->timestamp) {
                 unlink($log);
+                $logFiles++;
             }
         }
 
@@ -55,11 +59,20 @@ class PruneRetainedData extends Command
         Config::set('database.default', 'whatif');
 
         try {
-            Competition::whereNotNull('wi_user')->where('updated_at', '<', now()->subDays(14))->delete();
+            $whatIfCompetitions = Competition::whereNotNull('wi_user')->where('updated_at', '<', now()->subDays(14))->delete();
 
-            User::where('created_at', '<', now()->subDays(14))->whereDoesntHave('getWhatIfEditors')->delete();
+            $whatIfAccounts = User::where('created_at', '<', now()->subDays(14))->whereDoesntHave('getWhatIfEditors')->delete();
         } finally {
             Config::set('database.default', 'mysql');
         }
+
+        // One summary a run, so it's clear the privacy policy's deletions are happening
+        Log::info('Retained data pruned', [
+            'retention.logins' => $logins,
+            'retention.visits' => $visits,
+            'retention.log_files' => $logFiles,
+            'retention.whatif_competitions' => $whatIfCompetitions,
+            'retention.whatif_accounts' => $whatIfAccounts,
+        ]);
     }
 }

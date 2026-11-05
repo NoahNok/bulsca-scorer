@@ -2,6 +2,7 @@
 import { createInertiaApp, type ResolvedComponent } from "@inertiajs/svelte";
 import JudgeHeaderLayout from "./layout/JudgeHeaderLayout.svelte";
 import JudgeLayout from "./layout/JudgeLayout.svelte";
+import { initSentry } from "./lib/sentry";
 //import "./bootstrap";
 
 // import Alpine from 'alpinejs';
@@ -9,6 +10,8 @@ import JudgeLayout from "./layout/JudgeLayout.svelte";
 // window.Alpine = Alpine;
 
 // Alpine.start();
+
+initSentry("judge");
 
 const appName = "DigitalJudge";
 

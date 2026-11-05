@@ -6,10 +6,16 @@ use App\Helpers\CompetitionHeader;
 use App\Helpers\OrganisationHeader;
 use App\Models\Competition;
 use App\Models\Organisation\Organisation;
+use App\Support\ErrorContext;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Inertia\Inertia;
+use Sentry\Laravel\Integration;
+use Sentry\State\Scope;
 use Throwable;
+
+use function Sentry\withScope;
 
 class Handler extends ExceptionHandler
 {
@@ -50,8 +56,25 @@ class Handler extends ExceptionHandler
     public function register()
     {
         $this->reportable(function (Throwable $e) {
-            //
+            withScope(function (Scope $scope) use ($e) {
+                ErrorContext::applyTo($scope, app()->runningInConsole() ? null : request());
+
+                Integration::captureUnhandledException($e);
+            });
         });
+    }
+
+    /**
+     * A broken scoring formula fails on every view of its results, so report each distinct failure once an hour
+     * instead of using up the error quota. See docs/error-tracking.md.
+     */
+    protected function throttle(Throwable $e)
+    {
+        if ($e instanceof ScoringException) {
+            return Limit::perHour(1)->by('scoring:' . $e->getMessage());
+        }
+
+        return parent::throttle($e);
     }
 
     public function render($request, Throwable $exception)
