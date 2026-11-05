@@ -44,7 +44,7 @@
         }
 
         /* Two identical runs of words: sliding one run's width brings the second exactly where the first
-                       started, so the loop never shows a seam or runs out */
+                           started, so the loop never shows a seam or runs out */
         .f-marquee-track {
             position: absolute;
             top: 0;
@@ -217,7 +217,7 @@
                     <h3>Officials</h3>
                     <p>Judge, time and mark events from your phone with Digital Judge. Submit DQs and penalties poolside in
                         real-time.</p>
-                    <a href="{{ route('dj.home') }}" class="v2-link">Open Digital Judge</a>
+                    <a href="{{ route('judge.login') }}" class="v2-link">Open Digital Judge</a>
                 </div>
             </div>
         </section>

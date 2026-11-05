@@ -31,7 +31,12 @@
     import { index } from "@/routes/judge";
     import { submissions } from "@/routes/judge/competition/violation";
 
-    import { EventType, type Competition, type Event, type SERC } from "@/types/base";
+    import {
+        EventType,
+        type Competition,
+        type Event,
+        type SERC,
+    } from "@/types/base";
     import { page, Link, router } from "@inertiajs/svelte";
     import {
         CalendarX,
@@ -69,10 +74,10 @@
 
     async function leaveCompetition() {
         const ok = await confirm({
-            title: "Leave Competition",
+            title: "Exit Competition",
             description:
-                "Leave this competition? You can always come back later.",
-            confirmLabel: "Leave",
+                "Exit this competition? You can always come back later.",
+            confirmLabel: "Exit",
         });
 
         if (ok) router.visit(index());
@@ -111,7 +116,12 @@
         );
     }
 
-    type EventLink = { href: string; icon: any; label: string; method?: "post" };
+    type EventLink = {
+        href: string;
+        icon: any;
+        label: string;
+        method?: "post";
+    };
 
     function sercLinks(serc: SERC): EventLink[] {
         // with League Objectives the Entity's League picks the Objective, so there's one way in
@@ -197,7 +207,9 @@
         </div>
 
         {#if isHead && !sercsReleased}
-            <div class="mb-4 rounded-xl border border-amber-200 bg-amber-50 p-4">
+            <div
+                class="mb-4 rounded-xl border border-amber-200 bg-amber-50 p-4"
+            >
                 <div class="flex items-start gap-3">
                     <Lock size={18} class="mt-0.5 shrink-0 text-amber-700" />
                     <div class="min-w-0">
@@ -205,8 +217,8 @@
                             SERCs are hidden from officials
                         </p>
                         <p class="text-sm text-amber-800">
-                            Only referees can see them. Release them on the day when judging is
-                            about to start.
+                            Only referees can see them. Release them on the day
+                            when judging is about to start.
                         </p>
                     </div>
                 </div>
@@ -257,7 +269,10 @@
             {#if isHead}
                 {#if event.completed}
                     <span title="Event complete">
-                        <CircleCheck size={20} class="shrink-0 text-green-500" />
+                        <CircleCheck
+                            size={20}
+                            class="shrink-0 text-green-500"
+                        />
                     </span>
                 {:else}
                     <span title="Event incomplete">
@@ -267,7 +282,9 @@
             {/if}
         </div>
 
-        <div class="divide-y overflow-hidden rounded-xl border bg-white shadow-sm">
+        <div
+            class="divide-y overflow-hidden rounded-xl border bg-white shadow-sm"
+        >
             {#each links as link (link.href)}
                 {@render row(link)}
             {/each}
@@ -289,7 +306,9 @@
             <h3 class="min-w-0 truncate text-base!">{event.name}</h3>
         </div>
 
-        <div class="flex items-center gap-3 rounded-xl border bg-white px-3 py-2 shadow-sm">
+        <div
+            class="flex items-center gap-3 rounded-xl border bg-white px-3 py-2 shadow-sm"
+        >
             <span
                 class="flex size-8 shrink-0 items-center justify-center rounded-md bg-gray-100 text-gray-400"
             >
@@ -314,7 +333,8 @@
         >
             <Icon size={16} />
         </span>
-        <span class="font-archivo min-w-0 flex-1 truncate text-sm">{label}</span>
+        <span class="font-archivo min-w-0 flex-1 truncate text-sm">{label}</span
+        >
         <ChevronRight
             size={18}
             class="shrink-0 text-gray-300 transition-all group-hover:translate-x-0.5 group-hover:text-se"
@@ -334,7 +354,9 @@
         >
             <Shield size={16} />
         </span>
-        <span class="font-archivo min-w-0 flex-1 truncate text-sm">Confirm Results</span>
+        <span class="font-archivo min-w-0 flex-1 truncate text-sm"
+            >Confirm Results</span
+        >
         <ChevronRight
             size={18}
             class="shrink-0 text-gray-300 transition-all group-hover:translate-x-0.5 group-hover:text-se"
@@ -349,7 +371,9 @@
         >
             <ShieldCheck size={16} />
         </span>
-        <span class="font-archivo min-w-0 flex-1 truncate text-sm text-green-800">
+        <span
+            class="font-archivo min-w-0 flex-1 truncate text-sm text-green-800"
+        >
             Results Confirmed
         </span>
         <Check size={18} class="shrink-0 text-green-600" />
