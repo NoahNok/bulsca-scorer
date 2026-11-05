@@ -152,14 +152,10 @@ class ResultsController extends Controller
 
         abort_unless($violation->entity?->competition == $comp->id && $comp->hasReleased($violation->event), 404);
 
-        $submission = $violation->submission;
-
-
-
         return response()->json([
             'code' => "{$violation}",
             'description' => $violation->getMessage(),
-            'submission' => $submission?->only([
+            'submission' => $violation->violationSubmission?->publicDetails() ?? $violation->submission?->only([
                 'code',
                 'turn',
                 'length',

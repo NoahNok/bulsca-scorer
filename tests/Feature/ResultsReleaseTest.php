@@ -6,10 +6,13 @@ use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\CompetitionTeam;
 use App\Models\DigitalJudge\JudgeDQSubmission;
+use App\Models\DigitalJudge\Violation\ViolationSubmission;
+use App\Models\DQCode;
 use App\Models\Event\Disqualification;
 use App\Models\Orders\Heat;
 use App\Models\SERC;
 use App\Models\SpeedEvent;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -226,5 +229,117 @@ class ResultsReleaseTest extends TestCase
         $this->speedDqSubmission(resolved: null, viewable: true);
 
         $this->get($this->dqPenUrl())->assertOk()->assertDontSee('Reporting Judge');
+    }
+
+    private function violationSubmission(string $status = 'ACCEPTED'): ViolationSubmission
+    {
+        $code = new DQCode();
+        $code->code = 202;
+        $code->description = 'Did something wrong';
+        $code->save();
+
+        $submission = new ViolationSubmission();
+        $submission->competition_id = $this->comp->id;
+        $submission->entity()->associate($this->team);
+        $submission->event()->associate($this->serc);
+        $submission->submitted()->associate($code);
+        $submission->turn = 2;
+        $submission->length = 3;
+        $submission->details = 'Missed the turn';
+        $submission->submitter()->associate(User::factory()->create(['name' => 'New Reporter']));
+        $submission->submitter_position = 'Lane judge';
+        $submission->seconder()->associate(User::factory()->create(['name' => 'New Seconder']));
+        $submission->seconder_position = 'Turn judge';
+        $submission->save();
+
+        $submission->updateStatus($status);
+
+        return $submission;
+    }
+
+    private function appliedDq(ViolationSubmission $submission): Disqualification
+    {
+        $this->assertInstanceOf(Disqualification::class, $submission->applied);
+
+        return $submission->applied;
+    }
+
+    public function test_results_page_shows_the_violation_submission_behind_a_dq(): void
+    {
+        $submission = $this->violationSubmission();
+        $this->release($this->comp, $this->serc);
+
+        $this->get($this->violationUrl($this->comp, $this->appliedDq($submission)))
+            ->assertOk()
+            ->assertJsonPath('code', 'DQ202')
+            ->assertJsonPath('submission.code', 'DQ202')
+            ->assertJsonPath('submission.turn', 2)
+            ->assertJsonPath('submission.length', 3)
+            ->assertJsonPath('submission.details', 'Missed the turn')
+            ->assertJsonPath('submission.name', 'New Reporter')
+            ->assertJsonPath('submission.position', 'Lane judge')
+            ->assertJsonPath('submission.seconder_name', 'New Seconder')
+            ->assertJsonPath('submission.seconder_position', 'Turn judge');
+    }
+
+    public function test_results_page_falls_back_to_a_typed_seconder_name(): void
+    {
+        $submission = $this->violationSubmission();
+        $submission->seconder()->dissociate();
+        $submission->seconder_name = 'Typed Seconder';
+        $submission->save();
+        $this->release($this->comp, $this->serc);
+
+        $this->get($this->violationUrl($this->comp, $this->appliedDq($submission)))
+            ->assertJsonPath('submission.seconder_name', 'Typed Seconder');
+    }
+
+    public function test_results_page_shows_the_position_of_a_reporter_whose_account_was_deleted(): void
+    {
+        $submission = $this->violationSubmission();
+        $submission->submitter->delete();
+        $this->release($this->comp, $this->serc);
+
+        $this->get($this->violationUrl($this->comp, $this->appliedDq($submission->fresh())))
+            ->assertOk()
+            ->assertJsonPath('submission.name', null)
+            ->assertJsonPath('submission.position', 'Lane judge');
+    }
+
+    public function test_results_page_still_shows_the_old_judge_submission_behind_a_dq(): void
+    {
+        $legacy = $this->speedDqSubmission(resolved: true, viewable: true);
+        $legacy->violation()->associate($this->dq);
+        $legacy->save();
+        $this->release($this->comp, $this->serc);
+
+        $this->get($this->violationUrl($this->comp, $this->dq))->assertJsonPath('submission.name', 'Reporting Judge');
+    }
+
+    public function test_results_site_shows_an_accepted_violation_submission(): void
+    {
+        $this->violationSubmission();
+        $this->release($this->comp, $this->serc);
+
+        $this->get(route('public.results.dq-pen', [$this->comp->resultsSlug(), $this->team, 'DQ202']))
+            ->assertOk()
+            ->assertSee(['New Reporter', 'Lane judge', 'New Seconder', 'Did something wrong', 'Missed the turn']);
+    }
+
+    public function test_results_site_doesnt_show_who_reported_a_violation_submission_in_a_hidden_event(): void
+    {
+        $this->violationSubmission();
+
+        $this->get(route('public.results.dq-pen', [$this->comp->resultsSlug(), $this->team, 'DQ202']))
+            ->assertDontSee('New Reporter');
+    }
+
+    public function test_results_site_doesnt_show_violation_submissions_that_arent_accepted(): void
+    {
+        $this->violationSubmission('SUBMITTED');
+        $this->release($this->comp, $this->serc);
+
+        $this->get(route('public.results.dq-pen', [$this->comp->resultsSlug(), $this->team, 'DQ202']))
+            ->assertDontSee('New Reporter');
     }
 }
