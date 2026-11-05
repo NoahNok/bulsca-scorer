@@ -5,7 +5,7 @@
 </script>
 
 <div
-    class="pointer-events-none fixed right-4 top-4 z-50 flex w-[min(92vw,24rem)] flex-col gap-2"
+    class="pointer-events-none fixed right-4 top-[calc(1rem+env(safe-area-inset-top))] z-50 flex w-[min(92vw,24rem)] flex-col gap-2"
 >
     {#each toastState as toast (toast.id)}
         <ToastItem {toast} />

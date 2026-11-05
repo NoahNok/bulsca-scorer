@@ -2,6 +2,7 @@
 import { createInertiaApp, type ResolvedComponent } from "@inertiajs/svelte";
 import JudgeHeaderLayout from "./layout/JudgeHeaderLayout.svelte";
 import JudgeLayout from "./layout/JudgeLayout.svelte";
+import { initPwa } from "./lib/pwa.svelte";
 import { initSentry } from "./lib/sentry";
 //import "./bootstrap";
 
@@ -12,6 +13,7 @@ import { initSentry } from "./lib/sentry";
 // Alpine.start();
 
 initSentry("judge");
+initPwa();
 
 const appName = "DigitalJudge";
 

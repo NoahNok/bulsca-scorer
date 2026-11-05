@@ -33,7 +33,7 @@ The layouts provide the chrome, so pages don't add it themselves:
 |---|---|---|
 | Shell | `layout/JudgeLayout.svelte` | Padded, centred column, bottom tab bar (`JudgeTabBar`: Home, DQ/Penalty, Alerts, Online, plus the "Referee mode" band for the head ref), toasts, confirm dialog, the officials-online sheet and poke animation (joins the competition's presence channel), and the Alerts sheet (starts `alerts` from `lib/alerts.svelte` and `announcements` from `lib/announcements.svelte`) |
 | Header | `layout/JudgeHeaderLayout.svelte` | "Digital Judge" header + icon, the space under it, and the `AnnouncementBanner` on competition pages (all `Judge/*` pages) |
-| Root | `resources/views/app.blade.php` | The Inertia root view. `<html>` has `scrollbar-gutter: stable` so the page doesn't shift sideways when a scrollbar appears |
+| Root | `resources/views/app.blade.php` | The Inertia root view and the PWA tags (see "Installed app"). `<html>` has `scrollbar-gutter: stable` so the page doesn't shift sideways when a scrollbar appears |
 
 The header defaults to the House icon linking to the competition home. Override
 it from the page's `layout` export:
@@ -149,6 +149,7 @@ navigable row shows a `ChevronRight` that nudges right on hover.
 
 | Component | Use for |
 |---|---|
+| `InstallAppCard` | The dismissible "Add Digital Judge to your phone" card on the Dashboard: an Install button where the browser offers a prompt, Add to Home Screen steps on iOS, nothing once installed or dismissed. State comes from `install` in `lib/pwa.svelte`. |
 | `Button` | All buttons. Variants: `primary` (main action), `secondary`, `success`, `danger`, `white`. Has `icon`, `loading`. Note it has `ml-auto` baked in, so pass `w-full` when stacking. |
 | `Input` | Text, number and textarea fields. Use `variant="soft"` for new forms; it supports `label`, `hint`, and a required asterisk. |
 | `SearchInput` | Filtering a list in place. `bind:value`. |
@@ -369,6 +370,23 @@ title, a sentence of guidance if needed, then side-by-side `ConfirmDialog`s with
   `watching`; the store leaves them out of its members, so they never show as online. Get the websocket client from `getEcho()` in `lib/echo.ts` rather than
   `window.Echo`, which is the legacy Blade app's. Map statuses to colours with
   `presenceStatusBadgeClass` in `types/presence.ts`.
+
+### Installed app
+
+The judge app installs as a PWA (`public/judge.webmanifest`, scope `/v2`). `initPwa()`
+from `lib/pwa.svelte` runs once in `app.ts`.
+
+- **Nothing is cached or queued.** `public/judge-sw.js` only swaps a failed page load for
+  `public/judge-offline.html`, because the server decides locks and "Already marked". Keep
+  that page self-contained, and bump `CACHE` in the worker when it changes. The worker only
+  registers in production builds.
+- A failed navigation shows a "You're offline" toast (also `lib/pwa.svelte`). Polling doesn't.
+  `useHttp` requests still show their own errors.
+- **Safe areas:** the root view sets `viewport-fit=cover`, so anything pinned to a screen
+  edge has to pad itself with `env(safe-area-inset-top)` or `env(safe-area-inset-bottom)`, as
+  the layouts, `JudgeTabBar`, the sheets and toasts do.
+- There's no browser back button or address bar when installed, so every page needs its own
+  way back (`BackLink`, tab bar).
 
 ### Requests
 

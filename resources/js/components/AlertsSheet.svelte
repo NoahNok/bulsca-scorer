@@ -69,7 +69,7 @@
             ></div>
             <div
                 transition:fly={{ x: 320, duration: 220 }}
-                class="fixed inset-y-0 right-0 z-60 flex w-[min(85vw,22rem)] flex-col bg-white pb-[env(safe-area-inset-bottom)] shadow-lg"
+                class="fixed inset-y-0 right-0 z-60 flex w-[min(85vw,22rem)] flex-col bg-white pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] shadow-lg"
             >
                 <Dialog.Content class="flex min-h-0 flex-1 flex-col">
                     <div class="flex items-center justify-between border-b p-4">

@@ -1,0 +1,29 @@
+{
+    "id": "/v2",
+    "name": "Digital Judge",
+    "short_name": "Judge",
+    "description": "Judge lifesaving competitions on your phone.",
+    "start_url": "/v2",
+    "scope": "/v2",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#ffffff",
+    "icons": [
+        {
+            "src": "/judge-icons/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/judge-icons/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "/judge-icons/icon-maskable-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ]
+}
