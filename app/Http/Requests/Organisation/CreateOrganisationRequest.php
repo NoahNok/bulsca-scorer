@@ -23,14 +23,17 @@ class CreateOrganisationRequest extends FormRequest
     {
         return [
             'name' => 'required|string|min:1|unique:organisations',
-            'logo' => 'sometimes|image'
+            'logo' => 'sometimes|image|mimes:jpeg,png,webp|max:10240'
         ];
     }
 
     public function messages()
     {
         return [
-            'name.unique' => 'An organisation with this name already exists.'
+            'name.unique' => 'An organisation with this name already exists.',
+            'logo.image' => 'Choose a PNG, JPG or WebP image.',
+            'logo.mimes' => 'Choose a PNG, JPG or WebP image.',
+            'logo.max' => 'Choose an image up to 10 MB.',
         ];
     }
 }

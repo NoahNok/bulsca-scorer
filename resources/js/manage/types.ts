@@ -1,0 +1,474 @@
+/** A competition as the Management home lists it (ManageController::row) */
+export type ManagedCompetition = {
+    id: number;
+    name: string;
+    /** Y-m-d */
+    when: string;
+    where: string;
+    url: string;
+    past: boolean;
+    /** Days from today, negative once it's past */
+    days: number;
+    today: boolean;
+    /** Today, with the live site turned on */
+    live: boolean;
+    /** Hidden from the public site */
+    private: boolean;
+    /** An Organiser with only some permissions, e.g. results */
+    limited: boolean;
+};
+
+/** One of the Management home's list, with its organisation (null for a Personal Competition) */
+export type ListedCompetition = ManagedCompetition & { organisation: number | null };
+
+export type ManagedOrganisation = {
+    id: number;
+    name: string;
+    logo: string | null;
+    /** Null for one you were only invited into a competition of: you can't open its page */
+    url: string | null;
+};
+
+/** A competition's or organisation's page tab (App\Helpers\CompetitionTabs, OrganisationTabs), only the ones you can open */
+export type PageTab = {
+    label: string;
+    url: string;
+    current: boolean;
+    /** A Management app page, so an Inertia visit; the rest are Blade, and load in full */
+    svelte: boolean;
+    /** Opens in a new tab, marked ↗ (the live full-screen display) */
+    newTab?: boolean;
+};
+
+/** What CompetitionLayout draws above every competition page (App\Helpers\CompetitionHeader::for) */
+export type CompetitionHeader = {
+    id: number;
+    name: string;
+    /** Y-m-d */
+    when: string;
+    where: string;
+    organisation: { name: string; logo: string | null; url: string } | null;
+    championship: { name: string; url: string } | null;
+    /** Hidden from the public site */
+    private: boolean;
+    /** Today, with the live site turned on */
+    live: boolean;
+    /** The Organisers' note above every page, as HTML from the Status settings */
+    statusMessage: string | null;
+    tabs: PageTab[];
+};
+
+/** What OrganisationLayout draws above every organisation page (App\Helpers\OrganisationHeader::for) */
+export type OrganisationHeader = {
+    id: number;
+    name: string;
+    logo: string | null;
+    tabs: PageTab[];
+};
+
+/** A speed event (key `sp:<id>`) or SERC (`se:<id>`) */
+export type CompetitionEvent = {
+    key: string;
+    name: string;
+    serc: boolean;
+};
+
+/** Someone who can manage a competition or organisation, in its Accounts */
+export type Account = {
+    id: number;
+    name: string;
+    email: string;
+    /** Keys of the competition's or organisation's $accessTypes, without owner */
+    access: string[];
+    owner: boolean;
+    you: boolean;
+};
+
+/** An invite to manage a competition or organisation that hasn't been accepted yet */
+export type PendingInvite = { id: string; email: string };
+
+/**
+ * Where an official is with Digital Judge: their account not signed in to yet (made by an Organiser),
+ * the competition not opened yet, using it now, or last seen a while ago
+ */
+export type OfficialStatus = "notSignedIn" | "notOpened" | "online" | "seen";
+
+/** An official on a competition's Officials page (Manage\CompetitionOfficialsController::index) */
+export type CompetitionOfficial = {
+    id: number;
+    name: string;
+    email: string;
+    /** A key of Competition::$officialRoles */
+    role: string;
+    status: OfficialStatus;
+    joined: string | null;
+    lastSeen: string | null;
+    /** The competition's only Referee, so changing or removing them leaves none */
+    onlyReferee: boolean;
+    /** The confirm message for removing them, saying what they leave behind */
+    removeMessage: string;
+};
+
+/** Someone to add as an official: a search result, or a suggestion from the organisation's other competitions */
+export type OfficialCandidate = {
+    id: number;
+    name: string;
+    /** Masked, unless searched for in full */
+    email: string;
+    /** Search results: already an official here */
+    official?: boolean;
+    /** Suggestions: the competition they last officiated */
+    last?: string;
+};
+
+/** A team or competitor on Entries & Leagues (CompetitionEntriesController::index) */
+export type Entry = {
+    id: number;
+    name: string;
+    /** League ids */
+    leagues: number[];
+    /** Seed time (01:23.456) by speed event id, only for events that take seeds */
+    seeds: Record<string, string>;
+};
+
+export type EntryTeam = Entry & { competitors: Entry[] };
+
+export type EntryClub = { id: number; name: string; teams: EntryTeam[] };
+
+/** A competition's league, with how many teams and competitors are in it */
+export type CompetitionLeague = { id: number; name: string; teams: number; competitors: number };
+
+/** An event's card on the Events page (CompetitionEventsController::index) */
+type EventCard = {
+    id: number;
+    name: string;
+    /** Marked complete by an Organiser */
+    complete: boolean;
+    /** On the Digital Judge, and confirmed by the Referee */
+    confirmed: boolean;
+    /** Left out of the results */
+    hidden: boolean;
+    url: string;
+};
+
+/** The Entities a speed event or SERC scores */
+export type EventTarget = "club" | "team" | "competitor";
+
+export type SpeedEventCard = EventCard & { target: EventTarget };
+
+/** A speed event, as each of its pages takes it */
+export type SpeedEventHeader = {
+    id: number;
+    name: string;
+    target: EventTarget;
+    complete: boolean;
+    viewable: boolean;
+    hasPenalties: boolean;
+    digitalJudge: boolean;
+    ropeThrow: boolean;
+    /** How many heats it has, which deleting it removes */
+    heats: number;
+};
+
+export type SercType = "DRY" | "WET";
+
+export type SercCard = EventCard & { type: SercType };
+
+/** A SERC, as each of its pages takes it (Manage\SercEventController::shared) */
+export type SercEventHeader = {
+    id: number;
+    name: string;
+    type: SercType;
+    target: EventTarget;
+    complete: boolean;
+    viewable: boolean;
+    /** Each Entity is marked against the Objective its League is assigned */
+    leagueObjectives: boolean;
+    /** SERC access; a SERC Writer only sees its results and edits its setup */
+    canManage: boolean;
+};
+
+/** An Entity a SERC scores, in draw order, with how many of its marks are in */
+export type SercEntity = {
+    key: string;
+    id: number;
+    name: string;
+    /** Its place in the draw (Tank 2-3 with tanks), null when it isn't in one */
+    draw: string | null;
+    marked: number;
+    /** How many marks it takes; null when League Objectives give it none or several Objectives */
+    possible: number | null;
+};
+
+/** A ranked row on a SERC's page. A combined row stands for several Entities, one per entry in `names` */
+export type SercResultRow = {
+    key: string;
+    names: string[];
+    dq: string | null;
+    /** The weighted mark */
+    mark: number;
+    points: number;
+    disqualified: boolean;
+    position: number | null;
+};
+
+/** A marking point as the setup editor edits it; id null until it's saved */
+export type SercMarkingPoint = {
+    id: number | null;
+    description: string;
+    weight: number | null;
+    template_id: string | null;
+    /** Keys a new one in the list until it has an id */
+    sort_id?: number;
+};
+
+/** An Objective as the setup editor edits it (SERC::getSERCConfiguration) */
+export type SercObjective = {
+    id: number | null;
+    name: string;
+    /** Its marking hint, as HTML */
+    hint: string | null;
+    /** League ids, with League Objectives on */
+    restricted_leagues: number[];
+    marking_points: SercMarkingPoint[];
+    sort_id?: number;
+};
+
+/** An Objective on an Entity's marks page, with its marks (null for none) */
+export type SercMarkingObjective = {
+    id: number;
+    name: string;
+    /** Its marking hint, as HTML */
+    hint: string | null;
+    markingPoints: { id: number; name: string; weight: number; mark: number | null }[];
+};
+
+/** What the setup editor starts from */
+export type SercSetup = {
+    name: string;
+    type: SercType;
+    target: EventTarget;
+    leagueObjectives: boolean;
+    objectives: SercObjective[];
+};
+
+/** One speed result as the Enter results grid edits it (Manage\SpeedEventController::grid) */
+export type SpeedGridRow = {
+    id: number;
+    name: string;
+    /** The pool its heat swims in, when the competition uses pools */
+    pool: { id: number; name: string } | null;
+    heat: number | null;
+    /** The heat's pool and number ("12:3"), as heat numbers restart in each pool */
+    heatKey: string | null;
+    /** "H3 L2", or "Main Pool · H3 L2" with a pool */
+    heatLane: string | null;
+    lane: number | null;
+    /** A time (01:23.450), DNS, DNF or OOT, Rope Throw's ropes in (0-3), or empty */
+    result: string;
+    /** DQ101, or empty */
+    disqualification: string;
+    /** P100, P200, or empty */
+    penalties: string;
+};
+
+/** A ranked row on a speed event's Results. A combined row stands for several Entities, one per entry in `names` */
+export type SpeedResultRow = {
+    key: string;
+    names: string[];
+    /** Each combined Entity's own time; empty for a single one */
+    times: string[];
+    /** Each Entity's DQ, null for none */
+    dqs: (string | null)[];
+    /** The time that counts, after penalties */
+    time: string | null;
+    /** The time entered, when penalties changed it */
+    was: string | null;
+    /** Heat, lane and order of finish, with the Digital Judge on */
+    oof: string | null;
+    penalties: string | null;
+    /** "DQ" when disqualified ones don't score */
+    points: number | "DQ" | null;
+    position: number | null;
+};
+
+export type ScoringVariable = { order?: number; name: string; expression: string };
+
+export type ScoringViolation = { code: string; condition: string; amount: string };
+
+/** An event's scoring schema (ScoringSchemas::withDefaults) */
+export type ScoringSchema = {
+    equation: string;
+    penalty_func: string | null;
+    global_variables: ScoringVariable[];
+    local_variables: ScoringVariable[];
+    auto_penalties: ScoringViolation[];
+    auto_disqualifications: ScoringViolation[];
+    rank_higher: boolean;
+    rank_equation: string | null;
+    allow_disqualified_to_rank: boolean;
+    group_by: string[];
+    force_penalty: boolean;
+};
+
+/** What an event page's Scoring part edits */
+export type EventScoring = {
+    /** Null until it's set up */
+    schema: ScoringSchema | null;
+    /** Organisation schemas to start from, with their organisation's name */
+    options: { id: number; name: string; organisation: string; schema: ScoringSchema }[];
+};
+
+/** An Entity in a lane (HeatService::grid) */
+export type HeatCell = { id: number; entity: number; name: string; seed: string | null };
+
+/** An event's Heats in one Pool: a cell per lane in each Heat, null for an open one */
+export type HeatGrid = { lanes: number; heats: { number: number; lanes: (HeatCell | null)[] }[] };
+
+/** An Entity not in the Heats or the Draw, to place */
+export type UnplacedEntity = { id: number; name: string; seed?: string | null };
+
+export type NamedOption = { id: number; name: string };
+
+/** One Tank's running order (DrawService::tanks); Tank 0 is the whole Draw without tanks */
+export type DrawTank = { number: number; draws: { id: number; entity: number; name: string; draw: number }[] };
+
+/** A Digitally Judged Event still waiting for its Head Judge to confirm it, which holds up Results sheets */
+export type UnconfirmedEvent = { name: string; url: string };
+
+/** A Results sheet as the Results overview lists it (Manage\ResultSheetsController::index) */
+export type ResultSheetRow = {
+    id: number;
+    name: string;
+    /** The League's name, null for the whole competition */
+    league: string | null;
+    viewable: boolean;
+};
+
+/** A built-in Formula: the equation it sets and whether highest wins */
+export type BuiltInFormula = { key: string; label: string; equation: string; rankHigher: boolean };
+
+/** A Results sheet Formula's global variable */
+export type FormulaVariable = { name: string; expression: string; order?: number | null };
+
+/** An Event a Results sheet can include, `type` and `id` naming it together */
+export type SheetEventRef = { type: "speed" | "serc"; id: number };
+
+/** What New/Edit Results sheet edits (Manage\ResultSheetsController::form) */
+export type ResultSheetSettings = {
+    id: number;
+    name: string;
+    league: number | null;
+    events: SheetEventRef[];
+    equation: string;
+    global_variables: FormulaVariable[];
+    group_on: "club" | "team" | "competitor";
+    rank_higher: boolean;
+    ignore_dq: boolean;
+    break_ties: SheetEventRef[];
+    /** The built-in Formula it matches, null for a custom one */
+    builtIn: string | null;
+};
+
+/** An Activity filter's url parameter, each |-separated */
+export type ActivityParam = "related" | "by" | "activity";
+export type ActivityFilters = Record<ActivityParam, string[]>;
+
+export type ActivityKind = "comp" | "serc" | "speed" | "team" | "competitor" | "submission" | "dq" | "penalty";
+
+/** Something an Activity entry is related to (App\Services\ActivityFeed::relatedItem) */
+export type ActivityRelated = {
+    kind: ActivityKind;
+    name: string;
+    detail: string | null;
+    state: "present" | "deleted" | "appealed";
+    /** Its own page; null when deleted or what the page is forced to */
+    link: string | null;
+    /** The `related` value it toggles; null when deleted or what the page is forced to */
+    filter: { value: string; active: boolean } | null;
+};
+
+export type ActivityEntry = {
+    id: string;
+    /** ISO */
+    at: string;
+    type: string;
+    title: string;
+    description: string | null;
+    /** Null for the System */
+    by: string | null;
+    related: ActivityRelated[];
+    changes: {
+        columns: { label: string; old: string; new: string };
+        rows: { label: string; old: string | null; new: string | null }[];
+    } | null;
+};
+
+/** An "Add …" select on the Activity filter bar */
+export type ActivityPicker = {
+    label: string;
+    param: ActivityParam;
+    placeholder: string;
+    groups: { label: string | null; options: { value: string; label: string }[] }[];
+};
+
+/** The active filters of one kind, shown as removable chips */
+export type ActivityChipGroup = { label: string; chips: { label: string; param: ActivityParam; value: string }[] };
+
+/** A device you're signed in on (ManagesDevices), this one first */
+export type Device = {
+    id: number;
+    /** desktop, phone or tablet */
+    type: string;
+    name: string;
+    /** "Chrome on Windows", or empty */
+    browser: string;
+    ip: string | null;
+    /** "2 hours ago" */
+    lastActive: string;
+    /** "1 Nov 2026" */
+    signedIn: string | null;
+    current: boolean;
+    remembered: boolean;
+};
+
+/** A page of a long list (App\Helpers\Pagination::props), for Pagination */
+export type Pagination = {
+    current: number;
+    last: number;
+    total: number;
+    /** Null on the first page */
+    prev: string | null;
+    /** Null on the last page */
+    next: string | null;
+};
+
+/** What LiveLayout draws above every live page (LiveController::header) */
+export type LiveHeader = {
+    id: number;
+    name: string;
+    /** Y-m-d */
+    when: string;
+    where: string;
+    logo: string | null;
+    /** The live page polls this for each Team's progress (LiveController::liveData) */
+    dataUrl: string;
+    /** The Organisers' note from Settings → Status, as HTML. The poll keeps it current (LiveStatusMessage) */
+    statusMessage: string | null;
+    links: { live: string; dqs: string; display: string; heatsDraws: string };
+};
+
+/** The SERC order's Tanks, each Team in Draw order (LiveController::sercOrder) */
+export type SercOrder = {
+    tanks: { label: string | null; teams: { id: number; draw: number; name: string }[] }[];
+    sercCount: number;
+};
+
+/** A Team's SERC progress and Estimated start (App\Services\SercOrderEstimate::teams) */
+export type LiveTeam = {
+    finished: number;
+    /** First not-started Team in its Tank */
+    next: boolean;
+    /** Unix seconds, or null once started or skipped */
+    start: number | null;
+};

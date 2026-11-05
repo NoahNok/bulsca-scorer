@@ -11,6 +11,7 @@ use App\Models\SpeedEvent;
 use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 /**
@@ -89,6 +90,20 @@ class PoolsTest extends TestCase
         return $this->actingAs($this->admin)->postJson(route('comps.settings', $this->comp), $settings);
     }
 
+    public function test_settings_shows_pools_and_how_many_heats_turning_them_off_deletes(): void
+    {
+        $this->comp->use_pools = true;
+        $this->comp->save();
+        $this->pooledHeat($this->pool());
+
+        $this->actingAs($this->admin)
+            ->get(route('manage.competitions.settings', $this->comp))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('settings.use_pools', true)
+                ->where('settings.pooled_heats', 1));
+    }
+
     public function test_pools_cannot_be_turned_on_with_heats_per_event(): void
     {
         $this->saveSettings(['heats_per_event' => true, 'use_pools' => true])
@@ -112,10 +127,10 @@ class PoolsTest extends TestCase
 
     public function test_pools_can_be_turned_on_and_off_when_no_heats_use_them(): void
     {
-        $this->saveSettings(['heats_per_event' => false, 'use_pools' => true])->assertOk();
+        $this->saveSettings(['heats_per_event' => false, 'use_pools' => true])->assertRedirect();
         $this->assertTrue((bool) $this->comp->fresh()->use_pools);
 
-        $this->saveSettings(['use_pools' => false])->assertOk();
+        $this->saveSettings(['use_pools' => false])->assertRedirect();
         $this->assertFalse((bool) $this->comp->fresh()->use_pools);
     }
 
@@ -138,7 +153,7 @@ class PoolsTest extends TestCase
         $this->comp->save();
         $heat = $this->pooledHeat($this->pool());
 
-        $this->saveSettings(['use_pools' => false, 'heats_per_event' => true, 'clear_pooled_heats' => true])->assertOk();
+        $this->saveSettings(['use_pools' => false, 'heats_per_event' => true, 'clear_pooled_heats' => true])->assertRedirect();
 
         $comp = $this->comp->fresh();
         $this->assertFalse((bool) $comp->use_pools);
@@ -152,7 +167,7 @@ class PoolsTest extends TestCase
         $this->comp->save();
         $heat = $this->pooledHeat($this->pool());
 
-        $this->saveSettings(['use_pools' => true, 'clear_pooled_heats' => true])->assertOk();
+        $this->saveSettings(['use_pools' => true, 'clear_pooled_heats' => true])->assertRedirect();
 
         $this->assertTrue((bool) $this->comp->fresh()->use_pools);
         $this->assertNotNull(Heat::find($heat->id));

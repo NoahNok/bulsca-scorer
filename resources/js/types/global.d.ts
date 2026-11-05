@@ -23,8 +23,32 @@ declare module '@inertiajs/core' {
             name: string;
             auth: Auth;
             sidebarOpen: boolean;
+            // Digital Judge pages only (app.ts); Management pages get `manage` instead
             judge: {
                 isHeadRef: boolean
+            }
+            // Management app pages only (manage.ts)
+            manage?: {
+                isAdmin: boolean
+                // full urls of the public site on the main domain
+                site: {
+                    home: string
+                    explore: string
+                }
+                // the session flashes: `status` (e.g. password reset) and `alert-error` from the Blade pages,
+                // and `success`, which ManageLayout shows as a toast
+                flash: {
+                    status: string | null
+                    error: string | null
+                    success: string | null
+                }
+            }
+            // The live pages only (on live., served by manage.ts): full urls of the public site
+            live?: {
+                site: {
+                    home: string
+                    explore: string
+                }
             }
             env_local: boolean
             // full urls of the Terms, Privacy and Cookie policies (Blade pages on the main domain)
@@ -32,6 +56,8 @@ declare module '@inertiajs/core' {
                 terms: string
                 privacy: string
                 cookies: string
+                tradingAs: string
+                contactEmail: string
             }
             [key: string]: unknown;
         };

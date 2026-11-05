@@ -9,6 +9,7 @@ use App\Models\Event\ScoringSchema;
 use App\Models\ResultSchemas\ClubSERCResultSchema;
 use App\Models\ResultSchemas\HighestSumResultSchema;
 use App\Models\ResultSchemas\NationalsResultSchema;
+use App\Services\ResultSheetFormulas;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -29,17 +30,26 @@ class ResultSchema extends Model
 
     public function getResults($refreshCache = false): Collection
     {
-
-        $cacheKey = 'result_schema_' . $this->id . '_results';
-        $competitionCacheKey = $this->getCompetition->cacheKey();
-
         if ($refreshCache) {
-            Cache::tags("{$competitionCacheKey}.result-schemas")->forget($cacheKey);
+            $this->forgetResults();
         }
 
-        return Cache::tags("{$competitionCacheKey}.result-schemas")->rememberForever($cacheKey, function () {
+        return Cache::tags("{$this->getCompetition->cacheKey()}.result-schemas")->rememberForever($this->resultsCacheKey(), function () {
             return $this->getCachedResults();
         });
+    }
+
+    /**
+     * Drops the cached results, so the next look works them out again (after the sheet's edited)
+     */
+    public function forgetResults(): void
+    {
+        Cache::tags("{$this->getCompetition->cacheKey()}.result-schemas")->forget($this->resultsCacheKey());
+    }
+
+    private function resultsCacheKey(): string
+    {
+        return 'result_schema_' . $this->id . '_results';
     }
 
     private function getCachedResults(): Collection
@@ -125,32 +135,17 @@ class ResultSchema extends Model
 
 
 
-        $sortFunction = null;
+        // Points in the sheet's direction, then each tie-break Event's place, the better place first
+        // whichever way points rank. An entity missing from a tie-break Event comes after those in it.
+        $preRanked = $preRanked->sortBy(function ($result) use ($break_ties, $rank_higher) {
+            $options = [$rank_higher ? -$result->totalPoints : $result->totalPoints];
 
-        if ($break_ties) {
-            $sortFunction = function ($result) use ($break_ties) {
-                $options = [$result->totalPoints];
+            foreach ($break_ties as $bt) {
+                $options[] = $result->events->first(fn($eventResult) => ResultSheetFormulas::tieBreakIs($bt, $eventResult->event))?->position ?? PHP_INT_MAX;
+            }
 
-                foreach ($break_ties as $bt) {
-                    $eventPosition = $result->events->where('event.id', $bt)->first()->position;
-                    $options[] = $eventPosition;
-                }
-
-                return $options;
-            };
-        } else {
-            $sortFunction = function ($result) {
-                return [$result->totalPoints];
-            };
-        }
-
-
-
-        if ($rank_higher) {
-            $preRanked = $preRanked->sortByDesc(fn($result) => $sortFunction($result))->values();
-        } else {
-            $preRanked = $preRanked->sortBy(fn($result) => $sortFunction($result))->values();
-        }
+            return $options;
+        })->values();
 
 
 

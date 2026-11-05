@@ -1,3 +1,5 @@
+import { flipTheme, isDark } from './lib/theme';
+
 function dynamicInput(input) {
     const mirror = document.createElement('div');
     mirror.style.position = 'absolute';
@@ -27,3 +29,6 @@ function dynamicInput(input) {
 
 
 window.dynamicInput = dynamicInput
+
+// The v2 theme toggle (landing/v2/layout.blade.php) uses this from Alpine
+window.v2Theme = { isDark, flipTheme }

@@ -1,918 +1,410 @@
-@extends('layouts.landing-comp')
+{{--
+    A competition's Results tab. Up to three tabs (Overall: Master sheets; Results sheets; Events), each only when
+    something in it is published (LandingController::showResults). A row of chips picks the sheet, or the Event; Leagues
+    are chips, or a select when there are more than three and on phones; the table loads from the results endpoints. The tab and picks live in the url, so a link opens the
+    same table. Violations and penalties open in a modal.
+--}}
+@extends('landing.competition.layout')
 
-@section('title', 'Results')
+@section('title', 'Results | ' . $comp->name)
 
-@section('content')
+@php
+    $config = [
+        'tabs' => $tabs->keys(),
+        'groups' => $groups,
+        'leagues' => $leagues,
+        'leagueFirst' => (bool) $comp->select_league_first,
+        'urls' => [
+            'overall' => route('landing.competition.results.get.master.sheet', [$comp->getSlug(), 'schema' => '_id']),
+            'sheets' => route('landing.competition.results.get.sheet', [$comp->getSlug(), 'schema' => '_id']),
+            'events' => route('landing.competition.results.get', [$comp->getSlug(), 'league' => '_league', 'event' => '_id', 'type' => '_type']),
+            'violation' => route('landing.competition.results.get.violation', [$comp->getSlug(), 'violation_id' => '_id', 'violation_type' => '_type']),
+            'breakdown' => route('landing.competition.results.breakdown.serc', [$comp->getSlug(), 'serc' => '_id']),
+        ],
+    ];
+    $first = $tabs->keys()->first();
+@endphp
 
-    <div x-data="{
-        leagues: {{ $comp->getLeagues }},
-        events: {{ $comp->public_results ? $comp->getAllEvents()->map(fn($event) => ['id' => $event->id, 'name' => $event->getName(), 'type' => $event->getType()])->toJson() : '[]' }},
-    
-    
-        selected: {
-            league: null,
-            league_id: null,
-            event: null
-        },
-    
-        violationData: null,
-    
-        table: null,
-    
-        select_league_first: {{ $comp->select_league_first ? 'true' : 'false' }},
-    
-        getColumns() {
-            return Object.fromEntries(
-                Object.entries(this.table?.columns ?? {}).filter(([key]) => !key.startsWith('_'))
-            );
-        },
-    
-        error: '',
-    
-        url: '{{ route('landing.competition.results.get', [$comp->getSlug(), 'league' => '_league', 'event' => '_event', 'type' => '_type']) }}',
-        violationUrl: '{{ route('landing.competition.results.get.violation', [$comp->getSlug(), 'violation_id' => '_id', 'violation_type' => '_type']) }}',
-        breakdownUrl: '{{ route('landing.competition.results.breakdown.serc', [$comp->getSlug(), 'serc' => '_serc_id']) }}',
-    
-        onLeagueChange(targetLeague) {
-    
-            if (this.selected.league == targetLeague) {
-                this.selected.league = null;
-                return;
-            }
-    
-            this.selected.league = targetLeague;
-            this.loadResults();
-        },
-    
-        onEventChange(targetEvent) {
-            this.selected.event = targetEvent;
-            this.loadResults();
-        },
-    
-        async loadResults() {
-            if (!this.selected.league || !this.selected.event) {
-                return;
-            }
-    
-            this.error = null;
-    
-            this.table = null;
-    
-            let url = this.url.replace('_league', this.selected.league.id).replace('_event', this.selected.event.id).replace('_type', this.selected.event.type);
-    
-            let response = await fetch(url);
-            if (response.ok) {
-                this.table = await response.json();
-    
-            } else {
-    
-                this.error = (await response.json()).error || 'Failed to load results.';
-    
-            }
-    
-    
-        },
-    
-        async loadViolation(violation_id, violation_type, team_name = '') {
-            let url = this.violationUrl.replace('_id', violation_id).replace('_type', violation_type);
-    
-            let response = await fetch(url)
-    
-            if (response.ok) {
-                let data = await response.json()
-    
-                if (!data.for || data.for == '') {
-                    data.for = team_name;
-                }
-    
-                this.violationData = data
-    
-    
-                this.modals.violation = true
-            }
-        },
-    
-    
-    
-        init() {
-            let all = { id: 'all', name: 'All Leagues' }
-            this.leagues.unshift(all);
-            this.selected.league = all;
-    
-            $watch('selected.league', (newVal, oldVal) => {
-                // set league query param
-                const url = new URL(window.location);
-                if (newVal && newVal.id !== 'all') {
-                    url.searchParams.set('league', newVal.id);
-                } else {
-                    url.searchParams.delete('league');
-                }
-                window.history.replaceState({}, '', url);
-            });
-    
-            $watch('selected.event', (newVal, oldVal) => {
-                // set event query param
-                const url = new URL(window.location);
-                if (newVal) {
-                    url.searchParams.set('event', `${newVal.type}-${newVal.id}`);
-                } else {
-                    url.searchParams.delete('event');
-                }
-                window.history.replaceState({}, '', url);
-            });
-    
-    
-    
-            // On load, check for league and event query params
-            const params = new URLSearchParams(window.location.search);
-            const leagueParam = params.get('league');
-            const eventParam = params.get('event');
-    
-            if (leagueParam) {
-                const league = this.leagues.find(l => l.id == leagueParam);
-                if (league) {
-                    this.selected.league = league;
-    
-                    setTimeout(() => {
-                        this.selected.league_id = league.id;
-                    }, 100);
-    
-                }
-            }
-    
-            if (eventParam) {
-                const [type, id] = eventParam.split('-');
-                const event = this.events.find(e => e.id == id && e.type == type);
-                if (event) {
-                    this.selected.event = event;
-                }
-            }
-    
-            if (this.selected.league && this.selected.event) {
-                this.loadResults();
-            }
-        }
-    }">
-
-        @if ($comp->public_results && $comp->results_provisional)
-            <div class="alert-box alert-warning">
-                <h1>Provisional Results</h1>
-                <p>The results displayed here are provisional and may be subject to change.</p>
+@section('comp-content')
+    @if ($tabs->isEmpty())
+        <p class="v2-empty">Results appear here once an Organiser publishes them.</p>
+    @else
+        @if ($comp->areResultsProvisional())
+            <div class="v2-alert is-warning mb-6" role="note">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" />
+                </svg>
+                <div><strong>Provisional</strong>These results are provisional and may still change.</div>
             </div>
-            <br>
         @endif
 
-        <div class="grid mt-2 ">
-
-
-            <div class="row-start-1 col-start-1 grid-4 " x-show="selected.event == null" x-transition:enter.duration.500ms>
-
-                <template x-for="event in events" :key="event.id">
-                    <a href="#" class="se-card se-card-body se-card-hover" @click.prevent="onEventChange(event)"
-                        :class="selected.event && selected.event.id === event.id ? 'se-card-active' : ''">
-                        <h4 class="-mb-1 flex items-center"><span x-text="event.name"></span><span
-                                class="ml-2  badge badge-info badge-sm" x-show="event.type == 'serc'">SERC</span></h4>
-
-                    </a>
-                </template>
-
-                <template x-if="events.length == 0">
-                    <div class="alert-box alert-info col-span-full">
-                        <h1>Results Unavailable</h1>
-                        <p>Results are not available at this time. Please check back later.</p>
-                    </div>
-                </template>
-            </div>
-
-
-            <div x-show="selected.event != null && select_league_first && selected.league_id === null" x-transition
-                class="space-y-4 row-start-1 col-start-1 overflow-x-hidden">
-                <div class="flex items-center justify-center flex-col space-y-4">
-                    <h4>Please select a league/bracket</h4>
-                    <div class="se-form-input text-sm!  w-auto! imb-0">
-                        <select name="" id="" class="py-0! h-6! px-1!" x-model="selected.league_id"
-                            @change="onLeagueChange(leagues.find(l => l.id == $event.target.value))">
-
-                            <option value="null" :disabled="!select_league_first">Select League</option>
-
-                            <template x-for="league in leagues" :key="league.id">
-                                <option :value="league.id" x-text="league.name"></option>
-                            </template>
-                        </select>
-                    </div>
+        <div x-data="publicResults(@js($config))">
+            @if ($tabs->count() > 1)
+                <div class="v2-tabs v2-results-tabs" role="tablist" aria-label="Results"
+                    style="--v2-tabs: {{ $tabs->count() }}">
+                    <span class="v2-tabs-pill" aria-hidden="true"
+                        :style="`transform: translateX(${tabs.indexOf(tab) * 100}%)`"></span>
+                    @foreach ($tabs as $key => $label)
+                        <button type="button" role="tab" @click="tab = '{{ $key }}'"
+                            :aria-selected="(tab === '{{ $key }}').toString()"
+                            aria-selected="{{ $key === $first ? 'true' : 'false' }}">{{ $label }}</button>
+                    @endforeach
                 </div>
-            </div>
+            @endif
 
-            <div x-show="selected.event != null && (!select_league_first || selected.league_id !== null)" x-transition
-                class="space-y-4 row-start-1 col-start-1  overflow-x-hidden" x-cloak>
+            {{-- Eases the height as chips show and hide and tables swap, instead of the page jumping --}}
+            <div x-smooth-height>
+                <div>
+                    {{-- Picking: a sheet in Overall and Results sheets; a League, then an Event, in Events --}}
+                    <div class="v2-results-picks">
+                        @foreach (['overall' => 'Master sheet', 'sheets' => 'Results sheet'] as $key => $label)
+                            @if ($tabs->has($key) && $groups[$key]->count() > 1)
+                                <div class="v2-results-chips" role="group" aria-label="{{ $label }}"
+                                    x-show="tab === '{{ $key }}'" @if ($key !== $first) x-cloak @endif>
+                                    @foreach ($groups[$key] as $sheet)
+                                        <button type="button" class="v2-chip" @click="pick('{{ $key }}', {{ $sheet['id'] }})"
+                                            :aria-pressed="(picks.{{ $key }} == {{ $sheet['id'] }}).toString()">{{ $sheet['name'] }}</button>
+                                    @endforeach
+                                </div>
+                            @endif
+                        @endforeach
 
+                        @if ($tabs->has('events'))
+                            <div x-show="tab === 'events'" @if ($first !== 'events') x-cloak @endif>
+                                @if ($leagues->count() > 1)
+                                    {{-- Chips for up to three, or a select when there are more, and always on phones --}}
+                                    <div @class(['v2-field v2-results-league', 'is-phone-only' => $leagues->count() <= 3])>
+                                        <label for="results-league" class="sr-only">League</label>
+                                        <select id="results-league" class="v2-input" :value="league ?? ''"
+                                            @change="league = $event.target.value">
+                                            @if ($comp->select_league_first)
+                                                <option value="" disabled>Choose a League</option>
+                                            @endif
+                                            @foreach ($leagues as $league)
+                                                <option value="{{ $league['id'] }}">{{ $league['name'] }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    @if ($leagues->count() <= 3)
+                                        <div class="v2-results-chips v2-results-league-chips" role="group" aria-label="League">
+                                            @foreach ($leagues as $league)
+                                                <button type="button" class="v2-chip" @click="league = @js($league['id'])"
+                                                    :aria-pressed="(league == @js($league['id'])).toString()">{{ $league['name'] }}</button>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                @endif
+                                <div @class(['v2-results-chips', 'is-under-leagues' => $leagues->count() > 1]) role="group" aria-label="Event">
+                                    @foreach ($groups['events'] as $event)
+                                        <button type="button" class="v2-chip" @click="pick('events', @js($event['key']))"
+                                            :aria-pressed="(picks.events === @js($event['key'])).toString()">{{ $event['name'] }}
+                                            @if ($event['type'] === 'serc')
+                                                <span class="v2-badge">SERC</span>
+                                            @endif
+                                        </button>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+                    </div>
 
-                <div class="flex flex-col md:flex-row md:items-center  md:space-x-3">
-                    <div class="flex items-center space-x-3 ">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="size-6 min-w-6 hover:text-se transition-color cursor-pointer"
-                            @click="selected.event = null; table = null;">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                    <div class="v2-results-head" x-show="current" x-cloak>
+                        <h2 x-text="current?.name"></h2>
+                        <div class="flex flex-wrap items-center gap-4">
+                            {{-- A Results sheet's columns per event: its place and points in each --}}
+                            <label class="v2-check" x-show="tab === 'sheets' && hasDetail">
+                                <input type="checkbox" x-model="detailed"> Show each event
+                            </label>
+                            <a class="v2-link" x-show="tab === 'events' && current?.type === 'serc' && league !== null && !error"
+                                :href="breakdownUrl()">Breakdown</a>
+                        </div>
+                    </div>
+
+                    @if ($comp->select_league_first && $tabs->has('events'))
+                        <p class="v2-empty" x-show="tab === 'events' && league === null" @if ($first !== 'events') x-cloak @endif>
+                            Choose a League to see the results.</p>
+                    @endif
+
+                    {{-- Only before the first table: after that the last one stays, dimmed, until the next arrives --}}
+                    <p class="v2-results-status" x-show="loading && !table" x-cloak role="status">Loading results&hellip;</p>
+                    <div class="v2-alert is-warning" x-show="error" x-cloak role="alert">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <circle cx="12" cy="12" r="9" />
+                            <path d="M12 8v5M12 16h.01" />
                         </svg>
-
-                        <h1 x-text="selected.event?.name"></h1><span class="ml-2  badge badge-info "
-                            x-show="selected.event?.type == 'serc'">SERC</span>
-
-
-
+                        <div><strong>Results unavailable</strong><span x-text="error"></span></div>
                     </div>
 
-
-                    <div class="se-form-input text-sm!  w-auto! imb-0">
-                        <select name="" id="" class="py-0! h-6! px-1!" x-model="selected.league_id"
-                            @change="onLeagueChange(leagues.find(l => l.id == $event.target.value))">
-
-
-
-                            <template x-for="league in leagues" :key="league.id">
-                                <option :value="league.id" x-text="league.name"></option>
-                            </template>
-                        </select>
-                    </div>
-
-                    <a class="se-btn se-btn-blue" target="_blank"
-                        :href="breakdownUrl.replace('_serc_id', selected.event?.id) + `?league=${selected.league?.id}`"
-                        x-show="selected.event?.type == 'serc' && error == null">Breakdowns</a>
-                </div>
-
-
-
-                <div class="flex items-center justify-center" x-cloak
-                    x-show="!table && selected.league != null && selected.event != null && error == null">
-                    <svg aria-hidden="true" class="w-8 h-8 animate-spin text-gray-200 fill-se" viewBox="0 0 100 101"
-                        fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                            fill="currentColor" />
-                        <path
-                            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                            fill="currentFill" />
-                    </svg>
-                </div>
-
-                <div class="flex items-center justify-center" x-show="error">
-
-                    <div class="alert-box alert-warning md:w-1/2">
-                        <h1>Results Unavailable</h1>
-                        <p x-text="error"></p>
-                    </div>
-                </div>
-
-                <div class="se-table" x-show="table != null" x-transition x-cloak>
-                    <table>
-                        <thead>
-                            <tr>
-
-                                <template x-for="(column_name, column_label) in getColumns()">
-                                    <th scope="col" x-text="column_label"></th>
-                                </template>
-
-
-                            </tr>
-                        </thead>
-                        <tbody>
-
-
-
-                            <template x-for="row in table?.data">
-
+                    <div class="v2-table-scroll" x-show="table" x-cloak x-ref="table" :class="loading && 'is-loading'"
+                        :aria-busy="loading.toString()">
+                        <table class="v2-table">
+                            <thead>
                                 <tr>
-
-                                    <template x-for="([column_id, column_label], index) in Object.entries(getColumns())">
-                                        <td x-data="{
-                                            type: 'string',
-                                            data: row.data[column_id],
-                                        
-                                            init() {
-                                        
-                                                row_type = typeof row.data[column_id]
-                                        
-                                                if (row_type !== 'object') {
-                                                    return
-                                                }
-                                        
-                                                // We have an object, pull its type to decide which to render below
-                                        
-                                                this.type = row.data[column_id]['type']
-                                                this.data = row.data[column_id]['data']
-                                        
-                                        
-                                            }
-                                        }" :class="index == 0 ? 'table-th' : ''">
-
-
-                                            <template x-if="type === 'string'">
-                                                <span x-text="data"></span>
-                                            </template>
-
-                                            <template x-if="type === 'string-array'">
-                                                <div class="">
-                                                    <template x-for="item in data">
-
-                                                        <div>
-                                                            <span x-text="item"></span>
-                                                        </div>
-
-                                                    </template>
-                                                </div>
-                                            </template>
-
-                                            <template x-if="type == 'violation'">
-                                                <div>
-                                                    <template x-for="(violation, indx) in data">
-                                                        <span
-                                                            @click="loadViolation(violation['id'], violation['type'], row.data['name'])"
-                                                            x-text="violation['display'] + (indx === data.length - 1 ? '' : ', ')"
-                                                            class="hover:font-semibold cursor-pointer"></span>
-                                                    </template>
-                                                </div>
-                                            </template>
-
-                                            <template x-if="type == 'violation-combined'">
-                                                <div>
-                                                    <template x-for="item in data">
-                                                        <div>
-                                                            <template x-for="(violation, indx) in item">
-                                                                <span
-                                                                    @click="loadViolation(violation['id'], violation['type'])"
-                                                                    x-text="typeof violation == 'string' ? violation : violation['display'] + (indx === item.length - 1 ? '' : ', ')"
-                                                                    class="hover:font-semibold cursor-pointer"></span>
-                                                            </template>
-                                                        </div>
-                                                    </template>
-                                                </div>
-                                            </template>
-
-                                            <template x-if="type == 'result'">
-                                                <div>
-                                                    <span x-text="data['is']"></span>
-                                                    <template x-if="data['is'] != data['was']">
-                                                        <small><br>Was <span x-text="data['was']"></span></small>
-                                                    </template>
-                                                </div>
-                                            </template>
-
-                                            <template x-if="type == 'result-combined'">
-                                                <div class="flex justify-end items-center ">
-                                                    <div class="border-r-2 pr-2">
-
-                                                        <template x-for="time in data['combined']['results']">
-                                                            <div>
-                                                                <span x-text="time"></span>
+                                    <template x-for="column in visibleColumns" :key="column.id">
+                                        <th scope="col" x-text="column.label"></th>
+                                    </template>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template x-for="(row, r) in table?.rows ?? []" :key="r">
+                                    <tr :class="`is-place-${row.position?.data}`">
+                                        <template x-for="(column, c) in visibleColumns" :key="column.id">
+                                            <td :class="c === 0 && 'v2-table-name'">
+                                                <template x-if="row[column.id].type === 'string'">
+                                                    <span x-text="row[column.id].data ?? '-'"></span>
+                                                </template>
+                                                <template x-if="row[column.id].type === 'string-array'">
+                                                    <div>
+                                                        <template x-for="item in row[column.id].data">
+                                                            <div x-text="item"></div>
+                                                        </template>
+                                                    </div>
+                                                </template>
+                                                <template x-if="row[column.id].type === 'violation'">
+                                                    <div class="v2-results-violations">
+                                                        <template x-for="violation in row[column.id].data">
+                                                            <button type="button" class="v2-link-inline" x-text="violation.display"
+                                                                @click="openViolation(violation, row.name?.data)"></button>
+                                                        </template>
+                                                    </div>
+                                                </template>
+                                                <template x-if="row[column.id].type === 'violation-combined'">
+                                                    <div>
+                                                        <template x-for="item in row[column.id].data">
+                                                            <div class="v2-results-violations">
+                                                                <template x-if="typeof item === 'string'">
+                                                                    <span x-text="item"></span>
+                                                                </template>
+                                                                <template x-for="violation in (typeof item === 'string' ? [] : item)">
+                                                                    <button type="button" class="v2-link-inline" x-text="violation.display"
+                                                                        @click="openViolation(violation)"></button>
+                                                                </template>
                                                             </div>
                                                         </template>
-
-
                                                     </div>
-                                                    <div class="pl-2">
-                                                        <span x-text="data['is']"></span>
+                                                </template>
+                                                <template x-if="row[column.id].type === 'result'">
+                                                    <div>
+                                                        <span x-text="row[column.id].data.is"></span>
+                                                        <template x-if="row[column.id].data.is != row[column.id].data.was">
+                                                            <small class="v2-results-was">Was <span x-text="row[column.id].data.was"></span></small>
+                                                        </template>
                                                     </div>
-                                                </div>
-                                            </template>
-
-
-
-
-
-
-
-                                        </td>
-                                    </template>
-
-                                </tr>
-                            </template>
-
-
-
-                        </tbody>
-                    </table>
-                </div>
-
-
-
-            </div>
-
-        </div>
-
-        <x-s-e-modal id="violation" title="Violation">
-            <div x-effect="title = violationData?.for ">
-                <h2 class="text-red-500" x-text="violationData?.code"></h2>
-                <p x-text="violationData?.description"></p>
-
-            </div>
-
-            <template x-if="violationData?.submission">
-
-                <div class="mt-2 space-y-2">
-
-                    <div class="flex justify-between flex-col md:flex-row  md:space-y-0">
-                        <p>
-                            <strong>Reporter</strong>: <span x-text="violationData.submission.name"></span> (<span
-                                x-text="violationData.submission.position"></span>)
-                            <br class="md:hidden">
-                            <strong>Seconder</strong>: <span x-text="violationData.submission.seconder_name"></span>
-                            (<span x-text="violationData.submission.seconder_position"></span>)
-                        </p>
-
-                        <p><strong>Turn</strong>: <span x-text="violationData?.submission?.turn ?? '-'"></span>
-                            <strong>Length</strong>: <span x-text="violationData?.submission?.length ?? '-'"></span>
-                        </p>
-                    </div>
-
-                    <p>
-                        <i x-text="violationData.submission.details || 'No details provided.'"></i>
-                    </p>
-
-                </div>
-            </template>
-        </x-s-e-modal>
-
-        <hr x-show="events.length > 0" class="spacer my-8! mt-10!" x-cloak>
-
-    </div>
-
-
-    <div x-data="{
-        schemas: {{ $comp->public_results ? $comp->getResultSchemas->pluck('name', 'id') : '[]' }},
-    
-        selected: {
-            schema: null,
-            display: 'simple'
-        },
-    
-        table: null,
-    
-        error: '',
-    
-        url: '{{ route('landing.competition.results.get.sheet', [$comp->getSlug(), 'schema' => '_schema']) }}',
-    
-        onSchemaChange(targetSchema) {
-            if (this.selected.schema == targetSchema) {
-                this.selected.schema = null;
-                this.table = null;
-                return;
-            }
-    
-            this.selected.schema = targetSchema;
-            this.loadResults();
-        },
-    
-        async loadResults() {
-            if (!this.selected.schema) {
-                return;
-            }
-    
-            this.table = null;
-            this.error = null;
-    
-            let url = this.url.replace('_schema', this.selected.schema.id);
-    
-            let response = await fetch(url);
-            if (response.ok) {
-                this.table = await response.json();
-    
-            } else {
-                this.error = (await response.json()).error || 'Failed to load results.';
-            }
-    
-    
-        },
-    
-        init() {
-    
-            $watch('selected.schema', (newVal, oldVal) => {
-                // set schema query param
-                const url = new URL(window.location);
-                if (newVal) {
-                    url.searchParams.set('schema', newVal.id);
-                } else {
-                    url.searchParams.delete('schema');
-                }
-                window.history.replaceState({}, '', url);
-            });
-    
-            $watch('selected.display', (newVal, oldVal) => {
-                // set display query param
-                const url = new URL(window.location);
-                if (newVal && newVal !== 'simple') {
-                    url.searchParams.set('display', newVal);
-                } else {
-                    url.searchParams.delete('display');
-                }
-                window.history.replaceState({}, '', url);
-            });
-    
-            // On load, check for schema query param
-            const params = new URLSearchParams(window.location.search);
-            const schemaParam = params.get('schema');
-            const displayParam = params.get('display');
-    
-            if (schemaParam) {
-                const schema = Object.entries(this.schemas).find(([id, name]) => id == schemaParam);
-                if (schema) {
-                    this.selected.schema = { id: schema[0], name: schema[1] };
-                    this.loadResults();
-                }
-            }
-    
-            if (displayParam && ['simple', 'detailed'].includes(displayParam)) {
-                this.selected.display = displayParam;
-            }
-        }
-    
-    
-    }">
-
-
-        <div>
-
-            <div class="grid-4 mt-2" x-show="selected.schema == null" x-transition:enter.duration.500ms>
-
-                <template x-for="(schema_name, schema_id) in schemas" :key="schema_id">
-                    <div class="se-card se-card-hover"
-                        @click.prevent="onSchemaChange({id: schema_id, name: schema_name})">
-                        <div class="se-card-body flex items-center justify-between">
-                            <h4 class="-mb-1!" x-text="schema_name"></h4>
-
-
-                        </div>
-
-
-                    </div>
-                </template>
-            </div>
-
-            <div x-show="selected.schema != null" x-transition x-cloak
-                class="space-y-4 row-start-1 col-start-1  overflow-x-hidden">
-
-
-
-
-                <div class="flex flex-col md:flex-row md:items-center  md:space-x-3">
-                    <div class="flex items-center space-x-3 ">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="size-6 min-w-6 hover:text-se transition-color cursor-pointer"
-                            @click="selected.schema = null; table = null;">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-                        </svg>
-
-                        <h1 x-text="selected.schema?.name"></h1>
-
-                    </div>
-
-
-                    <div class="se-form-input text-sm!  w-auto! imb-0">
-                        <select name="" id="" class="py-0! h-6! px-1!" x-model="selected.display"
-                            @change="selected.display = $event.target.value">
-
-                            <option value="simple">Simple View</option>
-                            <option value="detailed">Detailed View</option>
-
-                        </select>
-                    </div>
-                </div>
-
-
-
-                <div class="flex items-center justify-center" x-show="!table && selected.schema != null && error == null">
-                    <svg aria-hidden="true" class="w-8 h-8 animate-spin text-gray-200 fill-se" viewBox="0 0 100 101"
-                        fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                            fill="currentColor" />
-                        <path
-                            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                            fill="currentFill" />
-                    </svg>
-                </div>
-
-                <div class="flex items-center justify-center" x-show="error">
-
-                    <div class="alert-box alert-warning md:w-1/2">
-                        <h1>Results Unavailable</h1>
-                        <p x-text="error"></p>
-                    </div>
-                </div>
-
-                <div class="se-table" x-show="table != null" x-transition>
-                    <table>
-                        <thead>
-                            <tr>
-
-                                <template x-for="(column_label, column_id) in table?.columns" :key="column_id">
-                                    <th scope="col" x-text="column_label" class=" whitespace-nowrap"
-                                        x-show="column_id.includes(':') ? selected.display == 'detailed' : true"></th>
+                                                </template>
+                                                <template x-if="row[column.id].type === 'result-combined'">
+                                                    <div class="v2-results-combined">
+                                                        <div>
+                                                            <template x-for="time in row[column.id].data.combined.results">
+                                                                <div x-text="time"></div>
+                                                            </template>
+                                                        </div>
+                                                        <span x-text="row[column.id].data.is"></span>
+                                                    </div>
+                                                </template>
+                                            </td>
+                                        </template>
+                                    </tr>
                                 </template>
-
-
-                            </tr>
-                        </thead>
-                        <tbody>
-
-
-
-                            <template x-for="row in table?.data">
-
-                                <tr>
-
-                                    <template
-                                        x-for="([column_id, column_label], index) in Object.entries(table?.columns ?? [])">
-                                        <td x-data="{
-                                            text: row[column_id],
-                                            was: null,
-                                        
-                                        
-                                        
-                                            init() {
-                                                if (column_id.includes(':') && typeof row[column_id] === 'object') {
-                                                    this.text = `${row[column_id].position} (${row[column_id].points} pts)`;
-                                        
-                                        
-                                        
-                                                }
-                                        
-                                        
-                                            }
-                                        }" class="whitespace-nowrap"
-                                            :class="index == 0 ? 'table-th' : ''"
-                                            x-show="column_id.includes(':') ? selected.display == 'detailed' : true">
-
-
-                                            <span x-text="text">h</span>
-
-                                            <span x-show="was != null">
-                                                <br>
-                                                <small>
-                                                    Was <span x-text='was'></span>
-                                                </small>
-                                            </span>
-
-
-
-                                        </td>
-                                    </template>
-
-                                </tr>
-                            </template>
-
-
-
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                        <p class="v2-results-status" x-show="table && table.rows.length === 0">No results in this yet.</p>
+                    </div>
                 </div>
+            </div>
 
-
-
+            <div class="v2-modal-backdrop" x-show="modal" x-cloak x-transition.opacity @click.self="modal = false"
+                @keydown.escape.window="modal = false">
+                <div class="v2-modal" role="dialog" aria-modal="true" aria-labelledby="violation-title"
+                    x-trap.noscroll="modal">
+                    <h3 id="violation-title" x-text="violation?.code"></h3>
+                    <p class="v2-results-for" x-show="violation?.for" x-text="violation?.for"></p>
+                    <p x-text="violation?.description"></p>
+                    <template x-if="violation?.submission">
+                        <dl class="v2-details mt-4">
+                            <dt>Reported by</dt>
+                            <dd x-text="`${violation.submission.name} (${violation.submission.position})`"></dd>
+                            <dt>Seconded by</dt>
+                            <dd x-text="`${violation.submission.seconder_name} (${violation.submission.seconder_position})`"></dd>
+                            <dt>Turn and length</dt>
+                            <dd x-text="`Turn ${violation.submission.turn ?? '-'}, length ${violation.submission.length ?? '-'}`"></dd>
+                            <dt>Details</dt>
+                            <dd x-text="violation.submission.details || 'No details given.'"></dd>
+                        </dl>
+                    </template>
+                    <div class="v2-modal-actions">
+                        <button type="button" class="v2-btn" @click="modal = false">Close</button>
+                    </div>
+                </div>
             </div>
         </div>
 
+        <script>
+            function publicResults(config) {
+                const first = (key) => config.groups[key][0] ?? null;
 
-        <hr x-show="Object.keys(schemas).length > 0" class="spacer my-8! mt-10!" x-cloak>
-    </div>
+                return {
+                    ...config,
+                    tab: config.tabs[0],
+                    // The pick in each tab: a sheet's id, or an Event's "type-id" key
+                    picks: {
+                        overall: first('overall')?.id ?? null,
+                        sheets: first('sheets')?.id ?? null,
+                        events: first('events')?.key ?? null,
+                    },
+                    // "All Leagues" to start, unless the competition asks for a League first
+                    league: config.leagueFirst ? null : 'all',
+                    detailed: false,
+                    table: null,
+                    loading: false,
+                    error: null,
+                    modal: false,
+                    violation: null,
+                    request: 0,
 
+                    get current() {
+                        const id = this.picks[this.tab];
+                        return this.groups[this.tab]?.find((item) => (this.tab === 'events' ? item.key : item.id) == id) ?? null;
+                    },
 
+                    get hasDetail() {
+                        return (this.table?.columns ?? []).some((column) => column.detail);
+                    },
 
+                    get visibleColumns() {
+                        return (this.table?.columns ?? []).filter((column) => !column.detail || this.detailed);
+                    },
 
+                    init() {
+                        const params = new URLSearchParams(window.location.search);
+                        if (this.tabs.includes(params.get('tab'))) this.tab = params.get('tab');
+                        if (params.has('sheet') && this.tab !== 'events') {
+                            const sheet = this.groups[this.tab].find((item) => item.id == params.get('sheet'));
+                            if (sheet) this.picks[this.tab] = sheet.id;
+                        }
+                        if (params.has('event') && this.groups.events.some((item) => item.key === params.get('event'))) {
+                            this.picks.events = params.get('event');
+                        }
+                        if (params.has('league')) {
+                            const league = this.leagues.find((item) => item.id == params.get('league'));
+                            if (league) this.league = league.id;
+                        }
+                        this.detailed = params.get('display') === 'detailed';
 
-    <div x-data="{
-        schemas: {{ $comp->public_results ? $comp->getMasterSchemas->pluck('name', 'id') : '[]' }},
-    
-        selected: {
-            schema: null,
-            display: 'simple'
-        },
-    
-        table: null,
-    
-        error: '',
-    
-        url: '{{ route('landing.competition.results.get.master.sheet', [$comp->getSlug(), 'schema' => '_schema']) }}',
-    
-        onSchemaChange(targetSchema) {
-            if (this.selected.schema == targetSchema) {
-                this.selected.schema = null;
-                this.table = null;
-                return;
+                        this.$watch('tab', () => this.load());
+                        this.$watch('league', () => this.load());
+                        this.$watch('detailed', () => this.remember());
+                        this.load();
+                    },
+
+                    pick(tab, id) {
+                        this.picks[tab] = id;
+                        this.load();
+                    },
+
+                    // Keep the view in the url, so a link opens the same table
+                    remember() {
+                        const url = new URL(window.location);
+                        ['tab', 'sheet', 'event', 'league', 'display'].forEach((key) => url.searchParams.delete(key));
+                        if (this.tab !== this.tabs[0]) url.searchParams.set('tab', this.tab);
+                        if (this.tab === 'events') {
+                            if (this.picks.events) url.searchParams.set('event', this.picks.events);
+                            // All Leagues is the default, so it's left out, unless the competition makes you choose
+                            if (this.league !== null && (this.league !== 'all' || this.leagueFirst)) url.searchParams.set('league', this.league);
+                        } else if (this.picks[this.tab]) {
+                            url.searchParams.set('sheet', this.picks[this.tab]);
+                        }
+                        if (this.tab === 'sheets' && this.detailed) url.searchParams.set('display', 'detailed');
+                        window.history.replaceState({}, '', url);
+                    },
+
+                    async load() {
+                        this.remember();
+                        this.error = null;
+
+                        const item = this.current;
+                        if (!item || (this.tab === 'events' && this.league === null)) {
+                            this.request++;
+                            this.table = null;
+                            this.loading = false;
+                            return;
+                        }
+
+                        const url = this.tab === 'events'
+                            ? this.urls.events.replace('_league', this.league).replace('_id', item.id).replace('_type', item.type)
+                            : this.urls[this.tab].replace('_id', item.id);
+
+                        // A slow answer for an earlier pick mustn't replace a later one
+                        const request = ++this.request;
+                        this.loading = true;
+                        try {
+                            const response = await fetch(url, { headers: { Accept: 'application/json' } });
+                            const json = await response.json();
+                            if (request !== this.request) return;
+                            if (response.ok) {
+                                this.table = this.tab === 'events' ? this.fromEvent(json) : this.fromSheet(json);
+                                this.$nextTick(() => this.fadeIn());
+                            } else {
+                                this.table = null;
+                                this.error = json.error || 'Try again in a minute.';
+                            }
+                        } catch {
+                            if (request === this.request) {
+                                this.table = null;
+                                this.error = 'Check your connection and try again.';
+                            }
+                        } finally {
+                            if (request === this.request) this.loading = false;
+                        }
+                    },
+
+                    // The new table fades in over the dimmed one it replaces
+                    fadeIn() {
+                        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+                        this.$refs.table?.animate([{ opacity: 0.4 }, { opacity: 1 }], { duration: 200, easing: 'ease-out' });
+                    },
+
+                    // An Event's table: columns starting "_" are for the page, and a cell is a value or {type, data}
+                    fromEvent(json) {
+                        const columns = Object.entries(json.columns)
+                            .filter(([id]) => !id.startsWith('_'))
+                            .map(([id, label]) => ({ id, label, detail: false }));
+                        const cell = (value) => value !== null && typeof value === 'object' ? value : { type: 'string', data: value };
+
+                        return {
+                            columns,
+                            rows: json.data.map((row) => Object.fromEntries(columns.map((column) => [column.id, cell(row.data[column.id])]))),
+                        };
+                    },
+
+                    // A sheet's table: "event:type" columns hold a place and points, shown with "Show each event"
+                    fromSheet(json) {
+                        const columns = Object.entries(json.columns)
+                            .map(([id, label]) => ({ id, label, detail: id.includes(':') }));
+                        const cell = (value) => ({
+                            type: 'string',
+                            data: value !== null && typeof value === 'object' ? `${value.position} (${value.points} pts)` : value,
+                        });
+
+                        return {
+                            columns,
+                            rows: json.data.map((row) => Object.fromEntries(columns.map((column) => [column.id, cell(row[column.id])]))),
+                        };
+                    },
+
+                    breakdownUrl() {
+                        const url = this.urls.breakdown.replace('_id', this.current?.id);
+                        return this.league !== null ? `${url}?league=${this.league}` : url;
+                    },
+
+                    async openViolation(violation, name = '') {
+                        const response = await fetch(this.urls.violation.replace('_id', violation.id).replace('_type', violation.type));
+                        if (!response.ok) return;
+                        const data = await response.json();
+                        this.violation = { ...data, for: data.for || name };
+                        this.modal = true;
+                    },
+                };
             }
-    
-            this.selected.schema = targetSchema;
-            this.loadResults();
-        },
-    
-        async loadResults() {
-            if (!this.selected.schema) {
-                return;
-            }
-    
-            this.table = null;
-            this.error = null;
-    
-            let url = this.url.replace('_schema', this.selected.schema.id);
-    
-            let response = await fetch(url);
-            if (response.ok) {
-                this.table = await response.json();
-    
-            } else {
-                this.error = (await response.json()).error || 'Failed to load results.';
-            }
-    
-    
-        },
-    
-        init() {
-    
-            $watch('selected.schema', (newVal, oldVal) => {
-                // set schema query param
-                const url = new URL(window.location);
-                if (newVal) {
-                    url.searchParams.set('masterSchema', newVal.id);
-                } else {
-                    url.searchParams.delete('masterSchema');
-                }
-                window.history.replaceState({}, '', url);
-            });
-    
-    
-    
-    
-            // On load, check for schema query param
-            const params = new URLSearchParams(window.location.search);
-            const schemaParam = params.get('masterSchema');
-            const displayParam = params.get('display');
-    
-    
-            if (schemaParam) {
-                const schema = Object.entries(this.schemas).find(([id, name]) => id == schemaParam);
-                if (schema) {
-                    this.selected.schema = { id: schema[0], name: schema[1] };
-                    this.loadResults();
-                }
-            }
-    
-            if (displayParam && ['simple', 'detailed'].includes(displayParam)) {
-                this.selected.display = displayParam;
-            }
-        }
-    
-    
-    }">
-
-
-        <div>
-
-            <div class="grid-4 mt-2" x-show="selected.schema == null" x-transition:enter.duration.500ms>
-
-                <template x-for="(schema_name, schema_id) in schemas" :key="schema_id">
-                    <div class="se-card se-card-hover"
-                        @click.prevent="onSchemaChange({id: schema_id, name: schema_name})">
-                        <div class="se-card-body flex items-center justify-between">
-                            <h4 class="-mb-1!" x-text="schema_name"></h4>
-
-
-                        </div>
-
-
-                    </div>
-                </template>
-            </div>
-
-            <div x-show="selected.schema != null" x-transition x-cloak
-                class="space-y-4 row-start-1 col-start-1  overflow-x-hidden">
-
-
-
-
-                <div class="flex flex-col md:flex-row md:items-center  md:space-x-3">
-                    <div class="flex items-center space-x-3 ">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="size-6 hover:text-se transition-color cursor-pointer"
-                            @click="selected.schema = null; table = null;">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-                        </svg>
-
-                        <h1 x-text="selected.schema?.name"></h1>
-
-                    </div>
-
-
-                    {{-- <div class="se-form-input text-sm!  w-auto! imb-0">
-                        <select name="" id="" class="py-0! h-6! px-1!" x-model="selected.display"
-                            @change="selected.display = $event.target.value">
-
-                            <option value="simple">Simple View</option>
-                            <option value="detailed">Detailed View</option>
-
-                        </select>
-                    </div> --}}
-                </div>
-
-
-
-                <div class="flex items-center justify-center" x-show="!table && selected.schema != null && error == null">
-                    <svg aria-hidden="true" class="w-8 h-8 animate-spin text-gray-200 fill-se" viewBox="0 0 100 101"
-                        fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                            fill="currentColor" />
-                        <path
-                            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                            fill="currentFill" />
-                    </svg>
-                </div>
-
-                <div class="flex items-center justify-center" x-show="error">
-
-                    <div class="alert-box alert-warning md:w-1/2">
-                        <h1>Results Unavailable</h1>
-                        <p x-text="error"></p>
-                    </div>
-                </div>
-
-                <div class="se-table" x-show="table != null" x-transition>
-                    <table>
-                        <thead>
-                            <tr>
-
-                                <template x-for="(column_label, column_id) in table?.columns" :key="column_id">
-                                    <th scope="col" x-text="column_label" class=" whitespace-nowrap"
-                                        x-show="column_id.includes(':') ? selected.display == 'detailed' : true"></th>
-                                </template>
-
-
-                            </tr>
-                        </thead>
-                        <tbody>
-
-
-
-                            <template x-for="row in table?.data">
-
-                                <tr>
-
-                                    <template
-                                        x-for="([column_id, column_label], index) in Object.entries(table?.columns ?? [])">
-                                        <td x-data="{
-                                            text: row[column_id],
-                                            was: null,
-                                        
-                                        
-                                        
-                                            init() {
-                                                if (column_id.includes(':') && typeof row[column_id] === 'object') {
-                                                    this.text = `${row[column_id].position} (${row[column_id].points} pts)`;
-                                        
-                                        
-                                        
-                                                }
-                                        
-                                        
-                                            }
-                                        }" class="whitespace-nowrap"
-                                            :class="index == 0 ? 'table-th' : ''"
-                                            x-show="column_id.includes(':') ? selected.display == 'detailed' : true">
-
-
-                                            <span x-text="text">h</span>
-
-                                            <span x-show="was != null">
-                                                <br>
-                                                <small>
-                                                    Was <span x-text='was'></span>
-                                                </small>
-                                            </span>
-
-
-
-                                        </td>
-                                    </template>
-
-                                </tr>
-                            </template>
-
-
-
-                        </tbody>
-                    </table>
-                </div>
-
-
-
-            </div>
-        </div>
-    </div>
-
-
-
-
-
-
-
+        </script>
+    @endif
 @endsection

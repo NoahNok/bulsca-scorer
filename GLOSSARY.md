@@ -18,6 +18,18 @@ _Avoid_: Participant, entrant
 A part of a SERC with its own marking points, e.g. a casualty, which an Official marks Entities against.
 _Avoid_: Judge (for the slot), casualty, position
 
+**Marking point template**:
+How a marking point is marked, picked for each one in a SERC: a range of numbers with a step, or a set of labelled choices. Admins look after the list.
+_Avoid_: Marking scheme, scale, preset
+
+**Speed record**:
+The best Time on record for a speed event. A competition's event copies it when the event is added.
+_Avoid_: Best time, record time
+
+**League**:
+A grouping of Entities within a competition, e.g. A League or B League. Pools run heats for their assigned Leagues, and SERC tanks are set up by League.
+_Avoid_: Bracket
+
 **League Objectives**:
 A SERC setting where each League is assigned exactly one Objective, and every Entity is marked against its League's Objective instead of one the Official picks.
 _Avoid_: Restricted judges, restricted SERC
@@ -38,6 +50,14 @@ _Avoid_: Pool (that's for speed events), station
 An Entity's place in a Tank's running order. A competition has one set of Draws, shared by all its SERCs.
 _Avoid_: Heat (that's for speed events), slot
 
+**SERC order**:
+The competition's Draws in each Tank, shown publicly on the day with how many SERCs each Team has finished and when the unfinished ones are expected to start.
+_Avoid_: Running order, start list
+
+**Estimated start**:
+When a Team that hasn't started its SERCs is expected to start in its Tank: after the Teams ahead of it in that Tank's Draws, at the pace that Tank has been running. A Team whose estimate has already passed is "Due now". It's an estimate only.
+_Avoid_: Start time (sounds guaranteed)
+
 ### Officials
 
 **Official**:
@@ -55,6 +75,44 @@ _Avoid_: v2, new judge app
 **Legacy Digital Judge**:
 The older Digital Judge that Officials join with only a PIN and a name. It still works, but it gets no new features.
 _Avoid_: v1, classic, old judge app
+
+**Official-only account**:
+An account an Official made in the Digital Judge. It can judge, time and referee, but can't use Management.
+_Avoid_: Judge-only, judge account
+
+**Full account**:
+An account that can use Management as well as the Digital Judge.
+_Avoid_: Normal account, main account
+
+### Organising
+
+**Organiser**:
+A person who sets up and runs a competition: its Events, Entities, Officials and results. An Organiser can have limited permissions, e.g. only results, and is still an Organiser.
+_Avoid_: Admin, owner, host, helper
+
+**Organisation**:
+A club, university or body that runs competitions. Its Organisers can manage all of its competitions.
+_Avoid_: Club, team
+
+**Management**:
+The signed-in area where Organisers edit their competitions and organisations.
+_Avoid_: Admin, dashboard, backend
+
+**Admin**:
+A site-wide administrator who runs the site itself (users, speed records), as opposed to an Organiser of one competition.
+_Avoid_: Organiser, superuser
+
+**Championship**:
+An Organisation's series of competitions between a start and end date. Each competition in it is a Regional, Qualifier or Final; one outside any Championship is Standalone.
+_Avoid_: Series, league (that's a grouping of Entities)
+
+**Personal Competition**:
+A competition that belongs to no organisation. Anyone signed in can create one, and becomes its first Organiser.
+_Avoid_: Owned competition, private competition
+
+**Invite**:
+An email asking someone to become an Organiser of a competition or organisation. Accepting it creates their account if they don't have one.
+_Avoid_: Sign-up, registration
 
 ### On the day
 
@@ -74,6 +132,22 @@ _Avoid_: Notification
 A printable PDF for one role on the day, e.g. the Chief Timekeeper Pack or a Marshalling Pack.
 _Avoid_: Printable, sheet (when meaning the whole document)
 
+**Rough mark sheet**:
+A blank table for a judge to rough-mark every Entity against one of a SERC's Objectives, before the marks are entered. Printed per SERC; not a Pack, as it serves a judge rather than a role.
+_Avoid_: Raw marking sheet
+
+**Results printout**:
+A PDF of the rankings for one Event or Results sheet, for noticeboards, teams and the record. Not a Pack, as it serves no role on the day.
+_Avoid_: Pack, sheet (when meaning the PDF), printable
+
+**Standings**:
+A Results sheet's final positions and points, without the per-Event breakdown.
+_Avoid_: Places
+
+**Breakdown**:
+A Results sheet with every Event's points and position beside the totals.
+_Avoid_: Detailed
+
 ### Results
 
 **Mark**:
@@ -85,8 +159,32 @@ A team's recorded time in a speed event.
 _Avoid_: Result
 
 **Place**:
-A team's position in a heat's order of finish (OOF).
+A team's position in a heat's order of finish (OOF). Not a final position on a Results sheet or Event.
 _Avoid_: OOF (when meaning the value)
+
+**Violation**:
+A DQ or penalty given to an Entity in an Event, by its Violation code.
+_Avoid_: Infraction, offence
+
+**Violation code**:
+One of the kinds of Violation an Organisation's competitions can give, e.g. DQ12 or P3: its number, a description, and for each event what kind of call it is (lane, turn, changeover…).
+_Avoid_: Infraction, DQ/penalty type
+
+**Scoring template**:
+An Organisation's saved way of scoring an event (its equation, variables, auto penalties and ranking) that a speed event or SERC can start its scoring from. Copied in, not linked: changing a template doesn't change an event already using it.
+_Avoid_: Scoring schema, scoring profile (fine in code, not in the UI)
+
+**Results sheet**:
+An overall ranking for the whole competition or one League, built from chosen Events, each with a weight, and a Formula.
+_Avoid_: Schema, result schema (fine in code, not in the UI)
+
+**Master sheet**:
+An overall ranking made by combining several Results sheets, e.g. one overall from each League's sheet.
+_Avoid_: Master schema, master results
+
+**Formula**:
+How a Results sheet turns each Event's results into points: built-in, an Organisation's saved Formula, or custom.
+_Avoid_: Result schema, result adjustment
 
 **Activity**:
 Any recorded action someone took on a competition, e.g. generating heats, swapping lanes, entering a Mark or submitting a DQ.

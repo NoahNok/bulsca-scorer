@@ -1,0 +1,451 @@
+# v2 UI style guide
+
+How redesigned main-site pages look and are built. The home page at `/`
+(`resources/views/landing/v2/home.blade.php`) is the reference
+implementation, and `/v2/kit` (unlinked, not indexed) is a sample sheet of
+every control in this theme (`landing/v2/partials/kit.blade.php`). Use both as
+the example when you redesign a page.
+
+**Scope:** every public page on the main domain, on `landing.v2.layout`,
+plus the Management app below. Blade pages that haven't moved yet still follow
+[`main-site-ui-style-guide.md`](main-site-ui-style-guide.md), and the Digital
+Judge follows [`judge-ui-style-guide.md`](judge-ui-style-guide.md). Don't mix
+v2 classes into an un-migrated page, and don't use the old `se-` classes on a v2
+page: redesign the whole page or leave it alone.
+
+## Principles
+
+- **The favicon is the brand.** The "S." mark (`#111827` tile, white S, teal
+  dot) sets the palette: ink, white and one teal accent. Teal marks what's live,
+  selected or actionable. Don't spend it on decoration.
+- **What's happening now comes first.** Lead with the live or most recent
+  thing (today's competition, the latest result). Explanation comes after.
+- **Whole rows are targets.** A row or card that leads somewhere is one link
+  with one hover state, not a row with a small link at the end.
+- **Light and dark are equals.** Every page works in both, from the OS
+  setting or the header toggle. Check both before you call a page done.
+- **One moment of motion.** Use motion to show what changed (a toast
+  arriving, a tab moving, the theme switching), never as decoration. Respect
+  `prefers-reduced-motion` every time.
+
+## Page structure
+
+| Layer | File | Provides |
+|---|---|---|
+| Shell | `landing/v2/layout.blade.php` | The favicon, fonts, Vite CSS/JS, Alpine (with the focus plugin), the header (brand, Explore, Officials, Sign in, theme toggle) and the footer's legal links. Sign in goes to `app.`'s home, which sends anyone signed in straight to Management: the main domain has no session, so don't use `@auth`/`@guest` on it |
+| Shared styles | `resources/css/v2.css` | Every token, component and pattern below. Loaded by the layout. It gives `html` `scrollbar-gutter: stable` (here and in the Management app), so the page doesn't jolt sideways when a scrollbar appears |
+| Brand mark | `landing/v2/partials/mark.blade.php` | The favicon's "S." as inline SVG: `@include('landing.v2.partials.mark', ['size' => 32, 'live' => true])`. With `live`, its dot pulses |
+| Samples | `landing/v2/partials/kit.blade.php`, shown at `/v2/kit` | The catalogue: every shared component in use. Only the sheet's own layout (`k-` classes) is styled there |
+| Theme | `landing/v2/partials/theme-script.blade.php`, `resources/js/lib/theme.ts` | The script that applies a saved theme before the first paint (in the `<head>` of every v2 page), and the toggle logic. Blade's Alpine toggle reaches it as `window.v2Theme` (set in `basic-app.js`) |
+
+A page `@extends('landing.v2.layout')`, names itself in `@section('title')`
+(the tab reads "Title | Scoring.Events"), puts styles only it uses in
+`@section('v2-styles')`, extra `<head>` tags (like `noindex`) in
+`@section('v2-meta')`, and its markup in `@section('content')`. Public pages
+are indexed, so only add `noindex` to pages that shouldn't be found. Once a
+second page needs a style, move it into `v2.css` with a `v2-` name. The layout
+is standalone, not `layouts.core`, because core's header and footer can't do
+dark mode. So it doesn't get core's toasts, `modals` state or `customConfirm`.
+Use the patterns below instead.
+
+Content sits in a `max-width: 76rem` column with a `1rem` side gutter, to line
+up with the header: `.v2-container`. Both read `--v2-page-width` (76rem by
+default), which the Management app sets to 88rem in `manage.css`. Full-bleed bands (like the pool hero)
+break out of it.
+
+### The Management app (Svelte)
+
+Management and Admin pages are Svelte + Inertia, in an app separate from the
+Digital Judge ([ADR 0002](adr/0002-public-blade-management-svelte.md)). They
+use this guide's tokens and `v2.css` classes, not the judge guide or judge
+components.
+
+| Layer | File | Provides |
+|---|---|---|
+| Root view | `resources/views/manage.blade.php` | The theme script, fonts, `manage.css` and `manage.ts` |
+| Styles | `resources/css/manage.css` | The app's own Tailwind build, separate from `app.css` (see Tailwind below). It imports `v2.css` into Tailwind's `components` layer, so utilities beat v2 classes, and has none of `app.css`'s global rules (`se-` classes, `h1`–`h4`, the `[title]` tooltip). |
+| Entry | `resources/js/manage.ts` | The Inertia app. Resolves only `pages/Manage/**`, `pages/Admin/**` and `pages/Live/**` (`app.ts` leaves them out) |
+| Shell | `resources/js/manage/layout/ManageLayout.svelte` | The same `.v2-header` and `.v2-footer` as the Blade layout, with Explore, Admin (for Admins), Account, Sign out and the theme toggle (on phones the brand, the toggle and a burger, with Dashboard, Admin, Account, Explore and Sign out in `NavDrawer`, Explore between two rules), and a `.v2-container` for the page (88rem wide here, 76rem on the public pages, so the tables and grids have room; the header widens with it), with 0.5625rem above it (0.75rem from `sm`) so every page's title has room under the header. Pages don't add their own top space |
+| Competition frame | `resources/js/manage/layout/CompetitionLayout.svelte` | Inside the shell for `pages/Manage/Competition/*`: the competition's name (`clamp(1.75rem, 3.5vw, 2.5rem)`, smaller than a page statement), its date (Archivo, not Anton), venue, championship and Live/Private badges, the organisation logo, its page tabs (`PageTabs`) and the Organisers' status message as an info alert. It reads the page's `competition` prop, which `App\Helpers\CompetitionHeader::for()` builds, so every page in it sends that. The tabs come from `App\Helpers\CompetitionTabs`; each tab says whether it's Svelte (an Inertia `<Link>`) or Blade (a plain `<a>`). A tab someone can't open shows `Manage/Competition/Forbidden` in this frame (a 403 from `App\Exceptions\Handler`) |
+| Organisation frame | `resources/js/manage/layout/OrganisationLayout.svelte` | Inside the shell for `pages/Manage/Organisation/*`: the organisation's name (sized like a competition's) with its round logo at the right, then its page tabs (`PageTabs`). It reads the page's `organisation` prop from `App\Helpers\OrganisationHeader::for()`. The tabs come from `App\Helpers\OrganisationTabs`; members with only view access get Overview alone, and a tab they can't open shows `Manage/Organisation/Forbidden` in this frame (a 403 from `App\Exceptions\Handler`) |
+| Admin frame | `resources/js/manage/layout/AdminLayout.svelte` | Inside the shell for `pages/Admin/*`: an "Admin" title (sized like a competition's name) and Admin's page tabs (`PageTabs`). Every Admin page is Svelte, so the tab list lives in the layout, not a PHP helper: each tab names the page components under it by prefix (`Admin/User` is under Users). Add a tab there when an Admin page needs one. Admin pages can show full emails; masking is for pages anyone can reach |
+| Signed-out frame | `resources/js/manage/layout/AuthLayout.svelte` | Used instead of the shell for `pages/Manage/Auth/*` (sign in, register, forgot and reset password, Invites). The `PoolBand` (one lane with its big ghosted number; the mouse picks the lane by height and swims a top-down swimmer along it by width, with bubbles and ripples on a canvas behind it. It treads water when the mouse stops, rarely dives for a few strokes, and stays under while a password field has focus. It's pale teal water with ink lines in light mode, like the Overview join card, and the `--v2-tile` band in dark; the canvas takes its splash colour from `.p-water`'s `color`) beside the form on desktop (phones get the brand mark and name in the top bar instead), the theme toggle, the session flashes as alerts, and the legal links. It holds each page's band line and the `.a-title`, `.a-lead`, `.a-form` and `.a-aside` classes the pages use |
+| Event components | `resources/js/manage/events/` | Pieces only the event pages use. `SpeedResultsGrid` (the Enter results grid: a row per result in heat and lane order with time, DQ and, when the event takes them, penalties inputs, heat pills and a search; one Save posts only the changed rows to `App\Services\SpeedResultEntry`, which checks every row first and saves none if any cell is wrong, putting each error under its cell as `rows.{id}.{cell}`; a failed save clears the filters so every failing row shows) and `SercSetupEditor` (a SERC's setup: name, type, what it scores and the League Objectives switch, then an Objective card per Objective (name, Leagues `MultiSelect` with League Objectives on, `RichText` marking hint, and marking points as rows of description, weight, a settings button and remove; the settings button opens a dialog with the marking point's template, which is rarely changed from the default, and turns red when it has none) and a dashed "Add Objective" card, in one form with a sticky Save bar. Removing a saved Objective or marking point confirms that its marks go too. Empty fields show only once a save is tried. A save that moves Leagues onto other Objectives after marking comes back as a `confirm_affected_marks` error saying how many marks it affects, which the editor confirms and resends) |
+| Results components | `resources/js/manage/results/` | `UnconfirmedAlert` (the danger alert naming the Digitally Judged events the Referee still has to confirm before sheets can be made or edited) and `DeleteSheetDialog` (a `<dialog class="v2-modal">` deleting a Results sheet or Master sheet: bind it and call `open()`; its name typed out, and the Master sheets a Results sheet is taken out of named) |
+| Activity components | `resources/js/manage/activity/` | What a competition's Activity page and the Admin Activity Monitor show. `ActivityFeedView` (the whole feed: the filter bar and the list, visiting the page's `url` when a filter changes and appending older pages; a page passes the `ActivityFeed` props straight through), `ActivityFilters` (the "Add …" pickers, the History chip and the active filters as removable chips grouped by kind, "and" between kinds and "or" within one, with Clear; it hands the next filters to `onchange` and leaves the visit to the page) and `ActivityList` (entries newest first under "Today", "Yesterday" or `Sun 1 Nov 2026` headings, each with its time, who did it, related items as chips that toggle a `related` filter through `onrelated` and open their page, and a "N changes" table; pass `older` for "Load older"). Their props are the `Activity*` types, which `App\Services\ActivityFeed` builds |
+| Admin components | `resources/js/manage/admin/` | Pieces only Admin pages use. `AccountBadges` (an account's type: Full account, or Official-only account in amber since it can't use Management, plus Admin in red), on the Users list and a user's page |
+| Live frame | `resources/js/manage/layout/LiveLayout.svelte` | Used instead of the shell for `pages/Live/*`, the public live pages on `live.` (not the full-screen `Live/Display`, which has no layout). The `.v2-header` with the brand (to Explore, its dot pulsing), `LiveStatus` and the theme toggle, but no nav, since nobody is signed in there; then the competition's name, date (Anton, as on the public pages), venue and logo, `PageTabs` for Live · DQs & Penalties · Full screen · Heats & Draws (the main site), both `newTab`, with `LiveStatusMessage` under them; and the footer. It reads the page's `competition` prop (`LiveController::header`). The Unavailable page has none, so gets just the shell. Its urls to the main site are the `live.site` shared prop |
+| Live components | `resources/js/manage/live/` | `liveData.svelte.ts` (`follow(url)`: one 5s poll of `live/{comp}`, its Teams and status message, and a ticking clock that the layout and page share), `LiveStatus` (the connection dot and words, and the time in Anton), `LiveStatusMessage` (the Organisers' status message from Settings → Status as an info `.v2-alert`, in `LiveLayout` and bigger on the full-screen display with `display`. It starts from `competition.statusMessage` and then follows the poll, so it fades in when set and out when cleared, easing its height too (250ms, off under reduced motion); a page loaded with one set shows it without animating. Its `class` goes on the wrapper that collapses, so space it with padding there, not a parent's `gap`), and `SercOrder` (each Tank's tiles in Draw order, column first: soft `--v2-success`/`--v2-warning` fills for Both/Dry finished, a teal ring and `is-live` badge for Up next, an ink outline for a search match, and "Est: 14:05" or "Due now"; with `display`, the same fills, one line a tile, sized to fill the screen) |
+| Components | `resources/js/manage/components/` | `BrandMark` (the Svelte copy of `mark.blade.php`), `ThemeToggle`, `NavDrawer` (the header's burger below `sm` and the `.v2-drawer` panel it slides in from the right, a native `<dialog>` holding the links passed as its children, with an `<hr>` between them for a rule; the ×, Escape, the backdrop or any link closes it, a link doing so before the unsaved changes prompt opens. The burger and × are `.v2-nav-icon`s, the theme toggle's round button), `Field` (a `.v2-field` with its error and hint wired up, and show/hide on passwords), `Alert` (a `.v2-alert` with its icon), `SubmitButton` (full-width, spinner and disabled while processing), `LegalNotice` (the policy line under forms that sign in or create an account), `DeclineInviteDialog` (the "Decline this invite?" modal both Invite pages open from their "Not for you?" aside; it's mounted in `AuthLayout`'s pages, which have no `confirm()`), `PoolBand`, `FormPage` (a page that's one form, like New competition and New organisation: a "Home" link back, the uppercase title and an optional muted lead, then the form in a 32rem column centred in the container, its fields spaced by the form's gap; end it with a `.p-actions` row: the full-width `SubmitButton` and a muted Cancel link under it) and `RowTable` (the default for a simple list: a table of whole-row links, each row ending in a `RowIcon` chevron rather than a "Manage" or "Edit" link. It's generic over rows with an `id`; give it the sr-only `columns` and a `row` snippet of `<td>`s, and give the name that links the row its exported `rowLink` class, or `.v2-row-link` on a button that opens a dialog; badges sit in the cells beside the name. Organisation Scoring and Violations, competition Overview, Events and Results, and `CompetitionTable` use it; for rows keyed otherwise, like Overview's events, map them to an `id`), `CompetitionTable` (competitions an Organiser can manage, in a `RowTable`: a muted Archivo date, the name as the row's link (with a muted organisation name when given), and a status of Live now, Today or "In N days" plus Private and Limited access badges; no venue; past rows are muted. It's generic over its rows, and an `actions` snippet adds to a row's end before the chevron, like a Championship's type and Remove; give anything clickable there `.v2-over-row`; `App\Helpers\ManagedCompetitions` builds its rows), `PageTabs` (a competition's, organisation's or live competition's `.v2-pagetabs`: an Inertia `<Link>` for a Svelte page's tab, a plain `<a>` for a Blade one's, `newTab` for one that opens in a new tab with a ↗, scrolled on phones to show the current one), `LogoField` (a form's `logo` file input: pick or drop a PNG, JPEG or WebP, previewed round; `current` starts it from the saved logo, and `onpick` tells an unsaved changes guard a file was chosen), `Accounts` (who can manage a competition or organisation: the table (name, email, an access summary) with pending invites as rows with Cancel invite, a row's dialog to change access or Remove (not the owner, not you), and Invite someone suggesting existing accounts as you type. It takes the access checkboxes as `accessGroups`, each with an optional heading, the actions' `routes`, and `of` for its copy ("this competition"); competition Settings and an organisation's Accounts use it), `OfficialRoleBadge` (an Official's role as a `.v2-badge`, a Referee in teal `is-live`), `ScoringSchemaEditor` (how results become points and a ranking: the result equation, penalty function, global and local variables, automatic penalties and DQs, grouping and ranking, on `useForm`, dropping half-filled rows on save, with its own `UnsavedChanges`. Given `scoring.options` (an event's page; `App\Services\ScoringSchemas::editorFor` builds them, `ScoringSchemas::save` saves, for either kind of event), before it has any scoring you start from an organisation's Scoring template or blank, and "Start again from another schema" sits in a `<details>`; without them (an organisation's Scoring template page) it opens straight on the editor. `name` adds a Name field it saves too, and `saveLabel` names the button), `FormulaEditor` (a Formula's global variables, added and removed, and its result equation with `error` under it; bind `variables` and `equation` to the form, which drops half-filled rows on save. A Results sheet's Custom Formula puts it in a card with its "Highest points total wins" checkbox after it; an organisation's Formula page puts it under a Name field), `Tabs` (the `.v2-tabs` slider over snippet panels, below), `SmoothHeight` (eases its height to fit what's inside as that changes, as `Tabs` does for its panels; wrap a `{#key}` block in it with `animate-fade-in` so swapping content, like the heats table for another Pool, fades in while the height glides), `WideScroll` (a sideways-scrolling box for anything wider than the page, like the heats tables (bind `element` to scroll it from outside): its scrollbar sticks to the bottom of the screen while the box is in view, and a mouse can drag it sideways, the click a drag ends with swallowed; an ancestor with `overflow: hidden` stops the bar sticking, so use `overflow-clip`, as `SmoothHeight` does), `SidebarPage` (the default for a page with main content and a sidebar: Overview, Entries & Leagues, an event's page; see "Two-column pages" below), `SideMenu` (a menu beside the content showing one part at a time, for a page with several parts like competition and organisation Settings or Your account: a sticky column of links from `56rem`, a row that scrolls sideways above the content on phones. Pass `items` (`id`, `label`, `rule` for a divider above it, `danger` for red), bind `value` if the page needs it, and put each part in a `SideMenuPart` (`id` matching its item, `labelledby` its heading), which hides itself unless it's current. Give each part its own form with `UnsavedChanges` in it: switching away from a part with unsaved changes asks to discard them, and discarding remounts the part back to its saved values (`ondiscard` resets anything the page keeps outside the form, like a live preview). The part follows the url's hash, the first item having none), `UnsavedChanges` (put `<UnsavedChanges dirty={isDirty} />` in any `Form`'s snippet, with `setDefaultsOnSuccess` on the form, and leaving with unsaved changes asks first: a `SideMenu` switch, an Inertia visit to another page (the guard in `manage/unsaved.ts`, which `ManageLayout` installs), or a plain link, reload or closing the tab (the browser's own prompt). Saves and other POSTs go ahead. Use it on every edit form; not on create forms or a delete confirmation), `MultiSelect` (a `.v2-field` for picking several options, on bits-ui's `Combobox`: the chosen ones as chips with remove buttons, typing filters the list, Backspace removes the last chip. The form gets one hidden input per chosen value, so give it a `name` ending in `[]`. Inside a `<dialog>` it puts its list in the dialog, and Escape closes the list, not the dialog. Use it instead of a native `multiple` select or a long run of checkboxes), `Switch` (a `.v2-switch` that a form sends as 1 or 0, so off is saved too, with an optional hint), `ActionSwitch` (a `.v2-switch` that acts as soon as it's flipped, for a sidebar of actions: "Shown in results", "Show heats publicly"; the page saves it in `onchange`), `PageHeading` (the heading of a page under another: a muted "← {page above}" link from `back`, the uppercase `title` with any `badges` snippet beside it, a muted `lead` (a string, or a snippet when it holds a link) and an `actions` snippet at its right end, like Tank setup's Save; every event page, its tools and the heat and draw editors use it), `ChipGroup` (a row of `.v2-chip`s picking one option from `options` (`id`, `name`), the picked one pressed; `all` adds a first chip, like "Overall" or "All heats", that picks null. Use it for League, Pool, event, Heat and Objective pickers; Home's organisation filter, with logos, is its own), `EmptyState` (the dashed box a list shows before it has anything: what goes there and how to add the first one, optionally with that button), `RowIcon` (the chevron at the end of a `sidebarRow`, or `icon="external"` for a link that opens in a new tab, like a print), `RichText` (Quill from `/vendor`, on the tokens, sending its HTML as a hidden `name` input, or bind its `value` and leave `name` out; it starts from `value` and doesn't follow later changes, so remount it with `{#key}` to reset it. `minHeight` sets the editor's starting height, 8rem by default), `Toasts` (the `.v2-toast` stack for `lib/toast.svelte.ts`) `ConfirmDialog` (answers `confirm()` from `lib/confirm.ts` with a `<dialog class="v2-modal">`, Cancel first) and `LinkPicker` (a `<dialog class="v2-modal">` for picking one of a few links that open in a new tab, like a Pack's layout: bind it and call `open(title, lead, options)`; the options are whole rows (`name`, an optional muted `description`, an external `RowIcon`), then Cancel, focused first, and picking one opens it and closes the dialog. Use it when a row on a page needs a choice before it can open). `ManageLayout` mounts `Toasts` and `ConfirmDialog` once, and installs the unsaved changes guard. Their prop types are in `resources/js/manage/types.ts`, and small helpers the pages share in `resources/js/manage/ui.ts`: `closeOnBackdrop` (a dialog's onclick), `upperCase` (an input's oninput for DQ and penalty codes) and `TARGET_LABELS` (Clubs, Teams, Competitors). `manage/orders.svelte.ts` has `ChangeSaver`, for an editor whose every click saves on its own (the heat and draw editors): change the page's own copy, then `save(url, data, keys)` lights `keys` with `animate-changed` and posts it one save at a time, and the props that come back put a failed change back, with why in a toast. The heat and draw editors' own pieces are in `manage/orders/`: `SelectionBar` (the sticky line of what's selected and what to do next, with Clear selection; buttons for the selection go in it as direct children. On phones the text takes its own line and the buttons share the next, filling its width), `UnassignedList` (the entries to place, as cards to select, with a `detail` snippet for a seed) and `RemoveButton` (the small × that removes a Heat, a tank or a Draw), `PlacementSearch` (a search over the Heats and/or the Draw a page shows, on Heats & Draws and both editors: under it a box of the first three Entities it finds, each with its heat and lane (in the event and Pool shown), its draw place, or Unassigned, then "and N more". The page lights matches with its `matcher` and `matchClass` and dims the rest with `dimClass`, hiding nothing so lane and draw numbers stay put; mark the heats table's matches `data-match` and pass its `WideScroll` box as `scroll` to scroll the first into view. Each place in the box is a button that jumps to it: mark what it jumps to with `data-place={placeKey(place)}` (`heat:3:2`, `draw:{id}`, `entity:{id}`; `UnassignedList` marks its cards), and `onpick` gets the page ready first, as the editors open the Tank and select it. The place found is scrolled to the middle of the screen, focused when it's a button and ringed with `animate-located`), and `orders.svelte.ts` exports `selectedClass` and `changedClass` for anything selected or just moved. `Pagination` (Previous, "Page 2 of 5" and Next under a long list split into pages on the server, e.g. Admin's Competitions and Users: pass the `pagination` prop that `App\Helpers\Pagination::props()` builds from a paginator, `withQueryString()` so the pages keep a search, and a `label` for its nav; it shows nothing when everything fits on one page. A list short enough to send whole filters in the browser instead, like an organisation's Officials). `SearchForm` (the search box and button over such a list: pass the page's `url`, its current `q`, a `placeholder` and a `label`; submitting visits `url` with `q`, or without it when empty, back on the first page), The app's own components go here |
+| Routes | `routes/app.php` | Every signed-in page, Blade or Svelte, on the `app.` subdomain, like the Digital Judge on `judge.`. `HandleInertiaRequests` gives every Inertia page on that domain the `manage` root view, and shares `manage.isAdmin`, `manage.site.home` and `.explore` (the public site's urls) and `manage.flash` (the `status` and `alert-error` session flashes, and `success`; `ManageLayout` toasts `success` and `alert-error` after every visit, and `AuthLayout` shows them as alerts) in place of `judge`. `manage` is `Inertia::always`, so a partial reload (`only`) brings an empty flash, not the last save's to toast again. A save answers with `back()->with('success', '…')` and puts errors that aren't about a field's format (already invited, wrong name) on that field with `ValidationException::withMessages`. Name new routes `manage.*` (Admin pages `manage.admin.*`). The app's home (`manage.home`, `pages/Manage/Home.svelte`) is at `/`: Recent cards, then one `CompetitionTable` of everything you can manage with a pill filter per organisation (yours, then ones you were invited into) and Personal, showing upcoming and the 3 latest past until "Show all". `/dashboard` redirects to it. New competition (`manage.competitions.create`, `/create`, `?org=<id>` preselects one) and New organisation (`manage.organisations.create`, `/organisation/create`) are `FormPage`s; a competition lands on its Overview, and an organisation on its own. An organisation's pages (`manage.organisations.*`, `/organisation/{organisation}`, by id or name, `pages/Manage/Organisation/*`, in `OrganisationLayout`): Overview (`show`, anyone in it) is its competitions in a `CompetitionTable`, upcoming first, with New competition for Organisers; the rest are its Organisers' only. Championships (`championships`, `Manage\ChampionshipController`) is a table of each one's dates and competition count, whole-row links, and New championship opens a dialog; a Championship's page (`championships.show`) is a `PageHeading` back to them with its dates, then its competitions in a `CompetitionTable` with their type (Regional, Qualifier, Final) and Remove, and Add competition opens a dialog of the organisation's competitions not in one yet, and the type. Delete (confirmed) sends its competitions back to standalone first, as their foreign key cascades. Accounts (`accounts`) is `Accounts`, its access in two groups (the organisation's own access, then its competitions'), invites starting with Overview ticked. Officials (`officials`, `Manage\OrganisationOfficialsController`) is everyone who has officiated for it, with role chips and a search filtering on the page, Export CSV taking the same filters, and Add to a competition opening a dialog of its upcoming competitions and a role. Settings (`settings`, `/edit`) is a `SideMenu` like competition Settings, for now one part, Details: name and `LogoField`, under `UnsavedChanges` (it posts with `_method=PATCH`, as a file can only go in a POST). Scoring (`scoring`, `/scoring`) lists its Scoring templates and Formulas side by side, each as whole-row links with a New button and an `EmptyState`; a Scoring template (`scoring.templates.create`/`.edit`, `/scoring/create`, `/scoring/{template}/edit`) and a Formula (`scoring.formulas.*`, `/scoring/result-schemas/…`) are full pages with `PageHeading` back to Scoring and Delete (confirmed) at the right when editing, one on `ScoringSchemaEditor` with a Name field, the other a Name field over `FormulaEditor`, both under `UnsavedChanges`. Violations (`violations`, still `/infractions`) lists its DQ codes and penalty codes side by side by code; a row opens one `.v2-modal` dialog (`useForm`, `preserveState` so errors stay in it) with the description and a kind-of-call select per speed event and SERC (N/A for none), Delete and Save, and New DQ code or New penalty code open it with a code number field. A competition's Overview (`comps.view`, `/comps/{comp}`, `pages/Manage/Competition/Overview.svelte`) lists its events as rows by your access (leagues live on Entries & Leagues, not here), and for Organisers links to Settings and Activity under the events, and beside them the Digital Judge panel (the one bold panel: `--v2-teal-soft` with a teal border in light, the dark `--v2-tile` band in dark; the PIN in teal Anton, QR code, releasing or locking the SERCs, on and off). Activity (`manage.competitions.activity`, still `/comps/{comp}/activity-log`, Organisers only, `pages/Manage/Competition/Activity.svelte`, `Manage\CompetitionActivityController`) is a `PageHeading` back to Overview, then the filters: "Add …" native selects (event, team, competitor when there are any, person, type; only this competition's, leaving out what's picked; stacked full width on phones), a History `.v2-chip` (exactly the Mark, Time and Place types, pressed when they're what's selected), and the active filters as removable chips grouped by kind with "and" between kinds, "or" within one, and Clear. The filters are the url's `related`, `by` and `activity` (each `|`-separated), so old links still work; changing one is a `preserveState` visit back on the first page. Below, the Activity newest first under day headings (Today, Yesterday, `Sun 1 Nov 2026`), each row its time to the second in the browser's time zone, a readable title, the description, who did it (or System), its related items as small chips (a kind icon; a press toggles that filter, an arrow opens an event's or competition's page; deleted ones muted italic and appealed ones struck through, neither clickable, nor the page's own competition) and, for SERC marks and places, the changes in a collapsed `<details>` table. "Load older" asks for the next page (`only` `entries`, an `Inertia::merge` matched on id) and appends it; an `EmptyState` says "No activity yet". `App\Services\ActivityFeed` does the filtering, chips, pickers and type titles, `App\Models\Activity\ActivityRelation` names each related item (even once deleted) for both pages, and the Admin Activity Monitor (`manage.admin.activity`) is the same feed across every competition, without the "Add …" pickers since they name things in one competition. Both pages render it through `ActivityFeedView`. Settings (`manage.competitions.settings`, `/comps/{comp}/settings`, Organisers only) is a `SideMenu`. Every part is its own form with its own Save button and "Unsaved changes": Details, Setup, Heats, Names and Status all post to `comps.settings`, which takes any subset of its fields (Heats' Pools switch can't be on with heats per event, and turning it off while heats are in pools confirms first, then sends `clear_pooled_heats` to delete them); a rule in the menu splits them from Digital Judge events, Accounts (`Accounts`, with pending invites to cancel) and Delete (type the name; its menu item is in danger red). A failed save focuses the first field with an error, and links can open a part by its hash (`#setup`, `#digital-judge`). Use `SideMenu` for any other settings page with several parts, rather than stacking them. Entries & Leagues (`manage.competitions.entries`, `/comps/{comp}/entries`, `pages/Manage/Competition/Entries.svelte`; `/entities` redirects there) lists the clubs, teams and competitors as one tree table (a club, its teams indented, each team's competitors indented again, then teams without a club and competitors without a team), with their leagues and a seed column per seedable event, and the leagues as rows beside it. Entries are added from the Add buttons at the top, which stick to the top of the screen with the heading and a search box as you scroll the table (a rule shows under them once stuck). The search filters by name, keeping a match's club and team and everything under it. Hovering a club row shows a "+ Team" button and a team row a "+ Competitor" button (`.v2-over-row`, also on keyboard focus, hidden on touch screens), opening the add dialog with that club or team already picked. Every row opens a dialog that saves or removes that one entry or league at once (`CompetitionEntriesController`, `LeagueController`), so there's no Edit page or unsaved state; removing a club or team confirms what it takes with it. An entry's leagues are a `MultiSelect`. Events (`manage.competitions.events`, `/comps/{comp}/events`, `pages/Manage/Competition/Events.svelte`) shows a section per type you have access to (Speed events with `speed`, SERCs with `serc` or `serc_writer`), side by side when you have both (stacked on phones), each a heading with its add button beside it, a lead, then whole-row links like Organisation Scoring's: the name with its badges beside it (Complete or Incomplete, "Confirmed by Referee" and Hidden; no line saying what it scores), or an `EmptyState` with the add button. "Add speed event" opens a dialog (event and what it scores) that adds it with a result for every Entity and opens its page, and "Add SERC" goes to the SERC setup page. A speed event's page (`manage.competitions.events.speeds.show`, `/comps/{comp}/events/speeds/{event}`, `pages/Manage/Competition/SpeedEvent.svelte`, `Manage\SpeedEventController`) is two columns split 2:1 like Entries & Leagues, with nothing above them. The first holds a muted "← Events" link, the event name with its Complete/Incomplete and Hidden badges, then its results. The second, from the top of the page and sticky, is the actions column (under the first column on phones, as Leagues is): Edit results and Settings as whole-row links with chevrons to the event's own pages, the "Shown in results" switch (saves at once), then Print results (its Results printout, a PDF, in a new tab). The results have no heading of their own under the name: a danger alert with a button per heat whose times and Digital Judge order of finish disagree, opening that heat in a dialog, league pills that reload only the results, a search and the ranked table. Edit results (`manage.competitions.events.speeds.results.edit`, `/results`, `SpeedEventResults.svelte`) is a full-width page, no sidebar: a muted "← {event}" link back, the "Edit results" heading and a lead, then `SpeedResultsGrid` (heat chips filter it; with heats in more than one pool, a row of pool chips comes first and only that pool's rows and heats show, as heat numbers restart in each pool, while rows without a heat show in every pool). Heats are named with their pool wherever they show (`Pool::heatLabel`, `Pool::heatLaneLabel`). Settings (`manage.competitions.events.speeds.settings`, `/settings`, `SpeedEventSettings.svelte`) has the same link back and a "Settings" heading above a `SideMenu` like competition Settings: Setup (what it scores, confirming that changing it deletes its results, and Has penalties), Scoring (`ScoringSchemaEditor`), then a rule and Delete (type the event's name, as for a competition; `destroy` checks it). Its old `/edit`, `/edit-result` and `/scoring-settings` urls redirect to `/settings`, `/results` and `/settings#scoring`. A SERC's page (`manage.competitions.events.sercs.show`, `/comps/{comp}/events/sercs/{serc}`, `pages/Manage/Competition/Serc.svelte`, `Manage\SercEventController`) has the same shape: "← Events", the name with Complete/Incomplete, an `N/M marks` badge while marking is incomplete, Dry/Wet and Hidden, then league pills and one search over its ranked results (#, Entry, DQ, mark, points struck through with "DQ" when disqualified, and a marking badge) and a "Draw order" table of every Entity (Tank N- with tanks; an info alert when there's no draw). For a SERC Organiser, every row in both tables is a whole-row link to that Entity's marks, ending in a chevron like the actions column's links (not a combined result row, which stands for several Entities). Marking badges: Marked `is-success`, `n/m marked` `is-provisional`, Waiting plain, and No Objective `is-danger` when League Objectives give an Entity none or several; with League Objectives on, an Entity's marks are counted against its own Objective only. The actions column has Edit setup, Mark splits, League Objectives (when on) and Settings, the "Shown in results" switch, then Print rough mark sheets (with printables access) and Print results. A SERC Writer sees the results and only Edit setup and Print results. Edit setup (`/setup`) and New SERC (`/events/sercs/create`, where the Events list's "Add SERC" goes) are one full-width page, `SercSetup.svelte`, with `SercSetupEditor`. Settings (`/settings`, `SercSettings.svelte`) is a `SideMenu` of Scoring and Delete, as for a speed event. The old `/edit`, `/scoring-settings` and `/add` urls redirect. An Entity's marks (`manage.competitions.events.sercs.marks`, `/results/{entity}`, `SercMarks.svelte`) are a score sheet in a 48rem column under "← {SERC}", the Entity's name and its place in the draw ("Draw 3 of 12", "Tank 1, Draw 3 of 6" with tanks, or "Not in the draw"): DQ and Penalties fields, then a section per Objective (its marking hint in a `<details>`) with a row per marking point, its name (and `×weight` when not 1) and a 0–10 number input on the right, and a sticky bar with "Skip to next", "Save" (saves and goes back to the SERC) and "Save & next" (saves and opens the next Entity in draw order, which Enter does too; on the last only "Save" shows). A blank mark takes the mark away. With League Objectives on it shows only the Entity's Objective, or every one under a danger alert when its Leagues give it none or several. Mark splits (`/mark-splits`, `SercMarkSplits.svelte`) is a pill per Objective (`?objective=`, reloading only the splits) and a table of every Entity in draw order by that Objective's marking points. League Objectives (`/league-objectives`, `SercLeagueObjectives.svelte`) is the Entity, its Leagues and its Objective (danger badges for none or several, with a danger alert counting them), then each Objective's Leagues. The old `/results/{entity}/edit` and `/restriction-map` urls redirect. Only the hidden image card stays Blade (`SERCController`). Heats & Draws (`manage.competitions.heats_and_draws`, `/comps/{comp}/heats-and-draws`, `pages/Manage/Competition/HeatsAndDraws.svelte`, `Manage\HeatsAndDrawsController`) is a `SidebarPage`: the Heats as a read-only lane × Heat table, one event (with heats per event) and one Pool (with pools) at a time, picked by `.v2-chip`s kept in the url (`?event=&pool=`, reloading only `heats`), then the Draw tank by tank. A `PlacementSearch` under the heading looks through both. Info alerts link to Events with no speed events or no SERC, and explain the pool-heats command while pools are on and nothing's generated. The sticky actions column has Generate heats (only while there are none and pools are off) or Edit heats ("Edit Main Pool heats" with pools, opening the editor on the event and Pool picked), Generate draw (opening Tank setup with tanks) or Edit draw, Tank setup (tanks only), then the Show heats publicly and Show draw publicly switches (`visibility`, saved at once). The heat editor (`…heats.edit`, `/heats/{event}/edit`, `HeatEditor.svelte`, `Manage\HeatsController`) and draw editor (`…draws.edit`, `/draws/edit`, `DrawEditor.svelte`, `Manage\DrawsController`; the competition's one Draw, so no SERC in the url, and the old `/draws/{serc}/edit` redirects) are full width under "← Heats & Draws": a `PlacementSearch`, a sticky line saying what's selected and what to do next, the grid (lanes × Heats; Tanks in `Tabs` with tanks), Unassigned entries to place, then Reset or Regenerate (confirmed) at the bottom. Editing is click to select: an entry, then an open lane, another entry to swap, a Heat header to swap Heats, or Between beside a Draw (one button between each pair, Before the first and After the last; an empty Tank shows "Add to Tank N" instead). Each change goes through `ChangeSaver` (`manage/orders.svelte.ts`): the page changes its own copy at once, lights what moved with `animate-changed`, and posts it with `preserveState`; the props that come back replace its copy, so a failed save (a `ValidationException` on `heats` or `draw`, shown as an error toast) puts the change back. One save at a time. Without heats per event, another event's editor redirects to the first, which holds every event's Heats. Tank setup (`…draws.tank_setup`, `/draws/tank-setup`, `TankSetup.svelte`, tanks only) holds its changes until Save (with `UnsavedChanges`): select Leagues as chips, then click a tank card (its Put here button covers the card; the tank's Leagues fill its width as chips on the sunk card); Save confirms, then draws everyone again League by League, and needs every League in exactly one tank. Officials (`manage.competitions.officials`, `/comps/{comp}/officials`, Organisers only, `pages/Manage/Competition/Officials.svelte`, `Manage\CompetitionOfficialsController`) is a `SidebarPage`: a sticky heading with counts (officials, referees, online now), Add official, filter chips (All, Referees, Online now, Not joined, each with its count) and a search by name or email, a danger alert while there's no Referee, then a table of each official (name and email, a role badge (teal `is-live` for a Referee, plain for an Official), and status: a live dot and "Online now", "Seen 5 min ago", or a provisional badge for "Hasn't opened it yet" or "Hasn't signed in yet"; the controller sends `status` as `online`, `seen`, `notOpened` or `notSignedIn`). Who's online is live: `manage/officialsPresence.svelte.ts` joins the judge app's `judge.officials.{id}` presence channel as a watcher (`routes/channels.php` lets Organisers in from `app.` marked `watching`, and the judge app's `lib/presence.svelte.ts` leaves watchers out of its Online list), showing "Online now" or, from the officials' whispers, "Online, idle" (a still orange dot, `#fb923c` like the judge app's idle dot; no token yet as it's used once). Without a connection the server's status stands. Beside it, How officials join (the Digital Judge PIN in teal Anton with the judge link and printable QR code, or a line pointing at Overview to turn it on) and Copy from another competition (a select and Add all). Add official opens a dialog that searches accounts as you type (`search`, masked emails), shows suggestions from the organisation's other competitions before anything's typed, and asks for a name only for an email with no account. A row opens a dialog to change their role (confirming first when they're the only Referee), Resend email until they've opened it, and Remove (confirming with what they leave behind). Its errors are plain keys (`email`, `name`, `from`, and `resend` for the rate limit). Printables (`comps.printables`, `/comps/{comp}/printables`, `printables` access, `pages/Manage/Competition/Printables.svelte`, `PrintableController`) is the "Printables" heading and a lead, then Speed events and SERCs side by side (stacked on phones), each a list of Packs (and, last under SERCs, Rough mark sheets) as whole-row links: the name, a muted line on what it holds and an external `RowIcon`, opening the PDF (built by `App\Pdf\CompetitionPdfCreator`) in a new tab. A row that needs a choice first opens a `LinkPicker`: the Chief Timekeeper Pack's layout (One heat per page or Packed) and, with more than one SERC, which SERC's Rough mark sheets (with one, the row opens its sheets). A row with nothing to print yet is muted, not a link, with why at its right end (No heats yet, No SERCs yet, No draw yet), linking to Heats & Draws or Events when you can open them. The controller decides all of that and sends each Pack's `url` and `unavailable`, and `roughMarkSheets` (every SERC's sheets) beside `packs`. Results (`manage.competitions.results`, `/comps/{comp}/results`, `results` access, `pages/Manage/Competition/Results.svelte`, `Manage\ResultSheetsController`) is a `SidebarPage`: Results sheets, then Master sheets, as whole-row links (`sidebarRow` between rules) with the sheet's League (or "Whole competition") muted and a Hidden badge, an `EmptyState` before the first Results sheet, and a danger alert (`UnconfirmedAlert`) linking each Digitally Judged event the Referee still has to confirm (until then nothing can be made or edited: New and Edit go away, and the sheet pages show the alert in their place). The sticky actions column has New Results sheet, New Master sheet, Print all sheets (a Results printout, new tab), then the "Results published" switch (with View public results, and a line for a private competition) and "Results final" with a line saying what finalising does (`publish` and `finalise`, saved at once). A Results sheet's page (`…results.show`, `/results/{sheet}`, `ResultSheet.svelte`) is "← Results", its name with its League as the lead, a search and the ranking (#, Entry, Points; a danger alert with the scoring engine's context in `<details>` when it can't be worked out), and actions: Edit sheet, "Shown in results", Print standings and Print breakdown (Results printouts, new tab), Refresh cache (Admins) and Delete sheet, then "How it's built" (Formula, Events with weights, tie-break order). New and Edit (`/results/create`, `/results/{sheet}/edit`, `ResultSheetForm.svelte`) are one full-width form: Details (name, blank for the League's; what it ranks; "Make one for every League" when new), Events as pressable cards with a weight beside each picked one, Formula (a built-in, an Organisation's copied in and shown as Custom, or Custom with global variables and the result equation; a sheet only stores its equation, so the picker shows the built-in it matches), Ranking (group on, keep disqualified results' points, tie-breaks as numbered `.v2-chip`s), and a sticky Save bar; editing a published sheet says changes show publicly at once. Master sheets (`…results.master.show`, `/results/master/{master}`, `MasterSheet.svelte`; New and Edit `MasterSheetForm.svelte`, `Manage\MasterSheetsController`) are the same shape: a table of Clubs by each sheet's value, total and place, and a form of name, Sums (places lowest wins, points highest wins), what a missing Club counts as, Results sheets and Clubs to leave out as `.v2-chip`s. Deleting either kind is `DeleteSheetDialog`. The old `/results/add`, `/results/master/add` and `/comp/results/view-schema/{sheet}` urls redirect, as do the old `/comp/results/view-schema/{sheet}/print-basic` and `/print` (to `/results/{sheet}/print/standings` and `/print/breakdown`). Every print link here and on the event pages is a Results printout (`ResultsPrintoutController`, built by `App\Pdf\ResultsPdfCreator`) |
+
+Links from `app.` to public pages use `RouteHelpers::mainRoute()` in Blade
+and `manage.site` in Svelte. `route()` would build them on `app.`. Link to a
+Blade page with a plain `<a>`, not Inertia's `<Link>`, which can only load
+Inertia pages.
+
+A Svelte page uses the same markup and classes as the kit for components
+(`.v2-btn`, `.v2-field`, `.v2-alert` and so on), and Tailwind for everything
+else.
+
+#### Tailwind
+
+- **Layout, spacing and type size are utilities**: `flex flex-col gap-2`,
+  `grid sm:grid-cols-2`, `mt-4`, `text-sm font-semibold uppercase`. Don't write
+  a scoped class for what a few utilities say. Utilities beat v2 classes, so
+  `class="v2-btn w-full"` works.
+- **Colours are only the tokens**: `manage.css` removes Tailwind's palette and
+  maps each `--v2-*` token to a colour, so `text-v2-muted`, `bg-v2-card`,
+  `border-v2-border`, `bg-v2-teal-soft`, `text-v2-danger-text`. They switch
+  with the theme on their own, so you rarely need `dark:`. `text-gray-600` or
+  `bg-white` generate nothing. Add a token to `v2.css` and its
+  `--color-v2-*` line to `manage.css` together. A colour no token covers, used
+  once, is an arbitrary value (`dark:border-[#374151]` on the Digital Judge
+  panel). Make it a token when a second place needs it. Opacity works on
+  tokens: `border-v2-teal/35`.
+- **`dark:`** follows the theme like `v2.css` does: the OS setting unless the
+  toggle sets `data-theme`. Use it for the odd dark-only change, like the
+  Digital Judge panel's `--v2-tile` band.
+- **Fonts:** `font-sans` is Archivo (the default) for everything, dates and
+  data included: write dates as `font-semibold` Archivo (Home, `CompetitionTable`,
+  the competition frame). `font-anton` is only for the Digital Judge PIN; don't
+  use it for dates, counts or other data. The exception is the public live
+  pages (`pages/Live/`), which follow the public pages' typography: Anton for
+  their dates and clock, Archivo for the times on tiles.
+- **Headings have no global styles** here, unlike Blade: Tailwind's reset
+  leaves them at body size. Give each one its size, weight and `uppercase`.
+- **Reusable components:** once a layout or pattern is settled (the user is
+  happy with it, not while it's still being iterated on), lift it into
+  `resources/js/manage/components/` with a small props API, like `SideMenu`
+  from competition Settings, and list it under Components above. Prefer
+  reusing one of those over writing the markup again on a new page.
+- **Repeated markup:** when one page repeats a class list (Home's filter
+  pills), keep it in a `const` in the script and pass it as `class={chip}`.
+  Style table cells from the row with `*:` (`*:py-3.5 *:first:pl-3`, see
+  `RowTable`), and hover children with `group` / `group-hover:`. A
+  piece of markup repeated within one page is a `{#snippet}`; one repeated
+  across pages is a component (a simple list of links is a `RowTable`, and a row's chevron is `RowIcon`). Style
+  HTML you don't write (`{@html}`, like the status message) with `[&_a]:`.
+- **Wide tables with a place or draw, then a name** (a speed event's results, a
+  SERC's results, draw order and mark splits): `class="v2-lead-table"` and
+  `use:leadTable` (`manage/ui.ts`) on the `<table>`, in an `overflow-x-auto`
+  box. Both columns stick, with a rule down the name's edge on phones, and the
+  name keeps at least `8rem`. A sticky cell holds a `.v2-row-link`'s `::after`
+  to itself, so for a whole-row link put `.v2-row-link` on a second link around
+  the row's `RowIcon` (`tabindex="-1"`, `aria-hidden`), and leave the name a
+  plain link. A table with only the name to keep in view (`SpeedResultsGrid`)
+  uses the same look with utilities on that one column: `border-separate
+  border-spacing-0` on the table and `sticky left-0 z-10 min-w-32 bg-v2-bg`
+  on the column's cells.
+- **Animations** are named in `manage.css`'s `@theme`: `animate-rise` (fades
+  in rising half a rem, 300ms; the sign-in pages), `animate-rise-fast` (200ms;
+  a dialog opening), `animate-fade-in` (a `Tabs` panel), `animate-changed`
+  (lit teal and fading back over 1.2s; what an edit just moved in the heat and
+  draw editors), `animate-located` (a teal ring pulsing out twice; what a
+  `PlacementSearch` jumped to, added from script and skipped under reduced
+  motion) and `animate-spinner` (`SubmitButton`). Always pair one with `motion-reduce:animate-none`. Add a
+  new one there with its `@keyframes`, not in a `<style>` block: Svelte
+  renames `@keyframes` in a component, and a scoped animation can't be
+  turned off by `motion-reduce:`. Transitions are utilities too:
+  `transition-[height] duration-250 motion-reduce:transition-none`.
+- **Sibling spacing:** utilities beat `v2.css`, so `*:mt-0` on a grid or
+  fieldset drops the `.v2-field + .v2-field` and `.v2-check + .v2-check`
+  margins and lets `gap` space them. `Switch` spaces itself from the one
+  above with `[&+&]:mt-4`.
+- **Use a `<style>` block** only for what utilities can't say: styling markup
+  a library or child component renders (`RichText`'s Quill toolbar), canvas
+  and long animation sequences (`PoolBand`), and the classes a layout hands
+  to every page in it (`AuthLayout`'s `.a-title`, `.a-lead`, `.a-form`,
+  `.a-aside`; `FormPage`'s form and `.p-actions`). A `<style>` block is
+  unlayered, so it beats every utility. Move a style into `v2.css` once a
+  second page, Blade or Svelte, needs it.
+- `manage.css` only scans `resources/js/manage`, `resources/js/pages/Manage`,
+  `resources/js/pages/Admin` and the root view.
+- Every page, layout and component is on utilities, except the `<style>`
+  uses above.
+
+A choice between two kinds of the same thing in a form (New competition's organisation or Personal)
+is a `.v2-tabs` (`--v2-tabs: 2`) with `role="tab"` buttons, each controlling a `role="tabpanel"` that
+holds that kind's fields, so only the chosen tab's fields are sent. Arrow keys move between the tabs. The panels sit in a wrapper whose height animates to the chosen one's (250ms, off under reduced motion), and the new panel fades in, so the fields below don't jump.
+Hide the tabs when only one kind is possible, and say which in a muted line instead.
+`Tabs` does all of this: pass `tabs`, bind `value`, label it (`labelledby` or `label`) and render each
+panel from its `panel` snippet. Tabs are for a choice within a form, or between lists about one
+subject on a page with no form (a user's Competitions, Organisations and Officiating on their Admin
+page, each label with its count, opening on the first that has anything in it). They're not for moving
+between parts of a settings page: use `SideMenu` for that.
+On phones the tabs' padding tightens so five fit.
+
+**Two-column pages.** A page with main content and a sidebar (a competition's Overview, Entries & Leagues, an event's page) is a `SidebarPage`: the main content as its children and the sidebar as its `sidebar` snippet, split 2:1 from `56rem` (`gap-10`) until the sidebar reaches `24rem`, after which the first column takes all the extra width, with nothing above the two columns. The page's own heading (and any back link or badges) goes at the top of the first column, so the sidebar starts at the top of the page beside it, and the heading stays in the same place whatever the first column shows. On phones the sidebar follows the content. The page picks the sidebar's element: a `<section>` with its own heading for a second list (Leagues), or a `<nav>` of actions for the content beside it, with `sticky` so it stays in view. Style a list of actions as whole rows with `sidebarRow` (exported by `SidebarPage`, a current one marked `aria-current="true"`) between `border-v2-border` rules, as on a speed event. An action that edits much of the page (its results, its settings) opens a page of its own rather than swapping the first column. Use `SideMenu` instead for settings split into several forms, like competition Settings.
+
+**Slider or page tabs?** `.v2-tabs` is for a choice within a page. Links between pages (a competition's
+Overview, Events, Results and so on) are `.v2-pagetabs`: muted text tabs with a teal underline under
+the one marked `aria-current="page"`, on a bottom border, scrolling sideways without a scrollbar when
+they don't fit.
+
+Organisation logos go through `OrganisationLogoService` (PNG, JPEG or WebP up to 10 MB, scaled to fit
+512px and stored as one transparent `.webp`), on the Svelte and Blade pages alike. Preview them round,
+with `object-fit: contain`, as the site shows them.
+
+Forms use Inertia's `<Form>` with `Field` and `SubmitButton`. A form that can
+land on a Blade page or another domain (signing in, accepting an Invite)
+answers with `Inertia::location()`, which does a full visit. A plain redirect
+would try to load the Blade page as an Inertia response. Errors that aren't
+about one field (wrong credentials, throttling) go on their own key (`auth`)
+and show as a danger `Alert` above the fields.
+
+Page changes between Svelte pages are view transitions: `manage.ts` turns `viewTransition` on for every
+GET visit (not form posts, whose error answer is the same page, nor a visit with `only` or
+`preserveState` that swaps part of the page, like a pool or league chip), and `v2.css` keeps the `.v2-header` and
+`.v2-footer` still while the page between fades and rises in (about 250ms, off under reduced motion).
+Full page loads, like a form landing on a Blade page, don't animate. The theme toggle marks its own
+transition with `data-theme-switching` on `<html>`, which swaps this for its circular reveal.
+
+Svelte transitions don't check `prefers-reduced-motion` on their own: pass
+`duration: prefersReducedMotion.current ? 0 : …` (from `svelte/motion`). Don't
+use `<aside>` in the app: an old rule in `app.css` collapses it to zero width.
+
+## Tokens
+
+Defined on `:root` in `v2.css`. Always use the variable, never the hex, so
+dark mode follows.
+
+| Token | Light | Dark | Use |
+|---|---|---|---|
+| `--v2-bg` | `#f9fafb` | `#030712` | Page background, field backgrounds |
+| `--v2-card` | `#ffffff` | `#111827` | Panels, cards, the status/modal surface |
+| `--v2-sunk` | `#f3f4f6` | `#1f2937` | Neutral badges, tab track, row hover in lists |
+| `--v2-ink` | `#111827` | `#f9fafb` | Text, primary button |
+| `--v2-muted` | `#6b7280` | `#9ca3af` | Secondary text, past results, hints |
+| `--v2-border` | `#e5e7eb` | `#1f2937` | Borders and row dividers |
+| `--v2-teal` | `#00d5be` | `#00d5be` | The accent: live dot, today line, focus ring, accent button |
+| `--v2-teal-text` | `#0f766e` | `#2dd4bf` | Teal *text* (links, "Live now"). `--v2-teal` is too light for small text on white |
+| `--v2-on-teal` | `#ffffff` | `#111827` | Text on a teal fill (accent button) |
+| `--v2-tile` | `#111827` | `#111827` | The favicon tile colour, for dark bands that stay dark in both themes |
+
+| `--v2-teal-soft` | teal 8% | teal 12% | Info alerts, live badge |
+| `--v2-row-hover` | teal 8% | teal 14% | Whole-row link hover and focus |
+| `--v2-danger`, `-soft`, `-text` | `#dc2626`, `#fef2f2`, `#b91c1c` | `#ef4444`, 12%, `#fca5a5` | DQs, deletes, errors |
+| `--v2-success`, `-soft`, `-text` | `#059669`, `#ecfdf5`, `#047857` | `#10b981`, 12%, `#6ee7b7` | Approved, published |
+| `--v2-warning` | `#b45309` | `#f59e0b` | A solid amber, like the connecting dot. For a fill use the soft pair |
+| `--v2-warning-soft`, `-text` | `#fef3c7`, `#92400e` | same | Provisional |
+| `--v2-gold`, `-silver`, `-bronze` | `#d4a017`, `#9ca3af`, `#c27a3a` | same | 1st, 2nd and 3rd: only the podium rows' strip and tint |
+
+## Dark mode
+
+The page follows the OS, and the header toggle can force a theme by setting
+`data-theme="light"` or `"dark"` on `<html>`. It's saved in `localStorage` as
+`v2-theme`, and a script in `<head>` applies it before the first paint. So
+**every dark rule is written twice**:
+
+```css
+@media (prefers-color-scheme: dark) {
+    html:not([data-theme="light"]) {
+        .my-thing { border: 1px solid var(--v2-border); }
+    }
+}
+
+html[data-theme="dark"] {
+    .my-thing { border: 1px solid var(--v2-border); }
+}
+```
+
+Most things need neither block because they use tokens. Write one only when
+dark needs something the tokens can't give: an extra border on a `--v2-tile`
+band, a deeper photo overlay, a stronger hover tint. A token override
+(`:root { … }`) inside the block becomes `& { … }`.
+
+The toggle switches themes with a circular View Transitions reveal from the
+button, and falls back to an instant switch.
+
+## Typography
+
+| Role | Face | Treatment |
+|---|---|---|
+| Body, UI | Archivo (self-hosted, `/fonts/google/fonts.css`) | 400–600 |
+| Section headings | Archivo | 800, uppercase, `1.75rem`; page statements up to `clamp(2rem, 4.5vw, 3.25rem)` with `line-height: 1.05` |
+| Panel and list headings | Archivo | 800, uppercase, `1–1.125rem` |
+| Names in lists | Archivo | 700, sentence case. Set `text-transform: none`: the global `h2`/`h3` rules uppercase everything |
+| Dates and numerals | Anton on the public v2 pages only | 400. Short dates like `27 Sep`, tabular. The Management app uses Archivo for dates and data (see "The Management app") |
+
+On Blade pages, the global `h1`–`h4` rules in `app.css` are unlayered, so
+they beat Tailwind utilities. Style headings with a page class, not
+`normal-case`. The Management app doesn't load them (see Tailwind above).
+
+Don't add other fonts. Use one heading level per section and no eyebrow labels
+above headings.
+
+## Components
+
+All in `v2.css`, so they're available on every v2 page. The kit partial shows
+each one in use; copy its markup.
+
+| Need | Use |
+|---|---|
+| Button | `.v2-btn` (plain: card background, border). `.v2-btn-primary` for the one main action (ink, inverts in dark), `.v2-btn-accent` (teal, for a "create" call to action), `.v2-btn-danger`, `.v2-btn-ghost`, `.v2-btn-sm`, and `disabled` |
+| Link | `.v2-link` (teal-text, 600, no wrap), `.v2-link-muted` (secondary), `.v2-link-inline` (underlined, inside a sentence) |
+| Live / status dot | `<span class="v2-dot is-live" aria-hidden="true"></span>`. Drop `is-live` for a still dot |
+| Search | `<x-v2.search />` (`.v2-search`): a `.v2-input` over the `/search/{search}` endpoint, with a `.v2-search-results` panel grouped into Competitions, Organisations and Championships. On a photo, give `.v2-search-input` a fixed light surface (see `.f-hero` in `home.blade.php`) |
+| Field | `div.v2-field` with a `<label>` and `.v2-input` (input, `select`, `textarea`). Add `.is-invalid` with `aria-invalid` and a `.v2-error` message linked by `aria-describedby`; `.v2-hint` for help text |
+| Checkbox / radio | `<label class="v2-check"><input type="checkbox"> Text</label>` (native, teal `accent-color`) |
+| Switch | `<label class="v2-check"><button class="v2-switch" role="switch" :aria-checked="…"></button><span>Text</span></label>`. The label lets the text toggle it |
+| Badge | `.v2-badge` + `is-provisional`, `is-success`, `is-danger`, `is-live` |
+| Chip | `<button class="v2-chip" aria-pressed="…">` for a row of pills that filter (leagues, an Objective, an organisation), in a `role="group"` with an `aria-label`. The chosen one is `aria-pressed="true"` (ink, inverts in dark); a `.v2-badge` inside flips with it. To jump straight to what a chip filters by (an organisation's page), wrap it and a link chip with an arrow in `.v2-chip-split`: one pill, the link inverting with its chip |
+| Alert | `.v2-alert` + `is-info`, `is-success`, `is-warning` (something left out or worth checking, not an error), `is-danger`, with an icon and a `<strong>` title |
+| Tabs | `.v2-tabs` with a sliding `.v2-tabs-pill` (equal-width tabs; set `--v2-tabs` to the count if it isn't 3). Wrap it in `.v2-tabs-scroll` if there could be many: each tab keeps at least 4rem and the row scrolls sideways. The Svelte `Tabs` component always does, and keeps the chosen tab in view |
+| Toast | `.v2-toasts` > `.v2-toast-slot` > `.v2-toast-clip` > `.v2-toast`, stacked bottom-right, newest nearest the corner. They slide up in and slide out right, and the stack closes the gap. The Alpine that fires them is in the kit for now. To toast on a public page from another host (the session cookie is per host, so `app.` can't flash onto the main domain), redirect with `?notice=<key>`: `landing.v2.partials.notice-toast`, in the v2 layout, shows only the keys it lists (like `invite-invalid`) and drops the param from the address |
+| Modal | `.v2-modal-backdrop` + `.v2-modal` with `x-trap.noscroll`: it traps Tab, locks page scroll and focuses the first button, so put the safe one first. Close on Escape and backdrop click. In Svelte, use a native `<dialog class="v2-modal">` opened with `showModal()` instead (it traps focus, closes on Escape and gets the backdrop from `v2.css`); close it on a click on the dialog itself |
+| Long-form text | `.v2-prose` on an `<article>` (legal policies): a readable measure, `h1`/`h3`, lists and `p` spacing. `.v2-prose-meta` for a muted line (last updated), `.v2-prose-table` around a plain table |
+| Whole-row link | `.v2-row` on the `<tr>`, `.v2-row-link` on its link, `.v2-over-row` on anything else clickable in it (see Patterns) |
+
+## Patterns
+
+- **Fixtures sheet** (`<x-v2.fixtures>`, `.v2-fixtures`): one table of
+  competitions, with past ones above, a teal "Today" line, today's
+  competitions on it, and upcoming ones below. Pass `past` (in the order to
+  show them), `live` and `upcoming` collections; `:today="false"` drops the
+  Today line for a sheet of results only, `:types="true"` badges each
+  competition with its Championship type, and `empty` says what goes there.
+  Home, Explore, Organisation and Championship use it. Explore and
+  Organisation show "Coming up" (today and upcoming) and "Results" (past,
+  newest first) as two sheets; Home and Championship show one, oldest first.
+  - **Past rows:** muted name and date (with the year when it isn't this
+    year), a Final/Provisional badge and "Results", or "No results yet" and
+    "Details" before they're published.
+  - **Upcoming rows:** an "In N days" countdown and "Details".
+  - **Today's rows:** the name takes the date column (the Today line already
+    gives the date), with "Live now", "Details" and a primary **Follow live**
+    button when it's live today, or "Today" when it isn't.
+  - **On phones:** the venue moves under the name, and the logo and status
+    columns hide.
+- **Sections:** `.v2-section` with a `.v2-section-head` (an uppercase `h2`
+  and an optional link at its right end). A page's own title under the header
+  is `.v2-page-title` with a muted `.v2-page-lead`.
+- **Plain lists:** `ul.v2-list` of whole-row links (`li.v2-row`, the name as
+  `.v2-list-name.v2-row-link`, a logo `img`, badges, a muted
+  `.v2-list-detail` at the end). `.v2-list-columns` flows it into columns,
+  without row borders (Explore's Organisations). An Organisation's Championships use it too.
+- **Pages of a long list:** `.v2-pager` under it, with "← Newer" and
+  "Older →" as small buttons (Explore's past competitions, 20 a page).
+- **A competition's public pages** extend `landing.competition.layout` and
+  fill `@section('comp-content')`. It gives them the heading (name, the date as
+  "Sunday 25th October" in semibold Archivo (`.v2-comp-date`), venue, the Championship link and type badge,
+  the Organisation's logo linking to its page), `.v2-pagetabs` for Info /
+  Heats & Draws / Results (the SERC breakdown counts as Results) with
+  **Follow live** at their end when `isLiveToday()`, and the Organisers'
+  `status_message` as an info `.v2-alert`. Set the tab title to "Page | {name}".
+- **Labelled facts** (a competition's When and Where): `dl.v2-details`, muted
+  `dt` labels over their `dd` values.
+- **Heats & Draws** (`.v2-hd-*`): `.v2-tabs` between Heats and Draws (full width on phones), event
+  chips when heats are per event, a card per heat or Tank (lanes or Draw
+  places numbered down it), and a search that hides heats and Tanks without
+  the Team and lights its rows teal (`is-match`), across every event. The
+  search shows only once heats or the Draw are released and set.
+- **Podium rows:** `.is-place-1`, `-2` or `-3` on a `.v2-table` row runs a
+  gold, silver or bronze strip down its first cell and tints the row in that
+  medal. Every public results table and the SERC breakdown mark their top
+  three; joint places share the medal.
+- **Data tables** (results, the SERC breakdown): `.v2-table` inside
+  `.v2-table-scroll`, which scrolls sideways on its own; muted headings on a
+  sunk row, rules between rows, the first column (`.v2-table-name`) bold. The
+  first column is sticky with a rule down its edge, so the name stays in view
+  as the rest scroll under it, narrower on phones with long names wrapping.
+- **Results** (`.v2-results-*`): `LandingController::showResults` sends only
+  what's published, in three groups: Overall (Master sheets), Results sheets
+  and Events. Each group with anything in it is a `.v2-tabs` tab, the bar
+  runs the full width and hides with one, and the page opens on the first. Sheets are `.v2-chip`s
+  (hidden with one); Events are a League picker over Event chips (SERC badged). The picker is
+  `.v2-chip`s for up to three choices (All Leagues counts) and a `select.v2-input` for more, and always the select on phones,
+  starting on All Leagues unless the competition chooses a League first, when
+  it asks for one. The view lives in the url (`tab`, `sheet`, `event`,
+  `league`, `display`). One warning `.v2-alert` above the tabs says results are
+  provisional, and one dashed box replaces the tabs when nothing is published.
+  Violations open in a `.v2-modal`. A SERC's table links to its breakdown in
+  the same tab, which links back with its League.
+  Picking keeps the last table up, dimmed (`.v2-table-scroll.is-loading`),
+  until the next one arrives and fades in, and the picks and table sit in an
+  `x-smooth-height`, so the page doesn't collapse and jump between tables.
+- **Smooth height** (`x-smooth-height`, `.v2-smooth-height`): an Alpine
+  directive the v2 layout registers
+  (`landing/v2/partials/smooth-height-script.blade.php`), the Blade counterpart
+  of the Management app's `SmoothHeight`. Put it on a wrapper around one child
+  and the wrapper's height eases to fit that child as it changes (chips shown
+  or hidden, a longer table swapped in), clipping only while it moves. Off
+  with reduced motion. Results and Heats & Draws use it. Give a panel that
+  swaps in `x-transition:enter="v2-fade-in"
+  x-transition:enter-start="v2-fade-from"` so it fades in as the height
+  eases (enter only, so the old panel goes at once and they never stack).
+- **SERC breakdown** (`.v2-breakdown`): the marking points sideways in a
+  sticky header, the Team column sticky, each Objective's columns ruled off, the
+  top three as podium rows and the pointer's column lit. Sorting is
+  `public/js/sorttable.js`; Analysis (`public/js/analysis.js`) colours each
+  mark, read in ink in both themes. Above it, a search for a Team's name and a
+  Show dropdown (All Teams, one of the competition's Leagues, or a Team letter,
+  each listed only when the table has more than one), each full width on phones,
+  narrow the rows together; the table sits in `x-smooth-height`, so its
+  height eases as rows are hidden, and fades in when Show changes. The
+  Overall feedback `<details>` eases open and
+  shut through `::details-content` with `interpolate-size`, instant where
+  that isn't supported.
+- **Whole-row links:** `.v2-row` on the row, and `.v2-row-link` on its own
+  link, whose `::after` covers the row. A `tr.v2-row` also has a `transform` and a `clip-path`, so the
+  `::after` can't escape the row in browsers that ignore `position: relative` on a `<tr>`, or catch taps
+  outside it on iPhones; they make each row a stacking context that clips what's in it, so portal any menu opened from a row. Anything else clickable in the row
+  (like **Follow live**) gets `.v2-over-row` to sit above it. Add `sr-only` text so the link says what it's for ("Results for Cardiff
+  Classic"). Hover and `:focus-within` tint every cell in the row teal, a `<th scope="row">` included, and underline the link.
+- **Live:** a pulsing teal dot plus the words "Live now". Never colour alone.
+- **Follow live** links to `live.` (`route('live', ['comp' => $comp->id])`, same tab) and shows only when
+  `$comp->isLiveToday()`: it's on today and the live pages will open it. Every page uses that one check.
+- **Empty states** say what will appear and when ("Results appear here once
+  an organiser publishes them"), in the dashed box (`EmptyState` in Svelte,
+  `.v2-empty` in Blade) or a muted line.
+- **Not found:** `errors/404.blade.php` is the 404 on every host, on the Blade shell, so that shell's links to the
+  public site use `RouteHelpers::mainRoute()`. Its first button goes back into the visitor's part of the site (app.,
+  judge. or Explore). `App\Exceptions\Handler` makes Inertia GET visits load it as a full page.
+- **Dates** read as people say them: "Tomorrow", "In 5 days", `Sunday 25
+  October`. Results use `j M`.
+
+## Behaviour
+
+- **Interactivity is Alpine** on Blade pages, and Svelte in the Management
+  app. The Blade layout loads Alpine with the focus plugin (`x-trap`), but not
+  mask, collapse or persist. Add a plugin's `/vendor` script to the layout,
+  before Alpine's, if a page needs it.
+- **Pointer cursor:** Tailwind's base styles give buttons the default cursor,
+  so every clickable control sets `cursor: pointer` (`.v2-btn` already does).
+- **Focus:** `:focus-visible` shows a 2px teal outline (from the layout).
+  Fields use a teal border and ring instead.
+- **Motion:** keep animations to 150–500ms, use `transform`, `opacity` or
+  `clip-path`, and turn them off under `prefers-reduced-motion`. Alpine's
+  `x-for` removes items before a leave transition can run, so mark an item as
+  leaving, then remove it (see the toasts).
+- **Moving between Blade pages:** they stay full page loads, but the Blade
+  layout turns on cross-document view transitions (`@view-transition`), so
+  they get the Management app's page fade with the header and footer held
+  still, and a speculation rule prefetches a same-origin page when its link
+  is hovered or pressed. Mark a link that mustn't be fetched early, like a
+  download, `data-no-prefetch` (`[download]` and `target="_blank"` are
+  skipped already). Both are in the layout, not `v2.css`, which the
+  Management app loads too.
+
+## Writing
+
+Sentence case, plain verbs, and buttons say what happens ("Follow live",
+"Create an account", "Keep event"). Errors say what to do next ("Enter a full
+email address, like name@club.org"). Use the glossary's terms (Event, Entity,
+Official, Referee, Announcement) and avoid the words it lists as ones to avoid.
+
+## Redesigning a page
+
+1. Extend `landing.v2.layout`, not `layouts.core` or `layouts.guest`.
+2. Rebuild the markup with the components above. Don't carry `se-` classes or
+   Tailwind colour utilities (`text-gray-600`, `bg-white`) across: they don't
+   follow dark mode. (In the Management app, use the `v2-` colour utilities
+   instead; see Tailwind.)
+3. Lead with what's happening now, and make list rows whole-row links.
+4. Write any dark-only rule twice (OS block and `data-theme` block).
+5. Check the page at 1440px and 390px, in light and dark, with live and empty
+   data. The `demo-landing` competitions in a local database cover the live case.
+6. Keep `noindex` until the page replaces its old version. Then delete the old
+   view and its route.
+7. If you add or change a shared component, token or pattern, put it in
+   `v2.css`, add it to the kit, and update this guide in the same change.

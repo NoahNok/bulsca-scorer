@@ -30,8 +30,8 @@ class AccountInviteNewAccountRequest extends FormRequest
     public function messages()
     {
         return [
-            'password.confirm' => 'Your passwords do not match',
-            'password.min' => 'You password must be atleast 6 characters long'
+            'password.confirmed' => 'Your passwords do not match.',
+            'password.min' => 'Your password must be at least 6 characters long.'
         ];
     }
 }

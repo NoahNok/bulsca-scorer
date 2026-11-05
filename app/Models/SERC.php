@@ -191,9 +191,12 @@ class SERC extends Event
         return $this->hasManyThrough(SERCResult::class, SERCMarkingPoint::class, 'serc', 'marking_point', 'id', 'id');
     }
 
+    /**
+     * The Draws this SERC holds. Only the competition's first SERC holds any (Competition::drawSerc);
+     * read a SERC's running order with getDraw()
+     */
     public function draw()
     {
-        // if using seperate draws per SERC, this is where that would be handled
         return $this->hasMany(Draw::class, 'serc');
     }
 
@@ -202,19 +205,19 @@ class SERC extends Event
         return $this->hasMany(DrawTank::class, 'serc');
     }
 
+    /**
+     * The running order every SERC shares: the competition's one set of Draws
+     */
     public function getDraw()
     {
-        // if using seperate draws per SERC, this is where that would be handled
-
-        // OTHERWISE USE DRAW ROM SERC WITH LOWEST ID
-        return SERC::where('competition', $this->competition)->orderBy('id')->first()->draw()->with('entity')->orderBy('draw');
+        return $this->getCompetition->drawSerc()->draw()->with('entity')->orderBy('draw');
     }
 
     public function getPositionInDraw(Entity $entity)
     {
         $draw = $this->getDraw()->whereMorphedTo('entity', $entity)->first();
 
-        $use_tanks = $this->getCompetition->getScoringSettings->use_tanks;
+        $use_tanks = $this->getCompetition->usesTanks();
 
         $data = [];
 
@@ -397,32 +400,6 @@ class SERC extends Event
         return $c[0]->count > 0;
     }
 
-    public function getAverageTimeBetweenTeams()
-    {
-
-        //$res = DB::select('SELECT TIMESTAMPDIFF(SECOND, MIN(team_min), MAX(team_min))/(GREATEST((COUNT(team_min) - 1),1)) AS avg_time FROM (SELECT sr.team, MIN(sr.created_at) as team_min FROM serc_results sr INNER JOIN serc_marking_points smp ON smp.id=sr.marking_point WHERE smp.serc=? GROUP BY sr.team) AS t;', [$this->id]);
-
-        // This new query takes into account larger outliers in seconds above the below threshold
-        $outlierThreshold = 541; // Query use <, so this means any team time diff > 12m is an outlier
-        $res = DB::select('WITH base AS (SELECT entity_id, sr.created_at, serc, ROW_NUMBER() OVER (PARTITION BY smp.id) AS rn FROM serc_results sr INNER JOIN serc_marking_points smp ON sr.marking_point=smp.id WHERE serc=?) (SELECT SUM(IF(btw<?,btw,0))/GREATEST(COUNT(IF(btw<?,1,NULL)),1) AS avg_time FROM (SELECT TIMESTAMPDIFF(SECOND, b1.created_at, b2.created_at) AS btw FROM base b1 INNER JOIN base b2 ON b1.rn=b2.rn-1) AS t);', [$this->id, $outlierThreshold, $outlierThreshold]);
-
-
-        $avgTime = $res[0]->avg_time;
-
-
-        if ($avgTime <= 0) {
-            // Try again with a bigger outlier thresh
-            $res = DB::select('WITH base AS (SELECT entity_id, sr.created_at, serc, ROW_NUMBER() OVER (PARTITION BY smp.id) AS rn FROM serc_results sr INNER JOIN serc_marking_points smp ON sr.marking_point=smp.id WHERE serc=?) (SELECT SUM(IF(btw<?,btw,0))/GREATEST(COUNT(IF(btw<?,1,NULL)),1) AS avg_time FROM (SELECT TIMESTAMPDIFF(SECOND, b1.created_at, b2.created_at) AS btw FROM base b1 INNER JOIN base b2 ON b1.rn=b2.rn-1) AS t);', [$this->id, $outlierThreshold * 2, $outlierThreshold * 2]);
-            $avgTime = $res[0]->avg_time;
-
-            if ($avgTime < 0) {
-                $avgTime = 360;
-            }
-        }
-
-        return $avgTime == 0 ? 360 : $avgTime;
-    }
-
     public function getDataAsJson()
     {
 
@@ -502,6 +479,8 @@ class SERC extends Event
             $results[$placeResult->entity->id]['raw'] = $placeResult->resolvedResult;
             $results[$placeResult->entity->id]['tid'] = $placeResult->entity->id;
             $results[$placeResult->entity->id]['disqualification'] = "{$placeResult->disqualifications->first()}";
+            $results[$placeResult->entity->id]['leagues'] = $placeResult->entity->leagues->pluck('id')->all();
+            $results[$placeResult->entity->id]['letter'] = $placeResult->entity instanceof CompetitionTeam ? $placeResult->entity->team : null;
         }
 
 

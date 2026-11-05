@@ -166,7 +166,7 @@
                 </a>
 
                 <div class="hidden lg:flex space-x-10 items-center">
-                    <a href="{{ route('explore') }}"
+                    <a href="{{ \App\Helpers\RouteHelpers::mainRoute('explore') }}"
                         class="text-sm/6 font-semibold text-gray-900 hover:text-se transition-colors">Explore</a>
                     <a href="{{ route('judge.index') }}"
                         class="text-sm/6 font-semibold text-se hover:text-se-accent transition-colors">Officials</a>
@@ -228,7 +228,7 @@
                             <div
                                 class="absolute top-6 -left-[25%] w-[150%]  bg-white border-2 rounded-md hidden group-hover:block group-focus:block group-focus-within:block">
                                 @foreach ($orgs as $orgg)
-                                    <a href="{{ route('orgs.show', $orgg->name) }}"
+                                    <a href="{{ route('manage.organisations.show', $orgg->name) }}"
                                         class="hover:bg-gray-200 px-2 py-1 text-sm/6 flex items-center justify-between">
                                         {{ $orgg->name }}
 
@@ -240,10 +240,10 @@
                 @endif
 
 
-                <a href="{{ route('home') }}"
-                    class="text-sm/6 font-semibold text-gray-900 hover:text-se transition-colors">Dashboard</a>
+                <a href="{{ route('manage.home') }}"
+                    class="text-sm/6 font-semibold text-gray-900 hover:text-se transition-colors">Management</a>
                 @if (Auth::user()->isAdmin())
-                    <a href="{{ route('admin.index') }}"
+                    <a href="{{ route('manage.admin.competitions.index') }}"
                         class="text-sm/6 font-semibold text-gray-900 hover:text-se transition-colors">Admin</a>
                 @endif
                 <a href="{{ route('account') }}"
@@ -325,7 +325,7 @@
                                     <div
                                         class="absolute top-9 w-[104%] -left-[2%] bg-white border-2 rounded-md hidden group-hover:block group-focus:block group-focus-within:block group-active:block">
                                         @foreach ($orgs as $orgg)
-                                            <a href="{{ route('orgs.show', $orgg->name) }}"
+                                            <a href="{{ route('manage.organisations.show', $orgg->name) }}"
                                                 class="hover:bg-gray-200 px-3 py-2 text-sm/6 flex items-center justify-between">
                                                 {{ $orgg->name }}
 
@@ -337,7 +337,7 @@
                         @endif
                     @endauth
 
-                    <a href="{{ route('explore') }}"
+                    <a href="{{ \App\Helpers\RouteHelpers::mainRoute('explore') }}"
                         class="-mx-3 block rounded-lg px-3 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Explore</a>
 
                     <a href="{{ route('judge.index') }}"
@@ -349,11 +349,11 @@
                     @auth
 
 
-                        <a href="{{ route('home') }}"
-                            class="-mx-3 block rounded-lg px-3  text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Dashboard</a>
+                        <a href="{{ route('manage.home') }}"
+                            class="-mx-3 block rounded-lg px-3  text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Management</a>
 
                         @if (Auth::user()->isAdmin())
-                            <a href="{{ route('admin.index') }}"
+                            <a href="{{ route('manage.admin.competitions.index') }}"
                                 class="-mx-3 block rounded-lg px-3 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Admin</a>
                         @endif
 

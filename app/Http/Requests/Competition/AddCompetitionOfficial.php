@@ -9,9 +9,6 @@ use Illuminate\Validation\Rule;
 
 class AddCompetitionOfficial extends FormRequest
 {
-    // own bag so the officials page knows to reopen the add modal
-    protected $errorBag = 'addOfficial';
-
     /**
      * Determine if the user is authorized to make this request.
      */

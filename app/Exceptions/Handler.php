@@ -2,9 +2,13 @@
 
 namespace App\Exceptions;
 
+use App\Helpers\CompetitionHeader;
+use App\Helpers\OrganisationHeader;
+use App\Models\Competition;
 use App\Models\Organisation\Organisation;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Inertia\Inertia;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -62,8 +66,10 @@ class Handler extends ExceptionHandler
                 ], 403);
             }
 
-            if ($request->is('comps/*')) {
-                return response()->view('competition.403', ['comp' => $request->route('comp')], 403);
+            if ($request->is('comps/*') && $request->route('comp') instanceof Competition) {
+                return Inertia::render('Manage/Competition/Forbidden', ['competition' => CompetitionHeader::for($request->route('comp'))])
+                    ->toResponse($request)
+                    ->setStatusCode(403);
             }
 
             if ($request->is('organisation/*')) {
@@ -74,10 +80,19 @@ class Handler extends ExceptionHandler
                     $org = Organisation::where('name', $org)->firstOrFail();
                 }
 
-                return response()->view('organisation.403', ['org' => $org], 403);
+                return Inertia::render('Manage/Organisation/Forbidden', ['organisation' => OrganisationHeader::for($org)])
+                    ->toResponse($request)
+                    ->setStatusCode(403);
             }
         }
 
-        return parent::render($request, $exception);
+        $response = parent::render($request, $exception);
+
+        // An Inertia visit would show the Blade 404 in a modal over the page it came from, so load it as a full page
+        if ($response->getStatusCode() === 404 && $request->isMethod('GET') && $request->header('X-Inertia')) {
+            return Inertia::location($request->fullUrl());
+        }
+
+        return $response;
     }
 }

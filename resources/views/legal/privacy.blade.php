@@ -9,7 +9,7 @@
     <ul>
         <li><strong>Accounts, sign-in records and logs:</strong> we're the controller.</li>
         <li><strong>Competitor and team data</strong> uploaded by an organiser: the organiser is the controller, and we
-            process it on their behalf under our <a class="link" href="{{ route('legal.terms') }}">Terms of
+            process it on their behalf under our <a class="v2-link-inline" href="{{ route('legal.terms') }}">Terms of
                 Service</a>. Questions about why you were entered, or about your results, are best sent to the
             organiser first. You can always contact us too.</li>
     </ul>
@@ -17,7 +17,8 @@
     <h3>What we hold and why</h3>
     <ul>
         <li><strong>Your account:</strong> name, email address, a hashed password, an optional profile photo, and which
-            organisations and competitions you can access, so we can provide the service (contract). Your profile photo
+            organisations and competitions you can access and when you last opened each one you manage, so we can
+            provide the service (contract). Your profile photo
             is shown to other officials and anyone with its link can see it.</li>
         <li><strong>Accounts made for you:</strong> an organiser can create an official's account with just a name and
             email address. We email you when this happens.</li>
@@ -73,6 +74,7 @@
     <ul>
         <li>Accounts: until you ask us to delete them.</li>
         <li>Device sign-in records: 12 months after they were last used, or a month after you sign the device out.</li>
+        <li>When you last opened a competition: 12 months.</li>
         <li>Server logs: 14 days.</li>
         <li>Backups: the last 10 copies of the database, replaced as new ones are made.</li>
         <li>WhatIf competitions: 14 days after you last change them. WhatIf accounts with no competitions left are then
@@ -84,15 +86,15 @@
     <h3>Your rights</h3>
     <p>Under UK data protection law you can ask to see the data we hold about you, correct it, delete it, restrict or
         object to how we use it, or get a copy to take elsewhere. To delete your account, or for any of these, email
-        <a class="link" href="mailto:{{ config('legal.contact_email') }}">{{ config('legal.contact_email') }}</a>. We'll
+        <a class="v2-link-inline" href="mailto:{{ config('legal.contact_email') }}">{{ config('legal.contact_email') }}</a>. We'll
         reply within a month.
     </p>
     <p>If you're unhappy with how we've handled your data, you can complain to the Information Commissioner's Office
-        at <a class="link" href="https://ico.org.uk/make-a-complaint/" target="_blank"
+        at <a class="v2-link-inline" href="https://ico.org.uk/make-a-complaint/" target="_blank"
             rel="noopener">ico.org.uk</a>. We'd appreciate the chance to put it right first.</p>
 
     <h3>Cookies</h3>
-    <p>We only use cookies and browser storage that the site needs to work. See the <a class="link"
+    <p>We only use cookies and browser storage that the site needs to work. See the <a class="v2-link-inline"
             href="{{ route('legal.cookies') }}">Cookie Policy</a>.</p>
 
     <h3>Changes</h3>

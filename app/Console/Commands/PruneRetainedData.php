@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use ALajusticia\Logins\Models\Login;
 use App\Models\Competition;
+use App\Models\CompetitionVisit;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Config;
@@ -26,7 +27,7 @@ class PruneRetainedData extends Command
      *
      * @var string
      */
-    protected $description = 'Deletes old login records, log files, and unused WhatIf competitions and accounts.';
+    protected $description = 'Deletes old login records, competition visits, log files, and unused WhatIf competitions and accounts.';
 
     /**
      * Execute the console command.
@@ -39,6 +40,9 @@ class PruneRetainedData extends Command
                 ->where('last_activity_at', '<', now()->subYear())
                 ->orWhere('deleted_at', '<', now()->subMonth()))
             ->forceDelete();
+
+        // "Recent" on the Management home only needs the last year
+        CompetitionVisit::where('visited_at', '<', now()->subYear())->delete();
 
         // log files not written to for 14 days; the daily channel prunes its own, this also catches the old single laravel.log
         foreach (glob(storage_path('logs/*.log')) as $log) {

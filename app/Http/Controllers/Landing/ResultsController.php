@@ -188,7 +188,7 @@ class ResultsController extends Controller
     {
         abort_unless($comp->hasReleased($serc), 404);
 
-        $entity = $serc->getScorableEntity()::where('competition', $comp->id)->findOrFail($entity_id);
+        $entity = $serc->findScorableEntity($entity_id);
 
         $notes = [];
 

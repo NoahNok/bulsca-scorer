@@ -10,7 +10,6 @@ use App\Http\Requests\DigitalJudge\LoginRequest;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\DigitalJudge\JudgeDQSubmission;
-use App\Models\DigitalJudge\JudgeLog;
 use App\Models\SERC;
 use App\Models\SERCJudge;
 use Carbon\Carbon;
@@ -105,18 +104,14 @@ class DigitalJudgeController extends Controller
         $wasState = $comp->digitalJudgeEnabled;
         $comp->digitalJudgeEnabled = !$wasState;
         $comp->save();
-        if ($wasState) return redirect()->back(); // Stop here as we have turned DJ off
+        if ($wasState) return redirect()->back()->with('success', 'Digital Judge off'); // Stop here as we have turned DJ off
 
         $comp->digitalJudgePin = $comp->digitalJudgePin ?: mt_rand(111111, 999999);
         $comp->digitalJudgeHeadPin = $comp->digitalJudgeHeadPin ?: mt_rand(111111, 999999);
 
         $comp->save();
 
-        if ($wasState == false) {
-            return redirect()->back()->with('success', 'Digital Judge Enabled!')->with('modal', 'djSettings');
-        }
-
-        return redirect()->back()->with('success', 'Digital Judge Disabled!');
+        return redirect()->back()->with('success', 'Digital Judge on');
     }
 
     function sercToggle(Competition $comp, SERC $serc)
@@ -166,45 +161,6 @@ class DigitalJudgeController extends Controller
         return redirect()->route('dj.home')->with('success', 'Results Confirmed');
     }
 
-    function judgeLog(Request $request, Competition $comp)
-    {
-        $log = JudgeLog::WHERE('competition', $comp->id);
-
-        if ($request->filled('filterEvent')) {
-            if (str_starts_with($request->input('filterEvent'), 'se')) {
-                $log = $log->where('judge', substr($request->input('filterEvent'), 2));
-            } else {
-                $log = $log->where('speed_event', substr($request->input('filterEvent'), 2));
-            }
-        }
-
-        if ($request->filled('filterJudge')) {
-            $log = $log->where('judgeName', $request->input('filterJudge'));
-        }
-
-        if ($request->filled('filterTeam')) {
-            $log = $log->where('team', $request->input('filterTeam'));
-        }
-
-
-
-        $log = $log->orderBy('created_at', 'DESC')->paginate(15);
-
-        if ($request->filled('filterEvent')) {
-            $log->appends(['filterEvent' => $request->input('filterEvent')]);
-        }
-        if ($request->filled('filterJudge')) {
-            $log->appends(['filterJudge' => $request->input('filterJudge')]);
-        }
-        if ($request->filled('filterTeam')) {
-            $log->appends(['filterTeam' => $request->input('filterTeam')]);
-        }
-
-
-
-        return view('digitaljudge.judge-log', ['comp' => $comp, 'log' => $log]);
-    }
-
     public function help()
     {
         return view('digitaljudge.help', ['comp' => DigitalJudge::getClientCompetition()]);
@@ -229,7 +185,7 @@ class DigitalJudgeController extends Controller
 
         $comp->save();
 
-        return;
+        return back()->with('success', 'Digital Judge settings saved');
     }
 
     public function sercsReleasePost(Competition $comp, Request $request)

@@ -61,7 +61,7 @@ class SaveSERCSetupRequest extends FormRequest
                 $leagueIds = collect($this->input('judges', []))->pluck('restricted_leagues')->flatten();
 
                 if ($leagueIds->duplicates()->isNotEmpty()) {
-                    $validator->errors()->add('judges', 'A league can only be assigned to one objective.');
+                    $validator->errors()->add('judges', 'A League can only be on one Objective.');
                 }
             },
         ];
@@ -73,9 +73,9 @@ class SaveSERCSetupRequest extends FormRequest
             'name' => 'SERC name',
             'type' => 'SERC type',
             'target_entity' => 'target entity',
-            'judges' => 'judges',
-            'judges.*.name' => 'judge name',
-            'judges.*.hint' => 'judge hint',
+            'judges' => 'Objectives',
+            'judges.*.name' => 'Objective name',
+            'judges.*.hint' => 'marking hint',
             'judges.*.marking_points' => 'marking points',
             'judges.*.marking_points.*.description' => 'marking point description',
             'judges.*.marking_points.*.weight' => 'marking point weight',
@@ -91,11 +91,12 @@ class SaveSERCSetupRequest extends FormRequest
             'type.in' => 'The SERC type must be either DRY or WET.',
             'target_entity.required' => 'The target entity is required.',
             'target_entity.in' => 'The target entity must be either club, team, or competitor.',
-            'judges.required' => 'At least one judge is required.',
-            'judges.*.name.required' => 'Each judge must have a name.',
-            'judges.*.marking_points.required' => 'Each judge must have at least one marking point.',
-            'judges.*.marking_points.*.description.required' => 'Each marking point must have a description.',
-            'judges.*.marking_points.*.weight.required' => 'Each marking point must have a weight.',
+            'judges.required' => 'Add at least one Objective.',
+            'judges.*.name.required' => 'Give it a name.',
+            'judges.*.marking_points.required' => 'Each Objective needs at least one marking point.',
+            'judges.*.marking_points.*.description.required' => 'Describe it.',
+            'judges.*.marking_points.*.weight.required' => 'Give it a weight.',
+            'judges.*.marking_points.*.template_id.required' => 'Pick a template.',
         ];
     }
 }

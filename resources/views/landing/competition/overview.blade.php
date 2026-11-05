@@ -1,77 +1,53 @@
-@extends('layouts.landing-comp')
+{{-- A competition's Info tab: when and where, and its Events --}}
+@extends('landing.competition.layout')
 
-@section('title', 'Overview')
+@section('title', $comp->name)
 
-@section('content')
-
-    <h2>Register</h2>
-    <div class="grid-3 mt-2">
-        <a href="" class="se-btn se-btn-disabled">Competitors</a>
-        <a href="" class="se-btn se-btn-disabled">Officials</a>
-        <a href="" class="se-btn se-btn-disabled">Helpers</a>
-    </div>
-    <br>
-    <hr class="spacer mt-2!">
-    <br>
-
-    <div class="grid-2">
-        <div>
-            <h3 class="mb-0">Events</h3>
-            <br>
-
-            <div class="grid-2">
-                @foreach ($comp->getSpeedEvents as $event)
-                    <button class="se-btn se-btn-disabled">
-                        <p class="text-lg font-semibold">{{ $event->getName() }}</p>
-
-
-                    </button>
-                @endforeach
-                @foreach ($comp->getSERCs as $event)
-                    <button class="se-btn flex items-center justify-center space-x-2 se-btn-disabled">
-                        <span class="badge badge-sm">SERC</span>
-                        <p class="text-lg font-semibold">{{ $event->name }}</p>
-
-
-
-
-                    </button>
-                @endforeach
-
+@section('comp-content')
+    <div class="grid gap-10 md:grid-cols-[2fr_1fr]">
+        <section aria-labelledby="info-events">
+            <div class="v2-section-head">
+                <h2 id="info-events">Events</h2>
             </div>
+            @php
+                $events = $comp->getSpeedEvents->map(fn($e) => ['name' => $e->getName(), 'serc' => false])
+                    ->concat($comp->getSERCs->map(fn($e) => ['name' => $e->getName(), 'serc' => true]));
+            @endphp
+            @if ($events->isEmpty())
+                <p class="v2-empty">The Events appear here once the Organisers add them.</p>
+            @else
+                <ul class="v2-list">
+                    @foreach ($events as $event)
+                        <li>
+                            <span class="v2-list-name">{{ $event['name'] }}</span>
+                            @if ($event['serc'])
+                                <span class="v2-badge">SERC</span>
+                            @endif
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
+        </section>
 
-        </div>
-
-        <div>
-            <h2>Details</h2>
-            <p>{{ $comp->when->format('M jS Y') }} at {{ $comp->where }}</p>
-
-            <a class="link" target="_blank" rel="noopener"
-                href="https://www.google.com/maps/search/?{{ http_build_query(['api' => 1, 'query' => $comp->where]) }}">Open
-                in Google Maps &nearr;</a>
-        </div>
-
-
+        <section aria-labelledby="info-details">
+            <div class="v2-section-head">
+                <h2 id="info-details">Details</h2>
+            </div>
+            <dl class="v2-details">
+                <dt>When</dt>
+                <dd>{{ $comp->when->format('l j F Y') }}</dd>
+                <dt>Where</dt>
+                <dd>{{ $comp->where }}
+                    <a class="v2-link mt-1 block" target="_blank" rel="noopener"
+                        href="https://www.google.com/maps/search/?{{ http_build_query(['api' => 1, 'query' => $comp->where]) }}">Open
+                        in Google Maps &nearr;</a>
+                </dd>
+                @if ($comp->getOrganisation)
+                    <dt>Organisation</dt>
+                    <dd><a href="{{ route('landing.organisation', $comp->getOrganisation->name) }}"
+                            class="v2-link">{{ $comp->getOrganisation->name }}</a></dd>
+                @endif
+            </dl>
+        </section>
     </div>
-
-
-
-
-
-
-    <br>
-    <hr class="spacer mt-2!">
-    <br>
-
-
-
-
-
-
-
-
-
-
-
-
 @endsection

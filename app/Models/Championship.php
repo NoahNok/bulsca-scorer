@@ -37,6 +37,14 @@ class Championship extends Model
         return $this->hasMany(Competition::class)->orderBy('when', 'asc');
     }
 
+    /**
+     * Whether today falls between its start and end dates.
+     */
+    public function isCurrent(): bool
+    {
+        return today()->between($this->start_date->copy()->startOfDay(), $this->end_date->copy()->endOfDay());
+    }
+
     public function slug()
     {
         return str_replace(' ', '-', $this->name);

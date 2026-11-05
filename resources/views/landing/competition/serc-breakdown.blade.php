@@ -1,461 +1,305 @@
-@extends('layouts.landing-comp')
+{{--
+    A SERC's breakdown, under the competition's Results tab: every Objective's marking points for every Team, sortable,
+    with the Officials' overall feedback, each Team's notes and Violations in modals, a filter, an analysis view that
+    colours each mark against the rest, and full screen.
+--}}
+@extends('landing.competition.layout')
 
-@section('title')
-    Breakdown | {{ $event->getName() }}
+@section('title', $event->getName() . ' breakdown | ' . $comp->name)
+
+@section('v2-meta')
+    <script src="{{ asset('js/sorttable.js') }}?{{ config('version.hash') }}"></script>
 @endsection
 
-@section('content')
+@php
+    $back = route('landing.competition.results', [
+        $comp->getSlug(),
+        'tab' => 'events',
+        'event' => 'serc-' . $event->id,
+        ...(request('league') ? ['league' => request('league')] : []),
+    ]);
 
-    <div class="flex items-center space-x-3 ">
-        <a href="{{ route('landing.competition.results', [$comp->getSlug()]) }}?event=serc-{{ $event->id }}"
-            class="hover:text-se transition-color">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                class="size-6 hover:text-se transition-color cursor-pointer">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-            </svg>
-        </a>
+    // The Show filter's options: the competition's Leagues and the Team letters that are on the table
+    $rows = collect($fsd['results']);
+    $leagueIds = $rows->pluck('leagues')->flatten()->unique();
+    $showLeagues = $comp->getLeagues()->orderBy('id')->get()->filter(fn($league) => $leagueIds->contains($league->id));
+    // Some competitions keep a whole name in a Team's letter field, so only short ones count as letters
+    $showLetters = $rows->pluck('letter')
+        ->filter(fn($letter) => filled($letter) && mb_strlen($letter) <= 2)
+        ->unique()
+        ->sort(SORT_NATURAL)
+        ->values();
+@endphp
 
+@section('comp-content')
+    <div x-data="{
+        dqOpen: false,
+        notesOpen: false,
+        dqUrl: '',
+        dqBaseUrl: '{{ route('public.results.dq-pen', [$comp->id, 'T', 'C']) }}',
+        notesBaseUrl: '{{ route('landing.competition.results.notes.serc', [$comp->id, $event->id, 'T']) }}',
+        notes: null,
 
-        <h2>{{ $event->getName() }} Breakdown</h2>
-
-
-
-    </div>
-
-    <br>
-
-    <div class="overflow-x-hidden" x-data="{
-        showModal: false,
-        showNotesModal: false,
-    
-        modalUrl: '',
-        modalBaseUrl: '{{ route('public.results.dq-pen', [$comp->id, 'T', 'C']) }}',
-        notesModalBaseUrl: '{{ route('landing.competition.results.notes.serc', [$comp->id, $event->id, 'T']) }}',
-    
-        notesData: null,
-    
         showDqPen(code, teamId) {
-            this.showModal = true;
-    
-            this.modalUrl = this.modalBaseUrl.replace('T', teamId).replace('C', code);
-    
+            if (!code) return;
+            this.dqUrl = this.dqBaseUrl.replace('T', teamId).replace('C', code);
+            this.dqOpen = true;
         },
-        hideDqPen() {
-            this.showModal = false;
-    
-        },
-        loadTeamNotes(teamId) {
-            this.showNotesModal = true;
-            this.notesData = null;
-    
-            fetch(this.notesModalBaseUrl.replace('T', teamId))
-                .then(response => response.json())
-                .then(data => {
-                    this.notesData = data;
-                })
-    
+        async loadNotes(teamId) {
+            this.notes = null;
+            this.notesOpen = true;
+            const response = await fetch(this.notesBaseUrl.replace('T', teamId));
+            this.notes = response.ok ? await response.json() : { name: '', notes: [] };
         },
     }">
+        <a href="{{ $back }}" class="v2-link-muted">&larr; Back to results</a>
+        <h2 class="v2-results-head-title">{{ $event->getName() }} breakdown</h2>
 
-        <div class=" ">
+        @if ($comp->areResultsProvisional())
+            <div class="v2-alert is-warning mt-4" role="note">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" />
+                </svg>
+                <div><strong>Provisional</strong>These results are provisional and may still change.</div>
+            </div>
+        @endif
 
-
-            <div class="">
-                @if ($comp->areResultsProvisional())
-                    <div class="p-2 text-center text-lg">
-                        <p>These results are provisional! <strong>They are subject to change</strong> and should not be
-                            considered accurate or final!</p>
-                    </div>
-                @endif
-
-
-
-                @if (count($overallJudgeNotes) > 0)
-                    <div x-data="{
-                        open: true,
-                    }">
-                        <div class="flex justify-between items-center mx-3 lg:mx-0 cursor-pointer" @click="open = !open">
-
-                            <h3>Overall feedback</h3>
-
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="size-6 transition-transform"
-                                :class="{ 'transform rotate-180': open }">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                            </svg>
-
-
+        @if (count($overallJudgeNotes) > 0)
+            <details class="v2-breakdown-feedback" open>
+                <summary>Overall feedback</summary>
+                <div>
+                    @foreach ($overallJudgeNotes as $note)
+                        <div>
+                            <strong>{{ $note->judge }}</strong>
+                            <p>{{ $note->note }}</p>
                         </div>
+                    @endforeach
+                </div>
+            </details>
+        @endif
 
-                        <div class="mx-3 grid sm:grid-cols-2 xl:grid-cols-3 3xl:grid-cols-4  gap-2  " x-cloak x-show="open"
-                            x-collapse>
-                            @foreach ($overallJudgeNotes as $note)
-                                <div class="flex flex-col ">
-                                    <strong>{{ $note->judge }}</strong>
-                                    <p class="ml-6">{{ $note->note }}</p>
-                                </div>
+        <div class="v2-breakdown-tools">
+            <div class="v2-field">
+                <label for="team-filter" class="sr-only">Filter Teams</label>
+                <input id="team-filter" type="search" class="v2-input" placeholder="Filter Teams">
+            </div>
+            <div class="v2-field v2-breakdown-show">
+                <label for="team-show" class="sr-only">Show</label>
+                <select id="team-show" class="v2-input">
+                    <option value="">All Teams</option>
+                    @if ($showLeagues->count() > 1)
+                        <optgroup label="League">
+                            @foreach ($showLeagues as $league)
+                                <option value="league:{{ $league->id }}">{{ $league->name }}</option>
                             @endforeach
-                        </div>
-                    </div>
-
-                    <br>
-                    <hr>
-                    <br>
-                @endif
-
-
-
-
-
-
-
-                <div id="table-wrapper" class="se-table   ">
-                    <p class="link hidden text-center" id="cfs">Close Fullscreen</p>
-                    <table id="table"
-                        class="table-highlight text-sm w-full shadow-md rounded-lg top-0 text-left  border-collapse  relative "
-                        sortable>
-
-                        <thead class="text-xs  text-right uppercase sticky top-0 z-50 ">
-                            <tr class="">
-                                <th class=""></th>
-                                <th class=""></th>
-                                @foreach ($fsd['judges'] as $judge => $mps)
-                                    <th colspan="{{ count($mps) + 1 }}"
-                                        class="py-3 px-6 border-x text-center sticky top-0 ">
-                                        {{ $judge }}</th>
-                                @endforeach
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                            <tr data-sortable-row class="">
-                                <th scope="col" class="py-3 px-6 text-left z-20" data-sortable>
-                                    Team
-                                </th>
-                                <th scope="col" class="py-3 px-6">
-                                    Notes
-                                </th>
-
-                                @foreach ($fsd['judges'] as $judge => $mpIds)
-                                    @foreach ($mpIds as $markingPoint)
-                                        <th scope="col"
-                                            class="py-3 px-6  @if ($loop->first) border-l @endif group  lg:whitespace-nowrap hover:whitespace-normal"
-                                            style="writing-mode: vertical-rl; " title="{{ $markingPoint['name'] }}"
-                                            data-sortable>
-
-                                            <span
-                                                class="block max-h-52 overflow-hidden text-ellipsis">{{ $markingPoint['name'] }}</span>
-                                            <!--<p class="text-center">{{ number_format($markingPoint['weight'], 1) }}</p>-->
-
-                                        </th>
-                                    @endforeach
-                                    <th scope="col"
-                                        class="py-3 px-6 border-r    group max-h-52 lg:whitespace-nowrap overflow-hidden text-ellipsis hover:whitespace-normal"
-                                        style="writing-mode: vertical-rl; " data-sortable>
-                                        TOTAL
-
-
-                                    </th>
-                                @endforeach
-
-                                <th scope="col" class="py-3 px-6">
-                                    DQ
-                                </th>
-                                <th scope="col" class="py-3 px-6">
-                                    Raw Mark
-                                </th>
-                                <th scope="col" class="py-3 px-6" data-sortable>
-                                    Points
-                                </th>
-                                <th scope="col" class="py-3 px-6" data-sortable>
-                                    Position
-                                </th>
-
-
-                            </tr>
-                            <tr class="">
-                                <th class=""></th>
-                                <th class=""></th>
-                                @foreach ($fsd['judges'] as $judge => $mpIds)
-                                    @foreach ($mpIds as $markingPoint)
-                                        <th
-                                            class="py-3 px-6 text-center sticky top-0   @if ($loop->first) border-l @endif">
-                                            {{ $markingPoint['weight'] }}</th>
-                                    @endforeach
-                                    <th class="py-3 px-6 text-center sticky top-0   border-r ">
-                                        -</th>
-                                @endforeach
-                                <th></th>
-                                <th>Max: {{ round($event->getMaxMark(), 1) }}</th>
-                                <th></th>
-                                <th></th>
-                            </tr>
-
-                        </thead>
-                        <tbody id="table-body">
-
-                            @forelse ($fsd['results'] as $tid => $team)
-                                <tr class="bg-white border-b text-right  place-{{ $team['place'] }} group ">
-                                    <th scope="row" class=" group-hover:bg-gray-200! transition-colors  ">
-                                        {{ $team['team'] }}
-                                    </th>
-                                    <td class="py-4 px-6 group-hover:bg-gray-200! ">
-                                        <a href="#notes" class="link"
-                                            @click="loadTeamNotes({{ $team['tid'] }})">Notes</a>
-                                    </td>
-
-                                    @foreach ($fsd['judges'] as $judge => $mpIds)
-                                        @php
-                                            $localTotal = 0;
-                                        @endphp
-                                        @foreach ($mpIds as $mpId => $markingPoint)
-                                            @php
-                                                $localTotal += ($team['results'][$mpId] ?? 0) * $markingPoint['weight'];
-                                            @endphp
-                                            <td class="py-3 px-6 text-center group-hover:bg-gray-200! hover:bg-gray-300!">
-                                                {{ round($team['results'][$mpId] ?? 0) }}
-                                            </td>
-                                        @endforeach
-                                        <td class="py-3 px-6 text-center border-x font-semibold group-hover:bg-gray-200!"
-                                            data-total-row>
-                                            {{ $localTotal }}</td>
-                                    @endforeach
-
-
-                                    <td class="py-4 px-6 group-hover:bg-gray-200!"
-                                        @click="showDqPen('{{ $team['disqualification'] }}', {{ $team['tid'] }})"
-                                        title="{{ $team['disqualification'] ?: '-' }}">
-                                        {{ $team['disqualification'] ?: '-' }}
-
-                                    </td>
-                                    <td class="py-4 px-6 font-semibold group-hover:bg-gray-200!">
-                                        {{ round($team['raw']) }}
-                                    </td>
-                                    <td class="py-4 px-6 font-bold group-hover:bg-gray-200!">
-                                        {{ round($team['points']) }}
-                                    </td>
-                                    <td class="py-4 px-6 group-hover:bg-gray-200! ">
-                                        {{ $team['place'] }}
-                                    </td>
-
-
-                                </tr>
-                            @empty
-                                <tr class="bg-white border-b text-right ">
-                                    <th colspan="100" scope="row"
-                                        class="py-4 text-left px-6 text-center font-medium text-gray-900 whitespace-nowrap ">
-                                        None
-                                    </th>
-                                </tr>
-                            @endforelse
-
-
-
-                        </tbody>
-
-                    </table>
-
-
-                </div>
-
-
-
-
-
-
-
-
-                <div class="mt-2 flex flex-col md:flex-row space-y-4 md:space-y-0 items-center ">
-                    <div class="flex flex-col ">
-                        <div class="form-input" style="margin-bottom: 0px !important;"><input placeholder="Filter"
-                                id="team-filter" style="margin-bottom: 0 !important" type="text"></div>
-                        <small class="text-gray-600">team:x, league:x</small>
-                    </div>
-
-                    <div class="flex items-center justify-center space-x-2 ml-8">
-                        <label for="anal">Analysis</label>
-                        <input type="checkbox" name="" id="anal">
-                    </div>
-
-                    <div class="md:ml-auto">
-                        <p class="link" id="fs">Fullscreen</p>
-                    </div>
-
-                    @if (!$comp->areResultsProvisional())
-                        <div class="md:ml-auto flex flex-col items-center md:items-end">
-                            <div>
-                                <a href="{{ route('whatif') }}" class="link ">Edit in WhatIf</a>
-                                or
-                                <a href="{{ Request::url() }}?dlCSV" class="link ">Download as CSV</a>
-                            </div>
-                            <small>WhatIf lets you explore how changes would effect overall results!</small>
-                        </div>
+                        </optgroup>
                     @endif
-                </div>
-
-
-
-
+                    @if ($showLetters->count() > 1)
+                        <optgroup label="Team">
+                            @foreach ($showLetters as $letter)
+                                <option value="team:{{ $letter }}">{{ $letter }} Teams</option>
+                            @endforeach
+                        </optgroup>
+                    @endif
+                </select>
             </div>
-
-
-
-            <div class=" pb-16 text-center">
-                <small>
-                    &copy;
-                    Noah Hollowell, Scoring.Events, BULSCA
-                    2022-{{ date('Y') }}
-
-                </small>
-            </div>
-
-
-
-
-
+            <label class="v2-check"><input type="checkbox" id="anal"> Analysis</label>
+            <button type="button" class="v2-btn v2-btn-sm" id="fs">Full screen</button>
         </div>
 
-        <div class="modal" x-show="showModal" x-transition style="display: none">
-            <div class="modal-content " @click.outside="showModal=false">
-                <iframe :src="modalUrl" frameborder="0" scrolling="no" class="w-full"
+        <div x-smooth-height>
+            <div id="table-wrapper" class="v2-table-scroll v2-breakdown">
+                <button type="button" class="v2-btn v2-btn-sm hidden" id="cfs">Close full screen</button>
+                <table id="table" class="v2-table" sortable>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            @foreach ($fsd['judges'] as $judge => $mps)
+                                <th colspan="{{ count($mps) + 1 }}" class="is-judge">{{ $judge }}</th>
+                            @endforeach
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        <tr data-sortable-row>
+                            <th scope="col" data-sortable>Team</th>
+                            <th scope="col">Notes</th>
+                            @foreach ($fsd['judges'] as $judge => $mpIds)
+                                @foreach ($mpIds as $markingPoint)
+                                    <th scope="col" @class(['is-point', 'is-judge-start' => $loop->first])
+                                        title="{{ $markingPoint['name'] }}" data-sortable>
+                                        <span>{{ $markingPoint['name'] }}</span>
+                                    </th>
+                                @endforeach
+                                <th scope="col" class="is-point is-judge-total" data-sortable><span>Total</span></th>
+                            @endforeach
+                            <th scope="col">DQ</th>
+                            <th scope="col">Raw mark</th>
+                            <th scope="col" data-sortable>Points</th>
+                            <th scope="col" data-sortable>Position</th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            @foreach ($fsd['judges'] as $judge => $mpIds)
+                                @foreach ($mpIds as $markingPoint)
+                                    <th @class(['is-weight', 'is-judge-start' => $loop->first])>{{ $markingPoint['weight'] }}</th>
+                                @endforeach
+                                <th class="is-weight is-judge-total">-</th>
+                            @endforeach
+                            <th></th>
+                            <th>Max {{ round($event->getMaxMark(), 1) }}</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        @forelse ($fsd['results'] as $tid => $team)
+                            <tr class="is-place-{{ $team['place'] }}" data-leagues="{{ implode(' ', $team['leagues']) }}"
+                                data-letter="{{ $team['letter'] }}">
+                                <th scope="row">{{ $team['team'] }}</th>
+                                <td><button type="button" class="v2-link" @click="loadNotes({{ $team['tid'] }})">Notes</button></td>
+                                @foreach ($fsd['judges'] as $judge => $mpIds)
+                                    @php
+                                        $localTotal = 0;
+                                    @endphp
+                                    @foreach ($mpIds as $mpId => $markingPoint)
+                                        @php
+                                            $localTotal += ($team['results'][$mpId] ?? 0) * $markingPoint['weight'];
+                                        @endphp
+                                        <td @class(['is-mark', 'is-judge-start' => $loop->first])>{{ round($team['results'][$mpId] ?? 0) }}</td>
+                                    @endforeach
+                                    <td class="is-mark is-judge-total" data-total-row>{{ $localTotal }}</td>
+                                @endforeach
+                                <td>
+                                    @if ($team['disqualification'])
+                                        <button type="button" class="v2-link-inline"
+                                            @click="showDqPen('{{ $team['disqualification'] }}', {{ $team['tid'] }})">{{ $team['disqualification'] }}</button>
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                                <td class="font-semibold">{{ round($team['raw']) }}</td>
+                                <td class="font-bold">{{ round($team['points']) }}</td>
+                                <td>{{ $team['place'] }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="100">No results in this SERC yet.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        @if (!$comp->areResultsProvisional())
+            <p class="v2-breakdown-more">
+                <a href="{{ route('whatif') }}" class="v2-link-inline">Edit in WhatIf</a> to see how changes would
+                affect the overall results, or <a href="{{ Request::url() }}?dlCSV" class="v2-link-inline" data-no-prefetch>download it as
+                    a CSV</a>.
+            </p>
+        @endif
+
+        <div class="v2-modal-backdrop" x-show="dqOpen" x-cloak x-transition.opacity @click.self="dqOpen = false"
+            @keydown.escape.window="dqOpen = false">
+            <div class="v2-modal v2-breakdown-dq" role="dialog" aria-modal="true" aria-label="Violation"
+                x-trap.noscroll="dqOpen">
+                <iframe :src="dqUrl" title="Violation" class="w-full"
                     onload="this.height=this.contentWindow.document.body.scrollHeight;"></iframe>
-            </div>
-        </div>
-
-        <div class="modal" x-show="showNotesModal" x-transition style="display: none">
-            <div class="modal-content " @click.outside="showNotesModal=false">
-                <div class="flex flex-col max-h-[70vh] overflow-y-auto ">
-                    <h4 class="font-bold">Notes for <span x-text="notesData?.name"></span></h4>
-                    <div class="flex flex-col space-y-3">
-
-                        <template x-for="note in notesData.notes">
-                            <div class="flex flex-col ">
-                                <strong x-text="note.judge"></strong>
-                                <p class="ml-6 " x-text="note.note"></p>
-                            </div>
-                        </template>
-
-                        <div x-show="!notesData.notes.length">
-                            <p>No notes were given for this team</p>
-                        </div>
-
-                        <template x-if="!notesData">
-                            <p>Loading...</p>
-                        </template>
-                    </div>
+                <div class="v2-modal-actions">
+                    <button type="button" class="v2-btn" @click="dqOpen = false">Close</button>
                 </div>
             </div>
         </div>
 
-
-        <script src="/vendor/chart.js@4.5.1/chart.umd.min.js"></script>
-        <script src="{{ asset('js/analysis.js') }}"></script>
-        <script>
-            function initTable() {
-                let table = document.getElementById("table");
-                let tableBody = document.getElementById("table-body");
-                let tableRows = tableBody.querySelectorAll("tr")
-
-                let tableWrapper = document.getElementById("table-wrapper")
-                let fs = document.getElementById("fs")
-                let cfs = document.getElementById("cfs")
-
-                fs.onclick = () => {
-                    tableWrapper.requestFullscreen()
-                    tableWrapper.classList.add("h-screen")
-                    table.classList.add("h-screen")
-                    fs.classList.add("hidden")
-                    cfs.classList.remove("hidden")
-                }
-
-                cfs.onclick = () => {
-                    document.exitFullscreen()
-                    tableWrapper.classList.remove("h-screen")
-                    table.classList.remove("h-screen")
-                    fs.classList.remove("hidden")
-                    cfs.classList.add("hidden")
-                }
-
-
-                analyze(tableRows)
-                document.getElementById("anal").onchange = v => {
-                    tableBody.classList.toggle("analysis")
-                }
-
-
-                table.onmouseover = (e) => {
-                    let type = e.target;
-                    if (type.nodeName != "TD") return
-                    //console.log(type.innerHTML)
-                    let index = Array.from(type.parentNode.children).indexOf(type)
-
-
-                    tableBody.querySelectorAll("tr").forEach(tr => {
-                        tr.children[index].classList.add('bg-gray-200')
-                    })
-                }
-
-
-                table.onmouseout = (e) => {
-                    let type = e.target;
-                    if (type.nodeName != "TD") return
-                    //console.log(type.innerHTML)
-                    let index = Array.from(type.parentNode.children).indexOf(type)
-
-
-                    tableBody.querySelectorAll("tr").forEach(tr => {
-                        tr.children[index].classList.remove('bg-gray-200')
-                    })
-                }
-
-                // Team search
-                let filter = document.getElementById("team-filter")
-
-                function search(team) {
-
-                    tableRows.forEach(row => {
-                        let teamCol = row.children[0];
-                        let teamName = teamCol.innerHTML.trim().toLowerCase();
-
-                        team = team.toLowerCase();
-                        let hide = false;
-
-
-
-                        if (team.startsWith("team:")) {
-                            hide = !teamName.endsWith(team.substr(5));
-                        } else if (team.startsWith("league:")) {
-                            let targetLeague = team.substr(7, 1);
-                            if (targetLeague == "a") {
-                                hide = !teamName.endsWith(targetLeague);
-                            } else {
-                                hide = teamName.endsWith("a")
-                            }
-                        } else {
-                            hide = !teamName.includes(team);
-                        }
-
-                        row.hidden = hide;
-
-
-                    })
-
-                }
-                filter.onkeyup = (e) => {
-                    search(e.target.value)
-                }
-
-
-
-
-            }
-
-
-            initTable()
-            Sorttable()
-        </script>
-
+        <div class="v2-modal-backdrop" x-show="notesOpen" x-cloak x-transition.opacity @click.self="notesOpen = false"
+            @keydown.escape.window="notesOpen = false">
+            <div class="v2-modal" role="dialog" aria-modal="true" aria-labelledby="notes-title"
+                x-trap.noscroll="notesOpen">
+                <h3 id="notes-title">Notes<span x-show="notes?.name" x-text="` for ${notes?.name}`"></span></h3>
+                <p x-show="!notes">Loading&hellip;</p>
+                <div class="v2-breakdown-notes" x-show="notes">
+                    <template x-for="note in notes?.notes ?? []">
+                        <div>
+                            <strong x-text="note.judge"></strong>
+                            <p x-text="note.note"></p>
+                        </div>
+                    </template>
+                    <p x-show="notes && !notes.notes.length">No notes were given for this Team.</p>
+                </div>
+                <div class="v2-modal-actions">
+                    <button type="button" class="v2-btn" @click="notesOpen = false">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <script src="/vendor/chart.js@4.5.1/chart.umd.min.js"></script>
+    <script src="{{ asset('js/analysis.js') }}"></script>
+    <script>
+        (function() {
+            const table = document.getElementById('table');
+            const tableBody = document.getElementById('table-body');
+            const tableRows = tableBody.querySelectorAll('tr');
+            const tableWrapper = document.getElementById('table-wrapper');
+            const fs = document.getElementById('fs');
+            const cfs = document.getElementById('cfs');
+
+            fs.onclick = () => {
+                tableWrapper.requestFullscreen();
+                cfs.classList.remove('hidden');
+            };
+            cfs.onclick = () => document.exitFullscreen();
+            document.addEventListener('fullscreenchange', () => {
+                if (!document.fullscreenElement) cfs.classList.add('hidden');
+            });
+
+            // analyze() paints each mark inline; park the colour in a property so it only shows under .analysis
+            analyze(tableRows);
+            tableBody.querySelectorAll('td.is-mark').forEach(td => {
+                td.style.setProperty('--analysis', td.style.backgroundColor);
+                td.style.backgroundColor = '';
+            });
+            document.getElementById('anal').onchange = () => tableBody.classList.toggle('analysis');
+
+            // Light up the column under the pointer
+            const column = (e, on) => {
+                if (e.target.nodeName !== 'TD') return;
+                const index = Array.from(e.target.parentNode.children).indexOf(e.target);
+                tableBody.querySelectorAll('tr').forEach(tr => tr.children[index]?.classList.toggle('is-col', on));
+            };
+            table.onmouseover = (e) => column(e, true);
+            table.onmouseout = (e) => column(e, false);
+
+            // The search matches part of a Team's name; Show picks "league:{id}" or "team:{letter}" from the row's data
+            const search = document.getElementById('team-filter');
+            const show = document.getElementById('team-show');
+            const shown = (row) => {
+                const [kind, value] = show.value.split(':');
+                if (kind === 'league') return (row.dataset.leagues ?? '').split(' ').includes(value);
+                if (kind === 'team') return row.dataset.letter === value;
+                return true;
+            };
+            const filter = () => {
+                const term = search.value.trim().toLowerCase();
+                tableRows.forEach(row => {
+                    const name = row.children[0].textContent.trim().toLowerCase();
+                    row.hidden = !(name.includes(term) && shown(row));
+                });
+            };
+            search.oninput = filter;
+            // Picking another set of Teams fades the table in, as the height eases to fit
+            show.onchange = () => {
+                filter();
+                if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                    table.animate([{ opacity: 0.4 }, { opacity: 1 }], { duration: 200, easing: 'ease-out' });
+                }
+            };
+
+            Sorttable();
+        })();
+    </script>
 @endsection

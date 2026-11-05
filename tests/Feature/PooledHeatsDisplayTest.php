@@ -5,12 +5,14 @@ namespace Tests\Feature;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\CompetitionTeam;
+use App\Models\Event\ScoringSchema;
 use App\Models\Orders\Heat;
 use App\Models\Pool;
 use App\Models\SpeedEvent;
 use App\Models\SpeedResult;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 /**
@@ -108,17 +110,41 @@ class PooledHeatsDisplayTest extends TestCase
             ->assertSeeInOrder(['Main Pool · Heat 1', 'Main Team', 'Diving Pool · Heat 1', 'Diving Team']);
     }
 
-    public function test_the_results_editor_filters_heats_by_pool(): void
+    public function test_the_results_editor_keys_heats_by_pool_and_labels_them_with_it(): void
     {
         $this->actingAs($this->admin)
-            ->get(route('comps.events.speeds.editResult', [$this->comp, $this->event]))
+            ->get(route('manage.competitions.events.speeds.results.edit', [$this->comp, $this->event]))
             ->assertOk()
-            ->assertSee('data-heat="' . $this->main->id . ':1"', false)
-            ->assertSee('table-pool-filter="scores" data-pool="' . $this->main->id . '"', false)
-            ->assertSee('table-pool-filter="scores" data-pool="' . $this->diving->id . '"', false)
-            ->assertSee('data-pool="' . $this->diving->id . '" class="se-btn">Heat 1', false)
-            ->assertSee('Main Pool · H1 L4')
-            ->assertSee('Diving Pool · H1 L2');
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Manage/Competition/SpeedEventResults')
+                ->where('grid.0.name', 'Main Team')
+                ->where('grid.0.pool', ['id' => $this->main->id, 'name' => 'Main Pool'])
+                ->where('grid.0.heatKey', $this->main->id . ':1')
+                ->where('grid.0.heatLane', 'Main Pool · H1 L4')
+                ->where('grid.1.name', 'Diving Team')
+                ->where('grid.1.heatKey', $this->diving->id . ':1')
+                ->where('grid.1.heatLane', 'Diving Pool · H1 L2'));
+    }
+
+    public function test_the_event_page_names_the_pool_beside_each_order_of_finish(): void
+    {
+        $schema = new ScoringSchema();
+        $schema->name = 'Fastest';
+        $schema->schema = ['equation' => '1', 'global_variables' => [], 'rank_higher' => false];
+        $schema->save();
+        $this->event->scoring_schema = $schema->id;
+        $this->event->digitalJudgeEnabled = true;
+        $this->event->save();
+        SpeedResult::query()->update(['result' => 62500]);
+
+        $this->actingAs($this->admin)
+            ->get(route('manage.competitions.events.speeds.show', [$this->comp, $this->event]))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('results', fn ($results) => collect($results)->pluck('oof')->sort()->values()->all() === [
+                    'Diving Pool · H1 L2: -',
+                    'Main Pool · H1 L4: -',
+                ]));
     }
 
     public function test_the_legacy_digital_judge_speed_pages_are_closed_when_pools_are_in_use(): void
@@ -150,7 +176,7 @@ class PooledHeatsDisplayTest extends TestCase
         SpeedResult::query()->delete();
 
         $this->actingAs($this->admin)
-            ->get(route('comps.events.speeds.view', [$this->comp, $this->event]))
+            ->get(route('manage.competitions.events.speeds.show', [$this->comp, $this->event]))
             ->assertOk();
     }
 }

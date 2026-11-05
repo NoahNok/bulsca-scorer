@@ -8,7 +8,6 @@ use App\DTO\JudgeAuthUser;
 use App\Models\Club;
 use App\Models\CompetitionTeam;
 use App\Models\Competitor;
-use App\View\Components\SERC\SERCEditor;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
@@ -61,7 +60,6 @@ class AppServiceProvider extends ServiceProvider
                 DigitalJudge::getClientName()
             );
         });
-        Blade::component('serc-editor', SERCEditor::class);
 
         // A login without "remember me" gets expires_at = now + session lifetime and the package
         // never moves it, so a session kept alive past that drops out of logins() and can't be

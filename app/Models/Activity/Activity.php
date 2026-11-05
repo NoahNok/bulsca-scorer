@@ -35,18 +35,6 @@ class Activity extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function renderContext()
-    {
-
-
-        return match ($this->activity) {
-
-            "SERC_RESULT_UPDATED", "SERC_MARKED" => view('components.activity-log.context.changes', ['context' => $this->context, 'label' => 'Marking Point', 'value' => 'Mark']),
-            "OOF_MARKED" => view('components.activity-log.context.changes', ['context' => $this->context, 'label' => 'Team', 'value' => 'Place']),
-            default => null
-        };
-    }
-
     public static function uniqueActivities()
     {
         return self::select('activity')->distinct()->orderBy('activity')->pluck('activity');

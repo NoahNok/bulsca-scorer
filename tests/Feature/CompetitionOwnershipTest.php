@@ -111,23 +111,18 @@ class CompetitionOwnershipTest extends TestCase
         return compact('comp', 'event', 'serc', 'league', 'teams', 'heats', 'draws', 'results');
     }
 
-    private function resultRow(SpeedResult $result, string $time): array
-    {
-        return ['id' => $result->id, 'values' => ['disqualification' => '', 'result' => $time]];
-    }
-
     public function test_cannot_open_or_delete_another_competitions_events_or_leagues(): void
     {
         $ours = $this->ours['comp'];
         $this->actingAs($this->admin);
 
-        $this->get(route('comps.events.speeds.view', [$ours, $this->theirs['event']]))->assertNotFound();
-        $this->get(route('comps.events.sercs.view', [$ours, $this->theirs['serc']]))->assertNotFound();
-        $this->get(route('comps.leagues.view', [$ours, $this->theirs['league']]))->assertNotFound();
+        $this->get(route('manage.competitions.events.speeds.show', [$ours, $this->theirs['event']]))->assertNotFound();
+        $this->get(route('manage.competitions.events.sercs.show', [$ours, $this->theirs['serc']]))->assertNotFound();
+        $this->post(route('manage.competitions.leagues.update', [$ours, $this->theirs['league']]), ['name' => 'Taken'])->assertNotFound();
 
-        $this->delete(route('comps.view.events.speeds.delete', [$ours, $this->theirs['event']]), ['eid' => $this->theirs['event']->id])->assertNotFound();
-        $this->delete(route('comps.view.events.sercs.delete', [$ours, $this->theirs['serc']]), ['sid' => $this->theirs['serc']->id])->assertNotFound();
-        $this->delete(route('comps.leagues.delete', [$ours, $this->theirs['league']]))->assertNotFound();
+        $this->delete(route('manage.competitions.events.speeds.destroy', [$ours, $this->theirs['event']]), ['eid' => $this->theirs['event']->id])->assertNotFound();
+        $this->delete(route('manage.competitions.events.sercs.destroy', [$ours, $this->theirs['serc']]), ['name' => $this->theirs['serc']->name])->assertNotFound();
+        $this->delete(route('manage.competitions.leagues.destroy', [$ours, $this->theirs['league']]))->assertNotFound();
 
         $this->assertNotNull($this->theirs['event']->fresh());
         $this->assertNotNull($this->theirs['serc']->fresh());
@@ -139,17 +134,18 @@ class CompetitionOwnershipTest extends TestCase
         $ours = $this->ours['comp'];
         $this->actingAs($this->admin);
 
-        $this->get(route('comps.leagues.view', [$ours, $this->ours['league']]))->assertOk();
+        $this->post(route('manage.competitions.leagues.update', [$ours, $this->ours['league']]), ['name' => 'Renamed'])->assertRedirect();
+        $this->assertSame('Renamed', $this->ours['league']->fresh()->name);
 
-        $this->delete(route('comps.view.events.speeds.delete', [$ours, $this->ours['event']]), ['eid' => $this->ours['event']->id])->assertRedirect();
+        $this->delete(route('manage.competitions.events.speeds.destroy', [$ours, $this->ours['event']]), ['name' => $this->ours['event']->getName()])->assertRedirect();
         $this->assertNull($this->ours['event']->fresh());
     }
 
     public function test_cannot_change_another_competitions_speed_results(): void
     {
         $this->actingAs($this->admin)
-            ->post(route('comps.view.events.speeds.editResultPost', [$this->ours['comp'], $this->ours['event']]), [
-                'data' => json_encode([$this->resultRow($this->theirs['results'][0], '0:30.000')]),
+            ->post(route('manage.competitions.events.speeds.results', [$this->ours['comp'], $this->ours['event']]), [
+                'rows' => [$this->theirs['results'][0]->id => ['result' => '00:30.000', 'disqualification' => '']],
             ])
             ->assertNotFound();
 
@@ -159,11 +155,11 @@ class CompetitionOwnershipTest extends TestCase
     public function test_cannot_change_another_competitions_serc_results(): void
     {
         $this->actingAs($this->admin)
-            ->get(route('comps.events.sercs.editResults', [$this->ours['comp'], $this->ours['serc'], $this->theirs['teams'][0]->id]))
+            ->get(route('manage.competitions.events.sercs.marks', [$this->ours['comp'], $this->ours['serc'], $this->theirs['teams'][0]->id]))
             ->assertNotFound();
 
         $this->actingAs($this->admin)
-            ->post(route('comps.view.events.sercs.editResultsPost', [$this->ours['comp'], $this->ours['serc'], $this->theirs['teams'][0]->id]), ['data' => '[]'])
+            ->post(route('manage.competitions.events.sercs.marks.save', [$this->ours['comp'], $this->ours['serc'], $this->theirs['teams'][0]->id]), ['marks' => []])
             ->assertNotFound();
     }
 
@@ -172,9 +168,9 @@ class CompetitionOwnershipTest extends TestCase
         [$theirA, $theirB] = $this->theirs['heats'];
 
         $this->actingAs($this->admin)
-            ->post(route('comps.heats_and_draws.heats.swap', [$this->ours['comp'], $this->ours['event']]), [
-                'team' => $theirA->id,
-                'target-heat' => $theirB->id,
+            ->post(route('manage.competitions.heats_and_draws.heats.swap', [$this->ours['comp'], $this->ours['event']]), [
+                'from' => $theirA->id,
+                'to' => $theirB->id,
             ])
             ->assertNotFound();
 
@@ -183,9 +179,9 @@ class CompetitionOwnershipTest extends TestCase
         [$drawA, $drawB] = $this->theirs['draws'];
 
         $this->actingAs($this->admin)
-            ->postJson(route('comps.heats_and_draws.draws.swap', [$this->ours['comp'], $this->ours['serc']]), [
-                'swap_from' => $drawA->id,
-                'swap_to' => $drawB->id,
+            ->post(route('manage.competitions.heats_and_draws.draws.swap', $this->ours['comp']), [
+                'from' => $drawA->id,
+                'to' => $drawB->id,
             ])
             ->assertNotFound();
 
@@ -197,9 +193,9 @@ class CompetitionOwnershipTest extends TestCase
         [$ourA, $ourB] = $this->ours['heats'];
 
         $this->actingAs($this->admin)
-            ->post(route('comps.heats_and_draws.heats.swap', [$this->ours['comp'], $this->ours['event']]), [
-                'team' => $ourA->id,
-                'target-heat' => $ourB->id,
+            ->post(route('manage.competitions.heats_and_draws.heats.swap', [$this->ours['comp'], $this->ours['event']]), [
+                'from' => $ourA->id,
+                'to' => $ourB->id,
             ])
             ->assertRedirect();
 

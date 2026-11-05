@@ -1,0 +1,223 @@
+<?php
+
+namespace App\Http\Controllers\Manage;
+
+use App\DTO\Result;
+use App\Helpers\CompetitionHeader;
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\Manage\Concerns\ManagesEventPages;
+use App\Http\Requests\Event\UpdateScoringSettings;
+use App\Models\Competition;
+use App\Models\CompetitionSpeedEvent;
+use App\Models\League;
+use App\Models\Orders\Heat;
+use App\Models\Pool;
+use App\Models\SpeedResult;
+use App\Services\HeatService;
+use App\Services\ScoringSchemas;
+use App\Services\SpeedResultEntry;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
+
+/**
+ * A speed event's pages (Svelte, in CompetitionLayout): its ranked results, a page with the grid to
+ * enter them, and its settings (setup, scoring and deleting it) in a SideMenu, each saved on its own.
+ */
+class SpeedEventController extends Controller
+{
+    use ManagesEventPages;
+
+    public function show(Competition $comp, CompetitionSpeedEvent $event, Request $request, HeatService $heats)
+    {
+        $league = $comp->getLeagues()->find($request->query('league'));
+        $schema = $event->scoringSchema;
+
+        return Inertia::render('Manage/Competition/SpeedEvent', [
+            ...$this->shared($comp, $event),
+            'leagues' => $comp->getLeagues()->orderBy('name')->get(['id', 'name']),
+            'league' => $league?->id,
+            // Null until the event has scoring set up
+            'results' => $schema ? fn () => $this->rankedResults($comp, $event, $league) : null,
+            'conflicts' => fn () => collect($heats->anyTimeAndOofConflicts($event))
+                ->map(fn ($rows, $heat) => [
+                    'heat' => $heat,
+                    'rows' => collect($rows)->map(fn ($row) => collect($row)->only('lane', 'entity_name', 'time', 'oof')),
+                ])->values(),
+            'eventsUrl' => route('manage.competitions.events', $comp),
+            'printUrl' => route('comps.view.events.speeds.printResults', [$comp, $event]),
+        ]);
+    }
+
+    public function editResults(Competition $comp, CompetitionSpeedEvent $event)
+    {
+        return Inertia::render('Manage/Competition/SpeedEventResults', [
+            ...$this->shared($comp, $event),
+            'grid' => $this->grid($comp, $event),
+        ]);
+    }
+
+    public function settings(Competition $comp, CompetitionSpeedEvent $event)
+    {
+        return Inertia::render('Manage/Competition/SpeedEventSettings', [
+            ...$this->shared($comp, $event),
+            'scoring' => ScoringSchemas::editorFor($event, Auth::user(), $comp->getOrganisation),
+        ]);
+    }
+
+    /**
+     * The competition and the event, as every one of its pages takes them
+     */
+    private function shared(Competition $comp, CompetitionSpeedEvent $event): array
+    {
+        return [
+            'competition' => CompetitionHeader::for($comp),
+            // Lazy, so a partial reload (a league pill) doesn't check completion or count heats again
+            'event' => fn () => [
+                'id' => $event->id,
+                'name' => $event->getName(),
+                'target' => $event->scorable_entity,
+                'complete' => $event->isComplete(),
+                'viewable' => (bool) $event->viewable,
+                'hasPenalties' => (bool) $event->hasPenalties(),
+                'digitalJudge' => (bool) $event->digitalJudgeEnabled,
+                'ropeThrow' => $event->getName() == 'Rope Throw',
+                'heats' => $event->getHeats()->count(),
+            ],
+        ];
+    }
+
+    /**
+     * The ranked results as the event's page shows them. A combined result (one row standing for
+     * several Entities) lists each one's name, time and DQ, with the total time beside them.
+     */
+    private function rankedResults(Competition $comp, CompetitionSpeedEvent $event, ?League $league): array
+    {
+        $showDqPoints = $event->scoringSchema->schema['allow_disqualified_to_rank'] ?? false;
+        $eventHeats = $event->digitalJudgeEnabled ? $event->getHeats()->with('oofs', 'getPool')->get() : collect();
+
+        return collect($event->getRankedResults($league))->map(function ($result) use ($comp, $event, $showDqPoints, $eventHeats) {
+            $parts = $this->partsOf($result);
+            $heat = $result->isCombined() ? null : $eventHeats
+                ->where('entity_id', $result->entity->id)
+                ->where('entity_type', $result->entity->getMorphClass())
+                ->first();
+
+            return [
+                ...$this->keyAndNames($comp, $result),
+                'times' => $result->isCombined() ? $parts->map(fn (Result $part) => SpeedResult::prettyTime($part->result))->values() : [],
+                'dqs' => $parts->map(fn (Result $part) => $part->getDisqualificationsString())->values(),
+                'time' => SpeedResult::prettyTime($result->resolvedResult),
+                'was' => !$result->isCombined() && $result->resolvedResult != $result->result ? SpeedResult::prettyTime($result->result) : null,
+                'oof' => !$event->digitalJudgeEnabled || $result->isCombined() ? null
+                    : ($heat ? Pool::heatLaneLabel($heat->getPool, $heat->heat, $heat->lane) . ': ' . ($heat->getOOF($event->id)?->oof ?: '-') : '-'),
+                'penalties' => $result->getPenaltiesString(),
+                'points' => $result->isDisqualified() && !$showDqPoints ? 'DQ' : (round($result->points, 1) ?: null),
+                'position' => $result->position ?? null,
+            ];
+        })->values()->all();
+    }
+
+    /**
+     * Every result as the grid edits it, in pool, heat and lane order (those without a heat last), with
+     * DNS, DNF and OOT shown in the time cell, where they're entered. Heat numbers restart per pool, so
+     * each row's heat is keyed by its pool and number together, and labelled with its pool.
+     */
+    private function grid(Competition $comp, CompetitionSpeedEvent $event): array
+    {
+        $heats = $event->getHeats()->with('getPool')->get()->keyBy(fn ($heat) => $heat->entity_type . ':' . $heat->entity_id);
+
+        return collect($event->getRawResults(true))
+            ->map(function (Result $result) use ($comp, $heats) {
+                $heat = $heats->get($result->entity->getMorphClass() . ':' . $result->entity->id);
+                $dq = $result->getDisqualificationsString();
+                $special = in_array($dq, ['DNS', 'DNF', 'OOT']);
+
+                return [
+                    'id' => $result->id,
+                    'name' => $result->entity->getName($comp),
+                    'pool' => $heat?->getPool?->only('id', 'name'),
+                    'heat' => $heat?->heat,
+                    'heatKey' => $heat ? Heat::keyFor($heat->pool, $heat->heat) : null,
+                    'heatLane' => $heat ? Pool::heatLaneLabel($heat->getPool, $heat->heat, $heat->lane) : null,
+                    'lane' => $heat?->lane,
+                    'result' => $special ? $dq : (string) (SpeedResult::prettyTime($result->result) ?? ''),
+                    'disqualification' => $special ? '' : ($dq ?? ''),
+                    'penalties' => $result->getPenaltiesString() ?? '',
+                ];
+            })
+            ->sortBy([
+                fn ($a, $b) => ($a['heat'] === null) <=> ($b['heat'] === null),
+                fn ($a, $b) => ($a['pool']['id'] ?? 0) <=> ($b['pool']['id'] ?? 0),
+                fn ($a, $b) => ($a['heat'] ?? PHP_INT_MAX) <=> ($b['heat'] ?? PHP_INT_MAX),
+                fn ($a, $b) => ($a['lane'] ?? PHP_INT_MAX) <=> ($b['lane'] ?? PHP_INT_MAX),
+            ])
+            ->values()
+            ->all();
+    }
+
+    public function saveResults(Competition $comp, CompetitionSpeedEvent $event, Request $request)
+    {
+        $rows = $request->validate([
+            'rows' => ['required', 'array'],
+            'rows.*' => ['array'],
+            'rows.*.result' => ['nullable', 'string'],
+            'rows.*.disqualification' => ['nullable', 'string'],
+            'rows.*.penalties' => ['nullable', 'string'],
+        ])['rows'];
+
+        (new SpeedResultEntry($comp, $event))->save($rows);
+
+        return redirect()->route('manage.competitions.events.speeds.show', [$comp, $event])->with('success', 'Results saved');
+    }
+
+    /**
+     * What the event scores and whether it takes penalties. Scoring different Entities starts its
+     * results again, with an empty one for each.
+     */
+    public function saveSetup(Competition $comp, CompetitionSpeedEvent $event, Request $request)
+    {
+        $data = $request->validate([
+            'target_entity' => ['required', 'in:club,team,competitor'],
+            'has_penalties' => ['required', 'boolean'],
+        ]);
+
+        if ($data['target_entity'] != $event->scorable_entity) {
+            $event->scorable_entity = $data['target_entity'];
+            $event->save();
+
+            $event->results()->delete();
+            foreach ($event->getScorableEntities() as $entity) {
+                $result = new SpeedResult();
+                $result->entity()->associate($entity);
+                $result->event = $event->id;
+                $result->save();
+            }
+        }
+
+        $event->has_penalties = $data['has_penalties'];
+        $event->save();
+
+        return back()->with('success', 'Event saved');
+    }
+
+    public function visibility(Competition $comp, CompetitionSpeedEvent $event, Request $request)
+    {
+        return $this->setVisibility($event, $request);
+    }
+
+    public function saveScoring(Competition $comp, CompetitionSpeedEvent $event, UpdateScoringSettings $request)
+    {
+        ScoringSchemas::save($event, $request);
+
+        return back()->with('success', 'Scoring saved');
+    }
+
+    /**
+     * Deleting needs the event's name typed out
+     */
+    public function destroy(Competition $comp, CompetitionSpeedEvent $event, Request $request)
+    {
+        return $this->destroyNamed($comp, $event, $request, 'event');
+    }
+}
