@@ -28,5 +28,7 @@
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
+        <!-- Blade can only touch() compiled views its own user owns, so tests can't share PHP-FPM's cache -->
+        <env name="VIEW_COMPILED_PATH" value="storage/framework/testing/views"/>
     </php>
 </phpunit>
