@@ -3,6 +3,7 @@
 namespace App\Models\AbstractClasses;
 
 use App\Models\DigitalJudge\JudgeDQSubmission;
+use App\Models\DigitalJudge\Violation\ViolationSubmission;
 use App\Models\Event\Disqualification;
 use App\Traits\RecordActivity;
 use Illuminate\Database\Eloquent\Model;
@@ -89,9 +90,20 @@ abstract class Violation extends Model
         return "OVERRIDE ME";
     }
 
+    /**
+     * The old Digital Judge's submission behind this violation
+     */
     public function submission()
     {
         return $this->morphOne(JudgeDQSubmission::class, 'violation');
+    }
+
+    /**
+     * The submission that applied this violation
+     */
+    public function violationSubmission()
+    {
+        return $this->morphOne(ViolationSubmission::class, 'applied');
     }
 
     // make this take an organisation param (optional) so that we get the right pen/dq message for the current org

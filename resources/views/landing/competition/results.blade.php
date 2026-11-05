@@ -162,9 +162,9 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <template x-for="(row, r) in table?.rows ?? []" :key="r">
+                                <template x-for="row in table?.rows ?? []" :key="row._key">
                                     <tr :class="`is-place-${row.position?.data}`">
-                                        <template x-for="(column, c) in visibleColumns" :key="column.id">
+                                        <template x-for="(column, c) in shownColumns(row._columns)" :key="column.id">
                                             <td :class="c === 0 && 'v2-table-name'">
                                                 <template x-if="row[column.id].type === 'string'">
                                                     <span x-text="row[column.id].data ?? '-'"></span>
@@ -232,19 +232,21 @@
                 @keydown.escape.window="modal = false">
                 <div class="v2-modal" role="dialog" aria-modal="true" aria-labelledby="violation-title"
                     x-trap.noscroll="modal">
-                    <h3 id="violation-title" x-text="violation?.code"></h3>
-                    <p class="v2-results-for" x-show="violation?.for" x-text="violation?.for"></p>
-                    <p x-text="violation?.description"></p>
-                    <template x-if="violation?.submission">
+                    <h3 id="violation-title" x-text="shownViolation?.code"></h3>
+                    <p class="v2-results-for" x-show="shownViolation?.for" x-text="shownViolation?.for"></p>
+                    <p x-text="shownViolation?.description"></p>
+                    <template x-if="shownViolation?.submission">
                         <dl class="v2-details mt-4">
                             <dt>Reported by</dt>
-                            <dd x-text="`${violation.submission.name} (${violation.submission.position})`"></dd>
-                            <dt>Seconded by</dt>
-                            <dd x-text="`${violation.submission.seconder_name} (${violation.submission.seconder_position})`"></dd>
-                            <dt>Turn and length</dt>
-                            <dd x-text="`Turn ${violation.submission.turn ?? '-'}, length ${violation.submission.length ?? '-'}`"></dd>
+                            <dd x-text="person(shownViolation.submission.name, shownViolation.submission.position)"></dd>
+                            <dt x-show="shownViolation.submission.seconder_name">Seconded by</dt>
+                            <dd x-show="shownViolation.submission.seconder_name"
+                                x-text="person(shownViolation.submission.seconder_name, shownViolation.submission.seconder_position)"></dd>
+                            <dt x-show="shownViolation.submission.turn !== null || shownViolation.submission.length !== null">Turn and length</dt>
+                            <dd x-show="shownViolation.submission.turn !== null || shownViolation.submission.length !== null"
+                                x-text="`Turn ${shownViolation.submission.turn ?? '-'}, length ${shownViolation.submission.length ?? '-'}`"></dd>
                             <dt>Details</dt>
-                            <dd x-text="violation.submission.details || 'No details given.'"></dd>
+                            <dd x-text="shownViolation.submission.details || 'No details given.'"></dd>
                         </dl>
                     </template>
                     <div class="v2-modal-actions">
@@ -274,8 +276,10 @@
                     loading: false,
                     error: null,
                     modal: false,
-                    violation: null,
+                    // Not "violation": openViolation runs in the table's x-for scope, where that's the loop variable
+                    shownViolation: null,
                     request: 0,
+                    rowKeys: 0,
 
                     get current() {
                         const id = this.picks[this.tab];
@@ -287,7 +291,11 @@
                     },
 
                     get visibleColumns() {
-                        return (this.table?.columns ?? []).filter((column) => !column.detail || this.detailed);
+                        return this.shownColumns(this.table?.columns ?? []);
+                    },
+
+                    shownColumns(columns) {
+                        return columns.filter((column) => !column.detail || this.detailed);
                     },
 
                     init() {
@@ -379,6 +387,15 @@
                         this.$refs.table?.animate([{ opacity: 0.4 }, { opacity: 1 }], { duration: 200, easing: 'ease-out' });
                     },
 
+                    // New keys and their own columns, so a new table replaces the old rows. Reusing them would pair a
+                    // row with the old table's columns during the swap, and those cells throw.
+                    tabulate(columns, rows) {
+                        return {
+                            columns,
+                            rows: rows.map((row) => ({ ...row, _key: ++this.rowKeys, _columns: columns })),
+                        };
+                    },
+
                     // An Event's table: columns starting "_" are for the page, and a cell is a value or {type, data}
                     fromEvent(json) {
                         const columns = Object.entries(json.columns)
@@ -386,10 +403,7 @@
                             .map(([id, label]) => ({ id, label, detail: false }));
                         const cell = (value) => value !== null && typeof value === 'object' ? value : { type: 'string', data: value };
 
-                        return {
-                            columns,
-                            rows: json.data.map((row) => Object.fromEntries(columns.map((column) => [column.id, cell(row.data[column.id])]))),
-                        };
+                        return this.tabulate(columns, json.data.map((row) => Object.fromEntries(columns.map((column) => [column.id, cell(row.data[column.id])]))));
                     },
 
                     // A sheet's table: "event:type" columns hold a place and points, shown with "Show each event"
@@ -401,10 +415,7 @@
                             data: value !== null && typeof value === 'object' ? `${value.position} (${value.points} pts)` : value,
                         });
 
-                        return {
-                            columns,
-                            rows: json.data.map((row) => Object.fromEntries(columns.map((column) => [column.id, cell(row[column.id])]))),
-                        };
+                        return this.tabulate(columns, json.data.map((row) => Object.fromEntries(columns.map((column) => [column.id, cell(row[column.id])]))));
                     },
 
                     breakdownUrl() {
@@ -412,11 +423,17 @@
                         return this.league !== null ? `${url}?league=${this.league}` : url;
                     },
 
+                    // An official's position is optional, and their name is gone once their account is deleted
+                    person(name, position) {
+                        if (!name) return position;
+                        return position ? `${name} (${position})` : name;
+                    },
+
                     async openViolation(violation, name = '') {
                         const response = await fetch(this.urls.violation.replace('_id', violation.id).replace('_type', violation.type));
                         if (!response.ok) return;
                         const data = await response.json();
-                        this.violation = { ...data, for: data.for || name };
+                        this.shownViolation = { ...data, for: data.for || name };
                         this.modal = true;
                     },
                 };

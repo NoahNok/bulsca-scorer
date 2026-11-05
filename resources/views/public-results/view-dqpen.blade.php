@@ -17,7 +17,7 @@
     <div class="mb-5 relative card" ">
 
         <div  class="flex justify-between items-center">
-            <h3>{{ $dq->getHeat?->getTeam?->getFullname() ?? '-' }}</h3>
+            <h3>{{ $team->getFullname() }}</h3>
             
 
 
@@ -28,18 +28,20 @@
         <div >
 
 
-            <div class="flex justify-between">
-                <p>
-                    @if ($dq->getHeat?->getPool)
-                        <strong>Pool</strong>: {{ $dq->getHeat->getPool->name }}
-                    @endif
-                    <strong>Heat</strong>: {{ $dq->getHeat?->heat ?? '-' }}
-                    <strong>Lane</strong>: {{ $dq->getHeat?->lane ?? '-' }} </span>
-                </p>
-            </div>
+            @if ($heat)
+                <div class="flex justify-between">
+                    <p>
+                        @if ($heat->getPool)
+                            <strong>Pool</strong>: {{ $heat->getPool->name }}
+                        @endif
+                        <strong>Heat</strong>: {{ $heat->heat }}
+                        <strong>Lane</strong>: {{ $heat->lane }} </span>
+                    </p>
+                </div>
+            @endif
 
             <div class="flex justify-between">
-                <p><strong>Team</strong>: {{ $dq->getHeat?->getTeam?->getFullname() ?? '-' }}</p>
+                <p><strong>Team</strong>: {{ $team->getFullname() }}</p>
                 <p><strong>Turn</strong>: {{ $dq['turn'] ?? '-' }} <strong>Length</strong>:
                     {{ $dq['length'] ?? '-' }}
                 </p>
@@ -69,7 +71,9 @@
 
             <div name="" id="" readonly class="w-full  -mt-2 text-sm text-gray-500 mb-6">
                 @php
-                    if (str_starts_with($dq['code'], 'P')) {
+                    if (isset($description)) {
+                        $code = $description;
+                    } elseif (str_starts_with($dq['code'], 'P')) {
                         $code = substr($dq['code'], 1);
 
                         $code = App\Models\PenaltyCode::find($code)->description ?? 'Penalty code not found';

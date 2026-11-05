@@ -124,6 +124,26 @@ class ViolationSubmission extends Model implements IJsonable
         ];
     }
 
+    /**
+     * What the public results show about an applied submission, in the shape of an old JudgeDQSubmission.
+     * The code comes from the applied violation, as an Organiser can delete the code that was submitted.
+     */
+    public function publicDetails(): array
+    {
+        return [
+            'code' => "{$this->applied}",
+            'turn' => $this->turn,
+            'length' => $this->length,
+            'details' => $this->details,
+            // null once the submitter's account is deleted
+            'name' => $this->submitter?->name,
+            'position' => $this->submitter_position,
+            'seconder_name' => $this->seconder?->name ?? $this->seconder_name,
+            'seconder_position' => $this->seconder_position,
+            'resolved' => true,
+        ];
+    }
+
     private function getHeatLane()
     {
         $heatlane = $this->event->getHeats()->whereMorphedTo('entity', $this->entity)->first();

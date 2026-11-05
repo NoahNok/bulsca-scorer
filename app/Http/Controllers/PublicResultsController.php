@@ -6,6 +6,7 @@ use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\CompetitionTeam;
 use App\Models\DigitalJudge\JudgeDQSubmission;
+use App\Models\DigitalJudge\Violation\ViolationSubmission;
 use App\Models\DQCode;
 use App\Models\Penalty;
 use App\Models\PenaltyCode;
@@ -265,6 +266,24 @@ class PublicResultsController extends Controller
     {
 
         // only accepted DQs from released events, so who reported them stays private until then
+        $violationSubmission = ViolationSubmission::with(['event', 'applied', 'submitter', 'seconder'])
+            ->where('competition_id', $comp->id)
+            ->whereMorphedTo('entity', $team)
+            ->where('status', 'ACCEPTED')
+            ->get()
+            ->first(fn($submission) => "{$submission->applied}" === strtoupper($code) && $comp->hasReleased($submission->event));
+
+        if ($violationSubmission) {
+            $event = $violationSubmission->event;
+
+            return view('public-results.view-dqpen', [
+                'dq' => $violationSubmission->publicDetails(),
+                'team' => $team,
+                'heat' => $event->getType() == 'speed' ? $event->getHeats()->whereMorphedTo('entity', $team)->first() : null,
+                'description' => $violationSubmission->applied->getMessage(),
+            ]);
+        }
+
         $judgeSubmission = JudgeDQSubmission::with(['getHeat', 'getEvent'])
             ->where('competition', $comp->id)
             ->where('code', $code)
@@ -287,6 +306,6 @@ class PublicResultsController extends Controller
             }
         }
 
-        return view('public-results.view-dqpen', ['dq' => $judgeSubmission]);
+        return view('public-results.view-dqpen', ['dq' => $judgeSubmission, 'team' => $team, 'heat' => $judgeSubmission->getHeat]);
     }
 }
