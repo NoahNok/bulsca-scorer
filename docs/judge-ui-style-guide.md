@@ -259,6 +259,19 @@ mode, `font-archivo text-xl font-semibold` for the heat/team), an optional
 `divide-y rounded-xl border bg-white` list, then `SignOffCheckbox` and a
 full-width primary submit `Button`.
 
+Time inputs (`Judging/Speed/Lane`) are `type="text" inputmode="numeric"` so the
+phone keyboard is a number pad; the mask adds the `:` and `.`. They are
+`text-base sm:text-sm`: iOS zooms the page into any focused input under 16px,
+so inputs judges tap on a phone need 16px text at phone widths. Because that
+keyboard has no letters, the page renders `Judging/Speed/ResultKeyBar` with
+the lane list as its `scope`: a fixed `bg-gray-50` toolbar of DNF / DNS / OOT
+buttons that sits just above the keyboard (positioned from `visualViewport`,
+since `bottom: 0` hides behind the iOS keyboard) while a lane input is focused.
+Its buttons `preventDefault` on pointerdown so the input keeps focus; a tap
+writes the value via a bubbling `input` event (so maska, the binding and
+validation all run) and moves focus to the next lane. Reuse it anywhere a
+numeric field needs a few word values.
+
 ### Heats and pools
 
 When a competition uses pools, heat numbers restart in each pool, so a heat is a

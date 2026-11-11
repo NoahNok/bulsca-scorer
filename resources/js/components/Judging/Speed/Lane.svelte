@@ -42,8 +42,10 @@
             {lane.entity.name}
         </span>
         <input
-            class="w-32 shrink-0 rounded-lg border border-gray-300 bg-white px-3 py-2 text-right font-mono text-sm text-gray-900 shadow-xs transition-all placeholder:text-gray-400 hover:border-gray-400 focus:border-se focus:ring-2 focus:ring-se/20 focus:outline-none user-invalid:border-red-400"
+            class="w-32 shrink-0 rounded-lg border border-gray-300 bg-white px-3 py-2 text-right font-mono text-base text-gray-900 sm:text-sm shadow-xs transition-all placeholder:text-gray-400 hover:border-gray-400 focus:border-se focus:ring-2 focus:ring-se/20 focus:outline-none user-invalid:border-red-400"
             type="text"
+            inputmode="numeric"
+            autocomplete="off"
             aria-label="Result for lane {lane.lane}"
             placeholder={allowSingleDigit ? "0–3 / time" : "00:00.00"}
             bind:value={times[lane.entity.id]}

@@ -19,6 +19,7 @@
     import BackLink from "@/components/BackLink.svelte";
     import Button from "@/components/Button.svelte";
     import Lane from "@/components/Judging/Speed/Lane.svelte";
+    import ResultKeyBar from "@/components/Judging/Speed/ResultKeyBar.svelte";
     import SignOffCheckbox from "@/components/Judging/SignOffCheckbox.svelte";
     import SectionLabel from "@/components/SectionLabel.svelte";
     import { heatLabel, heatQuery, laneCount } from "@/lib/heats";
@@ -51,6 +52,8 @@
     });
 
     let hasNextHeat = $state<boolean>(true);
+
+    let laneList = $state<HTMLDivElement>();
 
     const http = useHttp<{}, { hasNextHeat: boolean }>().transform(() => ({
         mark: times,
@@ -108,7 +111,8 @@
         <Info size={16} class="mt-0.5 shrink-0 text-gray-400" />
         <p>
             Enter times as <strong class="font-mono">00:00.00</strong>, including
-            leading zeros, or <strong>DNF</strong> / <strong>DNS</strong>.
+            leading zeros. For <strong>DNF</strong>, <strong>DNS</strong> or
+            <strong>OOT</strong>, tap the buttons above the keyboard.
             {#if event.name == "Rope Throw"}
                 For Rope Throw you can instead enter how many people were pulled
                 in (0–3).
@@ -117,7 +121,10 @@
     </div>
 
     <form onsubmit={submit} class="mt-4 flex flex-col gap-4">
-        <div class="divide-y overflow-hidden rounded-xl border bg-white shadow-sm">
+        <div
+            bind:this={laneList}
+            class="divide-y overflow-hidden rounded-xl border bg-white shadow-sm"
+        >
             {#each Array.from({ length: laneCount(heat, event.max_lanes) }, (_, i) => i + 1) as lane}
                 <Lane
                     lane={heat.lanes?.find((l) => l.lane === lane) ?? lane}
@@ -131,6 +138,8 @@
 
         <Button type="submit" label="Submit Times" class="w-full" icon={Check} />
     </form>
+
+    <ResultKeyBar scope={laneList} />
 
     <ActionStatusModal
         bind:this={modalRef}
