@@ -42,7 +42,9 @@ export default defineConfig(({ command, mode }) => {
                 input: ["resources/css/app.css", "resources/css/v2.css", "resources/css/manage.css", "resources/js/app.ts", "resources/js/manage.ts", "resources/js/legacy-app.js", "resources/js/basic-app.js"],
                 refresh: true,
             }),
-            inertia(),
+            // No SSR here: without this the plugin treats app.ts as the SSR entry and evaluates it in
+            // Node at startup, where the browser globals the judge app sets up (PWA install) don't exist
+            inertia({ ssr: false }),
             tailwindcss(),
             svelte(),
             wayfinder(),
