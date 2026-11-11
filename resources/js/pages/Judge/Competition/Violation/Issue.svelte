@@ -178,7 +178,10 @@
     });
 
     let violationSearchableTerm = $derived.by<string>(() => {
-        return violationSearchTerm.toLowerCase().trim();
+        return violationSearchTerm
+            .toLowerCase()
+            .trim()
+            .replace(/^(dq|p)(\d+)$/, "$2");
     });
 
     const heatsHttp = useHttp<{}, Heat[]>();

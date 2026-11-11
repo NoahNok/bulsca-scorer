@@ -93,6 +93,9 @@
 
     let hasSubmitted = $state(false);
 
+    // spinner on "Continue" while the next team's page loads
+    let loadingNext = $state(false);
+
     const showTeamNames = $derived(
         competition.show_teams_to_judges || page.props.judge.isHeadRef,
     );
@@ -292,12 +295,20 @@
                 })}
                 viewTransition
                 class="w-full"
+                onbefore={((e: Event) => {
+                    // ignore repeat taps while the first visit is loading
+                    // (Inertia types this as () => void but passes the event)
+                    if (loadingNext) e.preventDefault();
+                }) as () => void}
+                onstart={() => (loadingNext = true)}
+                onfinish={() => (loadingNext = false)}
             >
                 <Button
                     class="mb-0! w-full"
                     label="Continue"
                     type="button"
                     icon={ArrowRight}
+                    loading={loadingNext}
                 />
             </Link>
 
