@@ -1,0 +1,988 @@
+{
+  "competition": "Yorkshire Regional",
+  "events": {
+    "speed:205": {
+      "name": "Rope Throw",
+      "results": {
+        "all": [
+          {"entity":"competitor:1386","name":"Competitor 79 - Leeds Phoenix LSC (Masters Open 50-59) MO50-59","result":14940,"resolved":14940,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1384","name":"Competitor 77 - Leeds Lifesaving (Ladies) LI","result":16190,"resolved":16190,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1350","name":"Competitor 45 - Leeds Lifesaving (Junior Open Pairs) JOP 4","result":12100,"resolved":28660,"points":3,"position":3,"dqs":[],"pens":[],"combined":["competitor:1350","competitor:1351"]},
+          {"entity":"competitor:1334","name":"Competitor 29 - Leeds Phoenix LSC (Junior Open Pairs) JOP 1","result":16690,"resolved":33510,"points":4,"position":4,"dqs":[],"pens":[],"combined":["competitor:1334","competitor:1335"]},
+          {"entity":"competitor:1322","name":"Competitor 19 - Leeds Lifesaving (Junior Girls Pairs) JGP 7","result":15560,"resolved":33870,"points":5,"position":5,"dqs":[],"pens":[],"combined":["competitor:1322","competitor:1323"]},
+          {"entity":"competitor:1346","name":"Competitor 41 - Leeds Lifesaving (Junior Open Pairs) JOP 2","result":17470,"resolved":34750,"points":6,"position":6,"dqs":[],"pens":[],"combined":["competitor:1346","competitor:1347"]},
+          {"entity":"competitor:1338","name":"Competitor 33 - Rawmarsh LSC (Junior Open Pairs) JOP 1","result":20880,"resolved":40940,"points":7,"position":7,"dqs":[],"pens":[],"combined":["competitor:1338","competitor:1339"]},
+          {"entity":"competitor:1326","name":"Competitor 21 - Leeds Lifesaving (Junior Girls Pairs) JGP 9","result":27900,"resolved":41150,"points":8,"position":8,"dqs":[],"pens":[],"combined":["competitor:1326","competitor:1327"]},
+          {"entity":"competitor:1376","name":"Competitor 71 - Leeds Lifesaving (Senior Open Pairs) SOP 4","result":31590,"resolved":45550,"points":9,"position":9,"dqs":[],"pens":[],"combined":["competitor:1376","competitor:1377"]},
+          {"entity":"competitor:1378","name":"Competitor 73 - Leeds Lifesaving (Senior Open Pairs) SOP 5","result":20000,"resolved":49160,"points":10,"position":10,"dqs":[],"pens":[],"combined":["competitor:1378","competitor:1379"]},
+          {"entity":"competitor:1328","name":"Competitor 23 - Leeds Lifesaving (Junior Girls Pairs) JGP 10","result":17410,"resolved":52720,"points":11,"position":11,"dqs":[],"pens":[],"combined":["competitor:1328","competitor:1329"]},
+          {"entity":"competitor:1330","name":"Competitor 25 - Leeds Lifesaving (Junior Girls Pairs) JGP 11","result":29280,"resolved":55220,"points":12,"position":12,"dqs":[],"pens":[],"combined":["competitor:1330","competitor:1331"]},
+          {"entity":"competitor:1344","name":"Competitor 39 - Leeds Lifesaving (Junior Open Pairs) JOP 1","result":18810,"resolved":60190,"points":13,"position":13,"dqs":[],"pens":[],"combined":["competitor:1344","competitor:1345"]},
+          {"entity":"competitor:1352","name":"Competitor 47 - Leeds Lifesaving (Junior Open Pairs) JOP 5","result":19920,"resolved":63080,"points":14,"position":14,"dqs":[],"pens":[],"combined":["competitor:1352","competitor:1353"]},
+          {"entity":"competitor:1370","name":"Competitor 65 - Leeds Lifesaving (Senior Open Pairs) SOP 1","result":39220,"resolved":71220,"points":15,"position":15,"dqs":[],"pens":[],"combined":["competitor:1370","competitor:1371"]},
+          {"entity":"competitor:1385","name":"Competitor 78 - Leeds Lifesaving (Open) OI","result":120000,"resolved":120000,"points":16.5,"position":16,"dqs":[999],"pens":[],"combined":[]},
+          {"entity":"competitor:1387","name":"Competitor 80 - Loughborough Students Lifesaving (Ladies) LI","result":120000,"resolved":120000,"points":16.5,"position":16,"dqs":[999],"pens":[],"combined":[]},
+          {"entity":"competitor:1312","name":"Competitor 9 - Leeds Lifesaving (Junior Girls Pairs) JGP 2","result":120000,"resolved":137940,"points":18,"position":18,"dqs":[999],"pens":[],"combined":["competitor:1312","competitor:1313"]},
+          {"entity":"competitor:1362","name":"Competitor 57 - Leeds Lifesaving (Senior Girls Pairs) SGP 1","result":18590,"resolved":138590,"points":19,"position":19,"dqs":[],"pens":[],"combined":["competitor:1362","competitor:1363"]},
+          {"entity":"competitor:1318","name":"Competitor 15 - Leeds Lifesaving (Junior Girls Pairs) JGP 5","result":19530,"resolved":139530,"points":20,"position":20,"dqs":[],"pens":[],"combined":["competitor:1318","competitor:1319"]},
+          {"entity":"competitor:1342","name":"Competitor 37 - Rawmarsh LSC (Junior Open Pairs) JOP 3","result":19910,"resolved":139910,"points":21,"position":21,"dqs":[],"pens":[],"combined":["competitor:1342","competitor:1343"]},
+          {"entity":"competitor:1356","name":"Competitor 51 - Leeds Lifesaving (Junior Open Pairs) JOP 7","result":21380,"resolved":141380,"points":22,"position":22,"dqs":[],"pens":[],"combined":["competitor:1356","competitor:1357"]},
+          {"entity":"competitor:1368","name":"Competitor 63 - Leeds Phoenix LSC (Senior Open Pairs) SOP","result":23500,"resolved":143500,"points":23,"position":23,"dqs":[],"pens":[],"combined":["competitor:1368","competitor:1369"]},
+          {"entity":"competitor:1354","name":"Competitor 49 - Leeds Lifesaving (Junior Open Pairs) JOP 6","result":120000,"resolved":143570,"points":24,"position":24,"dqs":[999],"pens":[],"combined":["competitor:1354","competitor:1355"]},
+          {"entity":"competitor:1340","name":"Competitor 35 - Rawmarsh LSC (Junior Open Pairs) JOP 2","result":120000,"resolved":144790,"points":25,"position":25,"dqs":[999],"pens":[],"combined":["competitor:1340","competitor:1341"]},
+          {"entity":"competitor:1372","name":"Competitor 67 - Leeds Lifesaving (Senior Open Pairs) SOP 2","result":32030,"resolved":152030,"points":26,"position":26,"dqs":[],"pens":[],"combined":["competitor:1372","competitor:1373"]},
+          {"entity":"competitor:1320","name":"Competitor 17 - Leeds Lifesaving (Junior Girls Pairs) JGP 6","result":33100,"resolved":153100,"points":27,"position":27,"dqs":[],"pens":[],"combined":["competitor:1320","competitor:1321"]},
+          {"entity":"competitor:1316","name":"Competitor 13 - Leeds Lifesaving (Junior Girls Pairs) JGP 4","result":120000,"resolved":153690,"points":28,"position":28,"dqs":[999],"pens":[],"combined":["competitor:1316","competitor:1317"]},
+          {"entity":"competitor:1336","name":"Competitor 31 - Leeds Phoenix LSC (Junior Open Pairs) JOP 2","result":120000,"resolved":157190,"points":29,"position":29,"dqs":[999],"pens":[],"combined":["competitor:1336","competitor:1337"]},
+          {"entity":"competitor:1310","name":"Competitor 7 - Leeds Lifesaving (Junior Girls Pairs) JGP 1","result":120000,"resolved":157500,"points":30,"position":30,"dqs":[999],"pens":[],"combined":["competitor:1310","competitor:1311"]},
+          {"entity":"competitor:1308","name":"Competitor 5 - Leeds Phoenix LSC (Junior Girls Pairs) JGP 3","result":120000,"resolved":160940,"points":31,"position":31,"dqs":[999],"pens":[],"combined":["competitor:1308","competitor:1309"]},
+          {"entity":"competitor:1304","name":"Competitor 1 - Leeds Phoenix LSC (Junior Girls Pairs) JGP 1","result":120000,"resolved":162750,"points":32,"position":32,"dqs":[999],"pens":[],"combined":["competitor:1304","competitor:1305"]},
+          {"entity":"competitor:1366","name":"Competitor 61 - Leeds Lifesaving (Senior Girls Pairs) SGP 3","result":120000,"resolved":164850,"points":33,"position":33,"dqs":[999],"pens":[],"combined":["competitor:1366","competitor:1367"]},
+          {"entity":"competitor:1306","name":"Competitor 3 - Leeds Phoenix LSC (Junior Girls Pairs) JGP 2","result":120000,"resolved":240000,"points":37,"position":34,"dqs":[999],"pens":[],"combined":["competitor:1306","competitor:1307"]},
+          {"entity":"competitor:1314","name":"Competitor 11 - Leeds Lifesaving (Junior Girls Pairs) JGP 3","result":120000,"resolved":240000,"points":37,"position":34,"dqs":[999],"pens":[],"combined":["competitor:1314","competitor:1315"]},
+          {"entity":"competitor:1332","name":"Competitor 27 - Leeds Lifesaving (Junior Girls Pairs) JGP 12","result":120000,"resolved":240000,"points":37,"position":34,"dqs":[999],"pens":[],"combined":["competitor:1332","competitor:1333"]},
+          {"entity":"competitor:1358","name":"Competitor 53 - Leeds Phoenix LSC (Senior Girls Pairs) SGP 1","result":120000,"resolved":240000,"points":37,"position":34,"dqs":[999],"pens":[],"combined":["competitor:1358","competitor:1359"]},
+          {"entity":"competitor:1364","name":"Competitor 59 - Leeds Lifesaving (Senior Girls Pairs) SGP 2","result":120000,"resolved":240000,"points":37,"position":34,"dqs":[999],"pens":[],"combined":["competitor:1364","competitor:1365"]},
+          {"entity":"competitor:1374","name":"Competitor 69 - Leeds Lifesaving (Senior Open Pairs) SOP 3","result":120000,"resolved":240000,"points":37,"position":34,"dqs":[999],"pens":[],"combined":["competitor:1374","competitor:1375"]},
+          {"entity":"competitor:1380","name":"Competitor 75 - Leeds Lifesaving (Adult Ladies Pairs) ALP 1","result":120000,"resolved":240000,"points":37,"position":34,"dqs":[999],"pens":[],"combined":["competitor:1380","competitor:1381"]},
+          {"entity":"competitor:1348","name":"Competitor 43 - Leeds Lifesaving (Junior Open Pairs) JOP 3","result":26060,"resolved":626060,"points":41,"position":41,"dqs":[],"pens":[],"combined":["competitor:1348","competitor:1349"]},
+          {"entity":"competitor:1360","name":"Competitor 55 - Leeds Phoenix LSC (Senior Girls Pairs) SGP 2","result":25410,"resolved":720000,"points":42,"position":42,"dqs":[123],"pens":[],"combined":["competitor:1360","competitor:1361"]}
+        ],
+        "league:210": [
+          {"entity":"competitor:1322","name":"Competitor 19 - Leeds Lifesaving (Junior Girls Pairs) JGP 7","result":15560,"resolved":33870,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1322","competitor:1323"]},
+          {"entity":"competitor:1326","name":"Competitor 21 - Leeds Lifesaving (Junior Girls Pairs) JGP 9","result":27900,"resolved":41150,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1326","competitor:1327"]},
+          {"entity":"competitor:1328","name":"Competitor 23 - Leeds Lifesaving (Junior Girls Pairs) JGP 10","result":17410,"resolved":52720,"points":3,"position":3,"dqs":[],"pens":[],"combined":["competitor:1328","competitor:1329"]},
+          {"entity":"competitor:1330","name":"Competitor 25 - Leeds Lifesaving (Junior Girls Pairs) JGP 11","result":29280,"resolved":55220,"points":4,"position":4,"dqs":[],"pens":[],"combined":["competitor:1330","competitor:1331"]},
+          {"entity":"competitor:1312","name":"Competitor 9 - Leeds Lifesaving (Junior Girls Pairs) JGP 2","result":120000,"resolved":137940,"points":5,"position":5,"dqs":[999],"pens":[],"combined":["competitor:1312","competitor:1313"]},
+          {"entity":"competitor:1318","name":"Competitor 15 - Leeds Lifesaving (Junior Girls Pairs) JGP 5","result":19530,"resolved":139530,"points":6,"position":6,"dqs":[],"pens":[],"combined":["competitor:1318","competitor:1319"]},
+          {"entity":"competitor:1320","name":"Competitor 17 - Leeds Lifesaving (Junior Girls Pairs) JGP 6","result":33100,"resolved":153100,"points":7,"position":7,"dqs":[],"pens":[],"combined":["competitor:1320","competitor:1321"]},
+          {"entity":"competitor:1316","name":"Competitor 13 - Leeds Lifesaving (Junior Girls Pairs) JGP 4","result":120000,"resolved":153690,"points":8,"position":8,"dqs":[999],"pens":[],"combined":["competitor:1316","competitor:1317"]},
+          {"entity":"competitor:1310","name":"Competitor 7 - Leeds Lifesaving (Junior Girls Pairs) JGP 1","result":120000,"resolved":157500,"points":9,"position":9,"dqs":[999],"pens":[],"combined":["competitor:1310","competitor:1311"]},
+          {"entity":"competitor:1308","name":"Competitor 5 - Leeds Phoenix LSC (Junior Girls Pairs) JGP 3","result":120000,"resolved":160940,"points":10,"position":10,"dqs":[999],"pens":[],"combined":["competitor:1308","competitor:1309"]},
+          {"entity":"competitor:1304","name":"Competitor 1 - Leeds Phoenix LSC (Junior Girls Pairs) JGP 1","result":120000,"resolved":162750,"points":11,"position":11,"dqs":[999],"pens":[],"combined":["competitor:1304","competitor:1305"]},
+          {"entity":"competitor:1306","name":"Competitor 3 - Leeds Phoenix LSC (Junior Girls Pairs) JGP 2","result":120000,"resolved":240000,"points":13,"position":12,"dqs":[999],"pens":[],"combined":["competitor:1306","competitor:1307"]},
+          {"entity":"competitor:1314","name":"Competitor 11 - Leeds Lifesaving (Junior Girls Pairs) JGP 3","result":120000,"resolved":240000,"points":13,"position":12,"dqs":[999],"pens":[],"combined":["competitor:1314","competitor:1315"]},
+          {"entity":"competitor:1332","name":"Competitor 27 - Leeds Lifesaving (Junior Girls Pairs) JGP 12","result":120000,"resolved":240000,"points":13,"position":12,"dqs":[999],"pens":[],"combined":["competitor:1332","competitor:1333"]}
+        ],
+        "league:211": [
+          {"entity":"competitor:1350","name":"Competitor 45 - Leeds Lifesaving (Junior Open Pairs) JOP 4","result":12100,"resolved":28660,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1350","competitor:1351"]},
+          {"entity":"competitor:1334","name":"Competitor 29 - Leeds Phoenix LSC (Junior Open Pairs) JOP 1","result":16690,"resolved":33510,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1334","competitor:1335"]},
+          {"entity":"competitor:1346","name":"Competitor 41 - Leeds Lifesaving (Junior Open Pairs) JOP 2","result":17470,"resolved":34750,"points":3,"position":3,"dqs":[],"pens":[],"combined":["competitor:1346","competitor:1347"]},
+          {"entity":"competitor:1338","name":"Competitor 33 - Rawmarsh LSC (Junior Open Pairs) JOP 1","result":20880,"resolved":40940,"points":4,"position":4,"dqs":[],"pens":[],"combined":["competitor:1338","competitor:1339"]},
+          {"entity":"competitor:1344","name":"Competitor 39 - Leeds Lifesaving (Junior Open Pairs) JOP 1","result":18810,"resolved":60190,"points":5,"position":5,"dqs":[],"pens":[],"combined":["competitor:1344","competitor:1345"]},
+          {"entity":"competitor:1352","name":"Competitor 47 - Leeds Lifesaving (Junior Open Pairs) JOP 5","result":19920,"resolved":63080,"points":6,"position":6,"dqs":[],"pens":[],"combined":["competitor:1352","competitor:1353"]},
+          {"entity":"competitor:1342","name":"Competitor 37 - Rawmarsh LSC (Junior Open Pairs) JOP 3","result":19910,"resolved":139910,"points":7,"position":7,"dqs":[],"pens":[],"combined":["competitor:1342","competitor:1343"]},
+          {"entity":"competitor:1356","name":"Competitor 51 - Leeds Lifesaving (Junior Open Pairs) JOP 7","result":21380,"resolved":141380,"points":8,"position":8,"dqs":[],"pens":[],"combined":["competitor:1356","competitor:1357"]},
+          {"entity":"competitor:1354","name":"Competitor 49 - Leeds Lifesaving (Junior Open Pairs) JOP 6","result":120000,"resolved":143570,"points":9,"position":9,"dqs":[999],"pens":[],"combined":["competitor:1354","competitor:1355"]},
+          {"entity":"competitor:1340","name":"Competitor 35 - Rawmarsh LSC (Junior Open Pairs) JOP 2","result":120000,"resolved":144790,"points":10,"position":10,"dqs":[999],"pens":[],"combined":["competitor:1340","competitor:1341"]},
+          {"entity":"competitor:1336","name":"Competitor 31 - Leeds Phoenix LSC (Junior Open Pairs) JOP 2","result":120000,"resolved":157190,"points":11,"position":11,"dqs":[999],"pens":[],"combined":["competitor:1336","competitor:1337"]},
+          {"entity":"competitor:1348","name":"Competitor 43 - Leeds Lifesaving (Junior Open Pairs) JOP 3","result":26060,"resolved":626060,"points":12,"position":12,"dqs":[],"pens":[],"combined":["competitor:1348","competitor:1349"]}
+        ],
+        "league:212": [
+          {"entity":"competitor:1362","name":"Competitor 57 - Leeds Lifesaving (Senior Girls Pairs) SGP 1","result":18590,"resolved":138590,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1362","competitor:1363"]},
+          {"entity":"competitor:1366","name":"Competitor 61 - Leeds Lifesaving (Senior Girls Pairs) SGP 3","result":120000,"resolved":164850,"points":2,"position":2,"dqs":[999],"pens":[],"combined":["competitor:1366","competitor:1367"]},
+          {"entity":"competitor:1358","name":"Competitor 53 - Leeds Phoenix LSC (Senior Girls Pairs) SGP 1","result":120000,"resolved":240000,"points":3.5,"position":3,"dqs":[999],"pens":[],"combined":["competitor:1358","competitor:1359"]},
+          {"entity":"competitor:1364","name":"Competitor 59 - Leeds Lifesaving (Senior Girls Pairs) SGP 2","result":120000,"resolved":240000,"points":3.5,"position":3,"dqs":[999],"pens":[],"combined":["competitor:1364","competitor:1365"]},
+          {"entity":"competitor:1360","name":"Competitor 55 - Leeds Phoenix LSC (Senior Girls Pairs) SGP 2","result":25410,"resolved":720000,"points":5,"position":5,"dqs":[123],"pens":[],"combined":["competitor:1360","competitor:1361"]}
+        ],
+        "league:213": [
+          {"entity":"competitor:1376","name":"Competitor 71 - Leeds Lifesaving (Senior Open Pairs) SOP 4","result":31590,"resolved":45550,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1376","competitor:1377"]},
+          {"entity":"competitor:1378","name":"Competitor 73 - Leeds Lifesaving (Senior Open Pairs) SOP 5","result":20000,"resolved":49160,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1378","competitor:1379"]},
+          {"entity":"competitor:1370","name":"Competitor 65 - Leeds Lifesaving (Senior Open Pairs) SOP 1","result":39220,"resolved":71220,"points":3,"position":3,"dqs":[],"pens":[],"combined":["competitor:1370","competitor:1371"]},
+          {"entity":"competitor:1368","name":"Competitor 63 - Leeds Phoenix LSC (Senior Open Pairs) SOP","result":23500,"resolved":143500,"points":4,"position":4,"dqs":[],"pens":[],"combined":["competitor:1368","competitor:1369"]},
+          {"entity":"competitor:1372","name":"Competitor 67 - Leeds Lifesaving (Senior Open Pairs) SOP 2","result":32030,"resolved":152030,"points":5,"position":5,"dqs":[],"pens":[],"combined":["competitor:1372","competitor:1373"]},
+          {"entity":"competitor:1374","name":"Competitor 69 - Leeds Lifesaving (Senior Open Pairs) SOP 3","result":120000,"resolved":240000,"points":6,"position":6,"dqs":[999],"pens":[],"combined":["competitor:1374","competitor:1375"]}
+        ],
+        "league:214": [
+          {"entity":"competitor:1380","name":"Competitor 75 - Leeds Lifesaving (Adult Ladies Pairs) ALP 1","result":120000,"resolved":240000,"points":1,"position":4,"dqs":[999],"pens":[],"combined":["competitor:1380","competitor:1381"]}
+        ],
+        "league:216": [
+          {"entity":"competitor:1384","name":"Competitor 77 - Leeds Lifesaving (Ladies) LI","result":16190,"resolved":16190,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1387","name":"Competitor 80 - Loughborough Students Lifesaving (Ladies) LI","result":120000,"resolved":120000,"points":2,"position":4,"dqs":[999],"pens":[],"combined":[]}
+        ],
+        "league:217": [
+          {"entity":"competitor:1385","name":"Competitor 78 - Leeds Lifesaving (Open) OI","result":120000,"resolved":120000,"points":1,"position":4,"dqs":[999],"pens":[],"combined":[]}
+        ],
+        "league:223": [
+          {"entity":"competitor:1386","name":"Competitor 79 - Leeds Phoenix LSC (Masters Open 50-59) MO50-59","result":14940,"resolved":14940,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    },
+    "speed:206": {
+      "name": "Swim & Tow",
+      "results": {
+        "all": [
+          {"entity":"competitor:1386","name":"Competitor 79 - Leeds Phoenix LSC (Masters Open 50-59) MO50-59","result":50120,"resolved":50120,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1350","name":"Competitor 45 - Leeds Lifesaving (Junior Open Pairs) JOP 4","result":50970,"resolved":93880,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1350","competitor:1351"]},
+          {"entity":"competitor:1334","name":"Competitor 29 - Leeds Phoenix LSC (Junior Open Pairs) JOP 1","result":51840,"resolved":99780,"points":3,"position":3,"dqs":[],"pens":[],"combined":["competitor:1334","competitor:1335"]},
+          {"entity":"competitor:1326","name":"Competitor 21 - Leeds Lifesaving (Junior Girls Pairs) JGP 9","result":53750,"resolved":100090,"points":4,"position":4,"dqs":[],"pens":[],"combined":["competitor:1326","competitor:1327"]},
+          {"entity":"competitor:1322","name":"Competitor 19 - Leeds Lifesaving (Junior Girls Pairs) JGP 7","result":51070,"resolved":100910,"points":5,"position":5,"dqs":[],"pens":[],"combined":["competitor:1322","competitor:1323"]},
+          {"entity":"competitor:1308","name":"Competitor 5 - Leeds Phoenix LSC (Junior Girls Pairs) JGP 3","result":51880,"resolved":104420,"points":6,"position":6,"dqs":[],"pens":[],"combined":["competitor:1308","competitor:1309"]},
+          {"entity":"competitor:1320","name":"Competitor 17 - Leeds Lifesaving (Junior Girls Pairs) JGP 6","result":53690,"resolved":106280,"points":7,"position":7,"dqs":[],"pens":[],"combined":["competitor:1320","competitor:1321"]},
+          {"entity":"competitor:1306","name":"Competitor 3 - Leeds Phoenix LSC (Junior Girls Pairs) JGP 2","result":57900,"resolved":106340,"points":8,"position":8,"dqs":[],"pens":[],"combined":["competitor:1306","competitor:1307"]},
+          {"entity":"competitor:1336","name":"Competitor 31 - Leeds Phoenix LSC (Junior Open Pairs) JOP 2","result":48970,"resolved":107780,"points":9,"position":9,"dqs":[],"pens":[],"combined":["competitor:1336","competitor:1337"]},
+          {"entity":"competitor:1387","name":"Competitor 80 - Loughborough Students Lifesaving (Ladies) LI","result":108040,"resolved":108040,"points":10,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1384","name":"Competitor 77 - Leeds Lifesaving (Ladies) LI","result":111720,"resolved":111720,"points":11,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1352","name":"Competitor 47 - Leeds Lifesaving (Junior Open Pairs) JOP 5","result":57970,"resolved":112780,"points":12,"position":12,"dqs":[],"pens":[],"combined":["competitor:1352","competitor:1353"]},
+          {"entity":"competitor:1304","name":"Competitor 1 - Leeds Phoenix LSC (Junior Girls Pairs) JGP 1","result":61750,"resolved":116650,"points":13,"position":13,"dqs":[],"pens":[],"combined":["competitor:1304","competitor:1305"]},
+          {"entity":"competitor:1385","name":"Competitor 78 - Leeds Lifesaving (Open) OI","result":117560,"resolved":117560,"points":14,"position":14,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1316","name":"Competitor 13 - Leeds Lifesaving (Junior Girls Pairs) JGP 4","result":67280,"resolved":119470,"points":15,"position":15,"dqs":[],"pens":[],"combined":["competitor:1316","competitor:1317"]},
+          {"entity":"competitor:1314","name":"Competitor 11 - Leeds Lifesaving (Junior Girls Pairs) JGP 3","result":63160,"resolved":122690,"points":16,"position":16,"dqs":[],"pens":[],"combined":["competitor:1314","competitor:1315"]},
+          {"entity":"competitor:1318","name":"Competitor 15 - Leeds Lifesaving (Junior Girls Pairs) JGP 5","result":55540,"resolved":124300,"points":17,"position":17,"dqs":[],"pens":[],"combined":["competitor:1318","competitor:1319"]},
+          {"entity":"competitor:1328","name":"Competitor 23 - Leeds Lifesaving (Junior Girls Pairs) JGP 10","result":66060,"resolved":125750,"points":18,"position":18,"dqs":[],"pens":[],"combined":["competitor:1328","competitor:1329"]},
+          {"entity":"competitor:1330","name":"Competitor 25 - Leeds Lifesaving (Junior Girls Pairs) JGP 11","result":59820,"resolved":127130,"points":19,"position":19,"dqs":[],"pens":[],"combined":["competitor:1330","competitor:1331"]},
+          {"entity":"competitor:1338","name":"Competitor 33 - Rawmarsh LSC (Junior Open Pairs) JOP 1","result":69160,"resolved":127560,"points":20,"position":20,"dqs":[],"pens":[],"combined":["competitor:1338","competitor:1339"]},
+          {"entity":"competitor:1340","name":"Competitor 35 - Rawmarsh LSC (Junior Open Pairs) JOP 2","result":58380,"resolved":130720,"points":21,"position":21,"dqs":[],"pens":[],"combined":["competitor:1340","competitor:1341"]},
+          {"entity":"competitor:1346","name":"Competitor 41 - Leeds Lifesaving (Junior Open Pairs) JOP 2","result":65620,"resolved":133620,"points":22,"position":22,"dqs":[],"pens":[],"combined":["competitor:1346","competitor:1347"]},
+          {"entity":"competitor:1342","name":"Competitor 37 - Rawmarsh LSC (Junior Open Pairs) JOP 3","result":75090,"resolved":133710,"points":23,"position":23,"dqs":[],"pens":[],"combined":["competitor:1342","competitor:1343"]},
+          {"entity":"competitor:1344","name":"Competitor 39 - Leeds Lifesaving (Junior Open Pairs) JOP 1","result":74250,"resolved":139370,"points":24,"position":24,"dqs":[],"pens":[],"combined":["competitor:1344","competitor:1345"]},
+          {"entity":"competitor:1312","name":"Competitor 9 - Leeds Lifesaving (Junior Girls Pairs) JGP 2","result":75690,"resolved":144460,"points":25,"position":25,"dqs":[],"pens":[],"combined":["competitor:1312","competitor:1313"]},
+          {"entity":"competitor:1310","name":"Competitor 7 - Leeds Lifesaving (Junior Girls Pairs) JGP 1","result":91350,"resolved":151040,"points":26,"position":26,"dqs":[],"pens":[],"combined":["competitor:1310","competitor:1311"]},
+          {"entity":"competitor:1356","name":"Competitor 51 - Leeds Lifesaving (Junior Open Pairs) JOP 7","result":65100,"resolved":153290,"points":27,"position":27,"dqs":[],"pens":[],"combined":["competitor:1356","competitor:1357"]},
+          {"entity":"competitor:1348","name":"Competitor 43 - Leeds Lifesaving (Junior Open Pairs) JOP 3","result":87500,"resolved":157320,"points":28,"position":28,"dqs":[],"pens":[],"combined":["competitor:1348","competitor:1349"]},
+          {"entity":"competitor:1378","name":"Competitor 73 - Leeds Lifesaving (Senior Open Pairs) SOP 5","result":98660,"resolved":209100,"points":29,"position":29,"dqs":[],"pens":[],"combined":["competitor:1378","competitor:1379"]},
+          {"entity":"competitor:1374","name":"Competitor 69 - Leeds Lifesaving (Senior Open Pairs) SOP 3","result":96250,"resolved":211280,"points":30,"position":30,"dqs":[],"pens":[],"combined":["competitor:1374","competitor:1375"]},
+          {"entity":"competitor:1372","name":"Competitor 67 - Leeds Lifesaving (Senior Open Pairs) SOP 2","result":108370,"resolved":224240,"points":31,"position":31,"dqs":[],"pens":[],"combined":["competitor:1372","competitor:1373"]},
+          {"entity":"competitor:1368","name":"Competitor 63 - Leeds Phoenix LSC (Senior Open Pairs) SOP","result":123690,"resolved":225720,"points":32,"position":32,"dqs":[],"pens":[],"combined":["competitor:1368","competitor:1369"]},
+          {"entity":"competitor:1358","name":"Competitor 53 - Leeds Phoenix LSC (Senior Girls Pairs) SGP 1","result":111750,"resolved":226880,"points":33,"position":33,"dqs":[],"pens":[],"combined":["competitor:1358","competitor:1359"]},
+          {"entity":"competitor:1360","name":"Competitor 55 - Leeds Phoenix LSC (Senior Girls Pairs) SGP 2","result":100790,"resolved":226980,"points":34,"position":34,"dqs":[],"pens":[],"combined":["competitor:1360","competitor:1361"]},
+          {"entity":"competitor:1366","name":"Competitor 61 - Leeds Lifesaving (Senior Girls Pairs) SGP 3","result":119500,"resolved":239060,"points":35,"position":35,"dqs":[],"pens":[],"combined":["competitor:1366","competitor:1367"]},
+          {"entity":"competitor:1364","name":"Competitor 59 - Leeds Lifesaving (Senior Girls Pairs) SGP 2","result":136160,"resolved":273690,"points":36,"position":36,"dqs":[],"pens":[],"combined":["competitor:1364","competitor:1365"]},
+          {"entity":"competitor:1370","name":"Competitor 65 - Leeds Lifesaving (Senior Open Pairs) SOP 1","result":148250,"resolved":287130,"points":37,"position":37,"dqs":[],"pens":[],"combined":["competitor:1370","competitor:1371"]},
+          {"entity":"competitor:1354","name":"Competitor 49 - Leeds Lifesaving (Junior Open Pairs) JOP 6","result":64150,"resolved":664810,"points":38,"position":38,"dqs":[0],"pens":[],"combined":["competitor:1354","competitor:1355"]},
+          {"entity":"competitor:1332","name":"Competitor 27 - Leeds Lifesaving (Junior Girls Pairs) JGP 12","result":71340,"resolved":671340,"points":39,"position":39,"dqs":[],"pens":[],"combined":["competitor:1332","competitor:1333"]},
+          {"entity":"competitor:1376","name":"Competitor 71 - Leeds Lifesaving (Senior Open Pairs) SOP 4","result":130590,"resolved":700130,"points":40,"position":40,"dqs":[0],"pens":[],"combined":["competitor:1376","competitor:1377"]},
+          {"entity":"competitor:1362","name":"Competitor 57 - Leeds Lifesaving (Senior Girls Pairs) SGP 1","result":113280,"resolved":713280,"points":41,"position":41,"dqs":[],"pens":[],"combined":["competitor:1362","competitor:1363"]},
+          {"entity":"competitor:1380","name":"Competitor 75 - Leeds Lifesaving (Adult Ladies Pairs) ALP 1","result":117530,"resolved":1200000,"points":42,"position":42,"dqs":[0],"pens":[],"combined":["competitor:1380","competitor:1381"]}
+        ],
+        "league:210": [
+          {"entity":"competitor:1326","name":"Competitor 21 - Leeds Lifesaving (Junior Girls Pairs) JGP 9","result":53750,"resolved":100090,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1326","competitor:1327"]},
+          {"entity":"competitor:1322","name":"Competitor 19 - Leeds Lifesaving (Junior Girls Pairs) JGP 7","result":51070,"resolved":100910,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1322","competitor:1323"]},
+          {"entity":"competitor:1308","name":"Competitor 5 - Leeds Phoenix LSC (Junior Girls Pairs) JGP 3","result":51880,"resolved":104420,"points":3,"position":3,"dqs":[],"pens":[],"combined":["competitor:1308","competitor:1309"]},
+          {"entity":"competitor:1320","name":"Competitor 17 - Leeds Lifesaving (Junior Girls Pairs) JGP 6","result":53690,"resolved":106280,"points":4,"position":4,"dqs":[],"pens":[],"combined":["competitor:1320","competitor:1321"]},
+          {"entity":"competitor:1306","name":"Competitor 3 - Leeds Phoenix LSC (Junior Girls Pairs) JGP 2","result":57900,"resolved":106340,"points":5,"position":5,"dqs":[],"pens":[],"combined":["competitor:1306","competitor:1307"]},
+          {"entity":"competitor:1304","name":"Competitor 1 - Leeds Phoenix LSC (Junior Girls Pairs) JGP 1","result":61750,"resolved":116650,"points":6,"position":6,"dqs":[],"pens":[],"combined":["competitor:1304","competitor:1305"]},
+          {"entity":"competitor:1316","name":"Competitor 13 - Leeds Lifesaving (Junior Girls Pairs) JGP 4","result":67280,"resolved":119470,"points":7,"position":7,"dqs":[],"pens":[],"combined":["competitor:1316","competitor:1317"]},
+          {"entity":"competitor:1314","name":"Competitor 11 - Leeds Lifesaving (Junior Girls Pairs) JGP 3","result":63160,"resolved":122690,"points":8,"position":8,"dqs":[],"pens":[],"combined":["competitor:1314","competitor:1315"]},
+          {"entity":"competitor:1318","name":"Competitor 15 - Leeds Lifesaving (Junior Girls Pairs) JGP 5","result":55540,"resolved":124300,"points":9,"position":9,"dqs":[],"pens":[],"combined":["competitor:1318","competitor:1319"]},
+          {"entity":"competitor:1328","name":"Competitor 23 - Leeds Lifesaving (Junior Girls Pairs) JGP 10","result":66060,"resolved":125750,"points":10,"position":10,"dqs":[],"pens":[],"combined":["competitor:1328","competitor:1329"]},
+          {"entity":"competitor:1330","name":"Competitor 25 - Leeds Lifesaving (Junior Girls Pairs) JGP 11","result":59820,"resolved":127130,"points":11,"position":11,"dqs":[],"pens":[],"combined":["competitor:1330","competitor:1331"]},
+          {"entity":"competitor:1312","name":"Competitor 9 - Leeds Lifesaving (Junior Girls Pairs) JGP 2","result":75690,"resolved":144460,"points":12,"position":12,"dqs":[],"pens":[],"combined":["competitor:1312","competitor:1313"]},
+          {"entity":"competitor:1310","name":"Competitor 7 - Leeds Lifesaving (Junior Girls Pairs) JGP 1","result":91350,"resolved":151040,"points":13,"position":13,"dqs":[],"pens":[],"combined":["competitor:1310","competitor:1311"]},
+          {"entity":"competitor:1332","name":"Competitor 27 - Leeds Lifesaving (Junior Girls Pairs) JGP 12","result":71340,"resolved":671340,"points":14,"position":14,"dqs":[],"pens":[],"combined":["competitor:1332","competitor:1333"]}
+        ],
+        "league:211": [
+          {"entity":"competitor:1350","name":"Competitor 45 - Leeds Lifesaving (Junior Open Pairs) JOP 4","result":50970,"resolved":93880,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1350","competitor:1351"]},
+          {"entity":"competitor:1334","name":"Competitor 29 - Leeds Phoenix LSC (Junior Open Pairs) JOP 1","result":51840,"resolved":99780,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1334","competitor:1335"]},
+          {"entity":"competitor:1336","name":"Competitor 31 - Leeds Phoenix LSC (Junior Open Pairs) JOP 2","result":48970,"resolved":107780,"points":3,"position":3,"dqs":[],"pens":[],"combined":["competitor:1336","competitor:1337"]},
+          {"entity":"competitor:1352","name":"Competitor 47 - Leeds Lifesaving (Junior Open Pairs) JOP 5","result":57970,"resolved":112780,"points":4,"position":4,"dqs":[],"pens":[],"combined":["competitor:1352","competitor:1353"]},
+          {"entity":"competitor:1338","name":"Competitor 33 - Rawmarsh LSC (Junior Open Pairs) JOP 1","result":69160,"resolved":127560,"points":5,"position":5,"dqs":[],"pens":[],"combined":["competitor:1338","competitor:1339"]},
+          {"entity":"competitor:1340","name":"Competitor 35 - Rawmarsh LSC (Junior Open Pairs) JOP 2","result":58380,"resolved":130720,"points":6,"position":6,"dqs":[],"pens":[],"combined":["competitor:1340","competitor:1341"]},
+          {"entity":"competitor:1346","name":"Competitor 41 - Leeds Lifesaving (Junior Open Pairs) JOP 2","result":65620,"resolved":133620,"points":7,"position":7,"dqs":[],"pens":[],"combined":["competitor:1346","competitor:1347"]},
+          {"entity":"competitor:1342","name":"Competitor 37 - Rawmarsh LSC (Junior Open Pairs) JOP 3","result":75090,"resolved":133710,"points":8,"position":8,"dqs":[],"pens":[],"combined":["competitor:1342","competitor:1343"]},
+          {"entity":"competitor:1344","name":"Competitor 39 - Leeds Lifesaving (Junior Open Pairs) JOP 1","result":74250,"resolved":139370,"points":9,"position":9,"dqs":[],"pens":[],"combined":["competitor:1344","competitor:1345"]},
+          {"entity":"competitor:1356","name":"Competitor 51 - Leeds Lifesaving (Junior Open Pairs) JOP 7","result":65100,"resolved":153290,"points":10,"position":10,"dqs":[],"pens":[],"combined":["competitor:1356","competitor:1357"]},
+          {"entity":"competitor:1348","name":"Competitor 43 - Leeds Lifesaving (Junior Open Pairs) JOP 3","result":87500,"resolved":157320,"points":11,"position":11,"dqs":[],"pens":[],"combined":["competitor:1348","competitor:1349"]},
+          {"entity":"competitor:1354","name":"Competitor 49 - Leeds Lifesaving (Junior Open Pairs) JOP 6","result":64150,"resolved":664810,"points":12,"position":12,"dqs":[0],"pens":[],"combined":["competitor:1354","competitor:1355"]}
+        ],
+        "league:212": [
+          {"entity":"competitor:1358","name":"Competitor 53 - Leeds Phoenix LSC (Senior Girls Pairs) SGP 1","result":111750,"resolved":226880,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1358","competitor:1359"]},
+          {"entity":"competitor:1360","name":"Competitor 55 - Leeds Phoenix LSC (Senior Girls Pairs) SGP 2","result":100790,"resolved":226980,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1360","competitor:1361"]},
+          {"entity":"competitor:1366","name":"Competitor 61 - Leeds Lifesaving (Senior Girls Pairs) SGP 3","result":119500,"resolved":239060,"points":3,"position":3,"dqs":[],"pens":[],"combined":["competitor:1366","competitor:1367"]},
+          {"entity":"competitor:1364","name":"Competitor 59 - Leeds Lifesaving (Senior Girls Pairs) SGP 2","result":136160,"resolved":273690,"points":4,"position":4,"dqs":[],"pens":[],"combined":["competitor:1364","competitor:1365"]},
+          {"entity":"competitor:1362","name":"Competitor 57 - Leeds Lifesaving (Senior Girls Pairs) SGP 1","result":113280,"resolved":713280,"points":5,"position":5,"dqs":[],"pens":[],"combined":["competitor:1362","competitor:1363"]}
+        ],
+        "league:213": [
+          {"entity":"competitor:1378","name":"Competitor 73 - Leeds Lifesaving (Senior Open Pairs) SOP 5","result":98660,"resolved":209100,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1378","competitor:1379"]},
+          {"entity":"competitor:1374","name":"Competitor 69 - Leeds Lifesaving (Senior Open Pairs) SOP 3","result":96250,"resolved":211280,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1374","competitor:1375"]},
+          {"entity":"competitor:1372","name":"Competitor 67 - Leeds Lifesaving (Senior Open Pairs) SOP 2","result":108370,"resolved":224240,"points":3,"position":3,"dqs":[],"pens":[],"combined":["competitor:1372","competitor:1373"]},
+          {"entity":"competitor:1368","name":"Competitor 63 - Leeds Phoenix LSC (Senior Open Pairs) SOP","result":123690,"resolved":225720,"points":4,"position":4,"dqs":[],"pens":[],"combined":["competitor:1368","competitor:1369"]},
+          {"entity":"competitor:1370","name":"Competitor 65 - Leeds Lifesaving (Senior Open Pairs) SOP 1","result":148250,"resolved":287130,"points":5,"position":5,"dqs":[],"pens":[],"combined":["competitor:1370","competitor:1371"]},
+          {"entity":"competitor:1376","name":"Competitor 71 - Leeds Lifesaving (Senior Open Pairs) SOP 4","result":130590,"resolved":700130,"points":6,"position":6,"dqs":[0],"pens":[],"combined":["competitor:1376","competitor:1377"]}
+        ],
+        "league:214": [
+          {"entity":"competitor:1380","name":"Competitor 75 - Leeds Lifesaving (Adult Ladies Pairs) ALP 1","result":117530,"resolved":1200000,"points":1,"position":1,"dqs":[0],"pens":[],"combined":["competitor:1380","competitor:1381"]}
+        ],
+        "league:216": [
+          {"entity":"competitor:1387","name":"Competitor 80 - Loughborough Students Lifesaving (Ladies) LI","result":108040,"resolved":108040,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1384","name":"Competitor 77 - Leeds Lifesaving (Ladies) LI","result":111720,"resolved":111720,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:217": [
+          {"entity":"competitor:1385","name":"Competitor 78 - Leeds Lifesaving (Open) OI","result":117560,"resolved":117560,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:223": [
+          {"entity":"competitor:1386","name":"Competitor 79 - Leeds Phoenix LSC (Masters Open 50-59) MO50-59","result":50120,"resolved":50120,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    },
+    "serc:140": {
+      "name": "Life Support",
+      "results": {
+        "all": [
+          {"entity":"team:1909","name":"Competitor 65, Competitor 66 - Leeds Lifesaving (Senior Open Pairs)","result":87.75,"resolved":87.75,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1899","name":"Competitor 45, Competitor 46 - Leeds Lifesaving (Junior Open Pairs)","result":73.3,"resolved":73.3,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1918","name":"Competitor 79 - Leeds Phoenix LSC (Masters Open 50-59)","result":69.25,"resolved":69.25,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1910","name":"Competitor 67, Competitor 68 - Leeds Lifesaving (Senior Open Pairs)","result":67.25,"resolved":67.25,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1912","name":"Competitor 71, Competitor 72 - Leeds Lifesaving (Senior Open Pairs)","result":64.25,"resolved":64.25,"points":5,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1917","name":"Competitor 78 - Leeds Lifesaving (Open)","result":64,"resolved":64,"points":6,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1908","name":"Competitor 63, Competitor 64 - Leeds Phoenix LSC (Senior Open Pairs)","result":63.75,"resolved":63.75,"points":7,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1882","name":"Competitor 13, Competitor 14 - Leeds Lifesaving (Junior Girls Pairs)","result":63,"resolved":63,"points":8,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1911","name":"Competitor 69, Competitor 70 - Leeds Lifesaving (Senior Open Pairs)","result":62.5,"resolved":62.5,"points":9,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1902","name":"Competitor 51, Competitor 52 - Leeds Lifesaving (Junior Open Pairs)","result":62.3,"resolved":62.3,"points":10,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1914","name":"Competitor 75, Competitor 76 - Leeds Lifesaving (Adult Ladies Pairs)","result":62,"resolved":62,"points":11,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1898","name":"Competitor 43, Competitor 44 - Leeds Lifesaving (Junior Open Pairs)","result":60.5,"resolved":60.5,"points":12,"position":12,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1905","name":"Competitor 57, Competitor 58 - Leeds Lifesaving (Senior Girls Pairs)","result":57.75,"resolved":57.75,"points":13,"position":13,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1896","name":"Competitor 39, Competitor 40 - Leeds Lifesaving (Junior Open Pairs)","result":54.7,"resolved":54.7,"points":14,"position":14,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1878","name":"Competitor 5, Competitor 6 - Leeds Phoenix LSC (Junior Girls Pairs)","result":54.3,"resolved":54.3,"points":15,"position":15,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1890","name":"Competitor 27, Competitor 28 - Leeds Lifesaving (Junior Girls Pairs)","result":53,"resolved":53,"points":16,"position":16,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1897","name":"Competitor 41, Competitor 42 - Leeds Lifesaving (Junior Open Pairs)","result":52.4,"resolved":52.4,"points":17,"position":17,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1885","name":"Competitor 19, Competitor 20 - Leeds Lifesaving (Junior Girls Pairs)","result":52.2,"resolved":52.2,"points":18,"position":18,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1901","name":"Competitor 49, Competitor 50 - Leeds Lifesaving (Junior Open Pairs)","result":51.7,"resolved":51.7,"points":19,"position":19,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1900","name":"Competitor 47, Competitor 48 - Leeds Lifesaving (Junior Open Pairs)","result":51.5,"resolved":51.5,"points":20,"position":20,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1919","name":"Competitor 80 - Loughborough Students Lifesaving (Ladies)","result":49.5,"resolved":49.5,"points":21,"position":21,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1887","name":"Competitor 21, Competitor 22 - Leeds Lifesaving (Junior Girls Pairs)","result":48,"resolved":48,"points":22,"position":22,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1913","name":"Competitor 73, Competitor 74 - Leeds Lifesaving (Senior Open Pairs)","result":47.75,"resolved":47.75,"points":23,"position":23,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1889","name":"Competitor 25, Competitor 26 - Leeds Lifesaving (Junior Girls Pairs)","result":47.55,"resolved":47.55,"points":24,"position":24,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1891","name":"Competitor 29, Competitor 30 - Leeds Phoenix LSC (Junior Open Pairs)","result":47.5,"resolved":47.5,"points":25,"position":25,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1880","name":"Competitor 9, Competitor 10 - Leeds Lifesaving (Junior Girls Pairs)","result":47,"resolved":47,"points":26,"position":26,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1906","name":"Competitor 59, Competitor 60 - Leeds Lifesaving (Senior Girls Pairs)","result":47,"resolved":47,"points":26,"position":26,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1876","name":"Competitor 1, Competitor 2 - Leeds Phoenix LSC (Junior Girls Pairs)","result":46,"resolved":46,"points":28,"position":28,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1892","name":"Competitor 31, Competitor 32 - Leeds Phoenix LSC (Junior Open Pairs)","result":46,"resolved":46,"points":28,"position":28,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1884","name":"Competitor 17, Competitor 18 - Leeds Lifesaving (Junior Girls Pairs)","result":45,"resolved":45,"points":30,"position":30,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1894","name":"Competitor 35, Competitor 36 - Rawmarsh LSC (Junior Open Pairs)","result":44.9,"resolved":44.9,"points":31,"position":31,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1879","name":"Competitor 7, Competitor 8 - Leeds Lifesaving (Junior Girls Pairs)","result":44.7,"resolved":44.7,"points":32,"position":32,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1877","name":"Competitor 3, Competitor 4 - Leeds Phoenix LSC (Junior Girls Pairs)","result":43.7,"resolved":43.7,"points":33,"position":33,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1907","name":"Competitor 61, Competitor 62 - Leeds Lifesaving (Senior Girls Pairs)","result":42.5,"resolved":42.5,"points":34,"position":34,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1888","name":"Competitor 23, Competitor 24 - Leeds Lifesaving (Junior Girls Pairs)","result":41.4,"resolved":41.4,"points":35,"position":35,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1881","name":"Competitor 11, Competitor 12 - Leeds Lifesaving (Junior Girls Pairs)","result":41.15,"resolved":41.15,"points":36,"position":36,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1916","name":"Competitor 77 - Leeds Lifesaving (Ladies)","result":39.25,"resolved":39.25,"points":37,"position":37,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1883","name":"Competitor 15, Competitor 16 - Leeds Lifesaving (Junior Girls Pairs)","result":38.7,"resolved":38.7,"points":38,"position":38,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1903","name":"Competitor 53, Competitor 54 - Leeds Phoenix LSC (Senior Girls Pairs)","result":37.125,"resolved":37.125,"points":39,"position":39,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1904","name":"Competitor 55, Competitor 56 - Leeds Phoenix LSC (Senior Girls Pairs)","result":36.25,"resolved":36.25,"points":40,"position":40,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1895","name":"Competitor 37, Competitor 38 - Rawmarsh LSC (Junior Open Pairs)","result":35.7,"resolved":35.7,"points":41,"position":41,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1893","name":"Competitor 33, Competitor 34 - Rawmarsh LSC (Junior Open Pairs)","result":35.1,"resolved":35.1,"points":42,"position":42,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1922","name":"Competitor 83 - - (SKIP)","result":15,"resolved":15,"points":43,"position":43,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1920","name":"Competitor 81 - - (SKIP)","result":0,"resolved":0,"points":44,"position":44,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1921","name":"Competitor 82 - - (SKIP)","result":0,"resolved":0,"points":44,"position":44,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:210": [
+          {"entity":"team:1882","name":"Competitor 13, Competitor 14 - Leeds Lifesaving (Junior Girls Pairs)","result":63,"resolved":63,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1878","name":"Competitor 5, Competitor 6 - Leeds Phoenix LSC (Junior Girls Pairs)","result":54.3,"resolved":54.3,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1890","name":"Competitor 27, Competitor 28 - Leeds Lifesaving (Junior Girls Pairs)","result":53,"resolved":53,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1885","name":"Competitor 19, Competitor 20 - Leeds Lifesaving (Junior Girls Pairs)","result":52.2,"resolved":52.2,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1887","name":"Competitor 21, Competitor 22 - Leeds Lifesaving (Junior Girls Pairs)","result":48,"resolved":48,"points":5,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1889","name":"Competitor 25, Competitor 26 - Leeds Lifesaving (Junior Girls Pairs)","result":47.55,"resolved":47.55,"points":6,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1880","name":"Competitor 9, Competitor 10 - Leeds Lifesaving (Junior Girls Pairs)","result":47,"resolved":47,"points":7,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1876","name":"Competitor 1, Competitor 2 - Leeds Phoenix LSC (Junior Girls Pairs)","result":46,"resolved":46,"points":8,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1884","name":"Competitor 17, Competitor 18 - Leeds Lifesaving (Junior Girls Pairs)","result":45,"resolved":45,"points":9,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1879","name":"Competitor 7, Competitor 8 - Leeds Lifesaving (Junior Girls Pairs)","result":44.7,"resolved":44.7,"points":10,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1877","name":"Competitor 3, Competitor 4 - Leeds Phoenix LSC (Junior Girls Pairs)","result":43.7,"resolved":43.7,"points":11,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1888","name":"Competitor 23, Competitor 24 - Leeds Lifesaving (Junior Girls Pairs)","result":41.4,"resolved":41.4,"points":12,"position":12,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1881","name":"Competitor 11, Competitor 12 - Leeds Lifesaving (Junior Girls Pairs)","result":41.15,"resolved":41.15,"points":13,"position":13,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1883","name":"Competitor 15, Competitor 16 - Leeds Lifesaving (Junior Girls Pairs)","result":38.7,"resolved":38.7,"points":14,"position":14,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:211": [
+          {"entity":"team:1899","name":"Competitor 45, Competitor 46 - Leeds Lifesaving (Junior Open Pairs)","result":73.3,"resolved":73.3,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1902","name":"Competitor 51, Competitor 52 - Leeds Lifesaving (Junior Open Pairs)","result":62.3,"resolved":62.3,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1898","name":"Competitor 43, Competitor 44 - Leeds Lifesaving (Junior Open Pairs)","result":60.5,"resolved":60.5,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1896","name":"Competitor 39, Competitor 40 - Leeds Lifesaving (Junior Open Pairs)","result":54.7,"resolved":54.7,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1897","name":"Competitor 41, Competitor 42 - Leeds Lifesaving (Junior Open Pairs)","result":52.4,"resolved":52.4,"points":5,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1901","name":"Competitor 49, Competitor 50 - Leeds Lifesaving (Junior Open Pairs)","result":51.7,"resolved":51.7,"points":6,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1900","name":"Competitor 47, Competitor 48 - Leeds Lifesaving (Junior Open Pairs)","result":51.5,"resolved":51.5,"points":7,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1891","name":"Competitor 29, Competitor 30 - Leeds Phoenix LSC (Junior Open Pairs)","result":47.5,"resolved":47.5,"points":8,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1892","name":"Competitor 31, Competitor 32 - Leeds Phoenix LSC (Junior Open Pairs)","result":46,"resolved":46,"points":9,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1894","name":"Competitor 35, Competitor 36 - Rawmarsh LSC (Junior Open Pairs)","result":44.9,"resolved":44.9,"points":10,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1895","name":"Competitor 37, Competitor 38 - Rawmarsh LSC (Junior Open Pairs)","result":35.7,"resolved":35.7,"points":11,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1893","name":"Competitor 33, Competitor 34 - Rawmarsh LSC (Junior Open Pairs)","result":35.1,"resolved":35.1,"points":12,"position":12,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:212": [
+          {"entity":"team:1905","name":"Competitor 57, Competitor 58 - Leeds Lifesaving (Senior Girls Pairs)","result":57.75,"resolved":57.75,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1906","name":"Competitor 59, Competitor 60 - Leeds Lifesaving (Senior Girls Pairs)","result":47,"resolved":47,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1907","name":"Competitor 61, Competitor 62 - Leeds Lifesaving (Senior Girls Pairs)","result":42.5,"resolved":42.5,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1903","name":"Competitor 53, Competitor 54 - Leeds Phoenix LSC (Senior Girls Pairs)","result":37.125,"resolved":37.125,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1904","name":"Competitor 55, Competitor 56 - Leeds Phoenix LSC (Senior Girls Pairs)","result":36.25,"resolved":36.25,"points":5,"position":5,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:213": [
+          {"entity":"team:1909","name":"Competitor 65, Competitor 66 - Leeds Lifesaving (Senior Open Pairs)","result":87.75,"resolved":87.75,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1910","name":"Competitor 67, Competitor 68 - Leeds Lifesaving (Senior Open Pairs)","result":67.25,"resolved":67.25,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1912","name":"Competitor 71, Competitor 72 - Leeds Lifesaving (Senior Open Pairs)","result":64.25,"resolved":64.25,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1908","name":"Competitor 63, Competitor 64 - Leeds Phoenix LSC (Senior Open Pairs)","result":63.75,"resolved":63.75,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1911","name":"Competitor 69, Competitor 70 - Leeds Lifesaving (Senior Open Pairs)","result":62.5,"resolved":62.5,"points":5,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1913","name":"Competitor 73, Competitor 74 - Leeds Lifesaving (Senior Open Pairs)","result":47.75,"resolved":47.75,"points":6,"position":6,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:214": [
+          {"entity":"team:1914","name":"Competitor 75, Competitor 76 - Leeds Lifesaving (Adult Ladies Pairs)","result":62,"resolved":62,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:216": [
+          {"entity":"team:1919","name":"Competitor 80 - Loughborough Students Lifesaving (Ladies)","result":49.5,"resolved":49.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1916","name":"Competitor 77 - Leeds Lifesaving (Ladies)","result":39.25,"resolved":39.25,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:217": [
+          {"entity":"team:1917","name":"Competitor 78 - Leeds Lifesaving (Open)","result":64,"resolved":64,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:223": [
+          {"entity":"team:1918","name":"Competitor 79 - Leeds Phoenix LSC (Masters Open 50-59)","result":69.25,"resolved":69.25,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:229": [
+          {"entity":"team:1922","name":"Competitor 83 - - (SKIP)","result":15,"resolved":15,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1920","name":"Competitor 81 - - (SKIP)","result":0,"resolved":0,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1921","name":"Competitor 82 - - (SKIP)","result":0,"resolved":0,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    },
+    "serc:141": {
+      "name": "Aquatic",
+      "results": {
+        "all": [
+          {"entity":"team:1910","name":"Competitor 67, Competitor 68 - Leeds Lifesaving (Senior Open Pairs)","result":166.75,"resolved":166.75,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1911","name":"Competitor 69, Competitor 70 - Leeds Lifesaving (Senior Open Pairs)","result":165,"resolved":165,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1912","name":"Competitor 71, Competitor 72 - Leeds Lifesaving (Senior Open Pairs)","result":141.25,"resolved":141.25,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1909","name":"Competitor 65, Competitor 66 - Leeds Lifesaving (Senior Open Pairs)","result":135.25,"resolved":135.25,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1885","name":"Competitor 19, Competitor 20 - Leeds Lifesaving (Junior Girls Pairs)","result":132.5,"resolved":132.5,"points":5,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1908","name":"Competitor 63, Competitor 64 - Leeds Phoenix LSC (Senior Open Pairs)","result":132.5,"resolved":132.5,"points":5,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1913","name":"Competitor 73, Competitor 74 - Leeds Lifesaving (Senior Open Pairs)","result":130,"resolved":130,"points":7,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1901","name":"Competitor 49, Competitor 50 - Leeds Lifesaving (Junior Open Pairs)","result":129.5,"resolved":129.5,"points":8,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1917","name":"Competitor 78 - Leeds Lifesaving (Open)","result":129,"resolved":129,"points":9,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1918","name":"Competitor 79 - Leeds Phoenix LSC (Masters Open 50-59)","result":128.75,"resolved":128.75,"points":10,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1899","name":"Competitor 45, Competitor 46 - Leeds Lifesaving (Junior Open Pairs)","result":128,"resolved":128,"points":11,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1876","name":"Competitor 1, Competitor 2 - Leeds Phoenix LSC (Junior Girls Pairs)","result":127.5,"resolved":127.5,"points":12,"position":12,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1887","name":"Competitor 21, Competitor 22 - Leeds Lifesaving (Junior Girls Pairs)","result":127.25,"resolved":127.25,"points":13,"position":13,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1882","name":"Competitor 13, Competitor 14 - Leeds Lifesaving (Junior Girls Pairs)","result":126.25,"resolved":126.25,"points":14,"position":14,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1877","name":"Competitor 3, Competitor 4 - Leeds Phoenix LSC (Junior Girls Pairs)","result":123,"resolved":123,"points":15,"position":15,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1878","name":"Competitor 5, Competitor 6 - Leeds Phoenix LSC (Junior Girls Pairs)","result":122.75,"resolved":122.75,"points":16,"position":16,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1894","name":"Competitor 35, Competitor 36 - Rawmarsh LSC (Junior Open Pairs)","result":117,"resolved":117,"points":17,"position":17,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1907","name":"Competitor 61, Competitor 62 - Leeds Lifesaving (Senior Girls Pairs)","result":115,"resolved":115,"points":18,"position":18,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1891","name":"Competitor 29, Competitor 30 - Leeds Phoenix LSC (Junior Open Pairs)","result":113.5,"resolved":113.5,"points":19,"position":19,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1897","name":"Competitor 41, Competitor 42 - Leeds Lifesaving (Junior Open Pairs)","result":113.5,"resolved":113.5,"points":19,"position":19,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1896","name":"Competitor 39, Competitor 40 - Leeds Lifesaving (Junior Open Pairs)","result":113.25,"resolved":113.25,"points":21,"position":21,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1902","name":"Competitor 51, Competitor 52 - Leeds Lifesaving (Junior Open Pairs)","result":112,"resolved":112,"points":22,"position":22,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1903","name":"Competitor 53, Competitor 54 - Leeds Phoenix LSC (Senior Girls Pairs)","result":109,"resolved":109,"points":23,"position":23,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1914","name":"Competitor 75, Competitor 76 - Leeds Lifesaving (Adult Ladies Pairs)","result":108.75,"resolved":108.75,"points":24,"position":24,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1916","name":"Competitor 77 - Leeds Lifesaving (Ladies)","result":107.5,"resolved":107.5,"points":25,"position":25,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1904","name":"Competitor 55, Competitor 56 - Leeds Phoenix LSC (Senior Girls Pairs)","result":103,"resolved":103,"points":26,"position":26,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1895","name":"Competitor 37, Competitor 38 - Rawmarsh LSC (Junior Open Pairs)","result":97.25,"resolved":97.25,"points":27,"position":27,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1905","name":"Competitor 57, Competitor 58 - Leeds Lifesaving (Senior Girls Pairs)","result":95.25,"resolved":95.25,"points":28,"position":28,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1880","name":"Competitor 9, Competitor 10 - Leeds Lifesaving (Junior Girls Pairs)","result":93.5,"resolved":93.5,"points":29,"position":29,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1892","name":"Competitor 31, Competitor 32 - Leeds Phoenix LSC (Junior Open Pairs)","result":90.75,"resolved":90.75,"points":30,"position":30,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1900","name":"Competitor 47, Competitor 48 - Leeds Lifesaving (Junior Open Pairs)","result":90.5,"resolved":90.5,"points":31,"position":31,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1893","name":"Competitor 33, Competitor 34 - Rawmarsh LSC (Junior Open Pairs)","result":83.25,"resolved":83.25,"points":32,"position":32,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1879","name":"Competitor 7, Competitor 8 - Leeds Lifesaving (Junior Girls Pairs)","result":83,"resolved":83,"points":33,"position":33,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1919","name":"Competitor 80 - Loughborough Students Lifesaving (Ladies)","result":81.5,"resolved":81.5,"points":34,"position":34,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1889","name":"Competitor 25, Competitor 26 - Leeds Lifesaving (Junior Girls Pairs)","result":80.5,"resolved":80.5,"points":35,"position":35,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1884","name":"Competitor 17, Competitor 18 - Leeds Lifesaving (Junior Girls Pairs)","result":79.25,"resolved":79.25,"points":36,"position":36,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1898","name":"Competitor 43, Competitor 44 - Leeds Lifesaving (Junior Open Pairs)","result":75,"resolved":75,"points":37,"position":37,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1881","name":"Competitor 11, Competitor 12 - Leeds Lifesaving (Junior Girls Pairs)","result":74,"resolved":74,"points":38,"position":38,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1906","name":"Competitor 59, Competitor 60 - Leeds Lifesaving (Senior Girls Pairs)","result":72.25,"resolved":72.25,"points":39,"position":39,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1888","name":"Competitor 23, Competitor 24 - Leeds Lifesaving (Junior Girls Pairs)","result":58.5,"resolved":58.5,"points":40,"position":40,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1890","name":"Competitor 27, Competitor 28 - Leeds Lifesaving (Junior Girls Pairs)","result":49,"resolved":49,"points":41,"position":41,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1883","name":"Competitor 15, Competitor 16 - Leeds Lifesaving (Junior Girls Pairs)","result":13.5,"resolved":13.5,"points":42,"position":42,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:210": [
+          {"entity":"team:1885","name":"Competitor 19, Competitor 20 - Leeds Lifesaving (Junior Girls Pairs)","result":132.5,"resolved":132.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1876","name":"Competitor 1, Competitor 2 - Leeds Phoenix LSC (Junior Girls Pairs)","result":127.5,"resolved":127.5,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1887","name":"Competitor 21, Competitor 22 - Leeds Lifesaving (Junior Girls Pairs)","result":127.25,"resolved":127.25,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1882","name":"Competitor 13, Competitor 14 - Leeds Lifesaving (Junior Girls Pairs)","result":126.25,"resolved":126.25,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1877","name":"Competitor 3, Competitor 4 - Leeds Phoenix LSC (Junior Girls Pairs)","result":123,"resolved":123,"points":5,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1878","name":"Competitor 5, Competitor 6 - Leeds Phoenix LSC (Junior Girls Pairs)","result":122.75,"resolved":122.75,"points":6,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1880","name":"Competitor 9, Competitor 10 - Leeds Lifesaving (Junior Girls Pairs)","result":93.5,"resolved":93.5,"points":7,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1879","name":"Competitor 7, Competitor 8 - Leeds Lifesaving (Junior Girls Pairs)","result":83,"resolved":83,"points":8,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1889","name":"Competitor 25, Competitor 26 - Leeds Lifesaving (Junior Girls Pairs)","result":80.5,"resolved":80.5,"points":9,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1884","name":"Competitor 17, Competitor 18 - Leeds Lifesaving (Junior Girls Pairs)","result":79.25,"resolved":79.25,"points":10,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1881","name":"Competitor 11, Competitor 12 - Leeds Lifesaving (Junior Girls Pairs)","result":74,"resolved":74,"points":11,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1888","name":"Competitor 23, Competitor 24 - Leeds Lifesaving (Junior Girls Pairs)","result":58.5,"resolved":58.5,"points":12,"position":12,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1890","name":"Competitor 27, Competitor 28 - Leeds Lifesaving (Junior Girls Pairs)","result":49,"resolved":49,"points":13,"position":13,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1883","name":"Competitor 15, Competitor 16 - Leeds Lifesaving (Junior Girls Pairs)","result":13.5,"resolved":13.5,"points":14,"position":14,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:211": [
+          {"entity":"team:1901","name":"Competitor 49, Competitor 50 - Leeds Lifesaving (Junior Open Pairs)","result":129.5,"resolved":129.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1899","name":"Competitor 45, Competitor 46 - Leeds Lifesaving (Junior Open Pairs)","result":128,"resolved":128,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1894","name":"Competitor 35, Competitor 36 - Rawmarsh LSC (Junior Open Pairs)","result":117,"resolved":117,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1891","name":"Competitor 29, Competitor 30 - Leeds Phoenix LSC (Junior Open Pairs)","result":113.5,"resolved":113.5,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1897","name":"Competitor 41, Competitor 42 - Leeds Lifesaving (Junior Open Pairs)","result":113.5,"resolved":113.5,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1896","name":"Competitor 39, Competitor 40 - Leeds Lifesaving (Junior Open Pairs)","result":113.25,"resolved":113.25,"points":6,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1902","name":"Competitor 51, Competitor 52 - Leeds Lifesaving (Junior Open Pairs)","result":112,"resolved":112,"points":7,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1895","name":"Competitor 37, Competitor 38 - Rawmarsh LSC (Junior Open Pairs)","result":97.25,"resolved":97.25,"points":8,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1892","name":"Competitor 31, Competitor 32 - Leeds Phoenix LSC (Junior Open Pairs)","result":90.75,"resolved":90.75,"points":9,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1900","name":"Competitor 47, Competitor 48 - Leeds Lifesaving (Junior Open Pairs)","result":90.5,"resolved":90.5,"points":10,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1893","name":"Competitor 33, Competitor 34 - Rawmarsh LSC (Junior Open Pairs)","result":83.25,"resolved":83.25,"points":11,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1898","name":"Competitor 43, Competitor 44 - Leeds Lifesaving (Junior Open Pairs)","result":75,"resolved":75,"points":12,"position":12,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:212": [
+          {"entity":"team:1907","name":"Competitor 61, Competitor 62 - Leeds Lifesaving (Senior Girls Pairs)","result":115,"resolved":115,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1903","name":"Competitor 53, Competitor 54 - Leeds Phoenix LSC (Senior Girls Pairs)","result":109,"resolved":109,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1904","name":"Competitor 55, Competitor 56 - Leeds Phoenix LSC (Senior Girls Pairs)","result":103,"resolved":103,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1905","name":"Competitor 57, Competitor 58 - Leeds Lifesaving (Senior Girls Pairs)","result":95.25,"resolved":95.25,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1906","name":"Competitor 59, Competitor 60 - Leeds Lifesaving (Senior Girls Pairs)","result":72.25,"resolved":72.25,"points":5,"position":5,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:213": [
+          {"entity":"team:1910","name":"Competitor 67, Competitor 68 - Leeds Lifesaving (Senior Open Pairs)","result":166.75,"resolved":166.75,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1911","name":"Competitor 69, Competitor 70 - Leeds Lifesaving (Senior Open Pairs)","result":165,"resolved":165,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1912","name":"Competitor 71, Competitor 72 - Leeds Lifesaving (Senior Open Pairs)","result":141.25,"resolved":141.25,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1909","name":"Competitor 65, Competitor 66 - Leeds Lifesaving (Senior Open Pairs)","result":135.25,"resolved":135.25,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1908","name":"Competitor 63, Competitor 64 - Leeds Phoenix LSC (Senior Open Pairs)","result":132.5,"resolved":132.5,"points":5,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1913","name":"Competitor 73, Competitor 74 - Leeds Lifesaving (Senior Open Pairs)","result":130,"resolved":130,"points":6,"position":6,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:214": [
+          {"entity":"team:1914","name":"Competitor 75, Competitor 76 - Leeds Lifesaving (Adult Ladies Pairs)","result":108.75,"resolved":108.75,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:216": [
+          {"entity":"team:1916","name":"Competitor 77 - Leeds Lifesaving (Ladies)","result":107.5,"resolved":107.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1919","name":"Competitor 80 - Loughborough Students Lifesaving (Ladies)","result":81.5,"resolved":81.5,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:217": [
+          {"entity":"team:1917","name":"Competitor 78 - Leeds Lifesaving (Open)","result":129,"resolved":129,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:223": [
+          {"entity":"team:1918","name":"Competitor 79 - Leeds Phoenix LSC (Masters Open 50-59)","result":128.75,"resolved":128.75,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    }
+  },
+  "sheets": {
+    "sheet:283": {
+      "name": "Junior Girls Pairs",
+      "results": [
+        {
+          "entity": "team:1885",
+          "name": "Competitor 19, Competitor 20 - Leeds Lifesaving (Junior Girls Pairs)",
+          "total": 9,
+          "position": 1,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1322","position":1,"points":1,"adjusted":1},
+            {"event":"speed:206","entity":"competitor:1322","position":2,"points":2,"adjusted":2},
+            {"event":"serc:140","entity":"team:1885","position":4,"points":4,"adjusted":4},
+            {"event":"serc:141","entity":"team:1885","position":1,"points":1,"adjusted":2}
+          ]
+        },
+        {
+          "entity": "team:1887",
+          "name": "Competitor 21, Competitor 22 - Leeds Lifesaving (Junior Girls Pairs)",
+          "total": 14,
+          "position": 2,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1326","position":2,"points":2,"adjusted":2},
+            {"event":"speed:206","entity":"competitor:1326","position":1,"points":1,"adjusted":1},
+            {"event":"serc:140","entity":"team:1887","position":5,"points":5,"adjusted":5},
+            {"event":"serc:141","entity":"team:1887","position":3,"points":3,"adjusted":6}
+          ]
+        },
+        {
+          "entity": "team:1882",
+          "name": "Competitor 13, Competitor 14 - Leeds Lifesaving (Junior Girls Pairs)",
+          "total": 24,
+          "position": 3,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1316","position":8,"points":8,"adjusted":8},
+            {"event":"speed:206","entity":"competitor:1316","position":7,"points":7,"adjusted":7},
+            {"event":"serc:140","entity":"team:1882","position":1,"points":1,"adjusted":1},
+            {"event":"serc:141","entity":"team:1882","position":4,"points":4,"adjusted":8}
+          ]
+        },
+        {
+          "entity": "team:1878",
+          "name": "Competitor 5, Competitor 6 - Leeds Phoenix LSC (Junior Girls Pairs)",
+          "total": 27,
+          "position": 4,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1308","position":10,"points":10,"adjusted":10},
+            {"event":"speed:206","entity":"competitor:1308","position":3,"points":3,"adjusted":3},
+            {"event":"serc:140","entity":"team:1878","position":2,"points":2,"adjusted":2},
+            {"event":"serc:141","entity":"team:1878","position":6,"points":6,"adjusted":12}
+          ]
+        },
+        {
+          "entity": "team:1876",
+          "name": "Competitor 1, Competitor 2 - Leeds Phoenix LSC (Junior Girls Pairs)",
+          "total": 29,
+          "position": 5,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1304","position":11,"points":11,"adjusted":11},
+            {"event":"speed:206","entity":"competitor:1304","position":6,"points":6,"adjusted":6},
+            {"event":"serc:140","entity":"team:1876","position":8,"points":8,"adjusted":8},
+            {"event":"serc:141","entity":"team:1876","position":2,"points":2,"adjusted":4}
+          ]
+        },
+        {
+          "entity": "team:1877",
+          "name": "Competitor 3, Competitor 4 - Leeds Phoenix LSC (Junior Girls Pairs)",
+          "total": 38,
+          "position": 6,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1306","position":12,"points":13,"adjusted":12},
+            {"event":"speed:206","entity":"competitor:1306","position":5,"points":5,"adjusted":5},
+            {"event":"serc:140","entity":"team:1877","position":11,"points":11,"adjusted":11},
+            {"event":"serc:141","entity":"team:1877","position":5,"points":5,"adjusted":10}
+          ]
+        },
+        {
+          "entity": "team:1880",
+          "name": "Competitor 9, Competitor 10 - Leeds Lifesaving (Junior Girls Pairs)",
+          "total": 38,
+          "position": 7,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1312","position":5,"points":5,"adjusted":5},
+            {"event":"speed:206","entity":"competitor:1312","position":12,"points":12,"adjusted":12},
+            {"event":"serc:140","entity":"team:1880","position":7,"points":7,"adjusted":7},
+            {"event":"serc:141","entity":"team:1880","position":7,"points":7,"adjusted":14}
+          ]
+        },
+        {
+          "entity": "team:1889",
+          "name": "Competitor 25, Competitor 26 - Leeds Lifesaving (Junior Girls Pairs)",
+          "total": 39,
+          "position": 8,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1330","position":4,"points":4,"adjusted":4},
+            {"event":"speed:206","entity":"competitor:1330","position":11,"points":11,"adjusted":11},
+            {"event":"serc:140","entity":"team:1889","position":6,"points":6,"adjusted":6},
+            {"event":"serc:141","entity":"team:1889","position":9,"points":9,"adjusted":18}
+          ]
+        },
+        {
+          "entity": "team:1884",
+          "name": "Competitor 17, Competitor 18 - Leeds Lifesaving (Junior Girls Pairs)",
+          "total": 40,
+          "position": 9,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1320","position":7,"points":7,"adjusted":7},
+            {"event":"speed:206","entity":"competitor:1320","position":4,"points":4,"adjusted":4},
+            {"event":"serc:140","entity":"team:1884","position":9,"points":9,"adjusted":9},
+            {"event":"serc:141","entity":"team:1884","position":10,"points":10,"adjusted":20}
+          ]
+        },
+        {
+          "entity": "team:1879",
+          "name": "Competitor 7, Competitor 8 - Leeds Lifesaving (Junior Girls Pairs)",
+          "total": 48,
+          "position": 10,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1310","position":9,"points":9,"adjusted":9},
+            {"event":"speed:206","entity":"competitor:1310","position":13,"points":13,"adjusted":13},
+            {"event":"serc:140","entity":"team:1879","position":10,"points":10,"adjusted":10},
+            {"event":"serc:141","entity":"team:1879","position":8,"points":8,"adjusted":16}
+          ]
+        },
+        {
+          "entity": "team:1888",
+          "name": "Competitor 23, Competitor 24 - Leeds Lifesaving (Junior Girls Pairs)",
+          "total": 49,
+          "position": 11,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1328","position":3,"points":3,"adjusted":3},
+            {"event":"speed:206","entity":"competitor:1328","position":10,"points":10,"adjusted":10},
+            {"event":"serc:140","entity":"team:1888","position":12,"points":12,"adjusted":12},
+            {"event":"serc:141","entity":"team:1888","position":12,"points":12,"adjusted":24}
+          ]
+        },
+        {
+          "entity": "team:1881",
+          "name": "Competitor 11, Competitor 12 - Leeds Lifesaving (Junior Girls Pairs)",
+          "total": 55,
+          "position": 12,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1314","position":12,"points":13,"adjusted":12},
+            {"event":"speed:206","entity":"competitor:1314","position":8,"points":8,"adjusted":8},
+            {"event":"serc:140","entity":"team:1881","position":13,"points":13,"adjusted":13},
+            {"event":"serc:141","entity":"team:1881","position":11,"points":11,"adjusted":22}
+          ]
+        },
+        {
+          "entity": "team:1890",
+          "name": "Competitor 27, Competitor 28 - Leeds Lifesaving (Junior Girls Pairs)",
+          "total": 55,
+          "position": 13,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1332","position":12,"points":13,"adjusted":12},
+            {"event":"speed:206","entity":"competitor:1332","position":14,"points":14,"adjusted":14},
+            {"event":"serc:140","entity":"team:1890","position":3,"points":3,"adjusted":3},
+            {"event":"serc:141","entity":"team:1890","position":13,"points":13,"adjusted":26}
+          ]
+        },
+        {
+          "entity": "team:1883",
+          "name": "Competitor 15, Competitor 16 - Leeds Lifesaving (Junior Girls Pairs)",
+          "total": 57,
+          "position": 14,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1318","position":6,"points":6,"adjusted":6},
+            {"event":"speed:206","entity":"competitor:1318","position":9,"points":9,"adjusted":9},
+            {"event":"serc:140","entity":"team:1883","position":14,"points":14,"adjusted":14},
+            {"event":"serc:141","entity":"team:1883","position":14,"points":14,"adjusted":28}
+          ]
+        }
+      ]
+    },
+    "sheet:284": {
+      "name": "Junior Open Pairs",
+      "results": [
+        {
+          "entity": "team:1899",
+          "name": "Competitor 45, Competitor 46 - Leeds Lifesaving (Junior Open Pairs)",
+          "total": 7,
+          "position": 1,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1350","position":1,"points":1,"adjusted":1},
+            {"event":"speed:206","entity":"competitor:1350","position":1,"points":1,"adjusted":1},
+            {"event":"serc:140","entity":"team:1899","position":1,"points":1,"adjusted":1},
+            {"event":"serc:141","entity":"team:1899","position":2,"points":2,"adjusted":4}
+          ]
+        },
+        {
+          "entity": "team:1891",
+          "name": "Competitor 29, Competitor 30 - Leeds Phoenix LSC (Junior Open Pairs)",
+          "total": 20,
+          "position": 2,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1334","position":2,"points":2,"adjusted":2},
+            {"event":"speed:206","entity":"competitor:1334","position":2,"points":2,"adjusted":2},
+            {"event":"serc:140","entity":"team:1891","position":8,"points":8,"adjusted":8},
+            {"event":"serc:141","entity":"team:1891","position":4,"points":4,"adjusted":8}
+          ]
+        },
+        {
+          "entity": "team:1897",
+          "name": "Competitor 41, Competitor 42 - Leeds Lifesaving (Junior Open Pairs)",
+          "total": 23,
+          "position": 3,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1346","position":3,"points":3,"adjusted":3},
+            {"event":"speed:206","entity":"competitor:1346","position":7,"points":7,"adjusted":7},
+            {"event":"serc:140","entity":"team:1897","position":5,"points":5,"adjusted":5},
+            {"event":"serc:141","entity":"team:1897","position":4,"points":4,"adjusted":8}
+          ]
+        },
+        {
+          "entity": "team:1901",
+          "name": "Competitor 49, Competitor 50 - Leeds Lifesaving (Junior Open Pairs)",
+          "total": 29,
+          "position": 4,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1354","position":9,"points":9,"adjusted":9},
+            {"event":"speed:206","entity":"competitor:1354","position":12,"points":12,"adjusted":12},
+            {"event":"serc:140","entity":"team:1901","position":6,"points":6,"adjusted":6},
+            {"event":"serc:141","entity":"team:1901","position":1,"points":1,"adjusted":2}
+          ]
+        },
+        {
+          "entity": "team:1896",
+          "name": "Competitor 39, Competitor 40 - Leeds Lifesaving (Junior Open Pairs)",
+          "total": 30,
+          "position": 5,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1344","position":5,"points":5,"adjusted":5},
+            {"event":"speed:206","entity":"competitor:1344","position":9,"points":9,"adjusted":9},
+            {"event":"serc:140","entity":"team:1896","position":4,"points":4,"adjusted":4},
+            {"event":"serc:141","entity":"team:1896","position":6,"points":6,"adjusted":12}
+          ]
+        },
+        {
+          "entity": "team:1894",
+          "name": "Competitor 35, Competitor 36 - Rawmarsh LSC (Junior Open Pairs)",
+          "total": 32,
+          "position": 6,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1340","position":10,"points":10,"adjusted":10},
+            {"event":"speed:206","entity":"competitor:1340","position":6,"points":6,"adjusted":6},
+            {"event":"serc:140","entity":"team:1894","position":10,"points":10,"adjusted":10},
+            {"event":"serc:141","entity":"team:1894","position":3,"points":3,"adjusted":6}
+          ]
+        },
+        {
+          "entity": "team:1902",
+          "name": "Competitor 51, Competitor 52 - Leeds Lifesaving (Junior Open Pairs)",
+          "total": 34,
+          "position": 7,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1356","position":8,"points":8,"adjusted":8},
+            {"event":"speed:206","entity":"competitor:1356","position":10,"points":10,"adjusted":10},
+            {"event":"serc:140","entity":"team:1902","position":2,"points":2,"adjusted":2},
+            {"event":"serc:141","entity":"team:1902","position":7,"points":7,"adjusted":14}
+          ]
+        },
+        {
+          "entity": "team:1900",
+          "name": "Competitor 47, Competitor 48 - Leeds Lifesaving (Junior Open Pairs)",
+          "total": 37,
+          "position": 8,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1352","position":6,"points":6,"adjusted":6},
+            {"event":"speed:206","entity":"competitor:1352","position":4,"points":4,"adjusted":4},
+            {"event":"serc:140","entity":"team:1900","position":7,"points":7,"adjusted":7},
+            {"event":"serc:141","entity":"team:1900","position":10,"points":10,"adjusted":20}
+          ]
+        },
+        {
+          "entity": "team:1892",
+          "name": "Competitor 31, Competitor 32 - Leeds Phoenix LSC (Junior Open Pairs)",
+          "total": 41,
+          "position": 9,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1336","position":11,"points":11,"adjusted":11},
+            {"event":"speed:206","entity":"competitor:1336","position":3,"points":3,"adjusted":3},
+            {"event":"serc:140","entity":"team:1892","position":9,"points":9,"adjusted":9},
+            {"event":"serc:141","entity":"team:1892","position":9,"points":9,"adjusted":18}
+          ]
+        },
+        {
+          "entity": "team:1895",
+          "name": "Competitor 37, Competitor 38 - Rawmarsh LSC (Junior Open Pairs)",
+          "total": 42,
+          "position": 10,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1342","position":7,"points":7,"adjusted":7},
+            {"event":"speed:206","entity":"competitor:1342","position":8,"points":8,"adjusted":8},
+            {"event":"serc:140","entity":"team:1895","position":11,"points":11,"adjusted":11},
+            {"event":"serc:141","entity":"team:1895","position":8,"points":8,"adjusted":16}
+          ]
+        },
+        {
+          "entity": "team:1893",
+          "name": "Competitor 33, Competitor 34 - Rawmarsh LSC (Junior Open Pairs)",
+          "total": 43,
+          "position": 11,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1338","position":4,"points":4,"adjusted":4},
+            {"event":"speed:206","entity":"competitor:1338","position":5,"points":5,"adjusted":5},
+            {"event":"serc:140","entity":"team:1893","position":12,"points":12,"adjusted":12},
+            {"event":"serc:141","entity":"team:1893","position":11,"points":11,"adjusted":22}
+          ]
+        },
+        {
+          "entity": "team:1898",
+          "name": "Competitor 43, Competitor 44 - Leeds Lifesaving (Junior Open Pairs)",
+          "total": 50,
+          "position": 12,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1348","position":12,"points":12,"adjusted":12},
+            {"event":"speed:206","entity":"competitor:1348","position":11,"points":11,"adjusted":11},
+            {"event":"serc:140","entity":"team:1898","position":3,"points":3,"adjusted":3},
+            {"event":"serc:141","entity":"team:1898","position":12,"points":12,"adjusted":24}
+          ]
+        }
+      ]
+    },
+    "sheet:285": {
+      "name": "Senior Girls Pairs",
+      "results": [
+        {
+          "entity": "team:1907",
+          "name": "Competitor 61, Competitor 62 - Leeds Lifesaving (Senior Girls Pairs)",
+          "total": 10,
+          "position": 1,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1366","position":2,"points":2,"adjusted":2},
+            {"event":"speed:206","entity":"competitor:1366","position":3,"points":3,"adjusted":3},
+            {"event":"serc:140","entity":"team:1907","position":3,"points":3,"adjusted":3},
+            {"event":"serc:141","entity":"team:1907","position":1,"points":1,"adjusted":2}
+          ]
+        },
+        {
+          "entity": "team:1903",
+          "name": "Competitor 53, Competitor 54 - Leeds Phoenix LSC (Senior Girls Pairs)",
+          "total": 12,
+          "position": 2,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1358","position":3,"points":3.5,"adjusted":3},
+            {"event":"speed:206","entity":"competitor:1358","position":1,"points":1,"adjusted":1},
+            {"event":"serc:140","entity":"team:1903","position":4,"points":4,"adjusted":4},
+            {"event":"serc:141","entity":"team:1903","position":2,"points":2,"adjusted":4}
+          ]
+        },
+        {
+          "entity": "team:1905",
+          "name": "Competitor 57, Competitor 58 - Leeds Lifesaving (Senior Girls Pairs)",
+          "total": 15,
+          "position": 3,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1362","position":1,"points":1,"adjusted":1},
+            {"event":"speed:206","entity":"competitor:1362","position":5,"points":5,"adjusted":5},
+            {"event":"serc:140","entity":"team:1905","position":1,"points":1,"adjusted":1},
+            {"event":"serc:141","entity":"team:1905","position":4,"points":4,"adjusted":8}
+          ]
+        },
+        {
+          "entity": "team:1904",
+          "name": "Competitor 55, Competitor 56 - Leeds Phoenix LSC (Senior Girls Pairs)",
+          "total": 18,
+          "position": 4,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1360","position":5,"points":5,"adjusted":5},
+            {"event":"speed:206","entity":"competitor:1360","position":2,"points":2,"adjusted":2},
+            {"event":"serc:140","entity":"team:1904","position":5,"points":5,"adjusted":5},
+            {"event":"serc:141","entity":"team:1904","position":3,"points":3,"adjusted":6}
+          ]
+        },
+        {
+          "entity": "team:1906",
+          "name": "Competitor 59, Competitor 60 - Leeds Lifesaving (Senior Girls Pairs)",
+          "total": 19,
+          "position": 5,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1364","position":3,"points":3.5,"adjusted":3},
+            {"event":"speed:206","entity":"competitor:1364","position":4,"points":4,"adjusted":4},
+            {"event":"serc:140","entity":"team:1906","position":2,"points":2,"adjusted":2},
+            {"event":"serc:141","entity":"team:1906","position":5,"points":5,"adjusted":10}
+          ]
+        }
+      ]
+    },
+    "sheet:286": {
+      "name": "Senior Open Pairs",
+      "results": [
+        {
+          "entity": "team:1910",
+          "name": "Competitor 67, Competitor 68 - Leeds Lifesaving (Senior Open Pairs)",
+          "total": 12,
+          "position": 1,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1372","position":5,"points":5,"adjusted":5},
+            {"event":"speed:206","entity":"competitor:1372","position":3,"points":3,"adjusted":3},
+            {"event":"serc:140","entity":"team:1910","position":2,"points":2,"adjusted":2},
+            {"event":"serc:141","entity":"team:1910","position":1,"points":1,"adjusted":2}
+          ]
+        },
+        {
+          "entity": "team:1912",
+          "name": "Competitor 71, Competitor 72 - Leeds Lifesaving (Senior Open Pairs)",
+          "total": 16,
+          "position": 2,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1376","position":1,"points":1,"adjusted":1},
+            {"event":"speed:206","entity":"competitor:1376","position":6,"points":6,"adjusted":6},
+            {"event":"serc:140","entity":"team:1912","position":3,"points":3,"adjusted":3},
+            {"event":"serc:141","entity":"team:1912","position":3,"points":3,"adjusted":6}
+          ]
+        },
+        {
+          "entity": "team:1911",
+          "name": "Competitor 69, Competitor 70 - Leeds Lifesaving (Senior Open Pairs)",
+          "total": 17,
+          "position": 3,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1374","position":6,"points":6,"adjusted":6},
+            {"event":"speed:206","entity":"competitor:1374","position":2,"points":2,"adjusted":2},
+            {"event":"serc:140","entity":"team:1911","position":5,"points":5,"adjusted":5},
+            {"event":"serc:141","entity":"team:1911","position":2,"points":2,"adjusted":4}
+          ]
+        },
+        {
+          "entity": "team:1909",
+          "name": "Competitor 65, Competitor 66 - Leeds Lifesaving (Senior Open Pairs)",
+          "total": 17,
+          "position": 4,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1370","position":3,"points":3,"adjusted":3},
+            {"event":"speed:206","entity":"competitor:1370","position":5,"points":5,"adjusted":5},
+            {"event":"serc:140","entity":"team:1909","position":1,"points":1,"adjusted":1},
+            {"event":"serc:141","entity":"team:1909","position":4,"points":4,"adjusted":8}
+          ]
+        },
+        {
+          "entity": "team:1913",
+          "name": "Competitor 73, Competitor 74 - Leeds Lifesaving (Senior Open Pairs)",
+          "total": 21,
+          "position": 5,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1378","position":2,"points":2,"adjusted":2},
+            {"event":"speed:206","entity":"competitor:1378","position":1,"points":1,"adjusted":1},
+            {"event":"serc:140","entity":"team:1913","position":6,"points":6,"adjusted":6},
+            {"event":"serc:141","entity":"team:1913","position":6,"points":6,"adjusted":12}
+          ]
+        },
+        {
+          "entity": "team:1908",
+          "name": "Competitor 63, Competitor 64 - Leeds Phoenix LSC (Senior Open Pairs)",
+          "total": 22,
+          "position": 6,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1368","position":4,"points":4,"adjusted":4},
+            {"event":"speed:206","entity":"competitor:1368","position":4,"points":4,"adjusted":4},
+            {"event":"serc:140","entity":"team:1908","position":4,"points":4,"adjusted":4},
+            {"event":"serc:141","entity":"team:1908","position":5,"points":5,"adjusted":10}
+          ]
+        }
+      ]
+    },
+    "sheet:287": {
+      "name": "Adult Ladies Pairs",
+      "results": [
+        {
+          "entity": "team:1914",
+          "name": "Competitor 75, Competitor 76 - Leeds Lifesaving (Adult Ladies Pairs)",
+          "total": 8,
+          "position": 1,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1380","position":4,"points":1,"adjusted":4},
+            {"event":"speed:206","entity":"competitor:1380","position":1,"points":1,"adjusted":1},
+            {"event":"serc:140","entity":"team:1914","position":1,"points":1,"adjusted":1},
+            {"event":"serc:141","entity":"team:1914","position":1,"points":1,"adjusted":2}
+          ]
+        }
+      ]
+    },
+    "sheet:289": {
+      "name": "Ladies",
+      "results": [
+        {
+          "entity": "team:1916",
+          "name": "Competitor 77 - Leeds Lifesaving (Ladies)",
+          "total": 7,
+          "position": 1,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1384","position":1,"points":1,"adjusted":1},
+            {"event":"speed:206","entity":"competitor:1384","position":2,"points":2,"adjusted":2},
+            {"event":"serc:140","entity":"team:1916","position":2,"points":2,"adjusted":2},
+            {"event":"serc:141","entity":"team:1916","position":1,"points":1,"adjusted":2}
+          ]
+        },
+        {
+          "entity": "team:1919",
+          "name": "Competitor 80 - Loughborough Students Lifesaving (Ladies)",
+          "total": 10,
+          "position": 2,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1387","position":4,"points":2,"adjusted":4},
+            {"event":"speed:206","entity":"competitor:1387","position":1,"points":1,"adjusted":1},
+            {"event":"serc:140","entity":"team:1919","position":1,"points":1,"adjusted":1},
+            {"event":"serc:141","entity":"team:1919","position":2,"points":2,"adjusted":4}
+          ]
+        }
+      ]
+    },
+    "sheet:290": {
+      "name": "Open",
+      "results": [
+        {
+          "entity": "team:1917",
+          "name": "Competitor 78 - Leeds Lifesaving (Open)",
+          "total": 8,
+          "position": 1,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1385","position":4,"points":1,"adjusted":4},
+            {"event":"speed:206","entity":"competitor:1385","position":1,"points":1,"adjusted":1},
+            {"event":"serc:140","entity":"team:1917","position":1,"points":1,"adjusted":1},
+            {"event":"serc:141","entity":"team:1917","position":1,"points":1,"adjusted":2}
+          ]
+        }
+      ]
+    },
+    "sheet:296": {
+      "name": "Masters Open 50-59",
+      "results": [
+        {
+          "entity": "team:1918",
+          "name": "Competitor 79 - Leeds Phoenix LSC (Masters Open 50-59)",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:205","entity":"competitor:1386","position":1,"points":1,"adjusted":1},
+            {"event":"speed:206","entity":"competitor:1386","position":1,"points":1,"adjusted":1},
+            {"event":"serc:140","entity":"team:1918","position":1,"points":1,"adjusted":1},
+            {"event":"serc:141","entity":"team:1918","position":1,"points":1,"adjusted":2}
+          ]
+        }
+      ]
+    }
+  },
+  "masters": []
+}

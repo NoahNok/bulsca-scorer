@@ -1,0 +1,248 @@
+{
+  "competition": "Wales Regional",
+  "events": {
+    "speed:216": {
+      "name": "Swim & Tow",
+      "results": {
+        "all": [
+          {"entity":"competitor:1629","name":"Competitor 12 - Centurion (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 1","result":59660,"resolved":119380,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1629","competitor:1630"]},
+          {"entity":"competitor:1617","name":"Competitor 3 - Llanelli Surf Lifesaving Club (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 1","result":61150,"resolved":121300,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1617","competitor:1618"]},
+          {"entity":"competitor:1622","name":"Competitor 5 - Centurion (Ladies Individual (16+ years)) LIY - 1","result":150000,"resolved":150000,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1625","name":"Competitor 8 - Centurion (Senior Open/Mixed Pairs (15-17 years)) SOP1Y - 1","result":93000,"resolved":186530,"points":4,"position":4,"dqs":[],"pens":[],"combined":["competitor:1625","competitor:1626"]},
+          {"entity":"competitor:1627","name":"Competitor 10 - Centurion (Senior Open/Mixed Pairs (15-17 years)) SOP1Y - 2","result":98000,"resolved":222040,"points":5,"position":5,"dqs":[],"pens":[],"combined":["competitor:1627","competitor:1628"]},
+          {"entity":"competitor:1623","name":"Competitor 6 - Centurion (Adult Ladies Pairs (18-21 years)) ALP2Y - 1","result":111430,"resolved":225960,"points":6,"position":6,"dqs":[],"pens":[],"combined":["competitor:1623","competitor:1624"]},
+          {"entity":"competitor:1615","name":"Competitor 1 - Llanelli Surf Lifesaving Club (Senior Open/Mixed Pairs (15-17 years)) SOP1Y - 1","result":119280,"resolved":246220,"points":7,"position":7,"dqs":[],"pens":[],"combined":["competitor:1615","competitor:1616"]},
+          {"entity":"competitor:1631","name":"Competitor 14 - Neath polar bears (Adult Ladies Pairs (18-21 years)) ALP2Y - 1","result":134000,"resolved":291370,"points":8,"position":8,"dqs":[],"pens":[],"combined":["competitor:1631","competitor:1632"]}
+        ],
+        "league:286": [
+          {"entity":"competitor:1625","name":"Competitor 8 - Centurion (Senior Open/Mixed Pairs (15-17 years)) SOP1Y - 1","result":93000,"resolved":186530,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1625","competitor:1626"]},
+          {"entity":"competitor:1627","name":"Competitor 10 - Centurion (Senior Open/Mixed Pairs (15-17 years)) SOP1Y - 2","result":98000,"resolved":222040,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1627","competitor:1628"]},
+          {"entity":"competitor:1615","name":"Competitor 1 - Llanelli Surf Lifesaving Club (Senior Open/Mixed Pairs (15-17 years)) SOP1Y - 1","result":119280,"resolved":246220,"points":3,"position":3,"dqs":[],"pens":[],"combined":["competitor:1615","competitor:1616"]}
+        ],
+        "league:287": [
+          {"entity":"competitor:1629","name":"Competitor 12 - Centurion (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 1","result":59660,"resolved":119380,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1629","competitor:1630"]},
+          {"entity":"competitor:1617","name":"Competitor 3 - Llanelli Surf Lifesaving Club (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 1","result":61150,"resolved":121300,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1617","competitor:1618"]}
+        ],
+        "league:290": [
+          {"entity":"competitor:1622","name":"Competitor 5 - Centurion (Ladies Individual (16+ years)) LIY - 1","result":150000,"resolved":150000,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:291": [
+          {"entity":"competitor:1623","name":"Competitor 6 - Centurion (Adult Ladies Pairs (18-21 years)) ALP2Y - 1","result":111430,"resolved":225960,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1623","competitor:1624"]},
+          {"entity":"competitor:1631","name":"Competitor 14 - Neath polar bears (Adult Ladies Pairs (18-21 years)) ALP2Y - 1","result":134000,"resolved":291370,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1631","competitor:1632"]}
+        ]
+      }
+    },
+    "speed:217": {
+      "name": "Rope Throw",
+      "results": {
+        "all": [
+          {"entity":"competitor:1625","name":"Competitor 8 - Centurion (Senior Open/Mixed Pairs (15-17 years)) SOP1Y - 1","result":21690,"resolved":37910,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1625","competitor:1626"]},
+          {"entity":"competitor:1629","name":"Competitor 12 - Centurion (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 1","result":21280,"resolved":41030,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1629","competitor:1630"]},
+          {"entity":"competitor:1627","name":"Competitor 10 - Centurion (Senior Open/Mixed Pairs (15-17 years)) SOP1Y - 2","result":15350,"resolved":45760,"points":3,"position":3,"dqs":[],"pens":[],"combined":["competitor:1627","competitor:1628"]},
+          {"entity":"competitor:1617","name":"Competitor 3 - Llanelli Surf Lifesaving Club (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 1","result":23970,"resolved":46350,"points":4,"position":4,"dqs":[],"pens":[],"combined":["competitor:1617","competitor:1618"]},
+          {"entity":"competitor:1622","name":"Competitor 5 - Centurion (Ladies Individual (16+ years)) LIY - 1","result":120000,"resolved":120000,"points":5,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1623","name":"Competitor 6 - Centurion (Adult Ladies Pairs (18-21 years)) ALP2Y - 1","result":120000,"resolved":164160,"points":6,"position":6,"dqs":[],"pens":[],"combined":["competitor:1623","competitor:1624"]},
+          {"entity":"competitor:1615","name":"Competitor 1 - Llanelli Surf Lifesaving Club (Senior Open/Mixed Pairs (15-17 years)) SOP1Y - 1","result":120000,"resolved":240000,"points":7.5,"position":7,"dqs":[],"pens":[],"combined":["competitor:1615","competitor:1616"]},
+          {"entity":"competitor:1631","name":"Competitor 14 - Neath polar bears (Adult Ladies Pairs (18-21 years)) ALP2Y - 1","result":600000,"resolved":240000,"points":7.5,"position":7,"dqs":[],"pens":[],"combined":["competitor:1631","competitor:1632"]}
+        ],
+        "league:286": [
+          {"entity":"competitor:1625","name":"Competitor 8 - Centurion (Senior Open/Mixed Pairs (15-17 years)) SOP1Y - 1","result":21690,"resolved":37910,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1625","competitor:1626"]},
+          {"entity":"competitor:1627","name":"Competitor 10 - Centurion (Senior Open/Mixed Pairs (15-17 years)) SOP1Y - 2","result":15350,"resolved":45760,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1627","competitor:1628"]},
+          {"entity":"competitor:1615","name":"Competitor 1 - Llanelli Surf Lifesaving Club (Senior Open/Mixed Pairs (15-17 years)) SOP1Y - 1","result":120000,"resolved":240000,"points":3,"position":4,"dqs":[],"pens":[],"combined":["competitor:1615","competitor:1616"]}
+        ],
+        "league:287": [
+          {"entity":"competitor:1629","name":"Competitor 12 - Centurion (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 1","result":21280,"resolved":41030,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1629","competitor:1630"]},
+          {"entity":"competitor:1617","name":"Competitor 3 - Llanelli Surf Lifesaving Club (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 1","result":23970,"resolved":46350,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1617","competitor:1618"]}
+        ],
+        "league:290": [
+          {"entity":"competitor:1622","name":"Competitor 5 - Centurion (Ladies Individual (16+ years)) LIY - 1","result":120000,"resolved":120000,"points":1,"position":4,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:291": [
+          {"entity":"competitor:1623","name":"Competitor 6 - Centurion (Adult Ladies Pairs (18-21 years)) ALP2Y - 1","result":120000,"resolved":164160,"points":1,"position":4,"dqs":[],"pens":[],"combined":["competitor:1623","competitor:1624"]},
+          {"entity":"competitor:1631","name":"Competitor 14 - Neath polar bears (Adult Ladies Pairs (18-21 years)) ALP2Y - 1","result":600000,"resolved":240000,"points":2,"position":4,"dqs":[],"pens":[],"combined":["competitor:1631","competitor:1632"]}
+        ]
+      }
+    },
+    "serc:150": {
+      "name": "Life Support",
+      "results": {
+        "all": [
+          {"entity":"team:2059","name":"Competitor 10, Competitor 11 - Centurion (Senior Open/Mixed Pairs (15-17 years))","result":64.8,"resolved":64.8,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2057","name":"Competitor 6, Competitor 7 - Centurion (Adult Ladies Pairs (18-21 years))","result":63.96,"resolved":63.96,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2058","name":"Competitor 8, Competitor 9 - Centurion (Senior Open/Mixed Pairs (15-17 years))","result":59.96,"resolved":59.96,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2053","name":"Competitor 3, Competitor 4 - Llanelli Surf Lifesaving Club (Junior Open / Mixed Pairs (12-14 years))","result":59.8,"resolved":59.8,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2060","name":"Competitor 12, Competitor 13 - Centurion (Junior Open / Mixed Pairs (12-14 years))","result":59.2,"resolved":59.2,"points":5,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2052","name":"Competitor 1, Competitor 2 - Llanelli Surf Lifesaving Club (Senior Open/Mixed Pairs (15-17 years))","result":53.72,"resolved":53.72,"points":6,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2061","name":"Competitor 14, Competitor 15 - Neath polar bears (Adult Ladies Pairs (18-21 years))","result":38.96,"resolved":38.96,"points":7,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2056","name":"Competitor 5 - Centurion (Ladies Individual (16+ years))","result":7.2,"resolved":7.2,"points":8,"position":8,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:286": [
+          {"entity":"team:2059","name":"Competitor 10, Competitor 11 - Centurion (Senior Open/Mixed Pairs (15-17 years))","result":64.8,"resolved":64.8,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2058","name":"Competitor 8, Competitor 9 - Centurion (Senior Open/Mixed Pairs (15-17 years))","result":59.96,"resolved":59.96,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2052","name":"Competitor 1, Competitor 2 - Llanelli Surf Lifesaving Club (Senior Open/Mixed Pairs (15-17 years))","result":53.72,"resolved":53.72,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:287": [
+          {"entity":"team:2053","name":"Competitor 3, Competitor 4 - Llanelli Surf Lifesaving Club (Junior Open / Mixed Pairs (12-14 years))","result":59.8,"resolved":59.8,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2060","name":"Competitor 12, Competitor 13 - Centurion (Junior Open / Mixed Pairs (12-14 years))","result":59.2,"resolved":59.2,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:290": [
+          {"entity":"team:2056","name":"Competitor 5 - Centurion (Ladies Individual (16+ years))","result":7.2,"resolved":7.2,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:291": [
+          {"entity":"team:2057","name":"Competitor 6, Competitor 7 - Centurion (Adult Ladies Pairs (18-21 years))","result":63.96,"resolved":63.96,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2061","name":"Competitor 14, Competitor 15 - Neath polar bears (Adult Ladies Pairs (18-21 years))","result":38.96,"resolved":38.96,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    },
+    "serc:151": {
+      "name": "Aquatic",
+      "results": {
+        "all": [
+          {"entity":"team:2057","name":"Competitor 6, Competitor 7 - Centurion (Adult Ladies Pairs (18-21 years))","result":96,"resolved":96,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2059","name":"Competitor 10, Competitor 11 - Centurion (Senior Open/Mixed Pairs (15-17 years))","result":96,"resolved":96,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2058","name":"Competitor 8, Competitor 9 - Centurion (Senior Open/Mixed Pairs (15-17 years))","result":80.5,"resolved":80.5,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2060","name":"Competitor 12, Competitor 13 - Centurion (Junior Open / Mixed Pairs (12-14 years))","result":67.5,"resolved":67.5,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2061","name":"Competitor 14, Competitor 15 - Neath polar bears (Adult Ladies Pairs (18-21 years))","result":42.5,"resolved":42.5,"points":5,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2052","name":"Competitor 1, Competitor 2 - Llanelli Surf Lifesaving Club (Senior Open/Mixed Pairs (15-17 years))","result":35,"resolved":35,"points":6,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2053","name":"Competitor 3, Competitor 4 - Llanelli Surf Lifesaving Club (Junior Open / Mixed Pairs (12-14 years))","result":31,"resolved":31,"points":7,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2056","name":"Competitor 5 - Centurion (Ladies Individual (16+ years))","result":12.5,"resolved":12.5,"points":8,"position":8,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:286": [
+          {"entity":"team:2059","name":"Competitor 10, Competitor 11 - Centurion (Senior Open/Mixed Pairs (15-17 years))","result":96,"resolved":96,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2058","name":"Competitor 8, Competitor 9 - Centurion (Senior Open/Mixed Pairs (15-17 years))","result":80.5,"resolved":80.5,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2052","name":"Competitor 1, Competitor 2 - Llanelli Surf Lifesaving Club (Senior Open/Mixed Pairs (15-17 years))","result":35,"resolved":35,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:287": [
+          {"entity":"team:2060","name":"Competitor 12, Competitor 13 - Centurion (Junior Open / Mixed Pairs (12-14 years))","result":67.5,"resolved":67.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2053","name":"Competitor 3, Competitor 4 - Llanelli Surf Lifesaving Club (Junior Open / Mixed Pairs (12-14 years))","result":31,"resolved":31,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:290": [
+          {"entity":"team:2056","name":"Competitor 5 - Centurion (Ladies Individual (16+ years))","result":12.5,"resolved":12.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:291": [
+          {"entity":"team:2057","name":"Competitor 6, Competitor 7 - Centurion (Adult Ladies Pairs (18-21 years))","result":96,"resolved":96,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2061","name":"Competitor 14, Competitor 15 - Neath polar bears (Adult Ladies Pairs (18-21 years))","result":42.5,"resolved":42.5,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    }
+  },
+  "sheets": {
+    "sheet:341": {
+      "name": "Senior Open/Mixed Pairs (15-17 years)",
+      "results": [
+        {
+          "entity": "team:2059",
+          "name": "Competitor 10, Competitor 11 - Centurion (Senior Open/Mixed Pairs (15-17 years))",
+          "total": 7,
+          "position": 1,
+          "events": [
+            {"event":"speed:216","entity":"competitor:1627","position":2,"points":2,"adjusted":2},
+            {"event":"speed:217","entity":"competitor:1627","position":2,"points":2,"adjusted":2},
+            {"event":"serc:150","entity":"team:2059","position":1,"points":1,"adjusted":1},
+            {"event":"serc:151","entity":"team:2059","position":1,"points":1,"adjusted":2}
+          ]
+        },
+        {
+          "entity": "team:2058",
+          "name": "Competitor 8, Competitor 9 - Centurion (Senior Open/Mixed Pairs (15-17 years))",
+          "total": 8,
+          "position": 2,
+          "events": [
+            {"event":"speed:216","entity":"competitor:1625","position":1,"points":1,"adjusted":1},
+            {"event":"speed:217","entity":"competitor:1625","position":1,"points":1,"adjusted":1},
+            {"event":"serc:150","entity":"team:2058","position":2,"points":2,"adjusted":2},
+            {"event":"serc:151","entity":"team:2058","position":2,"points":2,"adjusted":4}
+          ]
+        },
+        {
+          "entity": "team:2052",
+          "name": "Competitor 1, Competitor 2 - Llanelli Surf Lifesaving Club (Senior Open/Mixed Pairs (15-17 years))",
+          "total": 16,
+          "position": 3,
+          "events": [
+            {"event":"speed:216","entity":"competitor:1615","position":3,"points":3,"adjusted":3},
+            {"event":"speed:217","entity":"competitor:1615","position":4,"points":3,"adjusted":4},
+            {"event":"serc:150","entity":"team:2052","position":3,"points":3,"adjusted":3},
+            {"event":"serc:151","entity":"team:2052","position":3,"points":3,"adjusted":6}
+          ]
+        }
+      ]
+    },
+    "sheet:342": {
+      "name": "Junior Open / Mixed Pairs (12-14 years)",
+      "results": [
+        {
+          "entity": "team:2060",
+          "name": "Competitor 12, Competitor 13 - Centurion (Junior Open / Mixed Pairs (12-14 years))",
+          "total": 6,
+          "position": 1,
+          "events": [
+            {"event":"speed:216","entity":"competitor:1629","position":1,"points":1,"adjusted":1},
+            {"event":"speed:217","entity":"competitor:1629","position":1,"points":1,"adjusted":1},
+            {"event":"serc:150","entity":"team:2060","position":2,"points":2,"adjusted":2},
+            {"event":"serc:151","entity":"team:2060","position":1,"points":1,"adjusted":2}
+          ]
+        },
+        {
+          "entity": "team:2053",
+          "name": "Competitor 3, Competitor 4 - Llanelli Surf Lifesaving Club (Junior Open / Mixed Pairs (12-14 years))",
+          "total": 9,
+          "position": 2,
+          "events": [
+            {"event":"speed:216","entity":"competitor:1617","position":2,"points":2,"adjusted":2},
+            {"event":"speed:217","entity":"competitor:1617","position":2,"points":2,"adjusted":2},
+            {"event":"serc:150","entity":"team:2053","position":1,"points":1,"adjusted":1},
+            {"event":"serc:151","entity":"team:2053","position":2,"points":2,"adjusted":4}
+          ]
+        }
+      ]
+    },
+    "sheet:345": {
+      "name": "Ladies Individual (16+ years)",
+      "results": [
+        {
+          "entity": "team:2056",
+          "name": "Competitor 5 - Centurion (Ladies Individual (16+ years))",
+          "total": 8,
+          "position": 1,
+          "events": [
+            {"event":"speed:216","entity":"competitor:1622","position":1,"points":1,"adjusted":1},
+            {"event":"speed:217","entity":"competitor:1622","position":4,"points":1,"adjusted":4},
+            {"event":"serc:150","entity":"team:2056","position":1,"points":1,"adjusted":1},
+            {"event":"serc:151","entity":"team:2056","position":1,"points":1,"adjusted":2}
+          ]
+        }
+      ]
+    },
+    "sheet:346": {
+      "name": "Adult Ladies Pairs (18-21 years)",
+      "results": [
+        {
+          "entity": "team:2057",
+          "name": "Competitor 6, Competitor 7 - Centurion (Adult Ladies Pairs (18-21 years))",
+          "total": 8,
+          "position": 1,
+          "events": [
+            {"event":"speed:216","entity":"competitor:1623","position":1,"points":1,"adjusted":1},
+            {"event":"speed:217","entity":"competitor:1623","position":4,"points":1,"adjusted":4},
+            {"event":"serc:150","entity":"team:2057","position":1,"points":1,"adjusted":1},
+            {"event":"serc:151","entity":"team:2057","position":1,"points":1,"adjusted":2}
+          ]
+        },
+        {
+          "entity": "team:2061",
+          "name": "Competitor 14, Competitor 15 - Neath polar bears (Adult Ladies Pairs (18-21 years))",
+          "total": 12,
+          "position": 2,
+          "events": [
+            {"event":"speed:216","entity":"competitor:1631","position":2,"points":2,"adjusted":2},
+            {"event":"speed:217","entity":"competitor:1631","position":4,"points":2,"adjusted":4},
+            {"event":"serc:150","entity":"team:2061","position":2,"points":2,"adjusted":2},
+            {"event":"serc:151","entity":"team:2061","position":2,"points":2,"adjusted":4}
+          ]
+        }
+      ]
+    }
+  },
+  "masters": []
+}

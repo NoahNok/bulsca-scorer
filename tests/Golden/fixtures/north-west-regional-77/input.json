@@ -1,0 +1,374 @@
+{
+  "competition": 77,
+  "name": "North West Regional",
+  "tables": {
+    "organisations": {
+      "columns": ["id","name","logo"],
+      "rows": [
+        [2,"RLSS UK",null]
+      ]
+    },
+    "competitions": {
+      "columns": ["id","name","when","public_results","results_provisional","digitalJudgeEnabled","digitalJudgePin","digitalJudgeHeadPin","max_lanes","serc_start_time","can_be_live","wi_user","anytimepin","show_teams_to_judges","where","organisation","seed_per_event","heats_per_event","use_seeds","team_format","competitor_format","status_message","select_league_first","show_heats","show_draws","show_competition","championship_id","type","sercs_released_at","use_pools"],
+      "rows": [
+        [77,"North West Regional","2026-10-10",1,0,0,null,null,6,null,0,null,1,1,"Nantwich Leisure Centre, Wall Lane, Nantwich CW5 5LS",2,0,0,0,":S - :C (:L)",":N - :C (:L) :T",null,1,1,0,1,null,"REGIONAL",null,0]
+      ]
+    },
+    "competition_scoring_settings": {
+      "columns": ["id","competition","use_tanks"],
+      "rows": [
+        [131,77,1],
+        [132,77,1]
+      ]
+    },
+    "leagues": {
+      "columns": ["id","name","competition"],
+      "rows": [
+        [310,"Junior Open / Mixed Pairs (12-14 years)",77],
+        [311,"Ladies Individual (16+ years)",77],
+        [312,"Masters Ladies ( 50-59 years )",77],
+        [313,"Senior Open/Mixed Pairs (15-17 years)",77],
+        [314,"Junior Girls Pairs (12-14 years)",77]
+      ]
+    },
+    "clubs": {
+      "columns": ["id","name","competition","league"],
+      "rows": [
+        [689,"Lancashire Tridents",77,null],
+        [690,"Nantwich Neptune Lifesaving Club",77,null]
+      ]
+    },
+    "competition_teams": {
+      "columns": ["id","competition","club","team","league"],
+      "rows": [
+        [2093,77,689,"LIY - 1","311"],
+        [2094,77,689,"ML55Y - 1","312"],
+        [2095,77,689,"SOP1Y - 1","313"],
+        [2096,77,690,"JGP1Y - 1","314"],
+        [2097,77,690,"JGP1Y - 2","314"],
+        [2098,77,690,"JOMP1Y - 1","310"],
+        [2099,77,690,"JOMP1Y - 2","310"],
+        [2100,77,690,"SOP1Y - 1","313"],
+        [2101,77,690,"SOP1Y - 2","313"]
+      ]
+    },
+    "competitors": {
+      "columns": ["id","competition","name","team","league"],
+      "rows": [
+        [1682,77,"Competitor 1",2093,311],
+        [1683,77,"Competitor 2",2094,312],
+        [1684,77,"Competitor 3",2095,313],
+        [1685,77,"Competitor 4",2095,313],
+        [1686,77,"Competitor 5",2096,314],
+        [1687,77,"Competitor 6",2096,314],
+        [1688,77,"Competitor 7",2097,314],
+        [1689,77,"Competitor 8",2097,314],
+        [1690,77,"Competitor 9",2098,310],
+        [1691,77,"Competitor 10",2098,310],
+        [1692,77,"Competitor 11",2099,310],
+        [1693,77,"Competitor 12",2099,310],
+        [1694,77,"Competitor 13",2100,313],
+        [1695,77,"Competitor 14",2100,313],
+        [1696,77,"Competitor 15",2101,313],
+        [1697,77,"Competitor 16",2101,313]
+      ]
+    },
+    "leagueables": {
+      "columns": ["id","league_id","entity_type","entity_id"],
+      "rows": [
+        [2339,311,"team",2093],
+        [2340,311,"competitor",1682],
+        [2341,312,"team",2094],
+        [2342,312,"competitor",1683],
+        [2343,313,"team",2095],
+        [2344,313,"competitor",1684],
+        [2345,313,"competitor",1685],
+        [2346,314,"team",2096],
+        [2347,314,"competitor",1686],
+        [2348,314,"competitor",1687],
+        [2349,314,"team",2097],
+        [2350,314,"competitor",1688],
+        [2351,314,"competitor",1689],
+        [2352,310,"team",2098],
+        [2353,310,"competitor",1690],
+        [2354,310,"competitor",1691],
+        [2355,310,"team",2099],
+        [2356,310,"competitor",1692],
+        [2357,310,"competitor",1693],
+        [2358,313,"team",2100],
+        [2359,313,"competitor",1694],
+        [2360,313,"competitor",1695],
+        [2361,313,"team",2101],
+        [2362,313,"competitor",1696],
+        [2363,313,"competitor",1697]
+      ]
+    },
+    "scoring_schemas": {
+      "columns": ["id","name","schema","organisation","default"],
+      "rows": [
+        [
+          265,
+          "Rope Throw 2025 v2",
+          {
+            "equation": "TOTAL_TEAMS > 4 ? RANKMEDIAN(results, 'resolvedResult', item, 'ASC') : RANK(results, 'resolvedResult', item, 'ASC')",
+            "group_by": ["league","team"],
+            "rank_higher": false,
+            "penalty_func": "( item.isDNF() || item.result > 45000) ? 120000 : (item.isDisqualified() ? 600000 : item.result)",
+            "force_penalty": true,
+            "rank_equation": "teams < 4 && (item.isDisqualified() || item.resolvedResult > (item.isCombined() ? 90000 : 45000)) ? 4 : rank",
+            "auto_penalties": [],
+            "local_variables": [],
+            "global_variables": [
+              {"name":"TOTAL_TEAMS","order":null,"expression":"COUNT(results)"}
+            ],
+            "auto_disqualifications": [],
+            "allow_disqualified_to_rank": true
+          },
+          null,
+          0
+        ],
+        [
+          266,
+          "Swim & Tow 2025",
+          {
+            "equation": "TOTAL_TEAMS > 4 ? RANKMEDIAN(results, 'resolvedResult', item, 'ASC') : RANK(results, 'resolvedResult', item, 'ASC')",
+            "group_by": ["league","team"],
+            "rank_higher": false,
+            "penalty_func": "item.isDisqualified() ? 600000 : item.result",
+            "force_penalty": true,
+            "rank_equation": null,
+            "auto_penalties": [],
+            "local_variables": [],
+            "global_variables": [
+              {"name":"TOTAL_TEAMS","order":null,"expression":"COUNT(results)"}
+            ],
+            "auto_disqualifications": [],
+            "allow_disqualified_to_rank": true
+          },
+          null,
+          0
+        ],
+        [
+          267,
+          "SERC 2025",
+          {"equation":"RANK(results, 'resolvedResult', item)","group_by":[],"rank_higher":false,"penalty_func":null,"force_penalty":false,"rank_equation":null,"auto_penalties":[],"local_variables":[],"global_variables":[],"auto_disqualifications":[],"allow_disqualified_to_rank":false},
+          null,
+          0
+        ],
+        [
+          273,
+          "SERC 2025",
+          {"equation":"RANK(results, 'resolvedResult', item)","group_by":[],"rank_higher":false,"penalty_func":null,"force_penalty":false,"rank_equation":null,"auto_penalties":[],"local_variables":[],"global_variables":[],"auto_disqualifications":[],"allow_disqualified_to_rank":false},
+          null,
+          0
+        ]
+      ]
+    },
+    "speed_events": {
+      "columns": ["id","name","has_penalties","record"],
+      "rows": [
+        [1,"Swim & Tow",1,0],
+        [2,"Rope Throw",1,0]
+      ]
+    },
+    "competition_speed_events": {
+      "columns": ["id","event","competition","weight","record","digitalJudgeConfirmed","completed","digitalJudgeEnabled","viewable","scoring_schema","scorable_entity","has_penalties"],
+      "rows": [
+        [222,2,77,"1.00",0,0,1,1,1,265,"competitor",0],
+        [223,1,77,"1.00",0,0,1,1,1,266,"competitor",0]
+      ]
+    },
+    "speed_results": {
+      "columns": ["id","event","result","entity_type","entity_id"],
+      "rows": [
+        [6662,222,"35730","competitor",1682],
+        [6663,222,"25500","competitor",1683],
+        [6664,222,"35810","competitor",1684],
+        [6665,222,"18880","competitor",1685],
+        [6666,222,"23750","competitor",1686],
+        [6667,222,"17190","competitor",1687],
+        [6668,222,"33380","competitor",1688],
+        [6669,222,"18180","competitor",1689],
+        [6670,222,"15380","competitor",1690],
+        [6671,222,"42660","competitor",1691],
+        [6672,222,"20500","competitor",1692],
+        [6673,222,"19960","competitor",1693],
+        [6674,222,"15880","competitor",1694],
+        [6675,222,"13630","competitor",1695],
+        [6676,222,"120000","competitor",1696],
+        [6677,222,"31220","competitor",1697],
+        [6680,223,"166240","competitor",1682],
+        [6681,223,"72160","competitor",1683],
+        [6682,223,"112750","competitor",1684],
+        [6683,223,"104660","competitor",1685],
+        [6684,223,"68000","competitor",1686],
+        [6685,223,"63940","competitor",1687],
+        [6686,223,"66910","competitor",1688],
+        [6687,223,"72380","competitor",1689],
+        [6688,223,"76120","competitor",1690],
+        [6689,223,"70160","competitor",1691],
+        [6690,223,"67580","competitor",1692],
+        [6691,223,"64970","competitor",1693],
+        [6692,223,"150890","competitor",1694],
+        [6693,223,"123580","competitor",1695],
+        [6694,223,"132060","competitor",1696],
+        [6695,223,"143500","competitor",1697]
+      ]
+    },
+    "sercs": {
+      "columns": ["id","name","competition","digitalJudgeConfirmed","completed","digitalJudgeEnabled","type","viewable","image","scoring_schema","scorable_entity","use_restricted_judges"],
+      "rows": [
+        [156,"Aquatic",77,0,1,1,"WET",1,null,267,"team",0],
+        [157,"Lifesupport",77,0,1,1,"DRY",1,null,273,"team",0]
+      ]
+    },
+    "serc_judges": {
+      "columns": ["id","name","serc","description"],
+      "rows": [
+        [843,"Marksheet",156,""],
+        [844,"Marksheet",157,""]
+      ]
+    },
+    "serc_marking_points": {
+      "columns": ["id","name","weight","judge","serc","marking_point_template_id"],
+      "rows": [
+        [4210,"10","10.00",843,156,null],
+        [4211,"10","10.00",844,157,null],
+        [4225,"1","1.00",843,156,null],
+        [4226,"0.`","0.10",843,156,null],
+        [4227,"1","1.00",844,157,null],
+        [4228,"0.1","0.10",844,157,null]
+      ]
+    },
+    "serc_results": {
+      "columns": ["id","result","marking_point","entity_type","entity_id"],
+      "rows": [
+        [88932,"7.00",4210,"team",2096],
+        [88933,"2.00",4225,"team",2096],
+        [88934,"5.00",4226,"team",2096],
+        [88935,"7.00",4210,"team",2097],
+        [88936,"8.00",4225,"team",2097],
+        [88937,"0.00",4226,"team",2097],
+        [88938,"8.00",4210,"team",2099],
+        [88939,"3.00",4225,"team",2099],
+        [88940,"0.00",4226,"team",2099],
+        [88941,"7.00",4210,"team",2098],
+        [88942,"1.00",4225,"team",2098],
+        [88943,"5.00",4226,"team",2098],
+        [88944,"9.00",4210,"team",2095],
+        [88945,"1.00",4225,"team",2095],
+        [88946,"0.00",4226,"team",2095],
+        [88947,"8.00",4210,"team",2100],
+        [88948,"5.00",4225,"team",2100],
+        [88949,"5.00",4226,"team",2100],
+        [88950,"7.00",4210,"team",2101],
+        [88951,"6.00",4225,"team",2101],
+        [88952,"0.00",4226,"team",2101],
+        [88953,"9.00",4210,"team",2093],
+        [88954,"1.00",4225,"team",2093],
+        [88955,"5.00",4226,"team",2093],
+        [88956,"7.00",4210,"team",2094],
+        [88957,"8.00",4225,"team",2094],
+        [88958,"0.00",4226,"team",2094],
+        [88959,"5.00",4211,"team",2096],
+        [88960,"9.00",4227,"team",2096],
+        [88961,"0.00",4228,"team",2096],
+        [88962,"6.00",4211,"team",2097],
+        [88963,"2.00",4227,"team",2097],
+        [88964,"0.00",4228,"team",2097],
+        [88965,"5.00",4211,"team",2099],
+        [88966,"3.00",4227,"team",2099],
+        [88967,"5.00",4228,"team",2099],
+        [88968,"3.00",4211,"team",2098],
+        [88969,"2.00",4227,"team",2098],
+        [88970,"0.00",4228,"team",2098],
+        [88971,"7.00",4211,"team",2095],
+        [88972,"6.00",4227,"team",2095],
+        [88973,"0.00",4228,"team",2095],
+        [88974,"6.00",4211,"team",2100],
+        [88975,"7.00",4227,"team",2100],
+        [88976,"0.00",4228,"team",2100],
+        [88977,"6.00",4211,"team",2101],
+        [88978,"1.00",4227,"team",2101],
+        [88979,"0.00",4228,"team",2101],
+        [88980,"8.00",4211,"team",2093],
+        [88981,"2.00",4227,"team",2093],
+        [88982,"0.00",4228,"team",2093],
+        [88983,"6.00",4211,"team",2094],
+        [88984,"4.00",4227,"team",2094],
+        [88985,"5.00",4228,"team",2094]
+      ]
+    },
+    "disqualifications": {
+      "columns": ["id","code","event_type","event_id","entity_type","entity_id"],
+      "rows": [
+        [859,99915,"App\\Models\\CompetitionSpeedEvent",222,"competitor",1696]
+      ]
+    },
+    "result_schemas": {
+      "columns": ["id","name","competition","viewable","schema"],
+      "rows": [
+        [
+          397,
+          "Junior Open / Mixed Pairs (12-14 years)",
+          77,
+          1,
+          {"league":310,"equation":"item.position","group_on":"team","ignore_dq":true,"break_ties":[156,157],"rank_higher":false,"global_variables":[]}
+        ],
+        [
+          398,
+          "Ladies Individual (16+ years)",
+          77,
+          1,
+          {"league":311,"equation":"item.position","group_on":"team","ignore_dq":true,"break_ties":[156,157],"rank_higher":false,"global_variables":[]}
+        ],
+        [
+          399,
+          "Masters Ladies ( 50-59 years )",
+          77,
+          1,
+          {"league":312,"equation":"item.position","group_on":"team","ignore_dq":true,"break_ties":[156,157],"rank_higher":false,"global_variables":[]}
+        ],
+        [
+          400,
+          "Senior Open/Mixed Pairs (15-17 years)",
+          77,
+          1,
+          {"league":313,"equation":"item.position","group_on":"team","ignore_dq":true,"break_ties":[156,157],"rank_higher":false,"global_variables":[]}
+        ],
+        [
+          401,
+          "Junior Girls Pairs (12-14 years)",
+          77,
+          1,
+          {"league":314,"equation":"item.position","group_on":"team","ignore_dq":true,"break_ties":[156,157],"rank_higher":false,"global_variables":[]}
+        ]
+      ]
+    },
+    "result_schema_events": {
+      "columns": ["id","schema","event_type","event_id","weight"],
+      "rows": [
+        [1638,397,"\\App\\Models\\CompetitionSpeedEvent",222,"1.00"],
+        [1639,397,"\\App\\Models\\CompetitionSpeedEvent",223,"1.00"],
+        [1640,397,"\\App\\Models\\SERC",156,"2.00"],
+        [1641,397,"\\App\\Models\\SERC",157,"1.00"],
+        [1642,398,"\\App\\Models\\CompetitionSpeedEvent",222,"1.00"],
+        [1643,398,"\\App\\Models\\CompetitionSpeedEvent",223,"1.00"],
+        [1644,398,"\\App\\Models\\SERC",156,"2.00"],
+        [1645,398,"\\App\\Models\\SERC",157,"1.00"],
+        [1646,399,"\\App\\Models\\CompetitionSpeedEvent",222,"1.00"],
+        [1647,399,"\\App\\Models\\CompetitionSpeedEvent",223,"1.00"],
+        [1648,399,"\\App\\Models\\SERC",156,"2.00"],
+        [1649,399,"\\App\\Models\\SERC",157,"1.00"],
+        [1650,400,"\\App\\Models\\CompetitionSpeedEvent",222,"1.00"],
+        [1651,400,"\\App\\Models\\CompetitionSpeedEvent",223,"1.00"],
+        [1652,400,"\\App\\Models\\SERC",156,"2.00"],
+        [1653,400,"\\App\\Models\\SERC",157,"1.00"],
+        [1654,401,"\\App\\Models\\CompetitionSpeedEvent",222,"1.00"],
+        [1655,401,"\\App\\Models\\CompetitionSpeedEvent",223,"1.00"],
+        [1656,401,"\\App\\Models\\SERC",156,"2.00"],
+        [1657,401,"\\App\\Models\\SERC",157,"1.00"]
+      ]
+    }
+  }
+}

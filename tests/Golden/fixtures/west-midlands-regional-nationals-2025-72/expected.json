@@ -1,0 +1,281 @@
+{
+  "competition": "West Midlands Regional | Nationals 2025",
+  "events": {
+    "speed:192": {
+      "name": "Rope Throw",
+      "results": {
+        "all": [
+          {"entity":"competitor:1145","name":"Competitor 7 - OI","result":14120,"resolved":14120,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1151","name":"Competitor 12 - 40-49 LM 1","result":18840,"resolved":18840,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1143","name":"Competitor 5 - OI","result":34320,"resolved":34320,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1144","name":"Competitor 6 - OL","result":43340,"resolved":43340,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1147","name":"Competitor 8 - 12-14 OP","result":21350,"resolved":44820,"points":5,"position":5,"dqs":[],"pens":[],"combined":["competitor:1147","competitor:1148"]},
+          {"entity":"competitor:1152","name":"Competitor 13 - 40-49 LM 2","result":120000,"resolved":120000,"points":6,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1133","name":"Competitor 1 - 15-17 GP 1","result":120000,"resolved":137550,"points":7,"position":7,"dqs":[],"pens":[],"combined":["competitor:1133","competitor:1134"]},
+          {"entity":"competitor:1135","name":"Competitor 3 - 15-17 GP 2","result":39900,"resolved":159900,"points":8,"position":8,"dqs":[],"pens":[],"combined":["competitor:1135","competitor:1136"]},
+          {"entity":"competitor:1149","name":"Competitor 10 - 15-17 GP","result":120000,"resolved":240000,"points":9,"position":9,"dqs":[],"pens":[],"combined":["competitor:1149","competitor:1150"]}
+        ],
+        "league:146": [
+          {"entity":"competitor:1145","name":"Competitor 7 - OI","result":14120,"resolved":14120,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1143","name":"Competitor 5 - OI","result":34320,"resolved":34320,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:147": [
+          {"entity":"competitor:1144","name":"Competitor 6 - OL","result":43340,"resolved":43340,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:150": [
+          {"entity":"competitor:1147","name":"Competitor 8 - 12-14 OP","result":21350,"resolved":44820,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1147","competitor:1148"]}
+        ],
+        "league:151": [
+          {"entity":"competitor:1133","name":"Competitor 1 - 15-17 GP 1","result":120000,"resolved":137550,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1133","competitor:1134"]},
+          {"entity":"competitor:1135","name":"Competitor 3 - 15-17 GP 2","result":39900,"resolved":159900,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1135","competitor:1136"]},
+          {"entity":"competitor:1149","name":"Competitor 10 - 15-17 GP","result":120000,"resolved":240000,"points":3,"position":3,"dqs":[],"pens":[],"combined":["competitor:1149","competitor:1150"]}
+        ],
+        "league:153": [
+          {"entity":"competitor:1151","name":"Competitor 12 - 40-49 LM 1","result":18840,"resolved":18840,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1152","name":"Competitor 13 - 40-49 LM 2","result":120000,"resolved":120000,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    },
+    "speed:198": {
+      "name": "Swim & Tow",
+      "results": {
+        "all": [
+          {"entity":"competitor:1145","name":"Competitor 7 - OI","result":90470,"resolved":90470,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1147","name":"Competitor 8 - 12-14 OP","result":55100,"resolved":109390,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1147","competitor:1148"]},
+          {"entity":"competitor:1143","name":"Competitor 5 - OI","result":109930,"resolved":109930,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1151","name":"Competitor 12 - 40-49 LM 1","result":114970,"resolved":114970,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1144","name":"Competitor 6 - OL","result":115910,"resolved":115910,"points":5,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1152","name":"Competitor 13 - 40-49 LM 2","result":132940,"resolved":132940,"points":6,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1133","name":"Competitor 1 - 15-17 GP 1","result":118500,"resolved":235970,"points":7,"position":7,"dqs":[],"pens":[],"combined":["competitor:1133","competitor:1134"]},
+          {"entity":"competitor:1149","name":"Competitor 10 - 15-17 GP","result":110690,"resolved":236190,"points":8,"position":8,"dqs":[],"pens":[],"combined":["competitor:1149","competitor:1150"]},
+          {"entity":"competitor:1135","name":"Competitor 3 - 15-17 GP 2","result":116780,"resolved":265250,"points":9,"position":9,"dqs":[],"pens":[],"combined":["competitor:1135","competitor:1136"]}
+        ],
+        "league:146": [
+          {"entity":"competitor:1145","name":"Competitor 7 - OI","result":90470,"resolved":90470,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1143","name":"Competitor 5 - OI","result":109930,"resolved":109930,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:147": [
+          {"entity":"competitor:1144","name":"Competitor 6 - OL","result":115910,"resolved":115910,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:150": [
+          {"entity":"competitor:1147","name":"Competitor 8 - 12-14 OP","result":55100,"resolved":109390,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1147","competitor:1148"]}
+        ],
+        "league:151": [
+          {"entity":"competitor:1133","name":"Competitor 1 - 15-17 GP 1","result":118500,"resolved":235970,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1133","competitor:1134"]},
+          {"entity":"competitor:1149","name":"Competitor 10 - 15-17 GP","result":110690,"resolved":236190,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1149","competitor:1150"]},
+          {"entity":"competitor:1135","name":"Competitor 3 - 15-17 GP 2","result":116780,"resolved":265250,"points":3,"position":3,"dqs":[],"pens":[],"combined":["competitor:1135","competitor:1136"]}
+        ],
+        "league:153": [
+          {"entity":"competitor:1151","name":"Competitor 12 - 40-49 LM 1","result":114970,"resolved":114970,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1152","name":"Competitor 13 - 40-49 LM 2","result":132940,"resolved":132940,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    },
+    "serc:129": {
+      "name": "Aquatic",
+      "results": {
+        "all": [
+          {"entity":"team:1757","name":"Competitor 7 - OI - University of Warwick Lifesaving Club","result":117,"resolved":117,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1756","name":"Competitor 6 - OL - University of Birmingham","result":116.5,"resolved":116.5,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1752","name":"Competitor 1, Competitor 2 - 15-17 GP 1 - South Worcester LSC","result":111,"resolved":111,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1761","name":"Competitor 12 - 40-49 LM 1 - North Worcester LSC","result":110,"resolved":110,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1760","name":"Competitor 10, Competitor 11 - 15-17 GP - North Worcester LSC","result":109.5,"resolved":109.5,"points":5,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1755","name":"Competitor 5 - OI - University of Birmingham","result":109,"resolved":109,"points":6,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1753","name":"Competitor 3, Competitor 4 - 15-17 GP 2 - South Worcester LSC","result":103,"resolved":103,"points":7,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1759","name":"Competitor 8, Competitor 9 - 12-14 OP - North Worcester LSC","result":100.5,"resolved":100.5,"points":8,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1762","name":"Competitor 13 - 40-49 LM 2 - North Worcester LSC","result":69.5,"resolved":69.5,"points":9,"position":9,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:146": [
+          {"entity":"team:1757","name":"Competitor 7 - OI - University of Warwick Lifesaving Club","result":117,"resolved":117,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1755","name":"Competitor 5 - OI - University of Birmingham","result":109,"resolved":109,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:147": [
+          {"entity":"team:1756","name":"Competitor 6 - OL - University of Birmingham","result":116.5,"resolved":116.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:150": [
+          {"entity":"team:1759","name":"Competitor 8, Competitor 9 - 12-14 OP - North Worcester LSC","result":100.5,"resolved":100.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:151": [
+          {"entity":"team:1752","name":"Competitor 1, Competitor 2 - 15-17 GP 1 - South Worcester LSC","result":111,"resolved":111,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1760","name":"Competitor 10, Competitor 11 - 15-17 GP - North Worcester LSC","result":109.5,"resolved":109.5,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1753","name":"Competitor 3, Competitor 4 - 15-17 GP 2 - South Worcester LSC","result":103,"resolved":103,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:153": [
+          {"entity":"team:1761","name":"Competitor 12 - 40-49 LM 1 - North Worcester LSC","result":110,"resolved":110,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1762","name":"Competitor 13 - 40-49 LM 2 - North Worcester LSC","result":69.5,"resolved":69.5,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    },
+    "serc:132": {
+      "name": "Initiative",
+      "results": {
+        "all": [
+          {"entity":"team:1756","name":"Competitor 6 - OL - University of Birmingham","result":68.5,"resolved":68.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1757","name":"Competitor 7 - OI - University of Warwick Lifesaving Club","result":68,"resolved":68,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1755","name":"Competitor 5 - OI - University of Birmingham","result":58.5,"resolved":58.5,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1760","name":"Competitor 10, Competitor 11 - 15-17 GP - North Worcester LSC","result":52.5,"resolved":52.5,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1762","name":"Competitor 13 - 40-49 LM 2 - North Worcester LSC","result":47.5,"resolved":47.5,"points":5,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1761","name":"Competitor 12 - 40-49 LM 1 - North Worcester LSC","result":47,"resolved":47,"points":6,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1753","name":"Competitor 3, Competitor 4 - 15-17 GP 2 - South Worcester LSC","result":45.5,"resolved":45.5,"points":7,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1752","name":"Competitor 1, Competitor 2 - 15-17 GP 1 - South Worcester LSC","result":44.5,"resolved":44.5,"points":8,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1759","name":"Competitor 8, Competitor 9 - 12-14 OP - North Worcester LSC","result":27,"resolved":27,"points":9,"position":9,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:146": [
+          {"entity":"team:1757","name":"Competitor 7 - OI - University of Warwick Lifesaving Club","result":68,"resolved":68,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1755","name":"Competitor 5 - OI - University of Birmingham","result":58.5,"resolved":58.5,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:147": [
+          {"entity":"team:1756","name":"Competitor 6 - OL - University of Birmingham","result":68.5,"resolved":68.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:150": [
+          {"entity":"team:1759","name":"Competitor 8, Competitor 9 - 12-14 OP - North Worcester LSC","result":27,"resolved":27,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:151": [
+          {"entity":"team:1760","name":"Competitor 10, Competitor 11 - 15-17 GP - North Worcester LSC","result":52.5,"resolved":52.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1753","name":"Competitor 3, Competitor 4 - 15-17 GP 2 - South Worcester LSC","result":45.5,"resolved":45.5,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1752","name":"Competitor 1, Competitor 2 - 15-17 GP 1 - South Worcester LSC","result":44.5,"resolved":44.5,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:153": [
+          {"entity":"team:1762","name":"Competitor 13 - 40-49 LM 2 - North Worcester LSC","result":47.5,"resolved":47.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1761","name":"Competitor 12 - 40-49 LM 1 - North Worcester LSC","result":47,"resolved":47,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    }
+  },
+  "sheets": {
+    "sheet:238": {
+      "name": "Open Ind",
+      "results": [
+        {
+          "entity": "team:1757",
+          "name": "Competitor 7 - OI - University of Warwick Lifesaving Club",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:192","entity":"competitor:1145","position":1,"points":1,"adjusted":1},
+            {"event":"speed:198","entity":"competitor:1145","position":1,"points":1,"adjusted":1},
+            {"event":"serc:129","entity":"team:1757","position":1,"points":1,"adjusted":2},
+            {"event":"serc:132","entity":"team:1757","position":1,"points":1,"adjusted":1}
+          ]
+        },
+        {
+          "entity": "team:1755",
+          "name": "Competitor 5 - OI - University of Birmingham",
+          "total": 10,
+          "position": 2,
+          "events": [
+            {"event":"speed:192","entity":"competitor:1143","position":2,"points":2,"adjusted":2},
+            {"event":"speed:198","entity":"competitor:1143","position":2,"points":2,"adjusted":2},
+            {"event":"serc:129","entity":"team:1755","position":2,"points":2,"adjusted":4},
+            {"event":"serc:132","entity":"team:1755","position":2,"points":2,"adjusted":2}
+          ]
+        }
+      ]
+    },
+    "sheet:239": {
+      "name": "Ladies Ind",
+      "results": [
+        {
+          "entity": "team:1756",
+          "name": "Competitor 6 - OL - University of Birmingham",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:192","entity":"competitor:1144","position":1,"points":1,"adjusted":1},
+            {"event":"speed:198","entity":"competitor:1144","position":1,"points":1,"adjusted":1},
+            {"event":"serc:129","entity":"team:1756","position":1,"points":1,"adjusted":2},
+            {"event":"serc:132","entity":"team:1756","position":1,"points":1,"adjusted":1}
+          ]
+        }
+      ]
+    },
+    "sheet:242": {
+      "name": "12-14 Open Pairs",
+      "results": [
+        {
+          "entity": "team:1759",
+          "name": "Competitor 8, Competitor 9 - 12-14 OP - North Worcester LSC",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:192","entity":"competitor:1147","position":1,"points":1,"adjusted":1},
+            {"event":"speed:198","entity":"competitor:1147","position":1,"points":1,"adjusted":1},
+            {"event":"serc:129","entity":"team:1759","position":1,"points":1,"adjusted":2},
+            {"event":"serc:132","entity":"team:1759","position":1,"points":1,"adjusted":1}
+          ]
+        }
+      ]
+    },
+    "sheet:243": {
+      "name": "15-17 Girls Pairs",
+      "results": [
+        {
+          "entity": "team:1752",
+          "name": "Competitor 1, Competitor 2 - 15-17 GP 1 - South Worcester LSC",
+          "total": 7,
+          "position": 1,
+          "events": [
+            {"event":"speed:192","entity":"competitor:1133","position":1,"points":1,"adjusted":1},
+            {"event":"speed:198","entity":"competitor:1133","position":1,"points":1,"adjusted":1},
+            {"event":"serc:129","entity":"team:1752","position":1,"points":1,"adjusted":2},
+            {"event":"serc:132","entity":"team:1752","position":3,"points":3,"adjusted":3}
+          ]
+        },
+        {
+          "entity": "team:1760",
+          "name": "Competitor 10, Competitor 11 - 15-17 GP - North Worcester LSC",
+          "total": 10,
+          "position": 2,
+          "events": [
+            {"event":"speed:192","entity":"competitor:1149","position":3,"points":3,"adjusted":3},
+            {"event":"speed:198","entity":"competitor:1149","position":2,"points":2,"adjusted":2},
+            {"event":"serc:129","entity":"team:1760","position":2,"points":2,"adjusted":4},
+            {"event":"serc:132","entity":"team:1760","position":1,"points":1,"adjusted":1}
+          ]
+        },
+        {
+          "entity": "team:1753",
+          "name": "Competitor 3, Competitor 4 - 15-17 GP 2 - South Worcester LSC",
+          "total": 13,
+          "position": 3,
+          "events": [
+            {"event":"speed:192","entity":"competitor:1135","position":2,"points":2,"adjusted":2},
+            {"event":"speed:198","entity":"competitor:1135","position":3,"points":3,"adjusted":3},
+            {"event":"serc:129","entity":"team:1753","position":3,"points":3,"adjusted":6},
+            {"event":"serc:132","entity":"team:1753","position":2,"points":2,"adjusted":2}
+          ]
+        }
+      ]
+    },
+    "sheet:245": {
+      "name": "Ladies Masters 40-49",
+      "results": [
+        {
+          "entity": "team:1761",
+          "name": "Competitor 12 - 40-49 LM 1 - North Worcester LSC",
+          "total": 6,
+          "position": 1,
+          "events": [
+            {"event":"speed:192","entity":"competitor:1151","position":1,"points":1,"adjusted":1},
+            {"event":"speed:198","entity":"competitor:1151","position":1,"points":1,"adjusted":1},
+            {"event":"serc:129","entity":"team:1761","position":1,"points":1,"adjusted":2},
+            {"event":"serc:132","entity":"team:1761","position":2,"points":2,"adjusted":2}
+          ]
+        },
+        {
+          "entity": "team:1762",
+          "name": "Competitor 13 - 40-49 LM 2 - North Worcester LSC",
+          "total": 9,
+          "position": 2,
+          "events": [
+            {"event":"speed:192","entity":"competitor:1152","position":2,"points":2,"adjusted":2},
+            {"event":"speed:198","entity":"competitor:1152","position":2,"points":2,"adjusted":2},
+            {"event":"serc:129","entity":"team:1762","position":2,"points":2,"adjusted":4},
+            {"event":"serc:132","entity":"team:1762","position":1,"points":1,"adjusted":1}
+          ]
+        }
+      ]
+    }
+  },
+  "masters": []
+}

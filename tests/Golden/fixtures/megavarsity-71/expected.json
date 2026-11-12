@@ -1,0 +1,326 @@
+{
+  "competition": "MegaVarsity",
+  "events": {
+    "speed:193": {
+      "name": "Rope Throw",
+      "results": {
+        "all": [
+          {"entity":"team:1785","name":"W","result":114030,"resolved":114030,"points":1000,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1779","name":"Cant lifesave to save our lives (Q)","result":116750,"resolved":116750,"points":959.9666388657215,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1782","name":"Competitor - Fittest Teacher (T)","result":119220,"resolved":119220,"points":923.6128146004023,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1778","name":"Baywatch your back (P)","result":119780,"resolved":119780,"points":915.3706520139333,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1786","name":"X","result":121320,"resolved":121320,"points":892.7047049011431,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1787","name":"Rapid Response (Y)","result":146440,"resolved":146440,"points":522.9848403080998,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1781","name":"S","result":147440,"resolved":147440,"points":508.26669283226215,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1784","name":"Three Buoys and a Gull (V)","result":149970,"resolved":149970,"points":471.0297797183928,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1780","name":"R","result":3,"resolved":3,"points":352.94117647058823,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1783","name":"U","result":3,"resolved":3,"points":352.94117647058823,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1788","name":"Lifesaver, I barely know her? (Z)","result":3,"resolved":3,"points":352.94117647058823,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1777","name":"O","result":2,"resolved":2,"points":176.47058823529412,"position":12,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    },
+    "speed:194": {
+      "name": "Manikin",
+      "results": {
+        "all": [
+          {"entity":"team:1786","name":"X","result":95910,"resolved":95910,"points":818.6968838526913,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1778","name":"Baywatch your back (P)","result":101070,"resolved":101070,"points":755.1422588988792,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1788","name":"Lifesaver, I barely know her? (Z)","result":104280,"resolved":104280,"points":715.6053701194729,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1777","name":"O","result":107720,"resolved":107720,"points":673.2356201502648,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1782","name":"Competitor - Fittest Teacher (T)","result":108060,"resolved":108060,"points":669.0479123044711,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1785","name":"W","result":110310,"resolved":110310,"points":641.3351397955414,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1781","name":"S","result":111970,"resolved":111970,"points":620.8892720778421,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1784","name":"Three Buoys and a Gull (V)","result":113220,"resolved":113220,"points":605.4932873506589,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1779","name":"Cant lifesave to save our lives (Q)","result":113250,"resolved":113250,"points":605.1237837172065,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1783","name":"U","result":113320,"resolved":113320,"points":604.2616085724843,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1780","name":"R","result":116500,"resolved":116500,"points":565.0942234265303,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1787","name":"Rapid Response (Y)","result":118250,"resolved":118250,"points":543.539844808474,"position":12,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    },
+    "speed:195": {
+      "name": "Medley",
+      "results": {
+        "all": [
+          {"entity":"team:1787","name":"Rapid Response (Y)","result":165880,"resolved":165880,"points":472.4191914540934,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1778","name":"Baywatch your back (P)","result":167310,"resolved":167310,"points":459.2503913804218,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1781","name":"S","result":171910,"resolved":171910,"points":416.8892163182614,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1785","name":"W","result":174750,"resolved":174750,"points":390.7357951929276,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1777","name":"O","result":175130,"resolved":175130,"points":387.23639377474905,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1779","name":"Cant lifesave to save our lives (Q)","result":179280,"resolved":179280,"points":349.01924670779994,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1784","name":"Three Buoys and a Gull (V)","result":179310,"resolved":179310,"points":348.74297817478595,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1788","name":"Lifesaver, I barely know her? (Z)","result":182220,"resolved":182220,"points":321.94493047241923,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1786","name":"X","result":182470,"resolved":182470,"points":319.6426926973017,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1780","name":"R","result":187210,"resolved":187210,"points":275.9922644810756,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1782","name":"Competitor - Fittest Teacher (T)","result":187440,"resolved":187440,"points":273.8742057279676,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1783","name":"U","result":198000,"resolved":198000,"points":176.62768210700796,"position":12,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    },
+    "speed:196": {
+      "name": "Swim & Tow",
+      "results": {
+        "all": [
+          {"entity":"team:1781","name":"S","result":25780,"resolved":25780,"points":1931.6234782378058,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1787","name":"Rapid Response (Y)","result":25810,"resolved":25810,"points":1931.5439089727606,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1784","name":"Three Buoys and a Gull (V)","result":25880,"resolved":25880,"points":1931.3582473543217,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1778","name":"Baywatch your back (P)","result":26190,"resolved":26190,"points":1930.5360316155213,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1777","name":"O","result":26470,"resolved":26470,"points":1929.7933851417658,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1782","name":"Competitor - Fittest Teacher (T)","result":26750,"resolved":26750,"points":1929.0507386680106,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1786","name":"X","result":27210,"resolved":27210,"points":1927.8306766039836,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1785","name":"W","result":27320,"resolved":27320,"points":1927.5389226321513,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1779","name":"Cant lifesave to save our lives (Q)","result":27380,"resolved":27380,"points":1927.3797841020607,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1783","name":"U","result":27530,"resolved":27530,"points":1926.9819377768347,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1788","name":"Lifesaver, I barely know her? (Z)","result":27660,"resolved":27660,"points":1926.6371376283055,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1780","name":"R","result":30470,"resolved":30470,"points":1919.184149802403,"position":12,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    },
+    "speed:197": {
+      "name": "Pool Lifesaver",
+      "results": {
+        "all": [
+          {"entity":"team:1787","name":"Rapid Response (Y)","result":147590,"resolved":147590,"points":863.0305831600032,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1786","name":"X","result":148970,"resolved":148970,"points":852.399661043063,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1779","name":"Cant lifesave to save our lives (Q)","result":149060,"resolved":149060,"points":851.7063400354365,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1788","name":"Lifesaver, I barely know her? (Z)","result":155190,"resolved":155190,"points":804.4834758493182,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1777","name":"O","result":156810,"resolved":156810,"points":792.0036977120407,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1780","name":"R","result":158620,"resolved":158620,"points":778.0602418919959,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1783","name":"U","result":160470,"resolved":160470,"points":763.8086434018951,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1781","name":"S","result":160750,"resolved":160750,"points":761.6516447115014,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1785","name":"W","result":163410,"resolved":163410,"points":741.1601571527617,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1778","name":"Baywatch your back (P)","result":172060,"resolved":172060,"points":674.5243047531006,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1784","name":"Three Buoys and a Gull (V)","result":173130,"resolved":173130,"points":666.2814883290964,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1782","name":"Competitor - Fittest Teacher (T)","result":176340,"resolved":176340,"points":641.5530390570834,"position":12,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    },
+    "serc:130": {
+      "name": "Dry",
+      "results": {
+        "all": [
+          {"entity":"team:1782","name":"Competitor - Fittest Teacher (T)","result":297,"resolved":297,"points":1000,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1784","name":"Three Buoys and a Gull (V)","result":273.7,"resolved":273.7,"points":921.5488215488216,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1787","name":"Rapid Response (Y)","result":268,"resolved":268,"points":902.3569023569023,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1777","name":"O","result":262,"resolved":262,"points":882.1548821548821,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1781","name":"S","result":250.5,"resolved":250.5,"points":843.4343434343434,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1788","name":"Lifesaver, I barely know her? (Z)","result":245.2,"resolved":245.2,"points":825.5892255892255,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1779","name":"Cant lifesave to save our lives (Q)","result":243.2,"resolved":243.2,"points":818.8552188552188,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1778","name":"Baywatch your back (P)","result":234.5,"resolved":234.5,"points":789.5622895622896,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1786","name":"X","result":218.9,"resolved":218.9,"points":737.0370370370371,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1780","name":"R","result":215.5,"resolved":215.5,"points":725.5892255892255,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1783","name":"U","result":168,"resolved":168,"points":565.6565656565656,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1785","name":"W","result":149,"resolved":149,"points":501.68350168350173,"position":12,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    },
+    "serc:131": {
+      "name": "Wet",
+      "results": {
+        "all": [
+          {"entity":"team:1787","name":"Rapid Response (Y)","result":225.5,"resolved":225.5,"points":1000,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1780","name":"R","result":222.5,"resolved":222.5,"points":986.6962305986697,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1782","name":"Competitor - Fittest Teacher (T)","result":207,"resolved":207,"points":917.960088691796,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1781","name":"S","result":206.5,"resolved":206.5,"points":915.7427937915743,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1778","name":"Baywatch your back (P)","result":204,"resolved":204,"points":904.6563192904656,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1785","name":"W","result":199.5,"resolved":199.5,"points":884.70066518847,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1779","name":"Cant lifesave to save our lives (Q)","result":195.5,"resolved":195.5,"points":866.9623059866963,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1788","name":"Lifesaver, I barely know her? (Z)","result":193.5,"resolved":193.5,"points":858.0931263858092,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1786","name":"X","result":193,"resolved":193,"points":855.8758314855876,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1784","name":"Three Buoys and a Gull (V)","result":187.5,"resolved":187.5,"points":831.4855875831486,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1783","name":"U","result":182.5,"resolved":182.5,"points":809.3126385809313,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1777","name":"O","result":173.5,"resolved":173.5,"points":769.4013303769401,"position":12,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    }
+  },
+  "sheets": {
+    "sheet:237": {
+      "name": "Overall",
+      "results": [
+        {
+          "entity": "team:1787",
+          "name": "Rapid Response (Y)",
+          "total": 9955.703916112314,
+          "position": 1,
+          "events": [
+            {"event":"speed:193","entity":"team:1787","position":6,"points":522.9848403080998,"adjusted":478.69057547956623},
+            {"event":"speed:194","entity":"team:1787","position":12,"points":543.539844808474,"adjusted":100},
+            {"event":"speed:195","entity":"team:1787","position":1,"points":472.4191914540934,"adjusted":1000.0000000000001},
+            {"event":"speed:196","entity":"team:1787","position":2,"points":1931.5439089727606,"adjusted":994.2430703624774},
+            {"event":"speed:197","entity":"team:1787","position":1,"points":863.0305831600032,"adjusted":1000},
+            {"event":"serc:130","entity":"team:1787","position":3,"points":902.3569023569023,"adjusted":2882.77027027027},
+            {"event":"serc:131","entity":"team:1787","position":1,"points":1000,"adjusted":3500}
+          ]
+        },
+        {
+          "entity": "team:1782",
+          "name": "Competitor - Fittest Teacher (T)",
+          "total": 8616.115575888125,
+          "position": 2,
+          "events": [
+            {"event":"speed:193","entity":"team:1782","position":3,"points":923.6128146004023,"adjusted":916.5197188132969},
+            {"event":"speed:194","entity":"team:1782","position":5,"points":669.0479123044711,"adjusted":510.51924798567615},
+            {"event":"speed:195","entity":"team:1782","position":11,"points":273.8742057279676,"adjusted":395.8904109589043},
+            {"event":"speed:196","entity":"team:1782","position":6,"points":1929.0507386680106,"adjusted":813.8592750533235},
+            {"event":"speed:197","entity":"team:1782","position":12,"points":641.5530390570834,"adjusted":100},
+            {"event":"serc:130","entity":"team:1782","position":1,"points":1000,"adjusted":3500},
+            {"event":"serc:131","entity":"team:1782","position":3,"points":917.960088691796,"adjusted":2379.326923076924}
+          ]
+        },
+        {
+          "entity": "team:1778",
+          "name": "Baywatch your back (P)",
+          "total": 8182.229711783293,
+          "position": 3,
+          "events": [
+            {"event":"speed:193","entity":"team:1778","position":4,"points":915.3706520139333,"adjusted":907.5122125580843},
+            {"event":"speed:194","entity":"team:1778","position":2,"points":755.1422588988792,"adjusted":792.1217547000894},
+            {"event":"speed:195","entity":"team:1778","position":2,"points":459.2503913804218,"adjusted":959.9315068493152},
+            {"event":"speed:196","entity":"team:1778","position":4,"points":1930.5360316155213,"adjusted":921.3219616204849},
+            {"event":"speed:197","entity":"team:1778","position":10,"points":674.5243047531006,"adjusted":233.98260869565195},
+            {"event":"serc:130","entity":"team:1778","position":8,"points":789.5622895622896,"adjusted":2169.7635135135138},
+            {"event":"serc:131","entity":"team:1778","position":5,"points":904.6563192904656,"adjusted":2197.596153846154}
+          ]
+        },
+        {
+          "entity": "team:1781",
+          "name": "S",
+          "total": 8094.021996387434,
+          "position": 4,
+          "events": [
+            {"event":"speed:193","entity":"team:1781","position":7,"points":508.26669283226215,"adjusted":462.60574288097223},
+            {"event":"speed:194","entity":"team:1781","position":7,"points":620.8892720778421,"adjusted":352.9991047448521},
+            {"event":"speed:195","entity":"team:1781","position":3,"points":416.8892163182614,"adjusted":831.0398505603987},
+            {"event":"speed:196","entity":"team:1781","position":1,"points":1931.6234782378058,"adjusted":1000},
+            {"event":"speed:197","entity":"team:1781","position":8,"points":761.6516447115014,"adjusted":588.0347826086952},
+            {"event":"serc:130","entity":"team:1781","position":5,"points":843.4343434343434,"adjusted":2510.3040540540537},
+            {"event":"serc:131","entity":"team:1781","position":4,"points":915.7427937915743,"adjusted":2349.038461538462}
+          ]
+        },
+        {
+          "entity": "team:1779",
+          "name": "Cant lifesave to save our lives (Q)",
+          "total": 7566.785766299143,
+          "position": 5,
+          "events": [
+            {"event":"speed:193","entity":"team:1779","position":2,"points":959.9666388657215,"adjusted":956.2492553318243},
+            {"event":"speed:194","entity":"team:1779","position":9,"points":605.1237837172065,"adjusted":301.4324082363471},
+            {"event":"speed:195","entity":"team:1779","position":6,"points":349.01924670779994,"adjusted":624.53300124533},
+            {"event":"speed:196","entity":"team:1779","position":9,"points":1927.3797841020607,"adjusted":692.9637526652483},
+            {"event":"speed:197","entity":"team:1779","position":3,"points":851.7063400354365,"adjusted":953.9826086956522},
+            {"event":"serc:130","entity":"team:1779","position":7,"points":818.8552188552188,"adjusted":2354.932432432432},
+            {"event":"serc:131","entity":"team:1779","position":7,"points":866.9623059866963,"adjusted":1682.6923076923083}
+          ]
+        },
+        {
+          "entity": "team:1786",
+          "name": "X",
+          "total": 7469.263850388796,
+          "position": 6,
+          "events": [
+            {"event":"speed:193","entity":"team:1786","position":5,"points":892.7047049011431,"adjusted":882.7415703562493},
+            {"event":"speed:194","entity":"team:1786","position":1,"points":818.6968838526913,"adjusted":1000},
+            {"event":"speed:195","entity":"team:1786","position":9,"points":319.6426926973017,"adjusted":535.1494396014944},
+            {"event":"speed:196","entity":"team:1786","position":7,"points":1927.8306766039836,"adjusted":725.5863539445654},
+            {"event":"speed:197","entity":"team:1786","position":2,"points":852.399661043063,"adjusted":956.8},
+            {"event":"serc:130","entity":"team:1786","position":9,"points":737.0370370370371,"adjusted":1837.7364864864862},
+            {"event":"serc:131","entity":"team:1786","position":9,"points":855.8758314855876,"adjusted":1531.2500000000002}
+          ]
+        },
+        {
+          "entity": "team:1788",
+          "name": "Lifesaver, I barely know her? (Z)",
+          "total": 6858.171539832918,
+          "position": 7,
+          "events": [
+            {"event":"speed:193","entity":"team:1788","position":9,"points":352.94117647058823,"adjusted":292.8571428571429},
+            {"event":"speed:194","entity":"team:1788","position":3,"points":715.6053701194729,"adjusted":662.8021486123547},
+            {"event":"speed:195","entity":"team:1788","position":8,"points":321.94493047241923,"adjusted":542.1544209215444},
+            {"event":"speed:196","entity":"team:1788","position":11,"points":1926.6371376283055,"adjusted":639.2324093816758},
+            {"event":"speed:197","entity":"team:1788","position":4,"points":804.4834758493182,"adjusted":762.0869565217388},
+            {"event":"serc:130","entity":"team:1788","position":6,"points":825.5892255892255,"adjusted":2397.4999999999995},
+            {"event":"serc:131","entity":"team:1788","position":8,"points":858.0931263858092,"adjusted":1561.5384615384608}
+          ]
+        },
+        {
+          "entity": "team:1784",
+          "name": "Three Buoys and a Gull (V)",
+          "total": 6731.706474557299,
+          "position": 8,
+          "events": [
+            {"event":"speed:193","entity":"team:1784","position":8,"points":471.0297797183928,"adjusted":421.91111640652923},
+            {"event":"speed:194","entity":"team:1784","position":8,"points":605.4932873506589,"adjusted":302.64100268576516},
+            {"event":"speed:195","entity":"team:1784","position":7,"points":348.74297817478595,"adjusted":623.6924034869243},
+            {"event":"speed:196","entity":"team:1784","position":3,"points":1931.3582473543217,"adjusted":980.8102345415801},
+            {"event":"speed:197","entity":"team:1784","position":11,"points":666.2814883290964,"adjusted":200.4869565217393},
+            {"event":"serc:130","entity":"team:1784","position":2,"points":921.5488215488216,"adjusted":3004.087837837838},
+            {"event":"serc:131","entity":"team:1784","position":10,"points":831.4855875831486,"adjusted":1198.0769230769235}
+          ]
+        },
+        {
+          "entity": "team:1780",
+          "name": "R",
+          "total": 6704.047375382327,
+          "position": 9,
+          "events": [
+            {"event":"speed:193","entity":"team:1780","position":9,"points":352.94117647058823,"adjusted":292.8571428571429},
+            {"event":"speed:194","entity":"team:1780","position":11,"points":565.0942234265303,"adjusted":170.50134288272145},
+            {"event":"speed:195","entity":"team:1780","position":10,"points":275.9922644810756,"adjusted":402.33499377335005},
+            {"event":"speed:196","entity":"team:1780","position":12,"points":1919.184149802403,"adjusted":100},
+            {"event":"speed:197","entity":"team:1780","position":6,"points":778.0602418919959,"adjusted":654.7130434782604},
+            {"event":"serc:130","entity":"team:1780","position":10,"points":725.5892255892255,"adjusted":1765.371621621621},
+            {"event":"serc:131","entity":"team:1780","position":2,"points":986.6962305986697,"adjusted":3318.2692307692314}
+          ]
+        },
+        {
+          "entity": "team:1777",
+          "name": "O",
+          "total": 6049.064441851846,
+          "position": 10,
+          "events": [
+            {"event":"speed:193","entity":"team:1777","position":12,"points":176.47058823529412,"adjusted":100},
+            {"event":"speed:194","entity":"team:1777","position":4,"points":673.2356201502648,"adjusted":524.2166517457474},
+            {"event":"speed:195","entity":"team:1777","position":5,"points":387.23639377474905,"adjusted":740.8156911581569},
+            {"event":"speed:196","entity":"team:1777","position":5,"points":1929.7933851417658,"adjusted":867.590618336896},
+            {"event":"speed:197","entity":"team:1777","position":5,"points":792.0036977120407,"adjusted":711.373913043478},
+            {"event":"serc:130","entity":"team:1777","position":4,"points":882.1548821548821,"adjusted":2755.0675675675675},
+            {"event":"serc:131","entity":"team:1777","position":12,"points":769.4013303769401,"adjusted":350}
+          ]
+        },
+        {
+          "entity": "team:1785",
+          "name": "W",
+          "total": 5655.580756375566,
+          "position": 11,
+          "events": [
+            {"event":"speed:193","entity":"team:1785","position":1,"points":1000,"adjusted":1000.0000000000001},
+            {"event":"speed:194","entity":"team:1785","position":6,"points":641.3351397955414,"adjusted":419.8746642793198},
+            {"event":"speed:195","entity":"team:1785","position":4,"points":390.7357951929276,"adjusted":751.4632627646329},
+            {"event":"speed:196","entity":"team:1785","position":8,"points":1927.5389226321513,"adjusted":704.4776119403101},
+            {"event":"speed:197","entity":"team:1785","position":9,"points":741.1601571527617,"adjusted":504.76521739130413},
+            {"event":"serc:130","entity":"team:1785","position":12,"points":501.68350168350173,"adjusted":350},
+            {"event":"serc:131","entity":"team:1785","position":6,"points":884.70066518847,"adjusted":1924.999999999999}
+          ]
+        },
+        {
+          "entity": "team:1783",
+          "name": "U",
+          "total": 3602.0328014399993,
+          "position": 12,
+          "events": [
+            {"event":"speed:193","entity":"team:1783","position":9,"points":352.94117647058823,"adjusted":292.8571428571429},
+            {"event":"speed:194","entity":"team:1783","position":10,"points":604.2616085724843,"adjusted":298.61235452103847},
+            {"event":"speed:195","entity":"team:1783","position":12,"points":176.62768210700796,"adjusted":100},
+            {"event":"speed:196","entity":"team:1783","position":10,"points":1926.9819377768347,"adjusted":664.1791044776184},
+            {"event":"speed:197","entity":"team:1783","position":7,"points":763.8086434018951,"adjusted":596.8},
+            {"event":"serc:130","entity":"team:1783","position":11,"points":565.6565656565656,"adjusted":754.3918918918912},
+            {"event":"serc:131","entity":"team:1783","position":11,"points":809.3126385809313,"adjusted":895.1923076923088}
+          ]
+        }
+      ]
+    }
+  },
+  "masters": []
+}

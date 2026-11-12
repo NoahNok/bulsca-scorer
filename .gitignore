@@ -29,3 +29,6 @@ storage/logs/*.log
 /*.csv
 /public/*.csv
 /.cache
+
+# Database dumps (production data)
+/*.sql

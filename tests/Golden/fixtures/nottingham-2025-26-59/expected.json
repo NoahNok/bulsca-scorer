@@ -1,0 +1,1414 @@
+{
+  "competition": "Nottingham 2025-26",
+  "events": {
+    "speed:148": {
+      "name": "Rope Throw",
+      "results": {
+        "all": [
+          {"entity":"team:1469","name":"Loughborough A","result":126840,"resolved":126840,"points":1000,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1462","name":"Birmingham A","result":3,"resolved":3,"points":841.4634146341464,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1471","name":"Loughborough C","result":3,"resolved":3,"points":841.4634146341464,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1476","name":"Nottingham A","result":3,"resolved":3,"points":841.4634146341464,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1477","name":"Nottingham B","result":3,"resolved":3,"points":841.4634146341464,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1483","name":"Southampton A","result":3,"resolved":3,"points":841.4634146341464,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1485","name":"Southampton C","result":3,"resolved":3,"points":841.4634146341464,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1486","name":"Southampton D","result":3,"resolved":3,"points":841.4634146341464,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1495","name":"Warwick A","result":3,"resolved":3,"points":841.4634146341464,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1463","name":"Birmingham B","result":2,"resolved":2,"points":524.390243902439,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1464","name":"Birmingham C","result":2,"resolved":2,"points":524.390243902439,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1465","name":"Birmingham D","result":2,"resolved":2,"points":524.390243902439,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1466","name":"Birmingham E","result":2,"resolved":2,"points":524.390243902439,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1467","name":"Bristol A","result":2,"resolved":2,"points":524.390243902439,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1468","name":"Bristol B","result":2,"resolved":2,"points":524.390243902439,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1470","name":"Loughborough B","result":3,"resolved":2,"points":524.390243902439,"position":10,"dqs":[],"pens":[807],"combined":[]},
+          {"entity":"team:1472","name":"Loughborough D","result":2,"resolved":2,"points":524.390243902439,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1478","name":"Nottingham C","result":3,"resolved":2,"points":524.390243902439,"position":10,"dqs":[],"pens":[801],"combined":[]},
+          {"entity":"team:1479","name":"Nottingham D","result":2,"resolved":2,"points":524.390243902439,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1480","name":"Oxford A","result":3,"resolved":2,"points":524.390243902439,"position":10,"dqs":[],"pens":[807],"combined":[]},
+          {"entity":"team:1481","name":"Sheffield A","result":3,"resolved":2,"points":524.390243902439,"position":10,"dqs":[],"pens":[801],"combined":[]},
+          {"entity":"team:1484","name":"Southampton B","result":2,"resolved":2,"points":524.390243902439,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1492","name":"Swansea C","result":2,"resolved":2,"points":524.390243902439,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1496","name":"Warwick B","result":2,"resolved":2,"points":524.390243902439,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1497","name":"Warwick C","result":2,"resolved":2,"points":524.390243902439,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1473","name":"Loughborough E","result":1,"resolved":1,"points":195.1219512195122,"position":26,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1474","name":"Loughborough F","result":2,"resolved":1,"points":195.1219512195122,"position":26,"dqs":[],"pens":[809],"combined":[]},
+          {"entity":"team:1475","name":"Loughborough G","result":1,"resolved":1,"points":195.1219512195122,"position":26,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1482","name":"Sheffield B","result":1,"resolved":1,"points":195.1219512195122,"position":26,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1487","name":"Plymouth A","result":1,"resolved":1,"points":195.1219512195122,"position":26,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1490","name":"Swansea A","result":1,"resolved":1,"points":195.1219512195122,"position":26,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1493","name":"Swansea D","result":1,"resolved":1,"points":195.1219512195122,"position":26,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1494","name":"Robin Hood A","result":1,"resolved":1,"points":195.1219512195122,"position":26,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1498","name":"Warwick D","result":1,"resolved":1,"points":195.1219512195122,"position":26,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1489","name":"Plymouth C","result":1,"resolved":0,"points":36.58536585365854,"position":35,"dqs":[],"pens":[804],"combined":[]},
+          {"entity":"team:1491","name":"Swansea B","result":0,"resolved":0,"points":36.58536585365854,"position":35,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1488","name":"Plymouth B","result":1,"resolved":1,"points":195.1219512195122,"position":37,"dqs":[401],"pens":[],"combined":[]}
+        ],
+        "league:113": [
+          {"entity":"team:1469","name":"Loughborough A","result":126840,"resolved":126840,"points":1000,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1462","name":"Birmingham A","result":3,"resolved":3,"points":700,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1476","name":"Nottingham A","result":3,"resolved":3,"points":700,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1483","name":"Southampton A","result":3,"resolved":3,"points":700,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1495","name":"Warwick A","result":3,"resolved":3,"points":700,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1467","name":"Bristol A","result":2,"resolved":2,"points":400,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1480","name":"Oxford A","result":3,"resolved":2,"points":400,"position":6,"dqs":[],"pens":[807],"combined":[]},
+          {"entity":"team:1481","name":"Sheffield A","result":3,"resolved":2,"points":400,"position":6,"dqs":[],"pens":[801],"combined":[]},
+          {"entity":"team:1487","name":"Plymouth A","result":1,"resolved":1,"points":166.66666666666669,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1490","name":"Swansea A","result":1,"resolved":1,"points":166.66666666666669,"position":9,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:114": [
+          {"entity":"team:1479","name":"Nottingham D","result":2,"resolved":2,"points":555.5555555555557,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1484","name":"Southampton B","result":2,"resolved":2,"points":555.5555555555557,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1492","name":"Swansea C","result":2,"resolved":2,"points":555.5555555555557,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1491","name":"Swansea B","result":0,"resolved":0,"points":111.11111111111111,"position":4,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:115": [
+          {"entity":"team:1471","name":"Loughborough C","result":3,"resolved":3,"points":880,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1477","name":"Nottingham B","result":3,"resolved":3,"points":880,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1485","name":"Southampton C","result":3,"resolved":3,"points":880,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1463","name":"Birmingham B","result":2,"resolved":2,"points":580,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1464","name":"Birmingham C","result":2,"resolved":2,"points":580,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1465","name":"Birmingham D","result":2,"resolved":2,"points":580,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1466","name":"Birmingham E","result":2,"resolved":2,"points":580,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1468","name":"Bristol B","result":2,"resolved":2,"points":580,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1470","name":"Loughborough B","result":3,"resolved":2,"points":580,"position":4,"dqs":[],"pens":[807],"combined":[]},
+          {"entity":"team:1472","name":"Loughborough D","result":2,"resolved":2,"points":580,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1478","name":"Nottingham C","result":3,"resolved":2,"points":580,"position":4,"dqs":[],"pens":[801],"combined":[]},
+          {"entity":"team:1496","name":"Warwick B","result":2,"resolved":2,"points":580,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1497","name":"Warwick C","result":2,"resolved":2,"points":580,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1473","name":"Loughborough E","result":1,"resolved":1,"points":220,"position":14,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1474","name":"Loughborough F","result":2,"resolved":1,"points":220,"position":14,"dqs":[],"pens":[809],"combined":[]},
+          {"entity":"team:1475","name":"Loughborough G","result":1,"resolved":1,"points":220,"position":14,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1482","name":"Sheffield B","result":1,"resolved":1,"points":220,"position":14,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1487","name":"Plymouth A","result":1,"resolved":1,"points":220,"position":14,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1498","name":"Warwick D","result":1,"resolved":1,"points":220,"position":14,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1489","name":"Plymouth C","result":1,"resolved":0,"points":40,"position":20,"dqs":[],"pens":[804],"combined":[]},
+          {"entity":"team:1488","name":"Plymouth B","result":1,"resolved":1,"points":220,"position":21,"dqs":[401],"pens":[],"combined":[]}
+        ],
+        "league:116": [
+          {"entity":"team:1486","name":"Southampton D","result":3,"resolved":3,"points":750,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1493","name":"Swansea D","result":1,"resolved":1,"points":312.5,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1494","name":"Robin Hood A","result":1,"resolved":1,"points":312.5,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    },
+    "speed:149": {
+      "name": "Manikin",
+      "results": {
+        "all": [
+          {"entity":"team:1469","name":"Loughborough A","result":89720,"resolved":89720,"points":894.9378002217022,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1495","name":"Warwick A","result":97630,"resolved":97630,"points":797.5120088680872,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1474","name":"Loughborough F","result":100520,"resolved":100520,"points":761.9164921788397,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1473","name":"Loughborough E","result":101350,"resolved":101350,"points":751.6935583199902,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1470","name":"Loughborough B","result":102090,"resolved":102090,"points":742.5791353614977,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1475","name":"Loughborough G","result":103320,"resolved":103320,"points":727.4294863899495,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1497","name":"Warwick C","result":103940,"resolved":103940,"points":719.7930779652665,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1462","name":"Birmingham A","result":104940,"resolved":104940,"points":707.4762901835201,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1496","name":"Warwick B","result":106310,"resolved":106310,"points":690.6022909225273,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1481","name":"Sheffield A","result":108720,"resolved":108720,"points":660.9188323685182,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1472","name":"Loughborough D","result":111160,"resolved":111160,"points":630.8658701810567,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1476","name":"Nottingham A","result":113370,"resolved":113370,"points":603.645769183397,"position":12,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1471","name":"Loughborough C","result":114750,"resolved":114750,"points":586.6486020445868,"position":13,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1498","name":"Warwick D","result":114860,"resolved":114860,"points":585.2937553885946,"position":14,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1467","name":"Bristol A","result":115070,"resolved":115070,"points":582.7072299544278,"position":15,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1485","name":"Southampton C","result":116750,"resolved":116750,"points":562.0150264810937,"position":16,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1483","name":"Southampton A","result":117720,"resolved":117720,"points":550.0677423327995,"position":17,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1465","name":"Birmingham D","result":117910,"resolved":117910,"points":547.7275526542678,"position":18,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1487","name":"Plymouth A","result":121100,"resolved":121100,"points":508.43699963049636,"position":19,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1486","name":"Southampton D","result":125510,"resolved":125510,"points":454.11996551299416,"position":20,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1490","name":"Swansea A","result":125720,"resolved":125720,"points":451.5334400788274,"position":21,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1477","name":"Nottingham B","result":130250,"resolved":130250,"points":395.73839142751564,"position":22,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1484","name":"Southampton B","result":135070,"resolved":135070,"points":336.37147431949745,"position":23,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1463","name":"Birmingham B","result":138820,"resolved":138820,"points":290.183520137948,"position":24,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1479","name":"Nottingham D","result":141900,"resolved":141900,"points":252.2478137701687,"position":25,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1494","name":"Robin Hood A","result":142870,"resolved":142870,"points":240.30052962187466,"position":26,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1464","name":"Birmingham C","result":143590,"resolved":143590,"points":231.43244241901718,"position":27,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1493","name":"Swansea D","result":146590,"resolved":146590,"points":194.48207907377758,"position":28,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1488","name":"Plymouth B","result":146940,"resolved":146940,"points":190.17120335016625,"position":29,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1480","name":"Oxford A","result":150620,"resolved":150620,"points":144.84542431333912,"position":30,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1468","name":"Bristol B","result":153470,"resolved":153470,"points":109.74257913536145,"position":31,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1489","name":"Plymouth C","result":167940,"resolved":167940,"points":-68.48134006651074,"position":32,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1491","name":"Swansea B","result":168840,"resolved":168840,"points":-79.56644907008248,"position":33,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1492","name":"Swansea C","result":172400,"resolved":172400,"points":-123.41421357310023,"position":34,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1466","name":"Birmingham E","result":148900,"resolved":148900,"points":166.03029929794312,"position":35,"dqs":[206],"pens":[],"combined":[]},
+          {"entity":"team:1478","name":"Nottingham C","result":167500,"resolved":167500,"points":-63.06195344254228,"position":35,"dqs":[19],"pens":[],"combined":[]},
+          {"entity":"team:1482","name":"Sheffield B","result":194290,"resolved":194290,"points":-393.02869811553154,"position":35,"dqs":[42],"pens":[],"combined":[]}
+        ],
+        "league:113": [
+          {"entity":"team:1469","name":"Loughborough A","result":89720,"resolved":89720,"points":894.9378002217022,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1495","name":"Warwick A","result":97630,"resolved":97630,"points":797.5120088680872,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1462","name":"Birmingham A","result":104940,"resolved":104940,"points":707.4762901835201,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1481","name":"Sheffield A","result":108720,"resolved":108720,"points":660.9188323685182,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1476","name":"Nottingham A","result":113370,"resolved":113370,"points":603.645769183397,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1467","name":"Bristol A","result":115070,"resolved":115070,"points":582.7072299544278,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1483","name":"Southampton A","result":117720,"resolved":117720,"points":550.0677423327995,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1487","name":"Plymouth A","result":121100,"resolved":121100,"points":508.43699963049636,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1490","name":"Swansea A","result":125720,"resolved":125720,"points":451.5334400788274,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1480","name":"Oxford A","result":150620,"resolved":150620,"points":144.84542431333912,"position":10,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:114": [
+          {"entity":"team:1484","name":"Southampton B","result":135070,"resolved":135070,"points":336.37147431949745,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1479","name":"Nottingham D","result":141900,"resolved":141900,"points":252.2478137701687,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1491","name":"Swansea B","result":168840,"resolved":168840,"points":-79.56644907008248,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1492","name":"Swansea C","result":172400,"resolved":172400,"points":-123.41421357310023,"position":4,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:115": [
+          {"entity":"team:1474","name":"Loughborough F","result":100520,"resolved":100520,"points":761.9164921788397,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1473","name":"Loughborough E","result":101350,"resolved":101350,"points":751.6935583199902,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1470","name":"Loughborough B","result":102090,"resolved":102090,"points":742.5791353614977,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1475","name":"Loughborough G","result":103320,"resolved":103320,"points":727.4294863899495,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1497","name":"Warwick C","result":103940,"resolved":103940,"points":719.7930779652665,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1496","name":"Warwick B","result":106310,"resolved":106310,"points":690.6022909225273,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1472","name":"Loughborough D","result":111160,"resolved":111160,"points":630.8658701810567,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1471","name":"Loughborough C","result":114750,"resolved":114750,"points":586.6486020445868,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1498","name":"Warwick D","result":114860,"resolved":114860,"points":585.2937553885946,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1485","name":"Southampton C","result":116750,"resolved":116750,"points":562.0150264810937,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1465","name":"Birmingham D","result":117910,"resolved":117910,"points":547.7275526542678,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1487","name":"Plymouth A","result":121100,"resolved":121100,"points":508.43699963049636,"position":12,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1477","name":"Nottingham B","result":130250,"resolved":130250,"points":395.73839142751564,"position":13,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1463","name":"Birmingham B","result":138820,"resolved":138820,"points":290.183520137948,"position":14,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1464","name":"Birmingham C","result":143590,"resolved":143590,"points":231.43244241901718,"position":15,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1488","name":"Plymouth B","result":146940,"resolved":146940,"points":190.17120335016625,"position":16,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1468","name":"Bristol B","result":153470,"resolved":153470,"points":109.74257913536145,"position":17,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1489","name":"Plymouth C","result":167940,"resolved":167940,"points":-68.48134006651074,"position":18,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1466","name":"Birmingham E","result":148900,"resolved":148900,"points":166.03029929794312,"position":19,"dqs":[206],"pens":[],"combined":[]},
+          {"entity":"team:1478","name":"Nottingham C","result":167500,"resolved":167500,"points":-63.06195344254228,"position":19,"dqs":[19],"pens":[],"combined":[]},
+          {"entity":"team:1482","name":"Sheffield B","result":194290,"resolved":194290,"points":-393.02869811553154,"position":19,"dqs":[42],"pens":[],"combined":[]}
+        ],
+        "league:116": [
+          {"entity":"team:1486","name":"Southampton D","result":125510,"resolved":125510,"points":454.11996551299416,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1494","name":"Robin Hood A","result":142870,"resolved":142870,"points":240.30052962187466,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1493","name":"Swansea D","result":146590,"resolved":146590,"points":194.48207907377758,"position":3,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    },
+    "speed:150": {
+      "name": "Swim & Tow",
+      "results": {
+        "all": [
+          {"entity":"team:1469","name":"Loughborough A","result":402220,"resolved":402220,"points":933.188340450362,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1495","name":"Warwick A","result":408090,"resolved":408090,"points":917.619287589847,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1462","name":"Birmingham A","result":427190,"resolved":427190,"points":866.9601888443891,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1470","name":"Loughborough B","result":457100,"resolved":457100,"points":787.6296315943029,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1474","name":"Loughborough F","result":463360,"resolved":463360,"points":771.0261782881998,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1483","name":"Southampton A","result":465190,"resolved":465190,"points":766.1724531204413,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1472","name":"Loughborough D","result":473720,"resolved":473720,"points":743.5482587592498,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1467","name":"Bristol A","result":475490,"resolved":475490,"points":738.8536721215818,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1476","name":"Nottingham A","result":477570,"resolved":477570,"points":733.3368697451132,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1497","name":"Warwick C","result":480870,"resolved":480870,"points":724.5842505901387,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1487","name":"Plymouth A","result":486630,"resolved":486630,"points":709.3069517014561,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1496","name":"Warwick B","result":494620,"resolved":494620,"points":688.1150041110786,"position":12,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1486","name":"Southampton D","result":502560,"resolved":502560,"points":667.0556719624433,"position":13,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1473","name":"Loughborough E","result":474850,"resolved":504850,"points":660.9818847306581,"position":14,"dqs":[],"pens":[915,915],"combined":[]},
+          {"entity":"team:1479","name":"Nottingham D","result":506190,"resolved":506190,"points":657.4277908919714,"position":15,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1477","name":"Nottingham B","result":502460,"resolved":517460,"points":627.5362703233164,"position":16,"dqs":[],"pens":[913],"combined":[]},
+          {"entity":"team:1484","name":"Southampton B","result":521100,"resolved":521100,"points":617.8818661644963,"position":17,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1481","name":"Sheffield A","result":506530,"resolved":521530,"points":616.7413733655147,"position":18,"dqs":[],"pens":[913],"combined":[]},
+          {"entity":"team:1464","name":"Birmingham C","result":522250,"resolved":522250,"points":614.8317110044294,"position":19,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1475","name":"Loughborough G","result":508930,"resolved":523930,"points":610.3758321618969,"position":20,"dqs":[],"pens":[900],"combined":[]},
+          {"entity":"team:1498","name":"Warwick D","result":537730,"resolved":537730,"points":573.7739702410948,"position":21,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1478","name":"Nottingham C","result":538060,"resolved":538060,"points":572.8987083255975,"position":22,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1480","name":"Oxford A","result":553630,"resolved":553630,"points":531.6022597671273,"position":23,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1490","name":"Swansea A","result":503310,"resolved":563310,"points":505.92791024586904,"position":24,"dqs":[],"pens":[900,900,900,900],"combined":[]},
+          {"entity":"team:1463","name":"Birmingham B","result":567140,"resolved":567140,"points":495.76956740842905,"position":25,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1465","name":"Birmingham D","result":547210,"resolved":577210,"points":469.0608174415829,"position":26,"dqs":[],"pens":[900,900],"combined":[]},
+          {"entity":"team:1488","name":"Plymouth B","result":573280,"resolved":588280,"points":439.69975863989606,"position":27,"dqs":[],"pens":[900],"combined":[]},
+          {"entity":"team:1494","name":"Robin Hood A","result":598280,"resolved":598280,"points":413.17667029148873,"position":28,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1493","name":"Swansea D","result":601630,"resolved":601630,"points":404.2914356947723,"position":29,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1491","name":"Swansea B","result":601170,"resolved":646170,"points":286.15760019096626,"position":30,"dqs":[],"pens":[900,900,900],"combined":[]},
+          {"entity":"team:1492","name":"Swansea C","result":640150,"resolved":670150,"points":222.55523433148562,"position":31,"dqs":[],"pens":[909,910],"combined":[]},
+          {"entity":"team:1468","name":"Bristol B","result":611250,"resolved":671250,"points":219.63769461316073,"position":32,"dqs":[],"pens":[913,910,909,913],"combined":[]},
+          {"entity":"team:1485","name":"Southampton C","result":509030,"resolved":509030,"points":649.8952338010238,"position":33,"dqs":[41],"pens":[],"combined":[]},
+          {"entity":"team:1466","name":"Birmingham E","result":546280,"resolved":546280,"points":551.0967297032066,"position":33,"dqs":[206],"pens":[],"combined":[]},
+          {"entity":"team:1489","name":"Plymouth C","result":598310,"resolved":718310,"points":94.82004084555606,"position":33,"dqs":[900],"pens":[913,913,910,908,910,909,900,900],"combined":[]},
+          {"entity":"team:1482","name":"Sheffield B","result":3599000,"resolved":6524000,"points":-15303.662838500915,"position":33,"dqs":[99915],"pens":[909,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900],"combined":[]},
+          {"entity":"team:1471","name":"Loughborough C","result":3599000,"resolved":6704000,"points":-15781.078428772247,"position":33,"dqs":[99915],"pens":[900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900],"combined":[]}
+        ],
+        "league:113": [
+          {"entity":"team:1469","name":"Loughborough A","result":402220,"resolved":402220,"points":933.188340450362,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1495","name":"Warwick A","result":408090,"resolved":408090,"points":917.619287589847,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1462","name":"Birmingham A","result":427190,"resolved":427190,"points":866.9601888443891,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1483","name":"Southampton A","result":465190,"resolved":465190,"points":766.1724531204413,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1467","name":"Bristol A","result":475490,"resolved":475490,"points":738.8536721215818,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1476","name":"Nottingham A","result":477570,"resolved":477570,"points":733.3368697451132,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1487","name":"Plymouth A","result":486630,"resolved":486630,"points":709.3069517014561,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1481","name":"Sheffield A","result":506530,"resolved":521530,"points":616.7413733655147,"position":8,"dqs":[],"pens":[913],"combined":[]},
+          {"entity":"team:1480","name":"Oxford A","result":553630,"resolved":553630,"points":531.6022597671273,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1490","name":"Swansea A","result":503310,"resolved":563310,"points":505.92791024586904,"position":10,"dqs":[],"pens":[900,900,900,900],"combined":[]}
+        ],
+        "league:114": [
+          {"entity":"team:1479","name":"Nottingham D","result":506190,"resolved":506190,"points":657.4277908919714,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1484","name":"Southampton B","result":521100,"resolved":521100,"points":617.8818661644963,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1491","name":"Swansea B","result":601170,"resolved":646170,"points":286.15760019096626,"position":3,"dqs":[],"pens":[900,900,900],"combined":[]},
+          {"entity":"team:1492","name":"Swansea C","result":640150,"resolved":670150,"points":222.55523433148562,"position":4,"dqs":[],"pens":[909,910],"combined":[]}
+        ],
+        "league:115": [
+          {"entity":"team:1470","name":"Loughborough B","result":457100,"resolved":457100,"points":787.6296315943029,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1474","name":"Loughborough F","result":463360,"resolved":463360,"points":771.0261782881998,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1472","name":"Loughborough D","result":473720,"resolved":473720,"points":743.5482587592498,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1497","name":"Warwick C","result":480870,"resolved":480870,"points":724.5842505901387,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1487","name":"Plymouth A","result":486630,"resolved":486630,"points":709.3069517014561,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1496","name":"Warwick B","result":494620,"resolved":494620,"points":688.1150041110786,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1473","name":"Loughborough E","result":474850,"resolved":504850,"points":660.9818847306581,"position":7,"dqs":[],"pens":[915,915],"combined":[]},
+          {"entity":"team:1477","name":"Nottingham B","result":502460,"resolved":517460,"points":627.5362703233164,"position":8,"dqs":[],"pens":[913],"combined":[]},
+          {"entity":"team:1464","name":"Birmingham C","result":522250,"resolved":522250,"points":614.8317110044294,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1475","name":"Loughborough G","result":508930,"resolved":523930,"points":610.3758321618969,"position":10,"dqs":[],"pens":[900],"combined":[]},
+          {"entity":"team:1498","name":"Warwick D","result":537730,"resolved":537730,"points":573.7739702410948,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1478","name":"Nottingham C","result":538060,"resolved":538060,"points":572.8987083255975,"position":12,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1463","name":"Birmingham B","result":567140,"resolved":567140,"points":495.76956740842905,"position":13,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1465","name":"Birmingham D","result":547210,"resolved":577210,"points":469.0608174415829,"position":14,"dqs":[],"pens":[900,900],"combined":[]},
+          {"entity":"team:1488","name":"Plymouth B","result":573280,"resolved":588280,"points":439.69975863989606,"position":15,"dqs":[],"pens":[900],"combined":[]},
+          {"entity":"team:1468","name":"Bristol B","result":611250,"resolved":671250,"points":219.63769461316073,"position":16,"dqs":[],"pens":[913,910,909,913],"combined":[]},
+          {"entity":"team:1485","name":"Southampton C","result":509030,"resolved":509030,"points":649.8952338010238,"position":17,"dqs":[41],"pens":[],"combined":[]},
+          {"entity":"team:1466","name":"Birmingham E","result":546280,"resolved":546280,"points":551.0967297032066,"position":17,"dqs":[206],"pens":[],"combined":[]},
+          {"entity":"team:1489","name":"Plymouth C","result":598310,"resolved":718310,"points":94.82004084555606,"position":17,"dqs":[900],"pens":[913,913,910,908,910,909,900,900],"combined":[]},
+          {"entity":"team:1482","name":"Sheffield B","result":3599000,"resolved":6524000,"points":-15303.662838500915,"position":17,"dqs":[99915],"pens":[909,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900],"combined":[]},
+          {"entity":"team:1471","name":"Loughborough C","result":3599000,"resolved":6704000,"points":-15781.078428772247,"position":17,"dqs":[99915],"pens":[900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900,900],"combined":[]}
+        ],
+        "league:116": [
+          {"entity":"team:1486","name":"Southampton D","result":502560,"resolved":502560,"points":667.0556719624433,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1494","name":"Robin Hood A","result":598280,"resolved":598280,"points":413.17667029148873,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1493","name":"Swansea D","result":601630,"resolved":601630,"points":404.2914356947723,"position":3,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    },
+    "serc:105": {
+      "name": "Nottingham Freshers 2025-26 Dry SERC",
+      "results": {
+        "all": [
+          {"entity":"team:1469","name":"Loughborough A","result":222,"resolved":222,"points":1000,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1496","name":"Warwick B","result":221,"resolved":221,"points":995.4954954954956,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1479","name":"Nottingham D","result":213.5,"resolved":213.5,"points":961.7117117117117,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1483","name":"Southampton A","result":211,"resolved":211,"points":950.4504504504504,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1464","name":"Birmingham C","result":193,"resolved":193,"points":869.3693693693693,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1465","name":"Birmingham D","result":193,"resolved":193,"points":869.3693693693693,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1463","name":"Birmingham B","result":190.5,"resolved":190.5,"points":858.1081081081081,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1466","name":"Birmingham E","result":186.5,"resolved":186.5,"points":840.09009009009,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1462","name":"Birmingham A","result":185.5,"resolved":185.5,"points":835.5855855855856,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1481","name":"Sheffield A","result":185.5,"resolved":185.5,"points":835.5855855855856,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1476","name":"Nottingham A","result":184.5,"resolved":184.5,"points":831.081081081081,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1486","name":"Southampton D","result":184,"resolved":184,"points":828.8288288288288,"position":12,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1495","name":"Warwick A","result":181,"resolved":181,"points":815.3153153153153,"position":13,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1497","name":"Warwick C","result":181,"resolved":181,"points":815.3153153153153,"position":13,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1477","name":"Nottingham B","result":177,"resolved":177,"points":797.2972972972973,"position":15,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1485","name":"Southampton C","result":176.5,"resolved":176.5,"points":795.0450450450451,"position":16,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1470","name":"Loughborough B","result":172.5,"resolved":172.5,"points":777.027027027027,"position":17,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1492","name":"Swansea C","result":172,"resolved":172,"points":774.7747747747748,"position":18,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1472","name":"Loughborough D","result":168,"resolved":168,"points":756.7567567567568,"position":19,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1473","name":"Loughborough E","result":166.5,"resolved":166.5,"points":750,"position":20,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1471","name":"Loughborough C","result":161,"resolved":161,"points":725.2252252252252,"position":21,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1491","name":"Swansea B","result":159,"resolved":159,"points":716.2162162162163,"position":22,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1480","name":"Oxford A","result":155,"resolved":155,"points":698.1981981981982,"position":23,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1467","name":"Bristol A","result":153.5,"resolved":153.5,"points":691.4414414414415,"position":24,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1468","name":"Bristol B","result":142.5,"resolved":142.5,"points":641.8918918918919,"position":25,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1484","name":"Southampton B","result":139,"resolved":139,"points":626.1261261261262,"position":26,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1498","name":"Warwick D","result":133,"resolved":133,"points":599.0990990990991,"position":27,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1482","name":"Sheffield B","result":128.5,"resolved":128.5,"points":578.8288288288288,"position":28,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1474","name":"Loughborough F","result":125,"resolved":125,"points":563.063063063063,"position":29,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1489","name":"Plymouth C","result":124,"resolved":124,"points":558.5585585585585,"position":30,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1494","name":"Robin Hood A","result":122.5,"resolved":122.5,"points":551.8018018018018,"position":31,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1478","name":"Nottingham C","result":122,"resolved":122,"points":549.5495495495496,"position":32,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1487","name":"Plymouth A","result":122,"resolved":122,"points":549.5495495495496,"position":32,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1493","name":"Swansea D","result":121.5,"resolved":121.5,"points":547.2972972972973,"position":34,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1475","name":"Loughborough G","result":115.5,"resolved":115.5,"points":520.2702702702703,"position":35,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1488","name":"Plymouth B","result":115.5,"resolved":115.5,"points":520.2702702702703,"position":35,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1490","name":"Swansea A","result":82.5,"resolved":82.5,"points":371.6216216216216,"position":37,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:113": [
+          {"entity":"team:1469","name":"Loughborough A","result":222,"resolved":222,"points":1000,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1483","name":"Southampton A","result":211,"resolved":211,"points":950.4504504504504,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1462","name":"Birmingham A","result":185.5,"resolved":185.5,"points":835.5855855855856,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1481","name":"Sheffield A","result":185.5,"resolved":185.5,"points":835.5855855855856,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1476","name":"Nottingham A","result":184.5,"resolved":184.5,"points":831.081081081081,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1495","name":"Warwick A","result":181,"resolved":181,"points":815.3153153153153,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1480","name":"Oxford A","result":155,"resolved":155,"points":698.1981981981982,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1467","name":"Bristol A","result":153.5,"resolved":153.5,"points":691.4414414414415,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1487","name":"Plymouth A","result":122,"resolved":122,"points":549.5495495495496,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1490","name":"Swansea A","result":82.5,"resolved":82.5,"points":371.6216216216216,"position":10,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:114": [
+          {"entity":"team:1479","name":"Nottingham D","result":213.5,"resolved":213.5,"points":1000,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1492","name":"Swansea C","result":172,"resolved":172,"points":805.6206088992974,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1491","name":"Swansea B","result":159,"resolved":159,"points":744.7306791569088,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1484","name":"Southampton B","result":139,"resolved":139,"points":651.0538641686182,"position":4,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:115": [
+          {"entity":"team:1496","name":"Warwick B","result":221,"resolved":221,"points":1000,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1464","name":"Birmingham C","result":193,"resolved":193,"points":873.3031674208145,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1465","name":"Birmingham D","result":193,"resolved":193,"points":873.3031674208145,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1463","name":"Birmingham B","result":190.5,"resolved":190.5,"points":861.9909502262444,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1466","name":"Birmingham E","result":186.5,"resolved":186.5,"points":843.8914027149322,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1497","name":"Warwick C","result":181,"resolved":181,"points":819.0045248868778,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1477","name":"Nottingham B","result":177,"resolved":177,"points":800.9049773755656,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1485","name":"Southampton C","result":176.5,"resolved":176.5,"points":798.6425339366516,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1470","name":"Loughborough B","result":172.5,"resolved":172.5,"points":780.5429864253393,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1472","name":"Loughborough D","result":168,"resolved":168,"points":760.180995475113,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1473","name":"Loughborough E","result":166.5,"resolved":166.5,"points":753.393665158371,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1471","name":"Loughborough C","result":161,"resolved":161,"points":728.5067873303167,"position":12,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1468","name":"Bristol B","result":142.5,"resolved":142.5,"points":644.7963800904978,"position":13,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1498","name":"Warwick D","result":133,"resolved":133,"points":601.8099547511312,"position":14,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1482","name":"Sheffield B","result":128.5,"resolved":128.5,"points":581.447963800905,"position":15,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1474","name":"Loughborough F","result":125,"resolved":125,"points":565.6108597285067,"position":16,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1489","name":"Plymouth C","result":124,"resolved":124,"points":561.0859728506788,"position":17,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1478","name":"Nottingham C","result":122,"resolved":122,"points":552.0361990950227,"position":18,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1487","name":"Plymouth A","result":122,"resolved":122,"points":552.0361990950227,"position":18,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1475","name":"Loughborough G","result":115.5,"resolved":115.5,"points":522.6244343891403,"position":20,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1488","name":"Plymouth B","result":115.5,"resolved":115.5,"points":522.6244343891403,"position":20,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:116": [
+          {"entity":"team:1486","name":"Southampton D","result":184,"resolved":184,"points":1000,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1494","name":"Robin Hood A","result":122.5,"resolved":122.5,"points":665.7608695652174,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1493","name":"Swansea D","result":121.5,"resolved":121.5,"points":660.3260869565217,"position":3,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    },
+    "serc:106": {
+      "name": "Nottingham Freshers 2025-26 Wet Serc",
+      "results": {
+        "all": [
+          {"entity":"team:1462","name":"Birmingham A","result":274,"resolved":274,"points":1000,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1469","name":"Loughborough A","result":257,"resolved":257,"points":937.9562043795621,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1496","name":"Warwick B","result":229,"resolved":229,"points":835.7664233576643,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1464","name":"Birmingham C","result":223.5,"resolved":223.5,"points":815.6934306569343,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1476","name":"Nottingham A","result":207,"resolved":207,"points":755.4744525547445,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1471","name":"Loughborough C","result":204,"resolved":204,"points":744.5255474452555,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1463","name":"Birmingham B","result":200,"resolved":200,"points":729.92700729927,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1483","name":"Southampton A","result":194,"resolved":194,"points":708.029197080292,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1473","name":"Loughborough E","result":188,"resolved":188,"points":686.1313868613139,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1477","name":"Nottingham B","result":186.5,"resolved":186.5,"points":680.6569343065694,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1470","name":"Loughborough B","result":184,"resolved":184,"points":671.5328467153284,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1484","name":"Southampton B","result":184,"resolved":184,"points":671.5328467153284,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1467","name":"Bristol A","result":179,"resolved":179,"points":653.2846715328468,"position":13,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1468","name":"Bristol B","result":175.5,"resolved":175.5,"points":640.5109489051096,"position":14,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1478","name":"Nottingham C","result":170,"resolved":170,"points":620.4379562043796,"position":15,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1472","name":"Loughborough D","result":167.5,"resolved":167.5,"points":611.3138686131387,"position":16,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1495","name":"Warwick A","result":163,"resolved":163,"points":594.8905109489051,"position":17,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1494","name":"Robin Hood A","result":162.5,"resolved":162.5,"points":593.065693430657,"position":18,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1486","name":"Southampton D","result":156,"resolved":156,"points":569.3430656934306,"position":19,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1493","name":"Swansea D","result":155,"resolved":155,"points":565.6934306569343,"position":20,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1474","name":"Loughborough F","result":152.5,"resolved":152.5,"points":556.5693430656934,"position":21,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1481","name":"Sheffield A","result":148.5,"resolved":148.5,"points":541.970802919708,"position":22,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1466","name":"Birmingham E","result":145,"resolved":145,"points":529.1970802919708,"position":23,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1490","name":"Swansea A","result":143,"resolved":143,"points":521.8978102189781,"position":24,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1482","name":"Sheffield B","result":139.5,"resolved":139.5,"points":509.1240875912408,"position":25,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1475","name":"Loughborough G","result":137,"resolved":137,"points":500,"position":26,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1497","name":"Warwick C","result":134,"resolved":134,"points":489.05109489051097,"position":27,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1480","name":"Oxford A","result":133,"resolved":133,"points":485.4014598540146,"position":28,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1485","name":"Southampton C","result":133,"resolved":133,"points":485.4014598540146,"position":28,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1498","name":"Warwick D","result":131,"resolved":131,"points":478.10218978102193,"position":30,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1465","name":"Birmingham D","result":127.5,"resolved":127.5,"points":465.3284671532847,"position":31,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1479","name":"Nottingham D","result":120,"resolved":120,"points":437.95620437956205,"position":32,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1491","name":"Swansea B","result":115.5,"resolved":115.5,"points":421.5328467153285,"position":33,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1489","name":"Plymouth C","result":91.5,"resolved":91.5,"points":333.94160583941607,"position":34,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1492","name":"Swansea C","result":87.5,"resolved":87.5,"points":319.3430656934307,"position":35,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1488","name":"Plymouth B","result":75.5,"resolved":75.5,"points":275.5474452554745,"position":36,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1487","name":"Plymouth A","result":65.5,"resolved":65.5,"points":239.05109489051097,"position":37,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:113": [
+          {"entity":"team:1462","name":"Birmingham A","result":274,"resolved":274,"points":1000,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1469","name":"Loughborough A","result":257,"resolved":257,"points":937.9562043795621,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1476","name":"Nottingham A","result":207,"resolved":207,"points":755.4744525547445,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1483","name":"Southampton A","result":194,"resolved":194,"points":708.029197080292,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1467","name":"Bristol A","result":179,"resolved":179,"points":653.2846715328468,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1495","name":"Warwick A","result":163,"resolved":163,"points":594.8905109489051,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1481","name":"Sheffield A","result":148.5,"resolved":148.5,"points":541.970802919708,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1490","name":"Swansea A","result":143,"resolved":143,"points":521.8978102189781,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1480","name":"Oxford A","result":133,"resolved":133,"points":485.4014598540146,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1487","name":"Plymouth A","result":65.5,"resolved":65.5,"points":239.05109489051097,"position":10,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:114": [
+          {"entity":"team:1484","name":"Southampton B","result":184,"resolved":184,"points":1000,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1479","name":"Nottingham D","result":120,"resolved":120,"points":652.1739130434783,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1491","name":"Swansea B","result":115.5,"resolved":115.5,"points":627.7173913043478,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1492","name":"Swansea C","result":87.5,"resolved":87.5,"points":475.54347826086956,"position":4,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:115": [
+          {"entity":"team:1496","name":"Warwick B","result":229,"resolved":229,"points":1000,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1464","name":"Birmingham C","result":223.5,"resolved":223.5,"points":975.9825327510918,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1471","name":"Loughborough C","result":204,"resolved":204,"points":890.829694323144,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1463","name":"Birmingham B","result":200,"resolved":200,"points":873.3624454148472,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1473","name":"Loughborough E","result":188,"resolved":188,"points":820.9606986899563,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1477","name":"Nottingham B","result":186.5,"resolved":186.5,"points":814.4104803493449,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1470","name":"Loughborough B","result":184,"resolved":184,"points":803.4934497816594,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1468","name":"Bristol B","result":175.5,"resolved":175.5,"points":766.3755458515284,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1478","name":"Nottingham C","result":170,"resolved":170,"points":742.35807860262,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1472","name":"Loughborough D","result":167.5,"resolved":167.5,"points":731.4410480349345,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1474","name":"Loughborough F","result":152.5,"resolved":152.5,"points":665.938864628821,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1466","name":"Birmingham E","result":145,"resolved":145,"points":633.1877729257642,"position":12,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1482","name":"Sheffield B","result":139.5,"resolved":139.5,"points":609.170305676856,"position":13,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1475","name":"Loughborough G","result":137,"resolved":137,"points":598.2532751091702,"position":14,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1497","name":"Warwick C","result":134,"resolved":134,"points":585.1528384279476,"position":15,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1485","name":"Southampton C","result":133,"resolved":133,"points":580.7860262008734,"position":16,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1498","name":"Warwick D","result":131,"resolved":131,"points":572.0524017467249,"position":17,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1465","name":"Birmingham D","result":127.5,"resolved":127.5,"points":556.7685589519651,"position":18,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1489","name":"Plymouth C","result":91.5,"resolved":91.5,"points":399.5633187772926,"position":19,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1488","name":"Plymouth B","result":75.5,"resolved":75.5,"points":329.69432314410477,"position":20,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1487","name":"Plymouth A","result":65.5,"resolved":65.5,"points":286.0262008733624,"position":21,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:116": [
+          {"entity":"team:1494","name":"Robin Hood A","result":162.5,"resolved":162.5,"points":1000,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1486","name":"Southampton D","result":156,"resolved":156,"points":960,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1493","name":"Swansea D","result":155,"resolved":155,"points":953.8461538461539,"position":3,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    }
+  },
+  "sheets": {
+    "sheet:191": {
+      "name": "Overall",
+      "results": [
+        {
+          "entity": "team:1469",
+          "name": "Loughborough A",
+          "total": 6853.237410071943,
+          "position": 1,
+          "events": [
+            {"event":"speed:148","entity":"team:1469","position":1,"points":1000,"adjusted":1000},
+            {"event":"speed:149","entity":"team:1469","position":1,"points":894.9378002217022,"adjusted":1000},
+            {"event":"speed:150","entity":"team:1469","position":1,"points":933.188340450362,"adjusted":1000},
+            {"event":"serc:105","entity":"team:1469","position":1,"points":1000,"adjusted":2000},
+            {"event":"serc:106","entity":"team:1469","position":2,"points":937.9562043795621,"adjusted":1853.2374100719426}
+          ]
+        },
+        {
+          "entity": "team:1462",
+          "name": "Birmingham A",
+          "total": 6131.722666162235,
+          "position": 2,
+          "events": [
+            {"event":"speed:148","entity":"team:1462","position":2,"points":841.4634146341464,"adjusted":851.8987341772151},
+            {"event":"speed:149","entity":"team:1462","position":8,"points":707.4762901835201,"adjusted":834.3251088534107},
+            {"event":"speed:150","entity":"team:1462","position":3,"points":866.9601888443891,"adjusted":916.4665650670929},
+            {"event":"serc:105","entity":"team:1462","position":9,"points":835.5855855855856,"adjusted":1529.0322580645163},
+            {"event":"serc:106","entity":"team:1462","position":1,"points":1000,"adjusted":2000}
+          ]
+        },
+        {
+          "entity": "team:1496",
+          "name": "Warwick B",
+          "total": 5664.605451552332,
+          "position": 3,
+          "events": [
+            {"event":"speed:148","entity":"team:1496","position":10,"points":524.390243902439,"adjusted":555.6962025316456},
+            {"event":"speed:149","entity":"team:1496","position":9,"points":690.6022909225273,"adjusted":819.4121915820028},
+            {"event":"speed:150","entity":"team:1496","position":12,"points":688.1150041110786,"adjusted":690.8894918782291},
+            {"event":"serc:105","entity":"team:1496","position":2,"points":995.4954954954956,"adjusted":1987.0967741935485},
+            {"event":"serc:106","entity":"team:1496","position":3,"points":835.7664233576643,"adjusted":1611.5107913669065}
+          ]
+        },
+        {
+          "entity": "team:1483",
+          "name": "Southampton A",
+          "total": 5503.869414145395,
+          "position": 4,
+          "events": [
+            {"event":"speed:148","entity":"team:1483","position":2,"points":841.4634146341464,"adjusted":851.8987341772151},
+            {"event":"speed:149","entity":"team:1483","position":17,"points":550.0677423327995,"adjusted":695.210449927431},
+            {"event":"speed:150","entity":"team:1483","position":6,"points":766.1724531204413,"adjusted":789.3431959261048},
+            {"event":"serc:105","entity":"team:1483","position":4,"points":950.4504504504504,"adjusted":1858.0645161290324},
+            {"event":"serc:106","entity":"team:1483","position":8,"points":708.029197080292,"adjusted":1309.3525179856115}
+          ]
+        },
+        {
+          "entity": "team:1476",
+          "name": "Nottingham A",
+          "total": 5280.099924248348,
+          "position": 5,
+          "events": [
+            {"event":"speed:148","entity":"team:1476","position":2,"points":841.4634146341464,"adjusted":851.8987341772151},
+            {"event":"speed:149","entity":"team:1476","position":12,"points":603.645769183397,"adjusted":742.5616835994194},
+            {"event":"speed:150","entity":"team:1476","position":9,"points":733.3368697451132,"adjusted":747.9277404006989},
+            {"event":"serc:105","entity":"team:1476","position":11,"points":831.081081081081,"adjusted":1516.1290322580644},
+            {"event":"serc:106","entity":"team:1476","position":5,"points":755.4744525547445,"adjusted":1421.5827338129495}
+          ]
+        },
+        {
+          "entity": "team:1495",
+          "name": "Warwick A",
+          "total": 5258.852831741771,
+          "position": 6,
+          "events": [
+            {"event":"speed:148","entity":"team:1495","position":2,"points":841.4634146341464,"adjusted":851.8987341772151},
+            {"event":"speed:149","entity":"team:1495","position":2,"points":797.5120088680872,"adjusted":913.8969521044992},
+            {"event":"speed:150","entity":"team:1495","position":2,"points":917.619287589847,"adjusted":980.3627848195368},
+            {"event":"serc:105","entity":"team:1495","position":13,"points":815.3153153153153,"adjusted":1470.967741935484},
+            {"event":"serc:106","entity":"team:1495","position":17,"points":594.8905109489051,"adjusted":1041.726618705036}
+          ]
+        },
+        {
+          "entity": "team:1470",
+          "name": "Loughborough B",
+          "total": 4821.76353090633,
+          "position": 7,
+          "events": [
+            {"event":"speed:148","entity":"team:1470","position":10,"points":524.390243902439,"adjusted":555.6962025316456},
+            {"event":"speed:149","entity":"team:1470","position":5,"points":742.5791353614977,"adjusted":865.3483309143687},
+            {"event":"speed:150","entity":"team:1470","position":4,"points":787.6296315943029,"adjusted":816.4070921458573},
+            {"event":"serc:105","entity":"team:1470","position":17,"points":777.027027027027,"adjusted":1361.2903225806451},
+            {"event":"serc:106","entity":"team:1470","position":11,"points":671.5328467153284,"adjusted":1223.021582733813}
+          ]
+        },
+        {
+          "entity": "team:1464",
+          "name": "Birmingham C",
+          "total": 4757.595528570944,
+          "position": 8,
+          "events": [
+            {"event":"speed:148","entity":"team:1464","position":10,"points":524.390243902439,"adjusted":555.6962025316456},
+            {"event":"speed:149","entity":"team:1464","position":27,"points":231.43244241901718,"adjusted":413.6066763425255},
+            {"event":"speed:150","entity":"team:1464","position":19,"points":614.8317110044294,"adjusted":598.457421105453},
+            {"event":"serc:105","entity":"team:1464","position":5,"points":869.3693693693693,"adjusted":1625.8064516129032},
+            {"event":"serc:106","entity":"team:1464","position":4,"points":815.6934306569343,"adjusted":1564.0287769784172}
+          ]
+        },
+        {
+          "entity": "team:1477",
+          "name": "Nottingham B",
+          "total": 4689.156672024468,
+          "position": 9,
+          "events": [
+            {"event":"speed:148","entity":"team:1477","position":2,"points":841.4634146341464,"adjusted":851.8987341772151},
+            {"event":"speed:149","entity":"team:1477","position":22,"points":395.73839142751564,"adjusted":558.8171262699564},
+            {"event":"speed:150","entity":"team:1477","position":16,"points":627.5362703233164,"adjusted":614.4816563208564},
+            {"event":"serc:105","entity":"team:1477","position":15,"points":797.2972972972973,"adjusted":1419.3548387096776},
+            {"event":"serc:106","entity":"team:1477","position":10,"points":680.6569343065694,"adjusted":1244.6043165467627}
+          ]
+        },
+        {
+          "entity": "team:1486",
+          "name": "Southampton D",
+          "total": 4617.612158953046,
+          "position": 10,
+          "events": [
+            {"event":"speed:148","entity":"team:1486","position":2,"points":841.4634146341464,"adjusted":851.8987341772151},
+            {"event":"speed:149","entity":"team:1486","position":20,"points":454.11996551299416,"adjusted":610.4136429608127},
+            {"event":"speed:150","entity":"team:1486","position":13,"points":667.0556719624433,"adjusted":664.3273984314017},
+            {"event":"serc:105","entity":"team:1486","position":12,"points":828.8288288288288,"adjusted":1509.6774193548388},
+            {"event":"serc:106","entity":"team:1486","position":19,"points":569.3430656934306,"adjusted":981.2949640287768}
+          ]
+        },
+        {
+          "entity": "team:1472",
+          "name": "Loughborough D",
+          "total": 4466.92318083038,
+          "position": 11,
+          "events": [
+            {"event":"speed:148","entity":"team:1472","position":10,"points":524.390243902439,"adjusted":555.6962025316456},
+            {"event":"speed:149","entity":"team:1472","position":11,"points":630.8658701810567,"adjusted":766.6182873730044},
+            {"event":"speed:150","entity":"team:1472","position":7,"points":743.5482587592498,"adjusted":760.8073449057724},
+            {"event":"serc:105","entity":"team:1472","position":19,"points":756.7567567567568,"adjusted":1303.2258064516132},
+            {"event":"serc:106","entity":"team:1472","position":16,"points":611.3138686131387,"adjusted":1080.5755395683452}
+          ]
+        },
+        {
+          "entity": "team:1463",
+          "name": "Birmingham B",
+          "total": 4424.2099999588245,
+          "position": 12,
+          "events": [
+            {"event":"speed:148","entity":"team:1463","position":10,"points":524.390243902439,"adjusted":555.6962025316456},
+            {"event":"speed:149","entity":"team:1463","position":24,"points":290.183520137948,"adjusted":465.5297532656024},
+            {"event":"speed:150","entity":"team:1463","position":25,"points":495.76956740842905,"adjusted":448.2845779281122},
+            {"event":"serc:105","entity":"team:1463","position":7,"points":858.1081081081081,"adjusted":1593.5483870967744},
+            {"event":"serc:106","entity":"team:1463","position":7,"points":729.92700729927,"adjusted":1361.1510791366904}
+          ]
+        },
+        {
+          "entity": "team:1497",
+          "name": "Warwick C",
+          "total": 4400.129380265731,
+          "position": 13,
+          "events": [
+            {"event":"speed:148","entity":"team:1497","position":10,"points":524.390243902439,"adjusted":555.6962025316456},
+            {"event":"speed:149","entity":"team:1497","position":7,"points":719.7930779652665,"adjusted":845.210449927431},
+            {"event":"speed:150","entity":"team:1497","position":10,"points":724.5842505901387,"adjusted":736.8880793963498},
+            {"event":"serc:105","entity":"team:1497","position":13,"points":815.3153153153153,"adjusted":1470.967741935484},
+            {"event":"serc:106","entity":"team:1497","position":27,"points":489.05109489051097,"adjusted":791.3669064748201}
+          ]
+        },
+        {
+          "entity": "team:1481",
+          "name": "Sheffield A",
+          "total": 4395.319817195196,
+          "position": 14,
+          "events": [
+            {"event":"speed:148","entity":"team:1481","position":10,"points":524.390243902439,"adjusted":555.6962025316456},
+            {"event":"speed:149","entity":"team:1481","position":10,"points":660.9188323685182,"adjusted":793.1785195936139},
+            {"event":"speed:150","entity":"team:1481","position":18,"points":616.7413733655147,"adjusted":600.8660744154927},
+            {"event":"serc:105","entity":"team:1481","position":9,"points":835.5855855855856,"adjusted":1529.0322580645163},
+            {"event":"serc:106","entity":"team:1481","position":22,"points":541.970802919708,"adjusted":916.546762589928}
+          ]
+        },
+        {
+          "entity": "team:1467",
+          "name": "Bristol A",
+          "total": 4330.624025856467,
+          "position": 15,
+          "events": [
+            {"event":"speed:148","entity":"team:1467","position":10,"points":524.390243902439,"adjusted":555.6962025316456},
+            {"event":"speed:149","entity":"team:1467","position":15,"points":582.7072299544278,"adjusted":724.0566037735849},
+            {"event":"speed:150","entity":"team:1467","position":8,"points":738.8536721215818,"adjusted":754.8860721852581},
+            {"event":"serc:105","entity":"team:1467","position":24,"points":691.4414414414415,"adjusted":1116.1290322580649},
+            {"event":"serc:106","entity":"team:1467","position":13,"points":653.2846715328468,"adjusted":1179.8561151079139}
+          ]
+        },
+        {
+          "entity": "team:1473",
+          "name": "Loughborough E",
+          "total": 4319.5962164731445,
+          "position": 16,
+          "events": [
+            {"event":"speed:148","entity":"team:1473","position":26,"points":195.1219512195122,"adjusted":248.1012658227848},
+            {"event":"speed:149","entity":"team:1473","position":4,"points":751.6935583199902,"adjusted":873.4034833091438},
+            {"event":"speed:150","entity":"team:1473","position":14,"points":660.9818847306581,"adjusted":656.6665427647474},
+            {"event":"serc:105","entity":"team:1473","position":20,"points":750,"adjusted":1283.8709677419356},
+            {"event":"serc:106","entity":"team:1473","position":9,"points":686.1313868613139,"adjusted":1257.5539568345325}
+          ]
+        },
+        {
+          "entity": "team:1479",
+          "name": "Nottingham D",
+          "total": 4200.709054383347,
+          "position": 17,
+          "events": [
+            {"event":"speed:148","entity":"team:1479","position":10,"points":524.390243902439,"adjusted":555.6962025316456},
+            {"event":"speed:149","entity":"team:1479","position":25,"points":252.2478137701687,"adjusted":432.0029027576198},
+            {"event":"speed:150","entity":"team:1479","position":15,"points":657.4277908919714,"adjusted":652.1837713266178},
+            {"event":"serc:105","entity":"team:1479","position":3,"points":961.7117117117117,"adjusted":1890.3225806451617},
+            {"event":"serc:106","entity":"team:1479","position":32,"points":437.95620437956205,"adjusted":670.5035971223022}
+          ]
+        },
+        {
+          "entity": "team:1471",
+          "name": "Loughborough C",
+          "total": 4188.025326138348,
+          "position": 18,
+          "events": [
+            {"event":"speed:148","entity":"team:1471","position":2,"points":841.4634146341464,"adjusted":851.8987341772151},
+            {"event":"speed:149","entity":"team:1471","position":13,"points":586.6486020445868,"adjusted":727.5399129172715},
+            {"event":"speed:150","entity":"team:1471","position":33,"points":-15781.078428772247,"adjusted":0},
+            {"event":"serc:105","entity":"team:1471","position":21,"points":725.2252252252252,"adjusted":1212.9032258064517},
+            {"event":"serc:106","entity":"team:1471","position":6,"points":744.5255474452555,"adjusted":1395.68345323741}
+          ]
+        },
+        {
+          "entity": "team:1465",
+          "name": "Birmingham D",
+          "total": 4024.4935729348176,
+          "position": 19,
+          "events": [
+            {"event":"speed:148","entity":"team:1465","position":10,"points":524.390243902439,"adjusted":555.6962025316456},
+            {"event":"speed:149","entity":"team:1465","position":18,"points":547.7275526542678,"adjusted":693.1422351233673},
+            {"event":"speed:150","entity":"team:1465","position":26,"points":469.0608174415829,"adjusted":414.59688510575035},
+            {"event":"serc:105","entity":"team:1465","position":5,"points":869.3693693693693,"adjusted":1625.8064516129032},
+            {"event":"serc:106","entity":"team:1465","position":31,"points":465.3284671532847,"adjusted":735.2517985611511}
+          ]
+        },
+        {
+          "entity": "team:1484",
+          "name": "Southampton B",
+          "total": 3816.4044013210314,
+          "position": 20,
+          "events": [
+            {"event":"speed:148","entity":"team:1484","position":10,"points":524.390243902439,"adjusted":555.6962025316456},
+            {"event":"speed:149","entity":"team:1484","position":23,"points":336.37147431949745,"adjusted":506.3497822931786},
+            {"event":"speed:150","entity":"team:1484","position":17,"points":617.8818661644963,"adjusted":602.3045756978777},
+            {"event":"serc:105","entity":"team:1484","position":26,"points":626.1261261261262,"adjusted":929.0322580645164},
+            {"event":"serc:106","entity":"team:1484","position":11,"points":671.5328467153284,"adjusted":1223.021582733813}
+          ]
+        },
+        {
+          "entity": "team:1485",
+          "name": "Southampton C",
+          "total": 3753.3050037025378,
+          "position": 21,
+          "events": [
+            {"event":"speed:148","entity":"team:1485","position":2,"points":841.4634146341464,"adjusted":851.8987341772151},
+            {"event":"speed:149","entity":"team:1485","position":16,"points":562.0150264810937,"adjusted":705.7692307692308},
+            {"event":"speed:150","entity":"team:1485","position":33,"points":649.8952338010238,"adjusted":0},
+            {"event":"serc:105","entity":"team:1485","position":16,"points":795.0450450450451,"adjusted":1412.9032258064517},
+            {"event":"serc:106","entity":"team:1485","position":28,"points":485.4014598540146,"adjusted":782.7338129496403}
+          ]
+        },
+        {
+          "entity": "team:1474",
+          "name": "Loughborough F",
+          "total": 3625.4710054439956,
+          "position": 22,
+          "events": [
+            {"event":"speed:148","entity":"team:1474","position":26,"points":195.1219512195122,"adjusted":248.1012658227848},
+            {"event":"speed:149","entity":"team:1474","position":3,"points":761.9164921788397,"adjusted":882.4383164005804},
+            {"event":"speed:150","entity":"team:1474","position":5,"points":771.0261782881998,"adjusted":795.4651897557893},
+            {"event":"serc:105","entity":"team:1474","position":29,"points":563.063063063063,"adjusted":748.3870967741935},
+            {"event":"serc:106","entity":"team:1474","position":21,"points":556.5693430656934,"adjusted":951.0791366906473}
+          ]
+        },
+        {
+          "entity": "team:1480",
+          "name": "Oxford A",
+          "total": 3304.476896050743,
+          "position": 23,
+          "events": [
+            {"event":"speed:148","entity":"team:1480","position":10,"points":524.390243902439,"adjusted":555.6962025316456},
+            {"event":"speed:149","entity":"team:1480","position":30,"points":144.84542431333912,"adjusted":337.08272859216265},
+            {"event":"speed:150","entity":"team:1480","position":23,"points":531.6022597671273,"adjusted":493.4802810095528},
+            {"event":"serc:105","entity":"team:1480","position":23,"points":698.1981981981982,"adjusted":1135.483870967742},
+            {"event":"serc:106","entity":"team:1480","position":28,"points":485.4014598540146,"adjusted":782.7338129496403}
+          ]
+        },
+        {
+          "entity": "team:1498",
+          "name": "Warwick D",
+          "total": 3138.1956952865985,
+          "position": 24,
+          "events": [
+            {"event":"speed:148","entity":"team:1498","position":26,"points":195.1219512195122,"adjusted":248.1012658227848},
+            {"event":"speed:149","entity":"team:1498","position":14,"points":585.2937553885946,"adjusted":726.3425253991292},
+            {"event":"speed:150","entity":"team:1498","position":21,"points":573.7739702410948,"adjusted":546.6713749395977},
+            {"event":"serc:105","entity":"team:1498","position":27,"points":599.0990990990991,"adjusted":851.6129032258066},
+            {"event":"serc:106","entity":"team:1498","position":30,"points":478.10218978102193,"adjusted":765.4676258992806}
+          ]
+        },
+        {
+          "entity": "team:1475",
+          "name": "Loughborough G",
+          "total": 3135.9704959280652,
+          "position": 25,
+          "events": [
+            {"event":"speed:148","entity":"team:1475","position":26,"points":195.1219512195122,"adjusted":248.1012658227848},
+            {"event":"speed:149","entity":"team:1475","position":6,"points":727.4294863899495,"adjusted":851.9593613933237},
+            {"event":"speed:150","entity":"team:1475","position":20,"points":610.3758321618969,"adjusted":592.8372300486935},
+            {"event":"serc:105","entity":"team:1475","position":35,"points":520.2702702702703,"adjusted":625.8064516129034},
+            {"event":"serc:106","entity":"team:1475","position":26,"points":500,"adjusted":817.2661870503597}
+          ]
+        },
+        {
+          "entity": "team:1468",
+          "name": "Bristol B",
+          "total": 3085.589545219731,
+          "position": 26,
+          "events": [
+            {"event":"speed:148","entity":"team:1468","position":10,"points":524.390243902439,"adjusted":555.6962025316456},
+            {"event":"speed:149","entity":"team:1468","position":31,"points":109.74257913536145,"adjusted":306.05950653120465},
+            {"event":"speed:150","entity":"team:1468","position":32,"points":219.63769461316073,"adjusted":100},
+            {"event":"serc:105","entity":"team:1468","position":25,"points":641.8918918918919,"adjusted":974.1935483870968},
+            {"event":"serc:106","entity":"team:1468","position":14,"points":640.5109489051096,"adjusted":1149.6402877697842}
+          ]
+        },
+        {
+          "entity": "team:1466",
+          "name": "Birmingham E",
+          "total": 2983.962621654412,
+          "position": 27,
+          "events": [
+            {"event":"speed:148","entity":"team:1466","position":10,"points":524.390243902439,"adjusted":555.6962025316456},
+            {"event":"speed:149","entity":"team:1466","position":35,"points":166.03029929794312,"adjusted":0},
+            {"event":"speed:150","entity":"team:1466","position":33,"points":551.0967297032066,"adjusted":0},
+            {"event":"serc:105","entity":"team:1466","position":8,"points":840.09009009009,"adjusted":1541.9354838709678},
+            {"event":"serc:106","entity":"team:1466","position":23,"points":529.1970802919708,"adjusted":886.3309352517985}
+          ]
+        },
+        {
+          "entity": "team:1478",
+          "name": "Nottingham C",
+          "total": 2913.0993041069423,
+          "position": 28,
+          "events": [
+            {"event":"speed:148","entity":"team:1478","position":10,"points":524.390243902439,"adjusted":555.6962025316456},
+            {"event":"speed:149","entity":"team:1478","position":35,"points":-63.06195344254228,"adjusted":0},
+            {"event":"speed:150","entity":"team:1478","position":22,"points":572.8987083255975,"adjusted":545.5674088391629},
+            {"event":"serc:105","entity":"team:1478","position":32,"points":549.5495495495496,"adjusted":709.677419354839},
+            {"event":"serc:106","entity":"team:1478","position":15,"points":620.4379562043796,"adjusted":1102.158273381295}
+          ]
+        },
+        {
+          "entity": "team:1494",
+          "name": "Robin Hood A",
+          "total": 2767.1948142080078,
+          "position": 29,
+          "events": [
+            {"event":"speed:148","entity":"team:1494","position":26,"points":195.1219512195122,"adjusted":248.1012658227848},
+            {"event":"speed:149","entity":"team:1494","position":26,"points":240.30052962187466,"adjusted":421.44412191582006},
+            {"event":"speed:150","entity":"team:1494","position":28,"points":413.17667029148873,"adjusted":344.110322268892},
+            {"event":"serc:105","entity":"team:1494","position":31,"points":551.8018018018018,"adjusted":716.1290322580647},
+            {"event":"serc:106","entity":"team:1494","position":18,"points":593.065693430657,"adjusted":1037.4100719424462}
+          ]
+        },
+        {
+          "entity": "team:1493",
+          "name": "Swansea D",
+          "total": 2637.8429895720274,
+          "position": 30,
+          "events": [
+            {"event":"speed:148","entity":"team:1493","position":26,"points":195.1219512195122,"adjusted":248.1012658227848},
+            {"event":"speed:149","entity":"team:1493","position":28,"points":194.48207907377758,"adjusted":380.9506531204645},
+            {"event":"speed:150","entity":"team:1493","position":29,"points":404.2914356947723,"adjusted":332.9033936735681},
+            {"event":"serc:105","entity":"team:1493","position":34,"points":547.2972972972973,"adjusted":703.2258064516129},
+            {"event":"serc:106","entity":"team:1493","position":20,"points":565.6934306569343,"adjusted":972.6618705035971}
+          ]
+        },
+        {
+          "entity": "team:1487",
+          "name": "Plymouth A",
+          "total": 2533.8155351908977,
+          "position": 31,
+          "events": [
+            {"event":"speed:148","entity":"team:1487","position":26,"points":195.1219512195122,"adjusted":248.1012658227848},
+            {"event":"speed:149","entity":"team:1487","position":19,"points":508.43699963049636,"adjusted":658.4179970972424},
+            {"event":"speed:150","entity":"team:1487","position":11,"points":709.3069517014561,"adjusted":717.6188529160316},
+            {"event":"serc:105","entity":"team:1487","position":32,"points":549.5495495495496,"adjusted":709.677419354839},
+            {"event":"serc:106","entity":"team:1487","position":37,"points":239.05109489051097,"adjusted":200}
+          ]
+        },
+        {
+          "entity": "team:1492",
+          "name": "Swansea C",
+          "total": 2504.1428567644716,
+          "position": 32,
+          "events": [
+            {"event":"speed:148","entity":"team:1492","position":10,"points":524.390243902439,"adjusted":555.6962025316456},
+            {"event":"speed:149","entity":"team:1492","position":34,"points":-123.41421357310023,"adjusted":100},
+            {"event":"speed:150","entity":"team:1492","position":31,"points":222.55523433148562,"adjusted":103.67988700144976},
+            {"event":"serc:105","entity":"team:1492","position":18,"points":774.7747747747748,"adjusted":1354.8387096774195},
+            {"event":"serc:106","entity":"team:1492","position":35,"points":319.3430656934307,"adjusted":389.9280575539568}
+          ]
+        },
+        {
+          "entity": "team:1490",
+          "name": "Swansea A",
+          "total": 2386.391010756288,
+          "position": 33,
+          "events": [
+            {"event":"speed:148","entity":"team:1490","position":26,"points":195.1219512195122,"adjusted":248.1012658227848},
+            {"event":"speed:149","entity":"team:1490","position":21,"points":451.5334400788274,"adjusted":608.1277213352685},
+            {"event":"speed:150","entity":"team:1490","position":24,"points":505.92791024586904,"adjusted":461.0972753967959},
+            {"event":"serc:105","entity":"team:1490","position":37,"points":371.6216216216216,"adjusted":200},
+            {"event":"serc:106","entity":"team:1490","position":24,"points":521.8978102189781,"adjusted":869.0647482014388}
+          ]
+        },
+        {
+          "entity": "team:1491",
+          "name": "Swansea B",
+          "total": 2241.404688309106,
+          "position": 34,
+          "events": [
+            {"event":"speed:148","entity":"team:1491","position":35,"points":36.58536585365854,"adjusted":100},
+            {"event":"speed:149","entity":"team:1491","position":33,"points":-79.56644907008248,"adjusted":138.75181422351244},
+            {"event":"speed:150","entity":"team:1491","position":30,"points":286.15760019096626,"adjusted":183.90142363305213},
+            {"event":"serc:105","entity":"team:1491","position":22,"points":716.2162162162163,"adjusted":1187.0967741935488},
+            {"event":"serc:106","entity":"team:1491","position":33,"points":421.5328467153285,"adjusted":631.6546762589928}
+          ]
+        },
+        {
+          "entity": "team:1482",
+          "name": "Sheffield B",
+          "total": 1880.4985737828683,
+          "position": 35,
+          "events": [
+            {"event":"speed:148","entity":"team:1482","position":26,"points":195.1219512195122,"adjusted":248.1012658227848},
+            {"event":"speed:149","entity":"team:1482","position":35,"points":-393.02869811553154,"adjusted":0},
+            {"event":"speed:150","entity":"team:1482","position":33,"points":-15303.662838500915,"adjusted":0},
+            {"event":"serc:105","entity":"team:1482","position":28,"points":578.8288288288288,"adjusted":793.5483870967743},
+            {"event":"serc:106","entity":"team:1482","position":25,"points":509.1240875912408,"adjusted":838.8489208633092}
+          ]
+        },
+        {
+          "entity": "team:1488",
+          "name": "Plymouth B",
+          "total": 1666.8420110731481,
+          "position": 36,
+          "events": [
+            {"event":"speed:148","entity":"team:1488","position":37,"points":195.1219512195122,"adjusted":0},
+            {"event":"speed:149","entity":"team:1488","position":29,"points":190.17120335016625,"adjusted":377.1407837445574},
+            {"event":"speed:150","entity":"team:1488","position":27,"points":439.69975863989606,"adjusted":377.5638404638888},
+            {"event":"serc:105","entity":"team:1488","position":35,"points":520.2702702702703,"adjusted":625.8064516129034},
+            {"event":"serc:106","entity":"team:1488","position":36,"points":275.5474452554745,"adjusted":286.33093525179856}
+          ]
+        },
+        {
+          "entity": "team:1489",
+          "name": "Plymouth C",
+          "total": 1408.4929238125487,
+          "position": 37,
+          "events": [
+            {"event":"speed:148","entity":"team:1489","position":35,"points":36.58536585365854,"adjusted":100},
+            {"event":"speed:149","entity":"team:1489","position":32,"points":-68.48134006651074,"adjusted":148.54862119013063},
+            {"event":"speed:150","entity":"team:1489","position":33,"points":94.82004084555606,"adjusted":0},
+            {"event":"serc:105","entity":"team:1489","position":30,"points":558.5585585585585,"adjusted":735.4838709677418},
+            {"event":"serc:106","entity":"team:1489","position":34,"points":333.94160583941607,"adjusted":424.46043165467626}
+          ]
+        }
+      ]
+    },
+    "sheet:192": {
+      "name": "A-League",
+      "results": [
+        {
+          "entity": "team:1469",
+          "name": "Loughborough A",
+          "total": 6853.237410071943,
+          "position": 1,
+          "events": [
+            {"event":"speed:148","entity":"team:1469","position":1,"points":1000,"adjusted":1000},
+            {"event":"speed:149","entity":"team:1469","position":1,"points":894.9378002217022,"adjusted":1000},
+            {"event":"speed:150","entity":"team:1469","position":1,"points":933.188340450362,"adjusted":1000},
+            {"event":"serc:105","entity":"team:1469","position":1,"points":1000,"adjusted":2000},
+            {"event":"serc:106","entity":"team:1469","position":2,"points":937.9562043795621,"adjusted":1853.2374100719426}
+          ]
+        },
+        {
+          "entity": "team:1462",
+          "name": "Birmingham A",
+          "total": 5840.600283404205,
+          "position": 2,
+          "events": [
+            {"event":"speed:148","entity":"team:1462","position":2,"points":700,"adjusted":676},
+            {"event":"speed:149","entity":"team:1462","position":3,"points":707.4762901835201,"adjusted":775.0738916256156},
+            {"event":"speed:150","entity":"team:1462","position":3,"points":866.9601888443891,"adjusted":860.4941337140731},
+            {"event":"serc:105","entity":"team:1462","position":3,"points":835.5855855855856,"adjusted":1529.0322580645163},
+            {"event":"serc:106","entity":"team:1462","position":1,"points":1000,"adjusted":2000}
+          ]
+        },
+        {
+          "entity": "team:1483",
+          "name": "Southampton A",
+          "total": 5077.814383208425,
+          "position": 3,
+          "events": [
+            {"event":"speed:148","entity":"team:1483","position":2,"points":700,"adjusted":676},
+            {"event":"speed:149","entity":"team:1483","position":7,"points":550.0677423327995,"adjusted":586.206896551724},
+            {"event":"speed:150","entity":"team:1483","position":4,"points":766.1724531204413,"adjusted":648.1904525420572},
+            {"event":"serc:105","entity":"team:1483","position":2,"points":950.4504504504504,"adjusted":1858.0645161290324},
+            {"event":"serc:106","entity":"team:1483","position":4,"points":708.029197080292,"adjusted":1309.3525179856115}
+          ]
+        },
+        {
+          "entity": "team:1495",
+          "name": "Warwick A",
+          "total": 5039.0024771142835,
+          "position": 4,
+          "events": [
+            {"event":"speed:148","entity":"team:1495","position":2,"points":700,"adjusted":676},
+            {"event":"speed:149","entity":"team:1495","position":2,"points":797.5120088680872,"adjusted":883.103448275862},
+            {"event":"speed:150","entity":"team:1495","position":2,"points":917.619287589847,"adjusted":967.2046681979018},
+            {"event":"serc:105","entity":"team:1495","position":6,"points":815.3153153153153,"adjusted":1470.967741935484},
+            {"event":"serc:106","entity":"team:1495","position":6,"points":594.8905109489051,"adjusted":1041.726618705036}
+          ]
+        },
+        {
+          "entity": "team:1476",
+          "name": "Nottingham A",
+          "total": 4843.228524900258,
+          "position": 5,
+          "events": [
+            {"event":"speed:148","entity":"team:1476","position":2,"points":700,"adjusted":676},
+            {"event":"speed:149","entity":"team:1476","position":5,"points":603.645769183397,"adjusted":650.4926108374384},
+            {"event":"speed:150","entity":"team:1476","position":6,"points":733.3368697451132,"adjusted":579.0241479918059},
+            {"event":"serc:105","entity":"team:1476","position":5,"points":831.081081081081,"adjusted":1516.1290322580644},
+            {"event":"serc:106","entity":"team:1476","position":3,"points":755.4744525547445,"adjusted":1421.5827338129495}
+          ]
+        },
+        {
+          "entity": "team:1467",
+          "name": "Bristol A",
+          "total": 3863.999586560542,
+          "position": 6,
+          "events": [
+            {"event":"speed:148","entity":"team:1467","position":6,"points":400,"adjusted":352},
+            {"event":"speed:149","entity":"team:1467","position":6,"points":582.7072299544278,"adjusted":625.3694581280787},
+            {"event":"speed:150","entity":"team:1467","position":5,"points":738.8536721215818,"adjusted":590.6449810664844},
+            {"event":"serc:105","entity":"team:1467","position":8,"points":691.4414414414415,"adjusted":1116.1290322580649},
+            {"event":"serc:106","entity":"team:1467","position":5,"points":653.2846715328468,"adjusted":1179.8561151079139}
+          ]
+        },
+        {
+          "entity": "team:1481",
+          "name": "Sheffield A",
+          "total": 3850.2131538241956,
+          "position": 7,
+          "events": [
+            {"event":"speed:148","entity":"team:1481","position":6,"points":400,"adjusted":352},
+            {"event":"speed:149","entity":"team:1481","position":4,"points":660.9188323685182,"adjusted":719.2118226600984},
+            {"event":"speed:150","entity":"team:1481","position":8,"points":616.7413733655147,"adjusted":333.4223105096531},
+            {"event":"serc:105","entity":"team:1481","position":3,"points":835.5855855855856,"adjusted":1529.0322580645163},
+            {"event":"serc:106","entity":"team:1481","position":7,"points":541.970802919708,"adjusted":916.546762589928}
+          ]
+        },
+        {
+          "entity": "team:1480",
+          "name": "Oxford A",
+          "total": 2524.2992532264643,
+          "position": 8,
+          "events": [
+            {"event":"speed:148","entity":"team:1480","position":6,"points":400,"adjusted":352},
+            {"event":"speed:149","entity":"team:1480","position":10,"points":144.84542431333912,"adjusted":100},
+            {"event":"speed:150","entity":"team:1480","position":9,"points":531.6022597671273,"adjusted":154.08156930908189},
+            {"event":"serc:105","entity":"team:1480","position":7,"points":698.1981981981982,"adjusted":1135.483870967742},
+            {"event":"serc:106","entity":"team:1480","position":9,"points":485.4014598540146,"adjusted":782.7338129496403}
+          ]
+        },
+        {
+          "entity": "team:1487",
+          "name": "Plymouth A",
+          "total": 2074.3400578395217,
+          "position": 9,
+          "events": [
+            {"event":"speed:148","entity":"team:1487","position":9,"points":166.66666666666669,"adjusted":100},
+            {"event":"speed:149","entity":"team:1487","position":8,"points":508.43699963049636,"adjusted":536.2561576354678},
+            {"event":"speed:150","entity":"team:1487","position":7,"points":709.3069517014561,"adjusted":528.4064808492147},
+            {"event":"serc:105","entity":"team:1487","position":9,"points":549.5495495495496,"adjusted":709.677419354839},
+            {"event":"serc:106","entity":"team:1487","position":10,"points":239.05109489051097,"adjusted":200}
+          ]
+        },
+        {
+          "entity": "team:1490",
+          "name": "Swansea A",
+          "total": 1737.0450437679413,
+          "position": 10,
+          "events": [
+            {"event":"speed:148","entity":"team:1490","position":9,"points":166.66666666666669,"adjusted":100},
+            {"event":"speed:149","entity":"team:1490","position":9,"points":451.5334400788274,"adjusted":467.98029556650243},
+            {"event":"speed:150","entity":"team:1490","position":10,"points":505.92791024586904,"adjusted":100},
+            {"event":"serc:105","entity":"team:1490","position":10,"points":371.6216216216216,"adjusted":200},
+            {"event":"serc:106","entity":"team:1490","position":8,"points":521.8978102189781,"adjusted":869.0647482014388}
+          ]
+        }
+      ]
+    },
+    "sheet:193": {
+      "name": "Freshers",
+      "results": [
+        {
+          "entity": "team:1496",
+          "name": "Warwick B",
+          "total": 6443.595957257652,
+          "position": 1,
+          "events": [
+            {"event":"speed:148","entity":"team:1496","position":4,"points":580,"adjusted":678.5714285714286},
+            {"event":"speed:149","entity":"team:1496","position":6,"points":690.6022909225273,"adjusted":922.7083951349748},
+            {"event":"speed:150","entity":"team:1496","position":6,"points":688.1150041110786,"adjusted":842.316133551249},
+            {"event":"serc:105","entity":"team:1496","position":1,"points":1000,"adjusted":2000},
+            {"event":"serc:106","entity":"team:1496","position":1,"points":1000,"adjusted":2000}
+          ]
+        },
+        {
+          "entity": "team:1470",
+          "name": "Loughborough B",
+          "total": 5334.712260226898,
+          "position": 2,
+          "events": [
+            {"event":"speed:148","entity":"team:1470","position":4,"points":580,"adjusted":678.5714285714286},
+            {"event":"speed:149","entity":"team:1470","position":3,"points":742.5791353614977,"adjusted":979.0418273509346},
+            {"event":"speed:150","entity":"team:1470","position":1,"points":787.6296315943029,"adjusted":1000},
+            {"event":"serc:105","entity":"team:1470","position":9,"points":780.5429864253393,"adjusted":1172.511848341232},
+            {"event":"serc:106","entity":"team:1470","position":7,"points":803.4934497816594,"adjusted":1504.5871559633026}
+          ]
+        },
+        {
+          "entity": "team:1464",
+          "name": "Birmingham C",
+          "total": 5291.54435592565,
+          "position": 3,
+          "events": [
+            {"event":"speed:148","entity":"team:1464","position":4,"points":580,"adjusted":678.5714285714286},
+            {"event":"speed:149","entity":"team:1464","position":15,"points":231.43244241901718,"adjusted":425.0519133788195},
+            {"event":"speed:150","entity":"team:1464","position":9,"points":614.8317110044294,"adjusted":726.1965911744105},
+            {"event":"serc:105","entity":"team:1464","position":2,"points":873.3031674208145,"adjusted":1522.2748815165876},
+            {"event":"serc:106","entity":"team:1464","position":2,"points":975.9825327510918,"adjusted":1939.4495412844037}
+          ]
+        },
+        {
+          "entity": "team:1477",
+          "name": "Nottingham B",
+          "total": 5130.856167041372,
+          "position": 4,
+          "events": [
+            {"event":"speed:148","entity":"team:1477","position":1,"points":880,"adjusted":1000},
+            {"event":"speed:149","entity":"team:1477","position":13,"points":395.73839142751564,"adjusted":603.129635123109},
+            {"event":"speed:150","entity":"team:1477","position":8,"points":627.5362703233164,"adjusted":746.3273406490778},
+            {"event":"serc:105","entity":"team:1477","position":7,"points":800.9049773755656,"adjusted":1249.2890995260664},
+            {"event":"serc:106","entity":"team:1477","position":6,"points":814.4104803493449,"adjusted":1532.110091743119}
+          ]
+        },
+        {
+          "entity": "team:1472",
+          "name": "Loughborough D",
+          "total": 4885.358563877718,
+          "position": 5,
+          "events": [
+            {"event":"speed:148","entity":"team:1472","position":4,"points":580,"adjusted":678.5714285714286},
+            {"event":"speed:149","entity":"team:1472","position":7,"points":630.8658701810567,"adjusted":857.9649955502819},
+            {"event":"speed:150","entity":"team:1472","position":3,"points":743.5482587592498,"adjusted":930.1517627830958},
+            {"event":"serc:105","entity":"team:1472","position":10,"points":760.180995475113,"adjusted":1095.7345971563977},
+            {"event":"serc:106","entity":"team:1472","position":10,"points":731.4410480349345,"adjusted":1322.9357798165138}
+          ]
+        },
+        {
+          "entity": "team:1463",
+          "name": "Birmingham B",
+          "total": 4865.192715307153,
+          "position": 6,
+          "events": [
+            {"event":"speed:148","entity":"team:1463","position":4,"points":580,"adjusted":678.5714285714286},
+            {"event":"speed:149","entity":"team:1463","position":14,"points":290.183520137948,"adjusted":488.72738059922875},
+            {"event":"speed:150","entity":"team:1463","position":13,"points":495.76956740842905,"adjusted":537.5391081017979},
+            {"event":"serc:105","entity":"team:1463","position":4,"points":861.9909502262444,"adjusted":1479.6208530805688},
+            {"event":"serc:106","entity":"team:1463","position":4,"points":873.3624454148472,"adjusted":1680.7339449541284}
+          ]
+        },
+        {
+          "entity": "team:1497",
+          "name": "Warwick C",
+          "total": 4804.684037119069,
+          "position": 7,
+          "events": [
+            {"event":"speed:148","entity":"team:1497","position":4,"points":580,"adjusted":678.5714285714286},
+            {"event":"speed:149","entity":"team:1497","position":5,"points":719.7930779652665,"adjusted":954.3458914268763},
+            {"event":"speed:150","entity":"team:1497","position":4,"points":724.5842505901387,"adjusted":900.1027317300957},
+            {"event":"serc:105","entity":"team:1497","position":6,"points":819.0045248868778,"adjusted":1317.5355450236964},
+            {"event":"serc:106","entity":"team:1497","position":15,"points":585.1528384279476,"adjusted":954.1284403669724}
+          ]
+        },
+        {
+          "entity": "team:1473",
+          "name": "Loughborough E",
+          "total": 4699.866282389684,
+          "position": 8,
+          "events": [
+            {"event":"speed:148","entity":"team:1473","position":14,"points":220,"adjusted":292.8571428571429},
+            {"event":"speed:149","entity":"team:1473","position":2,"points":751.6935583199902,"adjusted":988.9202017205579},
+            {"event":"speed:150","entity":"team:1473","position":7,"points":660.9818847306581,"adjusted":799.3229045061872},
+            {"event":"serc:105","entity":"team:1473","position":11,"points":753.393665158371,"adjusted":1070.1421800947867},
+            {"event":"serc:106","entity":"team:1473","position":5,"points":820.9606986899563,"adjusted":1548.623853211009}
+          ]
+        },
+        {
+          "entity": "team:1471",
+          "name": "Loughborough C",
+          "total": 4511.115490440435,
+          "position": 9,
+          "events": [
+            {"event":"speed:148","entity":"team:1471","position":1,"points":880,"adjusted":1000},
+            {"event":"speed:149","entity":"team:1471","position":8,"points":586.6486020445868,"adjusted":810.0415307030556},
+            {"event":"speed:150","entity":"team:1471","position":17,"points":-15781.078428772247,"adjusted":0},
+            {"event":"serc:105","entity":"team:1471","position":12,"points":728.5067873303167,"adjusted":976.3033175355447},
+            {"event":"serc:106","entity":"team:1471","position":3,"points":890.829694323144,"adjusted":1724.7706422018346}
+          ]
+        },
+        {
+          "entity": "team:1465",
+          "name": "Birmingham D",
+          "total": 4346.491624667773,
+          "position": 10,
+          "events": [
+            {"event":"speed:148","entity":"team:1465","position":4,"points":580,"adjusted":678.5714285714286},
+            {"event":"speed:149","entity":"team:1465","position":11,"points":547.7275526542678,"adjusted":767.8582023138536},
+            {"event":"speed:150","entity":"team:1465","position":14,"points":469.0608174415829,"adjusted":495.21830492645347},
+            {"event":"serc:105","entity":"team:1465","position":2,"points":873.3031674208145,"adjusted":1522.2748815165876},
+            {"event":"serc:106","entity":"team:1465","position":18,"points":556.7685589519651,"adjusted":882.5688073394497}
+          ]
+        },
+        {
+          "entity": "team:1485",
+          "name": "Southampton C",
+          "total": 3967.220781489874,
+          "position": 11,
+          "events": [
+            {"event":"speed:148","entity":"team:1485","position":1,"points":880,"adjusted":1000},
+            {"event":"speed:149","entity":"team:1485","position":10,"points":562.0150264810937,"adjusted":783.3432215959657},
+            {"event":"speed:150","entity":"team:1485","position":17,"points":649.8952338010238,"adjusted":0},
+            {"event":"serc:105","entity":"team:1485","position":8,"points":798.6425339366516,"adjusted":1240.7582938388625},
+            {"event":"serc:106","entity":"team:1485","position":16,"points":580.7860262008734,"adjusted":943.119266055046}
+          ]
+        },
+        {
+          "entity": "team:1474",
+          "name": "Loughborough F",
+          "total": 3786.431953898932,
+          "position": 12,
+          "events": [
+            {"event":"speed:148","entity":"team:1474","position":14,"points":220,"adjusted":292.8571428571429},
+            {"event":"speed:149","entity":"team:1474","position":1,"points":761.9164921788397,"adjusted":1000},
+            {"event":"speed:150","entity":"team:1474","position":2,"points":771.0261782881998,"adjusted":973.6913378473032},
+            {"event":"serc:105","entity":"team:1474","position":16,"points":565.6108597285067,"adjusted":362.08530805687167},
+            {"event":"serc:106","entity":"team:1474","position":11,"points":665.938864628821,"adjusted":1157.7981651376147}
+          ]
+        },
+        {
+          "entity": "team:1498",
+          "name": "Warwick D",
+          "total": 3182.248771321877,
+          "position": 13,
+          "events": [
+            {"event":"speed:148","entity":"team:1498","position":14,"points":220,"adjusted":292.8571428571429},
+            {"event":"speed:149","entity":"team:1498","position":9,"points":585.2937553885946,"adjusted":808.5731237021656},
+            {"event":"speed:150","entity":"team:1498","position":11,"points":573.7739702410948,"adjusted":661.1393882792435},
+            {"event":"serc:105","entity":"team:1498","position":14,"points":601.8099547511312,"adjusted":498.5781990521323},
+            {"event":"serc:106","entity":"team:1498","position":17,"points":572.0524017467249,"adjusted":921.1009174311926}
+          ]
+        },
+        {
+          "entity": "team:1466",
+          "name": "Birmingham E",
+          "total": 3165.175193952532,
+          "position": 14,
+          "events": [
+            {"event":"speed:148","entity":"team:1466","position":4,"points":580,"adjusted":678.5714285714286},
+            {"event":"speed:149","entity":"team:1466","position":19,"points":166.03029929794312,"adjusted":0},
+            {"event":"speed:150","entity":"team:1466","position":17,"points":551.0967297032066,"adjusted":0},
+            {"event":"serc:105","entity":"team:1466","position":5,"points":843.8914027149322,"adjusted":1411.3744075829384},
+            {"event":"serc:106","entity":"team:1466","position":12,"points":633.1877729257642,"adjusted":1075.229357798165}
+          ]
+        },
+        {
+          "entity": "team:1475",
+          "name": "Loughborough G",
+          "total": 3161.7715929523465,
+          "position": 15,
+          "events": [
+            {"event":"speed:148","entity":"team:1475","position":14,"points":220,"adjusted":292.8571428571429},
+            {"event":"speed:149","entity":"team:1475","position":4,"points":727.4294863899495,"adjusted":962.6223672500743},
+            {"event":"speed:150","entity":"team:1475","position":10,"points":610.3758321618969,"adjusted":719.1361195423768},
+            {"event":"serc:105","entity":"team:1475","position":20,"points":522.6244343891403,"adjusted":200},
+            {"event":"serc:106","entity":"team:1475","position":14,"points":598.2532751091702,"adjusted":987.1559633027521}
+          ]
+        },
+        {
+          "entity": "team:1468",
+          "name": "Bristol B",
+          "total": 3143.406376382155,
+          "position": 16,
+          "events": [
+            {"event":"speed:148","entity":"team:1468","position":4,"points":580,"adjusted":678.5714285714286},
+            {"event":"speed:149","entity":"team:1468","position":17,"points":109.74257913536145,"adjusted":293.1622663897954},
+            {"event":"speed:150","entity":"team:1468","position":16,"points":219.63769461316073,"adjusted":100},
+            {"event":"serc:105","entity":"team:1468","position":13,"points":644.7963800904978,"adjusted":660.6635071090047},
+            {"event":"serc:106","entity":"team:1468","position":8,"points":766.3755458515284,"adjusted":1411.0091743119265}
+          ]
+        },
+        {
+          "entity": "team:1478",
+          "name": "Nottingham C",
+          "total": 2999.6831280243587,
+          "position": 17,
+          "events": [
+            {"event":"speed:148","entity":"team:1478","position":4,"points":580,"adjusted":678.5714285714286},
+            {"event":"speed:149","entity":"team:1478","position":19,"points":-63.06195344254228,"adjusted":0},
+            {"event":"speed:150","entity":"team:1478","position":12,"points":572.8987083255975,"adjusted":659.7525099229512},
+            {"event":"serc:105","entity":"team:1478","position":18,"points":552.0361990950227,"adjusted":310.9004739336492},
+            {"event":"serc:106","entity":"team:1478","position":9,"points":742.35807860262,"adjusted":1350.45871559633}
+          ]
+        },
+        {
+          "entity": "team:1487",
+          "name": "Plymouth A",
+          "total": 2404.9274164991034,
+          "position": 18,
+          "events": [
+            {"event":"speed:148","entity":"team:1487","position":14,"points":220,"adjusted":292.8571428571429},
+            {"event":"speed:149","entity":"team:1487","position":12,"points":508.43699963049636,"adjusted":725.2743992880453},
+            {"event":"speed:150","entity":"team:1487","position":5,"points":709.3069517014561,"adjusted":875.8954004202661},
+            {"event":"serc:105","entity":"team:1487","position":18,"points":552.0361990950227,"adjusted":310.9004739336492},
+            {"event":"serc:106","entity":"team:1487","position":21,"points":286.0262008733624,"adjusted":200}
+          ]
+        },
+        {
+          "entity": "team:1482",
+          "name": "Sheffield B",
+          "total": 1729.3369898070102,
+          "position": 19,
+          "events": [
+            {"event":"speed:148","entity":"team:1482","position":14,"points":220,"adjusted":292.8571428571429},
+            {"event":"speed:149","entity":"team:1482","position":19,"points":-393.02869811553154,"adjusted":0},
+            {"event":"speed:150","entity":"team:1482","position":17,"points":-15303.662838500915,"adjusted":0},
+            {"event":"serc:105","entity":"team:1482","position":15,"points":581.447963800905,"adjusted":421.80094786729836},
+            {"event":"serc:106","entity":"team:1482","position":13,"points":609.170305676856,"adjusted":1014.6788990825689}
+          ]
+        },
+        {
+          "entity": "team:1488",
+          "name": "Plymouth B",
+          "total": 1339.1188288090848,
+          "position": 20,
+          "events": [
+            {"event":"speed:148","entity":"team:1488","position":21,"points":220,"adjusted":0},
+            {"event":"speed:149","entity":"team:1488","position":16,"points":190.17120335016625,"adjusted":380.33224562444383},
+            {"event":"speed:150","entity":"team:1488","position":15,"points":439.69975863989606,"adjusted":448.6948400653748},
+            {"event":"serc:105","entity":"team:1488","position":20,"points":522.6244343891403,"adjusted":200},
+            {"event":"serc:106","entity":"team:1488","position":20,"points":329.69432314410477,"adjusted":310.091743119266}
+          ]
+        },
+        {
+          "entity": "team:1489",
+          "name": "Plymouth C",
+          "total": 1031.2622287925562,
+          "position": 21,
+          "events": [
+            {"event":"speed:148","entity":"team:1489","position":20,"points":40,"adjusted":100},
+            {"event":"speed:149","entity":"team:1489","position":18,"points":-68.48134006651074,"adjusted":100},
+            {"event":"speed:150","entity":"team:1489","position":17,"points":94.82004084555606,"adjusted":0},
+            {"event":"serc:105","entity":"team:1489","position":17,"points":561.0859728506788,"adjusted":345.02369668246445},
+            {"event":"serc:106","entity":"team:1489","position":19,"points":399.5633187772926,"adjusted":486.2385321100918}
+          ]
+        }
+      ]
+    },
+    "sheet:194": {
+      "name": "B-League",
+      "results": [
+        {
+          "entity": "team:1479",
+          "name": "Nottingham D",
+          "total": 5641.551128501018,
+          "position": 1,
+          "events": [
+            {"event":"speed:148","entity":"team:1479","position":1,"points":555.5555555555557,"adjusted":1000},
+            {"event":"speed:149","entity":"team:1479","position":2,"points":252.2478137701687,"adjusted":835.3335119207072},
+            {"event":"speed:150","entity":"team:1479","position":1,"points":657.4277908919714,"adjusted":1000},
+            {"event":"serc:105","entity":"team:1479","position":1,"points":1000,"adjusted":1999.9999999999998},
+            {"event":"serc:106","entity":"team:1479","position":2,"points":652.1739130434783,"adjusted":806.2176165803107}
+          ]
+        },
+        {
+          "entity": "team:1484",
+          "name": "Southampton B",
+          "total": 5118.156867528665,
+          "position": 2,
+          "events": [
+            {"event":"speed:148","entity":"team:1484","position":1,"points":555.5555555555557,"adjusted":1000},
+            {"event":"speed:149","entity":"team:1484","position":1,"points":336.37147431949745,"adjusted":1000},
+            {"event":"speed:150","entity":"team:1484","position":2,"points":617.8818661644963,"adjusted":918.1568675286658},
+            {"event":"serc:105","entity":"team:1484","position":4,"points":651.0538641686182,"adjusted":200},
+            {"event":"serc:106","entity":"team:1484","position":1,"points":1000,"adjusted":2000}
+          ]
+        },
+        {
+          "entity": "team:1492",
+          "name": "Swansea C",
+          "total": 2397.3154362416108,
+          "position": 3,
+          "events": [
+            {"event":"speed:148","entity":"team:1492","position":1,"points":555.5555555555557,"adjusted":1000},
+            {"event":"speed:149","entity":"team:1492","position":4,"points":-123.41421357310023,"adjusted":100},
+            {"event":"speed:150","entity":"team:1492","position":4,"points":222.55523433148562,"adjusted":100},
+            {"event":"serc:105","entity":"team:1492","position":2,"points":805.6206088992974,"adjusted":997.3154362416105},
+            {"event":"serc:106","entity":"team:1492","position":4,"points":475.54347826086956,"adjusted":200}
+          ]
+        },
+        {
+          "entity": "team:1491",
+          "name": "Swansea B",
+          "total": 1922.960026911525,
+          "position": 4,
+          "events": [
+            {"event":"speed:148","entity":"team:1491","position":4,"points":111.11111111111111,"adjusted":100},
+            {"event":"speed:149","entity":"team:1491","position":3,"points":-79.56644907008248,"adjusted":185.8290918832041},
+            {"event":"speed:150","entity":"team:1491","position":3,"points":286.15760019096626,"adjusted":231.6296657721395},
+            {"event":"serc:105","entity":"team:1491","position":3,"points":744.7306791569088,"adjusted":683.2214765100676},
+            {"event":"serc:106","entity":"team:1491","position":3,"points":627.7173913043478,"adjusted":722.2797927461137}
+          ]
+        }
+      ]
+    }
+  },
+  "masters": []
+}
