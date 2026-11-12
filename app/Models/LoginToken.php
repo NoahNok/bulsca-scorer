@@ -17,6 +17,9 @@ class LoginToken extends Model
 
     protected $guarded = [];
 
+    /** The token itself, only on the one issueFor returns: it can't be got back later */
+    public ?string $plainToken = null;
+
     protected $casts = [
         'expires_at' => 'datetime',
         'used_at' => 'datetime',
@@ -28,10 +31,10 @@ class LoginToken extends Model
     }
 
     /**
-     * Make a new token for $user, replacing any they have that haven't been used, and return it. It can't be
-     * got back later.
+     * Make a new token for $user, replacing any they have that haven't been used. The token itself is in
+     * `plainToken`.
      */
-    public static function issueFor(User $user, User $by): string
+    public static function issueFor(User $user, User $by): static
     {
         // expired or used ones are no use to anyone
         static::where('expires_at', '<=', now())->orWhereNotNull('used_at')->delete();
@@ -39,14 +42,15 @@ class LoginToken extends Model
 
         $token = Str::random(64);
 
-        static::create([
+        $loginToken = static::create([
             'user_id' => $user->id,
             'created_by' => $by->id,
             'token_hash' => static::hash($token),
             'expires_at' => now()->addMinutes(static::TTL_MINUTES),
         ]);
+        $loginToken->plainToken = $token;
 
-        return $token;
+        return $loginToken;
     }
 
     /**

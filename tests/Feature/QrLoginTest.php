@@ -38,7 +38,8 @@ class QrLoginTest extends TestCase
         $this->get($page)->assertInertia(fn (Assert $p) => $p
             ->component('Admin/User')
             ->where('loginQr.svg', fn ($svg) => str_contains($svg, '<svg'))
-            ->has('loginQr.expiresAt'));
+            ->has('loginQr.expiresAt')
+            ->has('loginQr.status'));
 
         // flashed, so a reload drops it
         $this->get($page)->assertInertia(fn (Assert $p) => $p->where('loginQr', null));
@@ -69,7 +70,7 @@ class QrLoginTest extends TestCase
 
     public function test_a_token_signs_in_once(): void
     {
-        $token = LoginToken::issueFor($this->official, $this->admin);
+        $token = LoginToken::issueFor($this->official, $this->admin)->plainToken;
 
         $this->get(route('judge.qr-login', $token))->assertRedirect(route('judge.index'));
         $this->assertAuthenticatedAs($this->official);
@@ -84,7 +85,7 @@ class QrLoginTest extends TestCase
 
     public function test_a_token_expires(): void
     {
-        $token = LoginToken::issueFor($this->official, $this->admin);
+        $token = LoginToken::issueFor($this->official, $this->admin)->plainToken;
 
         $this->travel(LoginToken::TTL_MINUTES + 1)->minutes();
 
@@ -94,7 +95,7 @@ class QrLoginTest extends TestCase
 
     public function test_an_unknown_token_does_nothing(): void
     {
-        LoginToken::issueFor($this->official, $this->admin);
+        LoginToken::issueFor($this->official, $this->admin)->plainToken;
 
         $this->get(route('judge.qr-login', str_repeat('a', 64)))->assertRedirect(route('judge.login'));
         $this->assertGuest();
@@ -102,8 +103,8 @@ class QrLoginTest extends TestCase
 
     public function test_a_new_token_replaces_the_old_one(): void
     {
-        $old = LoginToken::issueFor($this->official, $this->admin);
-        $new = LoginToken::issueFor($this->official, $this->admin);
+        $old = LoginToken::issueFor($this->official, $this->admin)->plainToken;
+        $new = LoginToken::issueFor($this->official, $this->admin)->plainToken;
 
         $this->get(route('judge.qr-login', $old))->assertRedirect(route('judge.login'));
         $this->assertGuest();
@@ -114,15 +115,40 @@ class QrLoginTest extends TestCase
 
     public function test_only_a_hash_of_the_token_is_stored(): void
     {
-        $token = LoginToken::issueFor($this->official, $this->admin);
+        $token = LoginToken::issueFor($this->official, $this->admin)->plainToken;
 
         $this->assertDatabaseMissing('login_tokens', ['token_hash' => $token]);
         $this->assertDatabaseHas('login_tokens', ['token_hash' => hash('sha256', $token)]);
     }
 
+    public function test_admins_can_see_when_a_code_has_been_used(): void
+    {
+        $loginToken = LoginToken::issueFor($this->official, $this->admin);
+        $status = $this->appUrl("/admin/login-qr/{$loginToken->id}");
+
+        $this->actingAs($this->admin)->getJson($status)->assertExactJson(['used' => false]);
+
+        LoginToken::consume($loginToken->plainToken);
+
+        $this->getJson($status)->assertExactJson(['used' => true]);
+
+        // replaced by a newer code
+        LoginToken::issueFor($this->official, $this->admin);
+        $this->getJson($status)->assertNotFound();
+    }
+
+    public function test_non_admins_cannot_see_code_status(): void
+    {
+        $loginToken = LoginToken::issueFor($this->official, $this->admin);
+
+        $this->actingAs($this->official)
+            ->get($this->appUrl("/admin/login-qr/{$loginToken->id}"))
+            ->assertRedirect('/');
+    }
+
     public function test_it_swaps_a_signed_in_device_over(): void
     {
-        $token = LoginToken::issueFor($this->official, $this->admin);
+        $token = LoginToken::issueFor($this->official, $this->admin)->plainToken;
 
         $this->actingAs($this->admin)
             ->get(route('judge.qr-login', $token))

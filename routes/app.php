@@ -378,6 +378,7 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
         Route::get('/users/{user}', [AdminUsersController::class, 'show'])->name('manage.admin.users.show');
         Route::post('/users/{user}/full-account', [AdminUsersController::class, 'makeFullAccount'])->name('manage.admin.users.full-account');
         Route::post('/users/{user}/login-qr', [AdminUsersController::class, 'loginQr'])->name('manage.admin.users.login-qr');
+        Route::get('/login-qr/{loginToken}', [AdminUsersController::class, 'loginQrStatus'])->name('manage.admin.login-qr.status');
 
         Route::resource('serc/marking-points', AdminMarkingPointTemplatesController::class)->except(['show'])->names('manage.admin.marking-point-templates');
     });

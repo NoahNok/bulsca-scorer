@@ -187,11 +187,23 @@ class AdminUsersController extends Controller
             return back()->with('alert-error', "Admin accounts can't sign in with a QR code");
         }
 
-        $url = route('judge.qr-login', LoginToken::issueFor($user, $request->user()));
+        $loginToken = LoginToken::issueFor($user, $request->user());
+        $url = route('judge.qr-login', $loginToken->plainToken);
 
         return back()->with('loginQr', [
             'svg' => (string) QrCode::size(280)->margin(1)->generate($url),
-            'expiresAt' => now()->addMinutes(LoginToken::TTL_MINUTES)->toIso8601String(),
+            'expiresAt' => $loginToken->expires_at->toIso8601String(),
+            // the dialog polls loginQrStatus with it to know when it's been scanned
+            'status' => route('manage.admin.login-qr.status', $loginToken),
         ]);
+    }
+
+    /**
+     * Whether a sign-in QR code has been used, for the dialog showing it to swap in a new one. Gone (404) once
+     * another code for the same user replaced it.
+     */
+    public function loginQrStatus(LoginToken $loginToken)
+    {
+        return response()->json(['used' => $loginToken->used_at !== null]);
     }
 }

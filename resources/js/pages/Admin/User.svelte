@@ -72,8 +72,8 @@
         officiating: Officiating[];
         /** Null when they've never submitted one */
         submissions: { pending: number; accepted: number; rejected: number } | null;
-        /** Just after making a sign-in QR code: its svg and when it expires (ISO 8601) */
-        loginQr: { svg: string; expiresAt: string } | null;
+        /** Just after making a sign-in QR code: its svg, when it expires (ISO 8601) and a url saying if it's been used */
+        loginQr: { svg: string; expiresAt: string; status: string } | null;
     } = $props();
 
     const lists = $derived([
@@ -113,6 +113,8 @@
     function showLoginQr() {
         router.post(makeLoginQr(user.id).url, {}, {
             preserveScroll: true,
+            // keeps the open dialog and its count of phones signed in across a new code
+            preserveState: true,
             onStart: () => (makingQr = true),
             onFinish: () => (makingQr = false),
         });
