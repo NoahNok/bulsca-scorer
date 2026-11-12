@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
-use App\DTO\ScaledResult;
+use App\DTO\OverallResult;
 use App\Helpers\ClassHelpers;
-use App\Models\Event\ScoringEngine;
-use App\Models\Event\ScoringSchema;
+use App\Scoring\Engine\SheetScorer;
+use App\Scoring\Engine\SheetStanding;
+use App\Scoring\Input\SheetDefinition;
+use App\Scoring\Input\SheetEvent;
+use App\Scoring\ScoringRun;
 use App\Models\ResultSchemas\ClubSERCResultSchema;
 use App\Models\ResultSchemas\HighestSumResultSchema;
 use App\Models\ResultSchemas\NationalsResultSchema;
-use App\Services\ResultSheetFormulas;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -18,7 +20,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Log;
 
 class ResultSchema extends Model
 {
@@ -52,130 +53,59 @@ class ResultSchema extends Model
         return 'result_schema_' . $this->id . '_results';
     }
 
+    /**
+     * The sheet's rows, best placed first. Each Event is scored for the sheet's League (once per
+     * request, shared with every other sheet that includes it: `ScoringRun`), and `SheetScorer`
+     * works the standings out from those. The rows are handed back as the DTOs the pages expect.
+     *
+     * @return Collection<int, OverallResult>
+     */
     private function getCachedResults(): Collection
     {
-        $allResults = collect();
+        $run = app(ScoringRun::class);
 
+        // A League that no longer exists is no League: the sheet is of everyone
         $league = null;
         if (array_key_exists('league', $this->schema)) {
             $league = League::find($this->schema['league']);
         }
 
-        $ignore_dq = $this->schema['ignore_dq'] ?? false;
-        $group_on = $this->schema['group_on'] ?? 'team';
-        $group_class = Relation::getMorphedModel($group_on);
-        $rank_higher = $this->schema['rank_higher'] ?? true;
+        $events = [];
+        $eventResults = [];
+        $loaded = [];
 
-        $break_ties = $this->schema['break_ties'] ?? []; // Should be a list of event ids to break ties on, or empty if not breaking
+        foreach ($this->getEvents as $sheetEvent) {
+            $event = $sheetEvent->getActualEvent;
 
-        foreach ($this->getEvents as $event) {
-
-            $scoringEngine = ScoringSchema::engine();
-
-            $eventResults = null;
-
-
-            $eventResults = collect($event->getActualEvent->getRankedResults($league));
-
-
-            $eventResults = $eventResults->map(function ($result) {
-                return ScaledResult::fromRanked($result, -1);
-            });
-
-            Log::debug("Processing event '{$event->getActualEVENT->getName()}' with " . $eventResults->count() . " results.");
-            $eventResults = $scoringEngine->process($this->schema, $eventResults, 'adjustedPoints');
-
-            // mutiply by event weight
-            $eventResults = $eventResults->map(function ($result) use ($event, $ignore_dq) {
-                $result->adjustedPoints = $result->adjustedPoints * $event->weight;
-
-                if (!$ignore_dq && $result->isDisqualified()) {
-                    $result->adjustedPoints = 0;
-                }
-
-                return $result;
-            });
-
-
-            $allResults = $allResults->merge($eventResults);
+            $events[] = $definition = new SheetEvent($event->getType(), $event->id, (float) $sheetEvent->weight);
+            $eventResults[] = $run->results($event, $league?->id);
+            $loaded[spl_object_id($definition)] = $run->loaded($event);
         }
 
+        $standings = SheetScorer::score(SheetDefinition::fromSchema($this->schema, $events), $eventResults);
 
-        $grouped = $allResults->groupBy(function ($result) use ($group_on) {
-            return $result->entity->getGrouping()->{"{$group_on}_id"};
-        });
+        return collect($standings)->map(function (SheetStanding $standing) use ($loaded) {
+            $entity = null;
+            $results = collect();
 
+            foreach ($standing->events as $result) {
+                $from = $loaded[spl_object_id($result->event)];
 
+                $results->push($from->scaledResult($result->scored, $result->adjustedPoints));
 
-
-        $preRanked = $grouped->map(function ($results) use ($group_class) {
-            $entity = $results->filter(function ($result) use ($group_class) {
-                return $result->entity instanceof $group_class;
-            })->first()?->entity;
-
-
-
-            if (!$entity) {
-                $entity = $results->first()->entity;
+                if ($result->entity === $standing->entity) {
+                    $entity ??= $from->entity($standing->entity);
+                }
             }
 
-            $totalPoints = 0;
-            foreach ($results as $result) {
-
-                $totalPoints += $result->adjustedPoints;
-            }
-            return new \App\DTO\OverallResult(
+            return new OverallResult(
                 events: $results,
                 entity: $entity,
-                totalPoints: $totalPoints,
-                position: 0
+                totalPoints: $standing->totalPoints,
+                position: $standing->position,
             );
         });
-
-
-
-
-        // Points in the sheet's direction, then each tie-break Event's place, the better place first
-        // whichever way points rank. An entity missing from a tie-break Event comes after those in it.
-        $preRanked = $preRanked->sortBy(function ($result) use ($break_ties, $rank_higher) {
-            $options = [$rank_higher ? -$result->totalPoints : $result->totalPoints];
-
-            foreach ($break_ties as $bt) {
-                $options[] = $result->events->first(fn($eventResult) => ResultSheetFormulas::tieBreakIs($bt, $eventResult->event))?->position ?? PHP_INT_MAX;
-            }
-
-            return $options;
-        })->values();
-
-
-
-
-
-        $rankedResults = collect();
-        $previousScore = null;
-        $previousRank = 0;
-        $position = 1;
-
-        foreach ($preRanked as $result) {
-            $currentScore = $result->totalPoints;
-
-            if (!$break_ties && $currentScore === $previousScore) {
-                $rank = $previousRank;
-            } else {
-                $rank = $position;
-                $previousScore = $currentScore;
-                $previousRank = $rank;
-            }
-
-            $result->position = $rank;
-            $rankedResults->push($result);
-            $position++;
-        }
-
-        return $rankedResults;
     }
-
-
 
     public function getEvents()
     {

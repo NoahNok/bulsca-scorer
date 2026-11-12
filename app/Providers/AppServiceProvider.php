@@ -8,9 +8,11 @@ use App\DTO\JudgeAuthUser;
 use App\Models\Club;
 use App\Models\CompetitionTeam;
 use App\Models\Competitor;
+use App\Scoring\ScoringRun;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -23,7 +25,11 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register() {}
+    public function register()
+    {
+        // One per request: the Events already scored, shared between Results sheets
+        $this->app->scoped(ScoringRun::class);
+    }
 
     /**
      * Bootstrap any application services.
@@ -32,6 +38,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // Anything saved or deleted may change a result, so what was scored before it is dropped
+        Event::listen(['eloquent.saved: *', 'eloquent.deleted: *'], function () {
+            if ($this->app->resolved(ScoringRun::class)) {
+                $this->app->make(ScoringRun::class)->forget();
+            }
+        });
+
 
 
         Relation::morphMap([

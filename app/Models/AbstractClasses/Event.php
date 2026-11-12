@@ -5,7 +5,6 @@ namespace App\Models\AbstractClasses;
 
 use App\DigitalJudge\DigitalJudge;
 use App\DTO\Result;
-use App\DTO\ResolvedResult;
 use App\DTO\RankedResult;
 use App\Models\Competition;
 use App\Models\CompetitionTeam;
@@ -17,11 +16,12 @@ use App\Models\Interfaces\IJsonable;
 use App\Models\League;
 use App\Models\SERCResult;
 use App\Models\SpeedResult;
+use App\Scoring\Engine\EventScorer;
+use App\Scoring\Loading\EventLoader;
 use App\Traits\RecordActivity;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
@@ -42,14 +42,24 @@ abstract class Event extends Model implements IJsonable
      * @return Result[]
      */
     public abstract function getRawResults(bool $withEmpty = false, ?League $league = null): array;
+
     /**
-     * @return ResolvedResult[]
-     */
-    public abstract function getResolvedResults(?League $league = null): array;
-    /**
+     * The Event's results scored and placed, best first: everyone's, or a League's Entries scored
+     * against each other. An Event without a formula has none.
+     *
      * @return RankedResult[]
      */
-    public abstract function getRankedResults(?League $league = null): array;
+    public function getRankedResults(?League $league = null): array
+    {
+        if (!$this->scoringSchema) {
+            return [];
+        }
+
+        $loaded = EventLoader::load($this);
+
+        return $loaded->rankedResults(EventScorer::score($loaded->input, $league?->id));
+    }
+
     public abstract function results();
     public abstract function getCompetition();
     public function isComplete($no_check = False): bool
@@ -83,48 +93,6 @@ abstract class Event extends Model implements IJsonable
             $event->penalties()->delete();
             $event->disqualifications()->delete();
         });
-    }
-
-    protected function applyGrouping(SupportCollection $results): SupportCollection
-    {
-
-
-
-        $groupBy = $this->scoringSchema->schema['group_by'] ?? null; // could come from user input
-
-        if (!$groupBy || empty($groupBy)) {
-            return $results;
-        }
-
-        $grouped = collect($results)->groupBy(function (ResolvedResult $result) use ($groupBy) {
-            $entityGrouping = $result->entity->getGrouping();
-            $parts = collect($groupBy)->map(function ($key) use ($entityGrouping) {
-                return match ($key) {
-                    'league' => $entityGrouping->league_id ?? 'no-league',
-                    'team'   => $entityGrouping->team_id ?? 'no-team',
-                    'club'   => $entityGrouping->club_id ?? 'no-club',
-                    default  => 'unknown',
-                };
-            });
-
-            // Join into a single flat key like "league:1|team:5|club:9"
-            return $parts->implode('|');
-        });
-
-
-
-
-        // Combine results within each group
-        $combinedResults = $grouped->map(function ($group) {
-            /** @var ResolvedResult[] $group */
-            $base = $group->shift(); // take the first result as base
-            foreach ($group as $result) {
-                $base->combineWith($result);
-            }
-            return $base;
-        })->values();
-
-        return $combinedResults;
     }
 
     public function penalties()

@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use App\DTO\RankedResult;
 use Illuminate\Support\Facades\Storage;
-use App\DTO\ResolvedResult;
 use App\DTO\Result;
 use App\DTO\SERCResult as DTOSERCResult;
 use App\Models\AbstractClasses\Entity;
@@ -13,7 +11,6 @@ use App\Models\AbstractClasses\Event;
 use App\Models\DigitalJudge\JudgeNote;
 use App\Models\Event\Disqualification;
 use App\Models\Event\Penalty;
-use App\Models\Event\ScoringEngine;
 use App\Models\Event\ScoringSchema;
 use App\Models\Interfaces\IEvent;
 use App\Models\Interfaces\IPenalisable;
@@ -32,116 +29,6 @@ class SERC extends Event
     use HasFactory, Cloneable;
 
     protected $table = 'sercs';
-
-    public function getRankedResults(?League $league = null): array
-    {
-        if (!$this->scoringSchema) {
-            return [];
-        }
-
-        $resolvedResults = collect($this->getResolvedResults(league: $league));
-        $scoringSchema = $this->scoringSchema;
-        $rankHigher = $scoringSchema->schema['rank_higher'] ?? true; // If we are ranking based on highest score or not
-        $rankEquation = $scoringSchema->schema['rank_equation'] ?? null;
-        $allowDisqualifiedToRank = $scoringSchema->schema['allow_disqualified_to_rank'] ?? false;
-
-
-        $rankFunction = null;
-
-        if ($allowDisqualifiedToRank) {
-            $rankFunction = function ($result) use ($rankHigher) {
-                return $result->points * ($rankHigher ? -1 : 1);
-            };
-        } else {
-            $rankFunction = function ($result) use ($rankHigher) {
-                return [
-                    count($result->disqualifications) > 0 ? 1 : 0,
-                    $result->points * ($rankHigher ? -1 : 1)
-                ];
-            };
-        }
-
-
-        $sortedResults = $scoringSchema->applyToResults($resolvedResults)->sortBy(function ($result) use ($rankFunction) {
-            return $rankFunction($result);
-        })->values();
-
-        $rankedResults = collect();
-        $previousScore = null;
-        $previousRank = 0;
-        $position = 1;
-
-        foreach ($sortedResults as $result) {
-            $currentScore = count($result->disqualifications) > 0 ? 'DQ' : $result->points;
-
-            if ($currentScore === $previousScore) {
-                $rank = $previousRank;
-            } else {
-                $rank = $position;
-                $previousScore = $currentScore;
-                $previousRank = $rank;
-            }
-
-            $rankedResults->push(RankedResult::fromResolved($result, $rank));
-            $position++;
-        }
-
-        if ($rankEquation) {
-            $totalResults = count($sortedResults);
-
-            $rankEngine = new ScoringEngine();
-            $rankedResults->each(function ($rankedResult) use ($rankEngine, $totalResults, $rankEquation) {
-                $rankedResult->position = $rankEngine->evaluateInstance($rankEquation, $rankedResult, ['teams' => $totalResults, 'rank' => $rankedResult->position]);
-            });
-        }
-
-
-        return $rankedResults->toArray();
-    }
-
-    public function getResolvedResults(?League $league = null): array
-    {
-
-        if (!$this->scoringSchema) {
-            return [];
-        }
-
-        /**
-         * @param ResolvedResult[] $resolvedResults
-         */
-        $resolvedResults = collect([]);
-        $results = collect($this->getRawResults(league: $league));
-
-        $penalties = $this->penalties()->get();
-        $disqualifications = $this->disqualifications()->get();
-
-
-
-        foreach ($results->groupBy(fn($result) => $result->entity->id) as $id => $entityResults) {
-            $totalItems = $entityResults->count();
-            $resultTotal = $entityResults->reduce(fn($acc, $result) => $acc += $result->result * $result->markingPoint->weight, 0);
-
-            $resultData = $entityResults->first();
-
-            $r = new Result(
-                $resultData->id,
-                $resultTotal,
-                $resultData->entity,
-                $resultData->event,
-                $disqualifications->where('entity_id', $id),
-                $penalties->where('entity_id', $resultData->entity->id)
-            );
-
-            $r->total_marking_points = $totalItems;
-
-
-            $resolvedResults[] = $r;
-        }
-
-        $resolvedResults = $this->scoringSchema->applyViolations($resolvedResults);
-
-        return $this->applyGrouping($resolvedResults)->toArray();
-    }
 
     public function getRawResults(bool $withEmpty = false, ?League $league = null): array
     {

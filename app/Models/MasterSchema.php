@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\DTO\MasterResult;
+use App\Scoring\Engine\MasterScorer;
+use App\Scoring\Engine\MasterStanding;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -87,58 +89,23 @@ class MasterSchema extends Model
         // Specify entities we want
         $target_entities = $target_entities->whereNotIn('id', $exclude);
 
-        $final_results = collect();
-
-        foreach ($target_entities as $entity) {
-            $master_result = new MasterResult($entity);
-
-            $total = 0;
-            $sheetResults = [];
-
-            foreach ($sheets as $sheet) {
-                $resultForSheet = $sheet->results->first(function ($result) use ($entity) {
-                    // An entry without a Club counts for none
-                    $club = $result->entity ? self::clubOf($result->entity) : null;
-                    return $club !== null && $club === $entity->id;
-                });
-
-                $resultForSheet = $resultForSheet ? $resultForSheet->{$sum_over} : $default_value;
-
-                $sheetResults[$sheet->id] = $resultForSheet;
-
-                $total += $resultForSheet;
-            }
-
-            $master_result->total = $total;
-            $master_result->sheetResults = $sheetResults;
-
-            $final_results->add($master_result);
+        // Each sheet's rows with the Club each counts for. An entry without a Club counts for none.
+        $sheetRows = [];
+        foreach ($sheets as $sheet) {
+            $sheetRows[$sheet->id] = $sheet->results
+                ->map(fn ($result) => [$result->entity ? self::clubOf($result->entity) : null, $result])
+                ->values()->all();
         }
 
-        // Fewest places wins, most points wins
-        $final_results = $sum_over == 'position' ? $final_results->sortBy('total') : $final_results->sortByDesc('total');
+        $standings = MasterScorer::score($target_entities->pluck('id')->all(), $sheetRows, $default_value, $sum_over);
 
-        $rankedResults = collect();
-        $previousScore = null;
-        $previousRank = 0;
-        $position = 1;
+        $clubs = $target_entities->keyBy('id');
 
-        foreach ($final_results as $result) {
-            $currentScore = $result->total;
-
-            if ($currentScore === $previousScore) {
-                $rank = $previousRank;
-            } else {
-                $rank = $position;
-                $previousScore = $currentScore;
-                $previousRank = $rank;
-            }
-
-            $result->position = $rank;
-            $rankedResults->push($result);
-            $position++;
-        }
-
-        return $rankedResults;
+        return collect($standings)->map(fn (MasterStanding $standing) => new MasterResult(
+            $clubs[$standing->clubId],
+            $standing->sheetResults,
+            $standing->total,
+            $standing->position,
+        ));
     }
 }
