@@ -91,11 +91,6 @@
     {/if}
 {/snippet}
 
-<!-- The row's chevron and its whole-row link: the name's cell is sticky, which would hold the link to that cell -->
-{#snippet rowChevron(entity: SercEntity)}
-    <Link href={marksUrl(entity)} class="v2-row-link block" tabindex={-1} aria-hidden="true"><RowIcon /></Link>
-{/snippet}
-
 <SidebarPage sticky>
     <PageHeading back={{ href: eventsUrl, label: "Events" }} title={event.name}>
         {#snippet badges()}
@@ -156,7 +151,7 @@
                                 <td class="font-semibold tabular-nums">{row.position ?? "–"}</td>
                                 <th scope="row" class="font-bold wrap-anywhere">
                                     {#if entity}
-                                        <Link href={marksUrl(entity)} class="focus-visible:outline-none">
+                                        <Link href={marksUrl(entity)} class="focus-visible:outline-none" data-row-link>
                                             {entity.name}<span class="sr-only">: enter marks</span>
                                         </Link>
                                     {:else}
@@ -169,7 +164,7 @@
                                     {#if row.disqualified}<s class="font-normal text-v2-muted">{row.points}</s> DQ{:else}{row.points}{/if}
                                 </td>
                                 <td class="text-right">{@render status(byKey.get(row.key))}</td>
-                                {#if event.canManage}<td class="align-middle!">{#if entity}{@render rowChevron(entity)}{/if}</td>{/if}
+                                {#if event.canManage}<td class="align-middle!">{#if entity}<RowIcon />{/if}</td>{/if}
                             </tr>
                         {/each}
                     </tbody>
@@ -211,7 +206,7 @@
                             <td class="whitespace-nowrap text-v2-muted tabular-nums">{entity.draw ?? "–"}</td>
                             <th scope="row" class="font-bold wrap-anywhere">
                                 {#if event.canManage}
-                                    <Link href={marksUrl(entity)} class="focus-visible:outline-none">
+                                    <Link href={marksUrl(entity)} class="focus-visible:outline-none" data-row-link>
                                         {entity.name}<span class="sr-only">: enter marks</span>
                                     </Link>
                                 {:else}
@@ -219,7 +214,7 @@
                                 {/if}
                             </th>
                             <td class="text-right">{@render status(entity)}</td>
-                            {#if event.canManage}<td>{@render rowChevron(entity)}</td>{/if}
+                            {#if event.canManage}<td><RowIcon /></td>{/if}
                         </tr>
                     {/each}
                 </tbody>

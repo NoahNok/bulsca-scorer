@@ -130,10 +130,12 @@ else.
   SERC's results, draw order and mark splits): `class="v2-lead-table"` and
   `use:leadTable` (`manage/ui.ts`) on the `<table>`, in an `overflow-x-auto`
   box. Both columns stick, with a rule down the name's edge on phones, and the
-  name keeps at least `8rem`. A sticky cell holds a `.v2-row-link`'s `::after`
-  to itself, so for a whole-row link put `.v2-row-link` on a second link around
-  the row's `RowIcon` (`tabindex="-1"`, `aria-hidden`), and leave the name a
-  plain link. A table with only the name to keep in view (`SpeedResultsGrid`)
+  name keeps at least `8rem`. Don't use `.v2-row-link` in one: an `::after`
+  on every row, with the sticky cells, runs a long table (a big SERC's draw
+  order) out of memory on iPhones. For a whole-row link, give the row
+  `.v2-row` and its name link `data-row-link`, and end the row with a plain
+  `RowIcon`; `leadTable` follows that link on a click anywhere else in the
+  row, and leaves the row unpositioned. A table with only the name to keep in view (`SpeedResultsGrid`)
   uses the same look with utilities on that one column: `border-separate
   border-spacing-0` on the table and `sticky left-0 z-10 min-w-32 bg-v2-bg`
   on the column's cells.
@@ -389,7 +391,8 @@ each one in use; copy its markup.
 - **Whole-row links:** `.v2-row` on the row, and `.v2-row-link` on its own
   link, whose `::after` covers the row. A `tr.v2-row` also has a `transform` and a `clip-path`, so the
   `::after` can't escape the row in browsers that ignore `position: relative` on a `<tr>`, or catch taps
-  outside it on iPhones; they make each row a stacking context that clips what's in it, so portal any menu opened from a row. Anything else clickable in the row
+  outside it on iPhones; they make each row a stacking context that clips what's in it, so portal any menu opened from a row.
+  In a `.v2-lead-table`, use `data-row-link` instead (see Wide tables). Anything else clickable in the row
   (like **Follow live**) gets `.v2-over-row` to sit above it. Add `sr-only` text so the link says what it's for ("Results for Cardiff
   Classic"). Hover and `:focus-within` tint every cell in the row teal, a `<th scope="row">` included, and underline the link.
 - **Live:** a pulsing teal dot plus the words "Live now". Never colour alone.

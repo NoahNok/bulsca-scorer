@@ -1320,11 +1320,14 @@ tr.v2-row {
 }
 
 /*
- * A sticky cell would hold a .v2-row-link's ::after to itself, so a whole-row link lives in a later cell (the
- * chevron), and sits over the sticky cells to catch taps on them too.
+ * A whole-row link here is leadTable's click on the table, following the row's a[data-row-link], not a .v2-row-link:
+ * an ::after on every row, each row transformed and clipped to hold it, with the sticky cells, ran a long table out of
+ * memory on iPhones. So the row is left unpositioned.
  */
-.v2-lead-table .v2-row-link::after {
-    z-index: 2;
+.v2-lead-table tr.v2-row {
+    position: static;
+    transform: none;
+    clip-path: none;
 }
 
 @media (max-width: 640px) {
