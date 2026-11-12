@@ -375,6 +375,8 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
         Route::get('/activity', [AdminActivityController::class, 'show'])->name('manage.admin.activity');
 
         Route::get('/users', [AdminUsersController::class, 'index'])->name('manage.admin.users.index');
+        Route::get('/users/create', [AdminUsersController::class, 'create'])->name('manage.admin.users.create');
+        Route::post('/users', [AdminUsersController::class, 'store'])->name('manage.admin.users.store');
         Route::get('/users/{user}', [AdminUsersController::class, 'show'])->name('manage.admin.users.show');
         Route::post('/users/{user}/full-account', [AdminUsersController::class, 'makeFullAccount'])->name('manage.admin.users.full-account');
         Route::post('/users/{user}/login-qr', [AdminUsersController::class, 'loginQr'])->name('manage.admin.users.login-qr');
