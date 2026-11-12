@@ -5,41 +5,50 @@ namespace App\Exceptions;
 use App\Models\Interfaces\IScoringContextSimplify;
 use Exception;
 
+/**
+ * A formula failed. Carries what the formula could see at the time (`results`, `item`, its
+ * variables) so an Organiser can be shown which result broke it.
+ */
 class ScoringException extends Exception
 {
-    //
-    private array $context;
+    private ?array $simplified = null;
 
-    public function __construct(string $message, array $context = [])
+    public function __construct(string $message, private array $context = [])
     {
         parent::__construct($message);
-        $this->context = $context;
-
-        $this->context = $this->simplifyContext();
     }
 
+    /**
+     * What the formula could see, with each result reduced to its names and numbers. Worked out
+     * when first asked for, not when the exception is made: naming every Entity takes queries, and
+     * most failures are only ever reported by their message.
+     */
     public function getContext(): array
     {
-        return $this->context;
+        return $this->simplified ??= $this->simplifyContext();
     }
 
-    private function simplifyContext()
+    private function simplifyContext(): array
     {
-        if (key_exists('results', $this->context)) {
-            foreach ($this->context['results'] as $key => $result) {
-                if ($result instanceof IScoringContextSimplify) {
-                    $this->context['results'][$key] = $result->simplifyContext();
-                }
+        $context = $this->context;
+
+        if (is_iterable($context['results'] ?? null)) {
+            $results = [];
+            foreach ($context['results'] as $key => $result) {
+                $results[$key] = $result instanceof IScoringContextSimplify ? $result->simplifyContext() : $result;
             }
+            $context['results'] = $results;
         }
-        if (key_exists('item', $this->context)) {
-            $item = $this->context['item'];
-            unset($this->context['item']);
+
+        if (array_key_exists('item', $context)) {
+            $item = $context['item'];
+            unset($context['item']);
 
             if ($item instanceof IScoringContextSimplify) {
-                $this->context['item'] = $item->simplifyContext();
+                $context['item'] = $item->simplifyContext();
             }
         }
-        return $this->context;
+
+        return $context;
     }
 }
