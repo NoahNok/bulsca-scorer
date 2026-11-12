@@ -6,6 +6,8 @@ use App\Models\Competition;
 use App\Models\Organisation\Organisation;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
@@ -215,5 +217,81 @@ class AdminUsersTest extends TestCase
             ->assertRedirect('/');
 
         $this->assertTrue($this->official->fresh()->isJudgeOnly());
+    }
+
+    public function test_non_admins_cannot_create_users(): void
+    {
+        $this->actingAs($this->organiser)
+            ->get($this->appUrl('/admin/users/create'))
+            ->assertRedirect('/');
+
+        $this->actingAs($this->organiser)
+            ->post($this->appUrl('/admin/users'), ['name' => 'Pool tablet', 'email' => 'pool1@temp.local'])
+            ->assertRedirect('/');
+
+        $this->assertDatabaseMissing('users', ['email' => 'pool1@temp.local']);
+    }
+
+    public function test_admins_see_the_new_user_form(): void
+    {
+        $this->actingAs($this->admin)
+            ->get($this->appUrl('/admin/users/create'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page->component('Admin/NewUser'));
+    }
+
+    public function test_a_new_user_is_official_only_and_verified_without_any_email(): void
+    {
+        Mail::fake();
+
+        $response = $this->actingAs($this->admin)
+            ->post($this->appUrl('/admin/users'), [
+                'name' => 'Pool 1 tablet',
+                'email' => 'pool1@temp.local',
+                'password' => '',
+                'full_account' => 0,
+            ]);
+
+        $user = User::where('email', 'pool1@temp.local')->firstOrFail();
+
+        $response->assertRedirect($this->appUrl("/admin/users/{$user->id}"))
+            ->assertSessionHas('success', 'Pool 1 tablet added');
+
+        $this->assertSame('Pool 1 tablet', $user->name);
+        $this->assertTrue($user->isJudgeOnly());
+        $this->assertTrue($user->hasVerifiedEmail());
+        $this->assertFalse((bool) $user->isAdmin());
+        Mail::assertNothingSent();
+
+        $this->actingAs($this->admin)
+            ->get($this->appUrl("/admin/users/{$user->id}"))
+            ->assertInertia(fn (Assert $page) => $page->where('user.neverSignedIn', false));
+    }
+
+    public function test_a_new_user_can_be_a_full_account_with_a_password(): void
+    {
+        $this->actingAs($this->admin)
+            ->post($this->appUrl('/admin/users'), [
+                'name' => 'Desk',
+                'email' => 'desk@temp.local',
+                'password' => 'a-long-password-123',
+                'full_account' => 1,
+            ])
+            ->assertSessionHasNoErrors();
+
+        $user = User::where('email', 'desk@temp.local')->firstOrFail();
+        $this->assertFalse($user->isJudgeOnly());
+        $this->assertTrue($user->hasVerifiedEmail());
+        $this->assertTrue(Hash::check('a-long-password-123', $user->password));
+    }
+
+    public function test_a_new_user_needs_an_unused_email(): void
+    {
+        $this->actingAs($this->admin)
+            ->from($this->appUrl('/admin/users/create'))
+            ->post($this->appUrl('/admin/users'), ['name' => 'Copy', 'email' => 'olive@example.com'])
+            ->assertSessionHasErrors('email');
+
+        $this->assertSame(1, User::where('email', 'olive@example.com')->count());
     }
 }

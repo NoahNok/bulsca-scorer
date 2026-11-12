@@ -11,6 +11,10 @@ use App\Models\Organisation\Organisation;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -55,7 +59,38 @@ class AdminUsersController extends Controller
                 'url' => route('manage.admin.users.show', $user),
             ]),
             'pagination' => Pagination::props($users),
+            'createUrl' => route('manage.admin.users.create'),
         ]);
+    }
+
+    public function create()
+    {
+        return Inertia::render('Admin/NewUser');
+    }
+
+    /**
+     * Make an account that's verified from the start, so its email doesn't have to be real: for temporary or
+     * shared accounts that sign in with a sign-in QR code. Nothing is emailed. Without a password it can only
+     * sign in by QR code (or a PIN, if the email is real).
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique(User::class)],
+            'full_account' => ['boolean'],
+            'password' => ['nullable', 'string', Rules\Password::defaults()],
+        ]);
+
+        $user = new User();
+        $user->name = $validated['name'];
+        $user->email = $validated['email'];
+        $user->password = Hash::make($validated['password'] ?? Str::random(40));
+        $user->judge_only = !($validated['full_account'] ?? false);
+        $user->forceFill(['email_verified_at' => now()]);
+        $user->save();
+
+        return to_route('manage.admin.users.show', $user)->with('success', "{$user->name} added");
     }
 
     public function show(User $user)

@@ -1,7 +1,8 @@
 <!--
     Admin's Users (manage.admin.users.index), in AdminLayout: every account, by name, 25 to a page, with
     its type, how many competitions it can manage (directly or through an organisation) and officiate at,
-    and when it joined. Search matches name or email on the server, so it covers every page.
+    and when it joined. Search matches name or email on the server, so it covers every page. New user opens
+    the form for a verified account (Admin/NewUser).
 -->
 <script lang="ts">
     import { shortDate } from "@/lib/dates";
@@ -27,7 +28,7 @@
         url: string;
     };
 
-    let { q, users, pagination }: { q: string; users: User[]; pagination: Page } = $props();
+    let { q, users, pagination, createUrl }: { q: string; users: User[]; pagination: Page; createUrl: string } = $props();
 </script>
 
 <svelte:head>
@@ -35,9 +36,12 @@
 </svelte:head>
 
 <section aria-labelledby="au-heading">
-    <h2 id="au-heading" class="text-lg font-extrabold uppercase">
-        Users <span class="text-v2-muted tabular-nums">{pagination.total}</span>
-    </h2>
+    <div class="flex flex-wrap items-center justify-between gap-4">
+        <h2 id="au-heading" class="text-lg font-extrabold uppercase">
+            Users <span class="text-v2-muted tabular-nums">{pagination.total}</span>
+        </h2>
+        <Link href={createUrl} class="v2-btn v2-btn-accent v2-btn-sm">New user</Link>
+    </div>
     <p class="mt-[0.35rem] mb-5 text-[0.9375rem]/[1.6] text-v2-muted">Every account on the site, by name.</p>
 
     <SearchForm url={index().url} {q} placeholder="Search by name or email" label="Search users" />
