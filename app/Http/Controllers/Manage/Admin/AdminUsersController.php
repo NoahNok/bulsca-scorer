@@ -6,11 +6,13 @@ use App\Helpers\Pagination;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use App\Models\Competition;
+use App\Models\LoginToken;
 use App\Models\Organisation\Organisation;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class AdminUsersController extends Controller
 {
@@ -153,6 +155,8 @@ class AdminUsersController extends Controller
                 'accepted' => (int) $submissions->accepted,
                 'rejected' => (int) $submissions->rejected,
             ] : null,
+            // set just after making one, with the QR code's svg and when it expires (ISO 8601)
+            'loginQr' => session('loginQr'),
         ]);
     }
 
@@ -170,5 +174,24 @@ class AdminUsersController extends Controller
         $user->save();
 
         return back()->with('success', "{$user->name} now has a full account");
+    }
+
+    /**
+     * Make a sign-in QR code for $user: scanning it signs that device in to Digital Judge as them, once,
+     * within a few minutes. It's flashed, so the User page shows it once and a reload drops it.
+     */
+    public function loginQr(Request $request, User $user)
+    {
+        // an Admin account is too powerful to hand over by QR code
+        if ($user->isAdmin()) {
+            return back()->with('alert-error', "Admin accounts can't sign in with a QR code");
+        }
+
+        $url = route('judge.qr-login', LoginToken::issueFor($user, $request->user()));
+
+        return back()->with('loginQr', [
+            'svg' => (string) QrCode::size(280)->margin(1)->generate($url),
+            'expiresAt' => now()->addMinutes(LoginToken::TTL_MINUTES)->toIso8601String(),
+        ]);
     }
 }
