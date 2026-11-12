@@ -2,19 +2,21 @@
     A user's Admin page (manage.admin.users.show), in AdminLayout: their name, account badges, email and
     when they joined, verified and were last active, a line of their DQ and penalty submissions when they have
     any, then Tabs between their Competitions (directly or through an organisation), Organisations and
-    Officiating, each a RowTable. It opens on the first with anything in it. An official-only account has a
-    Make full account button at the heading's right end, confirmed first.
+    Officiating, each a RowTable. It opens on the first with anything in it. The heading's right end has
+    Sign-in QR code (not for Admins), which opens LoginQrDialog, and, for an official-only account, a Make
+    full account button, confirmed first.
 -->
 <script lang="ts">
     import { confirm } from "@/lib/confirm";
     import { shortDate } from "@/lib/dates";
     import AccountBadges from "@/manage/admin/AccountBadges.svelte";
+    import LoginQrDialog from "@/manage/admin/LoginQrDialog.svelte";
     import EmptyState from "@/manage/components/EmptyState.svelte";
     import OfficialRoleBadge from "@/manage/components/OfficialRoleBadge.svelte";
     import PageHeading from "@/manage/components/PageHeading.svelte";
     import RowTable, { rowLink } from "@/manage/components/RowTable.svelte";
     import Tabs from "@/manage/components/Tabs.svelte";
-    import { fullAccount, index } from "@/routes/manage/admin/users";
+    import { fullAccount, index, loginQr as makeLoginQr } from "@/routes/manage/admin/users";
     import { Link, router } from "@inertiajs/svelte";
 
     type Competition = {
@@ -49,6 +51,7 @@
         organisations,
         officiating,
         submissions,
+        loginQr,
     }: {
         user: {
             id: number;
@@ -69,6 +72,8 @@
         officiating: Officiating[];
         /** Null when they've never submitted one */
         submissions: { pending: number; accepted: number; rejected: number } | null;
+        /** Just after making a sign-in QR code: its svg, when it expires (ISO 8601) and a url saying if it's been used */
+        loginQr: { svg: string; expiresAt: string; status: string } | null;
     } = $props();
 
     const lists = $derived([
@@ -103,6 +108,18 @@
         });
     }
 
+    let makingQr = $state(false);
+
+    function showLoginQr() {
+        router.post(makeLoginQr(user.id).url, {}, {
+            preserveScroll: true,
+            // keeps the open dialog and its count of phones signed in across a new code
+            preserveState: true,
+            onStart: () => (makingQr = true),
+            onFinish: () => (makingQr = false),
+        });
+    }
+
     const meta = $derived(
         [
             user.joined ? `Joined ${shortDate(user.joined)}` : null,
@@ -130,13 +147,20 @@
         {/if}
     {/snippet}
     {#snippet actions()}
-        {#if user.officialOnly}
-            <div class="w-full sm:w-auto">
-                <button type="button" class="v2-btn" disabled={converting} onclick={makeFullAccount}>Make full account</button>
+        {#if !user.admin || user.officialOnly}
+            <div class="flex w-full flex-wrap gap-2 sm:w-auto">
+                {#if !user.admin}
+                    <button type="button" class="v2-btn" disabled={makingQr} onclick={showLoginQr}>Sign-in QR code</button>
+                {/if}
+                {#if user.officialOnly}
+                    <button type="button" class="v2-btn" disabled={converting} onclick={makeFullAccount}>Make full account</button>
+                {/if}
             </div>
         {/if}
     {/snippet}
 </PageHeading>
+
+<LoginQrDialog qr={loginQr} name={user.name} renewing={makingQr} onrenew={showLoginQr} />
 
 <Tabs tabs={lists} bind:value={tab} id="au" label="{user.name}'s access">
     {#snippet panel(id)}

@@ -84,6 +84,10 @@ _Avoid_: Judge-only, judge account
 An account that can use Management as well as the Digital Judge.
 _Avoid_: Normal account, main account
 
+**Sign-in QR code**:
+A QR code an Admin shows on a user's Admin page. Scanning it signs that phone in to the Digital Judge as the user, once, within 5 minutes. Not available for Admin accounts.
+_Avoid_: Magic link, login token (in the UI)
+
 ### Organising
 
 **Organiser**:

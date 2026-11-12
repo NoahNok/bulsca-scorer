@@ -29,3 +29,4 @@ storage/logs/*.log
 /*.csv
 /public/*.csv
 /.cache
+scoring.sql
