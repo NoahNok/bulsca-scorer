@@ -34,6 +34,36 @@ final class Violation
         };
     }
 
+    /**
+     * Penalties as a results table writes them ("P201, P900 (x3)"), or null without any. Several
+     * P900s are counted rather than listed, after the rest.
+     *
+     * @param Violation[] $penalties
+     */
+    public static function penaltiesLabel(array $penalties): ?string
+    {
+        if (!$penalties) {
+            return null;
+        }
+
+        $labels = [];
+        $p900s = count(array_filter($penalties, fn(Violation $penalty) => $penalty->code == '900'));
+
+        foreach ($penalties as $penalty) {
+            if ($p900s > 1 && $penalty->code == '900') {
+                continue;
+            }
+
+            $labels[] = $penalty->label();
+        }
+
+        if ($p900s > 1) {
+            $labels[] = "P900 (x{$p900s})";
+        }
+
+        return implode(', ', $labels);
+    }
+
     public function __toString(): string
     {
         return $this->label();

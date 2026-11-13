@@ -36,18 +36,18 @@ class ResultSheetScoringTest extends ScoringTestCase
         $sheet = $this->sheet([], [$this->speed, [$this->serc, 2]]);
 
         // A: 1000 + 500×2. B: 900 + 700×2. C: 800 + 600×2.
-        $this->assertSame([['B', 1, 2300.0], ['A', 2, 2000.0], ['C', 2, 2000.0]], $this->standings($sheet->getResults()));
+        $this->assertSame([['B', 1, 2300.0], ['A', 2, 2000.0], ['C', 2, 2000.0]], $this->standings($this->sheetRows($sheet)));
     }
 
     public function test_each_entitys_row_carries_its_result_in_every_event(): void
     {
         $sheet = $this->sheet([], [$this->speed, [$this->serc, 2]]);
 
-        $b = $sheet->getResults()->first();
+        $b = $this->sheetRows($sheet)[0];
 
         $this->assertSame(
             [['speed', 2, 900.0, 900.0], ['serc', 1, 700.0, 1400.0]],
-            $b->events->map(fn($e) => [$e->event->getType(), $e->position, $e->points, $e->adjustedPoints])->all(),
+            array_map(fn($e) => [$e->eventType, $e->position, $e->points, $e->adjustedPoints], $b->events),
         );
     }
 
@@ -55,7 +55,7 @@ class ResultSheetScoringTest extends ScoringTestCase
     {
         $sheet = $this->sheet(['equation' => 'item.position', 'rank_higher' => false], [$this->speed, $this->serc]);
 
-        $this->assertSame([['B', 1, 3.0], ['A', 2, 4.0], ['C', 3, 5.0]], $this->standings($sheet->getResults()));
+        $this->assertSame([['B', 1, 3.0], ['A', 2, 4.0], ['C', 3, 5.0]], $this->standings($this->sheetRows($sheet)));
     }
 
     public function test_a_formula_can_rescale_each_events_points(): void
@@ -73,7 +73,7 @@ class ResultSheetScoringTest extends ScoringTestCase
         ], [$this->speed, $this->serc]);
 
         // Speed: 1000, 550, 100. SERC: 100, 1000, 550.
-        $this->assertSame([['B', 1, 1550.0], ['A', 2, 1100.0], ['C', 3, 650.0]], $this->standings($sheet->getResults()));
+        $this->assertSame([['B', 1, 1550.0], ['A', 2, 1100.0], ['C', 3, 650.0]], $this->standings($this->sheetRows($sheet)));
     }
 
     public function test_a_disqualification_scores_nothing_for_that_event(): void
@@ -82,7 +82,7 @@ class ResultSheetScoringTest extends ScoringTestCase
 
         $sheet = $this->sheet([], [$this->speed, $this->serc]);
 
-        $this->assertSame([['B', 1, 1600.0], ['C', 2, 1400.0], ['A', 3, 500.0]], $this->standings($sheet->getResults()));
+        $this->assertSame([['B', 1, 1600.0], ['C', 2, 1400.0], ['A', 3, 500.0]], $this->standings($this->sheetRows($sheet)));
     }
 
     public function test_a_sheet_can_ignore_disqualifications(): void
@@ -91,7 +91,7 @@ class ResultSheetScoringTest extends ScoringTestCase
 
         $sheet = $this->sheet(['ignore_dq' => true], [$this->speed, $this->serc]);
 
-        $this->assertSame([['B', 1, 1600.0], ['A', 2, 1500.0], ['C', 3, 1400.0]], $this->standings($sheet->getResults()));
+        $this->assertSame([['B', 1, 1600.0], ['A', 2, 1500.0], ['C', 3, 1400.0]], $this->standings($this->sheetRows($sheet)));
     }
 
     public function test_tie_breaks_separate_equal_totals_by_place_in_an_event(): void
@@ -99,7 +99,7 @@ class ResultSheetScoringTest extends ScoringTestCase
         // A and C tie on 2000; C placed better in the SERC
         $sheet = $this->sheet(['break_ties' => [['type' => 'serc', 'id' => $this->serc->id]]], [$this->speed, [$this->serc, 2]]);
 
-        $this->assertSame([['B', 1, 2300.0], ['C', 2, 2000.0], ['A', 3, 2000.0]], $this->standings($sheet->getResults()));
+        $this->assertSame([['B', 1, 2300.0], ['C', 2, 2000.0], ['A', 3, 2000.0]], $this->standings($this->sheetRows($sheet)));
     }
 
     public function test_an_entity_missing_from_an_event_scores_only_what_it_has(): void
@@ -109,7 +109,7 @@ class ResultSheetScoringTest extends ScoringTestCase
 
         $sheet = $this->sheet([], [$this->speed, $this->serc]);
 
-        $this->assertSame([['B', 1, 1600.0], ['A', 2, 1500.0], ['C', 3, 1400.0], ['D', 4, 950.0]], $this->standings($sheet->getResults()));
+        $this->assertSame([['B', 1, 1600.0], ['A', 2, 1500.0], ['C', 3, 1400.0], ['D', 4, 950.0]], $this->standings($this->sheetRows($sheet)));
     }
 
     public function test_a_league_sheet_scores_only_that_leagues_entities_among_themselves(): void
@@ -121,7 +121,7 @@ class ResultSheetScoringTest extends ScoringTestCase
         $sheet = $this->sheet(['league' => $league->id, 'equation' => 'item.position', 'rank_higher' => false], [$this->speed, $this->serc]);
 
         // Without B: A is 1st and 2nd, C is 2nd and 1st
-        $this->assertSame([['A', 1, 3.0], ['C', 1, 3.0]], $this->standings($sheet->getResults()));
+        $this->assertSame([['A', 1, 3.0], ['C', 1, 3.0]], $this->standings($this->sheetRows($sheet)));
     }
 
     public function test_a_sheet_grouped_on_club_adds_a_clubs_teams_together(): void
@@ -133,28 +133,28 @@ class ResultSheetScoringTest extends ScoringTestCase
         $sheet = $this->sheet(['group_on' => 'club'], [$this->speed, $this->serc]);
 
         // Each club's row is under the first of its teams the sheet came across
-        $this->assertSame([['A', 1, 4500.0], ['D', 2, 4000.0]], $this->standings($sheet->getResults()));
+        $this->assertSame([['A', 1, 4500.0], ['D', 2, 4000.0]], $this->standings($this->sheetRows($sheet)));
     }
 
     public function test_results_are_remembered_until_a_result_is_edited(): void
     {
         $sheet = $this->sheet([], [$this->speed, $this->serc]);
-        $this->assertSame('B', $sheet->getResults()->first()->entity->team);
+        $this->assertSame('B', $this->sheetRows($sheet)[0]->entry->teamLetter);
 
         $time = $this->speed->results()->forEntity($this->t['C'])->first();
         $time->result = 5000;
         $time->save();
 
-        $this->assertSame([['C', 1, 5600.0], ['B', 2, 1600.0], ['A', 3, 1500.0]], $this->standings($sheet->getResults()));
+        $this->assertSame([['C', 1, 5600.0], ['B', 2, 1600.0], ['A', 3, 1500.0]], $this->standings($this->sheetRows($sheet)));
     }
 
     public function test_a_penalty_or_dq_refreshes_the_remembered_results(): void
     {
         $sheet = $this->sheet([], [$this->speed, $this->serc]);
-        $this->assertSame('B', $sheet->getResults()->first()->entity->team);
+        $this->assertSame('B', $this->sheetRows($sheet)[0]->entry->teamLetter);
 
         $this->speed->addEntityDisqualification($this->t['B'], 201);
 
-        $this->assertSame([['A', 1, 1500.0], ['C', 2, 1400.0], ['B', 3, 700.0]], $this->standings($sheet->getResults()));
+        $this->assertSame([['A', 1, 1500.0], ['C', 2, 1400.0], ['B', 3, 700.0]], $this->standings($this->sheetRows($sheet)));
     }
 }

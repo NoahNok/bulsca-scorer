@@ -3,7 +3,6 @@
 namespace App\Models\AbstractClasses;
 
 use App\DigitalJudge\DigitalJudge;
-use App\DTO\EntityGrouping;
 use App\Models\Club;
 use App\Models\Competition;
 use App\Models\DigitalJudge\JudgeNote;
@@ -178,8 +177,6 @@ abstract class Entity extends Model implements IJsonable
     }
 
     public abstract function getFormattedName(?Competition $comp): string;
-
-    public abstract function getGrouping(): EntityGrouping;
 
     public function sercNotes()
     {

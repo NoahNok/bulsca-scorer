@@ -145,11 +145,22 @@ final class EventLoader
     private static function entities(Event $event, Collection $rows): array
     {
         $models = [];
+        $comp = $event->getCompetition;
 
         foreach ($rows->groupBy(fn($row) => self::classOf($row->entity_type)) as $class => $ofClass) {
+            // With what an Entry needs, and what its name does (`Entity::getFormattedName()`), so
+            // that naming the rows takes no queries per Entry
             $with = match ($class) {
-                CompetitionTeam::class => ['leagues', 'getClub'],
-                Competitor::class => ['leagues', 'getTeam'],
+                CompetitionTeam::class => [
+                    'leagues',
+                    'getClub',
+                    ...(str_contains((string) $comp->team_format, ':S') ? ['getCompetitors'] : []),
+                ],
+                Competitor::class => [
+                    'leagues',
+                    'getTeam',
+                    ...(str_contains((string) $comp->competitor_format, ':C') ? ['getTeam.getClub'] : []),
+                ],
                 default => ['leagues'],
             };
 

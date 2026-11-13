@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\DTO\Result;
 use App\Models\AbstractClasses\Entity;
 use App\Models\AbstractClasses\Event;
 use App\Models\Event\Disqualification;
@@ -17,51 +16,6 @@ use Override;
 class CompetitionSpeedEvent extends Event
 {
     use HasFactory, Cloneable;
-
-    public function getRawResults(bool $withEmpty = false, ?League $league = null): array
-    {
-
-        $query = $this->results();
-
-        if (!$withEmpty) {
-
-            $query = $query->whereNotNull('result');
-        }
-
-        if ($league !== null) {
-            $query = $query->whereHas('entity', function ($q) use ($league) {
-
-                $q->whereHas('leagues', function ($qq) use ($league) {
-                    $qq->where('leagues.id', $league->id);
-                });
-            });
-        }
-
-        $query = $query->with(['entity', 'getEvent']);
-
-
-        $penalties = $this->penalties()->get();
-        $disqualifications = $this->disqualifications()->get();
-
-        $seeds = $this->getCompetition->getSpeedEvents->first()->seeds()->with('entity')->get();
-        $usingSeeds = $seeds->count() > 0;
-
-
-        return $query->get()->map(function ($result) use ($penalties, $disqualifications, $seeds, $usingSeeds) {
-            $r = $result->transformToResult();
-
-            if ($usingSeeds) {
-                $r->seed = $seeds->first(function ($item) use ($r) {
-                    return $item->entity->id == $r->entity->id;
-                })?->seed ?? 0;
-            }
-
-            $r->penalties = $penalties->where('entity_id', $result->entity->id);
-            $r->disqualifications = $disqualifications->where('entity_id', $result->entity->id);
-
-            return $r;
-        })->toArray();
-    }
 
     public function results()
     {

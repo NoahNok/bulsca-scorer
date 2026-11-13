@@ -16,8 +16,6 @@ use App\Scoring\Loading\LoadedEvent;
  * deleted (`AppServiceProvider`), so a change made in a request is seen by what is scored after it.
  * A change made without a model event (a query builder update, raw SQL) is not: call
  * `ResultsVersion::bump()` after one, which empties this too.
- *
- * `Event::getRankedResults()` does not use it, and scores afresh every time.
  */
 final class ScoringRun
 {
@@ -26,6 +24,9 @@ final class ScoringRun
 
     /** @var array<string, ScoredResult[]> */
     private array $results = [];
+
+    /** @var array<string, string> */
+    private array $names = [];
 
     /**
      * The Event's scoring input and the models it was read from. Null for an Event with no formula.
@@ -60,10 +61,19 @@ final class ScoringRun
         return $this->results[$key];
     }
 
+    /**
+     * The Event's name, read once however many sheets list it
+     */
+    public function name(Event $event): string
+    {
+        return $this->names[self::key($event)] ??= $event->getName();
+    }
+
     public function forget(): void
     {
         $this->loaded = [];
         $this->results = [];
+        $this->names = [];
     }
 
     private static function key(Event $event): string

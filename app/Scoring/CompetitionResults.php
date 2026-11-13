@@ -148,7 +148,7 @@ class CompetitionResults
 
             $events[] = $definition = new SheetEvent($event->getType(), $event->id, (float) $sheetEvent->weight);
             $eventResults[] = $this->run->results($event, $league?->id);
-            $from[spl_object_id($definition)] = [$this->run->loaded($event), $event->getName()];
+            $from[spl_object_id($definition)] = [$this->run->loaded($event), $this->run->name($event)];
         }
 
         $standings = SheetScorer::score(SheetDefinition::fromSchema($sheet->schema, $events), $eventResults);

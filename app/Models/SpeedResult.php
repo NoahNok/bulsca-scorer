@@ -2,9 +2,6 @@
 
 namespace App\Models;
 
-use App\DTO\DQ;
-use App\DTO\Pen;
-use App\DTO\Result;
 use App\Models\AbstractClasses\Eventable;
 use App\Models\AbstractClasses\Loggable;
 use App\Models\AbstractClasses\Resultable;
@@ -18,17 +15,6 @@ class SpeedResult extends Resultable
     use HasFactory, Cloneable, RecordActivity;
 
 
-
-    public function transformToResult(): Result
-    {
-        return new Result(
-            $this->id,
-            $this->result,
-            $this->entity,
-            $this->getEvent,
-
-        );
-    }
 
     public function entity()
     {

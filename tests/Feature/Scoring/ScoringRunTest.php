@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Scoring;
 
+use App\Scoring\CompetitionResults;
 use App\Scoring\ScoringRun;
 use Illuminate\Support\Facades\DB;
 
@@ -34,14 +35,14 @@ class ScoringRunTest extends ScoringTestCase
         $again = $this->sheet(['equation' => 'item.position', 'rank_higher' => false], [$event]);
         $league = $this->sheet(['league' => $a->id, 'equation' => 'item.position', 'rank_higher' => false], [$event]);
 
-        $this->assertSame(1, $this->timesRead(fn() => $overall->getResults()));
-        $this->assertSame(0, $this->timesRead(fn() => $again->getResults()));
-        $this->assertSame(0, $this->timesRead(fn() => $league->getResults()));
+        $this->assertSame(1, $this->timesRead(fn() => $this->sheetRows($overall)));
+        $this->assertSame(0, $this->timesRead(fn() => $this->sheetRows($again)));
+        $this->assertSame(0, $this->timesRead(fn() => $this->sheetRows($league)));
 
-        $this->assertSame([['B', 1, 1000.0], ['C', 2, 900.0], ['A', 3, 800.0]], $this->standings($overall->getResults()));
-        $this->assertSame([['B', 1, 1.0], ['C', 2, 2.0], ['A', 3, 3.0]], $this->standings($again->getResults()));
+        $this->assertSame([['B', 1, 1000.0], ['C', 2, 900.0], ['A', 3, 800.0]], $this->standings($this->sheetRows($overall)));
+        $this->assertSame([['B', 1, 1.0], ['C', 2, 2.0], ['A', 3, 3.0]], $this->standings($this->sheetRows($again)));
         // The League's two are placed against each other, not taken from everyone's places
-        $this->assertSame([['C', 1, 1.0], ['A', 2, 2.0]], $this->standings($league->getResults()));
+        $this->assertSame([['C', 1, 1.0], ['A', 2, 2.0]], $this->standings($this->sheetRows($league)));
     }
 
     public function test_a_sheets_formula_does_not_change_what_another_sheet_is_given(): void
@@ -52,9 +53,9 @@ class ScoringRunTest extends ScoringTestCase
         $doubled = $this->sheet(['equation' => 'item.points * 2'], [$event]);
         $plain = $this->sheet([], [$event]);
 
-        $this->assertSame([['B', 1, 2000.0], ['A', 2, 1600.0]], $this->standings($doubled->getResults()));
-        $this->assertSame([['B', 1, 1000.0], ['A', 2, 800.0]], $this->standings($plain->getResults()));
-        $this->assertSame([1000.0, 1000.0], $plain->getResults()->first()->events->map(fn($e) => $e->points)->push($plain->getResults()->first()->events[0]->adjustedPoints)->all());
+        $this->assertSame([['B', 1, 2000.0], ['A', 2, 1600.0]], $this->standings($this->sheetRows($doubled)));
+        $this->assertSame([['B', 1, 1000.0], ['A', 2, 800.0]], $this->standings($this->sheetRows($plain)));
+        $this->assertSame([1000.0, 1000.0], [$this->sheetRows($plain)[0]->events[0]->points, $this->sheetRows($plain)[0]->events[0]->adjustedPoints]);
     }
 
     public function test_something_saved_in_between_is_seen_by_the_next_sheet_scored(): void
@@ -64,14 +65,14 @@ class ScoringRunTest extends ScoringTestCase
 
         $first = $this->sheet([], [$event]);
         $second = $this->sheet([], [$event]);
-        $this->assertSame([['B', 1, 1000.0], ['A', 2, 800.0]], $this->standings($first->getResults()));
+        $this->assertSame([['B', 1, 1000.0], ['A', 2, 800.0]], $this->standings($this->sheetRows($first)));
 
         $time = $event->results()->forEntity($t['A'])->first();
         $time->result = 5000;
         $time->save();
 
         // The second sheet has never been scored, so this is the Event read again, not a cache cleared
-        $this->assertSame([['A', 1, 5000.0], ['B', 2, 1000.0]], $this->standings($second->getResults()));
+        $this->assertSame([['A', 1, 5000.0], ['B', 2, 1000.0]], $this->standings($this->sheetRows($second)));
     }
 
     public function test_a_change_made_without_a_model_is_not_seen_until_the_run_is_forgotten(): void
@@ -82,25 +83,30 @@ class ScoringRunTest extends ScoringTestCase
         $first = $this->sheet([], [$event]);
         $second = $this->sheet([], [$event]);
         $third = $this->sheet([], [$event]);
-        $first->getResults();
+        $this->sheetRows($first);
 
         DB::table('speed_results')->where('event', $event->id)->where('entity_id', $t['A']->id)->update(['result' => 5000]);
 
-        $this->assertSame([['B', 1, 1000.0], ['A', 2, 800.0]], $this->standings($second->getResults()));
+        $this->assertSame([['B', 1, 1000.0], ['A', 2, 800.0]], $this->standings($this->sheetRows($second)));
 
         app(ScoringRun::class)->forget();
 
-        $this->assertSame([['A', 1, 5000.0], ['B', 2, 1000.0]], $this->standings($third->getResults()));
+        $this->assertSame([['A', 1, 5000.0], ['B', 2, 1000.0]], $this->standings($this->sheetRows($third)));
     }
 
-    public function test_an_events_own_results_are_always_scored_afresh(): void
+    public function test_an_events_results_can_be_scored_afresh_whatever_is_kept(): void
     {
         $t = $this->teams('A', 'B');
         $event = $this->speedEvent(self::RAW, [[$t['A'], 800], [$t['B'], 1000]]);
-        $this->sheet([], [$event])->getResults();
+        $this->sheetRows($this->sheet([], [$event]));
 
+        // Written without a model event, so nothing knows the results have changed
         DB::table('speed_results')->where('event', $event->id)->where('entity_id', $t['A']->id)->update(['result' => 5000]);
+        app(ScoringRun::class)->forget();
 
-        $this->assertSame([['A', 1, 5000.0], ['B', 2, 1000.0]], $this->placings($event->getRankedResults()));
+        $this->assertSame(
+            [['A', 1, 5000.0], ['B', 2, 1000.0]],
+            $this->placings(app(CompetitionResults::class)->event($event, fresh: true)),
+        );
     }
 }

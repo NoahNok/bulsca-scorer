@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Manage;
 use App\Scoring\CompetitionResults;
 use App\Scoring\Results\EventResult;
 use App\Scoring\Results\EventResultPart;
+use App\Scoring\Results\Violation;
 use App\Scoring\ResultsVersion;
-use App\DTO\Result;
 use App\Helpers\CompetitionHeader;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Manage\Concerns\ManagesEventPages;
@@ -132,10 +132,18 @@ class SpeedEventController extends Controller
     {
         $heats = $event->getHeats()->with('getPool')->get()->keyBy(fn ($heat) => $heat->entity_type . ':' . $heat->entity_id);
 
-        return collect($event->getRawResults(true))
-            ->map(function (Result $result) use ($comp, $heats) {
+        $violations = fn (string $kind, $stored) => $stored->orderBy('id')->get()
+            ->groupBy('entity_id')
+            ->map(fn ($ofEntity) => $ofEntity->map(fn ($violation) => new Violation($kind, $violation->code, $violation->id))->all());
+
+        // Matched on the Entity's id alone, as an Event's Entries are all of one type
+        $penalties = $violations(Violation::PENALTY, $event->penalties());
+        $disqualifications = $violations(Violation::DISQUALIFICATION, $event->disqualifications());
+
+        return $event->results()->with('entity')->orderBy('id')->get()
+            ->map(function (SpeedResult $result) use ($comp, $heats, $penalties, $disqualifications) {
                 $heat = $heats->get($result->entity->getMorphClass() . ':' . $result->entity->id);
-                $dq = $result->getDisqualificationsString();
+                $dq = ($disqualifications[$result->entity_id][0] ?? null)?->label();
                 $special = in_array($dq, ['DNS', 'DNF', 'OOT']);
 
                 return [
@@ -148,7 +156,7 @@ class SpeedEventController extends Controller
                     'lane' => $heat?->lane,
                     'result' => $special ? $dq : (string) (SpeedResult::prettyTime($result->result) ?? ''),
                     'disqualification' => $special ? '' : ($dq ?? ''),
-                    'penalties' => $result->getPenaltiesString() ?? '',
+                    'penalties' => Violation::penaltiesLabel($penalties[$result->entity_id] ?? []) ?? '',
                 ];
             })
             ->sortBy([

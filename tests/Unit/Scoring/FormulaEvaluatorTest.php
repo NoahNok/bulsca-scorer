@@ -2,7 +2,8 @@
 
 namespace Tests\Unit\Scoring;
 
-use App\DTO\ResolvedResult;
+use App\Scoring\Engine\ScoredResult;
+use App\Scoring\Input\Entry;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\CompetitionTeam;
 use App\Exceptions\ScoringException;
@@ -25,12 +26,10 @@ class FormulaEvaluatorTest extends TestCase
     private function results(array $values, array $disqualified = []): Collection
     {
         return collect($values)->values()->map(function ($value, $index) use ($disqualified) {
-            $dqs = new EloquentCollection();
-            if (in_array($value, $disqualified, true)) {
-                $dqs->push(new Disqualification(['code' => 201]));
-            }
+            $result = new ScoredResult($index + 1, new Entry($index + 1, 'team'), $value, [], in_array($value, $disqualified, true) ? [201] : []);
+            $result->resolvedResult = $value;
 
-            return new ResolvedResult($index + 1, $value, $value, new CompetitionTeam(), new CompetitionSpeedEvent(), $dqs);
+            return $result;
         });
     }
 

@@ -46,6 +46,14 @@ final class EventResult
     }
 
     /**
+     * Did Not Finish, and nothing else
+     */
+    public function isDNF(): bool
+    {
+        return count($this->disqualifications) == 1 && $this->disqualifications[0]->code == '99915';
+    }
+
+    /**
      * Who the row is for: each part of a combined result, or the one Entry
      *
      * @return EntryRef[]
@@ -69,25 +77,6 @@ final class EventResult
      */
     public function penaltiesLabel(): ?string
     {
-        if (!$this->hasPenalties()) {
-            return null;
-        }
-
-        $labels = [];
-        $p900s = count(array_filter($this->penalties, fn(Violation $penalty) => $penalty->code == '900'));
-
-        foreach ($this->penalties as $penalty) {
-            if ($p900s > 1 && $penalty->code == '900') {
-                continue;
-            }
-
-            $labels[] = $penalty->label();
-        }
-
-        if ($p900s > 1) {
-            $labels[] = "P900 (x{$p900s})";
-        }
-
-        return implode(', ', $labels);
+        return Violation::penaltiesLabel($this->penalties);
     }
 }

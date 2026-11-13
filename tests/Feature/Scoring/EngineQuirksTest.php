@@ -25,10 +25,10 @@ class EngineQuirksTest extends ScoringTestCase
         $event->addEntityPenalty($t['A'], 801);
         $event->addEntityPenalty($t['A'], 802);
 
-        $result = $event->getRankedResults()[0];
+        $result = $this->eventResults($event)[0];
 
         $this->assertTrue($result->isDisqualified());
-        $this->assertSame('DQ900', $result->getDisqualificationsString());
+        $this->assertSame('DQ900', $result->disqualificationLabel());
     }
 
     public function test_an_automatic_dq_with_no_automatic_penalties_cannot_be_scored(): void
@@ -42,7 +42,7 @@ class EngineQuirksTest extends ScoringTestCase
         $this->expectException(ErrorException::class);
         $this->expectExceptionMessage('Undefined variable $autoPen');
 
-        $event->getRankedResults();
+        $this->eventResults($event);
     }
 
     public function test_seed_times_come_from_the_competitions_first_speed_event_whichever_is_scored(): void
@@ -54,7 +54,7 @@ class EngineQuirksTest extends ScoringTestCase
         $this->seedTime($first, $t['A'], 60000);
         $this->seedTime($second, $t['A'], 99000);
 
-        $this->assertSame(60000.0, $second->getRankedResults()[0]->resolvedResult);
+        $this->assertSame(60000.0, $this->eventResults($second)[0]->resolvedResult);
     }
 
     public function test_the_seed_time_can_be_read_by_penalties_but_not_by_the_equation(): void
@@ -63,7 +63,7 @@ class EngineQuirksTest extends ScoringTestCase
         $event = $this->speedEvent(['equation' => 'item.seed', 'global_variables' => []], [[$t['A'], 70000]]);
         $this->seedTime($event, $t['A'], 60000);
 
-        $this->assertSame(0.0, $event->getRankedResults()[0]->points);
+        $this->assertSame(0.0, $this->eventResults($event)[0]->points);
     }
 
     public function test_an_entity_without_a_seed_time_is_scored_as_if_its_seed_were_zero(): void
@@ -76,11 +76,11 @@ class EngineQuirksTest extends ScoringTestCase
         ], [[$t['A'], 61000], [$t['B'], 61000]]);
         $this->seedTime($event, $t['A'], 60000);
 
-        $results = $event->getRankedResults();
+        $results = $this->eventResults($event);
 
         // B swam the same time as A but has no seed: 1 + FLOOR(61000 / 15000) = 5 penalties
-        $this->assertSame(0, $this->resultFor($results, $t['A'])->penalties->count());
-        $this->assertSame(5, $this->resultFor($results, $t['B'])->penalties->count());
+        $this->assertCount(0, $this->resultFor($results, $t['A'])->penalties);
+        $this->assertCount(5, $this->resultFor($results, $t['B'])->penalties);
     }
 
     public function test_a_tie_break_gives_fully_tied_entities_different_places(): void
@@ -91,8 +91,8 @@ class EngineQuirksTest extends ScoringTestCase
         $tied = $this->sheet([], [$event]);
         $broken = $this->sheet(['break_ties' => [['type' => 'speed', 'id' => $event->id]]], [$event]);
 
-        $this->assertSame([['A', 1, 1000.0], ['B', 1, 1000.0]], $this->standings($tied->getResults()));
-        $this->assertSame([['A', 1, 1000.0], ['B', 2, 1000.0]], $this->standings($broken->getResults()));
+        $this->assertSame([['A', 1, 1000.0], ['B', 1, 1000.0]], $this->standings($this->sheetRows($tied)));
+        $this->assertSame([['A', 1, 1000.0], ['B', 2, 1000.0]], $this->standings($this->sheetRows($broken)));
     }
 
     public function test_a_broken_formula_fails_naming_the_part_that_broke(): void
@@ -103,6 +103,6 @@ class EngineQuirksTest extends ScoringTestCase
         $this->expectException(ScoringException::class);
         $this->expectExceptionMessage("Error evaluating global variable 'best'");
 
-        $event->getRankedResults();
+        $this->eventResults($event);
     }
 }

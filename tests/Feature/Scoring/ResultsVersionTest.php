@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Scoring;
 
+use App\Scoring\CompetitionResults;
+use App\Scoring\ScoringRun;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\CompetitionTeam;
@@ -44,7 +46,7 @@ class ResultsVersionTest extends ScoringTestCase
         $this->serc = $this->serc(self::RAW, [1, 1], [[$this->t['A'], [500]], [$this->t['B'], [700]], [$this->t['C'], [600]]]);
         $this->sheet = $this->sheet([], [$this->speed, $this->serc]);
 
-        $this->assertSame(self::START, $this->standings($this->sheet->getResults()));
+        $this->assertSame(self::START, $this->standings($this->sheetRows($this->sheet)));
     }
 
     /**
@@ -52,7 +54,7 @@ class ResultsVersionTest extends ScoringTestCase
      */
     private function standingsNow(?ResultSchema $sheet = null): array
     {
-        return $this->standings(ResultSchema::find(($sheet ?? $this->sheet)->id)->getResults());
+        return $this->standings($this->sheetRows(ResultSchema::find(($sheet ?? $this->sheet)->id)));
     }
 
     private function version(?Competition $comp = null): int
@@ -245,7 +247,7 @@ class ResultsVersionTest extends ScoringTestCase
         $this->time($this->speed, $this->team('D', $other), 100);
         $master = $this->master([], [$this->sheet]);
 
-        $clubs = fn() => $master->fresh()->getResults()->map(fn($row) => [$row->entity->name, $row->position])->all();
+        $clubs = fn() => array_map(fn($row) => [$row->club->name, $row->position], app(CompetitionResults::class)->master($master->fresh())->rows);
         $this->assertSame([['Cardiff', 1], ['Swansea', 2]], $clubs());
 
         $time = $this->speed->results()->forEntity(CompetitionTeam::where('team', 'D')->first())->first();
@@ -283,5 +285,32 @@ class ResultsVersionTest extends ScoringTestCase
         $time->save();
 
         $this->assertSame([['B', 1, 1600.0], ['A', 2, 1501.0], ['C', 3, 1400.0]], $this->standingsNow());
+    }
+
+    public function test_an_events_results_are_remembered_too_until_the_version_moves_on(): void
+    {
+        $now = function (): array {
+            // As a later request would: nothing kept but the cache
+            $this->app->forgetInstance(CompetitionResults::class);
+            $this->app->forgetInstance(ScoringRun::class);
+
+            DB::flushQueryLog();
+            DB::enableQueryLog();
+            $placings = $this->placings($this->eventResults(CompetitionSpeedEvent::find($this->speed->id)));
+            DB::disableQueryLog();
+
+            $read = count(array_filter(DB::getQueryLog(), fn(array $query) => str_contains($query['query'], '`speed_results`')));
+
+            return [$placings, $read];
+        };
+
+        $this->assertSame([[['A', 1, 1000.0], ['B', 2, 900.0], ['C', 3, 800.0]], 1], $now());
+        $this->assertSame([[['A', 1, 1000.0], ['B', 2, 900.0], ['C', 3, 800.0]], 0], $now());
+
+        $time = $this->speed->results()->forEntity($this->t['C'])->first();
+        $time->result = 5000;
+        $time->save();
+
+        $this->assertSame([[['C', 1, 5000.0], ['A', 2, 1000.0], ['B', 3, 900.0]], 1], $now());
     }
 }

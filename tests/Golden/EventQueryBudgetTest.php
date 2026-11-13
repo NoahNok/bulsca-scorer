@@ -2,6 +2,8 @@
 
 namespace Tests\Golden;
 
+use App\Scoring\CompetitionResults;
+use App\Scoring\ScoringRun;
 use App\Models\AbstractClasses\Event;
 use App\Models\Competition;
 use App\Scoring\Golden\CompetitionFixture;
@@ -25,14 +27,16 @@ class EventQueryBudgetTest extends TestCase
      * A speed event entered by teams takes 10: the formula, penalties, disqualifications, results,
      * the teams, their Clubs, their Leagues, the competition, its speed events and seeds. One
      * entered by competitors takes two more, for their teams and their own Leagues. A SERC takes 7,
-     * as it reads no seeds.
+     * as it reads no seeds. Through `CompetitionResults` each takes one more: rows come back named,
+     * so what the competition's name format needs (a competitor's team's Club, a team's
+     * competitors) is read with the Entries rather than by the page afterwards.
      *
      * Each fixture, with the most queries any of its Events may take, the fewest Entries each
      * should have, and the most queries all of its sheets and Master sheets may take together.
      */
     private const FIXTURES = [
-        'nationals-2025-50' => ['budget' => 12, 'entries' => 40, 'sheets' => 189],
-        'loughborough-2025-26-69' => ['budget' => 10, 'entries' => 20, 'sheets' => 69],
+        'nationals-2025-50' => ['budget' => 13, 'entries' => 40, 'sheets' => 203],
+        'loughborough-2025-26-69' => ['budget' => 11, 'entries' => 20, 'sheets' => 74],
     ];
 
     /** @return array<string, array{string}> */
@@ -51,9 +55,12 @@ class EventQueryBudgetTest extends TestCase
         // A model as a page would have it: nothing loaded yet
         $event = $event->fresh();
 
+        // And nothing kept from scoring it before
+        app(ScoringRun::class)->forget();
+
         DB::flushQueryLog();
         DB::enableQueryLog();
-        $event->getRankedResults($league);
+        app(CompetitionResults::class)->event($event, $league, fresh: true);
         DB::disableQueryLog();
 
         return count(DB::getQueryLog());
@@ -68,7 +75,7 @@ class EventQueryBudgetTest extends TestCase
         $this->assertNotEmpty($events);
 
         foreach ($events as $event) {
-            $entries = count($event->getRankedResults());
+            $entries = count(app(CompetitionResults::class)->event($event));
             $queries = $this->queriesToScore($event);
 
             $this->assertGreaterThan(self::FIXTURES[$fixture]['entries'], $entries, "{$event->getName()} should be a large Event");
@@ -87,10 +94,10 @@ class EventQueryBudgetTest extends TestCase
         DB::flushQueryLog();
         DB::enableQueryLog();
         foreach ($sheets as $sheet) {
-            $sheet->getResults(true);
+            app(CompetitionResults::class)->sheet($sheet, fresh: true);
         }
         foreach ($masters as $master) {
-            $master->getResults();
+            app(CompetitionResults::class)->master($master);
         }
         DB::disableQueryLog();
 

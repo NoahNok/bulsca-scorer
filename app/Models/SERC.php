@@ -3,8 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Support\Facades\Storage;
-use App\DTO\Result;
-use App\DTO\SERCResult as DTOSERCResult;
 use App\Models\AbstractClasses\Entity;
 use App\Models\SERCResult;
 use App\Models\AbstractClasses\Event;
@@ -30,49 +28,6 @@ class SERC extends Event
     use HasFactory, Cloneable;
 
     protected $table = 'sercs';
-
-    public function getRawResults(bool $withEmpty = false, ?League $league = null): array
-    {
-        $query = $this->results();
-
-        if ($league !== null) {
-
-            $query = $query->whereHas('entity', function ($q) use ($league) {
-
-                $q->whereHas('leagues', function ($qq) use ($league) {
-                    $qq->where('leagues.id', $league->id);
-                });
-            });
-            // $query = $query->whereHas('entity', function ($q) use ($league) {
-            //     $q->where('league', $league->id);
-            // });
-        }
-
-        $query = $query->with(['entity', 'getMarkingPoint', 'getMarkingPoint.getJudge']);
-
-        $results = $query->get();
-
-        if ($this->scorable_entity == 'team') {
-
-            $entityIds = $results->pluck('entity')->filter()->unique('id')->pluck('id');
-
-            $loadedEntities = CompetitionTeam::whereIn('id', $entityIds)->with('getCompetitors')->get();
-
-            $teamMap = $loadedEntities->keyBy('id');
-
-
-            $results->each(function ($draw) use ($teamMap) {
-
-                $draw->entity = $teamMap[$draw->entity->id];
-            });
-        }
-
-
-
-        return $results->map(function ($result) {
-            return $result->transformToResult();
-        })->toArray();
-    }
 
     public function results()
     {

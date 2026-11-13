@@ -2,9 +2,8 @@
 
 namespace Tests\Feature\Scoring;
 
-use App\DTO\OverallResult;
-use App\DTO\Result;
 use App\Models\AbstractClasses\Entity;
+use App\Models\AbstractClasses\Event;
 use App\Models\Club;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
@@ -22,6 +21,11 @@ use App\Models\SERCMarkingPoint;
 use App\Models\SERCResult;
 use App\Models\SpeedEvent;
 use App\Models\SpeedResult;
+use App\Scoring\CompetitionResults;
+use App\Scoring\Results\EntryRef;
+use App\Scoring\Results\EventResult;
+use App\Scoring\Results\SheetRow;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -262,39 +266,54 @@ abstract class ScoringTestCase extends TestCase
     }
 
     /**
+     * The Event's results as pages read them: everyone's, or a League's
+     *
+     * @return EventResult[]
+     */
+    protected function eventResults(Event $event, ?League $league = null): array
+    {
+        return app(CompetitionResults::class)->event($event, $league);
+    }
+
+    /**
+     * The Results sheet's rows as pages read them
+     *
+     * @return SheetRow[]
+     */
+    protected function sheetRows(ResultSchema $sheet): array
+    {
+        return app(CompetitionResults::class)->sheet($sheet);
+    }
+
+    /**
      * An Event's ranked results in the engine's order, as `[who, place, points]` rows
      *
-     * @param Result[] $results
+     * @param EventResult[] $results
      */
     protected function placings(array $results): array
     {
-        return array_map(fn($r) => [$this->who($r->entity), $r->position, round($r->points, 2)], array_values($results));
+        return array_map(fn(EventResult $r) => [$this->who($r->entry), $r->position, round($r->points, 2)], $results);
     }
 
     /**
      * A sheet's results in the engine's order, as `[who, place, total]` rows
      *
-     * @param iterable<OverallResult> $results
+     * @param SheetRow[] $rows
      */
-    protected function standings(iterable $results): array
+    protected function standings(array $rows): array
     {
-        $rows = [];
-        foreach ($results as $r) {
-            $rows[] = [$this->who($r->entity), $r->position, round($r->totalPoints, 2)];
-        }
-
-        return $rows;
+        return array_map(fn(SheetRow $r) => [$this->who($r->entry), $r->position, round($r->totalPoints, 2)], $rows);
     }
 
     /**
      * The one result for an entity
      *
-     * @param Result[] $results
+     * @param EventResult[] $results
      */
-    protected function resultFor(array $results, Entity $entity): Result
+    protected function resultFor(array $results, Entity $entity): EventResult
     {
         foreach ($results as $result) {
-            if ($result->entity->is($entity)) {
+            if ($result->entry->type === $entity->getMorphClass() && $result->entry->id === $entity->id) {
                 return $result;
             }
         }
@@ -302,8 +321,15 @@ abstract class ScoringTestCase extends TestCase
         $this->fail("No result for {$this->who($entity)}");
     }
 
-    private function who(Entity $entity): string
+    /**
+     * A team's letter, or a competitor's or Club's name as stored
+     */
+    protected function who(Entity|EntryRef $entity): string
     {
+        if ($entity instanceof EntryRef) {
+            $entity = Relation::getMorphedModel($entity->type)::findOrFail($entity->id);
+        }
+
         return $entity instanceof CompetitionTeam ? $entity->team : $entity->name;
     }
 }

@@ -5,8 +5,6 @@ namespace App\Models\AbstractClasses;
 
 use App\Scoring\ResultsVersion;
 use App\DigitalJudge\DigitalJudge;
-use App\DTO\Result;
-use App\DTO\RankedResult;
 use App\Models\Competition;
 use App\Models\CompetitionTeam;
 
@@ -18,8 +16,6 @@ use App\Models\League;
 use App\Models\SERCResult;
 use App\Models\SpeedResult;
 use App\Scoring\CompetitionResults;
-use App\Scoring\Engine\EventScorer;
-use App\Scoring\Loading\EventLoader;
 use App\Traits\RecordActivity;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -40,28 +36,6 @@ abstract class Event extends Model implements IJsonable
     ];
 
     public abstract function getName(): string;
-    /**
-     * @return Result[]
-     */
-    public abstract function getRawResults(bool $withEmpty = false, ?League $league = null): array;
-
-    /**
-     * The Event's results scored and placed, best first: everyone's, or a League's Entries scored
-     * against each other. An Event without a formula has none.
-     *
-     * @return RankedResult[]
-     */
-    public function getRankedResults(?League $league = null): array
-    {
-        if (!$this->scoringSchema) {
-            return [];
-        }
-
-        $loaded = EventLoader::load($this);
-
-        return $loaded->rankedResults(EventScorer::score($loaded->input, $league?->id));
-    }
-
     public abstract function results();
     public abstract function getCompetition();
     public function isComplete($no_check = False): bool

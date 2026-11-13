@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Scoring;
 
+use App\Scoring\CompetitionResults;
 use App\Models\Club;
 use App\Models\CompetitionTeam;
 use App\Models\MasterSchema;
@@ -48,7 +49,7 @@ class MasterSheetScoringTest extends ScoringTestCase
 
     private function rows(MasterSchema $master): array
     {
-        return $master->getResults()->map(fn($r) => [$r->entity->name, $r->position, $r->total, array_values($r->sheetResults)])->values()->all();
+        return array_map(fn($r) => [$r->club->name, $r->position, $r->total, array_values($r->sheetResults)], app(CompetitionResults::class)->master($master)->rows);
     }
 
     public function test_each_clubs_places_are_added_up_and_the_fewest_wins(): void
@@ -86,6 +87,6 @@ class MasterSheetScoringTest extends ScoringTestCase
     {
         $master = $this->master(['exclude' => [$this->bangor->id]], $this->sheets);
 
-        $this->assertSame(['Cardiff', 'Swansea'], $master->getResults()->map(fn($r) => $r->entity->name)->values()->all());
+        $this->assertSame(['Cardiff', 'Swansea'], array_map(fn($r) => $r->club->name, app(CompetitionResults::class)->master($master)->rows));
     }
 }

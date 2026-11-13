@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Data\TeamAdditionalDetailsData;
-use App\DTO\EntityGrouping;
 use App\Helpers\ClassHelpers;
 use App\Models\AbstractClasses\Entity;
 use App\Traits\Cloneable;
@@ -95,11 +94,6 @@ class CompetitionTeam extends Entity
         }) + 1;
 
         return $position;
-    }
-
-    public function getGrouping(): EntityGrouping
-    {
-        return new EntityGrouping($this->getClub?->id ?? -1, $this->id, null, $this->leagues()->orderBy('id')->first()?->id);
     }
 
     public function getCompetitors()

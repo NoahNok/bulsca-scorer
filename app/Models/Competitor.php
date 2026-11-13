@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\DTO\EntityGrouping;
 use App\Models\AbstractClasses\Entity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -51,12 +50,5 @@ class Competitor extends Entity
     public function getTeam()
     {
         return $this->belongsTo(CompetitionTeam::class, 'team');
-    }
-
-    public function getGrouping(): EntityGrouping
-    {
-
-        $team = $this->getTeam;
-        return new EntityGrouping($team->club, $team->id, $this->id, $this->leagues()->orderBy('id')->first()?->id);
     }
 }
