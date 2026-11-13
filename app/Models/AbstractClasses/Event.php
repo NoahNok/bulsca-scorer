@@ -3,6 +3,7 @@
 namespace App\Models\AbstractClasses;
 
 
+use App\Scoring\ResultsVersion;
 use App\DigitalJudge\DigitalJudge;
 use App\DTO\Result;
 use App\DTO\RankedResult;
@@ -136,11 +137,15 @@ abstract class Event extends Model implements IJsonable
     public function clearEntityPenalties(Entity $entity)
     {
         $this->penalties()->whereMorphedTo('entity', $entity)->delete();
+        // Deleted without model events
+        app(ResultsVersion::class)->bump($this->competition, $this->getConnection());
     }
 
     public function clearEntityDisqualifications(Entity $entity)
     {
         $this->disqualifications()->whereMorphedTo('entity', $entity)->delete();
+        // Deleted without model events
+        app(ResultsVersion::class)->bump($this->competition, $this->getConnection());
     }
 
     public function getEntityPenalties(Entity $entity)

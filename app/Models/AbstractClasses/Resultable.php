@@ -19,16 +19,6 @@ abstract class Resultable extends Model
             ->where('entity_id', $entity->getKey());
     }
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::updated(function ($model) {
-            $model->getCompetition->clearResultSchemaCaches();
-        });
-    }
-
-
     public abstract function transformToResult(): Result;
 
     public abstract function penalties();

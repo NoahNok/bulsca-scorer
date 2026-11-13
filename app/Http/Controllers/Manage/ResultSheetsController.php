@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Manage;
 
+use App\Scoring\ResultsVersion;
 use App\DigitalJudge\DigitalJudge;
 use App\Helpers\CompetitionHeader;
 use App\Helpers\RouteHelpers;
@@ -181,7 +182,6 @@ class ResultSheetsController extends Controller
         $league = $comp->getLeagues()->find($data['league']);
 
         $this->fill($sheet, $data, $data['name'] ?: ($league?->name ?? 'Overall'));
-        $sheet->forgetResults();
 
         return redirect()->route('manage.competitions.results.show', [$comp, $sheet])->with('success', 'Results sheet saved');
     }
@@ -258,6 +258,8 @@ class ResultSheetsController extends Controller
         DB::transaction(function () use ($sheet, $data) {
             $sheet->save();
             $sheet->getEvents()->delete();
+            // Deleted without model events, and the sheet itself may not have changed
+            app(ResultsVersion::class)->bump($sheet->competition);
 
             foreach ($data['events'] as $event) {
                 $row = new ResultSchemaEvent();
@@ -348,7 +350,6 @@ class ResultSheetsController extends Controller
                 $master->save();
             }
 
-            $sheet->forgetResults();
             $sheet->getEvents()->delete();
             $sheet->delete();
         });

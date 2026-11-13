@@ -8,6 +8,7 @@ use App\Scoring\Engine\SheetScorer;
 use App\Scoring\Engine\SheetStanding;
 use App\Scoring\Input\SheetDefinition;
 use App\Scoring\Input\SheetEvent;
+use App\Scoring\ResultsVersion;
 use App\Scoring\ScoringRun;
 use App\Models\ResultSchemas\ClubSERCResultSchema;
 use App\Models\ResultSchemas\HighestSumResultSchema;
@@ -29,38 +30,47 @@ class ResultSchema extends Model
         'schema' => 'array',
     ];
 
+    /**
+     * The sheet's rows, best placed first. They are cached with the competition's results version
+     * (`App\Scoring\ResultsVersion`) and used only while that hasn't moved, so nothing has to clear
+     * them: any write that can change a result moves the version on. `$refreshCache` works them out
+     * regardless.
+     *
+     * @return Collection<int, OverallResult>
+     */
     public function getResults($refreshCache = false): Collection
     {
-        if ($refreshCache) {
-            $this->forgetResults();
+        $comp = $this->getCompetition;
+        $version = app(ResultsVersion::class)->of($comp);
+
+        // Not versioned (What-If): nothing to say a cached result is still right
+        if ($version === null) {
+            return $this->scoreResults();
         }
 
-        return Cache::tags("{$this->getCompetition->cacheKey()}.result-schemas")->rememberForever($this->resultsCacheKey(), function () {
-            return $this->getCachedResults();
-        });
+        $key = "{$comp->cacheKey()}.sheet.{$this->id}.results";
+        $cached = $refreshCache ? null : Cache::get($key);
+
+        if (is_array($cached) && ($cached['version'] ?? null) === $version) {
+            return $cached['results'];
+        }
+
+        $results = $this->scoreResults();
+
+        // One entry per sheet, replaced when the version moves, so old versions don't pile up
+        Cache::forever($key, ['version' => $version, 'results' => $results]);
+
+        return $results;
     }
 
     /**
-     * Drops the cached results, so the next look works them out again (after the sheet's edited)
-     */
-    public function forgetResults(): void
-    {
-        Cache::tags("{$this->getCompetition->cacheKey()}.result-schemas")->forget($this->resultsCacheKey());
-    }
-
-    private function resultsCacheKey(): string
-    {
-        return 'result_schema_' . $this->id . '_results';
-    }
-
-    /**
-     * The sheet's rows, best placed first. Each Event is scored for the sheet's League (once per
+     * The sheet's rows worked out now. Each Event is scored for the sheet's League (once per
      * request, shared with every other sheet that includes it: `ScoringRun`), and `SheetScorer`
      * works the standings out from those. The rows are handed back as the DTOs the pages expect.
      *
      * @return Collection<int, OverallResult>
      */
-    private function getCachedResults(): Collection
+    private function scoreResults(): Collection
     {
         $run = app(ScoringRun::class);
 
@@ -104,6 +114,14 @@ class ResultSchema extends Model
                 totalPoints: $standing->totalPoints,
                 position: $standing->position,
             );
+        });
+    }
+
+    protected static function booted()
+    {
+        // Its cached results have no version to outlive, so they go with it
+        static::deleted(function (ResultSchema $sheet) {
+            Cache::forget("competition.{$sheet->competition}.sheet.{$sheet->id}.results");
         });
     }
 

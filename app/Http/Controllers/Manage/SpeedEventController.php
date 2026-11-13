@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Manage;
 
+use App\Scoring\ResultsVersion;
 use App\DTO\Result;
 use App\Helpers\CompetitionHeader;
 use App\Http\Controllers\Controller;
@@ -187,6 +188,8 @@ class SpeedEventController extends Controller
             $event->save();
 
             $event->results()->delete();
+            // Deleted without model events
+            app(ResultsVersion::class)->bump($event->competition);
             foreach ($event->getScorableEntities() as $entity) {
                 $result = new SpeedResult();
                 $result->entity()->associate($entity);

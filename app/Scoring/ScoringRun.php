@@ -14,8 +14,8 @@ use App\Scoring\Loading\LoadedEvent;
  *
  * There is one per request (it is bound `scoped`), and it is emptied whenever a model is saved or
  * deleted (`AppServiceProvider`), so a change made in a request is seen by what is scored after it.
- * A change made without a model event (a pivot `attach()`, a query builder update) is not: call
- * `forget()` after one if results are scored later in the same request.
+ * A change made without a model event (a query builder update, raw SQL) is not: call
+ * `ResultsVersion::bump()` after one, which empties this too.
  *
  * `Event::getRankedResults()` does not use it, and scores afresh every time.
  */

@@ -27,12 +27,12 @@ class EventQueryBudgetTest extends TestCase
      * entered by competitors takes two more, for their teams and their own Leagues. A SERC takes 7,
      * as it reads no seeds.
      *
-     * Each fixture, with the most queries any of its Events may take and the fewest Entries each
-     * should have.
+     * Each fixture, with the most queries any of its Events may take, the fewest Entries each
+     * should have, and the most queries all of its sheets and Master sheets may take together.
      */
     private const FIXTURES = [
-        'nationals-2025-50' => ['budget' => 12, 'entries' => 40, 'sheets' => 99999],
-        'loughborough-2025-26-69' => ['budget' => 10, 'entries' => 20, 'sheets' => 99999],
+        'nationals-2025-50' => ['budget' => 12, 'entries' => 40, 'sheets' => 189],
+        'loughborough-2025-26-69' => ['budget' => 10, 'entries' => 20, 'sheets' => 69],
     ];
 
     /** @return array<string, array{string}> */
@@ -93,7 +93,6 @@ class EventQueryBudgetTest extends TestCase
             $master->getResults();
         }
         DB::disableQueryLog();
-        fwrite(STDERR, "\n{$comp->name}: " . count(DB::getQueryLog()) . " queries for {$sheets->count()} sheets, {$masters->count()} masters");
 
         return count(DB::getQueryLog());
     }

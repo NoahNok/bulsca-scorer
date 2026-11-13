@@ -15,6 +15,7 @@ use App\Models\League;
 use App\Models\Orders\Draw;
 use App\Models\Orders\EntityEventSeed;
 use App\Models\Orders\Heat;
+use App\Models\Pivots\Leagueable;
 use App\Models\SERCResult;
 use App\Models\SpeedResult;
 use Illuminate\Database\Eloquent\Model;
@@ -110,7 +111,7 @@ abstract class Entity extends Model implements IJsonable
 
     public function leagues()
     {
-        return $this->morphToMany(League::class, 'entity', 'leagueables');
+        return $this->morphToMany(League::class, 'entity', 'leagueables')->using(Leagueable::class);
     }
 
     public function data()

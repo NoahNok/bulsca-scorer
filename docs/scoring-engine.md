@@ -2,7 +2,7 @@
 
 Written 2026-11-11 on `feature/scoring-engine-rebuild`, with the tests and tooling that make a
 rebuild safe. The evaluation below is the engine as it was found; where a step of the rebuild has
-since dealt with a point, it says so. Progress: steps 0, 1 and 2 are done (see [Steps](#steps)).
+since dealt with a point, it says so. Progress: steps 0 to 4 are done (see [Steps](#steps)).
 
 ## In short
 
@@ -16,10 +16,11 @@ since dealt with a point, it says so. Progress: steps 0, 1 and 2 are done (see [
 - **It is hard to change safely.** The logic is spread over five Eloquent models, ranking is
   written out four times, formulas read ORM objects directly, and until this branch no test
   checked a computed score.
-- **Its cache can serve stale results**, because it's cleared by model events that don't cover
-  every way a result can change (see [Quirks](#quirks), Q8).
-- **There are now 116 tests around it**: 23 real competitions scored again and compared in full, 89
-  small hand-worked cases and 4 that hold scoring an Event to a query budget. A tool compares the
+- **Its cache could serve stale results**, because it was cleared by model events that didn't cover
+  every way a result can change (see [Quirks](#quirks), Q8). *Fixed in step 4: sheets are cached
+  against a results version that every such write moves on.*
+- **There are now 170 tests around it**: 23 real competitions scored again and compared in full, 141
+  small hand-worked cases and 6 that hold scoring an Event, or every sheet, to a query budget. A tool compares the
   engine's output for every competition in a database before and after a change.
 - The rebuild is six steps, each of which ships on its own with all of the above still passing.
 
@@ -49,8 +50,10 @@ speed_results / serc_results          penalties, disqualifications, seeds
 | Event (since step 2) | `Event::getRankedResults()` → `App\Scoring\Loading\EventLoader` → `App\Scoring\Engine\EventScorer` → `LoadedEvent::rankedResults()` | The loader reads a speed event's times or a SERC's Marks (summed by marking point weight per Entry), with penalties, DQs, seeds and each Entry's Leagues, into a plain `EventInput`: 7 to 12 queries. The scorer, with no database, filters to a League, applies auto penalties, auto DQs and the penalty function, groups, works out points and ranks. The rows are handed back as `RankedResult`s. |
 | Speed event (until step 2) | `CompetitionSpeedEvent::getRawResults / getResolvedResults / getRankedResults` | Loaded times, penalties, DQs and seed times; handed them to the formula language; ranked. `getRawResults` remains, for callers that want results before scoring. |
 | SERC (until step 2) | `SERC::getRawResults / getResolvedResults / getRankedResults` | Loaded Marks, summed them by marking point weight per Entity, then the same as a speed event. `getRawResults` remains. |
-| Results sheet | `ResultSchema::getResults` | Scores each of its Events (for its League), applies the sheet's Formula to each Event's results, multiplies by the Event's weight, sums per Entity, ranks. Cached per sheet, forever. |
-| Master sheet | `MasterSchema::getResults` | Takes each Club's first (best) row in each of its sheets and sums the places. |
+| Results sheet (since step 3) | `ResultSchema::getResults()` → `App\Scoring\ScoringRun` → `App\Scoring\Engine\SheetScorer` | Takes each of its Events' results for its League from the request's `ScoringRun`, which loads an Event once and scores it once per League however many sheets include it. The scorer, with no database, applies the sheet's Formula to each Event's results, multiplies by the Event's weight, sums per Entity and ranks with tie-breaks. The rows are handed back as `OverallResult`s. Cached per sheet with the competition's results version (since step 4), and used only while that hasn't moved. |
+| Master sheet (since step 3) | `MasterSchema::getResults()` → `App\Scoring\Engine\MasterScorer` | Takes each Club's first (best) row in each of its sheets and sums the places. The rows are handed back as `MasterResult`s. |
+| Results version (since step 4) | `App\Scoring\ResultsVersion`, `competitions.results_version` | A number that moves on with every write that can change a competition's results. See [Results version](#results-version). |
+| Ranking (since step 3) | `App\Scoring\Engine\Ranking` | "Sort, then share a place on a tie", once, for Events, sheets and Master sheets. |
 | Results in transit | `app/DTO/`: `Result` → `ResolvedResult` → `RankedResult` → `ScaledResult`, `OverallResult`, `MasterResult` | A new object at each stage, built by copying the last one field by field. Since step 2 an Event is scored on one `ScoredResult` per Entry and only its finished rows become `RankedResult`s. |
 
 A formula is stored as JSON on `scoring_schemas.schema` (Events) or `result_schemas.schema`
@@ -101,7 +104,10 @@ Where it goes:
    reads its Entries' Leagues in one query.*
 2. **Every sheet scores its Events again.** Nationals has 18 sheets over the same 4 Events, so each
    Event is loaded and scored 18 times (plus once per League on the Events tab). Nothing is shared
-   between sheets, or between a sheet and the Master sheet's other sheets.
+   between sheets, or between a sheet and the Master sheet's other sheets. *Fixed in step 3:
+   `ScoringRun` loads an Event once a request and scores it once per League. All 18 Nationals 2025
+   sheets and both Master sheets take 188 queries from nothing (was several thousand), and
+   Loughborough 2025-26's three sheets 68.*
 3. **A League view re-queries rather than filters.** The League's rows are a subset of rows already
    loaded for the whole Event. *Fixed in step 2: `EventScorer` filters the Event's rows.*
 4. **About 60% of the time is PHP, not the database**: Eloquent hydrating a model per Mark (a league
@@ -115,7 +121,7 @@ Where it goes:
 
 None of this is slow enough to hurt a results page today, because sheets are cached. It matters on
 the day, when every Mark clears the cache and the Live and Results pages are being refreshed, and
-it is the reason the cache exists at all, with the staleness that brings.
+it is the reason the cache exists at all, with the staleness that brought (until step 4).
 
 ### Maintainability
 
@@ -125,12 +131,13 @@ it is the reason the cache exists at all, with the staleness that brings.
   `ScoringEngine` in one file (*separated in step 1*).
 - **Ranking is written four times**: in `CompetitionSpeedEvent` and `SERC` (30 identical lines but
   for one condition: a SERC always ties its DQs, a speed event only when DQs can't rank), and again
-  in `ResultSchema` and `MasterSchema`. *Step 2 replaced the first two with `EventScorer::rank()`.*
+  in `ResultSchema` and `MasterSchema`. *Step 2 replaced the first two with `EventScorer::rank()`;
+  since step 3 all of them use `Ranking`.*
 - **Formulas reach into the ORM.** `item` is a DTO holding Eloquent models, so a formula can read
   `item.entity.st_time` (two old formulas do) and `item.penalties` is a collection of `Penalty`
   models; auto penalties are made by constructing unsaved `Penalty` models. What a formula may
   rely on is whatever happens to be public. *Since step 2 an Event's formula reads a `ScoredResult`
-  and a plain `Entry`; a sheet's Formula still reads the DTOs.*
+  and a plain `Entry`, and since step 3 a sheet's Formula reads a `SheetEventResult`.*
 - **Fields get lost between stages.** Each DTO is built by copying the last positionally. `seed`
   isn't copied past the violations stage, so the equation sees 0 (Q4); `combined` and
   `total_marking_points` don't reach a sheet.
@@ -178,7 +185,9 @@ tie exactly are compared in Entity order, because the engine doesn't define thei
 
 `EventQueryBudgetTest` loads two of them and counts the queries scoring each Event takes: at most
 12 for Nationals 2025 (133 competitors a speed event, 19 Leagues) and 10 for Loughborough 2025-26
-(28 teams, with seed times), and no more for a League view than for the whole Event.
+(28 teams, with seed times), and no more for a League view than for the whole Event. It also scores
+every sheet and Master sheet of each in one request, from nothing: at most 189 queries for
+Nationals 2025 (18 sheets, 2 Master sheets) and 69 for Loughborough 2025-26 (3 sheets).
 
 The 23 competitions (3.6 MB, about 35 s to run):
 
@@ -219,11 +228,16 @@ no database or framework.
 | --- | --- |
 | `SpeedEventScoringTest` (16) | Time to points, ranking either way, shared places, DQs last, DQs allowed to rank, DNF/DNS/OOT, penalty function, forced penalty function, auto penalties from seed times, each entry's own seed time, rank equation, `RANKMEDIAN`, pairs combined by `group_by`, League views |
 | `SercScoringTest` (5) | Weighted Marks, scoring against the best, DQs, ranking Marks into places, League views |
-| `ResultSheetScoringTest` (12) | Event weights, per-Event breakdown, summing places, the BULSCA spread Formula, DQs and `ignore_dq`, tie-breaks, missing Events, League sheets, grouping on Club, cache refresh |
+| `ResultSheetScoringTest` (12) | Event weights, per-Event breakdown, summing places, the BULSCA spread Formula, DQs and `ignore_dq`, tie-breaks, missing Events, League sheets, grouping on Club, an edited time and a DQ refreshing the sheet |
 | `MasterSheetScoringTest` (3) | Summed places, best entry per sheet, default for a missing Club, excluded Clubs |
-| `EngineQuirksTest` (8) | Each quirk below but Q2 and Q3, pinned as it behaves today |
+| `ScoringRunTest` (5) | Sheets that share an Event read it once, one sheet's Formula doesn't change what another is given, a saved model is seen by the next sheet scored, a query-builder write isn't until `ScoringRun::forget()`, an Event's own results are always scored afresh |
+| `ResultsVersionTest` (18) | A sheet isn't scored again while nothing has changed, and each kind of write is seen by the next look: a new or edited time, a new or deleted Mark, a marking point's weight, a penalty or DQ given and cleared, an edited or swapped Event formula, an edited sheet and its Event weights, League membership, a seed time entered and removed, a removed entry, a Master sheet's sheets. Also: a save that changes nothing and a write to another competition leave the version alone, a query-builder write isn't seen until `bump()`, and a rolled-back transaction's version is never reused |
+| `EngineQuirksTest` (7) | Each quirk below but Q2, Q3 and Q8, pinned as it behaves today |
 | `EventScorerTest` (20, no database or framework) | `EventScorer` on inputs built by hand: ranking either way, shared places, a time stored as a string, DQs last, DQs allowed to rank, a SERC tying its DQs regardless, League filtering, penalty function, forced penalty function, auto penalties from seeds (and none: Q6), an auto DQ's code (Q1), the seed in the equation (Q4), pairs combined by `group_by` and what keeps results apart, rank equation, an empty League (Q9), `item.entity.<column>`, a missing equation |
 | `FormulaEvaluatorTest` (18, no database or framework) | Each built-in function, global and local variables and the order they run in, target field, a rank equation, what a broken formula reports, and quirks Q2 and Q3 |
+| `RankingTest` (5, no database or framework) | Sorting either way, shared places and the gap after them, places not shared |
+| `SheetScorerTest` (18, no database or framework) | `SheetScorer` on results built by hand: weights, the Formula per Event, DQs and `ignore_dq`, grouping on Club, tie-breaks, missing Events, an empty sheet |
+| `MasterScorerTest` (7, no database or framework) | `MasterScorer`: summed places, best row per sheet, the default for a missing Club, shared places |
 | `ScoringExceptionTest` (5, no database or framework) | A failed formula's context: described when asked for, once, without touching the results |
 | `ScoringSchemaTest` (2, no database or framework) | A formula made with its name and settings, and its settings read with their defaults |
 
@@ -243,9 +257,37 @@ holds competitors' real names, so keep it out of git (`storage/app` is ignored).
 `App\Scoring\Golden\CompetitionSnapshot` is the only code in the tooling that calls the engine.
 When the entry points change, re-point its three `*Rows()` methods.
 
+## Results version
+
+`competitions.results_version` is a number that moves on with every write that can change one of
+the competition's results. A sheet's results are cached as one entry holding the version they were
+worked out at, and used only if that is still the competition's version; otherwise they are worked
+out again and the entry replaced. Nothing clears the cache, so nothing can forget to.
+
+- **What moves it.** `AppServiceProvider` listens to every model saved or deleted and hands it to
+  `ResultsVersion::changed()`, whose `competitionsOf()` lists every model the engine reads and how
+  to find its competition: the competition itself, teams, competitors, Clubs, Leagues and their
+  members, Events, Event formulas (every competition with an Event using one), times, Marks,
+  marking points, penalties, DQs, seed times, sheets and their Events, Master sheets. A save that
+  changed nothing moves nothing.
+- **Adding a model the engine reads:** add it to `competitionsOf()`, and a test to
+  `ResultsVersionTest`.
+- **Writing without a model event** (a query-builder `update()` or `delete()`, raw SQL): call
+  `app(ResultsVersion::class)->bump($comp)` afterwards. Today that is clearing an Entry's penalties
+  or DQs (`Event::clearEntityPenalties()`), removing a seed time (`CompetitionEntries::saveSeeds()`),
+  replacing a sheet's Events (`ResultSheetsController`) and re-making a speed event's results when
+  who it scores changes (`SpeedEventController`). `attach()`, `detach()` and `sync()` on an Entry's
+  Leagues do raise model events, through the `Leagueable` pivot model.
+- **The number** is the time of the change in microseconds, and always more than the last. Inside a
+  transaction it is rolled back with the write, and the next one given out is different, so results
+  cached inside a rolled-back transaction are never matched.
+- **What-If** isn't versioned (its database isn't migrated by `deploy.sh`): `ResultsVersion::of()`
+  is null on the `whatif` connection, nothing moves and sheets there are scored every time.
+- Within a request `ScoringRun` still shares each Event between sheets; `bump()` empties it too.
+
 ## Quirks
 
-Behaviour that looks unintended. Each is pinned in `EngineQuirksTest` (Q2 and Q3 in
+Behaviour that looks unintended. Each but Q8 is pinned in `EngineQuirksTest` (Q2 and Q3 in
 `FormulaEvaluatorTest`) so a rebuild can't change it by accident. "Affects" is from applying the fix to the current engine and comparing all 66
 competitions in the live database.
 
@@ -258,7 +300,7 @@ competitions in the live database.
 | Q5 | Seed times are always read from the competition's **first speed event**, even with seeds per event turned on. | Nothing: no competition has used seeds per event | Fix |
 | Q6 | An Entity with **no seed time is scored as if its seed were 0**, so the BULSCA Swim & Tow auto penalty gives it `1 + FLOOR(time / 15000)` P900s. | Whatever was scored that way stays that way | **Keep** (decided 2026-11-11) |
 | Q7 | A sheet with tie-breaks gives **entries that tie on everything different places**, in database order. Which one is placed higher is not defined. | 133 sheets use tie-breaks; none in the fixtures currently tie all the way | **Keep** (decided 2026-11-11). The rebuild's loader must read rows in id order, which is the order the engine sees today, so these places don't move. |
-| Q8 | A sheet's cached results are cleared when a result or Mark is **edited**, and on any penalty or DQ, but **not** when a Mark or time is first entered, nor when a marking point's weight, a formula, a League's members or an entry changes. | Shows stale standings until something else clears the cache | Fixed by step 4 |
+| Q8 | A sheet's cached results are cleared when a result or Mark is **edited**, and on any penalty or DQ, but **not** when a Mark or time is first entered, nor when a marking point's weight, a formula, a League's members or an entry changes. | Showed stale standings until something else cleared the cache | **Fixed** in step 4 (`ResultsVersionTest`) |
 | Q9 | Scoring an Event for a League with no entries evaluates the formula anyway, which can divide by zero (Champs 2023-24's Rope Throw for its empty "Squad" League). | That one view errors | Fix: no entries, no results |
 | Q10 | The Master sheet ignores each sheet's `weight`, and `sum_over` anything but `position` reads a property that doesn't exist. | Nothing: every weight is 1 and every Master sheet sums places | Fix or remove the settings |
 
@@ -306,16 +348,14 @@ Each step is one PR. Each must pass the golden suite, the hand-worked cases and 
 **0. Safety net.** Done on this branch.
 
 **1. Pull the formula language out.** Done 2026-11-12, as written below. Checked with the golden
-suite and the hand-worked cases; **the whole-database comparison is still to run** (it needs the
-live copy loaded into a database of its own). Move `ScoringEngine` out of `ScoringSchema.php` into
+suite, the hand-worked cases and the whole-database comparison (see step 3). Move `ScoringEngine` out of `ScoringSchema.php` into
 `App\Scoring\Engine\FormulaEvaluator` with its functions, as it is, quirks included. Give
 `ScoringSchema` a normal constructor. Make `ScoringException` hold its context and format it only
 when reported. Drop the `Log::debug` calls. `ScoringEngineTest` and Q2/Q3 in `EngineQuirksTest`
 move to pure unit tests.
 
-**2. One Event scorer on plain inputs.** Done 2026-11-12. Checked with the golden suite and the
-hand-worked cases; **the whole-database comparison is still to run**, for this step and step 1
-together. What was built: `App\Scoring\Input` (`Entry`, `EventRow`, `EventInput`, `Formula`),
+**2. One Event scorer on plain inputs.** Done 2026-11-12. Checked with the golden suite, the
+hand-worked cases and the whole-database comparison (see step 3). What was built: `App\Scoring\Input` (`Entry`, `EventRow`, `EventInput`, `Formula`),
 `App\Scoring\Engine\EventScorer` and `ScoredResult`, `App\Scoring\Loading\EventLoader` and
 `LoadedEvent`. `Event::getRankedResults()` is the one thin call, mapping the scorer's rows back to
 today's `RankedResult`, so no caller changed. `getResolvedResults()`, `applyGrouping()`, the two
@@ -329,55 +369,35 @@ Measured on fixtures: a speed event entered by teams takes 10 queries and one en
 competitors 12 (was 15–207), a SERC 7 (was 14); a 133-entry Nationals speed event 22–36 ms (was
 150–160).
 
-Known difference to confirm with the whole-database comparison: a result whose Entry no longer
-exists now fails a League view too, not only the whole Event.
+Known difference: a result whose Entry no longer
+exists now fails a League view too, not only the whole Event. The whole-database comparison found
+no competition where that happens.
 
-**3. Sheets and Master sheets on the scorer.** In progress 2026-11-12, uncommitted (as are steps
-0–2). Done: `App\Scoring\Input\SheetDefinition` and `SheetEvent`; `App\Scoring\Engine\Ranking`
-(also used by `EventScorer`), `SheetScorer`, `SheetEventResult`, `SheetStanding`, `MasterScorer`,
+**3. Sheets and Master sheets on the scorer.** Done 2026-11-12. Checked with the golden suite,
+the hand-worked cases and the whole-database comparison of the engine before step 1 against steps
+1–3 together: all 66 competitions the same (39 s old, 15 s new). What was built:
+`App\Scoring\Input\SheetDefinition` and `SheetEvent`; `App\Scoring\Engine\Ranking` (also used by
+`EventScorer`), `SheetScorer`, `SheetEventResult`, `SheetStanding`, `MasterScorer`,
 `MasterStanding`; `App\Scoring\ScoringRun` (one per request, bound `scoped` in
-`AppServiceProvider`, emptied on any Eloquent save or delete, but not by a pivot `attach()` or a
-query-builder write); `ResultSchema::getResults()` and `MasterSchema::getResults()` delegate and
-return the same DTOs. `RankingTest` (5), `SheetScorerTest` (18) and `MasterScorerTest` (7) are
-pure unit tests. Checked: Unit/Feature and Golden pass with fixtures untouched, and the
-whole-database comparison of HEAD's engine against steps 1–3 gave all 66 competitions the same
-(39 s old, 15 s new).
+`AppServiceProvider`, emptied on any Eloquent save or delete, but not by a
+query-builder write: since step 4, call `ResultsVersion::bump()` after one, which empties it too). `ResultSchema::getResults()` and
+`MasterSchema::getResults()` delegate and return the same DTOs. `Event::getRankedResults()` doesn't
+use the run and scores afresh every time. `CompetitionSnapshot::of()` empties the run first.
 
-**Continue from here:**
-1. Add `tests/Feature/Scoring/ScoringRunTest`: sheets sharing an Event read `speed_results` once;
-   one sheet's Formula doesn't change what another is given; a model saved in between is seen by
-   the next sheet scored; a query-builder write is not until `ScoringRun::forget()`;
-   `Event::getRankedResults()` always scores afresh.
-2. Add a sheet budget to `tests/Golden/EventQueryBudgetTest`: every sheet and Master sheet of a
-   fixture scored with `getResults(true)` in one request, asserting a measured query count.
-3. Make `CompetitionSnapshot::of()` call `app(ScoringRun::class)->forget()` first.
-4. Update this document for step 3: "In short" test count, the "How it works today" rows for
-   Results sheet and Master sheet, the Efficiency and Maintainability notes (sheets no longer
-   re-score Events; ranking is written once), the test tables, and mark this step done.
-5. Run all three suites, then repeat the whole-database comparison (load `scoring.sql` into a
-   database of its own, record on HEAD plus the step 0 tooling, compare on the branch, both with
-   `CACHE_DRIVER=array` so dev's Redis cache isn't written).
-6. Commit as three: step 0 (tooling, fixtures, `tests/Feature/Scoring`), steps 1 and 2 together
-   (they share files and can't be separated without rewriting an intermediate state), step 3.
+**4. Results version and cache.** Done 2026-11-12. Checked with the whole test suite and the
+whole-database comparison against the engine before step 1: all 66 competitions the same. This is
+the one step that changes behaviour on purpose (Q8); see [Results version](#results-version) for
+how it works and what to do when adding a write. What was built: the `results_version` column,
+`App\Scoring\ResultsVersion`, `App\Models\Pivots\Leagueable` (so League membership raises model
+events), `ResultSchema::getResults()` caching against the version. Removed: the cache-tag flushes in
+`Resultable`, `Violation` and `ResultSheetsController`, `Competition::clearResultSchemaCaches()` and
+`ResultSchema::forgetResults()`. The Q8 quirk test is replaced by `ResultsVersionTest`.
 
-**Clean up first (left over from 2026-11-12):** the `scoring_test` database holds the live dump
-(real names) rather than the test schema; the next Feature or Golden run wipes and rebuilds it, so
-run one. The session scratchpad
-`/tmp/claude-1000/-home-noah-projects-bulsca-scorer/51bb3931-7e8a-438d-a27f-5bcc415199bc/scratchpad`
-holds `before/` (the old engine's recording of all 66 competitions, with real names) and `old/`
-(a 200 MB copy of HEAD's code): delete both by hand. Remove this paragraph once done.
+Not done here, left for step 5: Event results are still scored afresh on every request (only
+sheets are cached), as `CompetitionResults` doesn't exist yet.
 
-The plan as written: Add `SheetDefinition`, `SheetScorer` and
-`MasterScorer` with the shared `Ranking`. Within a request, score each (Event, League) once and
-reuse it across sheets. `ResultSchema::getResults()` and `MasterSchema::getResults()` delegate,
-returning today's `OverallResult` / `MasterResult`.
-
-**4. Results version and cache.** Add `results_version` to competitions and bump it from every
-write path that affects scoring: speed results, Marks, penalties and DQs, seeds, entries and their
-Leagues, marking points and weights, Event formulas, sheets and Master sheets. Cache
-`CompetitionResults` by competition and version; remove the tag flushes in `Resultable`,
-`Violation` and `ResultSheetsController`. This is the one step that changes behaviour on purpose
-(Q8): replace that quirk test with ones that each kind of write refreshes the standings.
+When deploying: run the migration. Sheet results cached before this step sit under the old cache
+tags and are never read again; `php artisan cache:clear` removes them.
 
 **5. Move callers to the read model and delete the old path.** Point the public Results pages,
 SERC breakdown, Management pages, PDFs and Live pages at `CompetitionResults`. Then delete

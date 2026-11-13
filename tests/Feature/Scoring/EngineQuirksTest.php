@@ -3,14 +3,14 @@
 namespace Tests\Feature\Scoring;
 
 use App\Exceptions\ScoringException;
-use App\Models\SERCResult;
 use ErrorException;
 
 /**
  * Things the engine does today that look unintended, pinned so a rebuild doesn't change one by
  * accident: results that have already been published may depend on them. Each is written up in
  * docs/scoring-engine.md ("Quirks"), with what it would take to fix it on purpose. The two in the
- * formula language itself (Q2, Q3) are in Tests\Unit\Scoring\FormulaEvaluatorTest.
+ * formula language itself (Q2, Q3) are in Tests\Unit\Scoring\FormulaEvaluatorTest. Q8 (a sheet's
+ * results going stale) is fixed: see ResultsVersionTest.
  */
 class EngineQuirksTest extends ScoringTestCase
 {
@@ -93,28 +93,6 @@ class EngineQuirksTest extends ScoringTestCase
 
         $this->assertSame([['A', 1, 1000.0], ['B', 1, 1000.0]], $this->standings($tied->getResults()));
         $this->assertSame([['A', 1, 1000.0], ['B', 2, 1000.0]], $this->standings($broken->getResults()));
-    }
-
-    public function test_a_new_mark_does_not_refresh_a_sheets_remembered_results_until_one_is_edited(): void
-    {
-        $t = $this->teams('A', 'B');
-        $serc = $this->serc(self::RAW, [1, 1], [[$t['A'], [5, 0]], [$t['B'], [6]]]);
-        $sheet = $this->sheet([], [$serc]);
-        $this->assertSame([['B', 1, 6.0], ['A', 2, 5.0]], $this->standings($sheet->getResults()));
-
-        $mark = new SERCResult();
-        $mark->marking_point = $serc->getMarkingPoints()->orderByDesc('serc_marking_points.id')->value('serc_marking_points.id');
-        $mark->entity()->associate($t['B']);
-        $mark->result = 10;
-        $mark->save();
-
-        // B now has 16 marks, but only an edit to an existing mark, a penalty or a DQ clears the cache
-        $this->assertSame([['B', 1, 6.0], ['A', 2, 5.0]], $this->standings($sheet->getResults()));
-
-        $mark->result = 9;
-        $mark->save();
-
-        $this->assertSame([['B', 1, 15.0], ['A', 2, 5.0]], $this->standings($sheet->getResults()));
     }
 
     public function test_a_broken_formula_fails_naming_the_part_that_broke(): void

@@ -650,11 +650,6 @@ class Competition extends Model implements IInvitable, IJsonable
         Cache::tags("{$this->cacheKey()}}.entity-names")->flush();
     }
 
-    public function clearResultSchemaCaches()
-    {
-        Cache::tags("{$this->cacheKey()}.result-schemas")->flush();
-    }
-
     public function clearHeatCache()
     {
         Cache::forget($this->heatCacheKey());

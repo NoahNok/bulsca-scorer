@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Scoring\ResultsVersion;
 use App\Models\AbstractClasses\Entity;
 use App\Models\Competition;
 use App\Models\Orders\EntityEventSeed;
@@ -52,6 +53,8 @@ class CompetitionEntries
 
             if (blank($seeds[$eventId])) {
                 EntityEventSeed::where($where)->delete();
+                // Deleted without a model event
+                app(ResultsVersion::class)->bump($this->comp);
                 continue;
             }
 
