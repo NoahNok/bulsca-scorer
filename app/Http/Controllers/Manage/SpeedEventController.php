@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Manage;
 
+use App\Scoring\CompetitionResults;
+use App\Scoring\Results\EventResult;
+use App\Scoring\Results\EventResultPart;
 use App\Scoring\ResultsVersion;
 use App\DTO\Result;
 use App\Helpers\CompetitionHeader;
@@ -97,26 +100,27 @@ class SpeedEventController extends Controller
         $showDqPoints = $event->scoringSchema->schema['allow_disqualified_to_rank'] ?? false;
         $eventHeats = $event->digitalJudgeEnabled ? $event->getHeats()->with('oofs', 'getPool')->get() : collect();
 
-        return collect($event->getRankedResults($league))->map(function ($result) use ($comp, $event, $showDqPoints, $eventHeats) {
-            $parts = $this->partsOf($result);
+        return array_map(function (EventResult $result) use ($event, $showDqPoints, $eventHeats) {
             $heat = $result->isCombined() ? null : $eventHeats
-                ->where('entity_id', $result->entity->id)
-                ->where('entity_type', $result->entity->getMorphClass())
+                ->where('entity_id', $result->entry->id)
+                ->where('entity_type', $result->entry->type)
                 ->first();
 
             return [
-                ...$this->keyAndNames($comp, $result),
-                'times' => $result->isCombined() ? $parts->map(fn (Result $part) => SpeedResult::prettyTime($part->result))->values() : [],
-                'dqs' => $parts->map(fn (Result $part) => $part->getDisqualificationsString())->values(),
+                ...$this->keyAndNames($result),
+                'times' => array_map(fn (EventResultPart $part) => SpeedResult::prettyTime($part->result), $result->parts),
+                'dqs' => $result->isCombined()
+                    ? array_map(fn (EventResultPart $part) => $part->disqualificationLabel(), $result->parts)
+                    : [$result->disqualificationLabel()],
                 'time' => SpeedResult::prettyTime($result->resolvedResult),
                 'was' => !$result->isCombined() && $result->resolvedResult != $result->result ? SpeedResult::prettyTime($result->result) : null,
                 'oof' => !$event->digitalJudgeEnabled || $result->isCombined() ? null
                     : ($heat ? Pool::heatLaneLabel($heat->getPool, $heat->heat, $heat->lane) . ': ' . ($heat->getOOF($event->id)?->oof ?: '-') : '-'),
-                'penalties' => $result->getPenaltiesString(),
+                'penalties' => $result->penaltiesLabel(),
                 'points' => $result->isDisqualified() && !$showDqPoints ? 'DQ' : (round($result->points, 1) ?: null),
-                'position' => $result->position ?? null,
+                'position' => $result->position,
             ];
-        })->values()->all();
+        }, app(CompetitionResults::class)->event($event, $league));
     }
 
     /**

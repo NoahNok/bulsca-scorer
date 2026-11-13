@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\DTO\OverallResult;
 use App\Helpers\ClassHelpers;
+use App\Scoring\CompetitionResults;
 use App\Scoring\Engine\SheetScorer;
 use App\Scoring\Engine\SheetStanding;
 use App\Scoring\Input\SheetDefinition;
@@ -122,6 +123,7 @@ class ResultSchema extends Model
         // Its cached results have no version to outlive, so they go with it
         static::deleted(function (ResultSchema $sheet) {
             Cache::forget("competition.{$sheet->competition}.sheet.{$sheet->id}.results");
+            CompetitionResults::forget($sheet);
         });
     }
 

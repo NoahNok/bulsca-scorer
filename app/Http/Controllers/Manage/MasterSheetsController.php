@@ -8,6 +8,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Competition;
 use App\Models\MasterSchema;
 use App\Models\ResultSchema;
+use App\Scoring\CompetitionResults;
+use App\Scoring\Results\MasterRow;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -25,6 +27,7 @@ class MasterSheetsController extends Controller
     {
         $sheets = $master->getSheets();
         $excluded = $master->schema['exclude'] ?? [];
+        $results = app(CompetitionResults::class)->master($master);
 
         return Inertia::render('Manage/Competition/MasterSheet', [
             'competition' => CompetitionHeader::for($comp),
@@ -37,15 +40,14 @@ class MasterSheetsController extends Controller
                 'sheets' => $sheets->map(fn (ResultSchema $sheet) => ['id' => $sheet->id, 'name' => $sheet->name])->values(),
                 'excluded' => $comp->getClubs->whereIn('id', $excluded)->pluck('name')->values(),
             ],
-            'results' => $master->getResults()->map(fn ($result) => [
-                'key' => $result->entity->getMorphClass() . ':' . $result->entity->id,
-                'name' => $result->entity->getName($comp),
-                'sheetResults' => $sheets->map(fn (ResultSchema $sheet) => round($result->sheetResults[$sheet->id] ?? 0, 1))->values(),
-                'total' => round($result->total, 1),
-                'position' => $result->position,
-            ])->values(),
-            // Set by getResults(), so after it
-            'withoutClub' => collect($master->withoutClub)->map(fn ($names, $sheet) => ['sheet' => $sheet, 'names' => $names])->values(),
+            'results' => array_map(fn (MasterRow $row) => [
+                'key' => $row->club->key(),
+                'name' => $row->club->name,
+                'sheetResults' => $sheets->map(fn (ResultSchema $sheet) => round($row->sheetResults[$sheet->id] ?? 0, 1))->values(),
+                'total' => round($row->total, 1),
+                'position' => $row->position,
+            ], $results->rows),
+            'withoutClub' => collect($results->withoutClub)->map(fn ($names, $sheet) => ['sheet' => $sheet, 'names' => $names])->values(),
             ...ResultSheetsController::confirmation($comp),
         ]);
     }

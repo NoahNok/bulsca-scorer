@@ -6,6 +6,7 @@ use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\ResultSchema;
 use App\Models\SERC;
+use App\Scoring\CompetitionResults;
 use Spatie\LaravelPdf\Enums\Orientation;
 use Spatie\LaravelPdf\PdfBuilder;
 
@@ -17,9 +18,12 @@ class ResultsPdfCreator
 {
     private Competition $comp;
 
+    private CompetitionResults $results;
+
     public function __construct(Competition $comp)
     {
         $this->comp = $comp;
+        $this->results = app(CompetitionResults::class);
     }
 
     private function printout(string $view, string $title, array $data, Orientation $orientation = Orientation::Portrait): PdfBuilder
@@ -32,10 +36,10 @@ class ResultsPdfCreator
      */
     private function leagueSections(CompetitionSpeedEvent|SERC $event): array
     {
-        $sections = [['title' => 'Overall', 'results' => $event->getRankedResults()]];
+        $sections = [['title' => 'Overall', 'results' => $this->results->event($event)]];
 
         foreach ($this->comp->getLeagues->sortBy('name') as $league) {
-            $sections[] = ['title' => $league->name, 'results' => $event->getRankedResults($league)];
+            $sections[] = ['title' => $league->name, 'results' => $this->results->event($event, $league)];
         }
 
         return array_values(array_filter($sections, fn ($section) => count($section['results']) > 0));
@@ -65,7 +69,7 @@ class ResultsPdfCreator
     public function standings(ResultSchema $sheet): PdfBuilder
     {
         return $this->printout('pdfs.results.standings', "{$sheet->name} Standings", [
-            'results' => $sheet->getResults() ?? [],
+            'results' => $this->results->sheet($sheet),
         ]);
     }
 
@@ -97,7 +101,7 @@ class ResultsPdfCreator
         $sections = [];
 
         foreach ($sheets as $sheet) {
-            $results = $sheet->getResults() ?? [];
+            $results = $this->results->sheet($sheet);
 
             if (count($results) > 0) {
                 $sections[] = ['title' => $sheet->name, 'results' => $results];

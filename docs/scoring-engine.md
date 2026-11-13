@@ -2,7 +2,7 @@
 
 Written 2026-11-11 on `feature/scoring-engine-rebuild`, with the tests and tooling that make a
 rebuild safe. The evaluation below is the engine as it was found; where a step of the rebuild has
-since dealt with a point, it says so. Progress: steps 0 to 4 are done (see [Steps](#steps)).
+since dealt with a point, it says so. Progress: steps 0 to 4 are done and step 5 is under way (see [Steps](#steps)).
 
 ## In short
 
@@ -52,6 +52,7 @@ speed_results / serc_results          penalties, disqualifications, seeds
 | SERC (until step 2) | `SERC::getRawResults / getResolvedResults / getRankedResults` | Loaded Marks, summed them by marking point weight per Entity, then the same as a speed event. `getRawResults` remains. |
 | Results sheet (since step 3) | `ResultSchema::getResults()` → `App\Scoring\ScoringRun` → `App\Scoring\Engine\SheetScorer` | Takes each of its Events' results for its League from the request's `ScoringRun`, which loads an Event once and scores it once per League however many sheets include it. The scorer, with no database, applies the sheet's Formula to each Event's results, multiplies by the Event's weight, sums per Entity and ranks with tie-breaks. The rows are handed back as `OverallResult`s. Cached per sheet with the competition's results version (since step 4), and used only while that hasn't moved. |
 | Master sheet (since step 3) | `MasterSchema::getResults()` → `App\Scoring\Engine\MasterScorer` | Takes each Club's first (best) row in each of its sheets and sums the places. The rows are handed back as `MasterResult`s. |
+| Read model (since step 5) | `App\Scoring\CompetitionResults` → `App\Scoring\Results` | What pages call: an Event's results, a sheet's rows, a Master sheet's rows, as plain data with names on them. Cached per Event and per sheet with the results version; a deleted Event's or sheet's entry goes with it. |
 | Results version (since step 4) | `App\Scoring\ResultsVersion`, `competitions.results_version` | A number that moves on with every write that can change a competition's results. See [Results version](#results-version). |
 | Ranking (since step 3) | `App\Scoring\Engine\Ranking` | "Sort, then share a place on a tie", once, for Events, sheets and Master sheets. |
 | Results in transit | `app/DTO/`: `Result` → `ResolvedResult` → `RankedResult` → `ScaledResult`, `OverallResult`, `MasterResult` | A new object at each stage, built by copying the last one field by field. Since step 2 an Event is scored on one `ScoredResult` per Entry and only its finished rows become `RankedResult`s. |
@@ -399,13 +400,39 @@ sheets are cached), as `CompetitionResults` doesn't exist yet.
 When deploying: run the migration. Sheet results cached before this step sit under the old cache
 tags and are never read again; `php artisan cache:clear` removes them.
 
-**5. Move callers to the read model and delete the old path.** Point the public Results pages,
-SERC breakdown, Management pages, PDFs and Live pages at `CompetitionResults`. Then delete
-`getRawResults / getResolvedResults / getRankedResults`, the DTO chain in `app/DTO`, `applyGrouping`
-on `Event`, and the dead callers of `$event->getResults()` (`StatsManager`,
-`ResultsToJSONController` and its route, the old Blade templates). Leave What-If alone: it is being
-rewritten and should be written against `CompetitionResults`. Re-point `CompetitionSnapshot`.
+**5. Move callers to the read model and delete the old path.** Under way.
 
+Done so far (2026-11-13), with the golden suite and the whole test suite passing:
+
+- `App\Scoring\CompetitionResults` (one per request, bound `scoped`): `event($event, $league)`,
+  `sheet($sheet)` and `master($master)`, each with `fresh: true` to score whatever is cached. Rows
+  are the plain classes in `App\Scoring\Results` (`EventResult` with its `EventResultPart`s and
+  `Violation`s, `SheetRow` with its `SheetRowEvent`s, `MasterResults` of `MasterRow`s), each naming
+  its Entry with an `EntryRef` that already holds the name, so a page reads no models.
+- Event results are now cached too: one entry per Event holding each League asked for, and one per
+  sheet, each with the results version it was worked out at. Master sheets are worked out each time
+  from their sheets' cached rows.
+- Reading from it: the Management speed event, SERC, Results sheet and Master sheet pages, the
+  public Results endpoints (`Landing\ResultsController`), the SERC breakdown (`SERC::getSERCData()`),
+  the Results PDFs and `CompetitionSnapshot`, so the golden suite now checks the read model.
+- Deleted: `ResultsToJSONController` and its route, and the unused speed `table_templates` views.
+
+Still to do:
+
+- Delete the old path: `Event::getRankedResults()`, `ResultSchema::getResults()` and
+  `MasterSchema::getResults()`, `LoadedEvent`'s DTO mapping, and the DTO chain in `app/DTO`
+  (`RankedResult`, `ResolvedResult`, `ScaledResult`, `OverallResult`, `MasterResult`). The tests in
+  `tests/Feature/Scoring` and `EventQueryBudgetTest` call those and move to `CompetitionResults` with
+  them. What-If's sheet editor calls `ResultSchema::getResults()`, so this waits on a decision
+  (below).
+- `getRawResults()`: the Management speed event grid still reads it (every result, entered or
+  not, with its stored penalties and DQs). It needs its own query before `getRawResults()` and the
+  `Result` DTO can go.
+- The old pages on `results.` (`PublicResultsController`): its speed pages and CSV downloads call
+  `$event->getResults()`, which doesn't exist, and its sheet view expects rows from an engine
+  before this one. Delete or redirect them: a decision (below).
+- `StatsManager`'s generating half (`stats:generate`), which calls `$event->getResults()`. The
+  `stats.` pages read what it stored and still work.
 **6. Fix the quirks, one PR each.** With the engine in one place each fix is a few lines. For each:
 change the pinned test to the intended behaviour, run the golden suite and the whole-database
 comparison, and put the list of results that moved (expected: none, for Q1–Q5, Q9, Q10) in the PR.
@@ -422,7 +449,15 @@ only checking its syntax; and store the two morph-type spellings and tie-break f
 3. **Golden numbers**: decided 2026-11-11, they must match exactly. The tests compare to the last
    digit, with no tolerance.
 4. **`ResultsToJSONController`** (`/api/results/{comp}/serc/{event}`): decided 2026-11-11, nothing
-   is known to use it, so step 5 deletes it and its route.
+   is known to use it, so step 5 deletes it and its route. Deleted 2026-11-13.
+5. **What-If's sheet editor** calls `ResultSchema::getResults()` and its views read the old DTOs.
+   Open: keep that one method and its DTOs until What-If is rewritten, or delete them now and
+   leave the editor's results broken until then (its Event results already are).
+6. **The old `results.` pages** (`PublicResultsController`'s competition, speed, SERC and sheet
+   views): open. Their speed pages and sheet view no longer work. Delete them and redirect to the
+   main site's Results, or leave them.
+7. **`stats:generate`**: open. Rewrite it on `CompetitionResults`, or drop generating and keep the
+   stored stats.
 
 ## Found along the way
 

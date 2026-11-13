@@ -13,6 +13,7 @@ use App\Models\League;
 use App\Models\SERC\MarkingPointTemplate;
 use App\Models\MasterSchema;
 use App\Models\ResultSchema;
+use App\Scoring\CompetitionResults;
 use App\Models\ResultSchemaEvent;
 use App\Models\SERC;
 use App\Models\SERCJudge;
@@ -504,17 +505,8 @@ class ResultsPagesTest extends TestCase
     {
         $sheet = $this->sheet('Overall');
 
-        $failing = new class extends ResultSchema {
-            protected $table = 'result_schemas';
-
-            public function getResults($refreshCache = false): \Illuminate\Support\Collection
-            {
-                throw new ScoringException('Error evaluating formula', ['team' => 'Cardiff A']);
-            }
-        };
-        $failing->setRawAttributes($sheet->getAttributes(), true);
-        $failing->exists = true;
-        Route::bind('sheet', fn () => $failing);
+        $this->mock(CompetitionResults::class)->shouldReceive('sheet')
+            ->andThrow(new ScoringException('Error evaluating formula', ['team' => 'Cardiff A']));
 
         $sentryLogs = Mockery::spy(LoggerInterface::class);
         Log::shouldReceive('channel')->with('daily')->andReturn(Mockery::spy(LoggerInterface::class));

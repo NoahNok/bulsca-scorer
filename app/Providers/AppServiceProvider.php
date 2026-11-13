@@ -9,6 +9,7 @@ use App\Models\Club;
 use App\Models\CompetitionTeam;
 use App\Models\Competitor;
 use App\Scoring\ResultsVersion;
+use App\Scoring\CompetitionResults;
 use App\Scoring\ScoringRun;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Events\TransactionRolledBack;
@@ -33,6 +34,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->scoped(ScoringRun::class);
         // One per request: each competition's results version, as last read
         $this->app->scoped(ResultsVersion::class);
+        // One per request: what pages read results from
+        $this->app->scoped(CompetitionResults::class);
     }
 
     /**

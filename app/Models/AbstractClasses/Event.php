@@ -17,6 +17,7 @@ use App\Models\Interfaces\IJsonable;
 use App\Models\League;
 use App\Models\SERCResult;
 use App\Models\SpeedResult;
+use App\Scoring\CompetitionResults;
 use App\Scoring\Engine\EventScorer;
 use App\Scoring\Loading\EventLoader;
 use App\Traits\RecordActivity;
@@ -88,6 +89,9 @@ abstract class Event extends Model implements IJsonable
 
         static::deleted(function (Event $event) {
             $event->recordActivity('EVENT_DELETED', 'Event \'' . $event->getName() . '\' deleted', related: [$event->getCompetition]);
+
+            // Its cached results have no version to outlive, so they go with it
+            CompetitionResults::forget($event);
         });
 
         static::deleting(function (Event $event) {

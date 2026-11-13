@@ -7,6 +7,7 @@ use App\Helpers\RouteHelpers;
 use App\Models\Competition;
 use App\Models\DigitalJudge\JudgeDQSubmission;
 use App\Models\ResultSchema;
+use App\Scoring\CompetitionResults;
 use App\Models\User;
 use App\Support\ErrorContext;
 use GuzzleHttp\Psr7\ServerRequest;
@@ -86,16 +87,14 @@ class ErrorReportingTest extends TestCase
 
         $comp = $this->competition();
 
-        $sheet = new class extends ResultSchema {
-            public function getResults($refreshCache = false): \Illuminate\Support\Collection
-            {
-                throw new ScoringException('Error evaluating formula');
-            }
-        };
-        $sheet->forceFill(['id' => 1, 'competition' => $comp->id, 'viewable' => true]);
-        Route::bind('schema', fn () => $sheet);
+        $sheet = new ResultSchema();
+        $sheet->forceFill(['name' => 'Overall', 'competition' => $comp->id, 'viewable' => true]);
+        $sheet->schema = ['equation' => 'item.position'];
+        $sheet->save();
 
-        $this->getJson(route('landing.competition.results.get.sheet', [$comp, 1]))
+        $this->mock(CompetitionResults::class)->shouldReceive('sheet')->andThrow(new ScoringException('Error evaluating formula'));
+
+        $this->getJson(route('landing.competition.results.get.sheet', [$comp, $sheet]))
             ->assertStatus(403)
             ->assertJson(['error' => 'Results unavailable at this time, please try again later. (S_ERR)']);
 

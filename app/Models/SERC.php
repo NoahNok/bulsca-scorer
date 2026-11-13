@@ -17,6 +17,7 @@ use App\Models\Interfaces\IPenalisable;
 use App\Models\Orders\Draw;
 use App\Models\Orders\DrawTank;
 use App\Models\Scoring\Bulsca\BulscaSercScoring;
+use App\Scoring\CompetitionResults;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -352,22 +353,17 @@ class SERC extends Event
             $results[$row->entity_id]['results'][$row->mp_id] = $row->result;
         }
 
-        $placeResults = $this->getRankedResults();
+        foreach (app(CompetitionResults::class)->event($this) as $placeResult) {
+            $id = $placeResult->entry->id;
 
-
-        foreach ($placeResults as $placeResult) {
-            $results[$placeResult->entity->id]['place'] = $placeResult->position;
-            $results[$placeResult->entity->id]['points'] = $placeResult->points;
-
-
-
-
-            $results[$placeResult->entity->id]['team'] = $placeResult->entity->getName($comp);
-            $results[$placeResult->entity->id]['raw'] = $placeResult->resolvedResult;
-            $results[$placeResult->entity->id]['tid'] = $placeResult->entity->id;
-            $results[$placeResult->entity->id]['disqualification'] = "{$placeResult->disqualifications->first()}";
-            $results[$placeResult->entity->id]['leagues'] = $placeResult->entity->leagues->pluck('id')->all();
-            $results[$placeResult->entity->id]['letter'] = $placeResult->entity instanceof CompetitionTeam ? $placeResult->entity->team : null;
+            $results[$id]['place'] = $placeResult->position;
+            $results[$id]['points'] = $placeResult->points;
+            $results[$id]['team'] = $placeResult->entry->name;
+            $results[$id]['raw'] = $placeResult->resolvedResult;
+            $results[$id]['tid'] = $id;
+            $results[$id]['disqualification'] = (string) ($placeResult->disqualifications[0] ?? '');
+            $results[$id]['leagues'] = $placeResult->entry->leagueIds;
+            $results[$id]['letter'] = $placeResult->entry->teamLetter;
         }
 
 

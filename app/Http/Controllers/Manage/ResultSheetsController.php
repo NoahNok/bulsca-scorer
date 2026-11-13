@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Manage;
 
+use App\Scoring\CompetitionResults;
+use App\Scoring\Results\SheetRow;
 use App\Scoring\ResultsVersion;
 use App\DigitalJudge\DigitalJudge;
 use App\Helpers\CompetitionHeader;
@@ -280,13 +282,13 @@ class ResultSheetsController extends Controller
         $error = null;
 
         try {
-            $results = $sheet->getResults($isAdmin && $request->boolean('refresh_cache'));
+            $results = app(CompetitionResults::class)->sheet($sheet, fresh: $isAdmin && $request->boolean('refresh_cache'));
         } catch (ScoringException $e) {
             // To the log file only: the context has team and competitor names, which stay out of Sentry
             Log::channel('daily')->error('ScoringException on a Results sheet: ' . $e->getMessage(), $e->getContext());
             Log::channel('sentry_logs')->warning('Results sheet failed to score', ['sheet.id' => $sheet->id]);
             $error = ['message' => $e->getMessage(), 'context' => $e->getContext()];
-            $results = collect();
+            $results = [];
         }
 
         $events = $sheet->getEvents->filter(fn (ResultSchemaEvent $row) => $row->getActualEvent);
@@ -308,12 +310,12 @@ class ResultSheetsController extends Controller
                     ->filter()
                     ->values(),
             ],
-            'results' => $results->map(fn ($result) => [
-                'key' => $result->entity->getMorphClass() . ':' . $result->entity->id,
-                'name' => $result->entity->getName($comp),
-                'points' => round($result->totalPoints, 1),
-                'position' => $result->position,
-            ])->values(),
+            'results' => array_map(fn (SheetRow $row) => [
+                'key' => $row->entry->key(),
+                'name' => $row->entry->name,
+                'points' => round($row->totalPoints, 1),
+                'position' => $row->position,
+            ], $results),
             'error' => $error,
             'isAdmin' => $isAdmin,
             // The Master sheets built on it, which deleting it takes it out of

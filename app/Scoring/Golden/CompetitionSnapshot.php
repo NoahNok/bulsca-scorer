@@ -2,16 +2,19 @@
 
 namespace App\Scoring\Golden;
 
-use App\DTO\RankedResult;
-use App\Models\AbstractClasses\Entity;
 use App\Models\AbstractClasses\Event;
 use App\Models\Competition;
 use App\Models\League;
 use App\Models\MasterSchema;
 use App\Models\ResultSchema;
-use App\Models\SERC;
+use App\Scoring\CompetitionResults;
+use App\Scoring\Results\EventResult;
+use App\Scoring\Results\EventResultPart;
+use App\Scoring\Results\MasterRow;
+use App\Scoring\Results\SheetRow;
+use App\Scoring\Results\SheetRowEvent;
+use App\Scoring\Results\Violation;
 use App\Scoring\ScoringRun;
-use Illuminate\Database\Eloquent\Relations\Relation;
 
 /**
  * Everything the scoring engine works out for a competition, as plain data: each Event's ranked
@@ -43,7 +46,7 @@ class CompetitionSnapshot
         foreach ($comp->getResultSchemas()->orderBy('id')->get() as $sheet) {
             $sheets["sheet:{$sheet->id}"] = [
                 'name' => $sheet->name,
-                'results' => self::guarded(fn() => self::sheetRows($sheet, $comp)),
+                'results' => self::guarded(fn() => self::sheetRows($sheet)),
             ];
         }
 
@@ -51,7 +54,7 @@ class CompetitionSnapshot
         foreach ($comp->getMasterSchemas()->orderBy('id')->get() as $master) {
             $masters["master:{$master->id}"] = [
                 'name' => $master->name,
-                'results' => self::guarded(fn() => self::masterRows($master, $comp)),
+                'results' => self::guarded(fn() => self::masterRows($master)),
             ];
         }
 
@@ -81,49 +84,49 @@ class CompetitionSnapshot
 
     private static function eventRows(Event $event, ?League $league): array
     {
-        $comp = $event->getCompetition;
-
-        return self::settleTies(array_map(fn(RankedResult $r) => [
-            'entity' => self::entityKey($r->entity),
-            'name' => $r->entity->getName($comp),
+        return self::settleTies(array_map(fn(EventResult $r) => [
+            'entity' => $r->entry->key(),
+            'name' => $r->entry->name,
             'result' => self::number($r->result),
             'resolved' => self::number($r->resolvedResult),
             'points' => self::number($r->points),
             'position' => self::number($r->position),
-            'dqs' => $r->disqualifications->map(fn($dq) => (int) $dq->code)->values()->all(),
-            'pens' => $r->penalties->map(fn($pen) => (int) $pen->code)->values()->all(),
-            'combined' => $r->combined->map(fn($c) => self::entityKey($c->entity))->values()->all(),
-        ], array_values($event->getRankedResults($league))), 'points');
+            'dqs' => array_map(fn(Violation $dq) => (int) $dq->code, $r->disqualifications),
+            'pens' => array_map(fn(Violation $pen) => (int) $pen->code, $r->penalties),
+            'combined' => array_map(fn(EventResultPart $part) => $part->entry->key(), $r->parts),
+        ], app(CompetitionResults::class)->event($event, $league, fresh: true)), 'points');
     }
 
-    private static function sheetRows(ResultSchema $sheet, Competition $comp): array
+    private static function sheetRows(ResultSchema $sheet): array
     {
-        return self::settleTies($sheet->getResults(true)->map(fn($r) => [
-            'entity' => self::entityKey($r->entity),
-            'name' => $r->entity->getName($comp),
+        return self::settleTies(array_map(fn(SheetRow $r) => [
+            'entity' => $r->entry->key(),
+            'name' => $r->entry->name,
             'total' => self::number($r->totalPoints),
             'position' => self::number($r->position),
-            'events' => $r->events->map(fn($e) => [
-                'event' => ($e->event instanceof SERC ? 'serc' : 'speed') . ":{$e->event->id}",
-                'entity' => self::entityKey($e->entity),
+            'events' => array_map(fn(SheetRowEvent $e) => [
+                'event' => "{$e->eventType}:{$e->eventId}",
+                'entity' => $e->entry->key(),
                 'position' => self::number($e->position),
                 'points' => self::number($e->points),
                 'adjusted' => self::number($e->adjustedPoints),
-            ])->values()->all(),
-        ])->values()->all(), 'total');
+            ], $r->events),
+        ], app(CompetitionResults::class)->sheet($sheet, fresh: true)), 'total');
     }
 
-    private static function masterRows(MasterSchema $master, Competition $comp): array
+    private static function masterRows(MasterSchema $master): array
     {
-        $rows = self::settleTies($master->getResults()->map(fn($r) => [
-            'entity' => self::entityKey($r->entity),
-            'name' => $r->entity->getName($comp),
+        $results = app(CompetitionResults::class)->master($master, fresh: true);
+
+        $rows = self::settleTies(array_map(fn(MasterRow $r) => [
+            'entity' => $r->club->key(),
+            'name' => $r->club->name,
             'sheets' => array_map(self::number(...), $r->sheetResults),
             'total' => self::number($r->total),
             'position' => self::number($r->position),
-        ])->values()->all(), 'total');
+        ], $results->rows), 'total');
 
-        return ['rows' => $rows, 'without_club' => $master->withoutClub];
+        return ['rows' => $rows, 'without_club' => $results->withoutClub];
     }
 
     /**
@@ -167,13 +170,6 @@ class CompetitionSnapshot
         usort($rows, fn($a, $b) => strnatcmp($a['entity'], $b['entity']));
 
         return $rows;
-    }
-
-    private static function entityKey(Entity $entity): string
-    {
-        $type = array_search($entity::class, Relation::morphMap(), true) ?: class_basename($entity);
-
-        return "{$type}:{$entity->id}";
     }
 
     /**
