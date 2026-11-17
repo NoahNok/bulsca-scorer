@@ -35,3 +35,6 @@ storage/logs/*.log
 
 # Claude Code settings for this machine only
 /.claude/settings.local.json
+
+# Windows download metadata
+*:Zone.Identifier
