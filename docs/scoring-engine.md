@@ -2,7 +2,7 @@
 
 Written 2026-11-11 on `feature/scoring-engine-rebuild`, with the tests and tooling that make a
 rebuild safe. The evaluation below is the engine as it was found; where a step of the rebuild has
-since dealt with a point, it says so. Progress: steps 0 to 5 are done (see [Steps](#steps) and [Notes from step 5](#notes-from-step-5)).
+since dealt with a point, it says so. Progress: steps 0 to 5 are done and checked (golden suite, whole-database comparison, browser); step 6, the quirk fixes, is next (see [Steps](#steps) and [Notes from step 5](#notes-from-step-5)).
 
 ## In short
 
@@ -472,8 +472,9 @@ Things to know before merging or building on this.
   sheet the `event` (`speed:3`) and `adjusted_points`. The engine has no database, so `ScoringRun`
   (an Event's formula) and `CompetitionResults` (a sheet's) hand the exception a way to swap
   those keys for names (`ScoringException::nameWith()`). Naming runs only when the context is
-  asked for. The Management Results sheet page shows it to Admins, and it goes to the daily log,
-  never to Sentry. Covered by `ScoringExceptionTest` and `ScoringErrorContextTest`.
+  asked for. The Management Results sheet page shows it to anyone who can open the sheet,
+  Organisers as well as Admins (decided 2026-11-17), and it goes to the daily log, never to
+  Sentry. Covered by `ScoringExceptionTest` and `ScoringErrorContextTest`.
 - **An Event's results are no longer scored afresh on every call.** They share the request's
   `ScoringRun` and the versioned cache, like sheets. After a write that raises no model event,
   call `ResultsVersion::bump()`, as before. `fresh: true` ignores the cache but not what the
@@ -482,19 +483,28 @@ Things to know before merging or building on this.
   methods that no longer exist (`ResultSchema::getResults()`, `$event->getResults()`). Before
   step 5 the sheet editor showed a table of totals with no names.
 - **`stats:generate` is broken** and stays so (`StatsManager` calls `$event->getResults()`).
-- **The whole-database comparison has not been run for step 5.** The local database is no longer
-  the copy of live that `storage/app/scoring-before` was recorded from (19 competitions against
-  66, names anonymised). Before merging: take a fresh copy of live, record it on `master`, and
-  compare on this branch. The golden suite (23 competitions) does pass.
+- **The whole-database comparison passes for step 5** (2026-11-17, on the live copy of
+  2026-11-11: 66 competitions, 223 sheets). Recorded on `master` and compared on this branch: all
+  66 the same, including the two League views that fail on both (comps 26 and 36). Also the same
+  against `storage/app/scoring-before`. How it was run, and what to watch for next time:
+  - Load the copy into a database other than your dev one (`scoring_test` works: the `scoring`
+    user owns it and the tests rebuild it), and run the branch's migrations on it.
+  - Record `master` from its own worktree with its own `vendor/` (copied, then
+    `composer dump-autoload`). A symlinked `vendor/` loads this checkout's `app/`. Copy in
+    `ScoringSnapshot.php`, `Golden/CompetitionSnapshot.php` and `Golden/GoldenJson.php` from
+    `f4b4b08`, and delete the `ScoringRun` line, which `master` doesn't have.
+  - Run both sides with `DB_DATABASE=<copy> CACHE_DRIVER=array CACHE_STORE=array`. The old code
+    caches Entity names, and the new code caches results by competition id. Either way the shared
+    Redis cache hands back what your dev database stored under the same ids. A first run against
+    Redis showed 1,197 name differences on Nationals 2025 for this reason.
 - **Query budgets went up a little**, because rows now come back named: an Event takes one more
   query (13 and 11 on the two fixtures, was 12 and 10) and scoring every sheet 203 and 74 (was 189
   and 69). `EventLoader` reads what the competition's name format needs with the Entries; a new
   placeholder in a name format that reads a relation needs adding there, or naming goes back to a
   few queries per Entry.
 - **`CompetitionResults` is not `final`**, so that page tests can stand in one that fails to score.
-- **Nothing has been checked in a browser**: the Management event, Results sheet and Master sheet
-  pages, the public Results page and SERC breakdown, the Results PDFs and the `results.` redirects
-  are covered by tests only.
+- **Checked in a browser** (2026-11-17): the Management event, Results sheet and Master sheet
+  pages, the public Results page and SERC breakdown, the Results PDFs and the `results.` redirects.
 - **Deploying:** run the step 4 migration and `php artisan cache:clear` (sheet results cached
   before step 4 and 5 sit under keys that are never read again).
 
