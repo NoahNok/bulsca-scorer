@@ -2,7 +2,7 @@
 
 Written 2026-11-11 on `feature/scoring-engine-rebuild`, with the tests and tooling that make a
 rebuild safe. The evaluation below is the engine as it was found; where a step of the rebuild has
-since dealt with a point, it says so. Progress: steps 0 to 5 are done and checked (golden suite, whole-database comparison, browser). Step 6, the quirk fixes, is done and checked (see [Steps](#steps), [Notes from step 5](#notes-from-step-5) and [Notes from step 6](#notes-from-step-6)).
+since dealt with a point, it says so. Progress: steps 0 to 5 are done and checked (golden suite, whole-database comparison, browser). Step 6, the quirk fixes, is done and checked, and all 25 golden fixtures match the live site (see [Steps](#steps), [Notes from step 5](#notes-from-step-5) and [Notes from step 6](#notes-from-step-6)).
 
 ## In short
 
@@ -200,8 +200,8 @@ The 25 competitions (4.2 MB, about 35 s to run):
 | Other | MegaVarsity (5 speed events, teams without clubs) |
 
 The fixtures were checked two ways: scoring a fixture gives exactly what scoring the same
-competition in the full database copy gives (0 differences), and three of them were compared with
-the live site.
+competition in the full database copy gives (0 differences), and all 25 were compared with the
+live site (2026-11-17, see [Notes from step 6](#notes-from-step-6)).
 
 **Adding a competition.** Load a copy of the live database somewhere that isn't your dev database,
 point `DB_*` at it, then:
@@ -527,6 +527,23 @@ Things to know before merging or building on this.
   live copy of that day, 72 competitions). Checked before recording: the old engine (`master`) and
   this branch score the whole copy identically but for the same Champs 2023-24 views (Q9), and each
   fixture scores exactly as the full copy does, names aside (the fixture renames competitors).
+- **All 25 golden fixtures match scoring.events** (2026-11-17, with the golden suite passing on
+  this branch). Every results view the live site serves for them, 966 in all (each Event overall
+  and per League, each Results sheet and Master sheet), was fetched as JSON from
+  `scoring.events/competition/<id>/results/...` and compared with the fixture's `expected.json`:
+  places and points, and each sheet row's per-Event place and adjusted points. All 966 match. The
+  live site rounds points to 1 decimal place and shows "DQ" instead of a disqualified entry's
+  points, so against live this proves agreement to 1 decimal place, and only the place and the DQ
+  for disqualified entries; exact agreement comes from the whole-database comparison above. Rows
+  that tie were compared as a set (their order isn't defined, Q7). The local app, serving Nationals
+  2025 and Nottingham 2026-27 from the dev database, matches live on all 120 of their views, names
+  aside (Overall Masters is Master sheet 7 in the dev database and 5 live). The other 47
+  competitions are checked only against the old engine, not against live. To run it again:
+  `python3 scripts/compare-live-results.py` (add `--refresh` to download again, `--only <fixture>`
+  for some fixtures, `--base http://localhost` to check the local app, which needs the fixture's
+  competition, with the same ids, in the dev database). Downloads are cached in
+  `storage/app/live-results` (real names, ignored by git). It exits non-zero if any view differs or
+  can't be fetched. Run it after adding a fixture, and after re-recording `expected.json`.
 - **Master sheet weights (Q10) apply, but nothing sets them.** Every stored weight is 1 and the
   Management page neither shows nor edits them; saving keeps what is stored. A weight other than 1
   makes that sheet's values floats (2 × 1.5 = 3.0); a weight of 1 leaves them as they are.
