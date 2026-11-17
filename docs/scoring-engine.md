@@ -519,11 +519,10 @@ Things to know before merging or building on this.
   change is the intended one: Champs 2023-24's Rope Throw for its "Squad" and "Team" Leagues, which
   have no members, no longer errors and has no results (Q9; `--compare` lists an empty view as
   "missing"). Brum 2024-25's "Non-counting" SERC view still errors: it has an entry, just no
-  non-disqualified one. To run it again:
-  - Load `scoring.sql` (the live copy) into `scoring_test`, after dropping and recreating it, then
-    run the migrations on it with `DB_DATABASE=scoring_test`.
-  - Run `DB_DATABASE=scoring_test CACHE_DRIVER=array CACHE_STORE=array php artisan scoring:snapshot --compare=storage/app/scoring-before`.
-  - Don't run the test suite in between: it rebuilds `scoring_test`.
+  non-disqualified one. To run it again, with `scoring.sql` (the live copy) in the repo root:
+  `./scripts/reload-live-copy.sh --compare=storage/app/scoring-before`. It recreates `scoring_test`,
+  loads the copy, migrates and compares, with the array cache. `--compare-only=` skips the reload,
+  and `--out=` records instead. The test suite rebuilds `scoring_test`, so reload after running it.
 - **Master sheet weights (Q10) apply, but nothing sets them.** Every stored weight is 1 and the
   Management page neither shows nor edits them; saving keeps what is stored. A weight other than 1
   makes that sheet's values floats (2 × 1.5 = 3.0); a weight of 1 leaves them as they are.
