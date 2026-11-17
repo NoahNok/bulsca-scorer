@@ -21,7 +21,9 @@
                     <tbody>
                         @foreach ($section['results'] as $result)
                             <tr>
-                                <td class="py-2 px-2 border text-left font-semibold whitespace-nowrap">{{ $result->entity->getName($comp) }}</td>
+                                <td class="py-2 px-2 border text-left font-semibold">
+                                    <div class="entry-name">{{ $result->entity->getName($comp) }}</div>
+                                </td>
                                 @foreach ($result->events as $event)
                                     <td class="py-2 px-2 border whitespace-nowrap">{{ round($event->adjustedPoints) }} ({{ $event->position }})</td>
                                 @endforeach

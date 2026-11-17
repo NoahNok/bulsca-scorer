@@ -26,7 +26,9 @@
                 <tbody>
                     @foreach ($teams as $team)
                         <tr>
-                            <td class="py-2 px-2 border text-left font-semibold whitespace-nowrap">{{ $team->getName($comp) }}</td>
+                            <td class="py-2 px-2 border text-left font-semibold">
+                                <div class="entry-name">{{ $team->getName($comp) }}</div>
+                            </td>
                             @foreach ($objective->getMarkingPoints as $mp)
                                 <td class="py-2 px-2 border"></td>
                             @endforeach
