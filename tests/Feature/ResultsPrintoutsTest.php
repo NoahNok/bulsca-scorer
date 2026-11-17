@@ -8,6 +8,7 @@ use App\Models\CompetitionSpeedEvent;
 use App\Models\CompetitionTeam;
 use App\Models\Event\ScoringSchema;
 use App\Models\League;
+use App\Models\MasterSchema;
 use App\Models\ResultSchema;
 use App\Models\ResultSchemaEvent;
 use App\Models\SERC;
@@ -26,7 +27,7 @@ use Spatie\LaravelPdf\PdfBuilder;
 use Tests\TestCase;
 
 /**
- * Results printouts: PDFs of the rankings for an Event or a Results sheet. The PDF engine is faked,
+ * Results printouts: PDFs of the rankings for an Event, a Results sheet or a Master sheet. The PDF engine is faked,
  * so these check what each printout is given and shows; page layout is checked by eye.
  *
  * Team A (in A League) wins the speed event and team B (in no League) wins the SERC.
@@ -190,6 +191,27 @@ class ResultsPrintoutsTest extends TestCase
         return $sheet;
     }
 
+    /**
+     * A Master sheet summing the Clubs' positions over the given Results sheets
+     */
+    private function master(string $name, array $sheets, bool $viewable = true): MasterSchema
+    {
+        $master = new MasterSchema();
+        $master->name = $name;
+        $master->competition = $this->comp->id;
+        $master->viewable = $viewable;
+        $master->schema = [
+            'sum_over' => 'position',
+            'default_value' => 0,
+            'sheets' => array_map(fn ($sheet) => ['id' => $sheet->id, 'weight' => 1], $sheets),
+            'group_on' => 'club',
+            'exclude' => [],
+        ];
+        $master->save();
+
+        return $master;
+    }
+
     private function url(string $path): string
     {
         return $this->appUrl('/comps/' . $this->comp->id . $path);
@@ -281,6 +303,68 @@ class ResultsPrintoutsTest extends TestCase
             && $pdf->orientation === 'Landscape'
             && $pdf->headerData['title'] === 'All Results sheets'
             && $this->sectionTitles($pdf) === ['Senior', 'Working']);
+    }
+
+    public function test_a_master_sheet_is_a_landscape_pdf_of_each_clubs_value_from_its_sheets(): void
+    {
+        $senior = $this->sheet('Senior');
+        $master = $this->master('Club Champs', [$senior]);
+
+        $this->actingAs($this->organiser)->get($this->url('/results/master/' . $master->id . '/print'))->assertOk();
+
+        Pdf::assertRespondedWithPdf(fn (PdfBuilder $pdf) => $pdf->viewName === 'pdfs.results.breakdown'
+            && $pdf->orientation === 'Landscape'
+            && $pdf->headerData['title'] === 'Club Champs'
+            && $this->sectionTitles($pdf) === ['Club Champs']
+            && $pdf->contains(['Cardiff', '>Senior</th>', '>Club</th>']));
+    }
+
+    public function test_printing_all_sheets_adds_every_master_sheet_after_the_results_sheets(): void
+    {
+        $senior = $this->sheet('Senior');
+        $this->master('Club Champs', [$senior]);
+        $this->master('Hidden Champs', [$senior], viewable: false);
+
+        $this->actingAs($this->organiser)->get($this->url('/results/print-all'))->assertOk();
+
+        Pdf::assertRespondedWithPdf(fn (PdfBuilder $pdf) => $this->sectionTitles($pdf) === ['Senior', 'Club Champs', 'Hidden Champs']
+            && $pdf->contains('Cardiff'));
+    }
+
+    public function test_a_master_sheet_with_no_clubs_to_rank_says_no_results_yet(): void
+    {
+        // Every Club left out
+        $master = $this->master('Club Champs', [$this->sheet('Senior')]);
+        $master->schema = [...$master->schema, 'exclude' => $this->comp->getClubs()->pluck('id')->all()];
+        $master->save();
+
+        $this->actingAs($this->organiser)->get($this->url('/results/master/' . $master->id . '/print'))->assertOk();
+
+        Pdf::assertRespondedWithPdf(fn (PdfBuilder $pdf) => $pdf->contains('No results yet'));
+    }
+
+    public function test_a_master_sheets_page_links_to_its_printout(): void
+    {
+        $master = $this->master('Club Champs', [$this->sheet('Senior')]);
+
+        $this->actingAs($this->organiser)->get($this->url('/results/master/' . $master->id))
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('printUrl', route('manage.competitions.results.master.print', [$this->comp, $master])));
+    }
+
+    public function test_master_sheet_printouts_need_results_access_to_the_sheets_competition(): void
+    {
+        $master = $this->master('Club Champs', [$this->sheet('Senior')]);
+        $other = User::factory()->create();
+        $this->comp->addAccount($other, ['teams']);
+
+        $this->actingAs($other)->get($this->url('/results/master/' . $master->id . '/print'))->assertForbidden();
+
+        $theirs = $this->comp->replicate();
+        $theirs->save();
+        $master->competition = $theirs->id;
+        $master->save();
+        $this->actingAs($this->organiser)->get($this->url('/results/master/' . $master->id . '/print'))->assertNotFound();
     }
 
     public function test_every_printouts_header_says_provisional_only_while_results_are(): void

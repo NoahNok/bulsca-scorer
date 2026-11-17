@@ -1,7 +1,8 @@
 <!--
     A Master sheet's page (manage.competitions.results.master.show), in CompetitionLayout: "← Results", its
     name, then each Club's value from every Results sheet in it, its total and its place. The sticky
-    actions column has Edit, the "Shown in results" switch and Delete, then how the sheet is built.
+    actions column has Edit, the "Shown in results" switch, its printout (PDF) and Delete, then how the
+    sheet is built.
 -->
 <script lang="ts">
     import { destroy, edit, visibility } from "@/actions/App/Http/Controllers/Manage/MasterSheetsController";
@@ -21,6 +22,7 @@
         master,
         results,
         withoutClub,
+        printUrl,
         canCreate,
         unconfirmed,
     }: {
@@ -41,6 +43,7 @@
         results: { key: string; name: string; sheetResults: number[]; total: number; position: number }[];
         /** Entries on its sheets with no Club, so counted for none */
         withoutClub: { sheet: string; names: string[] }[];
+        printUrl: string;
         /** False while a Digitally Judged Event waits to be confirmed */
         canCreate: boolean;
         unconfirmed: UnconfirmedEvent[];
@@ -124,6 +127,9 @@
             <ActionSwitch class="mt-5" label="Shown in results" checked={master.viewable} onchange={setViewable} />
 
             <ul class="mt-5 border-t border-v2-border *:border-b *:border-v2-border">
+                <li>
+                    <a href={printUrl} target="_blank" rel="noopener" class={sidebarRow}>Print sheet<RowIcon icon="external" /></a>
+                </li>
                 <li>
                     <button type="button" class="{sidebarRow} text-v2-danger-text" onclick={() => deleteDialog.open()}>Delete sheet</button>
                 </li>

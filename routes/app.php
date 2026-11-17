@@ -238,6 +238,7 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
                         Route::post('', [MasterSheetsController::class, 'update'])->name('update');
                         Route::post('/visibility', [MasterSheetsController::class, 'visibility'])->name('visibility');
                         Route::delete('', [MasterSheetsController::class, 'destroy'])->name('destroy');
+                        Route::get('/print', [ResultsPrintoutController::class, 'master'])->name('print');
                     });
                 });
 
