@@ -19,7 +19,7 @@ since dealt with a point, it says so. Progress: steps 0 to 5 are done and checke
 - **Its cache could serve stale results**, because it was cleared by model events that didn't cover
   every way a result can change (see [Quirks](#quirks), Q8). *Fixed in step 4: sheets are cached
   against a results version that every such write moves on.*
-- **There are now 175 tests around it**: 23 real competitions scored again and compared in full, 146
+- **There are now 177 tests around it**: 25 real competitions scored again and compared in full, 146
   small hand-worked cases and 6 that hold scoring an Event, or every sheet, to a query budget. A tool compares the
   engine's output for every competition in a database before and after a change.
 - The rebuild is six steps, each of which ships on its own with all of the above still passing.
@@ -71,7 +71,7 @@ and the Live pages. Event results are worked out afresh on every request; only s
 
 ### Correctness
 
-The numbers are right, and the tests on this branch now prove that for 23 real competitions. What
+The numbers are right, and the tests on this branch now prove that for 25 real competitions. What
 is wrong sits at the edges; these are listed under [Quirks](#quirks) with what each one affects.
 
 Two things worth knowing that aren't quirks of the maths:
@@ -190,12 +190,12 @@ tie exactly are compared in Entity order, because the engine doesn't define thei
 every sheet and Master sheet of each in one request, from nothing: at most 189 queries for
 Nationals 2025 (18 sheets, 2 Master sheets) and 69 for Loughborough 2025-26 (3 sheets).
 
-The 23 competitions (3.6 MB, about 35 s to run):
+The 25 competitions (4.2 MB, about 35 s to run):
 
 | | |
 | --- | --- |
 | BULSCA league | Nottingham, Warwick, Birmingham, Bristol, Southampton, Loughborough and the Championships 2025-26; Nottingham 2026-27; Bristol 2022-23 (the oldest, for old-style data) |
-| RLSS Nationals | Nationals 2025 (18 sheets, 2 Master sheets), National Club SERC 2025 |
+| RLSS Nationals | Nationals 2025 and 2026 (18 sheets, 2 Master sheets each), National Club SERC 2025 and 2026 |
 | 2026 regionals | East, South East, Yorkshire, East Midlands, Scotland, South, West Midlands, Wales, North West, West & South West, and the May West Midlands regional |
 | Other | MegaVarsity (5 speed events, teams without clubs) |
 
@@ -244,7 +244,7 @@ no database or framework.
 
 ### Whole-database comparison: `scoring:snapshot`
 
-The fixtures are 23 competitions; the live database has 66. To check all of them:
+The fixtures are 25 competitions; the live database had 72 on 2026-11-17. To check all of them:
 
 ```
 php artisan scoring:snapshot --out=storage/app/scoring-before       # on the old code
@@ -523,6 +523,10 @@ Things to know before merging or building on this.
   `./scripts/reload-live-copy.sh --compare=storage/app/scoring-before`. It recreates `scoring_test`,
   loads the copy, migrates and compares, with the array cache. `--compare-only=` skips the reload,
   and `--out=` records instead. The test suite rebuilds `scoring_test`, so reload after running it.
+- **Nationals 2026 and National Club SERC 2026 added as golden fixtures** (2026-11-17, from the
+  live copy of that day, 72 competitions). Checked before recording: the old engine (`master`) and
+  this branch score the whole copy identically but for the same Champs 2023-24 views (Q9), and each
+  fixture scores exactly as the full copy does, names aside (the fixture renames competitors).
 - **Master sheet weights (Q10) apply, but nothing sets them.** Every stored weight is 1 and the
   Management page neither shows nor edits them; saving keeps what is stored. A weight other than 1
   makes that sheet's values floats (2 × 1.5 = 3.0); a weight of 1 leaves them as they are.
@@ -533,9 +537,9 @@ Things to know before merging or building on this.
 
 Not engine faults, but worth a look:
 
-- **Nationals 2026 (14 November): both SERCs have no formula**, and the competition has no Results
-  sheets yet. A SERC without a formula produces no results at all. Its two speed events do have
-  formulas.
+- **Nationals 2026 (14 November): both SERCs had no formula** and the competition had no Results
+  sheets. *Since sorted: by the 2026-11-17 copy every Event has a formula, with 18 sheets and 2
+  Master sheets.*
 - **Older competitions with public results that now show none**, because their Events have no
   formula: Brum Internal May23, Sheff vs Notts Varsity 2023 and 2024, Brumwick Varsity 2024,
   Brumwick the Second 2024 (all Events); National Club SERC 2024's speed event; one of Brum vs

@@ -1,0 +1,99 @@
+{
+  "competition": "National Club SERC 2026",
+  "events": {
+    "serc:169": {
+      "name": "Seniors / Open SERC",
+      "results": {
+        "all": [
+          {"entity":"team:2367","name":"Blyth - Seniors","result":313,"resolved":313,"points":1000,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2357","name":"BULSCA - Senior","result":289,"resolved":289,"points":923.3226837060703,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2356","name":"Birmingham Uni - Senior","result":274.5,"resolved":274.5,"points":876.9968051118211,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2350","name":"St John Berchmans - Senior","result":252,"resolved":252,"points":805.111821086262,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2369","name":"Blyth - Lifeguard Seniors","result":241,"resolved":241,"points":769.9680511182108,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2378","name":"East Kilbride - Masters","result":232,"resolved":232,"points":741.2140575079871,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2354","name":"Horsham - Senior","result":231,"resolved":231,"points":738.0191693290735,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2361","name":"Crawley Town - Senior","result":220,"resolved":220,"points":702.8753993610223,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2351","name":"St John Berchmans - Masters","result":219,"resolved":219,"points":699.6805111821086,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2370","name":"Blyth - Masters A","result":204.5,"resolved":204.5,"points":653.3546325878594,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2344","name":"Retford & District - Senior","result":202,"resolved":202,"points":645.367412140575,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2363","name":"East Kilbride - Senior","result":197,"resolved":197,"points":629.3929712460064,"position":12,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2371","name":"Blyth - Masters B","result":192.5,"resolved":192.5,"points":615.0159744408946,"position":13,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2347","name":"SERCO - Senior","result":185.5,"resolved":185.5,"points":592.6517571884984,"position":14,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2368","name":"Blyth - Lifesaver Seniors","result":184.5,"resolved":184.5,"points":589.4568690095847,"position":15,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2377","name":"JARC - Senior","result":182,"resolved":182,"points":581.4696485623003,"position":16,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2345","name":"Retford & District - Masters","result":180,"resolved":180,"points":575.0798722044728,"position":17,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2359","name":"North Worcestershire - Masters","result":177.5,"resolved":177.5,"points":567.0926517571885,"position":18,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2379","name":"Bornemouth - Senior","result":177.5,"resolved":177.5,"points":567.0926517571885,"position":18,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2348","name":"City of Rochester - Senior","result":165,"resolved":165,"points":527.1565495207667,"position":20,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2376","name":"Poseidon LSC - Senior","result":154,"resolved":154,"points":492.01277955271564,"position":21,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2355","name":"Horsham - Masters","result":135,"resolved":135,"points":431.30990415335464,"position":22,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2358","name":"North Worcestershire - Senior","result":64.5,"resolved":64.5,"points":206.07028753993612,"position":23,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:361": [
+          {"entity":"team:2367","name":"Blyth - Seniors","result":313,"resolved":313,"points":1000,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2357","name":"BULSCA - Senior","result":289,"resolved":289,"points":923.3226837060703,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2356","name":"Birmingham Uni - Senior","result":274.5,"resolved":274.5,"points":876.9968051118211,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2350","name":"St John Berchmans - Senior","result":252,"resolved":252,"points":805.111821086262,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2369","name":"Blyth - Lifeguard Seniors","result":241,"resolved":241,"points":769.9680511182108,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2354","name":"Horsham - Senior","result":231,"resolved":231,"points":738.0191693290735,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2361","name":"Crawley Town - Senior","result":220,"resolved":220,"points":702.8753993610223,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2344","name":"Retford & District - Senior","result":202,"resolved":202,"points":645.367412140575,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2363","name":"East Kilbride - Senior","result":197,"resolved":197,"points":629.3929712460064,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2347","name":"SERCO - Senior","result":185.5,"resolved":185.5,"points":592.6517571884984,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2368","name":"Blyth - Lifesaver Seniors","result":184.5,"resolved":184.5,"points":589.4568690095847,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2377","name":"JARC - Senior","result":182,"resolved":182,"points":581.4696485623003,"position":12,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2379","name":"Bornemouth - Senior","result":177.5,"resolved":177.5,"points":567.0926517571885,"position":13,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2348","name":"City of Rochester - Senior","result":165,"resolved":165,"points":527.1565495207667,"position":14,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2376","name":"Poseidon LSC - Senior","result":154,"resolved":154,"points":492.01277955271564,"position":15,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2358","name":"North Worcestershire - Senior","result":64.5,"resolved":64.5,"points":206.07028753993612,"position":16,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:362": [
+          {"entity":"team:2378","name":"East Kilbride - Masters","result":232,"resolved":232,"points":1000,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2351","name":"St John Berchmans - Masters","result":219,"resolved":219,"points":943.9655172413793,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2370","name":"Blyth - Masters A","result":204.5,"resolved":204.5,"points":881.4655172413793,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2371","name":"Blyth - Masters B","result":192.5,"resolved":192.5,"points":829.7413793103449,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2345","name":"Retford & District - Masters","result":180,"resolved":180,"points":775.8620689655172,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2359","name":"North Worcestershire - Masters","result":177.5,"resolved":177.5,"points":765.0862068965517,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2355","name":"Horsham - Masters","result":135,"resolved":135,"points":581.8965517241379,"position":7,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    },
+    "serc:170": {
+      "name": "Junior SERC",
+      "results": {
+        "all": [
+          {"entity":"team:2373","name":"Blyth - Lifesavers Juniors","result":193,"resolved":193,"points":1000,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2374","name":"Blyth - Lifeguard Juniors","result":177.5,"resolved":177.5,"points":919.6891191709846,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2346","name":"Retford & District - Junior","result":143,"resolved":143,"points":740.9326424870466,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2360","name":"North Worcestershire - Junior","result":143,"resolved":143,"points":740.9326424870466,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2365","name":"East Kilbride - Junior B","result":141.5,"resolved":141.5,"points":733.160621761658,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2372","name":"Blyth - Junior Graduates","result":136,"resolved":136,"points":704.6632124352332,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2364","name":"East Kilbride - Junior A","result":126.5,"resolved":126.5,"points":655.4404145077721,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2375","name":"Blyth - Nippers","result":126,"resolved":126,"points":652.8497409326425,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2353","name":"St John Berchmans - Junior B","result":122,"resolved":122,"points":632.1243523316062,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2349","name":"City of Rochester - Junior","result":118.5,"resolved":118.5,"points":613.9896373056995,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2366","name":"Redditch LSC - Junior","result":117.5,"resolved":117.5,"points":608.8082901554404,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2362","name":"Crawley Town - Junior","result":110,"resolved":110,"points":569.9481865284974,"position":12,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2352","name":"St John Berchmans - Junior A","result":96.5,"resolved":96.5,"points":500,"position":13,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:360": [
+          {"entity":"team:2373","name":"Blyth - Lifesavers Juniors","result":193,"resolved":193,"points":1000,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2374","name":"Blyth - Lifeguard Juniors","result":177.5,"resolved":177.5,"points":919.6891191709846,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2346","name":"Retford & District - Junior","result":143,"resolved":143,"points":740.9326424870466,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2360","name":"North Worcestershire - Junior","result":143,"resolved":143,"points":740.9326424870466,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2365","name":"East Kilbride - Junior B","result":141.5,"resolved":141.5,"points":733.160621761658,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2372","name":"Blyth - Junior Graduates","result":136,"resolved":136,"points":704.6632124352332,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2364","name":"East Kilbride - Junior A","result":126.5,"resolved":126.5,"points":655.4404145077721,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2375","name":"Blyth - Nippers","result":126,"resolved":126,"points":652.8497409326425,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2353","name":"St John Berchmans - Junior B","result":122,"resolved":122,"points":632.1243523316062,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2349","name":"City of Rochester - Junior","result":118.5,"resolved":118.5,"points":613.9896373056995,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2366","name":"Redditch LSC - Junior","result":117.5,"resolved":117.5,"points":608.8082901554404,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2362","name":"Crawley Town - Junior","result":110,"resolved":110,"points":569.9481865284974,"position":12,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2352","name":"St John Berchmans - Junior A","result":96.5,"resolved":96.5,"points":500,"position":13,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    }
+  },
+  "sheets": [],
+  "masters": []
+}
