@@ -2,7 +2,7 @@
 
 Written 2026-11-11 on `feature/scoring-engine-rebuild`, with the tests and tooling that make a
 rebuild safe. The evaluation below is the engine as it was found; where a step of the rebuild has
-since dealt with a point, it says so. Progress: steps 0 to 5 are done and checked (golden suite, whole-database comparison, browser). Step 6, the quirk fixes, is done but for the whole-database comparison (see [Steps](#steps), [Notes from step 5](#notes-from-step-5) and [Notes from step 6](#notes-from-step-6)).
+since dealt with a point, it says so. Progress: steps 0 to 5 are done and checked (golden suite, whole-database comparison, browser). Step 6, the quirk fixes, is done and checked (see [Steps](#steps), [Notes from step 5](#notes-from-step-5) and [Notes from step 6](#notes-from-step-6)).
 
 ## In short
 
@@ -304,7 +304,7 @@ database.
 | Q6 | An Entity with **no seed time is scored as if its seed were 0**, so the BULSCA Swim & Tow auto penalty gives it `1 + FLOOR(time / 15000)` P900s. | Whatever was scored that way stays that way | **Keep** (decided 2026-11-11) |
 | Q7 | A sheet with tie-breaks gives **entries that tie on everything different places**, in database order. Which one is placed higher is not defined. | 133 sheets use tie-breaks; none in the fixtures currently tie all the way | **Keep** (decided 2026-11-11). The rebuild's loader must read rows in id order, which is the order the engine sees today, so these places don't move. |
 | Q8 | A sheet's cached results are cleared when a result or Mark is **edited**, and on any penalty or DQ, but **not** when a Mark or time is first entered, nor when a marking point's weight, a formula, a League's members or an entry changes. | Showed stale standings until something else cleared the cache | **Fixed** in step 4 (`ResultsVersionTest`) |
-| Q9 | Scoring an Event for a League with no entries evaluates the formula anyway, which can divide by zero (Champs 2023-24's Rope Throw for its empty "Squad" League). | That one view errors | **Fixed** in step 6: no entries, no results. A sheet skips an Event with no results the same way. |
+| Q9 | Scoring an Event for a League with no entries evaluates the formula anyway, which can divide by zero (Champs 2023-24's Rope Throw for its empty "Squad" and "Team" Leagues). | Those two views error | **Fixed** in step 6: no entries, no results. A sheet skips an Event with no results the same way. |
 | Q10 | The Master sheet ignores each sheet's `weight`, and `sum_over` anything but `position` reads a property that doesn't exist. | Nothing: every weight is 1 and every Master sheet sums places | **Fixed** in step 6 (decided 2026-11-17: keep the weight). Each sheet's value, the default included, is multiplied by its weight, and saving a Master sheet keeps the weights it has rather than setting them to 1. The page doesn't edit weights. Since step 5 summing `totalPoints` (the page's "Points") reads a real value. |
 
 ## The rebuild
@@ -442,7 +442,7 @@ on purpose.
 **6. Fix the quirks.** Q1–Q5, Q9 and Q10 done 2026-11-17, in one change rather than a PR each, as
 each was a few lines. Each pinned test now asserts the intended behaviour, and the fixed ones moved
 out of `EngineQuirksTest` to where the behaviour they cover is tested. Checked with the golden suite
-(no result moved) and the whole test suite. The whole-database comparison is still to run (see
+(no result moved), the whole test suite and the whole-database comparison (see
 [Notes from step 6](#notes-from-step-6)). Q6 and Q7 stay as they are: their
 tests in `EngineQuirksTest` are the specification, not a to-do.
 
@@ -514,12 +514,16 @@ Things to know before merging or building on this.
 
 ## Notes from step 6
 
-- **Whole-database comparison: still to run.** Load `scoring.sql` (the live copy of 2026-11-11)
-  into a database other than your dev one, run the migrations, then
-  `DB_DATABASE=<copy> CACHE_DRIVER=array CACHE_STORE=array php artisan scoring:snapshot --compare=storage/app/scoring-before`.
-  Expected: every competition the same but for Champs 2023-24's Rope Throw for its empty "Squad"
-  League, which no longer errors and has no results (Q9). Brum 2024-25's "Non-counting" SERC view
-  still errors: it has an entry, just no non-disqualified one.
+- **The whole-database comparison passes for step 6** (2026-11-17, on the live copy of
+  2026-11-11, against `storage/app/scoring-before`): 65 of 66 competitions the same. The one
+  change is the intended one: Champs 2023-24's Rope Throw for its "Squad" and "Team" Leagues, which
+  have no members, no longer errors and has no results (Q9; `--compare` lists an empty view as
+  "missing"). Brum 2024-25's "Non-counting" SERC view still errors: it has an entry, just no
+  non-disqualified one. To run it again:
+  - Load `scoring.sql` (the live copy) into `scoring_test`, after dropping and recreating it, then
+    run the migrations on it with `DB_DATABASE=scoring_test`.
+  - Run `DB_DATABASE=scoring_test CACHE_DRIVER=array CACHE_STORE=array php artisan scoring:snapshot --compare=storage/app/scoring-before`.
+  - Don't run the test suite in between: it rebuilds `scoring_test`.
 - **Master sheet weights (Q10) apply, but nothing sets them.** Every stored weight is 1 and the
   Management page neither shows nor edits them; saving keeps what is stored. A weight other than 1
   makes that sheet's values floats (2 × 1.5 = 3.0); a weight of 1 leaves them as they are.
@@ -537,8 +541,8 @@ Not engine faults, but worth a look:
   formula: Brum Internal May23, Sheff vs Notts Varsity 2023 and 2024, Brumwick Varsity 2024,
   Brumwick the Second 2024 (all Events); National Club SERC 2024's speed event; one of Brum vs
   Lough Varsity 2025's four speed events.
-- **Two League views that error** on the public Events tab: Champs 2023-24's Rope Throw for its
-  empty "Squad" League (Q9, *fixed in step 6*), and Brum 2024-25's SERCs for "Non-counting", whose only team was
+- **League views that error** on the public Events tab: Champs 2023-24's Rope Throw for its
+  empty "Squad" and "Team" Leagues (Q9, *fixed in step 6*), and Brum 2024-25's SERCs for "Non-counting", whose only team was
   disqualified (the formula divides by the best non-disqualified score, and there isn't one).
 - `php artisan stats:generate` can't work: `StatsManager` calls `$event->getResults()`. Left as
   it is (decided 2026-11-13).
