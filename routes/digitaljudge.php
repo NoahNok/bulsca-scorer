@@ -19,6 +19,7 @@ use App\Http\Controllers\DigitalJudge\SpeedJudgingController;
 use App\Http\Controllers\DigitalJudge\Violation\ViolationController;
 use App\Http\Controllers\DigitalJudge\Violation\ViolationStateController;
 use App\Http\Middleware\DigitalJudge\SERC\MustHaveJudgeSelected;
+use App\Http\Controllers\DigitalJudge\Auth\QrLoginController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -34,6 +35,8 @@ Route::domain(RouteHelpers::domainRemap("judge."))->group(function () {
 
         Route::get('register', [RegisterController::class, 'register'])->name('judge.register');
         Route::post('register', [RegisterController::class, 'registerPost'])->name('judge.register.post');
+        // a sign-in QR code an Admin showed (LoginToken)
+        Route::get('qr-login/{token}', QrLoginController::class)->where('token', '[A-Za-z0-9]{64}')->middleware('throttle:20,1')->name('judge.qr-login');
         Route::get('forgot-password', [ForgotPasswordController::class, 'forgotPassword'])->name('judge.password.forgot');
         Route::post('forgot-password', [ForgotPasswordController::class, 'forgotPasswordPost'])->name('judge.password.forgot.post');
 

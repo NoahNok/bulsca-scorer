@@ -6,11 +6,17 @@ use App\Helpers\Pagination;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use App\Models\Competition;
+use App\Models\LoginToken;
 use App\Models\Organisation\Organisation;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules;
 use Inertia\Inertia;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class AdminUsersController extends Controller
 {
@@ -53,7 +59,38 @@ class AdminUsersController extends Controller
                 'url' => route('manage.admin.users.show', $user),
             ]),
             'pagination' => Pagination::props($users),
+            'createUrl' => route('manage.admin.users.create'),
         ]);
+    }
+
+    public function create()
+    {
+        return Inertia::render('Admin/NewUser');
+    }
+
+    /**
+     * Make an account that's verified from the start, so its email doesn't have to be real: for temporary or
+     * shared accounts that sign in with a sign-in QR code. Nothing is emailed. Without a password it can only
+     * sign in by QR code (or a PIN, if the email is real).
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique(User::class)],
+            'full_account' => ['boolean'],
+            'password' => ['nullable', 'string', Rules\Password::defaults()],
+        ]);
+
+        $user = new User();
+        $user->name = $validated['name'];
+        $user->email = $validated['email'];
+        $user->password = Hash::make($validated['password'] ?? Str::random(40));
+        $user->judge_only = !($validated['full_account'] ?? false);
+        $user->forceFill(['email_verified_at' => now()]);
+        $user->save();
+
+        return to_route('manage.admin.users.show', $user)->with('success', "{$user->name} added");
     }
 
     public function show(User $user)
@@ -153,6 +190,8 @@ class AdminUsersController extends Controller
                 'accepted' => (int) $submissions->accepted,
                 'rejected' => (int) $submissions->rejected,
             ] : null,
+            // set just after making one, with the QR code's svg and when it expires (ISO 8601)
+            'loginQr' => session('loginQr'),
         ]);
     }
 
@@ -170,5 +209,36 @@ class AdminUsersController extends Controller
         $user->save();
 
         return back()->with('success', "{$user->name} now has a full account");
+    }
+
+    /**
+     * Make a sign-in QR code for $user: scanning it signs that device in to Digital Judge as them, once,
+     * within a few minutes. It's flashed, so the User page shows it once and a reload drops it.
+     */
+    public function loginQr(Request $request, User $user)
+    {
+        // an Admin account is too powerful to hand over by QR code
+        if ($user->isAdmin()) {
+            return back()->with('alert-error', "Admin accounts can't sign in with a QR code");
+        }
+
+        $loginToken = LoginToken::issueFor($user, $request->user());
+        $url = route('judge.qr-login', $loginToken->plainToken);
+
+        return back()->with('loginQr', [
+            'svg' => (string) QrCode::size(280)->margin(1)->generate($url),
+            'expiresAt' => $loginToken->expires_at->toIso8601String(),
+            // the dialog polls loginQrStatus with it to know when it's been scanned
+            'status' => route('manage.admin.login-qr.status', $loginToken),
+        ]);
+    }
+
+    /**
+     * Whether a sign-in QR code has been used, for the dialog showing it to swap in a new one. Gone (404) once
+     * another code for the same user replaced it.
+     */
+    public function loginQrStatus(LoginToken $loginToken)
+    {
+        return response()->json(['used' => $loginToken->used_at !== null]);
     }
 }

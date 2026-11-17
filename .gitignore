@@ -32,6 +32,7 @@ storage/logs/*.log
 
 # Database dumps (production data)
 /*.sql
+scoring.sql
 
 # Claude Code settings for this machine only
 /.claude/settings.local.json

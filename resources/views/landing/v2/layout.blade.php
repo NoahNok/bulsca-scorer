@@ -10,7 +10,8 @@
     <x-favicon />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light dark">
-    <title>{{ trim(View::yieldContent('title')) ? trim(View::yieldContent('title')) . ' | ' : '' }}Scoring.Events</title>
+    <title>{{ trim(View::yieldContent('title')) ? trim(View::yieldContent('title')) . ' | ' : '' }}Scoring.Events
+    </title>
     @yield('v2-meta')
 
     @include('landing.v2.partials.theme-script')
@@ -67,7 +68,7 @@
         </a>
         <nav class="v2-nav" aria-label="Main">
             <a href="{{ \App\Helpers\RouteHelpers::mainRoute('explore') }}" class="v2-nav-wide">Explore</a>
-            <a href="{{ route('dj.home') }}" class="v2-nav-wide">Officials</a>
+            <a href="{{ route('judge.login') }}" class="v2-nav-wide">Officials</a>
             {{-- The main domain has no session (ADR 0002): app.'s home sends anyone signed in straight to Management --}}
             <a href="{{ route('manage.home') }}">Sign in</a>
             {{-- Flips between light and dark, starting from whatever is showing (the OS setting until it's used) --}}
@@ -76,13 +77,14 @@
                 dark: false,
                 init() { this.dark = v2Theme.isDark(); },
                 flip() { v2Theme.flipTheme(this.$el, (dark) => this.dark = dark); }
-            }" @click="flip()" :aria-label="dark ? 'Switch to light mode' : 'Switch to dark mode'"
-                aria-label="Switch theme">
+            }" @click="flip()"
+                :aria-label="dark ? 'Switch to light mode' : 'Switch to dark mode'" aria-label="Switch theme">
                 {{-- Shows the mode you'd switch to --}}
                 <svg x-show="dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" aria-hidden="true">
                     <circle cx="12" cy="12" r="4" />
-                    <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+                    <path
+                        d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
                 </svg>
                 <svg x-show="!dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
