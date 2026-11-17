@@ -2,6 +2,7 @@
 
 namespace App\Scoring\Engine;
 
+use App\Models\Interfaces\IScoringContextSimplify;
 use App\Scoring\Input\Entry;
 use App\Scoring\Input\SheetEvent;
 use Illuminate\Support\Collection;
@@ -16,7 +17,7 @@ use Illuminate\Support\Collection;
  * It is a copy: the scored result it was made from is shared between every sheet that includes the
  * Event, and is not changed. A sheet does not see which results were combined into one.
  */
-final class SheetEventResult
+final class SheetEventResult implements IScoringContextSimplify
 {
     public int $id;
 
@@ -58,6 +59,19 @@ final class SheetEventResult
         $this->penalties = $scored->penalties;
         $this->disqualifications = $scored->disqualifications;
         $this->combined = collect();
+    }
+
+    /**
+     * What a failed formula's context shows of it: the Event's scored result, the Event by key
+     * (`speed:3`) and `adjusted_points`, null until the sheet's Formula has given it some
+     */
+    public function simplifyContext(): array
+    {
+        return [
+            ...$this->scored->simplifyContext(),
+            'event' => "{$this->event->type}:{$this->event->id}",
+            'adjusted_points' => $this->adjustedPoints === -1.0 ? null : $this->adjustedPoints,
+        ];
     }
 
     public function isDisqualified(): bool

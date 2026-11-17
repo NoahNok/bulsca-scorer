@@ -2,6 +2,7 @@
 
 namespace App\Scoring\Engine;
 
+use App\Models\Interfaces\IScoringContextSimplify;
 use App\Scoring\Input\Entry;
 use App\Scoring\Input\EventRow;
 use Illuminate\Support\Collection;
@@ -16,7 +17,7 @@ use Illuminate\Support\Collection;
  * that reads one before then fails. The property types matter: what a formula works out is
  * converted to them (a place of 2.5 to 2, a time held as a string to a number).
  */
-final class ScoredResult
+final class ScoredResult implements IScoringContextSimplify
 {
     public float $resolvedResult;
 
@@ -73,6 +74,23 @@ final class ScoredResult
     public function isDNF(): bool
     {
         return $this->disqualifications->firstWhere('code', '99915') !== null && $this->disqualifications->count() == 1;
+    }
+
+    /**
+     * What a failed formula's context shows of it: its Entry by key (`team:12`), its numbers and
+     * its codes. `resolved_result` and `position` are null until worked out.
+     */
+    public function simplifyContext(): array
+    {
+        return [
+            'entity' => $this->entity->key(),
+            'result' => $this->result,
+            'resolved_result' => $this->resolvedResult ?? null,
+            'points' => $this->points,
+            'position' => $this->position ?? null,
+            'penalties' => $this->penalties->pluck('code')->implode(', '),
+            'disqualifications' => $this->disqualifications->pluck('code')->implode(', '),
+        ];
     }
 
     /**

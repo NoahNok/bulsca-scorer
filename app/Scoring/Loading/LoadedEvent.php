@@ -78,6 +78,18 @@ final class LoadedEvent
     }
 
     /**
+     * The name of one of the Event's Entries, by `Entry::key()`. Null for one it doesn't have.
+     */
+    public function nameOf(string $key): ?string
+    {
+        if (!isset($this->entities[$key])) {
+            return null;
+        }
+
+        return ($this->refs[$key] ?? self::refTo($this->entities[$key], $this->event->getCompetition))->name;
+    }
+
+    /**
      * @param int[] $leagueIds
      */
     public static function refTo(Entity $entity, Competition $comp, array $leagueIds = []): EntryRef

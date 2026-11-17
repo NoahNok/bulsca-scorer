@@ -465,13 +465,15 @@ only checking its syntax; and store the two morph-type spellings and tie-break f
 
 Things to know before merging or building on this.
 
-- **A scoring error's context is unformatted.** `ScoringException::getContext()` reduces each
-  result to names and numbers only for objects that implement `IScoringContextSimplify`, and only
-  the deleted DTOs did. The engine's `ScoredResult` and `SheetEventResult` don't, so since step 2
-  the context holds the raw objects and `item` is dropped. The Management Results sheet page shows
-  that context to Admins, and it is written to the daily log. To fix: have the two engine classes
-  describe themselves (who, result, points, place, penalties and DQs), or format them in
-  `ScoringException`, and cover it in `ScoringExceptionTest`.
+- **A scoring error's context.** *Fixed after step 5.* From step 2 until this fix it held the raw
+  objects and dropped `item`, because only the deleted DTOs implemented `IScoringContextSimplify`. Now `ScoredResult` and
+  `SheetEventResult` describe themselves: their Entry by key (`team:12`), `result`,
+  `resolved_result`, `points`, `position` (null until worked out), penalty and DQ codes, and on a
+  sheet the `event` (`speed:3`) and `adjusted_points`. The engine has no database, so `ScoringRun`
+  (an Event's formula) and `CompetitionResults` (a sheet's) hand the exception a way to swap
+  those keys for names (`ScoringException::nameWith()`). Naming runs only when the context is
+  asked for. The Management Results sheet page shows it to Admins, and it goes to the daily log,
+  never to Sentry. Covered by `ScoringExceptionTest` and `ScoringErrorContextTest`.
 - **An Event's results are no longer scored afresh on every call.** They share the request's
   `ScoringRun` and the versioned cache, like sheets. After a write that raises no model event,
   call `ResultsVersion::bump()`, as before. `fresh: true` ignores the cache but not what the

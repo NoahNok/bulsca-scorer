@@ -2,6 +2,7 @@
 
 namespace App\Scoring;
 
+use App\Exceptions\ScoringException;
 use App\Models\AbstractClasses\Event;
 use App\Scoring\Engine\EventScorer;
 use App\Scoring\Engine\ScoredResult;
@@ -55,7 +56,11 @@ final class ScoringRun
         if (!array_key_exists($key, $this->results)) {
             $loaded = $this->loaded($event);
 
-            $this->results[$key] = $loaded ? EventScorer::score($loaded->input, $leagueId) : [];
+            try {
+                $this->results[$key] = $loaded ? EventScorer::score($loaded->input, $leagueId) : [];
+            } catch (ScoringException $e) {
+                throw $e->nameWith(entries: $loaded->nameOf(...));
+            }
         }
 
         return $this->results[$key];

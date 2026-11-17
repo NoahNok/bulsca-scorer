@@ -2,6 +2,7 @@
 
 namespace App\Scoring;
 
+use App\Exceptions\ScoringException;
 use App\Models\AbstractClasses\Event;
 use App\Models\Competition;
 use App\Models\League;
@@ -151,7 +152,30 @@ class CompetitionResults
             $from[spl_object_id($definition)] = [$this->run->loaded($event), $this->run->name($event)];
         }
 
-        $standings = SheetScorer::score(SheetDefinition::fromSchema($sheet->schema, $events), $eventResults);
+        try {
+            $standings = SheetScorer::score(SheetDefinition::fromSchema($sheet->schema, $events), $eventResults);
+        } catch (ScoringException $e) {
+            throw $e->nameWith(
+                entries: function (string $key) use ($from) {
+                    foreach ($from as [$loaded]) {
+                        if ($name = $loaded?->nameOf($key)) {
+                            return $name;
+                        }
+                    }
+
+                    return null;
+                },
+                events: function (string $key) use ($events, $from) {
+                    foreach ($events as $event) {
+                        if ("{$event->type}:{$event->id}" === $key) {
+                            return $from[spl_object_id($event)][1];
+                        }
+                    }
+
+                    return null;
+                },
+            );
+        }
 
         return array_map(function (SheetStanding $standing) use ($from) {
             $entry = null;
