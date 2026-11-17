@@ -341,7 +341,13 @@ class DJJudgingController extends Controller
                 $mpData['name'] = $mp->name;
                 $mpData['marks'] = [];
 
-                foreach ($judge->getSERC->getDraw as $draw) {
+                $draws = $judge->getSERC->getDraw;
+                $tank = DigitalJudge::getTank();
+                if ($tank != null) {
+                    $draws = $draws->where('tank', $tank);
+                }
+
+                foreach ($draws as $draw) {
                     $mpData['marks'][] = [
                         'team' => $comp->show_teams_to_judges || $head ? $draw->entity->getName($comp) : $draw->draw,
                         'mark' => $mp->getScoreForTeam($draw->entity)
