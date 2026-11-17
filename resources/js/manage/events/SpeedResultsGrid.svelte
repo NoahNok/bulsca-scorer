@@ -13,6 +13,7 @@
     import type { MaskInputOptions } from "maska";
     import { untrack } from "svelte";
     import { maska } from "maska/svelte";
+    import { TIME_MASK, TIME_TOKENS } from "@/manage/masks";
     import { upperCase } from "@/manage/ui";
 
     let {
@@ -122,11 +123,9 @@
     // codes, filled in as they're typed. Penalties are a free list, so only capitals
     const MASKS: Partial<Record<keyof Cells, MaskInputOptions>> = {
         result: {
-            mask: (input: string) => (input.startsWith("D") ? "DNF" : input.startsWith("O") ? "OOT" : "99:59.99#"),
+            mask: (input: string) => (input.startsWith("D") ? "DNF" : input.startsWith("O") ? "OOT" : TIME_MASK),
             tokens: {
-                "5": { pattern: /[0-5]/ },
-                "9": { pattern: /[0-9]/ },
-                "#": { pattern: /[0-9]/, optional: true },
+                ...TIME_TOKENS,
                 // The last letter of DNS or DNF
                 F: { pattern: /[SF]/ },
             },

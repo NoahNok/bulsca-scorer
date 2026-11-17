@@ -1,9 +1,11 @@
 <!--
     A v2 field (.v2-field): label, input, hint and error, with aria-invalid and aria-describedby wired up.
-    A password field gets a show/hide button.
+    A password field gets a show/hide button. Give it a maska `mask` to fill in a format as it's typed.
 -->
 <script lang="ts">
     import { Eye, EyeOff } from "@lucide/svelte";
+    import type { MaskInputOptions } from "maska";
+    import { maska } from "maska/svelte";
     import type { HTMLInputAttributes } from "svelte/elements";
 
     let {
@@ -13,6 +15,7 @@
         type = "text",
         error,
         hint,
+        mask,
         ...rest
     }: {
         id: string;
@@ -21,9 +24,15 @@
         type?: string;
         error?: string;
         hint?: string;
+        mask?: MaskInputOptions;
     } & Omit<HTMLInputAttributes, "id" | "value" | "type"> = $props();
 
     let shown = $state(false);
+
+    // Only fields given a mask get maska
+    function maskIf(node: HTMLInputElement, options?: MaskInputOptions) {
+        return options ? maska(node, options) : undefined;
+    }
 
     const describedBy = $derived([error && `${id}-error`, hint && `${id}-hint`].filter(Boolean).join(" ") || undefined);
 </script>
@@ -42,6 +51,7 @@
             {value}
             aria-invalid={error ? "true" : undefined}
             aria-describedby={describedBy}
+            use:maskIf={mask}
             {...rest}
         />
         {#if type === "password"}

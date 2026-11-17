@@ -20,6 +20,7 @@
     import { confirm } from "@/lib/confirm";
     import Alert from "@/manage/components/Alert.svelte";
     import Field from "@/manage/components/Field.svelte";
+    import { timeMask } from "@/manage/masks";
     import MultiSelect from "@/manage/components/MultiSelect.svelte";
     import SidebarPage from "@/manage/components/SidebarPage.svelte";
     import RowIcon from "@/manage/components/RowIcon.svelte";
@@ -446,7 +447,9 @@
                                             label={seeds?.perEvent ? event.name : "Seed"}
                                             value={saved[event.id] ?? ""}
                                             placeholder="01:23.456"
+                                            inputmode="numeric"
                                             autocomplete="off"
+                                            mask={timeMask}
                                             error={errors[`seeds.${event.id}`]}
                                         />
                                     {/each}
