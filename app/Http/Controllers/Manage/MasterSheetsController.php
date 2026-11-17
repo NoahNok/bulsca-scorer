@@ -126,16 +126,18 @@ class MasterSheetsController extends Controller
     }
 
     /**
-     * Saves a Master sheet. It's always by Club, and every sheet counts once: the weights it stores were
-     * never used, so they're kept at 1.
+     * Saves a Master sheet. It's always by Club. The page doesn't edit weights: a sheet already on
+     * it keeps the weight it has, and one added counts once.
      */
     private function fill(MasterSchema $master, array $data): void
     {
+        $weights = array_column($master->schema['sheets'] ?? [], 'weight', 'id');
+
         $master->name = $data['name'];
         $master->schema = [
             'sum_over' => $data['sum_over'],
             'default_value' => $data['default_value'] * 1,
-            'sheets' => collect($data['sheets'])->map(fn ($id) => ['id' => (int) $id, 'weight' => 1])->values()->all(),
+            'sheets' => collect($data['sheets'])->map(fn ($id) => ['id' => (int) $id, 'weight' => $weights[(int) $id] ?? 1])->values()->all(),
             'group_on' => 'club',
             'exclude' => collect($data['exclude'])->map(fn ($id) => (int) $id)->values()->all(),
         ];

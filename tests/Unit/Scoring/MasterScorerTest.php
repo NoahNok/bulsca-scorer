@@ -100,6 +100,19 @@ class MasterScorerTest extends TestCase
     }
 
     /** Q10 */
+    public function test_each_sheets_value_is_multiplied_by_its_weight_default_included(): void
+    {
+        $standings = MasterScorer::score([1, 2, 3], $this->sheets(), 10, weights: [10 => 1, 20 => 2.5]);
+
+        // Sheet 20 counts 2.5 times: Cardiff 1 + 2×2.5, Swansea 2 + 1×2.5, Bangor 3 + 10×2.5
+        $this->assertSame([
+            [2, 1, 4.5, [10 => 2, 20 => 2.5]],
+            [1, 2, 6.0, [10 => 1, 20 => 5.0]],
+            [3, 3, 28.0, [10 => 3, 20 => 25.0]],
+        ], $this->rows($standings));
+    }
+
+    /** Q10 */
     public function test_summing_anything_but_places_reads_that_property_of_a_sheets_row_and_the_most_wins(): void
     {
         $standings = MasterScorer::score([1, 2, 3], $this->sheets(), 0, 'totalPoints');

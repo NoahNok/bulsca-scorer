@@ -183,25 +183,47 @@ class FormulaEvaluatorTest extends TestCase
     }
 
     /*
-     * Quirks: unintended, but pinned so a rebuild can't change them by accident. See "Quirks" in
-     * docs/scoring-engine.md.
+     * Quirks fixed in step 6 of the rebuild. See "Quirks" in docs/scoring-engine.md.
      */
 
     /** Q2 */
-    public function test_rank_remembers_the_first_direction_it_was_asked_for(): void
+    public function test_rank_can_be_asked_for_both_directions_on_the_same_results(): void
     {
         $formula = ['equation' => "RANK(results, 'resolvedResult', item, 'ASC') * 10 + RANK(results, 'resolvedResult', item, 'DESC')"];
 
-        // The lowest is 1st ascending and should be 3rd descending (13), but the second RANK reuses the first's order
-        $this->assertSame([11.0, 22.0, 33.0], $this->points($formula, $this->results([10, 20, 30])));
+        // The lowest is 1st ascending and 3rd descending: 13, 22, 31
+        $this->assertSame([13.0, 22.0, 31.0], $this->points($formula, $this->results([10, 20, 30])));
+    }
+
+    /** Q2 */
+    public function test_rankmedian_can_be_asked_for_both_directions_on_the_same_results(): void
+    {
+        $formula = ['equation' => "RANKMEDIAN(results, 'resolvedResult', item, 'ASC') * 10 + RANKMEDIAN(results, 'resolvedResult', item, 'DESC')"];
+
+        $this->assertSame([13.0, 22.0, 31.0], $this->points($formula, $this->results([10, 20, 30])));
+    }
+
+    /** Q2 */
+    public function test_rank_works_out_each_processing_afresh(): void
+    {
+        $evaluator = new FormulaEvaluator();
+        $formula = ['equation' => "RANK(results, 'resolvedResult', item, 'ASC')"];
+
+        $first = $this->results([10, 20, 30]);
+        $evaluator->process($formula, $first);
+
+        // The same results (same ids), now in the other order
+        $second = $this->results([30, 20, 10]);
+        $evaluator->process($formula, $second);
+
+        $this->assertSame([3.0, 2.0, 1.0], $second->pluck('points')->all());
     }
 
     /** Q3 */
-    public function test_rankmedian_treats_results_that_differ_by_less_than_one_as_tied(): void
+    public function test_rankmedian_keeps_results_that_differ_by_less_than_one_apart(): void
     {
         $formula = ['equation' => "RANKMEDIAN(results, 'resolvedResult', item)"];
 
-        // The values are used as array keys, which cuts a float to a whole number. PHP 8 only warns.
         $warnings = [];
         set_error_handler(function (int $level, string $message) use (&$warnings) {
             $warnings[] = $message;
@@ -215,8 +237,7 @@ class FormulaEvaluatorTest extends TestCase
             restore_error_handler();
         }
 
-        // 22.5 should be 2nd and 22 3rd; both get the middle of 2nd and 3rd
-        $this->assertSame([2.5, 2.5, 1.0], $points);
-        $this->assertContains('Implicit conversion from float 22.5 to int loses precision', $warnings);
+        $this->assertSame([3.0, 2.0, 1.0], $points);
+        $this->assertSame([], $warnings);
     }
 }

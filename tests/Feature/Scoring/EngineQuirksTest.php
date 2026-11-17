@@ -3,69 +3,15 @@
 namespace Tests\Feature\Scoring;
 
 use App\Exceptions\ScoringException;
-use ErrorException;
 
 /**
- * Things the engine does today that look unintended, pinned so a rebuild doesn't change one by
- * accident: results that have already been published may depend on them. Each is written up in
- * docs/scoring-engine.md ("Quirks"), with what it would take to fix it on purpose. The two in the
- * formula language itself (Q2, Q3) are in Tests\Unit\Scoring\FormulaEvaluatorTest. Q8 (a sheet's
- * results going stale) is fixed: see ResultsVersionTest.
+ * Things the engine does that look unintended but are kept on purpose (Q6, Q7, decided 2026-11-11):
+ * results that have already been published depend on them. These tests are their specification.
+ * The other quirks in docs/scoring-engine.md ("Quirks") are fixed, and tested where the behaviour
+ * they fixed is: SpeedEventScoringTest, EventScorerTest, FormulaEvaluatorTest, ResultsVersionTest.
  */
 class EngineQuirksTest extends ScoringTestCase
 {
-    public function test_an_automatic_dq_takes_the_code_of_the_last_automatic_penalty_not_its_own(): void
-    {
-        $t = $this->teams('A');
-        $event = $this->speedEvent([
-            ...self::TIME_POINTS,
-            'auto_penalties' => [['code' => '900', 'condition' => 'false', 'amount' => '1']],
-            'auto_disqualifications' => [['code' => '555', 'condition' => 'COUNT(item.penalties) > 1', 'amount' => '1']],
-        ], [[$t['A'], 60000]]);
-        $event->addEntityPenalty($t['A'], 801);
-        $event->addEntityPenalty($t['A'], 802);
-
-        $result = $this->eventResults($event)[0];
-
-        $this->assertTrue($result->isDisqualified());
-        $this->assertSame('DQ900', $result->disqualificationLabel());
-    }
-
-    public function test_an_automatic_dq_with_no_automatic_penalties_cannot_be_scored(): void
-    {
-        $t = $this->teams('A');
-        $event = $this->speedEvent([
-            ...self::TIME_POINTS,
-            'auto_disqualifications' => [['code' => '555', 'condition' => 'true', 'amount' => '1']],
-        ], [[$t['A'], 60000]]);
-
-        $this->expectException(ErrorException::class);
-        $this->expectExceptionMessage('Undefined variable $autoPen');
-
-        $this->eventResults($event);
-    }
-
-    public function test_seed_times_come_from_the_competitions_first_speed_event_whichever_is_scored(): void
-    {
-        $t = $this->teams('A');
-        $first = $this->speedEvent(self::RAW, [[$t['A'], 1]]);
-        $second = $this->speedEvent([...self::RAW, 'penalty_func' => 'item.seed', 'force_penalty' => true], [[$t['A'], 70000]], name: 'Medley');
-
-        $this->seedTime($first, $t['A'], 60000);
-        $this->seedTime($second, $t['A'], 99000);
-
-        $this->assertSame(60000.0, $this->eventResults($second)[0]->resolvedResult);
-    }
-
-    public function test_the_seed_time_can_be_read_by_penalties_but_not_by_the_equation(): void
-    {
-        $t = $this->teams('A');
-        $event = $this->speedEvent(['equation' => 'item.seed', 'global_variables' => []], [[$t['A'], 70000]]);
-        $this->seedTime($event, $t['A'], 60000);
-
-        $this->assertSame(0.0, $this->eventResults($event)[0]->points);
-    }
-
     public function test_an_entity_without_a_seed_time_is_scored_as_if_its_seed_were_zero(): void
     {
         $t = $this->teams('A', 'B');

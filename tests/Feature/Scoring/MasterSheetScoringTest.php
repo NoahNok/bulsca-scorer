@@ -64,6 +64,18 @@ class MasterSheetScoringTest extends ScoringTestCase
         ], $this->rows($master));
     }
 
+    public function test_each_sheet_counts_its_weight_times(): void
+    {
+        $master = $this->master(['sheets' => [['id' => $this->sheets[0]->id, 'weight' => 1], ['id' => $this->sheets[1]->id, 'weight' => 3]]], $this->sheets);
+
+        // The B League sheet counts three times: Swansea 2 + 3, Cardiff 1 + 6, Bangor 3 + 30
+        $this->assertSame([
+            ['Swansea', 1, 5.0, [2, 3.0]],
+            ['Cardiff', 2, 7.0, [1, 6.0]],
+            ['Bangor', 3, 33.0, [3, 30.0]],
+        ], $this->rows($master));
+    }
+
     public function test_a_club_counts_its_best_placed_entry_in_each_sheet(): void
     {
         $extra = CompetitionTeam::create(['competition' => $this->comp->id, 'club' => $this->bangor->id, 'team' => 'F']);

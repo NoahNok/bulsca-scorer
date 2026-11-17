@@ -29,7 +29,11 @@ final class SheetScorer
         foreach ($sheet->events as $index => $event) {
             $results = array_map(fn(ScoredResult $result) => new SheetEventResult($result, $event), $eventResults[$index]);
 
-            // The Formula is worked out even for an Event with no results, as an Event's is (Q9)
+            // An Event with no results gives the sheet nothing, without working out its Formula
+            if ($results === []) {
+                continue;
+            }
+
             (new FormulaEvaluator())->process($sheet->formulaPayload(), collect($results), 'adjustedPoints');
 
             foreach ($results as $result) {

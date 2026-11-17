@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Scoring;
 
-use App\Exceptions\ScoringException;
 use App\Scoring\Engine\EventScorer;
 use App\Scoring\Engine\ScoredResult;
 use App\Scoring\Input\Entry;
@@ -247,7 +246,7 @@ class EventScorerTest extends TestCase
     }
 
     /** Q1 */
-    public function test_an_automatic_disqualification_takes_the_code_of_the_last_automatic_penalty(): void
+    public function test_an_automatic_disqualification_takes_its_own_code(): void
     {
         $formula = [
             ...self::RAW,
@@ -262,12 +261,23 @@ class EventScorerTest extends TestCase
         $results = $this->score($formula, $this->rows([1 => 120000.0, 2 => 70000.0]));
 
         $this->assertSame([[2, 1, 70000.0], [1, 2, 120000.0]], $this->placings($results));
-        $this->assertSame(['901'], $this->codes($results[1], 'disqualifications'));
+        $this->assertSame(['999'], $this->codes($results[1], 'disqualifications'));
         $this->assertSame([], $this->codes($results[0], 'disqualifications'));
     }
 
+    /** Q1 */
+    public function test_an_automatic_disqualification_needs_no_automatic_penalties(): void
+    {
+        $formula = [...self::RAW, 'rank_higher' => false, 'auto_disqualifications' => [['code' => '999', 'condition' => 'item.result > 100000', 'amount' => '1']]];
+
+        $results = $this->score($formula, $this->rows([1 => 120000.0, 2 => 70000.0]));
+
+        $this->assertSame([[2, 1, 70000.0], [1, 2, 120000.0]], $this->placings($results));
+        $this->assertSame(['999'], $this->codes($results[1], 'disqualifications'));
+    }
+
     /** Q4 */
-    public function test_the_seed_can_be_read_by_the_penalty_function_but_is_zero_in_the_equation(): void
+    public function test_the_seed_can_be_read_by_the_penalty_function_and_the_equation(): void
     {
         $rows = [new EventRow(101, $this->team(1), 70000.0, seed: 60000)];
 
@@ -275,8 +285,8 @@ class EventScorerTest extends TestCase
         $byEquation = $this->score(['equation' => 'item.seed + 1'], $rows);
 
         $this->assertSame(60000.0, $byPenaltyFunction[0]->resolvedResult);
-        $this->assertSame(1.0, $byEquation[0]->points);
-        $this->assertSame(0, $byEquation[0]->seed);
+        $this->assertSame(60001.0, $byEquation[0]->points);
+        $this->assertSame(60000, $byEquation[0]->seed);
     }
 
     public function test_grouping_adds_together_the_results_of_a_pair(): void
@@ -342,21 +352,16 @@ class EventScorerTest extends TestCase
     }
 
     /** Q9 */
-    public function test_a_league_with_no_entries_still_has_its_formula_worked_out(): void
+    public function test_a_league_with_no_entries_has_no_results_without_working_out_the_formula(): void
     {
         $rows = [new EventRow(101, $this->team(1, leagues: [7]), 60000.0)];
 
-        // Nothing to work the equation out for, so a formula that needs no results gives none
-        $this->assertSame([], $this->score(self::RAW, $rows, league: 8));
-
-        // But the global variables are worked out, and this one divides by how many results there are
+        // This global variable divides by how many results there are
         $perResult = ['equation' => 'share', 'global_variables' => [['name' => 'share', 'expression' => '1000 / COUNT(results)']]];
+
         $this->assertSame([[1, 1, 1000.0]], $this->placings($this->score($perResult, $rows, league: 7)));
-
-        $this->expectException(ScoringException::class);
-        $this->expectExceptionMessage("Error evaluating global variable 'share': Division by zero");
-
-        $this->score($perResult, $rows, league: 8);
+        $this->assertSame([], $this->score($perResult, $rows, league: 8));
+        $this->assertSame([], $this->score($perResult, []));
     }
 
     public function test_a_formula_can_read_an_entrys_stored_columns(): void

@@ -58,11 +58,15 @@ final class EventLoader
 
         $models = self::entities($event, $results);
 
-        // Q5: always the competition's first speed event's seeds, even with seeds per event
+        // With seeds per event, this event's own seeds; otherwise the competition's, which are
+        // entered against its first speed event (as `HeatService` reads them for heats).
         // Matched on the Entity's id alone, like penalties. An Entity has one seed per event; were
         // there more, the first (in id order) is the one used. One without a time counts as 0.
+        $comp = $event->getCompetition;
+        $seedsFrom = $comp->seed_per_event ? $event : $comp->getSpeedEvents->first();
+
         $seeds = [];
-        foreach ($event->getCompetition->getSpeedEvents->first()->seeds()->orderBy('id')->get(['id', 'entity_id', 'seed']) as $seed) {
+        foreach ($seedsFrom->seeds()->orderBy('id')->get(['id', 'entity_id', 'seed']) as $seed) {
             $seeds[$seed->entity_id] ??= $seed->seed ?? 0;
         }
 

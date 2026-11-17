@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Scoring;
 
-use App\Exceptions\ScoringException;
 use App\Scoring\Engine\EventScorer;
 use App\Scoring\Engine\ScoredResult;
 use App\Scoring\Engine\SheetEventResult;
@@ -246,7 +245,8 @@ class SheetScorerTest extends TestCase
         $this->assertSame($speed[1], $plain[0]->events[0]->scored);
     }
 
-    public function test_the_formula_is_worked_out_even_for_an_event_with_no_results(): void
+    /** Q9 */
+    public function test_an_event_with_no_results_gives_nothing_without_working_out_the_formula(): void
     {
         $settings = ['equation' => 'item.points * share', 'global_variables' => [['name' => 'share', 'expression' => '1 / COUNT(results)']]];
 
@@ -256,10 +256,11 @@ class SheetScorerTest extends TestCase
             $this->standings($this->score($settings)),
         ));
 
-        $this->expectException(ScoringException::class);
-        $this->expectExceptionMessage("Error evaluating global variable 'share': Division by zero");
-
-        $this->score($settings, serc: []);
+        // No SERC results: the speed event's alone, a third each, and no division by zero
+        $this->assertSame([[1, 1, 333.33], [2, 2, 300.0], [3, 3, 266.67]], array_map(
+            fn(array $row) => [$row[0], $row[1], round($row[2], 2)],
+            $this->standings($this->score($settings, serc: [])),
+        ));
     }
 
     public function test_a_sheet_with_no_events_has_no_rows(): void

@@ -15,15 +15,17 @@ use Symfony\Component\ExpressionLanguage\ParsedExpression;
  * its Formula over each Event's results (`process`).
  *
  * It knows nothing of models or the database: a result is any object with the properties a
- * formula reads. Quirks are kept as they were (see docs/scoring-engine.md): results that have been
- * published depend on what it works out, so change nothing here without the golden tests and a
- * `scoring:snapshot --compare`.
+ * formula reads. Results that have been published depend on what it works out, so change nothing
+ * here without the golden tests and a `scoring:snapshot --compare` (see docs/scoring-engine.md).
  */
 class FormulaEvaluator
 {
     private ExpressionLanguage $el;
 
-    /** The sorted values RANK has worked out, by the results' ids and the attribute (but not the direction: Q2) */
+    /**
+     * The sorted values RANK has worked out, by the results' ids, the attribute and the direction.
+     * Kept for one `process()`, during which the results don't change.
+     */
     private array $rankCache = [];
 
     /** The places RANKMEDIAN has worked out for each value, keyed as `$rankCache` is */
@@ -89,6 +91,9 @@ class FormulaEvaluator
         if (!is_string($equation) || $equation === '') {
             throw new InvalidArgumentException("Missing or invalid 'equation'.");
         }
+
+        $this->rankCache = [];
+        $this->rankMedianCache = [];
 
         $globalContext = [
             'results' => $results,
@@ -213,8 +218,7 @@ class FormulaEvaluator
             'RANK',
             fn($array, $attribute, $item, $direction = 'DESC') => sprintf('RANK(%s, %s, %s, %s)', $array, $attribute, $item, $direction),
             function ($arguments, $array, $attribute, $item, $direction = 'DESC') {
-                $ids = collect($array)->pluck('id')->sort()->values()->all();
-                $cacheKey = md5(json_encode($ids) . $attribute);
+                $cacheKey = $this->rankCacheKey($array, $attribute, $direction);
 
                 if (!isset($this->rankCache[$cacheKey])) {
                     $items = $this->toCollection($array);
@@ -245,16 +249,14 @@ class FormulaEvaluator
         );
 
         // RANKMEDIAN(results, 'attribute', item, 'DESC'|'ASC'): the item's place, ties sharing the
-        // middle of the places they cover. Values are grouped as array keys, so floats are cut to
-        // whole numbers first (Q3).
+        // middle of the places they cover
         $this->el->register(
             'RANKMEDIAN',
             fn($array, $attribute, $item, $direction = 'DESC') => sprintf('RANKMEDIAN(%s, %s, %s, %s)', $array, $attribute, $item, $direction),
             function ($arguments, $array, $attribute, $item, $direction = 'DESC') {
                 $items = $this->toCollection($array);
 
-                $ids = $items->pluck('id')->sort()->values()->all();
-                $cacheKey = md5(json_encode($ids) . $attribute);
+                $cacheKey = $this->rankCacheKey($items, $attribute, $direction);
 
                 if (!isset($this->rankMedianCache[$cacheKey])) {
                     if ($direction == 'ASC') {
@@ -266,14 +268,14 @@ class FormulaEvaluator
                     $rankMap = [];
                     foreach ($sorted as $i => $entry) {
                         $val = is_object($entry) ? $entry->{$attribute} : $entry[$attribute];
-                        $rankMap[$val][] = $i + 1;
+                        $rankMap[self::valueKey($val)][] = $i + 1;
                     }
 
                     $this->rankMedianCache[$cacheKey] = $rankMap;
                 }
 
                 $itemValue = is_object($item) ? $item->{$attribute} : $item[$attribute];
-                $ranks = $this->rankMedianCache[$cacheKey][$itemValue] ?? [];
+                $ranks = $this->rankMedianCache[$cacheKey][self::valueKey($itemValue)] ?? [];
 
                 if (empty($ranks)) {
                     return null;
@@ -299,6 +301,25 @@ class FormulaEvaluator
         } catch (\Throwable $e) {
             throw new ScoringException("Error evaluating {$label}: {$e->getMessage()} - '{$expr}'", $context);
         }
+    }
+
+    /**
+     * What RANK and RANKMEDIAN remember a ranking by: which results, the attribute and the direction
+     */
+    private function rankCacheKey($array, string $attribute, string $direction): string
+    {
+        $ids = collect($array)->pluck('id')->sort()->values()->all();
+
+        return md5(json_encode([$ids, $attribute, $direction == 'ASC' ? 'ASC' : 'DESC']));
+    }
+
+    /**
+     * A value as an array key that keeps it whole: 22.5 stays apart from 22, while 22, 22.0 and
+     * "22" (results equal as `==` compares them) are one
+     */
+    private static function valueKey(mixed $value): string
+    {
+        return is_numeric($value) ? (string) (float) $value : (string) $value;
     }
 
     private function toCollection($value): Collection

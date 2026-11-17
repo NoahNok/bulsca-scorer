@@ -246,4 +246,51 @@ class SpeedEventScoringTest extends ScoringTestCase
         $this->assertSame([['A', 1, 1000.0], ['C', 2, 916.67]], $this->placings($this->eventResults($event, $a)));
         $this->assertSame([['B', 1, 1000.0]], $this->placings($this->eventResults($event, $b)));
     }
+
+    /** Q1 */
+    public function test_an_automatic_dq_takes_its_own_code(): void
+    {
+        $t = $this->teams('A');
+        $event = $this->speedEvent([
+            ...self::TIME_POINTS,
+            'auto_penalties' => [['code' => '900', 'condition' => 'false', 'amount' => '1']],
+            'auto_disqualifications' => [['code' => '555', 'condition' => 'COUNT(item.penalties) > 1', 'amount' => '1']],
+        ], [[$t['A'], 60000]]);
+        $event->addEntityPenalty($t['A'], 801);
+        $event->addEntityPenalty($t['A'], 802);
+
+        $result = $this->eventResults($event)[0];
+
+        $this->assertTrue($result->isDisqualified());
+        $this->assertSame('DQ555', $result->disqualificationLabel());
+    }
+
+    /** Q5 */
+    public function test_seed_times_come_from_the_first_speed_event_unless_each_event_has_its_own(): void
+    {
+        $t = $this->teams('A');
+        $first = $this->speedEvent(self::RAW, [[$t['A'], 1]]);
+        $second = $this->speedEvent([...self::RAW, 'penalty_func' => 'item.seed', 'force_penalty' => true], [[$t['A'], 70000]], name: 'Medley');
+
+        $this->seedTime($first, $t['A'], 60000);
+        $this->seedTime($second, $t['A'], 99000);
+
+        $this->assertSame(60000.0, $this->eventResults($second)[0]->resolvedResult);
+
+        $this->comp->seed_per_event = true;
+        $this->comp->save();
+
+        // Read again, as the next request would, so it sees the competition as saved
+        $this->assertSame(99000.0, $this->eventResults($second->fresh())[0]->resolvedResult);
+    }
+
+    /** Q4 */
+    public function test_the_equation_can_read_the_seed_time(): void
+    {
+        $t = $this->teams('A');
+        $event = $this->speedEvent(['equation' => 'item.seed', 'global_variables' => []], [[$t['A'], 70000]]);
+        $this->seedTime($event, $t['A'], 60000);
+
+        $this->assertSame(60000.0, $this->eventResults($event)[0]->points);
+    }
 }

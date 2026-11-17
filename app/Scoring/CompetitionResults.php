@@ -89,6 +89,7 @@ class CompetitionResults
         $clubs = $comp->getClubs->whereNotIn('id', $schema['exclude'] ?? [])->keyBy('id');
 
         $sheetRows = [];
+        $weights = [];
         $withoutClub = [];
 
         foreach ($master->getSheets() as $sheet) {
@@ -96,6 +97,7 @@ class CompetitionResults
 
             // An Entry without a Club counts for none
             $sheetRows[$sheet->id] = array_map(fn(SheetRow $row) => [$row->entry->clubId, $row], $rows);
+            $weights[$sheet->id] = (float) ($sheet->weight ?? 1);
 
             $names = array_values(array_unique(array_map(
                 fn(SheetRow $row) => $row->entry->name,
@@ -107,7 +109,7 @@ class CompetitionResults
             }
         }
 
-        $standings = MasterScorer::score($clubs->keys()->all(), $sheetRows, $schema['default_value'], $sumOver);
+        $standings = MasterScorer::score($clubs->keys()->all(), $sheetRows, $schema['default_value'], $sumOver, $weights);
 
         return new MasterResults(
             array_map(fn(MasterStanding $standing) => new MasterRow(

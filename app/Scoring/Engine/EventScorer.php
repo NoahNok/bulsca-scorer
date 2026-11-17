@@ -12,8 +12,8 @@ use App\Scoring\Input\Formula;
  *        ──► rank ──► rank equation
  *
  * No database, cache or models: the same input always gives the same results. It reproduces the
- * engine it replaced exactly, quirks included (the Qn comments; see docs/scoring-engine.md), because
- * published results depend on them.
+ * engine it replaced exactly, but for the quirks fixed since (see "Quirks" in
+ * docs/scoring-engine.md), because published results depend on it.
  */
 final class EventScorer
 {
@@ -33,9 +33,13 @@ final class EventScorer
             }
         }
 
+        // Nobody to score, no results: a formula's global variables may divide by how many there are
+        if ($results === []) {
+            return [];
+        }
+
         self::applyViolations($evaluator, $formula, $results);
 
-        // Q9: the equation is worked out even when there is nobody to score
         $results = $evaluator->process($formula->equationPayload(), collect(self::group($formula, $results)));
 
         // A SERC's disqualified results always share last place. A speed event's do unless they are
@@ -85,9 +89,7 @@ final class EventScorer
         }
 
         foreach ($formula->autoDisqualifications as $autoDq) {
-            // Q1: the code of the last automatic penalty, not this DQ's own. `$autoPen` is left over
-            // from the loop above, and isn't defined when there are no automatic penalties.
-            $applyCode = $autoPen['code'];
+            $applyCode = $autoDq['code'];
 
             $applyIf = $evaluator->parse($autoDq['condition'], ['item']);
             $applyAmount = $evaluator->parse($autoDq['amount'], ['item']);
@@ -115,9 +117,6 @@ final class EventScorer
             }
 
             $result->resolvedResult = $resolved;
-
-            // Q4: the seed can be read by automatic penalties and the penalty function, but is 0 from here on
-            $result->seed = 0;
         }
     }
 
