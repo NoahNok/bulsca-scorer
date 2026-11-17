@@ -200,6 +200,22 @@ export type SercEntity = {
     possible: number | null;
 };
 
+/** A note a SERC's judge left in Digital Judge, under the Objective they judged */
+export type SercNote = {
+    id: number;
+    /** Null if its Objective has gone */
+    objective: string | null;
+    note: string;
+    /** ISO 8601 */
+    updatedAt: string | null;
+};
+
+/** Every note a SERC's judges left: their overall notes, then each Entity's in draw order (only those with notes) */
+export type SercNotes = {
+    overall: SercNote[];
+    entities: { key: string; name: string; draw: string | null; notes: SercNote[] }[];
+};
+
 /** A ranked row on a SERC's page. A combined row stands for several Entities, one per entry in `names` */
 export type SercResultRow = {
     key: string;

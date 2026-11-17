@@ -2,10 +2,13 @@
     An Entity's marks on a SERC (manage.competitions.events.sercs.marks), in CompetitionLayout, laid out like
     a score sheet: its DQ and penalties, then each Objective with a 0-10 mark per marking point. "Save" saves
     and goes back to the SERC; "Save & next" saves and opens the next Entity in draw order (not on the last);
-    "Skip to next" opens it unsaved.
+    "Skip to next" opens it unsaved. Organisers (and Admins) also get "Clear marks", which confirms, then takes
+    away every one of its marks on the SERC (its DQ and penalties stay). "Notes" opens the notes its judges
+    left in Digital Judge.
 -->
 <script lang="ts">
     import {
+        clearMarks,
         leagueObjectives,
         saveMarks,
         show,
@@ -13,14 +16,17 @@
     import Alert from "@/manage/components/Alert.svelte";
     import UnsavedChanges from "@/manage/components/UnsavedChanges.svelte";
     import PageHeading from "@/manage/components/PageHeading.svelte";
+    import SercNotesDialog from "@/manage/events/SercNotesDialog.svelte";
     import type {
         CompetitionHeader,
         SercEventHeader,
         SercMarkingObjective,
+        SercNote,
     } from "@/manage/types";
     import { Link, router } from "@inertiajs/svelte";
     import { tick } from "svelte";
     import { upperCase } from "@/manage/ui";
+    import { confirm } from "@/lib/confirm";
 
     let {
         competition,
@@ -30,7 +36,9 @@
         penalties,
         objectives,
         objectiveProblem,
+        notes,
         nextUrl,
+        canClear,
     }: {
         competition: CompetitionHeader;
         event: SercEventHeader;
@@ -47,8 +55,12 @@
         objectives: SercMarkingObjective[];
         /** With League Objectives on, its Leagues give it no Objective or several, so every one shows */
         objectiveProblem: boolean;
+        /** Its judges' notes, Objective by Objective */
+        notes: SercNote[];
         /** Null for the last Entity */
         nextUrl: string | null;
+        /** Organisers (and Admins) can clear every mark at once */
+        canClear: boolean;
     } = $props();
 
     const comp = $derived(competition.id);
@@ -92,6 +104,37 @@
 
     const dirty = $derived(JSON.stringify(values) !== JSON.stringify(saved()));
 
+    let notesDialog: SercNotesDialog;
+
+    const hasMarks = $derived(
+        objectives.some((objective) =>
+            objective.markingPoints.some((point) => point.mark !== null),
+        ),
+    );
+
+    async function clear() {
+        const ok = await confirm({
+            title: `Clear ${entity.name}'s marks?`,
+            description: `This takes away every one of its marks on ${event.name}${dirty ? ", and your unsaved changes" : ""}. Its DQ and penalties stay. It can't be undone.`,
+            confirmLabel: "Clear marks",
+            confirmVariant: "danger",
+        });
+        if (!ok) return;
+
+        router.delete(
+            clearMarks({ comp, serc: event.id, entity: entity.id }).url,
+            {
+                preserveScroll: true,
+                onStart: () => (processing = true),
+                onFinish: () => (processing = false),
+                onSuccess: () => {
+                    values = saved();
+                    errors = {};
+                },
+            },
+        );
+    }
+
     // Enter saves and moves on, as "Save & next" does; "Save" goes back to the SERC
     function save(submit: SubmitEvent) {
         submit.preventDefault();
@@ -133,7 +176,26 @@
             Not in the draw
         {/if}
     {/snippet}
+    {#snippet actions()}
+        <button type="button" class="v2-btn v2-btn-sm" onclick={() => notesDialog.open()}
+            >Notes ({notes.length})</button
+        >
+        {#if canClear && hasMarks}
+            <button
+                type="button"
+                class="v2-btn v2-btn-danger v2-btn-sm"
+                disabled={processing}
+                onclick={clear}>Clear marks</button
+            >
+        {/if}
+    {/snippet}
 </PageHeading>
+
+<SercNotesDialog
+    bind:this={notesDialog}
+    title="Notes"
+    entities={[{ key: String(entity.id), name: entity.name, notes }]}
+/>
 
 <form onsubmit={save} class="max-w-3xl" data-serc-marks novalidate>
     <UnsavedChanges {dirty} />

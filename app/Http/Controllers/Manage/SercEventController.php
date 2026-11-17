@@ -9,6 +9,8 @@ use App\Http\Requests\Event\UpdateScoringSettings;
 use App\Http\Requests\SERC\SaveSERCSetupRequest;
 use App\Models\AbstractClasses\Entity;
 use App\Models\Competition;
+use App\Models\DigitalJudge\JudgeNote;
+use App\Models\DigitalJudge\OverallJudgeNote;
 use App\Models\League;
 use App\Models\SERC;
 use App\Models\SERC\MarkingPointTemplate;
@@ -59,6 +61,8 @@ class SercEventController extends Controller
             'printUrl' => route('comps.view.events.sercs.printResults', [$comp, $serc]),
             // Mark sheets are a printable, which needs its own access
             'sheetsUrl' => Gate::allows('access', [$comp, 'printables']) ? route('comps.printables.serc-sheets', [$comp, $serc]) : null,
+            // Judges' notes, only once the notes dialog asks for them, and only with SERC access
+            'notes' => Inertia::optional(fn () => Gate::allows('access', [$comp, 'serc']) ? $this->allNotes($comp, $serc, $getMarking()) : null),
         ]);
     }
 
@@ -185,6 +189,61 @@ class SercEventController extends Controller
     }
 
     /**
+     * Every note the SERC's judges left: their overall notes, then each Entity's in draw order (only
+     * those with notes), each note under its Objective
+     */
+    private function allNotes(Competition $comp, SERC $serc, Collection $marking): array
+    {
+        $objectives = $serc->getJudges()->get(['id', 'name'])->keyBy('id');
+
+        $byEntity = JudgeNote::whereIn('judge', $objectives->keys())->get()
+            ->groupBy(fn (JudgeNote $note) => "{$note->entity_type}:{$note->entity_id}");
+
+        return [
+            'overall' => OverallJudgeNote::whereIn('judge', $objectives->keys())->get()
+                ->sortBy(fn ($note) => $objectives->keys()->search($note->judge))
+                ->map(fn ($note) => $this->noteRow($objectives, $note))
+                ->filter(fn ($note) => filled($note['note']))->values(),
+            'entities' => $marking
+                ->filter(fn ($entity) => $byEntity->has($entity['key']))
+                ->map(fn ($entity) => [
+                    'key' => $entity['key'],
+                    'name' => $entity['name'],
+                    'draw' => $entity['draw'],
+                    'notes' => $byEntity->get($entity['key'])
+                        ->sortBy(fn ($note) => $objectives->keys()->search($note->judge))
+                        ->map(fn ($note) => $this->noteRow($objectives, $note))
+                        ->filter(fn ($note) => filled($note['note']))->values(),
+                ])
+                ->filter(fn ($entity) => $entity['notes']->isNotEmpty())
+                ->values(),
+        ];
+    }
+
+    /**
+     * An Entity's notes from the SERC's judges, Objective by Objective
+     */
+    private function notesFor(SERC $serc, Entity $entity): Collection
+    {
+        $objectives = $serc->getJudges()->get(['id', 'name'])->keyBy('id');
+
+        return JudgeNote::whereIn('judge', $objectives->keys())->whereMorphedTo('entity', $entity)->get()
+            ->sortBy(fn ($note) => $objectives->keys()->search($note->judge))
+            ->map(fn ($note) => $this->noteRow($objectives, $note))
+            ->filter(fn ($note) => filled($note['note']))->values();
+    }
+
+    private function noteRow(Collection $objectives, JudgeNote|OverallJudgeNote $note): array
+    {
+        return [
+            'id' => $note->id,
+            'objective' => $objectives->get($note->judge)?->name,
+            'note' => $note->note,
+            'updatedAt' => $note->updated_at?->toIso8601String(),
+        ];
+    }
+
+    /**
      * The ranked results as the SERC's page shows them. A combined result (one row standing for
      * several Entities) lists each one's name; the page joins each row to its Entity's marking by key.
      */
@@ -247,8 +306,41 @@ class SercEventController extends Controller
             ]),
             // With League Objectives on, its Leagues give it no Objective, or more than one
             'objectiveProblem' => $serc->use_restricted_judges && $its->count() != 1,
+            'notes' => $this->notesFor($serc, $entity),
             'nextUrl' => $next ? route('manage.competitions.events.sercs.marks', [$comp, $serc, $next['id']]) : null,
+            // Only Organisers (and Admins) can clear every mark at once
+            'canClear' => Gate::allows('access', [$comp, 'admin']),
         ]);
+    }
+
+    /**
+     * Takes away every one of an Entity's marks on the SERC, logging each one. Its DQ and penalties stay.
+     */
+    public function clearMarks(Competition $comp, SERC $serc, int $entity)
+    {
+        $entity = $this->entityOf($comp, $serc, $entity);
+
+        $markingPoints = $serc->getMarkingPoints()
+            ->select('serc_marking_points.id', 'serc_marking_points.name', 'serc_judges.name AS judge_name')
+            ->get()->keyBy('id');
+        $results = SERCResult::whereIn('marking_point', $markingPoints->keys())->forEntity($entity)->get();
+
+        $changes = $results->map(function (SERCResult $result) use ($markingPoints, $entity) {
+            $mp = $markingPoints->get($result->marking_point);
+            $result->delete();
+            Cache::forget('mp.' . $result->marking_point . '.team.' . $entity->id);
+
+            return ['name' => "{$mp->judge_name} - {$mp->name}", 'old' => $result->result, 'new' => null];
+        })->values()->all();
+
+        if (count($changes) > 0) {
+            $serc->recordActivity('SERC_RESULT_UPDATED', 'Marks cleared (' . count($changes) . ')', context: [
+                'changes' => $changes,
+            ], related: [$serc, $entity, $comp]);
+        }
+
+        return redirect()->route('manage.competitions.events.sercs.marks', [$comp, $serc, $entity->id])
+            ->with('success', "Marks cleared for {$entity->getName($comp)}");
     }
 
     /**
