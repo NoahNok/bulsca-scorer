@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Http\Controllers\AccountInviteController;
 use App\Models\AccountInvite;
 use App\Models\Competition;
+use App\Models\Organisation\Organisation;
 use App\Models\User;
 use App\Models\UserCompetitionAccess;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -261,6 +262,44 @@ class CompetitionDashboardTest extends TestCase
             ->assertSessionHasErrors('account');
 
         $this->assertTrue($this->comp->userBelongsToCompetition($this->organiser));
+    }
+
+    public function test_an_account_can_be_removed_and_keeps_its_user(): void
+    {
+        $helper = User::factory()->create();
+        $this->comp->addAccount($helper, ['results']);
+
+        $this->actingAs($this->organiser)
+            ->from(route('manage.competitions.settings', $this->comp))
+            ->delete(route('comps.accounts.delete', [$this->comp, $helper]))
+            ->assertSessionHasNoErrors()
+            ->assertSessionHas('success', 'Account removed');
+
+        $this->assertFalse($this->comp->userBelongsToCompetition($helper));
+        $this->assertModelExists($helper);
+    }
+
+    public function test_an_organiser_through_the_organisation_can_remove_an_account(): void
+    {
+        $org = new Organisation();
+        $org->name = 'Dashboard ULSC';
+        $org->save();
+        $this->comp->organisation = $org->id;
+        $this->comp->save();
+
+        $orgOrganiser = User::factory()->create();
+        $org->addAccount($orgOrganiser, 'admin');
+
+        $helper = User::factory()->create();
+        $this->comp->addAccount($helper, ['results']);
+
+        $this->actingAs($orgOrganiser)
+            ->from(route('manage.competitions.settings', $this->comp))
+            ->delete(route('comps.accounts.delete', [$this->comp, $helper]))
+            ->assertSessionHasNoErrors()
+            ->assertSessionHas('success', 'Account removed');
+
+        $this->assertFalse($this->comp->userBelongsToCompetition($helper));
     }
 
     public function test_deleting_needs_the_name_and_then_goes_home(): void

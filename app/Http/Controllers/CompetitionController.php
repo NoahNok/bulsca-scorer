@@ -159,12 +159,8 @@ class CompetitionController extends Controller
     public function deleteCompetitionAccount(Competition $comp, User $account)
     {
 
+        // Admin access to the competition (directly or through its organisation) is checked by the route
         $user = auth()->user();
-
-        if (!$user->isAdmin() &&  $user->competition != $comp->id) {
-            // if the user is not an admin or does not have access to this competition, return error
-            throw ValidationException::withMessages(['account' => "You can't remove this account."]);
-        }
 
         // The page hides Remove for these, as the old one refused them
         if ($account->is($user) || UserCompetitionAccess::where('competition', $comp->id)->where('user', $account->id)->where('access_to', 'owner')->exists()) {

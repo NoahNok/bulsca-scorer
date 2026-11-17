@@ -590,11 +590,6 @@ class Competition extends Model implements IInvitable, IJsonable
         UserCompetitionAccess::where('user', $account->id)
             ->where('competition', $this->id)
             ->delete();
-
-        // If the user has no other competitions, delete the user
-        if (UserCompetitionAccess::where('user', $account->id)->count() == 0) {
-            $account->delete();
-        }
     }
 
     public function getOrganisation()
