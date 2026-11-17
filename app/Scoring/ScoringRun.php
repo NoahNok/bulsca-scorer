@@ -1,0 +1,88 @@
+<?php
+
+namespace App\Scoring;
+
+use App\Exceptions\ScoringException;
+use App\Models\AbstractClasses\Event;
+use App\Scoring\Engine\EventScorer;
+use App\Scoring\Engine\ScoredResult;
+use App\Scoring\Loading\EventLoader;
+use App\Scoring\Loading\LoadedEvent;
+
+/**
+ * Events already loaded and scored in this request, so that every Results sheet and Master sheet
+ * that includes an Event shares one loading of it and one scoring of it for each League.
+ *
+ * There is one per request (it is bound `scoped`), and it is emptied whenever a model is saved or
+ * deleted (`AppServiceProvider`), so a change made in a request is seen by what is scored after it.
+ * A change made without a model event (a query builder update, raw SQL) is not: call
+ * `ResultsVersion::bump()` after one, which empties this too.
+ */
+final class ScoringRun
+{
+    /** @var array<string, ?LoadedEvent> */
+    private array $loaded = [];
+
+    /** @var array<string, ScoredResult[]> */
+    private array $results = [];
+
+    /** @var array<string, string> */
+    private array $names = [];
+
+    /**
+     * The Event's scoring input and the models it was read from. Null for an Event with no formula.
+     */
+    public function loaded(Event $event): ?LoadedEvent
+    {
+        $key = self::key($event);
+
+        if (!array_key_exists($key, $this->loaded)) {
+            $this->loaded[$key] = $event->scoringSchema ? EventLoader::load($event) : null;
+        }
+
+        return $this->loaded[$key];
+    }
+
+    /**
+     * The Event's results scored and placed, best first: everyone's, or a League's Entries scored
+     * against each other. They are shared, so must not be changed. An Event without a formula has none.
+     *
+     * @return ScoredResult[]
+     */
+    public function results(Event $event, ?int $leagueId = null): array
+    {
+        $key = self::key($event) . '|' . ($leagueId ?? 'all');
+
+        if (!array_key_exists($key, $this->results)) {
+            $loaded = $this->loaded($event);
+
+            try {
+                $this->results[$key] = $loaded ? EventScorer::score($loaded->input, $leagueId) : [];
+            } catch (ScoringException $e) {
+                throw $e->nameWith(entries: $loaded->nameOf(...));
+            }
+        }
+
+        return $this->results[$key];
+    }
+
+    /**
+     * The Event's name, read once however many sheets list it
+     */
+    public function name(Event $event): string
+    {
+        return $this->names[self::key($event)] ??= $event->getName();
+    }
+
+    public function forget(): void
+    {
+        $this->loaded = [];
+        $this->results = [];
+        $this->names = [];
+    }
+
+    private static function key(Event $event): string
+    {
+        return "{$event->getConnectionName()}|{$event->getType()}|{$event->id}";
+    }
+}

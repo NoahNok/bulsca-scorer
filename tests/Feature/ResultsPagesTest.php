@@ -13,6 +13,7 @@ use App\Models\League;
 use App\Models\SERC\MarkingPointTemplate;
 use App\Models\MasterSchema;
 use App\Models\ResultSchema;
+use App\Scoring\CompetitionResults;
 use App\Models\ResultSchemaEvent;
 use App\Models\SERC;
 use App\Models\SERCJudge;
@@ -225,6 +226,30 @@ class ResultsPagesTest extends TestCase
                 ->where('provisional', true)
                 ->where('canCreate', true)
                 ->has('unconfirmed', 0));
+    }
+
+    public function test_saving_a_master_sheet_keeps_each_sheets_weight(): void
+    {
+        $kept = $this->sheet('Overall');
+        $dropped = $this->sheet('Working');
+        $added = $this->sheet('Extra');
+
+        $master = new MasterSchema();
+        $master->name = 'Clubs';
+        $master->competition = $this->comp->id;
+        $master->schema = ['sum_over' => 'position', 'default_value' => 0, 'sheets' => [['id' => $kept->id, 'weight' => 2.5], ['id' => $dropped->id, 'weight' => 3]], 'group_on' => 'club', 'exclude' => []];
+        $master->save();
+
+        $this->actingAs($this->organiser)->post($this->url('/master/' . $master->id), [
+            'name' => 'Clubs',
+            'sum_over' => 'position',
+            'default_value' => 0,
+            'sheets' => [$kept->id, $added->id],
+            'exclude' => [],
+        ])->assertSessionHasNoErrors();
+
+        // The page doesn't edit weights: a sheet already there keeps its own, one added counts once
+        $this->assertSame([['id' => $kept->id, 'weight' => 2.5], ['id' => $added->id, 'weight' => 1]], $master->fresh()->schema['sheets']);
     }
 
     public function test_a_results_sheet_shows_its_ranking_and_how_its_built(): void
@@ -504,17 +529,8 @@ class ResultsPagesTest extends TestCase
     {
         $sheet = $this->sheet('Overall');
 
-        $failing = new class extends ResultSchema {
-            protected $table = 'result_schemas';
-
-            public function getResults($refreshCache = false): \Illuminate\Support\Collection
-            {
-                throw new ScoringException('Error evaluating formula', ['team' => 'Cardiff A']);
-            }
-        };
-        $failing->setRawAttributes($sheet->getAttributes(), true);
-        $failing->exists = true;
-        Route::bind('sheet', fn () => $failing);
+        $this->mock(CompetitionResults::class)->shouldReceive('sheet')
+            ->andThrow(new ScoringException('Error evaluating formula', ['team' => 'Cardiff A']));
 
         $sentryLogs = Mockery::spy(LoggerInterface::class);
         Log::shouldReceive('channel')->with('daily')->andReturn(Mockery::spy(LoggerInterface::class));

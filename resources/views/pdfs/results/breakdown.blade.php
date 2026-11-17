@@ -12,7 +12,7 @@
                         <tr>
                             <th class="py-2 px-2 border text-left">Entry</th>
                             @foreach ($section['results'][0]->events as $event)
-                                <th class="py-2 px-2 border">{{ $event->event->getName() }}</th>
+                                <th class="py-2 px-2 border">{{ $event->eventName }}</th>
                             @endforeach
                             <th class="py-2 px-2 border">Total</th>
                             <th class="py-2 px-2 border">Position</th>
@@ -21,7 +21,7 @@
                     <tbody>
                         @foreach ($section['results'] as $result)
                             <tr>
-                                <td class="py-2 px-2 border text-left font-semibold whitespace-nowrap">{{ $result->entity->getName($comp) }}</td>
+                                <td class="py-2 px-2 border text-left font-semibold whitespace-nowrap">{{ $result->entry->name }}</td>
                                 @foreach ($result->events as $event)
                                     <td class="py-2 px-2 border whitespace-nowrap">{{ round($event->adjustedPoints) }} ({{ $event->position }})</td>
                                 @endforeach

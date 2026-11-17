@@ -1,0 +1,531 @@
+{
+  "competition": "West Midlands",
+  "events": {
+    "speed:220": {
+      "name": "Swim & Tow",
+      "results": {
+        "all": [
+          {"entity":"competitor:1656","name":"Competitor 1 - University of Warwick Lifesaving Club (Open Individual (16+ years)) OIY - 1","result":88250,"resolved":88250,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1663","name":"Competitor 8 - North Worcestershire LG (Open Individual (16+ years)) OIY - 1","result":106190,"resolved":106190,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1667","name":"Competitor 11 - North Worcestershire LG (Master Open (40-49 years )) MO4Y - 1","result":110440,"resolved":110440,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1657","name":"Competitor 2 - North Worcestershire LG (Junior Girls Pairs (12-14 years)) JGP1Y - 1","result":55060,"resolved":113710,"points":4,"position":4,"dqs":[],"pens":[],"combined":["competitor:1657","competitor:1658"]},
+          {"entity":"competitor:1664","name":"Competitor 9 - North Worcestershire LG (Masters Ladies (40-49 years)) ML4Y - 1","result":119530,"resolved":119530,"points":5,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1674","name":"Competitor 17 - Kore Sandwell (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 3","result":68320,"resolved":126290,"points":6,"position":6,"dqs":[],"pens":[],"combined":["competitor:1674","competitor:1675"]},
+          {"entity":"competitor:1670","name":"Competitor 13 - Kore Sandwell (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 2","result":69000,"resolved":143180,"points":7,"position":7,"dqs":[],"pens":[],"combined":["competitor:1670","competitor:1671"]},
+          {"entity":"competitor:1665","name":"Competitor 10 - North Worcestershire LG (Masters Ladies (40-49 years)) ML4Y - 2","result":161230,"resolved":161230,"points":8,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1669","name":"Competitor 12 - Kore Sandwell (Open Individual (16+ years)) OIY-2","result":164490,"resolved":164490,"points":9,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1659","name":"Competitor 4 - North Worcestershire LG (Senior Girls Pairs (15-17 years)) SGP1Y - 1","result":115530,"resolved":239380,"points":10,"position":10,"dqs":[],"pens":[],"combined":["competitor:1659","competitor:1660"]},
+          {"entity":"competitor:1661","name":"Competitor 6 - North Worcestershire LG (Adult Ladies Pairs (18-21 years)) ALP2Y - 1","result":143310,"resolved":268970,"points":11,"position":11,"dqs":[],"pens":[],"combined":["competitor:1661","competitor:1662"]},
+          {"entity":"competitor:1672","name":"Competitor 15 - Kore Sandwell (Senior Open/ Mixed Pairs (15-17 years )) SOMP1Y - 1","result":163720,"resolved":311470,"points":12,"position":12,"dqs":[],"pens":[],"combined":["competitor:1672","competitor:1673"]}
+        ],
+        "league:299": [
+          {"entity":"competitor:1656","name":"Competitor 1 - University of Warwick Lifesaving Club (Open Individual (16+ years)) OIY - 1","result":88250,"resolved":88250,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1663","name":"Competitor 8 - North Worcestershire LG (Open Individual (16+ years)) OIY - 1","result":106190,"resolved":106190,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1669","name":"Competitor 12 - Kore Sandwell (Open Individual (16+ years)) OIY-2","result":164490,"resolved":164490,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:300": [
+          {"entity":"competitor:1657","name":"Competitor 2 - North Worcestershire LG (Junior Girls Pairs (12-14 years)) JGP1Y - 1","result":55060,"resolved":113710,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1657","competitor:1658"]}
+        ],
+        "league:301": [
+          {"entity":"competitor:1659","name":"Competitor 4 - North Worcestershire LG (Senior Girls Pairs (15-17 years)) SGP1Y - 1","result":115530,"resolved":239380,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1659","competitor:1660"]}
+        ],
+        "league:302": [
+          {"entity":"competitor:1661","name":"Competitor 6 - North Worcestershire LG (Adult Ladies Pairs (18-21 years)) ALP2Y - 1","result":143310,"resolved":268970,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1661","competitor:1662"]}
+        ],
+        "league:303": [
+          {"entity":"competitor:1664","name":"Competitor 9 - North Worcestershire LG (Masters Ladies (40-49 years)) ML4Y - 1","result":119530,"resolved":119530,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1665","name":"Competitor 10 - North Worcestershire LG (Masters Ladies (40-49 years)) ML4Y - 2","result":161230,"resolved":161230,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:305": [
+          {"entity":"competitor:1667","name":"Competitor 11 - North Worcestershire LG (Master Open (40-49 years )) MO4Y - 1","result":110440,"resolved":110440,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:306": [
+          {"entity":"competitor:1674","name":"Competitor 17 - Kore Sandwell (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 3","result":68320,"resolved":126290,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1674","competitor:1675"]},
+          {"entity":"competitor:1670","name":"Competitor 13 - Kore Sandwell (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 2","result":69000,"resolved":143180,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1670","competitor:1671"]}
+        ],
+        "league:307": [
+          {"entity":"competitor:1672","name":"Competitor 15 - Kore Sandwell (Senior Open/ Mixed Pairs (15-17 years )) SOMP1Y - 1","result":163720,"resolved":311470,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1672","competitor:1673"]}
+        ]
+      }
+    },
+    "speed:221": {
+      "name": "Rope Throw",
+      "results": {
+        "all": [
+          {"entity":"competitor:1656","name":"Competitor 1 - University of Warwick Lifesaving Club (Open Individual (16+ years)) OIY - 1","result":12540,"resolved":12540,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1667","name":"Competitor 11 - North Worcestershire LG (Master Open (40-49 years )) MO4Y - 1","result":13460,"resolved":13460,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1663","name":"Competitor 8 - North Worcestershire LG (Open Individual (16+ years)) OIY - 1","result":13560,"resolved":13560,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1664","name":"Competitor 9 - North Worcestershire LG (Masters Ladies (40-49 years)) ML4Y - 1","result":16720,"resolved":16720,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1670","name":"Competitor 13 - Kore Sandwell (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 2","result":30070,"resolved":58980,"points":5,"position":5,"dqs":[],"pens":[],"combined":["competitor:1670","competitor:1671"]},
+          {"entity":"competitor:1665","name":"Competitor 10 - North Worcestershire LG (Masters Ladies (40-49 years)) ML4Y - 2","result":120000,"resolved":120000,"points":6.5,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1669","name":"Competitor 12 - Kore Sandwell (Open Individual (16+ years)) OIY-2","result":120000,"resolved":120000,"points":6.5,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1661","name":"Competitor 6 - North Worcestershire LG (Adult Ladies Pairs (18-21 years)) ALP2Y - 1","result":120000,"resolved":136220,"points":8,"position":8,"dqs":[],"pens":[],"combined":["competitor:1661","competitor:1662"]},
+          {"entity":"competitor:1657","name":"Competitor 2 - North Worcestershire LG (Junior Girls Pairs (12-14 years)) JGP1Y - 1","result":19560,"resolved":139560,"points":9,"position":9,"dqs":[],"pens":[],"combined":["competitor:1657","competitor:1658"]},
+          {"entity":"competitor:1674","name":"Competitor 17 - Kore Sandwell (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 3","result":1200000,"resolved":145310,"points":10,"position":10,"dqs":[],"pens":[],"combined":["competitor:1674","competitor:1675"]},
+          {"entity":"competitor:1659","name":"Competitor 4 - North Worcestershire LG (Senior Girls Pairs (15-17 years)) SGP1Y - 1","result":120000,"resolved":240000,"points":11.5,"position":11,"dqs":[],"pens":[],"combined":["competitor:1659","competitor:1660"]},
+          {"entity":"competitor:1672","name":"Competitor 15 - Kore Sandwell (Senior Open/ Mixed Pairs (15-17 years )) SOMP1Y - 1","result":120000,"resolved":240000,"points":11.5,"position":11,"dqs":[],"pens":[],"combined":["competitor:1672","competitor:1673"]}
+        ],
+        "league:299": [
+          {"entity":"competitor:1656","name":"Competitor 1 - University of Warwick Lifesaving Club (Open Individual (16+ years)) OIY - 1","result":12540,"resolved":12540,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1663","name":"Competitor 8 - North Worcestershire LG (Open Individual (16+ years)) OIY - 1","result":13560,"resolved":13560,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1669","name":"Competitor 12 - Kore Sandwell (Open Individual (16+ years)) OIY-2","result":120000,"resolved":120000,"points":3,"position":4,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:300": [
+          {"entity":"competitor:1657","name":"Competitor 2 - North Worcestershire LG (Junior Girls Pairs (12-14 years)) JGP1Y - 1","result":19560,"resolved":139560,"points":1,"position":4,"dqs":[],"pens":[],"combined":["competitor:1657","competitor:1658"]}
+        ],
+        "league:301": [
+          {"entity":"competitor:1659","name":"Competitor 4 - North Worcestershire LG (Senior Girls Pairs (15-17 years)) SGP1Y - 1","result":120000,"resolved":240000,"points":1,"position":4,"dqs":[],"pens":[],"combined":["competitor:1659","competitor:1660"]}
+        ],
+        "league:302": [
+          {"entity":"competitor:1661","name":"Competitor 6 - North Worcestershire LG (Adult Ladies Pairs (18-21 years)) ALP2Y - 1","result":120000,"resolved":136220,"points":1,"position":4,"dqs":[],"pens":[],"combined":["competitor:1661","competitor:1662"]}
+        ],
+        "league:303": [
+          {"entity":"competitor:1664","name":"Competitor 9 - North Worcestershire LG (Masters Ladies (40-49 years)) ML4Y - 1","result":16720,"resolved":16720,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1665","name":"Competitor 10 - North Worcestershire LG (Masters Ladies (40-49 years)) ML4Y - 2","result":120000,"resolved":120000,"points":2,"position":4,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:305": [
+          {"entity":"competitor:1667","name":"Competitor 11 - North Worcestershire LG (Master Open (40-49 years )) MO4Y - 1","result":13460,"resolved":13460,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:306": [
+          {"entity":"competitor:1670","name":"Competitor 13 - Kore Sandwell (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 2","result":30070,"resolved":58980,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1670","competitor:1671"]},
+          {"entity":"competitor:1674","name":"Competitor 17 - Kore Sandwell (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 3","result":1200000,"resolved":145310,"points":2,"position":4,"dqs":[],"pens":[],"combined":["competitor:1674","competitor:1675"]}
+        ],
+        "league:307": [
+          {"entity":"competitor:1672","name":"Competitor 15 - Kore Sandwell (Senior Open/ Mixed Pairs (15-17 years )) SOMP1Y - 1","result":120000,"resolved":240000,"points":1,"position":4,"dqs":[],"pens":[],"combined":["competitor:1672","competitor:1673"]}
+        ]
+      }
+    },
+    "serc:154": {
+      "name": "Life Support",
+      "results": {
+        "all": [
+          {"entity":"team:2082","name":"Competitor 9 - North Worcestershire LG (Masters Ladies (40-49 years))","result":80,"resolved":80,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2085","name":"Competitor 11 - North Worcestershire LG (Master Open (40-49 years ))","result":78,"resolved":78,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2077","name":"Competitor 1 - University of Warwick Lifesaving Club (Open Individual (16+ years))","result":59.5,"resolved":59.5,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2080","name":"Competitor 6, Competitor 7 - North Worcestershire LG (Adult Ladies Pairs (18-21 years))","result":58.5,"resolved":58.5,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2081","name":"Competitor 8 - North Worcestershire LG (Open Individual (16+ years))","result":56,"resolved":56,"points":5,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2083","name":"Competitor 10 - North Worcestershire LG (Masters Ladies (40-49 years))","result":49.5,"resolved":49.5,"points":6,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2079","name":"Competitor 4, Competitor 5 - North Worcestershire LG (Senior Girls Pairs (15-17 years))","result":43,"resolved":43,"points":7,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2078","name":"Competitor 2, Competitor 3 - North Worcestershire LG (Junior Girls Pairs (12-14 years))","result":37,"resolved":37,"points":8,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2086","name":"Competitor 12 - Kore Sandwell (Open Individual (16+ years))","result":27,"resolved":27,"points":9,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2089","name":"Competitor 17, Competitor 18 - Kore Sandwell (Junior Open / Mixed Pairs (12-14 years))","result":17.5,"resolved":17.5,"points":10,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2087","name":"Competitor 13, Competitor 14 - Kore Sandwell (Junior Open / Mixed Pairs (12-14 years))","result":16,"resolved":16,"points":11,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2088","name":"Competitor 15, Competitor 16 - Kore Sandwell (Senior Open/ Mixed Pairs (15-17 years ))","result":11,"resolved":11,"points":12,"position":12,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:299": [
+          {"entity":"team:2077","name":"Competitor 1 - University of Warwick Lifesaving Club (Open Individual (16+ years))","result":59.5,"resolved":59.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2081","name":"Competitor 8 - North Worcestershire LG (Open Individual (16+ years))","result":56,"resolved":56,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2086","name":"Competitor 12 - Kore Sandwell (Open Individual (16+ years))","result":27,"resolved":27,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:300": [
+          {"entity":"team:2078","name":"Competitor 2, Competitor 3 - North Worcestershire LG (Junior Girls Pairs (12-14 years))","result":37,"resolved":37,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:301": [
+          {"entity":"team:2079","name":"Competitor 4, Competitor 5 - North Worcestershire LG (Senior Girls Pairs (15-17 years))","result":43,"resolved":43,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:302": [
+          {"entity":"team:2080","name":"Competitor 6, Competitor 7 - North Worcestershire LG (Adult Ladies Pairs (18-21 years))","result":58.5,"resolved":58.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:303": [
+          {"entity":"team:2082","name":"Competitor 9 - North Worcestershire LG (Masters Ladies (40-49 years))","result":80,"resolved":80,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2083","name":"Competitor 10 - North Worcestershire LG (Masters Ladies (40-49 years))","result":49.5,"resolved":49.5,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:305": [
+          {"entity":"team:2085","name":"Competitor 11 - North Worcestershire LG (Master Open (40-49 years ))","result":78,"resolved":78,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:306": [
+          {"entity":"team:2089","name":"Competitor 17, Competitor 18 - Kore Sandwell (Junior Open / Mixed Pairs (12-14 years))","result":17.5,"resolved":17.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2087","name":"Competitor 13, Competitor 14 - Kore Sandwell (Junior Open / Mixed Pairs (12-14 years))","result":16,"resolved":16,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:307": [
+          {"entity":"team:2088","name":"Competitor 15, Competitor 16 - Kore Sandwell (Senior Open/ Mixed Pairs (15-17 years ))","result":11,"resolved":11,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    },
+    "serc:155": {
+      "name": "Aquatic",
+      "results": {
+        "all": [
+          {"entity":"team:2077","name":"Competitor 1 - University of Warwick Lifesaving Club (Open Individual (16+ years))","result":103.5,"resolved":103.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2085","name":"Competitor 11 - North Worcestershire LG (Master Open (40-49 years ))","result":94.5,"resolved":94.5,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2082","name":"Competitor 9 - North Worcestershire LG (Masters Ladies (40-49 years))","result":92,"resolved":92,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2078","name":"Competitor 2, Competitor 3 - North Worcestershire LG (Junior Girls Pairs (12-14 years))","result":90,"resolved":90,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2079","name":"Competitor 4, Competitor 5 - North Worcestershire LG (Senior Girls Pairs (15-17 years))","result":90,"resolved":90,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2080","name":"Competitor 6, Competitor 7 - North Worcestershire LG (Adult Ladies Pairs (18-21 years))","result":86,"resolved":86,"points":6,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2089","name":"Competitor 17, Competitor 18 - Kore Sandwell (Junior Open / Mixed Pairs (12-14 years))","result":77.5,"resolved":77.5,"points":7,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2083","name":"Competitor 10 - North Worcestershire LG (Masters Ladies (40-49 years))","result":70,"resolved":70,"points":8,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2086","name":"Competitor 12 - Kore Sandwell (Open Individual (16+ years))","result":52,"resolved":52,"points":9,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2088","name":"Competitor 15, Competitor 16 - Kore Sandwell (Senior Open/ Mixed Pairs (15-17 years ))","result":51.5,"resolved":51.5,"points":10,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2081","name":"Competitor 8 - North Worcestershire LG (Open Individual (16+ years))","result":48.5,"resolved":48.5,"points":11,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2087","name":"Competitor 13, Competitor 14 - Kore Sandwell (Junior Open / Mixed Pairs (12-14 years))","result":35,"resolved":35,"points":12,"position":12,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:299": [
+          {"entity":"team:2077","name":"Competitor 1 - University of Warwick Lifesaving Club (Open Individual (16+ years))","result":103.5,"resolved":103.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2086","name":"Competitor 12 - Kore Sandwell (Open Individual (16+ years))","result":52,"resolved":52,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2081","name":"Competitor 8 - North Worcestershire LG (Open Individual (16+ years))","result":48.5,"resolved":48.5,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:300": [
+          {"entity":"team:2078","name":"Competitor 2, Competitor 3 - North Worcestershire LG (Junior Girls Pairs (12-14 years))","result":90,"resolved":90,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:301": [
+          {"entity":"team:2079","name":"Competitor 4, Competitor 5 - North Worcestershire LG (Senior Girls Pairs (15-17 years))","result":90,"resolved":90,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:302": [
+          {"entity":"team:2080","name":"Competitor 6, Competitor 7 - North Worcestershire LG (Adult Ladies Pairs (18-21 years))","result":86,"resolved":86,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:303": [
+          {"entity":"team:2082","name":"Competitor 9 - North Worcestershire LG (Masters Ladies (40-49 years))","result":92,"resolved":92,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2083","name":"Competitor 10 - North Worcestershire LG (Masters Ladies (40-49 years))","result":70,"resolved":70,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:305": [
+          {"entity":"team:2085","name":"Competitor 11 - North Worcestershire LG (Master Open (40-49 years ))","result":94.5,"resolved":94.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:306": [
+          {"entity":"team:2089","name":"Competitor 17, Competitor 18 - Kore Sandwell (Junior Open / Mixed Pairs (12-14 years))","result":77.5,"resolved":77.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2087","name":"Competitor 13, Competitor 14 - Kore Sandwell (Junior Open / Mixed Pairs (12-14 years))","result":35,"resolved":35,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:307": [
+          {"entity":"team:2088","name":"Competitor 15, Competitor 16 - Kore Sandwell (Senior Open/ Mixed Pairs (15-17 years ))","result":51.5,"resolved":51.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    }
+  },
+  "sheets": {
+    "sheet:347": {
+      "name": "All results",
+      "results": [
+        {
+          "entity": "team:2077",
+          "name": "Competitor 1 - University of Warwick Lifesaving Club (Open Individual (16+ years))",
+          "total": 7,
+          "position": 1,
+          "events": [
+            {"event":"speed:220","entity":"competitor:1656","position":1,"points":1,"adjusted":1},
+            {"event":"speed:221","entity":"competitor:1656","position":1,"points":1,"adjusted":1},
+            {"event":"serc:154","entity":"team:2077","position":3,"points":3,"adjusted":3},
+            {"event":"serc:155","entity":"team:2077","position":1,"points":1,"adjusted":2}
+          ]
+        },
+        {
+          "entity": "team:2085",
+          "name": "Competitor 11 - North Worcestershire LG (Master Open (40-49 years ))",
+          "total": 11,
+          "position": 2,
+          "events": [
+            {"event":"speed:220","entity":"competitor:1667","position":3,"points":3,"adjusted":3},
+            {"event":"speed:221","entity":"competitor:1667","position":2,"points":2,"adjusted":2},
+            {"event":"serc:154","entity":"team:2085","position":2,"points":2,"adjusted":2},
+            {"event":"serc:155","entity":"team:2085","position":2,"points":2,"adjusted":4}
+          ]
+        },
+        {
+          "entity": "team:2082",
+          "name": "Competitor 9 - North Worcestershire LG (Masters Ladies (40-49 years))",
+          "total": 16,
+          "position": 3,
+          "events": [
+            {"event":"speed:220","entity":"competitor:1664","position":5,"points":5,"adjusted":5},
+            {"event":"speed:221","entity":"competitor:1664","position":4,"points":4,"adjusted":4},
+            {"event":"serc:154","entity":"team:2082","position":1,"points":1,"adjusted":1},
+            {"event":"serc:155","entity":"team:2082","position":3,"points":3,"adjusted":6}
+          ]
+        },
+        {
+          "entity": "team:2078",
+          "name": "Competitor 2, Competitor 3 - North Worcestershire LG (Junior Girls Pairs (12-14 years))",
+          "total": 29,
+          "position": 4,
+          "events": [
+            {"event":"speed:220","entity":"competitor:1657","position":4,"points":4,"adjusted":4},
+            {"event":"speed:221","entity":"competitor:1657","position":9,"points":9,"adjusted":9},
+            {"event":"serc:154","entity":"team:2078","position":8,"points":8,"adjusted":8},
+            {"event":"serc:155","entity":"team:2078","position":4,"points":4,"adjusted":8}
+          ]
+        },
+        {
+          "entity": "team:2081",
+          "name": "Competitor 8 - North Worcestershire LG (Open Individual (16+ years))",
+          "total": 32,
+          "position": 5,
+          "events": [
+            {"event":"speed:220","entity":"competitor:1663","position":2,"points":2,"adjusted":2},
+            {"event":"speed:221","entity":"competitor:1663","position":3,"points":3,"adjusted":3},
+            {"event":"serc:154","entity":"team:2081","position":5,"points":5,"adjusted":5},
+            {"event":"serc:155","entity":"team:2081","position":11,"points":11,"adjusted":22}
+          ]
+        },
+        {
+          "entity": "team:2080",
+          "name": "Competitor 6, Competitor 7 - North Worcestershire LG (Adult Ladies Pairs (18-21 years))",
+          "total": 35,
+          "position": 6,
+          "events": [
+            {"event":"speed:220","entity":"competitor:1661","position":11,"points":11,"adjusted":11},
+            {"event":"speed:221","entity":"competitor:1661","position":8,"points":8,"adjusted":8},
+            {"event":"serc:154","entity":"team:2080","position":4,"points":4,"adjusted":4},
+            {"event":"serc:155","entity":"team:2080","position":6,"points":6,"adjusted":12}
+          ]
+        },
+        {
+          "entity": "team:2079",
+          "name": "Competitor 4, Competitor 5 - North Worcestershire LG (Senior Girls Pairs (15-17 years))",
+          "total": 36.5,
+          "position": 7,
+          "events": [
+            {"event":"speed:220","entity":"competitor:1659","position":10,"points":10,"adjusted":10},
+            {"event":"speed:221","entity":"competitor:1659","position":11,"points":11.5,"adjusted":11.5},
+            {"event":"serc:154","entity":"team:2079","position":7,"points":7,"adjusted":7},
+            {"event":"serc:155","entity":"team:2079","position":4,"points":4,"adjusted":8}
+          ]
+        },
+        {
+          "entity": "team:2083",
+          "name": "Competitor 10 - North Worcestershire LG (Masters Ladies (40-49 years))",
+          "total": 36.5,
+          "position": 7,
+          "events": [
+            {"event":"speed:220","entity":"competitor:1665","position":8,"points":8,"adjusted":8},
+            {"event":"speed:221","entity":"competitor:1665","position":6,"points":6.5,"adjusted":6.5},
+            {"event":"serc:154","entity":"team:2083","position":6,"points":6,"adjusted":6},
+            {"event":"serc:155","entity":"team:2083","position":8,"points":8,"adjusted":16}
+          ]
+        },
+        {
+          "entity": "team:2089",
+          "name": "Competitor 17, Competitor 18 - Kore Sandwell (Junior Open / Mixed Pairs (12-14 years))",
+          "total": 40,
+          "position": 9,
+          "events": [
+            {"event":"speed:220","entity":"competitor:1674","position":6,"points":6,"adjusted":6},
+            {"event":"speed:221","entity":"competitor:1674","position":10,"points":10,"adjusted":10},
+            {"event":"serc:154","entity":"team:2089","position":10,"points":10,"adjusted":10},
+            {"event":"serc:155","entity":"team:2089","position":7,"points":7,"adjusted":14}
+          ]
+        },
+        {
+          "entity": "team:2086",
+          "name": "Competitor 12 - Kore Sandwell (Open Individual (16+ years))",
+          "total": 42.5,
+          "position": 10,
+          "events": [
+            {"event":"speed:220","entity":"competitor:1669","position":9,"points":9,"adjusted":9},
+            {"event":"speed:221","entity":"competitor:1669","position":6,"points":6.5,"adjusted":6.5},
+            {"event":"serc:154","entity":"team:2086","position":9,"points":9,"adjusted":9},
+            {"event":"serc:155","entity":"team:2086","position":9,"points":9,"adjusted":18}
+          ]
+        },
+        {
+          "entity": "team:2087",
+          "name": "Competitor 13, Competitor 14 - Kore Sandwell (Junior Open / Mixed Pairs (12-14 years))",
+          "total": 47,
+          "position": 11,
+          "events": [
+            {"event":"speed:220","entity":"competitor:1670","position":7,"points":7,"adjusted":7},
+            {"event":"speed:221","entity":"competitor:1670","position":5,"points":5,"adjusted":5},
+            {"event":"serc:154","entity":"team:2087","position":11,"points":11,"adjusted":11},
+            {"event":"serc:155","entity":"team:2087","position":12,"points":12,"adjusted":24}
+          ]
+        },
+        {
+          "entity": "team:2088",
+          "name": "Competitor 15, Competitor 16 - Kore Sandwell (Senior Open/ Mixed Pairs (15-17 years ))",
+          "total": 55.5,
+          "position": 12,
+          "events": [
+            {"event":"speed:220","entity":"competitor:1672","position":12,"points":12,"adjusted":12},
+            {"event":"speed:221","entity":"competitor:1672","position":11,"points":11.5,"adjusted":11.5},
+            {"event":"serc:154","entity":"team:2088","position":12,"points":12,"adjusted":12},
+            {"event":"serc:155","entity":"team:2088","position":10,"points":10,"adjusted":20}
+          ]
+        }
+      ]
+    },
+    "sheet:348": {
+      "name": "OI16+",
+      "results": [
+        {
+          "entity": "team:2077",
+          "name": "Competitor 1 - University of Warwick Lifesaving Club (Open Individual (16+ years))",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:220","entity":"competitor:1656","position":1,"points":1,"adjusted":1},
+            {"event":"speed:221","entity":"competitor:1656","position":1,"points":1,"adjusted":1},
+            {"event":"serc:154","entity":"team:2077","position":1,"points":1,"adjusted":1},
+            {"event":"serc:155","entity":"team:2077","position":1,"points":1,"adjusted":2}
+          ]
+        },
+        {
+          "entity": "team:2081",
+          "name": "Competitor 8 - North Worcestershire LG (Open Individual (16+ years))",
+          "total": 12,
+          "position": 2,
+          "events": [
+            {"event":"speed:220","entity":"competitor:1663","position":2,"points":2,"adjusted":2},
+            {"event":"speed:221","entity":"competitor:1663","position":2,"points":2,"adjusted":2},
+            {"event":"serc:154","entity":"team:2081","position":2,"points":2,"adjusted":2},
+            {"event":"serc:155","entity":"team:2081","position":3,"points":3,"adjusted":6}
+          ]
+        },
+        {
+          "entity": "team:2086",
+          "name": "Competitor 12 - Kore Sandwell (Open Individual (16+ years))",
+          "total": 13,
+          "position": 3,
+          "events": [
+            {"event":"speed:220","entity":"competitor:1669","position":3,"points":3,"adjusted":3},
+            {"event":"speed:221","entity":"competitor:1669","position":4,"points":3,"adjusted":3},
+            {"event":"serc:154","entity":"team:2086","position":3,"points":3,"adjusted":3},
+            {"event":"serc:155","entity":"team:2086","position":2,"points":2,"adjusted":4}
+          ]
+        }
+      ]
+    },
+    "sheet:350": {
+      "name": "JGP 12-14",
+      "results": [
+        {
+          "entity": "team:2078",
+          "name": "Competitor 2, Competitor 3 - North Worcestershire LG (Junior Girls Pairs (12-14 years))",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:220","entity":"competitor:1657","position":1,"points":1,"adjusted":1},
+            {"event":"speed:221","entity":"competitor:1657","position":4,"points":1,"adjusted":1},
+            {"event":"serc:154","entity":"team:2078","position":1,"points":1,"adjusted":1},
+            {"event":"serc:155","entity":"team:2078","position":1,"points":1,"adjusted":2}
+          ]
+        }
+      ]
+    },
+    "sheet:351": {
+      "name": "SGP15-17",
+      "results": [
+        {
+          "entity": "team:2079",
+          "name": "Competitor 4, Competitor 5 - North Worcestershire LG (Senior Girls Pairs (15-17 years))",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:220","entity":"competitor:1659","position":1,"points":1,"adjusted":1},
+            {"event":"speed:221","entity":"competitor:1659","position":4,"points":1,"adjusted":1},
+            {"event":"serc:154","entity":"team:2079","position":1,"points":1,"adjusted":1},
+            {"event":"serc:155","entity":"team:2079","position":1,"points":1,"adjusted":2}
+          ]
+        }
+      ]
+    },
+    "sheet:352": {
+      "name": "ALP18-21",
+      "results": [
+        {
+          "entity": "team:2080",
+          "name": "Competitor 6, Competitor 7 - North Worcestershire LG (Adult Ladies Pairs (18-21 years))",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:220","entity":"competitor:1661","position":1,"points":1,"adjusted":1},
+            {"event":"speed:221","entity":"competitor:1661","position":4,"points":1,"adjusted":1},
+            {"event":"serc:154","entity":"team:2080","position":1,"points":1,"adjusted":1},
+            {"event":"serc:155","entity":"team:2080","position":1,"points":1,"adjusted":2}
+          ]
+        }
+      ]
+    },
+    "sheet:353": {
+      "name": "JOMP12-14",
+      "results": [
+        {
+          "entity": "team:2089",
+          "name": "Competitor 17, Competitor 18 - Kore Sandwell (Junior Open / Mixed Pairs (12-14 years))",
+          "total": 6,
+          "position": 1,
+          "events": [
+            {"event":"speed:220","entity":"competitor:1674","position":1,"points":1,"adjusted":1},
+            {"event":"speed:221","entity":"competitor:1674","position":4,"points":2,"adjusted":2},
+            {"event":"serc:154","entity":"team:2089","position":1,"points":1,"adjusted":1},
+            {"event":"serc:155","entity":"team:2089","position":1,"points":1,"adjusted":2}
+          ]
+        },
+        {
+          "entity": "team:2087",
+          "name": "Competitor 13, Competitor 14 - Kore Sandwell (Junior Open / Mixed Pairs (12-14 years))",
+          "total": 9,
+          "position": 2,
+          "events": [
+            {"event":"speed:220","entity":"competitor:1670","position":2,"points":2,"adjusted":2},
+            {"event":"speed:221","entity":"competitor:1670","position":1,"points":1,"adjusted":1},
+            {"event":"serc:154","entity":"team:2087","position":2,"points":2,"adjusted":2},
+            {"event":"serc:155","entity":"team:2087","position":2,"points":2,"adjusted":4}
+          ]
+        }
+      ]
+    },
+    "sheet:354": {
+      "name": "SOMP 15-17",
+      "results": [
+        {
+          "entity": "team:2088",
+          "name": "Competitor 15, Competitor 16 - Kore Sandwell (Senior Open/ Mixed Pairs (15-17 years ))",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:220","entity":"competitor:1672","position":1,"points":1,"adjusted":1},
+            {"event":"speed:221","entity":"competitor:1672","position":4,"points":1,"adjusted":1},
+            {"event":"serc:154","entity":"team:2088","position":1,"points":1,"adjusted":1},
+            {"event":"serc:155","entity":"team:2088","position":1,"points":1,"adjusted":2}
+          ]
+        }
+      ]
+    },
+    "sheet:355": {"name":"AOMP18-21","results":[]},
+    "sheet:356": {
+      "name": "ML40-49",
+      "results": [
+        {
+          "entity": "team:2082",
+          "name": "Competitor 9 - North Worcestershire LG (Masters Ladies (40-49 years))",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:220","entity":"competitor:1664","position":1,"points":1,"adjusted":1},
+            {"event":"speed:221","entity":"competitor:1664","position":1,"points":1,"adjusted":1},
+            {"event":"serc:154","entity":"team:2082","position":1,"points":1,"adjusted":1},
+            {"event":"serc:155","entity":"team:2082","position":1,"points":1,"adjusted":2}
+          ]
+        },
+        {
+          "entity": "team:2083",
+          "name": "Competitor 10 - North Worcestershire LG (Masters Ladies (40-49 years))",
+          "total": 10,
+          "position": 2,
+          "events": [
+            {"event":"speed:220","entity":"competitor:1665","position":2,"points":2,"adjusted":2},
+            {"event":"speed:221","entity":"competitor:1665","position":4,"points":2,"adjusted":2},
+            {"event":"serc:154","entity":"team:2083","position":2,"points":2,"adjusted":2},
+            {"event":"serc:155","entity":"team:2083","position":2,"points":2,"adjusted":4}
+          ]
+        }
+      ]
+    },
+    "sheet:357": {"name":"ML60-69","results":[]},
+    "sheet:358": {
+      "name": "Masters open 40-49",
+      "results": [
+        {
+          "entity": "team:2085",
+          "name": "Competitor 11 - North Worcestershire LG (Master Open (40-49 years ))",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:220","entity":"competitor:1667","position":1,"points":1,"adjusted":1},
+            {"event":"speed:221","entity":"competitor:1667","position":1,"points":1,"adjusted":1},
+            {"event":"serc:154","entity":"team:2085","position":1,"points":1,"adjusted":1},
+            {"event":"serc:155","entity":"team:2085","position":1,"points":1,"adjusted":2}
+          ]
+        }
+      ]
+    }
+  },
+  "masters": []
+}

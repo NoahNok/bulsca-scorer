@@ -15,6 +15,8 @@ use App\Models\SERC\MarkingPointTemplate;
 use App\Models\SERCJudge;
 use App\Models\SERCMarkingPoint;
 use App\Models\SERCResult;
+use App\Scoring\CompetitionResults;
+use App\Scoring\Results\EventResult;
 use App\Services\ScoringSchemas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -190,16 +192,14 @@ class SercEventController extends Controller
      */
     private function rankedResults(Competition $comp, SERC $serc, ?League $league): array
     {
-        return collect($serc->getRankedResults($league))->map(function ($result) use ($comp) {
-            return [
-                ...$this->keyAndNames($comp, $result),
-                'dq' => $result->getDisqualificationsString(),
-                'mark' => round($result->resolvedResult, 1),
-                'points' => round($result->points ?? 0, 1),
-                'disqualified' => $result->isDisqualified(),
-                'position' => $result->position ?? null,
-            ];
-        })->values()->all();
+        return array_map(fn (EventResult $result) => [
+            ...$this->keyAndNames($result),
+            'dq' => $result->disqualificationLabel(),
+            'mark' => round($result->resolvedResult, 1),
+            'points' => round($result->points ?? 0, 1),
+            'disqualified' => $result->isDisqualified(),
+            'position' => $result->position,
+        ], app(CompetitionResults::class)->event($serc, $league));
     }
 
     /**

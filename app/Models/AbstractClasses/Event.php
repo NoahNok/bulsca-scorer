@@ -3,10 +3,8 @@
 namespace App\Models\AbstractClasses;
 
 
+use App\Scoring\ResultsVersion;
 use App\DigitalJudge\DigitalJudge;
-use App\DTO\Result;
-use App\DTO\ResolvedResult;
-use App\DTO\RankedResult;
 use App\Models\Competition;
 use App\Models\CompetitionTeam;
 
@@ -17,11 +15,11 @@ use App\Models\Interfaces\IJsonable;
 use App\Models\League;
 use App\Models\SERCResult;
 use App\Models\SpeedResult;
+use App\Scoring\CompetitionResults;
 use App\Traits\RecordActivity;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
@@ -38,18 +36,6 @@ abstract class Event extends Model implements IJsonable
     ];
 
     public abstract function getName(): string;
-    /**
-     * @return Result[]
-     */
-    public abstract function getRawResults(bool $withEmpty = false, ?League $league = null): array;
-    /**
-     * @return ResolvedResult[]
-     */
-    public abstract function getResolvedResults(?League $league = null): array;
-    /**
-     * @return RankedResult[]
-     */
-    public abstract function getRankedResults(?League $league = null): array;
     public abstract function results();
     public abstract function getCompetition();
     public function isComplete($no_check = False): bool
@@ -77,54 +63,15 @@ abstract class Event extends Model implements IJsonable
 
         static::deleted(function (Event $event) {
             $event->recordActivity('EVENT_DELETED', 'Event \'' . $event->getName() . '\' deleted', related: [$event->getCompetition]);
+
+            // Its cached results have no version to outlive, so they go with it
+            CompetitionResults::forget($event);
         });
 
         static::deleting(function (Event $event) {
             $event->penalties()->delete();
             $event->disqualifications()->delete();
         });
-    }
-
-    protected function applyGrouping(SupportCollection $results): SupportCollection
-    {
-
-
-
-        $groupBy = $this->scoringSchema->schema['group_by'] ?? null; // could come from user input
-
-        if (!$groupBy || empty($groupBy)) {
-            return $results;
-        }
-
-        $grouped = collect($results)->groupBy(function (ResolvedResult $result) use ($groupBy) {
-            $entityGrouping = $result->entity->getGrouping();
-            $parts = collect($groupBy)->map(function ($key) use ($entityGrouping) {
-                return match ($key) {
-                    'league' => $entityGrouping->league_id ?? 'no-league',
-                    'team'   => $entityGrouping->team_id ?? 'no-team',
-                    'club'   => $entityGrouping->club_id ?? 'no-club',
-                    default  => 'unknown',
-                };
-            });
-
-            // Join into a single flat key like "league:1|team:5|club:9"
-            return $parts->implode('|');
-        });
-
-
-
-
-        // Combine results within each group
-        $combinedResults = $grouped->map(function ($group) {
-            /** @var ResolvedResult[] $group */
-            $base = $group->shift(); // take the first result as base
-            foreach ($group as $result) {
-                $base->combineWith($result);
-            }
-            return $base;
-        })->values();
-
-        return $combinedResults;
     }
 
     public function penalties()
@@ -168,11 +115,15 @@ abstract class Event extends Model implements IJsonable
     public function clearEntityPenalties(Entity $entity)
     {
         $this->penalties()->whereMorphedTo('entity', $entity)->delete();
+        // Deleted without model events
+        app(ResultsVersion::class)->bump($this->competition, $this->getConnection());
     }
 
     public function clearEntityDisqualifications(Entity $entity)
     {
         $this->disqualifications()->whereMorphedTo('entity', $entity)->delete();
+        // Deleted without model events
+        app(ResultsVersion::class)->bump($this->competition, $this->getConnection());
     }
 
     public function getEntityPenalties(Entity $entity)

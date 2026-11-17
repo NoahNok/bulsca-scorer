@@ -1,0 +1,420 @@
+{
+  "competition": "South Regional",
+  "events": {
+    "speed:218": {
+      "name": "Swim & Tow",
+      "results": {
+        "all": [
+          {"entity":"competitor:1655","name":"Competitor 22 - Bournemouth Lifeguard Corps (Masters Open (60-69 years)) MO6Y - 1","result":50160,"resolved":50160,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1635","name":"Competitor 3 - Jersey Aquatic Rescue Club (Masters Open (60-69 years)) MO6Y - 1","result":91150,"resolved":91150,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1647","name":"Competitor 15 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 4","result":56720,"resolved":105040,"points":3,"position":3,"dqs":[],"pens":[],"combined":["competitor:1647","competitor:1648"]},
+          {"entity":"competitor:1640","name":"Competitor 8 - RLSS POOLE (Open Individual (16+ years)) OIY - 1","result":108570,"resolved":108570,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1643","name":"Competitor 11 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 2","result":56130,"resolved":117040,"points":5,"position":5,"dqs":[],"pens":[],"combined":["competitor:1643","competitor:1644"]},
+          {"entity":"competitor:1645","name":"Competitor 13 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 3","result":61810,"resolved":121380,"points":6,"position":6,"dqs":[],"pens":[],"combined":["competitor:1645","competitor:1646"]},
+          {"entity":"competitor:1653","name":"Competitor 20 - Bournemouth Lifeguard Corps (Ladies Individual (16+ years)) LIY - 1","result":123710,"resolved":123710,"points":7,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1633","name":"Competitor 1 - GAFIRS (Ladies Individual (16+ years)) LIY - 1","result":146870,"resolved":146870,"points":8,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1638","name":"Competitor 6 - Jersey Aquatic Rescue Club (Senior Open/Mixed Pairs (15-17 years)) SOP1Y - 2","result":118530,"resolved":220910,"points":9,"position":9,"dqs":[],"pens":[],"combined":["competitor:1638","competitor:1639"]},
+          {"entity":"competitor:1652","name":"Competitor 19 - Bournemouth Lifeguard Corps (Adult Open / Mixed Pairs (18-21 years)) AOP1Y - 1","result":116930,"resolved":224570,"points":10,"position":10,"dqs":[],"pens":[],"combined":["competitor:1652","competitor:1654"]},
+          {"entity":"competitor:1636","name":"Competitor 4 - Jersey Aquatic Rescue Club (Senior Open/Mixed Pairs (15-17 years)) SOP1Y - 1","result":123720,"resolved":226590,"points":11,"position":11,"dqs":[],"pens":[],"combined":["competitor:1636","competitor:1637"]},
+          {"entity":"competitor:1634","name":"Competitor 2 - GAFIRS (Masters Ladies (40-49 years)) ML4Y - 1","result":3599000,"resolved":600000,"points":12,"position":12,"dqs":[99904],"pens":[],"combined":[]},
+          {"entity":"competitor:1641","name":"Competitor 9 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 1","result":600000,"resolved":648840,"points":13,"position":13,"dqs":[],"pens":[],"combined":["competitor:1641","competitor:1642"]},
+          {"entity":"competitor:1649","name":"Competitor 17 - Bournemouth Lifeguard Corps (Senior Girls Pairs (15-17 years)) SGP1Y - 1","result":600000,"resolved":739940,"points":14,"position":14,"dqs":[],"pens":[],"combined":["competitor:1649","competitor:1650"]}
+        ],
+        "league:292": [
+          {"entity":"competitor:1653","name":"Competitor 20 - Bournemouth Lifeguard Corps (Ladies Individual (16+ years)) LIY - 1","result":123710,"resolved":123710,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1633","name":"Competitor 1 - GAFIRS (Ladies Individual (16+ years)) LIY - 1","result":146870,"resolved":146870,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:293": [
+          {"entity":"competitor:1634","name":"Competitor 2 - GAFIRS (Masters Ladies (40-49 years)) ML4Y - 1","result":3599000,"resolved":600000,"points":1,"position":1,"dqs":[99904],"pens":[],"combined":[]}
+        ],
+        "league:294": [
+          {"entity":"competitor:1655","name":"Competitor 22 - Bournemouth Lifeguard Corps (Masters Open (60-69 years)) MO6Y - 1","result":50160,"resolved":50160,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1635","name":"Competitor 3 - Jersey Aquatic Rescue Club (Masters Open (60-69 years)) MO6Y - 1","result":91150,"resolved":91150,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:295": [
+          {"entity":"competitor:1638","name":"Competitor 6 - Jersey Aquatic Rescue Club (Senior Open/Mixed Pairs (15-17 years)) SOP1Y - 2","result":118530,"resolved":220910,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1638","competitor:1639"]},
+          {"entity":"competitor:1636","name":"Competitor 4 - Jersey Aquatic Rescue Club (Senior Open/Mixed Pairs (15-17 years)) SOP1Y - 1","result":123720,"resolved":226590,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1636","competitor:1637"]}
+        ],
+        "league:296": [
+          {"entity":"competitor:1640","name":"Competitor 8 - RLSS POOLE (Open Individual (16+ years)) OIY - 1","result":108570,"resolved":108570,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:297": [
+          {"entity":"competitor:1647","name":"Competitor 15 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 4","result":56720,"resolved":105040,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1647","competitor:1648"]},
+          {"entity":"competitor:1643","name":"Competitor 11 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 2","result":56130,"resolved":117040,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1643","competitor:1644"]},
+          {"entity":"competitor:1645","name":"Competitor 13 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 3","result":61810,"resolved":121380,"points":3,"position":3,"dqs":[],"pens":[],"combined":["competitor:1645","competitor:1646"]},
+          {"entity":"competitor:1641","name":"Competitor 9 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 1","result":600000,"resolved":648840,"points":4,"position":4,"dqs":[],"pens":[],"combined":["competitor:1641","competitor:1642"]}
+        ],
+        "league:298": [
+          {"entity":"competitor:1649","name":"Competitor 17 - Bournemouth Lifeguard Corps (Senior Girls Pairs (15-17 years)) SGP1Y - 1","result":600000,"resolved":739940,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1649","competitor:1650"]}
+        ],
+        "league:309": [
+          {"entity":"competitor:1652","name":"Competitor 19 - Bournemouth Lifeguard Corps (Adult Open / Mixed Pairs (18-21 years)) AOP1Y - 1","result":116930,"resolved":224570,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1652","competitor:1654"]}
+        ]
+      }
+    },
+    "speed:219": {
+      "name": "Rope Throw",
+      "results": {
+        "all": [
+          {"entity":"competitor:1655","name":"Competitor 22 - Bournemouth Lifeguard Corps (Masters Open (60-69 years)) MO6Y - 1","result":14220,"resolved":14220,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1635","name":"Competitor 3 - Jersey Aquatic Rescue Club (Masters Open (60-69 years)) MO6Y - 1","result":29410,"resolved":29410,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1640","name":"Competitor 8 - RLSS POOLE (Open Individual (16+ years)) OIY - 1","result":31180,"resolved":31180,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1633","name":"Competitor 1 - GAFIRS (Ladies Individual (16+ years)) LIY - 1","result":38280,"resolved":38280,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1641","name":"Competitor 9 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 1","result":18650,"resolved":39050,"points":5,"position":5,"dqs":[],"pens":[],"combined":["competitor:1641","competitor:1642"]},
+          {"entity":"competitor:1643","name":"Competitor 11 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 2","result":21340,"resolved":42460,"points":6,"position":6,"dqs":[],"pens":[],"combined":["competitor:1643","competitor:1644"]},
+          {"entity":"competitor:1636","name":"Competitor 4 - Jersey Aquatic Rescue Club (Senior Open/Mixed Pairs (15-17 years)) SOP1Y - 1","result":22510,"resolved":55780,"points":7,"position":7,"dqs":[],"pens":[],"combined":["competitor:1636","competitor:1637"]},
+          {"entity":"competitor:1647","name":"Competitor 15 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 4","result":16280,"resolved":57500,"points":8,"position":8,"dqs":[],"pens":[],"combined":["competitor:1647","competitor:1648"]},
+          {"entity":"competitor:1649","name":"Competitor 17 - Bournemouth Lifeguard Corps (Senior Girls Pairs (15-17 years)) SGP1Y - 1","result":21970,"resolved":61370,"points":9,"position":9,"dqs":[],"pens":[],"combined":["competitor:1649","competitor:1650"]},
+          {"entity":"competitor:1634","name":"Competitor 2 - GAFIRS (Masters Ladies (40-49 years)) ML4Y - 1","result":3599000,"resolved":120000,"points":10.5,"position":10,"dqs":[99904],"pens":[],"combined":[]},
+          {"entity":"competitor:1653","name":"Competitor 20 - Bournemouth Lifeguard Corps (Ladies Individual (16+ years)) LIY - 1","result":120000,"resolved":120000,"points":10.5,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1638","name":"Competitor 6 - Jersey Aquatic Rescue Club (Senior Open/Mixed Pairs (15-17 years)) SOP1Y - 2","result":600000,"resolved":139000,"points":12,"position":12,"dqs":[],"pens":[],"combined":["competitor:1638","competitor:1639"]},
+          {"entity":"competitor:1645","name":"Competitor 13 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 3","result":120000,"resolved":143020,"points":13,"position":13,"dqs":[],"pens":[],"combined":["competitor:1645","competitor:1646"]},
+          {"entity":"competitor:1652","name":"Competitor 19 - Bournemouth Lifeguard Corps (Adult Open / Mixed Pairs (18-21 years)) AOP1Y - 1","result":44590,"resolved":164590,"points":14,"position":14,"dqs":[],"pens":[],"combined":["competitor:1652","competitor:1654"]}
+        ],
+        "league:292": [
+          {"entity":"competitor:1633","name":"Competitor 1 - GAFIRS (Ladies Individual (16+ years)) LIY - 1","result":38280,"resolved":38280,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1653","name":"Competitor 20 - Bournemouth Lifeguard Corps (Ladies Individual (16+ years)) LIY - 1","result":120000,"resolved":120000,"points":2,"position":4,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:293": [
+          {"entity":"competitor:1634","name":"Competitor 2 - GAFIRS (Masters Ladies (40-49 years)) ML4Y - 1","result":3599000,"resolved":120000,"points":1,"position":4,"dqs":[99904],"pens":[],"combined":[]}
+        ],
+        "league:294": [
+          {"entity":"competitor:1655","name":"Competitor 22 - Bournemouth Lifeguard Corps (Masters Open (60-69 years)) MO6Y - 1","result":14220,"resolved":14220,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1635","name":"Competitor 3 - Jersey Aquatic Rescue Club (Masters Open (60-69 years)) MO6Y - 1","result":29410,"resolved":29410,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:295": [
+          {"entity":"competitor:1636","name":"Competitor 4 - Jersey Aquatic Rescue Club (Senior Open/Mixed Pairs (15-17 years)) SOP1Y - 1","result":22510,"resolved":55780,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1636","competitor:1637"]},
+          {"entity":"competitor:1638","name":"Competitor 6 - Jersey Aquatic Rescue Club (Senior Open/Mixed Pairs (15-17 years)) SOP1Y - 2","result":600000,"resolved":139000,"points":2,"position":4,"dqs":[],"pens":[],"combined":["competitor:1638","competitor:1639"]}
+        ],
+        "league:296": [
+          {"entity":"competitor:1640","name":"Competitor 8 - RLSS POOLE (Open Individual (16+ years)) OIY - 1","result":31180,"resolved":31180,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:297": [
+          {"entity":"competitor:1641","name":"Competitor 9 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 1","result":18650,"resolved":39050,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1641","competitor:1642"]},
+          {"entity":"competitor:1643","name":"Competitor 11 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 2","result":21340,"resolved":42460,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1643","competitor:1644"]},
+          {"entity":"competitor:1647","name":"Competitor 15 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 4","result":16280,"resolved":57500,"points":3,"position":3,"dqs":[],"pens":[],"combined":["competitor:1647","competitor:1648"]},
+          {"entity":"competitor:1645","name":"Competitor 13 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 3","result":120000,"resolved":143020,"points":4,"position":4,"dqs":[],"pens":[],"combined":["competitor:1645","competitor:1646"]}
+        ],
+        "league:298": [
+          {"entity":"competitor:1649","name":"Competitor 17 - Bournemouth Lifeguard Corps (Senior Girls Pairs (15-17 years)) SGP1Y - 1","result":21970,"resolved":61370,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1649","competitor:1650"]}
+        ],
+        "league:309": [
+          {"entity":"competitor:1652","name":"Competitor 19 - Bournemouth Lifeguard Corps (Adult Open / Mixed Pairs (18-21 years)) AOP1Y - 1","result":44590,"resolved":164590,"points":1,"position":4,"dqs":[],"pens":[],"combined":["competitor:1652","competitor:1654"]}
+        ]
+      }
+    },
+    "serc:152": {
+      "name": "Lifesupport",
+      "results": {
+        "all": [
+          {"entity":"team:2074","name":"Competitor 20 - Bournemouth Lifeguard Corps (Ladies Individual (16+ years))","result":39.5,"resolved":39.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2072","name":"Competitor 17, Competitor 18 - Bournemouth Lifeguard Corps (Senior Girls Pairs (15-17 years))","result":38.5,"resolved":38.5,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2066","name":"Competitor 6, Competitor 7 - Jersey Aquatic Rescue Club (Senior Open/Mixed Pairs (15-17 years))","result":37.5,"resolved":37.5,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2064","name":"Competitor 3 - Jersey Aquatic Rescue Club (Masters Open (60-69 years))","result":37,"resolved":37,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2062","name":"Competitor 1 - GAFIRS (Ladies Individual (16+ years))","result":36,"resolved":36,"points":5,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2069","name":"Competitor 11, Competitor 12 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years))","result":35,"resolved":35,"points":6,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2073","name":"Competitor 19, Competitor 21 - Bournemouth Lifeguard Corps (Adult Open / Mixed Pairs (18-21 years))","result":34.5,"resolved":34.5,"points":7,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2071","name":"Competitor 15, Competitor 16 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years))","result":34,"resolved":34,"points":8,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2065","name":"Competitor 4, Competitor 5 - Jersey Aquatic Rescue Club (Senior Open/Mixed Pairs (15-17 years))","result":33.5,"resolved":33.5,"points":9,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2067","name":"Competitor 8 - RLSS POOLE (Open Individual (16+ years))","result":31,"resolved":31,"points":10,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2076","name":"Competitor 22 - Bournemouth Lifeguard Corps (Masters Open (60-69 years))","result":30,"resolved":30,"points":11,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2068","name":"Competitor 9, Competitor 10 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years))","result":29.5,"resolved":29.5,"points":12,"position":12,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2070","name":"Competitor 13, Competitor 14 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years))","result":28.5,"resolved":28.5,"points":13,"position":13,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2063","name":"Competitor 2 - GAFIRS (Masters Ladies (40-49 years))","result":0,"resolved":0,"points":14,"position":14,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:292": [
+          {"entity":"team:2074","name":"Competitor 20 - Bournemouth Lifeguard Corps (Ladies Individual (16+ years))","result":39.5,"resolved":39.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2062","name":"Competitor 1 - GAFIRS (Ladies Individual (16+ years))","result":36,"resolved":36,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:293": [
+          {"entity":"team:2063","name":"Competitor 2 - GAFIRS (Masters Ladies (40-49 years))","result":0,"resolved":0,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:294": [
+          {"entity":"team:2064","name":"Competitor 3 - Jersey Aquatic Rescue Club (Masters Open (60-69 years))","result":37,"resolved":37,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2076","name":"Competitor 22 - Bournemouth Lifeguard Corps (Masters Open (60-69 years))","result":30,"resolved":30,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:295": [
+          {"entity":"team:2066","name":"Competitor 6, Competitor 7 - Jersey Aquatic Rescue Club (Senior Open/Mixed Pairs (15-17 years))","result":37.5,"resolved":37.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2065","name":"Competitor 4, Competitor 5 - Jersey Aquatic Rescue Club (Senior Open/Mixed Pairs (15-17 years))","result":33.5,"resolved":33.5,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:296": [
+          {"entity":"team:2067","name":"Competitor 8 - RLSS POOLE (Open Individual (16+ years))","result":31,"resolved":31,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:297": [
+          {"entity":"team:2069","name":"Competitor 11, Competitor 12 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years))","result":35,"resolved":35,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2071","name":"Competitor 15, Competitor 16 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years))","result":34,"resolved":34,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2068","name":"Competitor 9, Competitor 10 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years))","result":29.5,"resolved":29.5,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2070","name":"Competitor 13, Competitor 14 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years))","result":28.5,"resolved":28.5,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:298": [
+          {"entity":"team:2072","name":"Competitor 17, Competitor 18 - Bournemouth Lifeguard Corps (Senior Girls Pairs (15-17 years))","result":38.5,"resolved":38.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:309": [
+          {"entity":"team:2073","name":"Competitor 19, Competitor 21 - Bournemouth Lifeguard Corps (Adult Open / Mixed Pairs (18-21 years))","result":34.5,"resolved":34.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    },
+    "serc:153": {
+      "name": "Aquatic",
+      "results": {
+        "all": [
+          {"entity":"team:2068","name":"Competitor 9, Competitor 10 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years))","result":98,"resolved":98,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2069","name":"Competitor 11, Competitor 12 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years))","result":91,"resolved":91,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2065","name":"Competitor 4, Competitor 5 - Jersey Aquatic Rescue Club (Senior Open/Mixed Pairs (15-17 years))","result":86.5,"resolved":86.5,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2066","name":"Competitor 6, Competitor 7 - Jersey Aquatic Rescue Club (Senior Open/Mixed Pairs (15-17 years))","result":75,"resolved":75,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2072","name":"Competitor 17, Competitor 18 - Bournemouth Lifeguard Corps (Senior Girls Pairs (15-17 years))","result":72.5,"resolved":72.5,"points":5,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2073","name":"Competitor 19, Competitor 21 - Bournemouth Lifeguard Corps (Adult Open / Mixed Pairs (18-21 years))","result":69.5,"resolved":69.5,"points":6,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2062","name":"Competitor 1 - GAFIRS (Ladies Individual (16+ years))","result":69,"resolved":69,"points":7,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2071","name":"Competitor 15, Competitor 16 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years))","result":59,"resolved":59,"points":8,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2070","name":"Competitor 13, Competitor 14 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years))","result":55.5,"resolved":55.5,"points":9,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2064","name":"Competitor 3 - Jersey Aquatic Rescue Club (Masters Open (60-69 years))","result":44.5,"resolved":44.5,"points":10,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2076","name":"Competitor 22 - Bournemouth Lifeguard Corps (Masters Open (60-69 years))","result":44,"resolved":44,"points":11,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2074","name":"Competitor 20 - Bournemouth Lifeguard Corps (Ladies Individual (16+ years))","result":27.5,"resolved":27.5,"points":12,"position":12,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2067","name":"Competitor 8 - RLSS POOLE (Open Individual (16+ years))","result":17,"resolved":17,"points":13,"position":13,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2063","name":"Competitor 2 - GAFIRS (Masters Ladies (40-49 years))","result":0,"resolved":0,"points":14,"position":14,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:292": [
+          {"entity":"team:2062","name":"Competitor 1 - GAFIRS (Ladies Individual (16+ years))","result":69,"resolved":69,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2074","name":"Competitor 20 - Bournemouth Lifeguard Corps (Ladies Individual (16+ years))","result":27.5,"resolved":27.5,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:293": [
+          {"entity":"team:2063","name":"Competitor 2 - GAFIRS (Masters Ladies (40-49 years))","result":0,"resolved":0,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:294": [
+          {"entity":"team:2064","name":"Competitor 3 - Jersey Aquatic Rescue Club (Masters Open (60-69 years))","result":44.5,"resolved":44.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2076","name":"Competitor 22 - Bournemouth Lifeguard Corps (Masters Open (60-69 years))","result":44,"resolved":44,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:295": [
+          {"entity":"team:2065","name":"Competitor 4, Competitor 5 - Jersey Aquatic Rescue Club (Senior Open/Mixed Pairs (15-17 years))","result":86.5,"resolved":86.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2066","name":"Competitor 6, Competitor 7 - Jersey Aquatic Rescue Club (Senior Open/Mixed Pairs (15-17 years))","result":75,"resolved":75,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:296": [
+          {"entity":"team:2067","name":"Competitor 8 - RLSS POOLE (Open Individual (16+ years))","result":17,"resolved":17,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:297": [
+          {"entity":"team:2068","name":"Competitor 9, Competitor 10 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years))","result":98,"resolved":98,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2069","name":"Competitor 11, Competitor 12 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years))","result":91,"resolved":91,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2071","name":"Competitor 15, Competitor 16 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years))","result":59,"resolved":59,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2070","name":"Competitor 13, Competitor 14 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years))","result":55.5,"resolved":55.5,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:298": [
+          {"entity":"team:2072","name":"Competitor 17, Competitor 18 - Bournemouth Lifeguard Corps (Senior Girls Pairs (15-17 years))","result":72.5,"resolved":72.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:309": [
+          {"entity":"team:2073","name":"Competitor 19, Competitor 21 - Bournemouth Lifeguard Corps (Adult Open / Mixed Pairs (18-21 years))","result":69.5,"resolved":69.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    }
+  },
+  "sheets": {
+    "sheet:359": {
+      "name": "Ladies Individual (16+ years)",
+      "results": [
+        {
+          "entity": "team:2062",
+          "name": "Competitor 1 - GAFIRS (Ladies Individual (16+ years))",
+          "total": 7,
+          "position": 1,
+          "events": [
+            {"event":"speed:218","entity":"competitor:1633","position":2,"points":2,"adjusted":2},
+            {"event":"speed:219","entity":"competitor:1633","position":1,"points":1,"adjusted":1},
+            {"event":"serc:152","entity":"team:2062","position":2,"points":2,"adjusted":2},
+            {"event":"serc:153","entity":"team:2062","position":1,"points":1,"adjusted":2}
+          ]
+        },
+        {
+          "entity": "team:2074",
+          "name": "Competitor 20 - Bournemouth Lifeguard Corps (Ladies Individual (16+ years))",
+          "total": 10,
+          "position": 2,
+          "events": [
+            {"event":"speed:218","entity":"competitor:1653","position":1,"points":1,"adjusted":1},
+            {"event":"speed:219","entity":"competitor:1653","position":4,"points":2,"adjusted":4},
+            {"event":"serc:152","entity":"team:2074","position":1,"points":1,"adjusted":1},
+            {"event":"serc:153","entity":"team:2074","position":2,"points":2,"adjusted":4}
+          ]
+        }
+      ]
+    },
+    "sheet:360": {
+      "name": "Masters Ladies (40-49 years)",
+      "results": [
+        {
+          "entity": "team:2063",
+          "name": "Competitor 2 - GAFIRS (Masters Ladies (40-49 years))",
+          "total": 3,
+          "position": 1,
+          "events": [
+            {"event":"speed:218","entity":"competitor:1634","position":1,"points":1,"adjusted":0},
+            {"event":"speed:219","entity":"competitor:1634","position":4,"points":1,"adjusted":0},
+            {"event":"serc:152","entity":"team:2063","position":1,"points":1,"adjusted":1},
+            {"event":"serc:153","entity":"team:2063","position":1,"points":1,"adjusted":2}
+          ]
+        }
+      ]
+    },
+    "sheet:361": {
+      "name": "Masters Open (60-69 years)",
+      "results": [
+        {
+          "entity": "team:2064",
+          "name": "Competitor 3 - Jersey Aquatic Rescue Club (Masters Open (60-69 years))",
+          "total": 7,
+          "position": 1,
+          "events": [
+            {"event":"speed:218","entity":"competitor:1635","position":2,"points":2,"adjusted":2},
+            {"event":"speed:219","entity":"competitor:1635","position":2,"points":2,"adjusted":2},
+            {"event":"serc:152","entity":"team:2064","position":1,"points":1,"adjusted":1},
+            {"event":"serc:153","entity":"team:2064","position":1,"points":1,"adjusted":2}
+          ]
+        },
+        {
+          "entity": "team:2076",
+          "name": "Competitor 22 - Bournemouth Lifeguard Corps (Masters Open (60-69 years))",
+          "total": 8,
+          "position": 2,
+          "events": [
+            {"event":"speed:218","entity":"competitor:1655","position":1,"points":1,"adjusted":1},
+            {"event":"speed:219","entity":"competitor:1655","position":1,"points":1,"adjusted":1},
+            {"event":"serc:152","entity":"team:2076","position":2,"points":2,"adjusted":2},
+            {"event":"serc:153","entity":"team:2076","position":2,"points":2,"adjusted":4}
+          ]
+        }
+      ]
+    },
+    "sheet:362": {
+      "name": "Senior Open/Mixed Pairs (15-17 years)",
+      "results": [
+        {
+          "entity": "team:2065",
+          "name": "Competitor 4, Competitor 5 - Jersey Aquatic Rescue Club (Senior Open/Mixed Pairs (15-17 years))",
+          "total": 7,
+          "position": 1,
+          "events": [
+            {"event":"speed:218","entity":"competitor:1636","position":2,"points":2,"adjusted":2},
+            {"event":"speed:219","entity":"competitor:1636","position":1,"points":1,"adjusted":1},
+            {"event":"serc:152","entity":"team:2065","position":2,"points":2,"adjusted":2},
+            {"event":"serc:153","entity":"team:2065","position":1,"points":1,"adjusted":2}
+          ]
+        },
+        {
+          "entity": "team:2066",
+          "name": "Competitor 6, Competitor 7 - Jersey Aquatic Rescue Club (Senior Open/Mixed Pairs (15-17 years))",
+          "total": 10,
+          "position": 2,
+          "events": [
+            {"event":"speed:218","entity":"competitor:1638","position":1,"points":1,"adjusted":1},
+            {"event":"speed:219","entity":"competitor:1638","position":4,"points":2,"adjusted":4},
+            {"event":"serc:152","entity":"team:2066","position":1,"points":1,"adjusted":1},
+            {"event":"serc:153","entity":"team:2066","position":2,"points":2,"adjusted":4}
+          ]
+        }
+      ]
+    },
+    "sheet:363": {
+      "name": "Open Individual (16+ years)",
+      "results": [
+        {
+          "entity": "team:2067",
+          "name": "Competitor 8 - RLSS POOLE (Open Individual (16+ years))",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:218","entity":"competitor:1640","position":1,"points":1,"adjusted":1},
+            {"event":"speed:219","entity":"competitor:1640","position":1,"points":1,"adjusted":1},
+            {"event":"serc:152","entity":"team:2067","position":1,"points":1,"adjusted":1},
+            {"event":"serc:153","entity":"team:2067","position":1,"points":1,"adjusted":2}
+          ]
+        }
+      ]
+    },
+    "sheet:364": {
+      "name": "Junior Open / Mixed Pairs (12-14 years)",
+      "results": [
+        {
+          "entity": "team:2069",
+          "name": "Competitor 11, Competitor 12 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years))",
+          "total": 9,
+          "position": 1,
+          "events": [
+            {"event":"speed:218","entity":"competitor:1643","position":2,"points":2,"adjusted":2},
+            {"event":"speed:219","entity":"competitor:1643","position":2,"points":2,"adjusted":2},
+            {"event":"serc:152","entity":"team:2069","position":1,"points":1,"adjusted":1},
+            {"event":"serc:153","entity":"team:2069","position":2,"points":2,"adjusted":4}
+          ]
+        },
+        {
+          "entity": "team:2068",
+          "name": "Competitor 9, Competitor 10 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years))",
+          "total": 10,
+          "position": 2,
+          "events": [
+            {"event":"speed:218","entity":"competitor:1641","position":4,"points":4,"adjusted":4},
+            {"event":"speed:219","entity":"competitor:1641","position":1,"points":1,"adjusted":1},
+            {"event":"serc:152","entity":"team:2068","position":3,"points":3,"adjusted":3},
+            {"event":"serc:153","entity":"team:2068","position":1,"points":1,"adjusted":2}
+          ]
+        },
+        {
+          "entity": "team:2071",
+          "name": "Competitor 15, Competitor 16 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years))",
+          "total": 12,
+          "position": 3,
+          "events": [
+            {"event":"speed:218","entity":"competitor:1647","position":1,"points":1,"adjusted":1},
+            {"event":"speed:219","entity":"competitor:1647","position":3,"points":3,"adjusted":3},
+            {"event":"serc:152","entity":"team:2071","position":2,"points":2,"adjusted":2},
+            {"event":"serc:153","entity":"team:2071","position":3,"points":3,"adjusted":6}
+          ]
+        },
+        {
+          "entity": "team:2070",
+          "name": "Competitor 13, Competitor 14 - Bournemouth Lifeguard Corps (Junior Open / Mixed Pairs (12-14 years))",
+          "total": 19,
+          "position": 4,
+          "events": [
+            {"event":"speed:218","entity":"competitor:1645","position":3,"points":3,"adjusted":3},
+            {"event":"speed:219","entity":"competitor:1645","position":4,"points":4,"adjusted":4},
+            {"event":"serc:152","entity":"team:2070","position":4,"points":4,"adjusted":4},
+            {"event":"serc:153","entity":"team:2070","position":4,"points":4,"adjusted":8}
+          ]
+        }
+      ]
+    },
+    "sheet:365": {
+      "name": "Senior Girls Pairs (15-17 years)",
+      "results": [
+        {
+          "entity": "team:2072",
+          "name": "Competitor 17, Competitor 18 - Bournemouth Lifeguard Corps (Senior Girls Pairs (15-17 years))",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:218","entity":"competitor:1649","position":1,"points":1,"adjusted":1},
+            {"event":"speed:219","entity":"competitor:1649","position":1,"points":1,"adjusted":1},
+            {"event":"serc:152","entity":"team:2072","position":1,"points":1,"adjusted":1},
+            {"event":"serc:153","entity":"team:2072","position":1,"points":1,"adjusted":2}
+          ]
+        }
+      ]
+    },
+    "sheet:366": {
+      "name": "Adult Open Pairs",
+      "results": [
+        {
+          "entity": "team:2073",
+          "name": "Competitor 19, Competitor 21 - Bournemouth Lifeguard Corps (Adult Open / Mixed Pairs (18-21 years))",
+          "total": 8,
+          "position": 1,
+          "events": [
+            {"event":"speed:218","entity":"competitor:1652","position":1,"points":1,"adjusted":1},
+            {"event":"speed:219","entity":"competitor:1652","position":4,"points":1,"adjusted":4},
+            {"event":"serc:152","entity":"team:2073","position":1,"points":1,"adjusted":1},
+            {"event":"serc:153","entity":"team:2073","position":1,"points":1,"adjusted":2}
+          ]
+        }
+      ]
+    }
+  },
+  "masters": []
+}

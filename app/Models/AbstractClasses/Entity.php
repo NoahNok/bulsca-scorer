@@ -3,7 +3,6 @@
 namespace App\Models\AbstractClasses;
 
 use App\DigitalJudge\DigitalJudge;
-use App\DTO\EntityGrouping;
 use App\Models\Club;
 use App\Models\Competition;
 use App\Models\DigitalJudge\JudgeNote;
@@ -15,6 +14,7 @@ use App\Models\League;
 use App\Models\Orders\Draw;
 use App\Models\Orders\EntityEventSeed;
 use App\Models\Orders\Heat;
+use App\Models\Pivots\Leagueable;
 use App\Models\SERCResult;
 use App\Models\SpeedResult;
 use Illuminate\Database\Eloquent\Model;
@@ -110,7 +110,7 @@ abstract class Entity extends Model implements IJsonable
 
     public function leagues()
     {
-        return $this->morphToMany(League::class, 'entity', 'leagueables');
+        return $this->morphToMany(League::class, 'entity', 'leagueables')->using(Leagueable::class);
     }
 
     public function data()
@@ -177,8 +177,6 @@ abstract class Entity extends Model implements IJsonable
     }
 
     public abstract function getFormattedName(?Competition $comp): string;
-
-    public abstract function getGrouping(): EntityGrouping;
 
     public function sercNotes()
     {

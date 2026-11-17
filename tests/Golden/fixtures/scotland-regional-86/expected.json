@@ -1,0 +1,546 @@
+{
+  "competition": "Scotland Regional",
+  "events": {
+    "speed:212": {
+      "name": "Rope Throw",
+      "results": {
+        "all": [
+          {"entity":"competitor:1484","name":"Competitor 29 - East Kilbride Lifesaving Club (Masters Open 40-49) MO 40-49 1","result":12600,"resolved":12600,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1482","name":"Competitor 27 - East Kilbride Lifesaving Club (Open) OI 2","result":13190,"resolved":13190,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1480","name":"Competitor 25 - East Kilbride Lifesaving Club (Ladies) LI 1","result":13750,"resolved":13750,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1481","name":"Competitor 26 - East Kilbride Lifesaving Club (Open) OI 1","result":15290,"resolved":15290,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1478","name":"Competitor 23 - East Kilbride Lifesaving Club (Adult Open Pairs) AOP 1","result":14600,"resolved":41640,"points":5,"position":5,"dqs":[],"pens":[],"combined":["competitor:1478","competitor:1479"]},
+          {"entity":"competitor:1454","name":"Competitor 1 - East Kilbride Lifesaving Club (Junior Girls Pairs) JGP 1","result":19350,"resolved":50810,"points":6,"position":6,"dqs":[],"pens":[],"combined":["competitor:1454","competitor:1455"]},
+          {"entity":"competitor:1476","name":"Competitor 21 - East Kilbride Lifesaving Club (Adult Ladies Pairs) ALP 1","result":18930,"resolved":53730,"points":7,"position":7,"dqs":[],"pens":[],"combined":["competitor:1476","competitor:1477"]},
+          {"entity":"competitor:1487","name":"Competitor 32 - Aberdeen Lifesaving Club (Adult Open Pairs) AOP 1","result":35380,"resolved":57260,"points":8,"position":8,"dqs":[],"pens":[],"combined":["competitor:1487","competitor:1488"]},
+          {"entity":"competitor:1470","name":"Competitor 15 - Nithsdale Lifesavers (Senior Girls Pairs) SGP 2","result":39290,"resolved":76520,"points":9,"position":9,"dqs":[],"pens":[],"combined":["competitor:1470","competitor:1471"]},
+          {"entity":"competitor:1483","name":"Competitor 28 - East Kilbride Lifesaving Club (Masters Ladies 30-39) ML30-39 1","result":120000,"resolved":120000,"points":10,"position":10,"dqs":[99915],"pens":[],"combined":[]},
+          {"entity":"competitor:1458","name":"Competitor 5 - East Kilbride Lifesaving Club (Junior Open Pairs) JOP 1","result":15630,"resolved":135630,"points":11,"position":11,"dqs":[],"pens":[],"combined":["competitor:1458","competitor:1459"]},
+          {"entity":"competitor:1456","name":"Competitor 3 - East Kilbride Lifesaving Club (Junior Girls Pairs) JGP 2","result":15850,"resolved":135850,"points":12,"position":12,"dqs":[],"pens":[],"combined":["competitor:1456","competitor:1457"]},
+          {"entity":"competitor:1462","name":"Competitor 9 - East Kilbride Lifesaving Club (Senior Girls Pairs) SGP 1","result":20050,"resolved":140050,"points":13,"position":13,"dqs":[],"pens":[],"combined":["competitor:1462","competitor:1463"]},
+          {"entity":"competitor:1474","name":"Competitor 19 - Nithsdale Lifesavers (Senior Open Pairs) SOP 1","result":120000,"resolved":140100,"points":14,"position":14,"dqs":[99915],"pens":[],"combined":["competitor:1474","competitor:1475"]},
+          {"entity":"competitor:1485","name":"Competitor 30 - Aberdeen Lifesaving Club (Junior Girls Pairs) JGP 1","result":23640,"resolved":143640,"points":15,"position":15,"dqs":[],"pens":[],"combined":["competitor:1485","competitor:1486"]},
+          {"entity":"competitor:1466","name":"Competitor 13 - East Kilbride Lifesaving Club (Senior Open Pairs) SOP 2","result":120000,"resolved":150620,"points":16,"position":16,"dqs":[99915],"pens":[],"combined":["competitor:1466","competitor:1467"]},
+          {"entity":"competitor:1464","name":"Competitor 11 - East Kilbride Lifesaving Club (Senior Open Pairs) SOP 1","result":120000,"resolved":240000,"points":17.5,"position":17,"dqs":[99915],"pens":[],"combined":["competitor:1464","competitor:1465"]},
+          {"entity":"competitor:1472","name":"Competitor 17 - Nithsdale Lifesavers (Senior Girls Pairs) SGP 3","result":120000,"resolved":240000,"points":17.5,"position":17,"dqs":[99915],"pens":[],"combined":["competitor:1472","competitor:1473"]},
+          {"entity":"competitor:1460","name":"Competitor 7 - East Kilbride Lifesaving Club (Junior Open Pairs) JOP 2","result":18700,"resolved":618700,"points":19,"position":19,"dqs":[],"pens":[],"combined":["competitor:1460","competitor:1461"]}
+        ],
+        "league:248": [
+          {"entity":"competitor:1454","name":"Competitor 1 - East Kilbride Lifesaving Club (Junior Girls Pairs) JGP 1","result":19350,"resolved":50810,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1454","competitor:1455"]},
+          {"entity":"competitor:1456","name":"Competitor 3 - East Kilbride Lifesaving Club (Junior Girls Pairs) JGP 2","result":15850,"resolved":135850,"points":2,"position":4,"dqs":[],"pens":[],"combined":["competitor:1456","competitor:1457"]},
+          {"entity":"competitor:1485","name":"Competitor 30 - Aberdeen Lifesaving Club (Junior Girls Pairs) JGP 1","result":23640,"resolved":143640,"points":3,"position":4,"dqs":[],"pens":[],"combined":["competitor:1485","competitor:1486"]}
+        ],
+        "league:249": [
+          {"entity":"competitor:1458","name":"Competitor 5 - East Kilbride Lifesaving Club (Junior Open Pairs) JOP 1","result":15630,"resolved":135630,"points":1,"position":4,"dqs":[],"pens":[],"combined":["competitor:1458","competitor:1459"]},
+          {"entity":"competitor:1460","name":"Competitor 7 - East Kilbride Lifesaving Club (Junior Open Pairs) JOP 2","result":18700,"resolved":618700,"points":2,"position":4,"dqs":[],"pens":[],"combined":["competitor:1460","competitor:1461"]}
+        ],
+        "league:250": [
+          {"entity":"competitor:1470","name":"Competitor 15 - Nithsdale Lifesavers (Senior Girls Pairs) SGP 2","result":39290,"resolved":76520,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1470","competitor:1471"]},
+          {"entity":"competitor:1462","name":"Competitor 9 - East Kilbride Lifesaving Club (Senior Girls Pairs) SGP 1","result":20050,"resolved":140050,"points":2,"position":4,"dqs":[],"pens":[],"combined":["competitor:1462","competitor:1463"]},
+          {"entity":"competitor:1472","name":"Competitor 17 - Nithsdale Lifesavers (Senior Girls Pairs) SGP 3","result":120000,"resolved":240000,"points":3,"position":4,"dqs":[99915],"pens":[],"combined":["competitor:1472","competitor:1473"]}
+        ],
+        "league:251": [
+          {"entity":"competitor:1474","name":"Competitor 19 - Nithsdale Lifesavers (Senior Open Pairs) SOP 1","result":120000,"resolved":140100,"points":1,"position":4,"dqs":[99915],"pens":[],"combined":["competitor:1474","competitor:1475"]},
+          {"entity":"competitor:1466","name":"Competitor 13 - East Kilbride Lifesaving Club (Senior Open Pairs) SOP 2","result":120000,"resolved":150620,"points":2,"position":4,"dqs":[99915],"pens":[],"combined":["competitor:1466","competitor:1467"]},
+          {"entity":"competitor:1464","name":"Competitor 11 - East Kilbride Lifesaving Club (Senior Open Pairs) SOP 1","result":120000,"resolved":240000,"points":3,"position":4,"dqs":[99915],"pens":[],"combined":["competitor:1464","competitor:1465"]}
+        ],
+        "league:252": [
+          {"entity":"competitor:1476","name":"Competitor 21 - East Kilbride Lifesaving Club (Adult Ladies Pairs) ALP 1","result":18930,"resolved":53730,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1476","competitor:1477"]}
+        ],
+        "league:253": [
+          {"entity":"competitor:1478","name":"Competitor 23 - East Kilbride Lifesaving Club (Adult Open Pairs) AOP 1","result":14600,"resolved":41640,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1478","competitor:1479"]},
+          {"entity":"competitor:1487","name":"Competitor 32 - Aberdeen Lifesaving Club (Adult Open Pairs) AOP 1","result":35380,"resolved":57260,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1487","competitor:1488"]}
+        ],
+        "league:254": [
+          {"entity":"competitor:1480","name":"Competitor 25 - East Kilbride Lifesaving Club (Ladies) LI 1","result":13750,"resolved":13750,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:255": [
+          {"entity":"competitor:1482","name":"Competitor 27 - East Kilbride Lifesaving Club (Open) OI 2","result":13190,"resolved":13190,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1481","name":"Competitor 26 - East Kilbride Lifesaving Club (Open) OI 1","result":15290,"resolved":15290,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:256": [
+          {"entity":"competitor:1483","name":"Competitor 28 - East Kilbride Lifesaving Club (Masters Ladies 30-39) ML30-39 1","result":120000,"resolved":120000,"points":1,"position":4,"dqs":[99915],"pens":[],"combined":[]}
+        ],
+        "league:259": [
+          {"entity":"competitor:1484","name":"Competitor 29 - East Kilbride Lifesaving Club (Masters Open 40-49) MO 40-49 1","result":12600,"resolved":12600,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    },
+    "speed:213": {
+      "name": "Swim & Tow",
+      "results": {
+        "all": [
+          {"entity":"competitor:1482","name":"Competitor 27 - East Kilbride Lifesaving Club (Open) OI 2","result":88030,"resolved":88030,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1456","name":"Competitor 3 - East Kilbride Lifesaving Club (Junior Girls Pairs) JGP 2","result":50240,"resolved":96060,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1456","competitor:1457"]},
+          {"entity":"competitor:1484","name":"Competitor 29 - East Kilbride Lifesaving Club (Masters Open 40-49) MO 40-49 1","result":96800,"resolved":96800,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1481","name":"Competitor 26 - East Kilbride Lifesaving Club (Open) OI 1","result":99290,"resolved":99290,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1483","name":"Competitor 28 - East Kilbride Lifesaving Club (Masters Ladies 30-39) ML30-39 1","result":99990,"resolved":99990,"points":5,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1480","name":"Competitor 25 - East Kilbride Lifesaving Club (Ladies) LI 1","result":106480,"resolved":106480,"points":6,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1458","name":"Competitor 5 - East Kilbride Lifesaving Club (Junior Open Pairs) JOP 1","result":52290,"resolved":113640,"points":7,"position":7,"dqs":[],"pens":[],"combined":["competitor:1458","competitor:1459"]},
+          {"entity":"competitor:1460","name":"Competitor 7 - East Kilbride Lifesaving Club (Junior Open Pairs) JOP 2","result":54590,"resolved":114640,"points":8,"position":8,"dqs":[],"pens":[],"combined":["competitor:1460","competitor:1461"]},
+          {"entity":"competitor:1454","name":"Competitor 1 - East Kilbride Lifesaving Club (Junior Girls Pairs) JGP 1","result":56270,"resolved":115220,"points":9,"position":9,"dqs":[],"pens":[],"combined":["competitor:1454","competitor:1455"]},
+          {"entity":"competitor:1485","name":"Competitor 30 - Aberdeen Lifesaving Club (Junior Girls Pairs) JGP 1","result":65070,"resolved":136620,"points":10,"position":10,"dqs":[],"pens":[],"combined":["competitor:1485","competitor:1486"]},
+          {"entity":"competitor:1478","name":"Competitor 23 - East Kilbride Lifesaving Club (Adult Open Pairs) AOP 1","result":95840,"resolved":196940,"points":11,"position":11,"dqs":[],"pens":[],"combined":["competitor:1478","competitor:1479"]},
+          {"entity":"competitor:1464","name":"Competitor 11 - East Kilbride Lifesaving Club (Senior Open Pairs) SOP 1","result":98930,"resolved":205610,"points":12,"position":12,"dqs":[],"pens":[],"combined":["competitor:1464","competitor:1465"]},
+          {"entity":"competitor:1462","name":"Competitor 9 - East Kilbride Lifesaving Club (Senior Girls Pairs) SGP 1","result":103050,"resolved":214090,"points":13,"position":13,"dqs":[],"pens":[],"combined":["competitor:1462","competitor:1463"]},
+          {"entity":"competitor:1476","name":"Competitor 21 - East Kilbride Lifesaving Club (Adult Ladies Pairs) ALP 1","result":110340,"resolved":226090,"points":14,"position":14,"dqs":[],"pens":[],"combined":["competitor:1476","competitor:1477"]},
+          {"entity":"competitor:1466","name":"Competitor 13 - East Kilbride Lifesaving Club (Senior Open Pairs) SOP 2","result":111400,"resolved":229700,"points":15,"position":15,"dqs":[],"pens":[],"combined":["competitor:1466","competitor:1467"]},
+          {"entity":"competitor:1487","name":"Competitor 32 - Aberdeen Lifesaving Club (Adult Open Pairs) AOP 1","result":120930,"resolved":247340,"points":16,"position":16,"dqs":[],"pens":[],"combined":["competitor:1487","competitor:1488"]},
+          {"entity":"competitor:1474","name":"Competitor 19 - Nithsdale Lifesavers (Senior Open Pairs) SOP 1","result":127900,"resolved":261530,"points":17,"position":17,"dqs":[],"pens":[],"combined":["competitor:1474","competitor:1475"]},
+          {"entity":"competitor:1472","name":"Competitor 17 - Nithsdale Lifesavers (Senior Girls Pairs) SGP 3","result":146270,"resolved":279860,"points":18,"position":18,"dqs":[],"pens":[],"combined":["competitor:1472","competitor:1473"]},
+          {"entity":"competitor:1470","name":"Competitor 15 - Nithsdale Lifesavers (Senior Girls Pairs) SGP 2","result":150480,"resolved":285190,"points":19,"position":19,"dqs":[],"pens":[],"combined":["competitor:1470","competitor:1471"]}
+        ],
+        "league:248": [
+          {"entity":"competitor:1456","name":"Competitor 3 - East Kilbride Lifesaving Club (Junior Girls Pairs) JGP 2","result":50240,"resolved":96060,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1456","competitor:1457"]},
+          {"entity":"competitor:1454","name":"Competitor 1 - East Kilbride Lifesaving Club (Junior Girls Pairs) JGP 1","result":56270,"resolved":115220,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1454","competitor:1455"]},
+          {"entity":"competitor:1485","name":"Competitor 30 - Aberdeen Lifesaving Club (Junior Girls Pairs) JGP 1","result":65070,"resolved":136620,"points":3,"position":3,"dqs":[],"pens":[],"combined":["competitor:1485","competitor:1486"]}
+        ],
+        "league:249": [
+          {"entity":"competitor:1458","name":"Competitor 5 - East Kilbride Lifesaving Club (Junior Open Pairs) JOP 1","result":52290,"resolved":113640,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1458","competitor:1459"]},
+          {"entity":"competitor:1460","name":"Competitor 7 - East Kilbride Lifesaving Club (Junior Open Pairs) JOP 2","result":54590,"resolved":114640,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1460","competitor:1461"]}
+        ],
+        "league:250": [
+          {"entity":"competitor:1462","name":"Competitor 9 - East Kilbride Lifesaving Club (Senior Girls Pairs) SGP 1","result":103050,"resolved":214090,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1462","competitor:1463"]},
+          {"entity":"competitor:1472","name":"Competitor 17 - Nithsdale Lifesavers (Senior Girls Pairs) SGP 3","result":146270,"resolved":279860,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1472","competitor:1473"]},
+          {"entity":"competitor:1470","name":"Competitor 15 - Nithsdale Lifesavers (Senior Girls Pairs) SGP 2","result":150480,"resolved":285190,"points":3,"position":3,"dqs":[],"pens":[],"combined":["competitor:1470","competitor:1471"]}
+        ],
+        "league:251": [
+          {"entity":"competitor:1464","name":"Competitor 11 - East Kilbride Lifesaving Club (Senior Open Pairs) SOP 1","result":98930,"resolved":205610,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1464","competitor:1465"]},
+          {"entity":"competitor:1466","name":"Competitor 13 - East Kilbride Lifesaving Club (Senior Open Pairs) SOP 2","result":111400,"resolved":229700,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1466","competitor:1467"]},
+          {"entity":"competitor:1474","name":"Competitor 19 - Nithsdale Lifesavers (Senior Open Pairs) SOP 1","result":127900,"resolved":261530,"points":3,"position":3,"dqs":[],"pens":[],"combined":["competitor:1474","competitor:1475"]}
+        ],
+        "league:252": [
+          {"entity":"competitor:1476","name":"Competitor 21 - East Kilbride Lifesaving Club (Adult Ladies Pairs) ALP 1","result":110340,"resolved":226090,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1476","competitor:1477"]}
+        ],
+        "league:253": [
+          {"entity":"competitor:1478","name":"Competitor 23 - East Kilbride Lifesaving Club (Adult Open Pairs) AOP 1","result":95840,"resolved":196940,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1478","competitor:1479"]},
+          {"entity":"competitor:1487","name":"Competitor 32 - Aberdeen Lifesaving Club (Adult Open Pairs) AOP 1","result":120930,"resolved":247340,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1487","competitor:1488"]}
+        ],
+        "league:254": [
+          {"entity":"competitor:1480","name":"Competitor 25 - East Kilbride Lifesaving Club (Ladies) LI 1","result":106480,"resolved":106480,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:255": [
+          {"entity":"competitor:1482","name":"Competitor 27 - East Kilbride Lifesaving Club (Open) OI 2","result":88030,"resolved":88030,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1481","name":"Competitor 26 - East Kilbride Lifesaving Club (Open) OI 1","result":99290,"resolved":99290,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:256": [
+          {"entity":"competitor:1483","name":"Competitor 28 - East Kilbride Lifesaving Club (Masters Ladies 30-39) ML30-39 1","result":99990,"resolved":99990,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:259": [
+          {"entity":"competitor:1484","name":"Competitor 29 - East Kilbride Lifesaving Club (Masters Open 40-49) MO 40-49 1","result":96800,"resolved":96800,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    },
+    "serc:146": {
+      "name": "Life Support",
+      "results": {
+        "all": [
+          {"entity":"team:1970","name":"Competitor 25 - East Kilbride Lifesaving Club (Ladies)","result":118,"resolved":118,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1973","name":"Competitor 28 - East Kilbride Lifesaving Club (Masters Ladies 30-39)","result":118,"resolved":118,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1969","name":"Competitor 23, Competitor 24 - East Kilbride Lifesaving Club (Adult Open Pairs)","result":113,"resolved":113,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1976","name":"Competitor 32, Competitor 33 - Aberdeen Lifesaving Club (Adult Open Pairs)","result":110.5,"resolved":110.5,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1972","name":"Competitor 27 - East Kilbride Lifesaving Club (Open)","result":109,"resolved":109,"points":5,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1962","name":"Competitor 11, Competitor 12 - East Kilbride Lifesaving Club (Senior Open Pairs)","result":106,"resolved":106,"points":6,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1961","name":"Competitor 9, Competitor 10 - East Kilbride Lifesaving Club (Senior Girls Pairs)","result":105.5,"resolved":105.5,"points":7,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1963","name":"Competitor 13, Competitor 14 - East Kilbride Lifesaving Club (Senior Open Pairs)","result":101,"resolved":101,"points":8,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1968","name":"Competitor 21, Competitor 22 - East Kilbride Lifesaving Club (Adult Ladies Pairs)","result":97,"resolved":97,"points":9,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1971","name":"Competitor 26 - East Kilbride Lifesaving Club (Open)","result":96.5,"resolved":96.5,"points":10,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1974","name":"Competitor 29 - East Kilbride Lifesaving Club (Masters Open 40-49)","result":95.5,"resolved":95.5,"points":11,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1958","name":"Competitor 3, Competitor 4 - East Kilbride Lifesaving Club (Junior Girls Pairs)","result":84,"resolved":84,"points":12,"position":12,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1965","name":"Competitor 15, Competitor 16 - Nithsdale Lifesavers (Senior Girls Pairs)","result":75,"resolved":75,"points":13,"position":13,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1959","name":"Competitor 5, Competitor 6 - East Kilbride Lifesaving Club (Junior Open Pairs)","result":74,"resolved":74,"points":14,"position":14,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1967","name":"Competitor 19, Competitor 20 - Nithsdale Lifesavers (Senior Open Pairs)","result":71,"resolved":71,"points":15,"position":15,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1957","name":"Competitor 1, Competitor 2 - East Kilbride Lifesaving Club (Junior Girls Pairs)","result":64.5,"resolved":64.5,"points":16,"position":16,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1966","name":"Competitor 17, Competitor 18 - Nithsdale Lifesavers (Senior Girls Pairs)","result":59.5,"resolved":59.5,"points":17,"position":17,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1975","name":"Competitor 30, Competitor 31 - Aberdeen Lifesaving Club (Junior Girls Pairs)","result":58,"resolved":58,"points":18,"position":18,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1960","name":"Competitor 7, Competitor 8 - East Kilbride Lifesaving Club (Junior Open Pairs)","result":43,"resolved":43,"points":19,"position":19,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:248": [
+          {"entity":"team:1958","name":"Competitor 3, Competitor 4 - East Kilbride Lifesaving Club (Junior Girls Pairs)","result":84,"resolved":84,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1957","name":"Competitor 1, Competitor 2 - East Kilbride Lifesaving Club (Junior Girls Pairs)","result":64.5,"resolved":64.5,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1975","name":"Competitor 30, Competitor 31 - Aberdeen Lifesaving Club (Junior Girls Pairs)","result":58,"resolved":58,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:249": [
+          {"entity":"team:1959","name":"Competitor 5, Competitor 6 - East Kilbride Lifesaving Club (Junior Open Pairs)","result":74,"resolved":74,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1960","name":"Competitor 7, Competitor 8 - East Kilbride Lifesaving Club (Junior Open Pairs)","result":43,"resolved":43,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:250": [
+          {"entity":"team:1961","name":"Competitor 9, Competitor 10 - East Kilbride Lifesaving Club (Senior Girls Pairs)","result":105.5,"resolved":105.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1965","name":"Competitor 15, Competitor 16 - Nithsdale Lifesavers (Senior Girls Pairs)","result":75,"resolved":75,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1966","name":"Competitor 17, Competitor 18 - Nithsdale Lifesavers (Senior Girls Pairs)","result":59.5,"resolved":59.5,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:251": [
+          {"entity":"team:1962","name":"Competitor 11, Competitor 12 - East Kilbride Lifesaving Club (Senior Open Pairs)","result":106,"resolved":106,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1963","name":"Competitor 13, Competitor 14 - East Kilbride Lifesaving Club (Senior Open Pairs)","result":101,"resolved":101,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1967","name":"Competitor 19, Competitor 20 - Nithsdale Lifesavers (Senior Open Pairs)","result":71,"resolved":71,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:252": [
+          {"entity":"team:1968","name":"Competitor 21, Competitor 22 - East Kilbride Lifesaving Club (Adult Ladies Pairs)","result":97,"resolved":97,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:253": [
+          {"entity":"team:1969","name":"Competitor 23, Competitor 24 - East Kilbride Lifesaving Club (Adult Open Pairs)","result":113,"resolved":113,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1976","name":"Competitor 32, Competitor 33 - Aberdeen Lifesaving Club (Adult Open Pairs)","result":110.5,"resolved":110.5,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:254": [
+          {"entity":"team:1970","name":"Competitor 25 - East Kilbride Lifesaving Club (Ladies)","result":118,"resolved":118,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:255": [
+          {"entity":"team:1972","name":"Competitor 27 - East Kilbride Lifesaving Club (Open)","result":109,"resolved":109,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1971","name":"Competitor 26 - East Kilbride Lifesaving Club (Open)","result":96.5,"resolved":96.5,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:256": [
+          {"entity":"team:1973","name":"Competitor 28 - East Kilbride Lifesaving Club (Masters Ladies 30-39)","result":118,"resolved":118,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:259": [
+          {"entity":"team:1974","name":"Competitor 29 - East Kilbride Lifesaving Club (Masters Open 40-49)","result":95.5,"resolved":95.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    },
+    "serc:147": {
+      "name": "Aquatic",
+      "results": {
+        "all": [
+          {"entity":"team:1961","name":"Competitor 9, Competitor 10 - East Kilbride Lifesaving Club (Senior Girls Pairs)","result":157.5,"resolved":157.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1970","name":"Competitor 25 - East Kilbride Lifesaving Club (Ladies)","result":150,"resolved":150,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1973","name":"Competitor 28 - East Kilbride Lifesaving Club (Masters Ladies 30-39)","result":150,"resolved":150,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1968","name":"Competitor 21, Competitor 22 - East Kilbride Lifesaving Club (Adult Ladies Pairs)","result":146,"resolved":146,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1972","name":"Competitor 27 - East Kilbride Lifesaving Club (Open)","result":145.5,"resolved":145.5,"points":5,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1971","name":"Competitor 26 - East Kilbride Lifesaving Club (Open)","result":144,"resolved":144,"points":6,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1960","name":"Competitor 7, Competitor 8 - East Kilbride Lifesaving Club (Junior Open Pairs)","result":143,"resolved":143,"points":7,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1962","name":"Competitor 11, Competitor 12 - East Kilbride Lifesaving Club (Senior Open Pairs)","result":133.5,"resolved":133.5,"points":8,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1969","name":"Competitor 23, Competitor 24 - East Kilbride Lifesaving Club (Adult Open Pairs)","result":123,"resolved":123,"points":9,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1963","name":"Competitor 13, Competitor 14 - East Kilbride Lifesaving Club (Senior Open Pairs)","result":113.5,"resolved":113.5,"points":10,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1957","name":"Competitor 1, Competitor 2 - East Kilbride Lifesaving Club (Junior Girls Pairs)","result":113,"resolved":113,"points":11,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1976","name":"Competitor 32, Competitor 33 - Aberdeen Lifesaving Club (Adult Open Pairs)","result":104,"resolved":104,"points":12,"position":12,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1965","name":"Competitor 15, Competitor 16 - Nithsdale Lifesavers (Senior Girls Pairs)","result":102,"resolved":102,"points":13,"position":13,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1959","name":"Competitor 5, Competitor 6 - East Kilbride Lifesaving Club (Junior Open Pairs)","result":101.5,"resolved":101.5,"points":14,"position":14,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1974","name":"Competitor 29 - East Kilbride Lifesaving Club (Masters Open 40-49)","result":95.5,"resolved":95.5,"points":15,"position":15,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1958","name":"Competitor 3, Competitor 4 - East Kilbride Lifesaving Club (Junior Girls Pairs)","result":95,"resolved":95,"points":16,"position":16,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1967","name":"Competitor 19, Competitor 20 - Nithsdale Lifesavers (Senior Open Pairs)","result":93.5,"resolved":93.5,"points":17,"position":17,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1966","name":"Competitor 17, Competitor 18 - Nithsdale Lifesavers (Senior Girls Pairs)","result":74.5,"resolved":74.5,"points":18,"position":18,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1975","name":"Competitor 30, Competitor 31 - Aberdeen Lifesaving Club (Junior Girls Pairs)","result":45,"resolved":45,"points":19,"position":19,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:248": [
+          {"entity":"team:1957","name":"Competitor 1, Competitor 2 - East Kilbride Lifesaving Club (Junior Girls Pairs)","result":113,"resolved":113,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1958","name":"Competitor 3, Competitor 4 - East Kilbride Lifesaving Club (Junior Girls Pairs)","result":95,"resolved":95,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1975","name":"Competitor 30, Competitor 31 - Aberdeen Lifesaving Club (Junior Girls Pairs)","result":45,"resolved":45,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:249": [
+          {"entity":"team:1960","name":"Competitor 7, Competitor 8 - East Kilbride Lifesaving Club (Junior Open Pairs)","result":143,"resolved":143,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1959","name":"Competitor 5, Competitor 6 - East Kilbride Lifesaving Club (Junior Open Pairs)","result":101.5,"resolved":101.5,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:250": [
+          {"entity":"team:1961","name":"Competitor 9, Competitor 10 - East Kilbride Lifesaving Club (Senior Girls Pairs)","result":157.5,"resolved":157.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1965","name":"Competitor 15, Competitor 16 - Nithsdale Lifesavers (Senior Girls Pairs)","result":102,"resolved":102,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1966","name":"Competitor 17, Competitor 18 - Nithsdale Lifesavers (Senior Girls Pairs)","result":74.5,"resolved":74.5,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:251": [
+          {"entity":"team:1962","name":"Competitor 11, Competitor 12 - East Kilbride Lifesaving Club (Senior Open Pairs)","result":133.5,"resolved":133.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1963","name":"Competitor 13, Competitor 14 - East Kilbride Lifesaving Club (Senior Open Pairs)","result":113.5,"resolved":113.5,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1967","name":"Competitor 19, Competitor 20 - Nithsdale Lifesavers (Senior Open Pairs)","result":93.5,"resolved":93.5,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:252": [
+          {"entity":"team:1968","name":"Competitor 21, Competitor 22 - East Kilbride Lifesaving Club (Adult Ladies Pairs)","result":146,"resolved":146,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:253": [
+          {"entity":"team:1969","name":"Competitor 23, Competitor 24 - East Kilbride Lifesaving Club (Adult Open Pairs)","result":123,"resolved":123,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1976","name":"Competitor 32, Competitor 33 - Aberdeen Lifesaving Club (Adult Open Pairs)","result":104,"resolved":104,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:254": [
+          {"entity":"team:1970","name":"Competitor 25 - East Kilbride Lifesaving Club (Ladies)","result":150,"resolved":150,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:255": [
+          {"entity":"team:1972","name":"Competitor 27 - East Kilbride Lifesaving Club (Open)","result":145.5,"resolved":145.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1971","name":"Competitor 26 - East Kilbride Lifesaving Club (Open)","result":144,"resolved":144,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:256": [
+          {"entity":"team:1973","name":"Competitor 28 - East Kilbride Lifesaving Club (Masters Ladies 30-39)","result":150,"resolved":150,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:259": [
+          {"entity":"team:1974","name":"Competitor 29 - East Kilbride Lifesaving Club (Masters Open 40-49)","result":95.5,"resolved":95.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    }
+  },
+  "sheets": {
+    "sheet:320": {
+      "name": "Junior Girls Pairs",
+      "results": [
+        {
+          "entity": "team:1957",
+          "name": "Competitor 1, Competitor 2 - East Kilbride Lifesaving Club (Junior Girls Pairs)",
+          "total": 7,
+          "position": 1,
+          "events": [
+            {"event":"speed:212","entity":"competitor:1454","position":1,"points":1,"adjusted":1},
+            {"event":"speed:213","entity":"competitor:1454","position":2,"points":2,"adjusted":2},
+            {"event":"serc:146","entity":"team:1957","position":2,"points":2,"adjusted":2},
+            {"event":"serc:147","entity":"team:1957","position":1,"points":1,"adjusted":2}
+          ]
+        },
+        {
+          "entity": "team:1958",
+          "name": "Competitor 3, Competitor 4 - East Kilbride Lifesaving Club (Junior Girls Pairs)",
+          "total": 10,
+          "position": 2,
+          "events": [
+            {"event":"speed:212","entity":"competitor:1456","position":4,"points":2,"adjusted":4},
+            {"event":"speed:213","entity":"competitor:1456","position":1,"points":1,"adjusted":1},
+            {"event":"serc:146","entity":"team:1958","position":1,"points":1,"adjusted":1},
+            {"event":"serc:147","entity":"team:1958","position":2,"points":2,"adjusted":4}
+          ]
+        },
+        {
+          "entity": "team:1975",
+          "name": "Competitor 30, Competitor 31 - Aberdeen Lifesaving Club (Junior Girls Pairs)",
+          "total": 16,
+          "position": 3,
+          "events": [
+            {"event":"speed:212","entity":"competitor:1485","position":4,"points":3,"adjusted":4},
+            {"event":"speed:213","entity":"competitor:1485","position":3,"points":3,"adjusted":3},
+            {"event":"serc:146","entity":"team:1975","position":3,"points":3,"adjusted":3},
+            {"event":"serc:147","entity":"team:1975","position":3,"points":3,"adjusted":6}
+          ]
+        }
+      ]
+    },
+    "sheet:321": {
+      "name": "Junior Open Pairs",
+      "results": [
+        {
+          "entity": "team:1959",
+          "name": "Competitor 5, Competitor 6 - East Kilbride Lifesaving Club (Junior Open Pairs)",
+          "total": 10,
+          "position": 1,
+          "events": [
+            {"event":"speed:212","entity":"competitor:1458","position":4,"points":1,"adjusted":4},
+            {"event":"speed:213","entity":"competitor:1458","position":1,"points":1,"adjusted":1},
+            {"event":"serc:146","entity":"team:1959","position":1,"points":1,"adjusted":1},
+            {"event":"serc:147","entity":"team:1959","position":2,"points":2,"adjusted":4}
+          ]
+        },
+        {
+          "entity": "team:1960",
+          "name": "Competitor 7, Competitor 8 - East Kilbride Lifesaving Club (Junior Open Pairs)",
+          "total": 10,
+          "position": 2,
+          "events": [
+            {"event":"speed:212","entity":"competitor:1460","position":4,"points":2,"adjusted":4},
+            {"event":"speed:213","entity":"competitor:1460","position":2,"points":2,"adjusted":2},
+            {"event":"serc:146","entity":"team:1960","position":2,"points":2,"adjusted":2},
+            {"event":"serc:147","entity":"team:1960","position":1,"points":1,"adjusted":2}
+          ]
+        }
+      ]
+    },
+    "sheet:322": {
+      "name": "Senior Girls Pairs",
+      "results": [
+        {
+          "entity": "team:1961",
+          "name": "Competitor 9, Competitor 10 - East Kilbride Lifesaving Club (Senior Girls Pairs)",
+          "total": 8,
+          "position": 1,
+          "events": [
+            {"event":"speed:212","entity":"competitor:1462","position":4,"points":2,"adjusted":4},
+            {"event":"speed:213","entity":"competitor:1462","position":1,"points":1,"adjusted":1},
+            {"event":"serc:146","entity":"team:1961","position":1,"points":1,"adjusted":1},
+            {"event":"serc:147","entity":"team:1961","position":1,"points":1,"adjusted":2}
+          ]
+        },
+        {
+          "entity": "team:1965",
+          "name": "Competitor 15, Competitor 16 - Nithsdale Lifesavers (Senior Girls Pairs)",
+          "total": 10,
+          "position": 2,
+          "events": [
+            {"event":"speed:212","entity":"competitor:1470","position":1,"points":1,"adjusted":1},
+            {"event":"speed:213","entity":"competitor:1470","position":3,"points":3,"adjusted":3},
+            {"event":"serc:146","entity":"team:1965","position":2,"points":2,"adjusted":2},
+            {"event":"serc:147","entity":"team:1965","position":2,"points":2,"adjusted":4}
+          ]
+        },
+        {
+          "entity": "team:1966",
+          "name": "Competitor 17, Competitor 18 - Nithsdale Lifesavers (Senior Girls Pairs)",
+          "total": 11,
+          "position": 3,
+          "events": [
+            {"event":"speed:212","entity":"competitor:1472","position":4,"points":3,"adjusted":0},
+            {"event":"speed:213","entity":"competitor:1472","position":2,"points":2,"adjusted":2},
+            {"event":"serc:146","entity":"team:1966","position":3,"points":3,"adjusted":3},
+            {"event":"serc:147","entity":"team:1966","position":3,"points":3,"adjusted":6}
+          ]
+        }
+      ]
+    },
+    "sheet:323": {
+      "name": "Senior Open Pairs",
+      "results": [
+        {
+          "entity": "team:1962",
+          "name": "Competitor 11, Competitor 12 - East Kilbride Lifesaving Club (Senior Open Pairs)",
+          "total": 4,
+          "position": 1,
+          "events": [
+            {"event":"speed:212","entity":"competitor:1464","position":4,"points":3,"adjusted":0},
+            {"event":"speed:213","entity":"competitor:1464","position":1,"points":1,"adjusted":1},
+            {"event":"serc:146","entity":"team:1962","position":1,"points":1,"adjusted":1},
+            {"event":"serc:147","entity":"team:1962","position":1,"points":1,"adjusted":2}
+          ]
+        },
+        {
+          "entity": "team:1963",
+          "name": "Competitor 13, Competitor 14 - East Kilbride Lifesaving Club (Senior Open Pairs)",
+          "total": 8,
+          "position": 2,
+          "events": [
+            {"event":"speed:212","entity":"competitor:1466","position":4,"points":2,"adjusted":0},
+            {"event":"speed:213","entity":"competitor:1466","position":2,"points":2,"adjusted":2},
+            {"event":"serc:146","entity":"team:1963","position":2,"points":2,"adjusted":2},
+            {"event":"serc:147","entity":"team:1963","position":2,"points":2,"adjusted":4}
+          ]
+        },
+        {
+          "entity": "team:1967",
+          "name": "Competitor 19, Competitor 20 - Nithsdale Lifesavers (Senior Open Pairs)",
+          "total": 12,
+          "position": 3,
+          "events": [
+            {"event":"speed:212","entity":"competitor:1474","position":4,"points":1,"adjusted":0},
+            {"event":"speed:213","entity":"competitor:1474","position":3,"points":3,"adjusted":3},
+            {"event":"serc:146","entity":"team:1967","position":3,"points":3,"adjusted":3},
+            {"event":"serc:147","entity":"team:1967","position":3,"points":3,"adjusted":6}
+          ]
+        }
+      ]
+    },
+    "sheet:324": {
+      "name": "Adult Ladies Pairs",
+      "results": [
+        {
+          "entity": "team:1968",
+          "name": "Competitor 21, Competitor 22 - East Kilbride Lifesaving Club (Adult Ladies Pairs)",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:212","entity":"competitor:1476","position":1,"points":1,"adjusted":1},
+            {"event":"speed:213","entity":"competitor:1476","position":1,"points":1,"adjusted":1},
+            {"event":"serc:146","entity":"team:1968","position":1,"points":1,"adjusted":1},
+            {"event":"serc:147","entity":"team:1968","position":1,"points":1,"adjusted":2}
+          ]
+        }
+      ]
+    },
+    "sheet:325": {
+      "name": "Adult Open Pairs",
+      "results": [
+        {
+          "entity": "team:1969",
+          "name": "Competitor 23, Competitor 24 - East Kilbride Lifesaving Club (Adult Open Pairs)",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:212","entity":"competitor:1478","position":1,"points":1,"adjusted":1},
+            {"event":"speed:213","entity":"competitor:1478","position":1,"points":1,"adjusted":1},
+            {"event":"serc:146","entity":"team:1969","position":1,"points":1,"adjusted":1},
+            {"event":"serc:147","entity":"team:1969","position":1,"points":1,"adjusted":2}
+          ]
+        },
+        {
+          "entity": "team:1976",
+          "name": "Competitor 32, Competitor 33 - Aberdeen Lifesaving Club (Adult Open Pairs)",
+          "total": 10,
+          "position": 2,
+          "events": [
+            {"event":"speed:212","entity":"competitor:1487","position":2,"points":2,"adjusted":2},
+            {"event":"speed:213","entity":"competitor:1487","position":2,"points":2,"adjusted":2},
+            {"event":"serc:146","entity":"team:1976","position":2,"points":2,"adjusted":2},
+            {"event":"serc:147","entity":"team:1976","position":2,"points":2,"adjusted":4}
+          ]
+        }
+      ]
+    },
+    "sheet:326": {
+      "name": "Ladies",
+      "results": [
+        {
+          "entity": "team:1970",
+          "name": "Competitor 25 - East Kilbride Lifesaving Club (Ladies)",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:212","entity":"competitor:1480","position":1,"points":1,"adjusted":1},
+            {"event":"speed:213","entity":"competitor:1480","position":1,"points":1,"adjusted":1},
+            {"event":"serc:146","entity":"team:1970","position":1,"points":1,"adjusted":1},
+            {"event":"serc:147","entity":"team:1970","position":1,"points":1,"adjusted":2}
+          ]
+        }
+      ]
+    },
+    "sheet:327": {
+      "name": "Open",
+      "results": [
+        {
+          "entity": "team:1972",
+          "name": "Competitor 27 - East Kilbride Lifesaving Club (Open)",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:212","entity":"competitor:1482","position":1,"points":1,"adjusted":1},
+            {"event":"speed:213","entity":"competitor:1482","position":1,"points":1,"adjusted":1},
+            {"event":"serc:146","entity":"team:1972","position":1,"points":1,"adjusted":1},
+            {"event":"serc:147","entity":"team:1972","position":1,"points":1,"adjusted":2}
+          ]
+        },
+        {
+          "entity": "team:1971",
+          "name": "Competitor 26 - East Kilbride Lifesaving Club (Open)",
+          "total": 10,
+          "position": 2,
+          "events": [
+            {"event":"speed:212","entity":"competitor:1481","position":2,"points":2,"adjusted":2},
+            {"event":"speed:213","entity":"competitor:1481","position":2,"points":2,"adjusted":2},
+            {"event":"serc:146","entity":"team:1971","position":2,"points":2,"adjusted":2},
+            {"event":"serc:147","entity":"team:1971","position":2,"points":2,"adjusted":4}
+          ]
+        }
+      ]
+    },
+    "sheet:328": {
+      "name": "Masters Ladies 30-39",
+      "results": [
+        {
+          "entity": "team:1973",
+          "name": "Competitor 28 - East Kilbride Lifesaving Club (Masters Ladies 30-39)",
+          "total": 4,
+          "position": 1,
+          "events": [
+            {"event":"speed:212","entity":"competitor:1483","position":4,"points":1,"adjusted":0},
+            {"event":"speed:213","entity":"competitor:1483","position":1,"points":1,"adjusted":1},
+            {"event":"serc:146","entity":"team:1973","position":1,"points":1,"adjusted":1},
+            {"event":"serc:147","entity":"team:1973","position":1,"points":1,"adjusted":2}
+          ]
+        }
+      ]
+    },
+    "sheet:331": {
+      "name": "Masters Open 40-49",
+      "results": [
+        {
+          "entity": "team:1974",
+          "name": "Competitor 29 - East Kilbride Lifesaving Club (Masters Open 40-49)",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:212","entity":"competitor:1484","position":1,"points":1,"adjusted":1},
+            {"event":"speed:213","entity":"competitor:1484","position":1,"points":1,"adjusted":1},
+            {"event":"serc:146","entity":"team:1974","position":1,"points":1,"adjusted":1},
+            {"event":"serc:147","entity":"team:1974","position":1,"points":1,"adjusted":2}
+          ]
+        }
+      ]
+    }
+  },
+  "masters": []
+}

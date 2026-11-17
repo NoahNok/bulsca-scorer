@@ -1,0 +1,84 @@
+{
+  "competition": "National Club SERC 2025",
+  "events": {
+    "serc:109": {
+      "name": "National Club SERC 2025",
+      "results": {
+        "all": [
+          {"entity":"team:1542","name":"Blyth Senior Students","result":484.5,"resolved":484.5,"points":1000,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1543","name":"Blyth Masters","result":455,"resolved":455,"points":939.1124871001032,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1514","name":"BULSCA A","result":454,"resolved":454,"points":937.0485036119711,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1540","name":"Blyth Senior Lifeguards","result":430,"resolved":430,"points":887.5128998968008,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1515","name":"Retford Ladies","result":420.5,"resolved":420.5,"points":867.9050567595459,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1516","name":"Retford Men","result":410,"resolved":410,"points":846.2332301341589,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1520","name":"Retford Seniors","result":408.5,"resolved":408.5,"points":843.1372549019608,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1541","name":"Blyth Senior Lifesavers","result":406.5,"resolved":406.5,"points":839.0092879256966,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1525","name":"BULSCA B","result":365,"resolved":365,"points":753.3539731682146,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1531","name":"Horsham Masters","result":364.5,"resolved":364.5,"points":752.3219814241486,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1534","name":"St John Berchman Masters","result":361.5,"resolved":361.5,"points":746.1300309597523,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1518","name":"Retford Juniors 2","result":357,"resolved":357,"points":736.8421052631578,"position":12,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1533","name":"St. John Berchman Seniors","result":343,"resolved":343,"points":707.9463364293086,"position":13,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1529","name":"Horsham Juniors","result":341,"resolved":341,"points":703.8183694530443,"position":14,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1527","name":"GB Police","result":340,"resolved":340,"points":701.7543859649122,"position":15,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1545","name":"Leeds Lifesaving Seniors","result":339.5,"resolved":339.5,"points":700.7223942208462,"position":16,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1522","name":"East Kilbride Masters","result":335,"resolved":335,"points":691.4344685242519,"position":17,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1530","name":"Horsham Seniors","result":327.5,"resolved":327.5,"points":675.9545923632611,"position":18,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1524","name":"East Kilbride Seniors","result":320.5,"resolved":320.5,"points":661.5067079463365,"position":19,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1528","name":"RASCALS","result":309.5,"resolved":309.5,"points":638.8028895768833,"position":20,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1535","name":"South Worcester","result":303,"resolved":303,"points":625.3869969040247,"position":21,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1538","name":"Blyth Lifesavers","result":301.5,"resolved":301.5,"points":622.2910216718266,"position":22,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1544","name":"Leeds Lifesaving Juniors","result":301,"resolved":301,"points":621.2590299277606,"position":23,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1517","name":"Retford Juniors 1","result":291,"resolved":291,"points":600.6191950464397,"position":24,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1526","name":"Poseidon LSC","result":285.5,"resolved":285.5,"points":589.267285861713,"position":25,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1519","name":"Retford Juniors 3","result":267,"resolved":267,"points":551.0835913312694,"position":26,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1539","name":"Blyth Lifeguards","result":265,"resolved":265,"points":546.955624355005,"position":27,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1532","name":"St. John Berchman Juniors","result":244.5,"resolved":244.5,"points":504.6439628482973,"position":28,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1537","name":"Blyth Graduates","result":240,"resolved":240,"points":495.35603715170276,"position":29,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1523","name":"East Kilbride Juniors","result":239.5,"resolved":239.5,"points":494.32404540763673,"position":30,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1521","name":"Wells LSC","result":236,"resolved":236,"points":487.1001031991744,"position":31,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1536","name":"Blyth Nippers","result":235,"resolved":235,"points":485.0361197110423,"position":32,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:117": [
+          {"entity":"team:1518","name":"Retford Juniors 2","result":357,"resolved":357,"points":1000,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1529","name":"Horsham Juniors","result":341,"resolved":341,"points":955.1820728291317,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1528","name":"RASCALS","result":309.5,"resolved":309.5,"points":866.9467787114846,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1535","name":"South Worcester","result":303,"resolved":303,"points":848.7394957983194,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1538","name":"Blyth Lifesavers","result":301.5,"resolved":301.5,"points":844.5378151260504,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1544","name":"Leeds Lifesaving Juniors","result":301,"resolved":301,"points":843.1372549019608,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1517","name":"Retford Juniors 1","result":291,"resolved":291,"points":815.1260504201681,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1526","name":"Poseidon LSC","result":285.5,"resolved":285.5,"points":799.7198879551821,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1519","name":"Retford Juniors 3","result":267,"resolved":267,"points":747.8991596638656,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1539","name":"Blyth Lifeguards","result":265,"resolved":265,"points":742.296918767507,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1532","name":"St. John Berchman Juniors","result":244.5,"resolved":244.5,"points":684.8739495798319,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1537","name":"Blyth Graduates","result":240,"resolved":240,"points":672.2689075630252,"position":12,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1523","name":"East Kilbride Juniors","result":239.5,"resolved":239.5,"points":670.8683473389356,"position":13,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1521","name":"Wells LSC","result":236,"resolved":236,"points":661.0644257703082,"position":14,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1536","name":"Blyth Nippers","result":235,"resolved":235,"points":658.2633053221289,"position":15,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:118": [
+          {"entity":"team:1542","name":"Blyth Senior Students","result":484.5,"resolved":484.5,"points":1000,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1514","name":"BULSCA A","result":454,"resolved":454,"points":937.0485036119711,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1540","name":"Blyth Senior Lifeguards","result":430,"resolved":430,"points":887.5128998968008,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1520","name":"Retford Seniors","result":408.5,"resolved":408.5,"points":843.1372549019608,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1541","name":"Blyth Senior Lifesavers","result":406.5,"resolved":406.5,"points":839.0092879256966,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1525","name":"BULSCA B","result":365,"resolved":365,"points":753.3539731682146,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1533","name":"St. John Berchman Seniors","result":343,"resolved":343,"points":707.9463364293086,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1527","name":"GB Police","result":340,"resolved":340,"points":701.7543859649122,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1545","name":"Leeds Lifesaving Seniors","result":339.5,"resolved":339.5,"points":700.7223942208462,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1530","name":"Horsham Seniors","result":327.5,"resolved":327.5,"points":675.9545923632611,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1524","name":"East Kilbride Seniors","result":320.5,"resolved":320.5,"points":661.5067079463365,"position":11,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:119": [
+          {"entity":"team:1543","name":"Blyth Masters","result":455,"resolved":455,"points":1000,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1515","name":"Retford Ladies","result":420.5,"resolved":420.5,"points":924.1758241758242,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1516","name":"Retford Men","result":410,"resolved":410,"points":901.0989010989011,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1531","name":"Horsham Masters","result":364.5,"resolved":364.5,"points":801.0989010989011,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1534","name":"St John Berchman Masters","result":361.5,"resolved":361.5,"points":794.5054945054944,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1522","name":"East Kilbride Masters","result":335,"resolved":335,"points":736.2637362637363,"position":6,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    }
+  },
+  "sheets": [],
+  "masters": []
+}

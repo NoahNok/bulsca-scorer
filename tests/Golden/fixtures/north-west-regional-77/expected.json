@@ -1,0 +1,281 @@
+{
+  "competition": "North West Regional",
+  "events": {
+    "speed:222": {
+      "name": "Rope Throw",
+      "results": {
+        "all": [
+          {"entity":"competitor:1683","name":"Competitor 2 - Lancashire Tridents (Masters Ladies ( 50-59 years )) ML55Y - 1","result":25500,"resolved":25500,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1694","name":"Competitor 13 - Nantwich Neptune Lifesaving Club (Senior Open/Mixed Pairs (15-17 years)) SOP1Y - 1","result":15880,"resolved":29510,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1694","competitor:1695"]},
+          {"entity":"competitor:1682","name":"Competitor 1 - Lancashire Tridents (Ladies Individual (16+ years)) LIY - 1","result":35730,"resolved":35730,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1692","name":"Competitor 11 - Nantwich Neptune Lifesaving Club (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 2","result":20500,"resolved":40460,"points":4,"position":4,"dqs":[],"pens":[],"combined":["competitor:1692","competitor:1693"]},
+          {"entity":"competitor:1686","name":"Competitor 5 - Nantwich Neptune Lifesaving Club (Junior Girls Pairs (12-14 years)) JGP1Y - 1","result":23750,"resolved":40940,"points":5,"position":5,"dqs":[],"pens":[],"combined":["competitor:1686","competitor:1687"]},
+          {"entity":"competitor:1688","name":"Competitor 7 - Nantwich Neptune Lifesaving Club (Junior Girls Pairs (12-14 years)) JGP1Y - 2","result":33380,"resolved":51560,"points":6,"position":6,"dqs":[],"pens":[],"combined":["competitor:1688","competitor:1689"]},
+          {"entity":"competitor:1684","name":"Competitor 3 - Lancashire Tridents (Senior Open/Mixed Pairs (15-17 years)) SOP1Y - 1","result":35810,"resolved":54690,"points":7,"position":7,"dqs":[],"pens":[],"combined":["competitor:1684","competitor:1685"]},
+          {"entity":"competitor:1690","name":"Competitor 9 - Nantwich Neptune Lifesaving Club (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 1","result":15380,"resolved":58040,"points":8,"position":8,"dqs":[],"pens":[],"combined":["competitor:1690","competitor:1691"]},
+          {"entity":"competitor:1696","name":"Competitor 15 - Nantwich Neptune Lifesaving Club (Senior Open/Mixed Pairs (15-17 years)) SOP1Y - 2","result":120000,"resolved":151220,"points":9,"position":9,"dqs":[99915],"pens":[],"combined":["competitor:1696","competitor:1697"]}
+        ],
+        "league:310": [
+          {"entity":"competitor:1692","name":"Competitor 11 - Nantwich Neptune Lifesaving Club (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 2","result":20500,"resolved":40460,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1692","competitor:1693"]},
+          {"entity":"competitor:1690","name":"Competitor 9 - Nantwich Neptune Lifesaving Club (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 1","result":15380,"resolved":58040,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1690","competitor:1691"]}
+        ],
+        "league:311": [
+          {"entity":"competitor:1682","name":"Competitor 1 - Lancashire Tridents (Ladies Individual (16+ years)) LIY - 1","result":35730,"resolved":35730,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:312": [
+          {"entity":"competitor:1683","name":"Competitor 2 - Lancashire Tridents (Masters Ladies ( 50-59 years )) ML55Y - 1","result":25500,"resolved":25500,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:313": [
+          {"entity":"competitor:1694","name":"Competitor 13 - Nantwich Neptune Lifesaving Club (Senior Open/Mixed Pairs (15-17 years)) SOP1Y - 1","result":15880,"resolved":29510,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1694","competitor:1695"]},
+          {"entity":"competitor:1684","name":"Competitor 3 - Lancashire Tridents (Senior Open/Mixed Pairs (15-17 years)) SOP1Y - 1","result":35810,"resolved":54690,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1684","competitor:1685"]},
+          {"entity":"competitor:1696","name":"Competitor 15 - Nantwich Neptune Lifesaving Club (Senior Open/Mixed Pairs (15-17 years)) SOP1Y - 2","result":120000,"resolved":151220,"points":3,"position":4,"dqs":[99915],"pens":[],"combined":["competitor:1696","competitor:1697"]}
+        ],
+        "league:314": [
+          {"entity":"competitor:1686","name":"Competitor 5 - Nantwich Neptune Lifesaving Club (Junior Girls Pairs (12-14 years)) JGP1Y - 1","result":23750,"resolved":40940,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1686","competitor:1687"]},
+          {"entity":"competitor:1688","name":"Competitor 7 - Nantwich Neptune Lifesaving Club (Junior Girls Pairs (12-14 years)) JGP1Y - 2","result":33380,"resolved":51560,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1688","competitor:1689"]}
+        ]
+      }
+    },
+    "speed:223": {
+      "name": "Swim & Tow",
+      "results": {
+        "all": [
+          {"entity":"competitor:1683","name":"Competitor 2 - Lancashire Tridents (Masters Ladies ( 50-59 years )) ML55Y - 1","result":72160,"resolved":72160,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1686","name":"Competitor 5 - Nantwich Neptune Lifesaving Club (Junior Girls Pairs (12-14 years)) JGP1Y - 1","result":68000,"resolved":131940,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1686","competitor:1687"]},
+          {"entity":"competitor:1692","name":"Competitor 11 - Nantwich Neptune Lifesaving Club (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 2","result":67580,"resolved":132550,"points":3,"position":3,"dqs":[],"pens":[],"combined":["competitor:1692","competitor:1693"]},
+          {"entity":"competitor:1688","name":"Competitor 7 - Nantwich Neptune Lifesaving Club (Junior Girls Pairs (12-14 years)) JGP1Y - 2","result":66910,"resolved":139290,"points":4,"position":4,"dqs":[],"pens":[],"combined":["competitor:1688","competitor:1689"]},
+          {"entity":"competitor:1690","name":"Competitor 9 - Nantwich Neptune Lifesaving Club (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 1","result":76120,"resolved":146280,"points":5,"position":5,"dqs":[],"pens":[],"combined":["competitor:1690","competitor:1691"]},
+          {"entity":"competitor:1682","name":"Competitor 1 - Lancashire Tridents (Ladies Individual (16+ years)) LIY - 1","result":166240,"resolved":166240,"points":6,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1684","name":"Competitor 3 - Lancashire Tridents (Senior Open/Mixed Pairs (15-17 years)) SOP1Y - 1","result":112750,"resolved":217410,"points":7,"position":7,"dqs":[],"pens":[],"combined":["competitor:1684","competitor:1685"]},
+          {"entity":"competitor:1694","name":"Competitor 13 - Nantwich Neptune Lifesaving Club (Senior Open/Mixed Pairs (15-17 years)) SOP1Y - 1","result":150890,"resolved":274470,"points":8,"position":8,"dqs":[],"pens":[],"combined":["competitor:1694","competitor:1695"]},
+          {"entity":"competitor:1696","name":"Competitor 15 - Nantwich Neptune Lifesaving Club (Senior Open/Mixed Pairs (15-17 years)) SOP1Y - 2","result":132060,"resolved":275560,"points":9,"position":9,"dqs":[],"pens":[],"combined":["competitor:1696","competitor:1697"]}
+        ],
+        "league:310": [
+          {"entity":"competitor:1692","name":"Competitor 11 - Nantwich Neptune Lifesaving Club (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 2","result":67580,"resolved":132550,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1692","competitor:1693"]},
+          {"entity":"competitor:1690","name":"Competitor 9 - Nantwich Neptune Lifesaving Club (Junior Open / Mixed Pairs (12-14 years)) JOMP1Y - 1","result":76120,"resolved":146280,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1690","competitor:1691"]}
+        ],
+        "league:311": [
+          {"entity":"competitor:1682","name":"Competitor 1 - Lancashire Tridents (Ladies Individual (16+ years)) LIY - 1","result":166240,"resolved":166240,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:312": [
+          {"entity":"competitor:1683","name":"Competitor 2 - Lancashire Tridents (Masters Ladies ( 50-59 years )) ML55Y - 1","result":72160,"resolved":72160,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:313": [
+          {"entity":"competitor:1684","name":"Competitor 3 - Lancashire Tridents (Senior Open/Mixed Pairs (15-17 years)) SOP1Y - 1","result":112750,"resolved":217410,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1684","competitor:1685"]},
+          {"entity":"competitor:1694","name":"Competitor 13 - Nantwich Neptune Lifesaving Club (Senior Open/Mixed Pairs (15-17 years)) SOP1Y - 1","result":150890,"resolved":274470,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1694","competitor:1695"]},
+          {"entity":"competitor:1696","name":"Competitor 15 - Nantwich Neptune Lifesaving Club (Senior Open/Mixed Pairs (15-17 years)) SOP1Y - 2","result":132060,"resolved":275560,"points":3,"position":3,"dqs":[],"pens":[],"combined":["competitor:1696","competitor:1697"]}
+        ],
+        "league:314": [
+          {"entity":"competitor:1686","name":"Competitor 5 - Nantwich Neptune Lifesaving Club (Junior Girls Pairs (12-14 years)) JGP1Y - 1","result":68000,"resolved":131940,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1686","competitor:1687"]},
+          {"entity":"competitor:1688","name":"Competitor 7 - Nantwich Neptune Lifesaving Club (Junior Girls Pairs (12-14 years)) JGP1Y - 2","result":66910,"resolved":139290,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1688","competitor:1689"]}
+        ]
+      }
+    },
+    "serc:156": {
+      "name": "Aquatic",
+      "results": {
+        "all": [
+          {"entity":"team:2093","name":"Competitor 1 - Lancashire Tridents (Ladies Individual (16+ years))","result":91.5,"resolved":91.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2095","name":"Competitor 3, Competitor 4 - Lancashire Tridents (Senior Open/Mixed Pairs (15-17 years))","result":91,"resolved":91,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2100","name":"Competitor 13, Competitor 14 - Nantwich Neptune Lifesaving Club (Senior Open/Mixed Pairs (15-17 years))","result":85.5,"resolved":85.5,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2099","name":"Competitor 11, Competitor 12 - Nantwich Neptune Lifesaving Club (Junior Open / Mixed Pairs (12-14 years))","result":83,"resolved":83,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2094","name":"Competitor 2 - Lancashire Tridents (Masters Ladies ( 50-59 years ))","result":78,"resolved":78,"points":5,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2097","name":"Competitor 7, Competitor 8 - Nantwich Neptune Lifesaving Club (Junior Girls Pairs (12-14 years))","result":78,"resolved":78,"points":5,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2101","name":"Competitor 15, Competitor 16 - Nantwich Neptune Lifesaving Club (Senior Open/Mixed Pairs (15-17 years))","result":76,"resolved":76,"points":7,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2096","name":"Competitor 5, Competitor 6 - Nantwich Neptune Lifesaving Club (Junior Girls Pairs (12-14 years))","result":72.5,"resolved":72.5,"points":8,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2098","name":"Competitor 9, Competitor 10 - Nantwich Neptune Lifesaving Club (Junior Open / Mixed Pairs (12-14 years))","result":71.5,"resolved":71.5,"points":9,"position":9,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:310": [
+          {"entity":"team:2099","name":"Competitor 11, Competitor 12 - Nantwich Neptune Lifesaving Club (Junior Open / Mixed Pairs (12-14 years))","result":83,"resolved":83,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2098","name":"Competitor 9, Competitor 10 - Nantwich Neptune Lifesaving Club (Junior Open / Mixed Pairs (12-14 years))","result":71.5,"resolved":71.5,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:311": [
+          {"entity":"team:2093","name":"Competitor 1 - Lancashire Tridents (Ladies Individual (16+ years))","result":91.5,"resolved":91.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:312": [
+          {"entity":"team:2094","name":"Competitor 2 - Lancashire Tridents (Masters Ladies ( 50-59 years ))","result":78,"resolved":78,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:313": [
+          {"entity":"team:2095","name":"Competitor 3, Competitor 4 - Lancashire Tridents (Senior Open/Mixed Pairs (15-17 years))","result":91,"resolved":91,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2100","name":"Competitor 13, Competitor 14 - Nantwich Neptune Lifesaving Club (Senior Open/Mixed Pairs (15-17 years))","result":85.5,"resolved":85.5,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2101","name":"Competitor 15, Competitor 16 - Nantwich Neptune Lifesaving Club (Senior Open/Mixed Pairs (15-17 years))","result":76,"resolved":76,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:314": [
+          {"entity":"team:2097","name":"Competitor 7, Competitor 8 - Nantwich Neptune Lifesaving Club (Junior Girls Pairs (12-14 years))","result":78,"resolved":78,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2096","name":"Competitor 5, Competitor 6 - Nantwich Neptune Lifesaving Club (Junior Girls Pairs (12-14 years))","result":72.5,"resolved":72.5,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    },
+    "serc:157": {
+      "name": "Lifesupport",
+      "results": {
+        "all": [
+          {"entity":"team:2093","name":"Competitor 1 - Lancashire Tridents (Ladies Individual (16+ years))","result":82,"resolved":82,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2095","name":"Competitor 3, Competitor 4 - Lancashire Tridents (Senior Open/Mixed Pairs (15-17 years))","result":76,"resolved":76,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2100","name":"Competitor 13, Competitor 14 - Nantwich Neptune Lifesaving Club (Senior Open/Mixed Pairs (15-17 years))","result":67,"resolved":67,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2094","name":"Competitor 2 - Lancashire Tridents (Masters Ladies ( 50-59 years ))","result":64.5,"resolved":64.5,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2097","name":"Competitor 7, Competitor 8 - Nantwich Neptune Lifesaving Club (Junior Girls Pairs (12-14 years))","result":62,"resolved":62,"points":5,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2101","name":"Competitor 15, Competitor 16 - Nantwich Neptune Lifesaving Club (Senior Open/Mixed Pairs (15-17 years))","result":61,"resolved":61,"points":6,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2096","name":"Competitor 5, Competitor 6 - Nantwich Neptune Lifesaving Club (Junior Girls Pairs (12-14 years))","result":59,"resolved":59,"points":7,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2099","name":"Competitor 11, Competitor 12 - Nantwich Neptune Lifesaving Club (Junior Open / Mixed Pairs (12-14 years))","result":53.5,"resolved":53.5,"points":8,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2098","name":"Competitor 9, Competitor 10 - Nantwich Neptune Lifesaving Club (Junior Open / Mixed Pairs (12-14 years))","result":32,"resolved":32,"points":9,"position":9,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:310": [
+          {"entity":"team:2099","name":"Competitor 11, Competitor 12 - Nantwich Neptune Lifesaving Club (Junior Open / Mixed Pairs (12-14 years))","result":53.5,"resolved":53.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2098","name":"Competitor 9, Competitor 10 - Nantwich Neptune Lifesaving Club (Junior Open / Mixed Pairs (12-14 years))","result":32,"resolved":32,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:311": [
+          {"entity":"team:2093","name":"Competitor 1 - Lancashire Tridents (Ladies Individual (16+ years))","result":82,"resolved":82,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:312": [
+          {"entity":"team:2094","name":"Competitor 2 - Lancashire Tridents (Masters Ladies ( 50-59 years ))","result":64.5,"resolved":64.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:313": [
+          {"entity":"team:2095","name":"Competitor 3, Competitor 4 - Lancashire Tridents (Senior Open/Mixed Pairs (15-17 years))","result":76,"resolved":76,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2100","name":"Competitor 13, Competitor 14 - Nantwich Neptune Lifesaving Club (Senior Open/Mixed Pairs (15-17 years))","result":67,"resolved":67,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2101","name":"Competitor 15, Competitor 16 - Nantwich Neptune Lifesaving Club (Senior Open/Mixed Pairs (15-17 years))","result":61,"resolved":61,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:314": [
+          {"entity":"team:2097","name":"Competitor 7, Competitor 8 - Nantwich Neptune Lifesaving Club (Junior Girls Pairs (12-14 years))","result":62,"resolved":62,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:2096","name":"Competitor 5, Competitor 6 - Nantwich Neptune Lifesaving Club (Junior Girls Pairs (12-14 years))","result":59,"resolved":59,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    }
+  },
+  "sheets": {
+    "sheet:397": {
+      "name": "Junior Open / Mixed Pairs (12-14 years)",
+      "results": [
+        {
+          "entity": "team:2099",
+          "name": "Competitor 11, Competitor 12 - Nantwich Neptune Lifesaving Club (Junior Open / Mixed Pairs (12-14 years))",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:222","entity":"competitor:1692","position":1,"points":1,"adjusted":1},
+            {"event":"speed:223","entity":"competitor:1692","position":1,"points":1,"adjusted":1},
+            {"event":"serc:156","entity":"team:2099","position":1,"points":1,"adjusted":2},
+            {"event":"serc:157","entity":"team:2099","position":1,"points":1,"adjusted":1}
+          ]
+        },
+        {
+          "entity": "team:2098",
+          "name": "Competitor 9, Competitor 10 - Nantwich Neptune Lifesaving Club (Junior Open / Mixed Pairs (12-14 years))",
+          "total": 10,
+          "position": 2,
+          "events": [
+            {"event":"speed:222","entity":"competitor:1690","position":2,"points":2,"adjusted":2},
+            {"event":"speed:223","entity":"competitor:1690","position":2,"points":2,"adjusted":2},
+            {"event":"serc:156","entity":"team:2098","position":2,"points":2,"adjusted":4},
+            {"event":"serc:157","entity":"team:2098","position":2,"points":2,"adjusted":2}
+          ]
+        }
+      ]
+    },
+    "sheet:398": {
+      "name": "Ladies Individual (16+ years)",
+      "results": [
+        {
+          "entity": "team:2093",
+          "name": "Competitor 1 - Lancashire Tridents (Ladies Individual (16+ years))",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:222","entity":"competitor:1682","position":1,"points":1,"adjusted":1},
+            {"event":"speed:223","entity":"competitor:1682","position":1,"points":1,"adjusted":1},
+            {"event":"serc:156","entity":"team:2093","position":1,"points":1,"adjusted":2},
+            {"event":"serc:157","entity":"team:2093","position":1,"points":1,"adjusted":1}
+          ]
+        }
+      ]
+    },
+    "sheet:399": {
+      "name": "Masters Ladies ( 50-59 years )",
+      "results": [
+        {
+          "entity": "team:2094",
+          "name": "Competitor 2 - Lancashire Tridents (Masters Ladies ( 50-59 years ))",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:222","entity":"competitor:1683","position":1,"points":1,"adjusted":1},
+            {"event":"speed:223","entity":"competitor:1683","position":1,"points":1,"adjusted":1},
+            {"event":"serc:156","entity":"team:2094","position":1,"points":1,"adjusted":2},
+            {"event":"serc:157","entity":"team:2094","position":1,"points":1,"adjusted":1}
+          ]
+        }
+      ]
+    },
+    "sheet:400": {
+      "name": "Senior Open/Mixed Pairs (15-17 years)",
+      "results": [
+        {
+          "entity": "team:2095",
+          "name": "Competitor 3, Competitor 4 - Lancashire Tridents (Senior Open/Mixed Pairs (15-17 years))",
+          "total": 6,
+          "position": 1,
+          "events": [
+            {"event":"speed:222","entity":"competitor:1684","position":2,"points":2,"adjusted":2},
+            {"event":"speed:223","entity":"competitor:1684","position":1,"points":1,"adjusted":1},
+            {"event":"serc:156","entity":"team:2095","position":1,"points":1,"adjusted":2},
+            {"event":"serc:157","entity":"team:2095","position":1,"points":1,"adjusted":1}
+          ]
+        },
+        {
+          "entity": "team:2100",
+          "name": "Competitor 13, Competitor 14 - Nantwich Neptune Lifesaving Club (Senior Open/Mixed Pairs (15-17 years))",
+          "total": 9,
+          "position": 2,
+          "events": [
+            {"event":"speed:222","entity":"competitor:1694","position":1,"points":1,"adjusted":1},
+            {"event":"speed:223","entity":"competitor:1694","position":2,"points":2,"adjusted":2},
+            {"event":"serc:156","entity":"team:2100","position":2,"points":2,"adjusted":4},
+            {"event":"serc:157","entity":"team:2100","position":2,"points":2,"adjusted":2}
+          ]
+        },
+        {
+          "entity": "team:2101",
+          "name": "Competitor 15, Competitor 16 - Nantwich Neptune Lifesaving Club (Senior Open/Mixed Pairs (15-17 years))",
+          "total": 16,
+          "position": 3,
+          "events": [
+            {"event":"speed:222","entity":"competitor:1696","position":4,"points":3,"adjusted":4},
+            {"event":"speed:223","entity":"competitor:1696","position":3,"points":3,"adjusted":3},
+            {"event":"serc:156","entity":"team:2101","position":3,"points":3,"adjusted":6},
+            {"event":"serc:157","entity":"team:2101","position":3,"points":3,"adjusted":3}
+          ]
+        }
+      ]
+    },
+    "sheet:401": {
+      "name": "Junior Girls Pairs (12-14 years)",
+      "results": [
+        {
+          "entity": "team:2097",
+          "name": "Competitor 7, Competitor 8 - Nantwich Neptune Lifesaving Club (Junior Girls Pairs (12-14 years))",
+          "total": 7,
+          "position": 1,
+          "events": [
+            {"event":"speed:222","entity":"competitor:1688","position":2,"points":2,"adjusted":2},
+            {"event":"speed:223","entity":"competitor:1688","position":2,"points":2,"adjusted":2},
+            {"event":"serc:156","entity":"team:2097","position":1,"points":1,"adjusted":2},
+            {"event":"serc:157","entity":"team:2097","position":1,"points":1,"adjusted":1}
+          ]
+        },
+        {
+          "entity": "team:2096",
+          "name": "Competitor 5, Competitor 6 - Nantwich Neptune Lifesaving Club (Junior Girls Pairs (12-14 years))",
+          "total": 8,
+          "position": 2,
+          "events": [
+            {"event":"speed:222","entity":"competitor:1686","position":1,"points":1,"adjusted":1},
+            {"event":"speed:223","entity":"competitor:1686","position":1,"points":1,"adjusted":1},
+            {"event":"serc:156","entity":"team:2096","position":2,"points":2,"adjusted":4},
+            {"event":"serc:157","entity":"team:2096","position":2,"points":2,"adjusted":2}
+          ]
+        }
+      ]
+    }
+  },
+  "masters": []
+}

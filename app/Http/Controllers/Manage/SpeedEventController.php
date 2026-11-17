@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers\Manage;
 
-use App\DTO\Result;
+use App\Scoring\CompetitionResults;
+use App\Scoring\Results\EventResult;
+use App\Scoring\Results\EventResultPart;
+use App\Scoring\Results\Violation;
+use App\Scoring\ResultsVersion;
 use App\Helpers\CompetitionHeader;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Manage\Concerns\ManagesEventPages;
@@ -96,26 +100,27 @@ class SpeedEventController extends Controller
         $showDqPoints = $event->scoringSchema->schema['allow_disqualified_to_rank'] ?? false;
         $eventHeats = $event->digitalJudgeEnabled ? $event->getHeats()->with('oofs', 'getPool')->get() : collect();
 
-        return collect($event->getRankedResults($league))->map(function ($result) use ($comp, $event, $showDqPoints, $eventHeats) {
-            $parts = $this->partsOf($result);
+        return array_map(function (EventResult $result) use ($event, $showDqPoints, $eventHeats) {
             $heat = $result->isCombined() ? null : $eventHeats
-                ->where('entity_id', $result->entity->id)
-                ->where('entity_type', $result->entity->getMorphClass())
+                ->where('entity_id', $result->entry->id)
+                ->where('entity_type', $result->entry->type)
                 ->first();
 
             return [
-                ...$this->keyAndNames($comp, $result),
-                'times' => $result->isCombined() ? $parts->map(fn (Result $part) => SpeedResult::prettyTime($part->result))->values() : [],
-                'dqs' => $parts->map(fn (Result $part) => $part->getDisqualificationsString())->values(),
+                ...$this->keyAndNames($result),
+                'times' => array_map(fn (EventResultPart $part) => SpeedResult::prettyTime($part->result), $result->parts),
+                'dqs' => $result->isCombined()
+                    ? array_map(fn (EventResultPart $part) => $part->disqualificationLabel(), $result->parts)
+                    : [$result->disqualificationLabel()],
                 'time' => SpeedResult::prettyTime($result->resolvedResult),
                 'was' => !$result->isCombined() && $result->resolvedResult != $result->result ? SpeedResult::prettyTime($result->result) : null,
                 'oof' => !$event->digitalJudgeEnabled || $result->isCombined() ? null
                     : ($heat ? Pool::heatLaneLabel($heat->getPool, $heat->heat, $heat->lane) . ': ' . ($heat->getOOF($event->id)?->oof ?: '-') : '-'),
-                'penalties' => $result->getPenaltiesString(),
+                'penalties' => $result->penaltiesLabel(),
                 'points' => $result->isDisqualified() && !$showDqPoints ? 'DQ' : (round($result->points, 1) ?: null),
-                'position' => $result->position ?? null,
+                'position' => $result->position,
             ];
-        })->values()->all();
+        }, app(CompetitionResults::class)->event($event, $league));
     }
 
     /**
@@ -127,10 +132,18 @@ class SpeedEventController extends Controller
     {
         $heats = $event->getHeats()->with('getPool')->get()->keyBy(fn ($heat) => $heat->entity_type . ':' . $heat->entity_id);
 
-        return collect($event->getRawResults(true))
-            ->map(function (Result $result) use ($comp, $heats) {
+        $violations = fn (string $kind, $stored) => $stored->orderBy('id')->get()
+            ->groupBy('entity_id')
+            ->map(fn ($ofEntity) => $ofEntity->map(fn ($violation) => new Violation($kind, $violation->code, $violation->id))->all());
+
+        // Matched on the Entity's id alone, as an Event's Entries are all of one type
+        $penalties = $violations(Violation::PENALTY, $event->penalties());
+        $disqualifications = $violations(Violation::DISQUALIFICATION, $event->disqualifications());
+
+        return $event->results()->with('entity')->orderBy('id')->get()
+            ->map(function (SpeedResult $result) use ($comp, $heats, $penalties, $disqualifications) {
                 $heat = $heats->get($result->entity->getMorphClass() . ':' . $result->entity->id);
-                $dq = $result->getDisqualificationsString();
+                $dq = ($disqualifications[$result->entity_id][0] ?? null)?->label();
                 $special = in_array($dq, ['DNS', 'DNF', 'OOT']);
 
                 return [
@@ -143,7 +156,7 @@ class SpeedEventController extends Controller
                     'lane' => $heat?->lane,
                     'result' => $special ? $dq : (string) (SpeedResult::prettyTime($result->result) ?? ''),
                     'disqualification' => $special ? '' : ($dq ?? ''),
-                    'penalties' => $result->getPenaltiesString() ?? '',
+                    'penalties' => Violation::penaltiesLabel($penalties[$result->entity_id] ?? []) ?? '',
                 ];
             })
             ->sortBy([
@@ -187,6 +200,8 @@ class SpeedEventController extends Controller
             $event->save();
 
             $event->results()->delete();
+            // Deleted without model events
+            app(ResultsVersion::class)->bump($event->competition);
             foreach ($event->getScorableEntities() as $entity) {
                 $result = new SpeedResult();
                 $result->entity()->associate($entity);

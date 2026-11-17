@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Manage\Concerns;
 
-use App\DTO\Result;
 use App\Models\AbstractClasses\Event;
 use App\Models\Competition;
+use App\Scoring\Results\EntryRef;
+use App\Scoring\Results\EventResult;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -45,25 +45,15 @@ trait ManagesEventPages
     }
 
     /**
-     * The Entities a ranked result stands for: just its own, or each one in a combined result
-     *
-     * @return Collection<int, Result>
-     */
-    protected function partsOf(Result $result): Collection
-    {
-        return $result->isCombined() ? $result->combined : collect([$result]);
-    }
-
-    /**
      * A ranked row's key (`type:id`, joined by commas for a combined result) and each Entity's name
      */
-    protected function keyAndNames(Competition $comp, Result $result): array
+    protected function keyAndNames(EventResult $result): array
     {
-        $parts = $this->partsOf($result);
+        $entries = $result->entries();
 
         return [
-            'key' => $parts->map(fn (Result $part) => $part->entity->getMorphClass() . ':' . $part->entity->id)->implode(','),
-            'names' => $parts->map(fn (Result $part) => $part->entity->getName($comp))->values(),
+            'key' => implode(',', array_map(fn (EntryRef $entry) => $entry->key(), $entries)),
+            'names' => array_map(fn (EntryRef $entry) => $entry->name, $entries),
         ];
     }
 }

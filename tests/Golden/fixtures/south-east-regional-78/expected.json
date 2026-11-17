@@ -1,0 +1,746 @@
+{
+  "competition": "South East Regional",
+  "events": {
+    "speed:203": {
+      "name": "Rope Throw",
+      "results": {
+        "all": [
+          {"entity":"competitor:1295","name":"Competitor 32 - City of Rochester Swimming and Lifeguard Club (Masters Open 40-49) MO 40-49","result":12960,"resolved":12960,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1302","name":"Competitor 36 - Eastbourne Voluntary lifeguards (Open) OI 2","result":17090,"resolved":17090,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1288","name":"Competitor 26 - Loughbrough Uni (Open) OI","result":21200,"resolved":21200,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1287","name":"Competitor 25 - Eastbourne Voluntary lifeguards (Open) OI","result":21250,"resolved":21250,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1298","name":"Competitor 34 - Horsham Lifesaving Club (Masters Open 40-49) MO 40-49","result":22910,"resolved":22910,"points":5,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1258","name":"Competitor 1 - Crawley Town Lifesaving Club (Junior Girls Pairs) JGP","result":12840,"resolved":29290,"points":6,"position":6,"dqs":[],"pens":[],"combined":["competitor:1258","competitor:1259"]},
+          {"entity":"competitor:1291","name":"Competitor 28 - Horsham Lifesaving Club (Masters Ladies 30-39) ML 30-39","result":30220,"resolved":30220,"points":7,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1278","name":"Competitor 19 - Beacon Lsc (Adult Open Pairs) AOP","result":15560,"resolved":31440,"points":8,"position":8,"dqs":[],"pens":[],"combined":["competitor:1278","competitor:1279"]},
+          {"entity":"competitor:1262","name":"Competitor 5 - City of Rochester Swimming and Lifeguard Club (Junior Open Pairs) JOP","result":17870,"resolved":34950,"points":9,"position":9,"dqs":[],"pens":[],"combined":["competitor:1262","competitor:1263"]},
+          {"entity":"competitor:1282","name":"Competitor 21 - Horsham Lifesaving Club (Adult Open Pairs) AOP","result":20650,"resolved":39610,"points":10,"position":10,"dqs":[],"pens":[],"combined":["competitor:1282","competitor:1283"]},
+          {"entity":"competitor:1272","name":"Competitor 13 - Crawley Town Lifesaving Club (Adult Ladies Pairs) ALP","result":31370,"resolved":56090,"points":11,"position":11,"dqs":[],"pens":[],"combined":["competitor:1272","competitor:1273"]},
+          {"entity":"competitor:1290","name":"Competitor 27 - Beacon Lsc (Masters Ladies 50-59) ML 50-59","result":120000,"resolved":120000,"points":15,"position":12,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1292","name":"Competitor 29 - Horsham Lifesaving Club (Masters Ladies 40-49) ML 40-49","result":120000,"resolved":120000,"points":15,"position":12,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1293","name":"Competitor 30 - Horsham Lifesaving Club (Masters Ladies 50-59) ML 50-59","result":120000,"resolved":120000,"points":15,"position":12,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1294","name":"Competitor 31 - City of Rochester Swimming and Lifeguard Club (Masters Open 30-39) MO 30-39","result":120000,"resolved":120000,"points":15,"position":12,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1297","name":"Competitor 33 - Horsham Lifesaving Club (Masters Open 60-69) MO 50-59","result":120000,"resolved":120000,"points":15,"position":12,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1299","name":"Competitor 35 - Horsham Lifesaving Club (Masters Open 70+) MO 70+","result":120000,"resolved":120000,"points":15,"position":12,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1303","name":"Competitor 37 - Horsham Lifesaving Club (Ladies) LI","result":120000,"resolved":120000,"points":15,"position":12,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1276","name":"Competitor 17 - City of Rochester Swimming and Lifeguard Club (Adult Open Pairs) AOP","result":120000,"resolved":135350,"points":19,"position":19,"dqs":[],"pens":[],"combined":["competitor:1276","competitor:1277"]},
+          {"entity":"competitor:1284","name":"Competitor 23 - Eastbourne Voluntary lifeguards (Adult Open Pairs) AOP","result":18150,"resolved":138150,"points":20,"position":20,"dqs":[],"pens":[],"combined":["competitor:1284","competitor:1285"]},
+          {"entity":"competitor:1264","name":"Competitor 7 - Beacon Lsc (Junior Open Pairs) JOP","result":21970,"resolved":141970,"points":21,"position":21,"dqs":[],"pens":[],"combined":["competitor:1264","competitor:1265"]},
+          {"entity":"competitor:1266","name":"Competitor 9 - Crawley Town Lifesaving Club (Senior Girls Pairs) SGP","result":30820,"resolved":150820,"points":22,"position":22,"dqs":[],"pens":[],"combined":["competitor:1266","competitor:1267"]},
+          {"entity":"competitor:1260","name":"Competitor 3 - City of Rochester Swimming and Lifeguard Club (Junior Girls Pairs) JGP","result":120000,"resolved":240000,"points":24,"position":23,"dqs":[],"pens":[],"combined":["competitor:1260","competitor:1261"]},
+          {"entity":"competitor:1268","name":"Competitor 11 - City of Rochester Swimming and Lifeguard Club (Senior Open Pairs) SOP","result":120000,"resolved":240000,"points":24,"position":23,"dqs":[],"pens":[],"combined":["competitor:1268","competitor:1269"]},
+          {"entity":"competitor:1274","name":"Competitor 15 - City of Rochester Swimming and Lifeguard Club (Adult Ladies Pairs) ALP","result":120000,"resolved":240000,"points":24,"position":23,"dqs":[],"pens":[],"combined":["competitor:1274","competitor:1275"]}
+        ],
+        "league:191": [
+          {"entity":"competitor:1258","name":"Competitor 1 - Crawley Town Lifesaving Club (Junior Girls Pairs) JGP","result":12840,"resolved":29290,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1258","competitor:1259"]},
+          {"entity":"competitor:1260","name":"Competitor 3 - City of Rochester Swimming and Lifeguard Club (Junior Girls Pairs) JGP","result":120000,"resolved":240000,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1260","competitor:1261"]}
+        ],
+        "league:192": [
+          {"entity":"competitor:1262","name":"Competitor 5 - City of Rochester Swimming and Lifeguard Club (Junior Open Pairs) JOP","result":17870,"resolved":34950,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1262","competitor:1263"]},
+          {"entity":"competitor:1264","name":"Competitor 7 - Beacon Lsc (Junior Open Pairs) JOP","result":21970,"resolved":141970,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1264","competitor:1265"]}
+        ],
+        "league:193": [
+          {"entity":"competitor:1266","name":"Competitor 9 - Crawley Town Lifesaving Club (Senior Girls Pairs) SGP","result":30820,"resolved":150820,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1266","competitor:1267"]}
+        ],
+        "league:194": [
+          {"entity":"competitor:1268","name":"Competitor 11 - City of Rochester Swimming and Lifeguard Club (Senior Open Pairs) SOP","result":120000,"resolved":240000,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1268","competitor:1269"]}
+        ],
+        "league:195": [
+          {"entity":"competitor:1272","name":"Competitor 13 - Crawley Town Lifesaving Club (Adult Ladies Pairs) ALP","result":31370,"resolved":56090,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1272","competitor:1273"]},
+          {"entity":"competitor:1274","name":"Competitor 15 - City of Rochester Swimming and Lifeguard Club (Adult Ladies Pairs) ALP","result":120000,"resolved":240000,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1274","competitor:1275"]}
+        ],
+        "league:196": [
+          {"entity":"competitor:1278","name":"Competitor 19 - Beacon Lsc (Adult Open Pairs) AOP","result":15560,"resolved":31440,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1278","competitor:1279"]},
+          {"entity":"competitor:1282","name":"Competitor 21 - Horsham Lifesaving Club (Adult Open Pairs) AOP","result":20650,"resolved":39610,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1282","competitor:1283"]},
+          {"entity":"competitor:1276","name":"Competitor 17 - City of Rochester Swimming and Lifeguard Club (Adult Open Pairs) AOP","result":120000,"resolved":135350,"points":3,"position":3,"dqs":[],"pens":[],"combined":["competitor:1276","competitor:1277"]},
+          {"entity":"competitor:1284","name":"Competitor 23 - Eastbourne Voluntary lifeguards (Adult Open Pairs) AOP","result":18150,"resolved":138150,"points":4,"position":4,"dqs":[],"pens":[],"combined":["competitor:1284","competitor:1285"]}
+        ],
+        "league:197": [
+          {"entity":"competitor:1303","name":"Competitor 37 - Horsham Lifesaving Club (Ladies) LI","result":120000,"resolved":120000,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:198": [
+          {"entity":"competitor:1302","name":"Competitor 36 - Eastbourne Voluntary lifeguards (Open) OI 2","result":17090,"resolved":17090,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1288","name":"Competitor 26 - Loughbrough Uni (Open) OI","result":21200,"resolved":21200,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1287","name":"Competitor 25 - Eastbourne Voluntary lifeguards (Open) OI","result":21250,"resolved":21250,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:199": [
+          {"entity":"competitor:1291","name":"Competitor 28 - Horsham Lifesaving Club (Masters Ladies 30-39) ML 30-39","result":30220,"resolved":30220,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:200": [
+          {"entity":"competitor:1294","name":"Competitor 31 - City of Rochester Swimming and Lifeguard Club (Masters Open 30-39) MO 30-39","result":120000,"resolved":120000,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:201": [
+          {"entity":"competitor:1292","name":"Competitor 29 - Horsham Lifesaving Club (Masters Ladies 40-49) ML 40-49","result":120000,"resolved":120000,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:202": [
+          {"entity":"competitor:1295","name":"Competitor 32 - City of Rochester Swimming and Lifeguard Club (Masters Open 40-49) MO 40-49","result":12960,"resolved":12960,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1298","name":"Competitor 34 - Horsham Lifesaving Club (Masters Open 40-49) MO 40-49","result":22910,"resolved":22910,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:203": [
+          {"entity":"competitor:1290","name":"Competitor 27 - Beacon Lsc (Masters Ladies 50-59) ML 50-59","result":120000,"resolved":120000,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1293","name":"Competitor 30 - Horsham Lifesaving Club (Masters Ladies 50-59) ML 50-59","result":120000,"resolved":120000,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:206": [
+          {"entity":"competitor:1297","name":"Competitor 33 - Horsham Lifesaving Club (Masters Open 60-69) MO 50-59","result":120000,"resolved":120000,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:208": [
+          {"entity":"competitor:1299","name":"Competitor 35 - Horsham Lifesaving Club (Masters Open 70+) MO 70+","result":120000,"resolved":120000,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    },
+    "speed:204": {
+      "name": "Swim & Tow",
+      "results": {
+        "all": [
+          {"entity":"competitor:1288","name":"Competitor 26 - Loughbrough Uni (Open) OI","result":89970,"resolved":89970,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1258","name":"Competitor 1 - Crawley Town Lifesaving Club (Junior Girls Pairs) JGP","result":50000,"resolved":98590,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1258","competitor:1259"]},
+          {"entity":"competitor:1298","name":"Competitor 34 - Horsham Lifesaving Club (Masters Open 40-49) MO 40-49","result":102220,"resolved":102220,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1302","name":"Competitor 36 - Eastbourne Voluntary lifeguards (Open) OI 2","result":104970,"resolved":104970,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1295","name":"Competitor 32 - City of Rochester Swimming and Lifeguard Club (Masters Open 40-49) MO 40-49","result":105540,"resolved":105540,"points":5,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1264","name":"Competitor 7 - Beacon Lsc (Junior Open Pairs) JOP","result":58250,"resolved":108630,"points":6,"position":6,"dqs":[],"pens":[],"combined":["competitor:1264","competitor:1265"]},
+          {"entity":"competitor:1260","name":"Competitor 3 - City of Rochester Swimming and Lifeguard Club (Junior Girls Pairs) JGP","result":53030,"resolved":108650,"points":7,"position":7,"dqs":[],"pens":[],"combined":["competitor:1260","competitor:1261"]},
+          {"entity":"competitor:1287","name":"Competitor 25 - Eastbourne Voluntary lifeguards (Open) OI","result":109440,"resolved":109440,"points":8,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1262","name":"Competitor 5 - City of Rochester Swimming and Lifeguard Club (Junior Open Pairs) JOP","result":58690,"resolved":117690,"points":9,"position":9,"dqs":[],"pens":[],"combined":["competitor:1262","competitor:1263"]},
+          {"entity":"competitor:1291","name":"Competitor 28 - Horsham Lifesaving Club (Masters Ladies 30-39) ML 30-39","result":134440,"resolved":134440,"points":10,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1276","name":"Competitor 17 - City of Rochester Swimming and Lifeguard Club (Adult Open Pairs) AOP","result":109780,"resolved":205840,"points":11,"position":11,"dqs":[],"pens":[],"combined":["competitor:1276","competitor:1277"]},
+          {"entity":"competitor:1284","name":"Competitor 23 - Eastbourne Voluntary lifeguards (Adult Open Pairs) AOP","result":101190,"resolved":214030,"points":12,"position":12,"dqs":[],"pens":[],"combined":["competitor:1284","competitor:1285"]},
+          {"entity":"competitor:1278","name":"Competitor 19 - Beacon Lsc (Adult Open Pairs) AOP","result":101220,"resolved":215150,"points":13,"position":13,"dqs":[],"pens":[],"combined":["competitor:1278","competitor:1279"]},
+          {"entity":"competitor:1266","name":"Competitor 9 - Crawley Town Lifesaving Club (Senior Girls Pairs) SGP","result":122450,"resolved":230870,"points":14,"position":14,"dqs":[],"pens":[],"combined":["competitor:1266","competitor:1267"]},
+          {"entity":"competitor:1290","name":"Competitor 27 - Beacon Lsc (Masters Ladies 50-59) ML 50-59","result":240000,"resolved":240000,"points":17.5,"position":15,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1292","name":"Competitor 29 - Horsham Lifesaving Club (Masters Ladies 40-49) ML 40-49","result":240000,"resolved":240000,"points":17.5,"position":15,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1294","name":"Competitor 31 - City of Rochester Swimming and Lifeguard Club (Masters Open 30-39) MO 30-39","result":240000,"resolved":240000,"points":17.5,"position":15,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1297","name":"Competitor 33 - Horsham Lifesaving Club (Masters Open 60-69) MO 50-59","result":240000,"resolved":240000,"points":17.5,"position":15,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1299","name":"Competitor 35 - Horsham Lifesaving Club (Masters Open 70+) MO 70+","result":240000,"resolved":240000,"points":17.5,"position":15,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1303","name":"Competitor 37 - Horsham Lifesaving Club (Ladies) LI","result":240000,"resolved":240000,"points":17.5,"position":15,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1282","name":"Competitor 21 - Horsham Lifesaving Club (Adult Open Pairs) AOP","result":108420,"resolved":241370,"points":21,"position":21,"dqs":[],"pens":[],"combined":["competitor:1282","competitor:1283"]},
+          {"entity":"competitor:1274","name":"Competitor 15 - City of Rochester Swimming and Lifeguard Club (Adult Ladies Pairs) ALP","result":140530,"resolved":292250,"points":22,"position":22,"dqs":[],"pens":[],"combined":["competitor:1274","competitor:1275"]},
+          {"entity":"competitor:1293","name":"Competitor 30 - Horsham Lifesaving Club (Masters Ladies 50-59) ML 50-59","result":300000,"resolved":300000,"points":23,"position":23,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1268","name":"Competitor 11 - City of Rochester Swimming and Lifeguard Club (Senior Open Pairs) SOP","result":147660,"resolved":313970,"points":24,"position":24,"dqs":[],"pens":[],"combined":["competitor:1268","competitor:1269"]},
+          {"entity":"competitor:1272","name":"Competitor 13 - Crawley Town Lifesaving Club (Adult Ladies Pairs) ALP","result":600000,"resolved":721340,"points":25,"position":25,"dqs":[],"pens":[],"combined":["competitor:1272","competitor:1273"]}
+        ],
+        "league:191": [
+          {"entity":"competitor:1258","name":"Competitor 1 - Crawley Town Lifesaving Club (Junior Girls Pairs) JGP","result":50000,"resolved":98590,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1258","competitor:1259"]},
+          {"entity":"competitor:1260","name":"Competitor 3 - City of Rochester Swimming and Lifeguard Club (Junior Girls Pairs) JGP","result":53030,"resolved":108650,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1260","competitor:1261"]}
+        ],
+        "league:192": [
+          {"entity":"competitor:1264","name":"Competitor 7 - Beacon Lsc (Junior Open Pairs) JOP","result":58250,"resolved":108630,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1264","competitor:1265"]},
+          {"entity":"competitor:1262","name":"Competitor 5 - City of Rochester Swimming and Lifeguard Club (Junior Open Pairs) JOP","result":58690,"resolved":117690,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1262","competitor:1263"]}
+        ],
+        "league:193": [
+          {"entity":"competitor:1266","name":"Competitor 9 - Crawley Town Lifesaving Club (Senior Girls Pairs) SGP","result":122450,"resolved":230870,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1266","competitor:1267"]}
+        ],
+        "league:194": [
+          {"entity":"competitor:1268","name":"Competitor 11 - City of Rochester Swimming and Lifeguard Club (Senior Open Pairs) SOP","result":147660,"resolved":313970,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1268","competitor:1269"]}
+        ],
+        "league:195": [
+          {"entity":"competitor:1274","name":"Competitor 15 - City of Rochester Swimming and Lifeguard Club (Adult Ladies Pairs) ALP","result":140530,"resolved":292250,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1274","competitor:1275"]},
+          {"entity":"competitor:1272","name":"Competitor 13 - Crawley Town Lifesaving Club (Adult Ladies Pairs) ALP","result":600000,"resolved":721340,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1272","competitor:1273"]}
+        ],
+        "league:196": [
+          {"entity":"competitor:1276","name":"Competitor 17 - City of Rochester Swimming and Lifeguard Club (Adult Open Pairs) AOP","result":109780,"resolved":205840,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1276","competitor:1277"]},
+          {"entity":"competitor:1284","name":"Competitor 23 - Eastbourne Voluntary lifeguards (Adult Open Pairs) AOP","result":101190,"resolved":214030,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1284","competitor:1285"]},
+          {"entity":"competitor:1278","name":"Competitor 19 - Beacon Lsc (Adult Open Pairs) AOP","result":101220,"resolved":215150,"points":3,"position":3,"dqs":[],"pens":[],"combined":["competitor:1278","competitor:1279"]},
+          {"entity":"competitor:1282","name":"Competitor 21 - Horsham Lifesaving Club (Adult Open Pairs) AOP","result":108420,"resolved":241370,"points":4,"position":4,"dqs":[],"pens":[],"combined":["competitor:1282","competitor:1283"]}
+        ],
+        "league:197": [
+          {"entity":"competitor:1303","name":"Competitor 37 - Horsham Lifesaving Club (Ladies) LI","result":240000,"resolved":240000,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:198": [
+          {"entity":"competitor:1288","name":"Competitor 26 - Loughbrough Uni (Open) OI","result":89970,"resolved":89970,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1302","name":"Competitor 36 - Eastbourne Voluntary lifeguards (Open) OI 2","result":104970,"resolved":104970,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1287","name":"Competitor 25 - Eastbourne Voluntary lifeguards (Open) OI","result":109440,"resolved":109440,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:199": [
+          {"entity":"competitor:1291","name":"Competitor 28 - Horsham Lifesaving Club (Masters Ladies 30-39) ML 30-39","result":134440,"resolved":134440,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:200": [
+          {"entity":"competitor:1294","name":"Competitor 31 - City of Rochester Swimming and Lifeguard Club (Masters Open 30-39) MO 30-39","result":240000,"resolved":240000,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:201": [
+          {"entity":"competitor:1292","name":"Competitor 29 - Horsham Lifesaving Club (Masters Ladies 40-49) ML 40-49","result":240000,"resolved":240000,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:202": [
+          {"entity":"competitor:1298","name":"Competitor 34 - Horsham Lifesaving Club (Masters Open 40-49) MO 40-49","result":102220,"resolved":102220,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1295","name":"Competitor 32 - City of Rochester Swimming and Lifeguard Club (Masters Open 40-49) MO 40-49","result":105540,"resolved":105540,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:203": [
+          {"entity":"competitor:1290","name":"Competitor 27 - Beacon Lsc (Masters Ladies 50-59) ML 50-59","result":240000,"resolved":240000,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1293","name":"Competitor 30 - Horsham Lifesaving Club (Masters Ladies 50-59) ML 50-59","result":300000,"resolved":300000,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:206": [
+          {"entity":"competitor:1297","name":"Competitor 33 - Horsham Lifesaving Club (Masters Open 60-69) MO 50-59","result":240000,"resolved":240000,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:208": [
+          {"entity":"competitor:1299","name":"Competitor 35 - Horsham Lifesaving Club (Masters Open 70+) MO 70+","result":240000,"resolved":240000,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    },
+    "serc:137": {
+      "name": "Life Support",
+      "results": {
+        "all": [
+          {"entity":"team:1854","name":"Competitor 17, Competitor 18 - City of Rochester Swimming and Lifeguard Club (Adult Open Pairs)","result":52,"resolved":52,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1868","name":"Competitor 32 - City of Rochester Swimming and Lifeguard Club (Masters Open 40-49)","result":51,"resolved":51,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1861","name":"Competitor 26 - Loughbrough Uni (Open)","result":49.25,"resolved":49.25,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1857","name":"Competitor 21, Competitor 22 - Horsham Lifesaving Club (Adult Open Pairs)","result":47,"resolved":47,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1855","name":"Competitor 19, Competitor 20 - Beacon Lsc (Adult Open Pairs)","result":45.5,"resolved":45.5,"points":5,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1847","name":"Competitor 5, Competitor 6 - City of Rochester Swimming and Lifeguard Club (Junior Open Pairs)","result":44,"resolved":44,"points":6,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1853","name":"Competitor 15, Competitor 16 - City of Rochester Swimming and Lifeguard Club (Adult Ladies Pairs)","result":43.75,"resolved":43.75,"points":7,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1864","name":"Competitor 28 - Horsham Lifesaving Club (Masters Ladies 30-39)","result":42.75,"resolved":42.75,"points":8,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1874","name":"Competitor 36 - Eastbourne Voluntary lifeguards (Open)","result":42.75,"resolved":42.75,"points":8,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1860","name":"Competitor 25 - Eastbourne Voluntary lifeguards (Open)","result":42.5,"resolved":42.5,"points":10,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1871","name":"Competitor 34 - Horsham Lifesaving Club (Masters Open 40-49)","result":40.25,"resolved":40.25,"points":11,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1845","name":"Competitor 1, Competitor 2 - Crawley Town Lifesaving Club (Junior Girls Pairs)","result":38.5,"resolved":38.5,"points":12,"position":12,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1846","name":"Competitor 3, Competitor 4 - City of Rochester Swimming and Lifeguard Club (Junior Girls Pairs)","result":36.5,"resolved":36.5,"points":13,"position":13,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1848","name":"Competitor 7, Competitor 8 - Beacon Lsc (Junior Open Pairs)","result":36.25,"resolved":36.25,"points":14,"position":14,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1849","name":"Competitor 9, Competitor 10 - Crawley Town Lifesaving Club (Senior Girls Pairs)","result":36.25,"resolved":36.25,"points":14,"position":14,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1852","name":"Competitor 13, Competitor 14 - Crawley Town Lifesaving Club (Adult Ladies Pairs)","result":34.75,"resolved":34.75,"points":16,"position":16,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1850","name":"Competitor 11, Competitor 12 - City of Rochester Swimming and Lifeguard Club (Senior Open Pairs)","result":34,"resolved":34,"points":17,"position":17,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1858","name":"Competitor 23, Competitor 24 - Eastbourne Voluntary lifeguards (Adult Open Pairs)","result":22.5,"resolved":22.5,"points":18,"position":18,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1863","name":"Competitor 27 - Beacon Lsc (Masters Ladies 50-59)","result":13,"resolved":13,"points":19,"position":19,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1865","name":"Competitor 29 - Horsham Lifesaving Club (Masters Ladies 40-49)","result":6.5,"resolved":6.5,"points":20,"position":20,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1866","name":"Competitor 30 - Horsham Lifesaving Club (Masters Ladies 50-59)","result":6.5,"resolved":6.5,"points":20,"position":20,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1867","name":"Competitor 31 - City of Rochester Swimming and Lifeguard Club (Masters Open 30-39)","result":6.5,"resolved":6.5,"points":20,"position":20,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1870","name":"Competitor 33 - Horsham Lifesaving Club (Masters Open 50-59)","result":6.5,"resolved":6.5,"points":20,"position":20,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1872","name":"Competitor 35 - Horsham Lifesaving Club (Masters Open 70+)","result":6.5,"resolved":6.5,"points":20,"position":20,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1875","name":"Competitor 37 - Horsham Lifesaving Club (Ladies)","result":6.5,"resolved":6.5,"points":20,"position":20,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:191": [
+          {"entity":"team:1845","name":"Competitor 1, Competitor 2 - Crawley Town Lifesaving Club (Junior Girls Pairs)","result":38.5,"resolved":38.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1846","name":"Competitor 3, Competitor 4 - City of Rochester Swimming and Lifeguard Club (Junior Girls Pairs)","result":36.5,"resolved":36.5,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:192": [
+          {"entity":"team:1847","name":"Competitor 5, Competitor 6 - City of Rochester Swimming and Lifeguard Club (Junior Open Pairs)","result":44,"resolved":44,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1848","name":"Competitor 7, Competitor 8 - Beacon Lsc (Junior Open Pairs)","result":36.25,"resolved":36.25,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:193": [
+          {"entity":"team:1849","name":"Competitor 9, Competitor 10 - Crawley Town Lifesaving Club (Senior Girls Pairs)","result":36.25,"resolved":36.25,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:194": [
+          {"entity":"team:1850","name":"Competitor 11, Competitor 12 - City of Rochester Swimming and Lifeguard Club (Senior Open Pairs)","result":34,"resolved":34,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:195": [
+          {"entity":"team:1853","name":"Competitor 15, Competitor 16 - City of Rochester Swimming and Lifeguard Club (Adult Ladies Pairs)","result":43.75,"resolved":43.75,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1852","name":"Competitor 13, Competitor 14 - Crawley Town Lifesaving Club (Adult Ladies Pairs)","result":34.75,"resolved":34.75,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:196": [
+          {"entity":"team:1854","name":"Competitor 17, Competitor 18 - City of Rochester Swimming and Lifeguard Club (Adult Open Pairs)","result":52,"resolved":52,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1857","name":"Competitor 21, Competitor 22 - Horsham Lifesaving Club (Adult Open Pairs)","result":47,"resolved":47,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1855","name":"Competitor 19, Competitor 20 - Beacon Lsc (Adult Open Pairs)","result":45.5,"resolved":45.5,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1858","name":"Competitor 23, Competitor 24 - Eastbourne Voluntary lifeguards (Adult Open Pairs)","result":22.5,"resolved":22.5,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:197": [
+          {"entity":"team:1875","name":"Competitor 37 - Horsham Lifesaving Club (Ladies)","result":6.5,"resolved":6.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:198": [
+          {"entity":"team:1861","name":"Competitor 26 - Loughbrough Uni (Open)","result":49.25,"resolved":49.25,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1874","name":"Competitor 36 - Eastbourne Voluntary lifeguards (Open)","result":42.75,"resolved":42.75,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1860","name":"Competitor 25 - Eastbourne Voluntary lifeguards (Open)","result":42.5,"resolved":42.5,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:199": [
+          {"entity":"team:1864","name":"Competitor 28 - Horsham Lifesaving Club (Masters Ladies 30-39)","result":42.75,"resolved":42.75,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:200": [
+          {"entity":"team:1867","name":"Competitor 31 - City of Rochester Swimming and Lifeguard Club (Masters Open 30-39)","result":6.5,"resolved":6.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:201": [
+          {"entity":"team:1865","name":"Competitor 29 - Horsham Lifesaving Club (Masters Ladies 40-49)","result":6.5,"resolved":6.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:202": [
+          {"entity":"team:1868","name":"Competitor 32 - City of Rochester Swimming and Lifeguard Club (Masters Open 40-49)","result":51,"resolved":51,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1871","name":"Competitor 34 - Horsham Lifesaving Club (Masters Open 40-49)","result":40.25,"resolved":40.25,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:203": [
+          {"entity":"team:1863","name":"Competitor 27 - Beacon Lsc (Masters Ladies 50-59)","result":13,"resolved":13,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1866","name":"Competitor 30 - Horsham Lifesaving Club (Masters Ladies 50-59)","result":6.5,"resolved":6.5,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:204": [
+          {"entity":"team:1870","name":"Competitor 33 - Horsham Lifesaving Club (Masters Open 50-59)","result":6.5,"resolved":6.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:208": [
+          {"entity":"team:1872","name":"Competitor 35 - Horsham Lifesaving Club (Masters Open 70+)","result":6.5,"resolved":6.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    },
+    "serc:138": {
+      "name": "Aquatic",
+      "results": {
+        "all": [
+          {"entity":"team:1852","name":"Competitor 13, Competitor 14 - Crawley Town Lifesaving Club (Adult Ladies Pairs)","result":73,"resolved":73,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1847","name":"Competitor 5, Competitor 6 - City of Rochester Swimming and Lifeguard Club (Junior Open Pairs)","result":69,"resolved":69,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1868","name":"Competitor 32 - City of Rochester Swimming and Lifeguard Club (Masters Open 40-49)","result":64.5,"resolved":64.5,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1854","name":"Competitor 17, Competitor 18 - City of Rochester Swimming and Lifeguard Club (Adult Open Pairs)","result":60.25,"resolved":60.25,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1853","name":"Competitor 15, Competitor 16 - City of Rochester Swimming and Lifeguard Club (Adult Ladies Pairs)","result":56.5,"resolved":56.5,"points":5,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1849","name":"Competitor 9, Competitor 10 - Crawley Town Lifesaving Club (Senior Girls Pairs)","result":55,"resolved":55,"points":6,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1845","name":"Competitor 1, Competitor 2 - Crawley Town Lifesaving Club (Junior Girls Pairs)","result":53.25,"resolved":53.25,"points":7,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1864","name":"Competitor 28 - Horsham Lifesaving Club (Masters Ladies 30-39)","result":51.5,"resolved":51.5,"points":8,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1855","name":"Competitor 19, Competitor 20 - Beacon Lsc (Adult Open Pairs)","result":50.25,"resolved":50.25,"points":9,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1857","name":"Competitor 21, Competitor 22 - Horsham Lifesaving Club (Adult Open Pairs)","result":47.25,"resolved":47.25,"points":10,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1861","name":"Competitor 26 - Loughbrough Uni (Open)","result":45.75,"resolved":45.75,"points":11,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1850","name":"Competitor 11, Competitor 12 - City of Rochester Swimming and Lifeguard Club (Senior Open Pairs)","result":42.25,"resolved":42.25,"points":12,"position":12,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1848","name":"Competitor 7, Competitor 8 - Beacon Lsc (Junior Open Pairs)","result":40.25,"resolved":40.25,"points":13,"position":13,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1846","name":"Competitor 3, Competitor 4 - City of Rochester Swimming and Lifeguard Club (Junior Girls Pairs)","result":39.75,"resolved":39.75,"points":14,"position":14,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1871","name":"Competitor 34 - Horsham Lifesaving Club (Masters Open 40-49)","result":38,"resolved":38,"points":15,"position":15,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1874","name":"Competitor 36 - Eastbourne Voluntary lifeguards (Open)","result":35.5,"resolved":35.5,"points":16,"position":16,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1858","name":"Competitor 23, Competitor 24 - Eastbourne Voluntary lifeguards (Adult Open Pairs)","result":31.75,"resolved":31.75,"points":17,"position":17,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1860","name":"Competitor 25 - Eastbourne Voluntary lifeguards (Open)","result":25.75,"resolved":25.75,"points":18,"position":18,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1863","name":"Competitor 27 - Beacon Lsc (Masters Ladies 50-59)","result":20,"resolved":20,"points":19,"position":19,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1865","name":"Competitor 29 - Horsham Lifesaving Club (Masters Ladies 40-49)","result":10,"resolved":10,"points":20,"position":20,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1866","name":"Competitor 30 - Horsham Lifesaving Club (Masters Ladies 50-59)","result":10,"resolved":10,"points":20,"position":20,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1867","name":"Competitor 31 - City of Rochester Swimming and Lifeguard Club (Masters Open 30-39)","result":10,"resolved":10,"points":20,"position":20,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1870","name":"Competitor 33 - Horsham Lifesaving Club (Masters Open 50-59)","result":10,"resolved":10,"points":20,"position":20,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1872","name":"Competitor 35 - Horsham Lifesaving Club (Masters Open 70+)","result":10,"resolved":10,"points":20,"position":20,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1875","name":"Competitor 37 - Horsham Lifesaving Club (Ladies)","result":10,"resolved":10,"points":20,"position":20,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:191": [
+          {"entity":"team:1845","name":"Competitor 1, Competitor 2 - Crawley Town Lifesaving Club (Junior Girls Pairs)","result":53.25,"resolved":53.25,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1846","name":"Competitor 3, Competitor 4 - City of Rochester Swimming and Lifeguard Club (Junior Girls Pairs)","result":39.75,"resolved":39.75,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:192": [
+          {"entity":"team:1847","name":"Competitor 5, Competitor 6 - City of Rochester Swimming and Lifeguard Club (Junior Open Pairs)","result":69,"resolved":69,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1848","name":"Competitor 7, Competitor 8 - Beacon Lsc (Junior Open Pairs)","result":40.25,"resolved":40.25,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:193": [
+          {"entity":"team:1849","name":"Competitor 9, Competitor 10 - Crawley Town Lifesaving Club (Senior Girls Pairs)","result":55,"resolved":55,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:194": [
+          {"entity":"team:1850","name":"Competitor 11, Competitor 12 - City of Rochester Swimming and Lifeguard Club (Senior Open Pairs)","result":42.25,"resolved":42.25,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:195": [
+          {"entity":"team:1852","name":"Competitor 13, Competitor 14 - Crawley Town Lifesaving Club (Adult Ladies Pairs)","result":73,"resolved":73,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1853","name":"Competitor 15, Competitor 16 - City of Rochester Swimming and Lifeguard Club (Adult Ladies Pairs)","result":56.5,"resolved":56.5,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:196": [
+          {"entity":"team:1854","name":"Competitor 17, Competitor 18 - City of Rochester Swimming and Lifeguard Club (Adult Open Pairs)","result":60.25,"resolved":60.25,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1855","name":"Competitor 19, Competitor 20 - Beacon Lsc (Adult Open Pairs)","result":50.25,"resolved":50.25,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1857","name":"Competitor 21, Competitor 22 - Horsham Lifesaving Club (Adult Open Pairs)","result":47.25,"resolved":47.25,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1858","name":"Competitor 23, Competitor 24 - Eastbourne Voluntary lifeguards (Adult Open Pairs)","result":31.75,"resolved":31.75,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:197": [
+          {"entity":"team:1875","name":"Competitor 37 - Horsham Lifesaving Club (Ladies)","result":10,"resolved":10,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:198": [
+          {"entity":"team:1861","name":"Competitor 26 - Loughbrough Uni (Open)","result":45.75,"resolved":45.75,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1874","name":"Competitor 36 - Eastbourne Voluntary lifeguards (Open)","result":35.5,"resolved":35.5,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1860","name":"Competitor 25 - Eastbourne Voluntary lifeguards (Open)","result":25.75,"resolved":25.75,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:199": [
+          {"entity":"team:1864","name":"Competitor 28 - Horsham Lifesaving Club (Masters Ladies 30-39)","result":51.5,"resolved":51.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:200": [
+          {"entity":"team:1867","name":"Competitor 31 - City of Rochester Swimming and Lifeguard Club (Masters Open 30-39)","result":10,"resolved":10,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:201": [
+          {"entity":"team:1865","name":"Competitor 29 - Horsham Lifesaving Club (Masters Ladies 40-49)","result":10,"resolved":10,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:202": [
+          {"entity":"team:1868","name":"Competitor 32 - City of Rochester Swimming and Lifeguard Club (Masters Open 40-49)","result":64.5,"resolved":64.5,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1871","name":"Competitor 34 - Horsham Lifesaving Club (Masters Open 40-49)","result":38,"resolved":38,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:203": [
+          {"entity":"team:1863","name":"Competitor 27 - Beacon Lsc (Masters Ladies 50-59)","result":20,"resolved":20,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1866","name":"Competitor 30 - Horsham Lifesaving Club (Masters Ladies 50-59)","result":10,"resolved":10,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:204": [
+          {"entity":"team:1870","name":"Competitor 33 - Horsham Lifesaving Club (Masters Open 50-59)","result":10,"resolved":10,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:208": [
+          {"entity":"team:1872","name":"Competitor 35 - Horsham Lifesaving Club (Masters Open 70+)","result":10,"resolved":10,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    }
+  },
+  "sheets": {
+    "sheet:265": {
+      "name": "Junior Girls Pairs",
+      "results": [
+        {
+          "entity": "team:1845",
+          "name": "Competitor 1, Competitor 2 - Crawley Town Lifesaving Club (Junior Girls Pairs)",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:203","entity":"competitor:1258","position":1,"points":1,"adjusted":1},
+            {"event":"speed:204","entity":"competitor:1258","position":1,"points":1,"adjusted":1},
+            {"event":"serc:137","entity":"team:1845","position":1,"points":1,"adjusted":1},
+            {"event":"serc:138","entity":"team:1845","position":1,"points":1,"adjusted":2}
+          ]
+        },
+        {
+          "entity": "team:1846",
+          "name": "Competitor 3, Competitor 4 - City of Rochester Swimming and Lifeguard Club (Junior Girls Pairs)",
+          "total": 10,
+          "position": 2,
+          "events": [
+            {"event":"speed:203","entity":"competitor:1260","position":2,"points":2,"adjusted":2},
+            {"event":"speed:204","entity":"competitor:1260","position":2,"points":2,"adjusted":2},
+            {"event":"serc:137","entity":"team:1846","position":2,"points":2,"adjusted":2},
+            {"event":"serc:138","entity":"team:1846","position":2,"points":2,"adjusted":4}
+          ]
+        }
+      ]
+    },
+    "sheet:266": {
+      "name": "Junior Open Pairs",
+      "results": [
+        {
+          "entity": "team:1847",
+          "name": "Competitor 5, Competitor 6 - City of Rochester Swimming and Lifeguard Club (Junior Open Pairs)",
+          "total": 6,
+          "position": 1,
+          "events": [
+            {"event":"speed:203","entity":"competitor:1262","position":1,"points":1,"adjusted":1},
+            {"event":"speed:204","entity":"competitor:1262","position":2,"points":2,"adjusted":2},
+            {"event":"serc:137","entity":"team:1847","position":1,"points":1,"adjusted":1},
+            {"event":"serc:138","entity":"team:1847","position":1,"points":1,"adjusted":2}
+          ]
+        },
+        {
+          "entity": "team:1848",
+          "name": "Competitor 7, Competitor 8 - Beacon Lsc (Junior Open Pairs)",
+          "total": 9,
+          "position": 2,
+          "events": [
+            {"event":"speed:203","entity":"competitor:1264","position":2,"points":2,"adjusted":2},
+            {"event":"speed:204","entity":"competitor:1264","position":1,"points":1,"adjusted":1},
+            {"event":"serc:137","entity":"team:1848","position":2,"points":2,"adjusted":2},
+            {"event":"serc:138","entity":"team:1848","position":2,"points":2,"adjusted":4}
+          ]
+        }
+      ]
+    },
+    "sheet:267": {
+      "name": "Senior Girls Pairs",
+      "results": [
+        {
+          "entity": "team:1849",
+          "name": "Competitor 9, Competitor 10 - Crawley Town Lifesaving Club (Senior Girls Pairs)",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:203","entity":"competitor:1266","position":1,"points":1,"adjusted":1},
+            {"event":"speed:204","entity":"competitor:1266","position":1,"points":1,"adjusted":1},
+            {"event":"serc:137","entity":"team:1849","position":1,"points":1,"adjusted":1},
+            {"event":"serc:138","entity":"team:1849","position":1,"points":1,"adjusted":2}
+          ]
+        }
+      ]
+    },
+    "sheet:268": {
+      "name": "Senior Open Pairs",
+      "results": [
+        {
+          "entity": "team:1850",
+          "name": "Competitor 11, Competitor 12 - City of Rochester Swimming and Lifeguard Club (Senior Open Pairs)",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:203","entity":"competitor:1268","position":1,"points":1,"adjusted":1},
+            {"event":"speed:204","entity":"competitor:1268","position":1,"points":1,"adjusted":1},
+            {"event":"serc:137","entity":"team:1850","position":1,"points":1,"adjusted":1},
+            {"event":"serc:138","entity":"team:1850","position":1,"points":1,"adjusted":2}
+          ]
+        }
+      ]
+    },
+    "sheet:269": {
+      "name": "Adult Ladies Pairs",
+      "results": [
+        {
+          "entity": "team:1852",
+          "name": "Competitor 13, Competitor 14 - Crawley Town Lifesaving Club (Adult Ladies Pairs)",
+          "total": 7,
+          "position": 1,
+          "events": [
+            {"event":"speed:203","entity":"competitor:1272","position":1,"points":1,"adjusted":1},
+            {"event":"speed:204","entity":"competitor:1272","position":2,"points":2,"adjusted":2},
+            {"event":"serc:137","entity":"team:1852","position":2,"points":2,"adjusted":2},
+            {"event":"serc:138","entity":"team:1852","position":1,"points":1,"adjusted":2}
+          ]
+        },
+        {
+          "entity": "team:1853",
+          "name": "Competitor 15, Competitor 16 - City of Rochester Swimming and Lifeguard Club (Adult Ladies Pairs)",
+          "total": 8,
+          "position": 2,
+          "events": [
+            {"event":"speed:203","entity":"competitor:1274","position":2,"points":2,"adjusted":2},
+            {"event":"speed:204","entity":"competitor:1274","position":1,"points":1,"adjusted":1},
+            {"event":"serc:137","entity":"team:1853","position":1,"points":1,"adjusted":1},
+            {"event":"serc:138","entity":"team:1853","position":2,"points":2,"adjusted":4}
+          ]
+        }
+      ]
+    },
+    "sheet:270": {
+      "name": "Adult Open Pairs",
+      "results": [
+        {
+          "entity": "team:1854",
+          "name": "Competitor 17, Competitor 18 - City of Rochester Swimming and Lifeguard Club (Adult Open Pairs)",
+          "total": 7,
+          "position": 1,
+          "events": [
+            {"event":"speed:203","entity":"competitor:1276","position":3,"points":3,"adjusted":3},
+            {"event":"speed:204","entity":"competitor:1276","position":1,"points":1,"adjusted":1},
+            {"event":"serc:137","entity":"team:1854","position":1,"points":1,"adjusted":1},
+            {"event":"serc:138","entity":"team:1854","position":1,"points":1,"adjusted":2}
+          ]
+        },
+        {
+          "entity": "team:1855",
+          "name": "Competitor 19, Competitor 20 - Beacon Lsc (Adult Open Pairs)",
+          "total": 11,
+          "position": 2,
+          "events": [
+            {"event":"speed:203","entity":"competitor:1278","position":1,"points":1,"adjusted":1},
+            {"event":"speed:204","entity":"competitor:1278","position":3,"points":3,"adjusted":3},
+            {"event":"serc:137","entity":"team:1855","position":3,"points":3,"adjusted":3},
+            {"event":"serc:138","entity":"team:1855","position":2,"points":2,"adjusted":4}
+          ]
+        },
+        {
+          "entity": "team:1857",
+          "name": "Competitor 21, Competitor 22 - Horsham Lifesaving Club (Adult Open Pairs)",
+          "total": 14,
+          "position": 3,
+          "events": [
+            {"event":"speed:203","entity":"competitor:1282","position":2,"points":2,"adjusted":2},
+            {"event":"speed:204","entity":"competitor:1282","position":4,"points":4,"adjusted":4},
+            {"event":"serc:137","entity":"team:1857","position":2,"points":2,"adjusted":2},
+            {"event":"serc:138","entity":"team:1857","position":3,"points":3,"adjusted":6}
+          ]
+        },
+        {
+          "entity": "team:1858",
+          "name": "Competitor 23, Competitor 24 - Eastbourne Voluntary lifeguards (Adult Open Pairs)",
+          "total": 18,
+          "position": 4,
+          "events": [
+            {"event":"speed:203","entity":"competitor:1284","position":4,"points":4,"adjusted":4},
+            {"event":"speed:204","entity":"competitor:1284","position":2,"points":2,"adjusted":2},
+            {"event":"serc:137","entity":"team:1858","position":4,"points":4,"adjusted":4},
+            {"event":"serc:138","entity":"team:1858","position":4,"points":4,"adjusted":8}
+          ]
+        }
+      ]
+    },
+    "sheet:271": {
+      "name": "Ladies",
+      "results": [
+        {
+          "entity": "team:1875",
+          "name": "Competitor 37 - Horsham Lifesaving Club (Ladies)",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:203","entity":"competitor:1303","position":1,"points":1,"adjusted":1},
+            {"event":"speed:204","entity":"competitor:1303","position":1,"points":1,"adjusted":1},
+            {"event":"serc:137","entity":"team:1875","position":1,"points":1,"adjusted":1},
+            {"event":"serc:138","entity":"team:1875","position":1,"points":1,"adjusted":2}
+          ]
+        }
+      ]
+    },
+    "sheet:272": {
+      "name": "Open",
+      "results": [
+        {
+          "entity": "team:1861",
+          "name": "Competitor 26 - Loughbrough Uni (Open)",
+          "total": 6,
+          "position": 1,
+          "events": [
+            {"event":"speed:203","entity":"competitor:1288","position":2,"points":2,"adjusted":2},
+            {"event":"speed:204","entity":"competitor:1288","position":1,"points":1,"adjusted":1},
+            {"event":"serc:137","entity":"team:1861","position":1,"points":1,"adjusted":1},
+            {"event":"serc:138","entity":"team:1861","position":1,"points":1,"adjusted":2}
+          ]
+        },
+        {
+          "entity": "team:1874",
+          "name": "Competitor 36 - Eastbourne Voluntary lifeguards (Open)",
+          "total": 9,
+          "position": 2,
+          "events": [
+            {"event":"speed:203","entity":"competitor:1302","position":1,"points":1,"adjusted":1},
+            {"event":"speed:204","entity":"competitor:1302","position":2,"points":2,"adjusted":2},
+            {"event":"serc:137","entity":"team:1874","position":2,"points":2,"adjusted":2},
+            {"event":"serc:138","entity":"team:1874","position":2,"points":2,"adjusted":4}
+          ]
+        },
+        {
+          "entity": "team:1860",
+          "name": "Competitor 25 - Eastbourne Voluntary lifeguards (Open)",
+          "total": 15,
+          "position": 3,
+          "events": [
+            {"event":"speed:203","entity":"competitor:1287","position":3,"points":3,"adjusted":3},
+            {"event":"speed:204","entity":"competitor:1287","position":3,"points":3,"adjusted":3},
+            {"event":"serc:137","entity":"team:1860","position":3,"points":3,"adjusted":3},
+            {"event":"serc:138","entity":"team:1860","position":3,"points":3,"adjusted":6}
+          ]
+        }
+      ]
+    },
+    "sheet:273": {
+      "name": "Masters Ladies 30-39",
+      "results": [
+        {
+          "entity": "team:1864",
+          "name": "Competitor 28 - Horsham Lifesaving Club (Masters Ladies 30-39)",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:203","entity":"competitor:1291","position":1,"points":1,"adjusted":1},
+            {"event":"speed:204","entity":"competitor:1291","position":1,"points":1,"adjusted":1},
+            {"event":"serc:137","entity":"team:1864","position":1,"points":1,"adjusted":1},
+            {"event":"serc:138","entity":"team:1864","position":1,"points":1,"adjusted":2}
+          ]
+        }
+      ]
+    },
+    "sheet:274": {
+      "name": "Masters Open 30-39",
+      "results": [
+        {
+          "entity": "team:1867",
+          "name": "Competitor 31 - City of Rochester Swimming and Lifeguard Club (Masters Open 30-39)",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:203","entity":"competitor:1294","position":1,"points":1,"adjusted":1},
+            {"event":"speed:204","entity":"competitor:1294","position":1,"points":1,"adjusted":1},
+            {"event":"serc:137","entity":"team:1867","position":1,"points":1,"adjusted":1},
+            {"event":"serc:138","entity":"team:1867","position":1,"points":1,"adjusted":2}
+          ]
+        }
+      ]
+    },
+    "sheet:275": {
+      "name": "Masters Ladies 40-49",
+      "results": [
+        {
+          "entity": "team:1865",
+          "name": "Competitor 29 - Horsham Lifesaving Club (Masters Ladies 40-49)",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:203","entity":"competitor:1292","position":1,"points":1,"adjusted":1},
+            {"event":"speed:204","entity":"competitor:1292","position":1,"points":1,"adjusted":1},
+            {"event":"serc:137","entity":"team:1865","position":1,"points":1,"adjusted":1},
+            {"event":"serc:138","entity":"team:1865","position":1,"points":1,"adjusted":2}
+          ]
+        }
+      ]
+    },
+    "sheet:276": {
+      "name": "Masters Open 40-49",
+      "results": [
+        {
+          "entity": "team:1868",
+          "name": "Competitor 32 - City of Rochester Swimming and Lifeguard Club (Masters Open 40-49)",
+          "total": 6,
+          "position": 1,
+          "events": [
+            {"event":"speed:203","entity":"competitor:1295","position":1,"points":1,"adjusted":1},
+            {"event":"speed:204","entity":"competitor:1295","position":2,"points":2,"adjusted":2},
+            {"event":"serc:137","entity":"team:1868","position":1,"points":1,"adjusted":1},
+            {"event":"serc:138","entity":"team:1868","position":1,"points":1,"adjusted":2}
+          ]
+        },
+        {
+          "entity": "team:1871",
+          "name": "Competitor 34 - Horsham Lifesaving Club (Masters Open 40-49)",
+          "total": 9,
+          "position": 2,
+          "events": [
+            {"event":"speed:203","entity":"competitor:1298","position":2,"points":2,"adjusted":2},
+            {"event":"speed:204","entity":"competitor:1298","position":1,"points":1,"adjusted":1},
+            {"event":"serc:137","entity":"team:1871","position":2,"points":2,"adjusted":2},
+            {"event":"serc:138","entity":"team:1871","position":2,"points":2,"adjusted":4}
+          ]
+        }
+      ]
+    },
+    "sheet:277": {
+      "name": "Masters Ladies 50-59",
+      "results": [
+        {
+          "entity": "team:1863",
+          "name": "Competitor 27 - Beacon Lsc (Masters Ladies 50-59)",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:203","entity":"competitor:1290","position":1,"points":1,"adjusted":1},
+            {"event":"speed:204","entity":"competitor:1290","position":1,"points":1,"adjusted":1},
+            {"event":"serc:137","entity":"team:1863","position":1,"points":1,"adjusted":1},
+            {"event":"serc:138","entity":"team:1863","position":1,"points":1,"adjusted":2}
+          ]
+        },
+        {
+          "entity": "team:1866",
+          "name": "Competitor 30 - Horsham Lifesaving Club (Masters Ladies 50-59)",
+          "total": 9,
+          "position": 2,
+          "events": [
+            {"event":"speed:203","entity":"competitor:1293","position":1,"points":1,"adjusted":1},
+            {"event":"speed:204","entity":"competitor:1293","position":2,"points":2,"adjusted":2},
+            {"event":"serc:137","entity":"team:1866","position":2,"points":2,"adjusted":2},
+            {"event":"serc:138","entity":"team:1866","position":2,"points":2,"adjusted":4}
+          ]
+        }
+      ]
+    },
+    "sheet:278": {
+      "name": "Masters Open 50-59",
+      "results": [
+        {
+          "entity": "team:1870",
+          "name": "Competitor 33 - Horsham Lifesaving Club (Masters Open 50-59)",
+          "total": 3,
+          "position": 1,
+          "events": [
+            {"event":"serc:137","entity":"team:1870","position":1,"points":1,"adjusted":1},
+            {"event":"serc:138","entity":"team:1870","position":1,"points":1,"adjusted":2}
+          ]
+        }
+      ]
+    },
+    "sheet:279": {"name":"Masters Ladies 60-69","results":[]},
+    "sheet:280": {
+      "name": "Masters Open 60-69",
+      "results": [
+        {
+          "entity": "competitor:1297",
+          "name": "Competitor 33 - Horsham Lifesaving Club (Masters Open 60-69) MO 50-59",
+          "total": 2,
+          "position": 1,
+          "events": [
+            {"event":"speed:203","entity":"competitor:1297","position":1,"points":1,"adjusted":1},
+            {"event":"speed:204","entity":"competitor:1297","position":1,"points":1,"adjusted":1}
+          ]
+        }
+      ]
+    },
+    "sheet:281": {"name":"Masters Ladies 70+","results":[]},
+    "sheet:282": {
+      "name": "Masters Open 70+",
+      "results": [
+        {
+          "entity": "team:1872",
+          "name": "Competitor 35 - Horsham Lifesaving Club (Masters Open 70+)",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:203","entity":"competitor:1299","position":1,"points":1,"adjusted":1},
+            {"event":"speed:204","entity":"competitor:1299","position":1,"points":1,"adjusted":1},
+            {"event":"serc:137","entity":"team:1872","position":1,"points":1,"adjusted":1},
+            {"event":"serc:138","entity":"team:1872","position":1,"points":1,"adjusted":2}
+          ]
+        }
+      ]
+    }
+  },
+  "masters": []
+}

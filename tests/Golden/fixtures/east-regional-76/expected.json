@@ -1,0 +1,479 @@
+{
+  "competition": "East Regional",
+  "events": {
+    "speed:201": {
+      "name": "Rope Throw",
+      "results": {
+        "all": [
+          {"entity":"competitor:1256","name":"Competitor 23 - Ipswich Lifesaving Club (Masters Open 50-59) MO 50-59","result":13770,"resolved":13770,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1238","name":"Competitor 5 - Ipswich Lifesaving Club (Junior Open Pairs) JOP","result":13930,"resolved":34830,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1238","competitor:1239"]},
+          {"entity":"competitor:1236","name":"Competitor 3 - Ipswich Lifesaving Club (Junior Girls Pairs) JGP 2","result":30070,"resolved":61500,"points":3,"position":3,"dqs":[],"pens":[],"combined":["competitor:1236","competitor:1237"]},
+          {"entity":"competitor:1252","name":"Competitor 19 - Ipswich Lifesaving Club (Ladies) L","result":3599000,"resolved":120000,"points":6,"position":4,"dqs":[99904],"pens":[],"combined":[]},
+          {"entity":"competitor:1253","name":"Competitor 20 - Sudbury Lifesaving Club (Open) O 1","result":3599000,"resolved":120000,"points":6,"position":4,"dqs":[99915],"pens":[],"combined":[]},
+          {"entity":"competitor:1254","name":"Competitor 21 - Ipswich Lifesaving Club (Open) O 2","result":3599000,"resolved":120000,"points":6,"position":4,"dqs":[99915],"pens":[],"combined":[]},
+          {"entity":"competitor:1255","name":"Competitor 22 - Ipswich Lifesaving Club (Masters Ladies 30-39) ML 30-39","result":3599000,"resolved":120000,"points":6,"position":4,"dqs":[99915],"pens":[],"combined":[]},
+          {"entity":"competitor:1257","name":"Competitor 24 - Ipswich Lifesaving Club (Masters Ladies 60-69) ML 60-69","result":3599000,"resolved":120000,"points":6,"position":4,"dqs":[99904],"pens":[],"combined":[]},
+          {"entity":"competitor:1248","name":"Competitor 15 - Ipswich Lifesaving Club (Adult Ladies Pairs) ALP","result":43220,"resolved":163220,"points":9,"position":9,"dqs":[],"pens":[],"combined":["competitor:1248","competitor:1249"]},
+          {"entity":"competitor:1234","name":"Competitor 1 - Ipswich Lifesaving Club (Junior Girls Pairs) JGP 1","result":3599000,"resolved":240000,"points":12.5,"position":10,"dqs":[99915],"pens":[],"combined":["competitor:1234","competitor:1235"]},
+          {"entity":"competitor:1240","name":"Competitor 7 - Sudbury Lifesaving Club (Senior Girls Pairs) SGP","result":3599000,"resolved":240000,"points":12.5,"position":10,"dqs":[99915],"pens":[],"combined":["competitor:1240","competitor:1241"]},
+          {"entity":"competitor:1242","name":"Competitor 9 - Ipswich Lifesaving Club (Senior Open Pairs) SOP 1","result":3599000,"resolved":240000,"points":12.5,"position":10,"dqs":[99915],"pens":[],"combined":["competitor:1242","competitor:1243"]},
+          {"entity":"competitor:1244","name":"Competitor 11 - Ipswich Lifesaving Club (Senior Open Pairs) SOP 2","result":3599000,"resolved":240000,"points":12.5,"position":10,"dqs":[99915],"pens":[],"combined":["competitor:1244","competitor:1245"]},
+          {"entity":"competitor:1246","name":"Competitor 13 - Sudbury Lifesaving Club (Senior Open Pairs) SOP 3","result":3599000,"resolved":240000,"points":12.5,"position":10,"dqs":[99915],"pens":[],"combined":["competitor:1246","competitor:1247"]},
+          {"entity":"competitor:1250","name":"Competitor 17 - Ipswich Lifesaving Club (Adult Open Pairs) AOP","result":3599000,"resolved":240000,"points":12.5,"position":10,"dqs":[99904],"pens":[],"combined":["competitor:1250","competitor:1251"]}
+        ],
+        "league:173": [
+          {"entity":"competitor:1236","name":"Competitor 3 - Ipswich Lifesaving Club (Junior Girls Pairs) JGP 2","result":30070,"resolved":61500,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1236","competitor:1237"]},
+          {"entity":"competitor:1234","name":"Competitor 1 - Ipswich Lifesaving Club (Junior Girls Pairs) JGP 1","result":3599000,"resolved":240000,"points":2,"position":2,"dqs":[99915],"pens":[],"combined":["competitor:1234","competitor:1235"]}
+        ],
+        "league:174": [
+          {"entity":"competitor:1238","name":"Competitor 5 - Ipswich Lifesaving Club (Junior Open Pairs) JOP","result":13930,"resolved":34830,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1238","competitor:1239"]}
+        ],
+        "league:175": [
+          {"entity":"competitor:1240","name":"Competitor 7 - Sudbury Lifesaving Club (Senior Girls Pairs) SGP","result":3599000,"resolved":240000,"points":1,"position":1,"dqs":[99915],"pens":[],"combined":["competitor:1240","competitor:1241"]}
+        ],
+        "league:176": [
+          {"entity":"competitor:1242","name":"Competitor 9 - Ipswich Lifesaving Club (Senior Open Pairs) SOP 1","result":3599000,"resolved":240000,"points":1,"position":1,"dqs":[99915],"pens":[],"combined":["competitor:1242","competitor:1243"]},
+          {"entity":"competitor:1244","name":"Competitor 11 - Ipswich Lifesaving Club (Senior Open Pairs) SOP 2","result":3599000,"resolved":240000,"points":1,"position":1,"dqs":[99915],"pens":[],"combined":["competitor:1244","competitor:1245"]},
+          {"entity":"competitor:1246","name":"Competitor 13 - Sudbury Lifesaving Club (Senior Open Pairs) SOP 3","result":3599000,"resolved":240000,"points":1,"position":1,"dqs":[99915],"pens":[],"combined":["competitor:1246","competitor:1247"]}
+        ],
+        "league:177": [
+          {"entity":"competitor:1248","name":"Competitor 15 - Ipswich Lifesaving Club (Adult Ladies Pairs) ALP","result":43220,"resolved":163220,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1248","competitor:1249"]}
+        ],
+        "league:178": [
+          {"entity":"competitor:1250","name":"Competitor 17 - Ipswich Lifesaving Club (Adult Open Pairs) AOP","result":3599000,"resolved":240000,"points":1,"position":1,"dqs":[99904],"pens":[],"combined":["competitor:1250","competitor:1251"]}
+        ],
+        "league:179": [
+          {"entity":"competitor:1252","name":"Competitor 19 - Ipswich Lifesaving Club (Ladies) L","result":3599000,"resolved":120000,"points":1,"position":1,"dqs":[99904],"pens":[],"combined":[]}
+        ],
+        "league:180": [
+          {"entity":"competitor:1253","name":"Competitor 20 - Sudbury Lifesaving Club (Open) O 1","result":3599000,"resolved":120000,"points":1,"position":1,"dqs":[99915],"pens":[],"combined":[]},
+          {"entity":"competitor:1254","name":"Competitor 21 - Ipswich Lifesaving Club (Open) O 2","result":3599000,"resolved":120000,"points":1,"position":1,"dqs":[99915],"pens":[],"combined":[]}
+        ],
+        "league:181": [
+          {"entity":"competitor:1255","name":"Competitor 22 - Ipswich Lifesaving Club (Masters Ladies 30-39) ML 30-39","result":3599000,"resolved":120000,"points":1,"position":1,"dqs":[99915],"pens":[],"combined":[]}
+        ],
+        "league:186": [
+          {"entity":"competitor:1256","name":"Competitor 23 - Ipswich Lifesaving Club (Masters Open 50-59) MO 50-59","result":13770,"resolved":13770,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:187": [
+          {"entity":"competitor:1257","name":"Competitor 24 - Ipswich Lifesaving Club (Masters Ladies 60-69) ML 60-69","result":3599000,"resolved":120000,"points":1,"position":1,"dqs":[99904],"pens":[],"combined":[]}
+        ]
+      }
+    },
+    "speed:202": {
+      "name": "Swim & Tow",
+      "results": {
+        "all": [
+          {"entity":"competitor:1256","name":"Competitor 23 - Ipswich Lifesaving Club (Masters Open 50-59) MO 50-59","result":54230,"resolved":54230,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1238","name":"Competitor 5 - Ipswich Lifesaving Club (Junior Open Pairs) JOP","result":49990,"resolved":94760,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1238","competitor:1239"]},
+          {"entity":"competitor:1254","name":"Competitor 21 - Ipswich Lifesaving Club (Open) O 2","result":101250,"resolved":101250,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1255","name":"Competitor 22 - Ipswich Lifesaving Club (Masters Ladies 30-39) ML 30-39","result":128870,"resolved":128870,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1253","name":"Competitor 20 - Sudbury Lifesaving Club (Open) O 1","result":137060,"resolved":137060,"points":5,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1236","name":"Competitor 3 - Ipswich Lifesaving Club (Junior Girls Pairs) JGP 2","result":76560,"resolved":146060,"points":6,"position":6,"dqs":[],"pens":[],"combined":["competitor:1236","competitor:1237"]},
+          {"entity":"competitor:1234","name":"Competitor 1 - Ipswich Lifesaving Club (Junior Girls Pairs) JGP 1","result":94440,"resolved":170690,"points":7,"position":7,"dqs":[],"pens":[],"combined":["competitor:1234","competitor:1235"]},
+          {"entity":"competitor:1244","name":"Competitor 11 - Ipswich Lifesaving Club (Senior Open Pairs) SOP 2","result":131310,"resolved":228560,"points":8,"position":8,"dqs":[],"pens":[],"combined":["competitor:1244","competitor:1245"]},
+          {"entity":"competitor:1248","name":"Competitor 15 - Ipswich Lifesaving Club (Adult Ladies Pairs) ALP","result":132210,"resolved":253950,"points":9,"position":9,"dqs":[],"pens":[],"combined":["competitor:1248","competitor:1249"]},
+          {"entity":"competitor:1246","name":"Competitor 13 - Sudbury Lifesaving Club (Senior Open Pairs) SOP 3","result":127070,"resolved":274350,"points":10,"position":10,"dqs":[],"pens":[],"combined":["competitor:1246","competitor:1247"]},
+          {"entity":"competitor:1240","name":"Competitor 7 - Sudbury Lifesaving Club (Senior Girls Pairs) SGP","result":161970,"resolved":323270,"points":11,"position":11,"dqs":[],"pens":[],"combined":["competitor:1240","competitor:1241"]},
+          {"entity":"competitor:1252","name":"Competitor 19 - Ipswich Lifesaving Club (Ladies) L","result":3599000,"resolved":600000,"points":12.5,"position":12,"dqs":[99904],"pens":[],"combined":[]},
+          {"entity":"competitor:1257","name":"Competitor 24 - Ipswich Lifesaving Club (Masters Ladies 60-69) ML 60-69","result":3599000,"resolved":600000,"points":12.5,"position":12,"dqs":[99904],"pens":[],"combined":[]},
+          {"entity":"competitor:1242","name":"Competitor 9 - Ipswich Lifesaving Club (Senior Open Pairs) SOP 1","result":150190,"resolved":750190,"points":14,"position":14,"dqs":[],"pens":[],"combined":["competitor:1242","competitor:1243"]},
+          {"entity":"competitor:1250","name":"Competitor 17 - Ipswich Lifesaving Club (Adult Open Pairs) AOP","result":3599000,"resolved":1200000,"points":15,"position":15,"dqs":[99904],"pens":[],"combined":["competitor:1250","competitor:1251"]}
+        ],
+        "league:173": [
+          {"entity":"competitor:1236","name":"Competitor 3 - Ipswich Lifesaving Club (Junior Girls Pairs) JGP 2","result":76560,"resolved":146060,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1236","competitor:1237"]},
+          {"entity":"competitor:1234","name":"Competitor 1 - Ipswich Lifesaving Club (Junior Girls Pairs) JGP 1","result":94440,"resolved":170690,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1234","competitor:1235"]}
+        ],
+        "league:174": [
+          {"entity":"competitor:1238","name":"Competitor 5 - Ipswich Lifesaving Club (Junior Open Pairs) JOP","result":49990,"resolved":94760,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1238","competitor:1239"]}
+        ],
+        "league:175": [
+          {"entity":"competitor:1240","name":"Competitor 7 - Sudbury Lifesaving Club (Senior Girls Pairs) SGP","result":161970,"resolved":323270,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1240","competitor:1241"]}
+        ],
+        "league:176": [
+          {"entity":"competitor:1244","name":"Competitor 11 - Ipswich Lifesaving Club (Senior Open Pairs) SOP 2","result":131310,"resolved":228560,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1244","competitor:1245"]},
+          {"entity":"competitor:1246","name":"Competitor 13 - Sudbury Lifesaving Club (Senior Open Pairs) SOP 3","result":127070,"resolved":274350,"points":2,"position":2,"dqs":[],"pens":[],"combined":["competitor:1246","competitor:1247"]},
+          {"entity":"competitor:1242","name":"Competitor 9 - Ipswich Lifesaving Club (Senior Open Pairs) SOP 1","result":150190,"resolved":750190,"points":3,"position":3,"dqs":[],"pens":[],"combined":["competitor:1242","competitor:1243"]}
+        ],
+        "league:177": [
+          {"entity":"competitor:1248","name":"Competitor 15 - Ipswich Lifesaving Club (Adult Ladies Pairs) ALP","result":132210,"resolved":253950,"points":1,"position":1,"dqs":[],"pens":[],"combined":["competitor:1248","competitor:1249"]}
+        ],
+        "league:178": [
+          {"entity":"competitor:1250","name":"Competitor 17 - Ipswich Lifesaving Club (Adult Open Pairs) AOP","result":3599000,"resolved":1200000,"points":1,"position":1,"dqs":[99904],"pens":[],"combined":["competitor:1250","competitor:1251"]}
+        ],
+        "league:179": [
+          {"entity":"competitor:1252","name":"Competitor 19 - Ipswich Lifesaving Club (Ladies) L","result":3599000,"resolved":600000,"points":1,"position":1,"dqs":[99904],"pens":[],"combined":[]}
+        ],
+        "league:180": [
+          {"entity":"competitor:1254","name":"Competitor 21 - Ipswich Lifesaving Club (Open) O 2","result":101250,"resolved":101250,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"competitor:1253","name":"Competitor 20 - Sudbury Lifesaving Club (Open) O 1","result":137060,"resolved":137060,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:181": [
+          {"entity":"competitor:1255","name":"Competitor 22 - Ipswich Lifesaving Club (Masters Ladies 30-39) ML 30-39","result":128870,"resolved":128870,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:186": [
+          {"entity":"competitor:1256","name":"Competitor 23 - Ipswich Lifesaving Club (Masters Open 50-59) MO 50-59","result":54230,"resolved":54230,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:187": [
+          {"entity":"competitor:1257","name":"Competitor 24 - Ipswich Lifesaving Club (Masters Ladies 60-69) ML 60-69","result":3599000,"resolved":600000,"points":1,"position":1,"dqs":[99904],"pens":[],"combined":[]}
+        ]
+      }
+    },
+    "serc:135": {
+      "name": "Life Support",
+      "results": {
+        "all": [
+          {"entity":"team:1842","name":"Competitor 22 - Ipswich Lifesaving Club (Masters Ladies 30-39)","result":92,"resolved":92,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1841","name":"Competitor 21 - Ipswich Lifesaving Club (Open)","result":90,"resolved":90,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1843","name":"Competitor 23 - Ipswich Lifesaving Club (Masters Open 50-59)","result":85,"resolved":85,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1832","name":"Competitor 5, Competitor 6 - Ipswich Lifesaving Club (Junior Open Pairs)","result":80,"resolved":80,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1835","name":"Competitor 11, Competitor 12 - Ipswich Lifesaving Club (Senior Open Pairs)","result":80,"resolved":80,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1837","name":"Competitor 15, Competitor 16 - Ipswich Lifesaving Club (Adult Ladies Pairs)","result":80,"resolved":80,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1831","name":"Competitor 3, Competitor 4 - Ipswich Lifesaving Club (Junior Girls Pairs)","result":76,"resolved":76,"points":7,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1833","name":"Competitor 7, Competitor 8 - Sudbury Lifesaving Club (Senior Girls Pairs)","result":75,"resolved":75,"points":8,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1830","name":"Competitor 1, Competitor 2 - Ipswich Lifesaving Club (Junior Girls Pairs)","result":71,"resolved":71,"points":9,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1834","name":"Competitor 9, Competitor 10 - Ipswich Lifesaving Club (Senior Open Pairs)","result":71,"resolved":71,"points":9,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1840","name":"Competitor 20 - Sudbury Lifesaving Club (Open)","result":62,"resolved":62,"points":11,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1836","name":"Competitor 13, Competitor 14 - Sudbury Lifesaving Club (Senior Open Pairs)","result":59,"resolved":59,"points":12,"position":12,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1838","name":"Competitor 17, Competitor 18 - Ipswich Lifesaving Club (Adult Open Pairs)","result":0,"resolved":0,"points":13,"position":13,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1839","name":"Competitor 19 - Ipswich Lifesaving Club (Ladies)","result":0,"resolved":0,"points":13,"position":13,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1844","name":"Competitor 24 - Ipswich Lifesaving Club (Masters Ladies 60-69)","result":0,"resolved":0,"points":13,"position":13,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:173": [
+          {"entity":"team:1831","name":"Competitor 3, Competitor 4 - Ipswich Lifesaving Club (Junior Girls Pairs)","result":76,"resolved":76,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1830","name":"Competitor 1, Competitor 2 - Ipswich Lifesaving Club (Junior Girls Pairs)","result":71,"resolved":71,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:174": [
+          {"entity":"team:1832","name":"Competitor 5, Competitor 6 - Ipswich Lifesaving Club (Junior Open Pairs)","result":80,"resolved":80,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:175": [
+          {"entity":"team:1833","name":"Competitor 7, Competitor 8 - Sudbury Lifesaving Club (Senior Girls Pairs)","result":75,"resolved":75,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:176": [
+          {"entity":"team:1835","name":"Competitor 11, Competitor 12 - Ipswich Lifesaving Club (Senior Open Pairs)","result":80,"resolved":80,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1834","name":"Competitor 9, Competitor 10 - Ipswich Lifesaving Club (Senior Open Pairs)","result":71,"resolved":71,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1836","name":"Competitor 13, Competitor 14 - Sudbury Lifesaving Club (Senior Open Pairs)","result":59,"resolved":59,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:177": [
+          {"entity":"team:1837","name":"Competitor 15, Competitor 16 - Ipswich Lifesaving Club (Adult Ladies Pairs)","result":80,"resolved":80,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:178": [
+          {"entity":"team:1838","name":"Competitor 17, Competitor 18 - Ipswich Lifesaving Club (Adult Open Pairs)","result":0,"resolved":0,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:179": [
+          {"entity":"team:1839","name":"Competitor 19 - Ipswich Lifesaving Club (Ladies)","result":0,"resolved":0,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:180": [
+          {"entity":"team:1841","name":"Competitor 21 - Ipswich Lifesaving Club (Open)","result":90,"resolved":90,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1840","name":"Competitor 20 - Sudbury Lifesaving Club (Open)","result":62,"resolved":62,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:181": [
+          {"entity":"team:1842","name":"Competitor 22 - Ipswich Lifesaving Club (Masters Ladies 30-39)","result":92,"resolved":92,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:186": [
+          {"entity":"team:1843","name":"Competitor 23 - Ipswich Lifesaving Club (Masters Open 50-59)","result":85,"resolved":85,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:187": [
+          {"entity":"team:1844","name":"Competitor 24 - Ipswich Lifesaving Club (Masters Ladies 60-69)","result":0,"resolved":0,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    },
+    "serc:136": {
+      "name": "Aquatic",
+      "results": {
+        "all": [
+          {"entity":"team:1835","name":"Competitor 11, Competitor 12 - Ipswich Lifesaving Club (Senior Open Pairs)","result":77,"resolved":77,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1832","name":"Competitor 5, Competitor 6 - Ipswich Lifesaving Club (Junior Open Pairs)","result":70,"resolved":70,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1842","name":"Competitor 22 - Ipswich Lifesaving Club (Masters Ladies 30-39)","result":66,"resolved":66,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1837","name":"Competitor 15, Competitor 16 - Ipswich Lifesaving Club (Adult Ladies Pairs)","result":63,"resolved":63,"points":4,"position":4,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1833","name":"Competitor 7, Competitor 8 - Sudbury Lifesaving Club (Senior Girls Pairs)","result":62,"resolved":62,"points":5,"position":5,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1843","name":"Competitor 23 - Ipswich Lifesaving Club (Masters Open 50-59)","result":58,"resolved":58,"points":6,"position":6,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1836","name":"Competitor 13, Competitor 14 - Sudbury Lifesaving Club (Senior Open Pairs)","result":56,"resolved":56,"points":7,"position":7,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1831","name":"Competitor 3, Competitor 4 - Ipswich Lifesaving Club (Junior Girls Pairs)","result":54,"resolved":54,"points":8,"position":8,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1841","name":"Competitor 21 - Ipswich Lifesaving Club (Open)","result":49,"resolved":49,"points":9,"position":9,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1830","name":"Competitor 1, Competitor 2 - Ipswich Lifesaving Club (Junior Girls Pairs)","result":48,"resolved":48,"points":10,"position":10,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1834","name":"Competitor 9, Competitor 10 - Ipswich Lifesaving Club (Senior Open Pairs)","result":39,"resolved":39,"points":11,"position":11,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1840","name":"Competitor 20 - Sudbury Lifesaving Club (Open)","result":24,"resolved":24,"points":12,"position":12,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1838","name":"Competitor 17, Competitor 18 - Ipswich Lifesaving Club (Adult Open Pairs)","result":0,"resolved":0,"points":13,"position":13,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1839","name":"Competitor 19 - Ipswich Lifesaving Club (Ladies)","result":0,"resolved":0,"points":13,"position":13,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1844","name":"Competitor 24 - Ipswich Lifesaving Club (Masters Ladies 60-69)","result":0,"resolved":0,"points":13,"position":13,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:173": [
+          {"entity":"team:1831","name":"Competitor 3, Competitor 4 - Ipswich Lifesaving Club (Junior Girls Pairs)","result":54,"resolved":54,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1830","name":"Competitor 1, Competitor 2 - Ipswich Lifesaving Club (Junior Girls Pairs)","result":48,"resolved":48,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:174": [
+          {"entity":"team:1832","name":"Competitor 5, Competitor 6 - Ipswich Lifesaving Club (Junior Open Pairs)","result":70,"resolved":70,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:175": [
+          {"entity":"team:1833","name":"Competitor 7, Competitor 8 - Sudbury Lifesaving Club (Senior Girls Pairs)","result":62,"resolved":62,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:176": [
+          {"entity":"team:1835","name":"Competitor 11, Competitor 12 - Ipswich Lifesaving Club (Senior Open Pairs)","result":77,"resolved":77,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1836","name":"Competitor 13, Competitor 14 - Sudbury Lifesaving Club (Senior Open Pairs)","result":56,"resolved":56,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1834","name":"Competitor 9, Competitor 10 - Ipswich Lifesaving Club (Senior Open Pairs)","result":39,"resolved":39,"points":3,"position":3,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:177": [
+          {"entity":"team:1837","name":"Competitor 15, Competitor 16 - Ipswich Lifesaving Club (Adult Ladies Pairs)","result":63,"resolved":63,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:178": [
+          {"entity":"team:1838","name":"Competitor 17, Competitor 18 - Ipswich Lifesaving Club (Adult Open Pairs)","result":0,"resolved":0,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:179": [
+          {"entity":"team:1839","name":"Competitor 19 - Ipswich Lifesaving Club (Ladies)","result":0,"resolved":0,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:180": [
+          {"entity":"team:1841","name":"Competitor 21 - Ipswich Lifesaving Club (Open)","result":49,"resolved":49,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]},
+          {"entity":"team:1840","name":"Competitor 20 - Sudbury Lifesaving Club (Open)","result":24,"resolved":24,"points":2,"position":2,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:181": [
+          {"entity":"team:1842","name":"Competitor 22 - Ipswich Lifesaving Club (Masters Ladies 30-39)","result":66,"resolved":66,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:186": [
+          {"entity":"team:1843","name":"Competitor 23 - Ipswich Lifesaving Club (Masters Open 50-59)","result":58,"resolved":58,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ],
+        "league:187": [
+          {"entity":"team:1844","name":"Competitor 24 - Ipswich Lifesaving Club (Masters Ladies 60-69)","result":0,"resolved":0,"points":1,"position":1,"dqs":[],"pens":[],"combined":[]}
+        ]
+      }
+    }
+  },
+  "sheets": {
+    "sheet:247": {
+      "name": "Junior Girls Pairs",
+      "results": [
+        {
+          "entity": "team:1831",
+          "name": "Competitor 3, Competitor 4 - Ipswich Lifesaving Club (Junior Girls Pairs)",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:201","entity":"competitor:1236","position":1,"points":1,"adjusted":1},
+            {"event":"speed:202","entity":"competitor:1236","position":1,"points":1,"adjusted":1},
+            {"event":"serc:135","entity":"team:1831","position":1,"points":1,"adjusted":1},
+            {"event":"serc:136","entity":"team:1831","position":1,"points":1,"adjusted":2}
+          ]
+        },
+        {
+          "entity": "team:1830",
+          "name": "Competitor 1, Competitor 2 - Ipswich Lifesaving Club (Junior Girls Pairs)",
+          "total": 10,
+          "position": 2,
+          "events": [
+            {"event":"speed:201","entity":"competitor:1234","position":2,"points":2,"adjusted":2},
+            {"event":"speed:202","entity":"competitor:1234","position":2,"points":2,"adjusted":2},
+            {"event":"serc:135","entity":"team:1830","position":2,"points":2,"adjusted":2},
+            {"event":"serc:136","entity":"team:1830","position":2,"points":2,"adjusted":4}
+          ]
+        }
+      ]
+    },
+    "sheet:248": {
+      "name": "Junior Open Pairs",
+      "results": [
+        {
+          "entity": "team:1832",
+          "name": "Competitor 5, Competitor 6 - Ipswich Lifesaving Club (Junior Open Pairs)",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:201","entity":"competitor:1238","position":1,"points":1,"adjusted":1},
+            {"event":"speed:202","entity":"competitor:1238","position":1,"points":1,"adjusted":1},
+            {"event":"serc:135","entity":"team:1832","position":1,"points":1,"adjusted":1},
+            {"event":"serc:136","entity":"team:1832","position":1,"points":1,"adjusted":2}
+          ]
+        }
+      ]
+    },
+    "sheet:249": {
+      "name": "Senior Girls Pairs",
+      "results": [
+        {
+          "entity": "team:1833",
+          "name": "Competitor 7, Competitor 8 - Sudbury Lifesaving Club (Senior Girls Pairs)",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:201","entity":"competitor:1240","position":1,"points":1,"adjusted":1},
+            {"event":"speed:202","entity":"competitor:1240","position":1,"points":1,"adjusted":1},
+            {"event":"serc:135","entity":"team:1833","position":1,"points":1,"adjusted":1},
+            {"event":"serc:136","entity":"team:1833","position":1,"points":1,"adjusted":2}
+          ]
+        }
+      ]
+    },
+    "sheet:250": {
+      "name": "Senior Open Pairs",
+      "results": [
+        {
+          "entity": "team:1835",
+          "name": "Competitor 11, Competitor 12 - Ipswich Lifesaving Club (Senior Open Pairs)",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:201","entity":"competitor:1244","position":1,"points":1,"adjusted":1},
+            {"event":"speed:202","entity":"competitor:1244","position":1,"points":1,"adjusted":1},
+            {"event":"serc:135","entity":"team:1835","position":1,"points":1,"adjusted":1},
+            {"event":"serc:136","entity":"team:1835","position":1,"points":1,"adjusted":2}
+          ]
+        },
+        {
+          "entity": "team:1836",
+          "name": "Competitor 13, Competitor 14 - Sudbury Lifesaving Club (Senior Open Pairs)",
+          "total": 10,
+          "position": 2,
+          "events": [
+            {"event":"speed:201","entity":"competitor:1246","position":1,"points":1,"adjusted":1},
+            {"event":"speed:202","entity":"competitor:1246","position":2,"points":2,"adjusted":2},
+            {"event":"serc:135","entity":"team:1836","position":3,"points":3,"adjusted":3},
+            {"event":"serc:136","entity":"team:1836","position":2,"points":2,"adjusted":4}
+          ]
+        },
+        {
+          "entity": "team:1834",
+          "name": "Competitor 9, Competitor 10 - Ipswich Lifesaving Club (Senior Open Pairs)",
+          "total": 12,
+          "position": 3,
+          "events": [
+            {"event":"speed:201","entity":"competitor:1242","position":1,"points":1,"adjusted":1},
+            {"event":"speed:202","entity":"competitor:1242","position":3,"points":3,"adjusted":3},
+            {"event":"serc:135","entity":"team:1834","position":2,"points":2,"adjusted":2},
+            {"event":"serc:136","entity":"team:1834","position":3,"points":3,"adjusted":6}
+          ]
+        }
+      ]
+    },
+    "sheet:251": {
+      "name": "Adult Ladies Pairs",
+      "results": [
+        {
+          "entity": "team:1837",
+          "name": "Competitor 15, Competitor 16 - Ipswich Lifesaving Club (Adult Ladies Pairs)",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:201","entity":"competitor:1248","position":1,"points":1,"adjusted":1},
+            {"event":"speed:202","entity":"competitor:1248","position":1,"points":1,"adjusted":1},
+            {"event":"serc:135","entity":"team:1837","position":1,"points":1,"adjusted":1},
+            {"event":"serc:136","entity":"team:1837","position":1,"points":1,"adjusted":2}
+          ]
+        }
+      ]
+    },
+    "sheet:252": {
+      "name": "Adult Open Pairs",
+      "results": [
+        {
+          "entity": "team:1838",
+          "name": "Competitor 17, Competitor 18 - Ipswich Lifesaving Club (Adult Open Pairs)",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:201","entity":"competitor:1250","position":1,"points":1,"adjusted":1},
+            {"event":"speed:202","entity":"competitor:1250","position":1,"points":1,"adjusted":1},
+            {"event":"serc:135","entity":"team:1838","position":1,"points":1,"adjusted":1},
+            {"event":"serc:136","entity":"team:1838","position":1,"points":1,"adjusted":2}
+          ]
+        }
+      ]
+    },
+    "sheet:253": {
+      "name": "Ladies",
+      "results": [
+        {
+          "entity": "team:1839",
+          "name": "Competitor 19 - Ipswich Lifesaving Club (Ladies)",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:201","entity":"competitor:1252","position":1,"points":1,"adjusted":1},
+            {"event":"speed:202","entity":"competitor:1252","position":1,"points":1,"adjusted":1},
+            {"event":"serc:135","entity":"team:1839","position":1,"points":1,"adjusted":1},
+            {"event":"serc:136","entity":"team:1839","position":1,"points":1,"adjusted":2}
+          ]
+        }
+      ]
+    },
+    "sheet:254": {
+      "name": "Open",
+      "results": [
+        {
+          "entity": "team:1841",
+          "name": "Competitor 21 - Ipswich Lifesaving Club (Open)",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:201","entity":"competitor:1254","position":1,"points":1,"adjusted":1},
+            {"event":"speed:202","entity":"competitor:1254","position":1,"points":1,"adjusted":1},
+            {"event":"serc:135","entity":"team:1841","position":1,"points":1,"adjusted":1},
+            {"event":"serc:136","entity":"team:1841","position":1,"points":1,"adjusted":2}
+          ]
+        },
+        {
+          "entity": "team:1840",
+          "name": "Competitor 20 - Sudbury Lifesaving Club (Open)",
+          "total": 9,
+          "position": 2,
+          "events": [
+            {"event":"speed:201","entity":"competitor:1253","position":1,"points":1,"adjusted":1},
+            {"event":"speed:202","entity":"competitor:1253","position":2,"points":2,"adjusted":2},
+            {"event":"serc:135","entity":"team:1840","position":2,"points":2,"adjusted":2},
+            {"event":"serc:136","entity":"team:1840","position":2,"points":2,"adjusted":4}
+          ]
+        }
+      ]
+    },
+    "sheet:255": {
+      "name": "Masters Ladies 30-39",
+      "results": [
+        {
+          "entity": "team:1842",
+          "name": "Competitor 22 - Ipswich Lifesaving Club (Masters Ladies 30-39)",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:201","entity":"competitor:1255","position":1,"points":1,"adjusted":1},
+            {"event":"speed:202","entity":"competitor:1255","position":1,"points":1,"adjusted":1},
+            {"event":"serc:135","entity":"team:1842","position":1,"points":1,"adjusted":1},
+            {"event":"serc:136","entity":"team:1842","position":1,"points":1,"adjusted":2}
+          ]
+        }
+      ]
+    },
+    "sheet:260": {
+      "name": "Masters Open 50-59",
+      "results": [
+        {
+          "entity": "team:1843",
+          "name": "Competitor 23 - Ipswich Lifesaving Club (Masters Open 50-59)",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:201","entity":"competitor:1256","position":1,"points":1,"adjusted":1},
+            {"event":"speed:202","entity":"competitor:1256","position":1,"points":1,"adjusted":1},
+            {"event":"serc:135","entity":"team:1843","position":1,"points":1,"adjusted":1},
+            {"event":"serc:136","entity":"team:1843","position":1,"points":1,"adjusted":2}
+          ]
+        }
+      ]
+    },
+    "sheet:261": {
+      "name": "Masters Ladies 60-69",
+      "results": [
+        {
+          "entity": "team:1844",
+          "name": "Competitor 24 - Ipswich Lifesaving Club (Masters Ladies 60-69)",
+          "total": 5,
+          "position": 1,
+          "events": [
+            {"event":"speed:201","entity":"competitor:1257","position":1,"points":1,"adjusted":1},
+            {"event":"speed:202","entity":"competitor:1257","position":1,"points":1,"adjusted":1},
+            {"event":"serc:135","entity":"team:1844","position":1,"points":1,"adjusted":1},
+            {"event":"serc:136","entity":"team:1844","position":1,"points":1,"adjusted":2}
+          ]
+        }
+      ]
+    }
+  },
+  "masters": []
+}

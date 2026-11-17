@@ -2,7 +2,13 @@
 
 namespace App\Http\Controllers\Landing;
 
-use App\DTO\RankedResult;
+use App\Scoring\CompetitionResults;
+use App\Scoring\Results\EventResult;
+use App\Scoring\Results\EventResultPart;
+use App\Scoring\Results\MasterRow;
+use App\Scoring\Results\SheetRow;
+use App\Scoring\Results\SheetRowEvent;
+use App\Scoring\Results\Violation;
 use App\Exceptions\ScoringException;
 use App\Http\Controllers\Controller;
 use App\Models\AbstractClasses\Event;
@@ -67,11 +73,11 @@ class ResultsController extends Controller
             return response()->json(['error' => 'Results unavailable at this time, please try again later.'], 403);
         }
 
-        $results = $event->getRankedResults($league);
+        $results = app(CompetitionResults::class)->event($event, $league);
 
         $show_dq_points = $event->scoringSchema->schema['allow_disqualified_to_rank'] ?? false;
 
-        return response()->json($this->tablify($comp, $results, $target_columns, $type, $show_dq_points));
+        return response()->json($this->tablify($results, $target_columns, $type, $show_dq_points));
     }
 
     public function getSheetResults(Competition $comp, ResultSchema $schema)
@@ -82,29 +88,31 @@ class ResultsController extends Controller
         }
 
         try {
-            $rawResults = $schema->getResults();
+            $rows = app(CompetitionResults::class)->sheet($schema);
         } catch (ScoringException $e) {
             report($e);
 
             return response()->json(['error' => 'Results unavailable at this time, please try again later. (S_ERR)'], 403);
         }
 
-        $results = $rawResults->map(function ($r) use ($comp) {
-            return [
-                'name' => $r->entity->getName($comp),
-                'points' => round($r->totalPoints, 1),
-                'position' => $r->position,
-                ...$r->events->mapWithKeys(fn($res) => [
-                    "{$res->event->id}:{$res->event->getType()}" => [
-                        'position' => $res->position,
-                        'points' => round($res->adjustedPoints, 1),
-                    ],
-                ]),
-            ];
-        });
+        $results = array_map(fn(SheetRow $row) => [
+            'name' => $row->entry->name,
+            'points' => round($row->totalPoints, 1),
+            'position' => $row->position,
+            ...collect($row->events)->mapWithKeys(fn(SheetRowEvent $event) => [
+                $event->eventKey() => [
+                    'position' => $event->position,
+                    'points' => round($event->adjustedPoints, 1),
+                ],
+            ]),
+        ], $rows);
 
         return response()->json([
-            'columns' => array_merge(['name' => 'Name'], $rawResults->first()?->events->mapWithKeys(fn($e) => ["{$e->event->id}:{$e->event->getType()}" => $e->event->getName()])->toArray() ?? [], ['points' => 'Points', 'position' => 'Position']),
+            'columns' => array_merge(
+                ['name' => 'Name'],
+                collect($rows[0]->events ?? [])->mapWithKeys(fn(SheetRowEvent $event) => [$event->eventKey() => $event->eventName])->toArray(),
+                ['points' => 'Points', 'position' => 'Position'],
+            ),
             'data' => $results,
         ]);
     }
@@ -116,15 +124,11 @@ class ResultsController extends Controller
             return response()->json(['error' => 'Results unavailable at this time, please try again later.'], 403);
         }
 
-        $rawResults = $schema->getResults();
-
-        $results = $rawResults->map(function ($r) use ($comp) {
-            return [
-                'name' => $r->entity->getName($comp),
-                'points' => $r->total,
-                'position' => $r->position,
-            ];
-        });
+        $results = array_map(fn(MasterRow $row) => [
+            'name' => $row->club->name,
+            'points' => $row->total,
+            'position' => $row->position,
+        ], app(CompetitionResults::class)->master($schema)->rows);
 
         return response()->json([
             'columns' => array_merge(['name' => 'Name'], ['points' => 'Points', 'position' => 'Position']),
@@ -206,14 +210,14 @@ class ResultsController extends Controller
 
 
     /**
-     * @param RankedResult[] $results
+     * @param EventResult[] $results
      */
-    private function tablify(Competition $comp, array $results, array $use_columns, string $type, bool $show_dq_points = false)
+    private function tablify(array $results, array $use_columns, string $type, bool $show_dq_points = false)
     {
-        $t = new Tablify($comp, $type, $show_dq_points);
+        $t = new Tablify($type, $show_dq_points);
 
-        return $t->from($use_columns, $results, function ($row) {
-            return $row->entity->id;
+        return $t->from($use_columns, $results, function (EventResult $row) {
+            return $row->entry->id;
         });
     }
 }
@@ -231,16 +235,17 @@ class Tablify
     ];
 
     private $event_type;
-    private Competition $comp;
     private bool $show_dq_points;
 
-    public function __construct(Competition $comp, $event_type = 'speed', $show_dq_points = false)
+    public function __construct($event_type = 'speed', $show_dq_points = false)
     {
-        $this->comp = $comp;
         $this->event_type = $event_type;
         $this->show_dq_points = $show_dq_points;
     }
 
+    /**
+     * @param EventResult[] $results
+     */
     public function from(array $use_columns, array $results, $row_id_func = null)
     {
         $table_data = [];
@@ -274,62 +279,58 @@ class Tablify
         ];
     }
 
-    private function resolveColumnData($column, $result)
+    private function resolveColumnData($column, EventResult $result)
     {
-
-        $is_combined = $result->isCombined();
-
         return match ($column) {
-            'name' => $is_combined ? ['type' => 'string-array', 'data' => $result->combined->map(fn($item) => $item->entity->getName($this->comp))->toArray()] : $result->entity->getName($this->comp),
+            'name' => $result->isCombined()
+                ? ['type' => 'string-array', 'data' => array_map(fn(EventResultPart $part) => $part->entry->name, $result->parts)]
+                : $result->entry->name,
             'position' => $result->position,
             'points' => $result->isDisqualified() && !$this->show_dq_points ? 'DQ' : round($result->points, 1),
-            'result' => $this->resolveResult($result, $is_combined),
-            'disqualifications' => $this->resolveDisqualifications($result, $is_combined),
+            'result' => $this->resolveResult($result),
+            'disqualifications' => $this->resolveDisqualifications($result),
             'penalties' => $this->resolvePenalties($result),
             default => null,
         };
     }
 
-    private function resolveResult($result, $combined = false)
+    private function resolveResult(EventResult $result)
     {
         $type = $this->event_type;
         $data = ['is' => $type == 'speed' ? SpeedResult::prettyTime($result->resolvedResult) : $result->resolvedResult, 'was' => $type == 'speed' ? SpeedResult::prettyTime($result->result) : $result->result];
 
         $result_type = 'result';
 
-        if ($combined) {
+        if ($result->isCombined()) {
             $result_type = 'result-combined';
             $data['combined'] = [
-                'results' => $result->combined->map(fn($item) => SpeedResult::prettyTime($item->result))->toArray(),
-                'dqs' => $result->combined->map(fn($item) => $item->getDisqualificationsString() ?: '-')->toArray(),
+                'results' => array_map(fn(EventResultPart $part) => SpeedResult::prettyTime($part->result), $result->parts),
+                'dqs' => array_map(fn(EventResultPart $part) => $part->disqualificationLabel() ?: '-', $result->parts),
             ];
         }
 
         return ['type' => $result_type, 'data' => $data];
     }
 
-    private function resolveDisqualifications($result, $combined = false)
+    private function resolveDisqualifications(EventResult $result)
     {
+        $links = fn(array $dqs) => array_map(fn(Violation $dq) => ['display' => $dq->label(), 'id' => $dq->id, 'type' => 'dq'], $dqs);
 
-
-
-        if ($combined) {
-            return ['type' => 'violation-combined', 'data' => $result->combined->map(function ($item) {
-                if (!$item->isDisqualified()) {
-                    return '-';
-                }
-                return $item->disqualifications->map(fn(Disqualification $dq) => ['display' => "{$dq}", 'id' => $dq->id, 'type' => 'dq'])->values()->toArray();
-            })->toArray()];
+        if ($result->isCombined()) {
+            return ['type' => 'violation-combined', 'data' => array_map(
+                fn(EventResultPart $part) => $part->isDisqualified() ? $links($part->disqualifications) : '-',
+                $result->parts,
+            )];
         }
 
         if (!$result->isDisqualified()) {
             return '-';
         }
 
-        return ['type' => 'violation', 'data' => $result->disqualifications->map(fn(Disqualification $dq) => ['display' => "{$dq}", 'id' => $dq->id, 'type' => 'dq'])->values()->toArray()];
+        return ['type' => 'violation', 'data' => $links($result->disqualifications)];
     }
 
-    private function resolvePenalties($result)
+    private function resolvePenalties(EventResult $result)
     {
         if (!$result->hasPenalties()) {
             return '-';
@@ -339,14 +340,14 @@ class Tablify
         $penalties = $result->penalties;
 
         // Check for P900, remove all of them and add a single entry with the count if more than 1
-        $p900Count = $penalties->where('code', '900')->count();
+        $p900Count = count(array_filter($penalties, fn(Violation $pen) => $pen->code == '900'));
         if ($p900Count > 1) {
-            $penalties = $penalties->filter(fn($pen) => $pen->code != '900');
+            $penalties = array_filter($penalties, fn(Violation $pen) => $pen->code != '900');
             $penaltie_values[] = ['display' => "P900 (x$p900Count)", 'id' => 900, 'type' => 'pen-special'];
         }
 
         foreach ($penalties as $penalty) {
-            $penaltie_values[] = ['display' => "{$penalty}", 'id' => $penalty->id, 'type' => 'pen'];
+            $penaltie_values[] = ['display' => $penalty->label(), 'id' => $penalty->id, 'type' => 'pen'];
         }
 
 

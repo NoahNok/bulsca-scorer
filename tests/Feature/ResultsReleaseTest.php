@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Helpers\RouteHelpers;
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
 use App\Models\CompetitionTeam;
@@ -142,32 +143,21 @@ class ResultsReleaseTest extends TestCase
         $this->get(route('landing.competition.results.get', ['comp' => $theirs['comp'], 'league' => 'all', 'event' => $this->serc->id, 'type' => 'serc']))->assertForbidden();
     }
 
-    public function test_results_site_hides_unreleased_events_and_their_notes(): void
+    public function test_the_old_results_sites_pages_send_you_to_the_main_site(): void
     {
-        $this->comp->public_results = true;
-        $this->comp->save();
-        $this->serc->viewable = false;
-        $this->serc->save();
+        $slug = $this->comp->resultsSlug();
+        $results = RouteHelpers::mainRoute('landing.competition.results', $slug);
 
-        $this->get(route('public.results.serc', ['comp' => $this->comp->resultsSlug(), 'event' => $this->serc]))->assertNotFound();
-        $this->get(route('public.results.serc', ['comp' => $this->comp->resultsSlug(), 'event' => $this->serc, 'dlCSV' => 1]))->assertNotFound();
-        $this->get(route('public.results.serc.entity-notes', ['comp' => $this->comp->resultsSlug(), 'event' => $this->serc, 'entity_id' => $this->team->id]))->assertNotFound();
-
-        $this->release($this->comp, $this->serc);
-
-        $this->get(route('public.results.serc.entity-notes', ['comp' => $this->comp->resultsSlug(), 'event' => $this->serc, 'entity_id' => $this->team->id]))->assertOk();
+        $this->get(route('public.results'))->assertRedirect(RouteHelpers::mainRoute('explore'))->assertStatus(301);
+        $this->get(route('public.results.comp', $slug))->assertRedirect($results)->assertStatus(301);
+        $this->get(route('public.results.speed', [$slug, 1]))->assertRedirect($results);
+        $this->get(route('public.results.results', [$slug, 1]))->assertRedirect($results);
+        $this->get(route('public.results.serc', ['comp' => $slug, 'event' => $this->serc]))
+            ->assertRedirect(RouteHelpers::mainRoute('landing.competition.results.breakdown.serc', [$slug, $this->serc->id]));
+        $this->get(route('public.results.serc.entity-notes', ['comp' => $slug, 'event' => $this->serc, 'entity_id' => $this->team->id]))
+            ->assertRedirect(RouteHelpers::mainRoute('landing.competition.results.notes.serc', [$slug, $this->serc->id, $this->team->id]));
     }
 
-    public function test_results_site_cant_reach_another_competitions_events(): void
-    {
-        $theirs = $this->competition('Their Competition');
-        $this->release($theirs['comp'], $theirs['serc']);
-        $this->serc->viewable = true;
-        $this->serc->save();
-
-        $this->get(route('public.results.serc', ['comp' => $theirs['comp']->resultsSlug(), 'event' => $this->serc]))->assertNotFound();
-        $this->get(route('public.results.serc.entity-notes', ['comp' => $theirs['comp']->resultsSlug(), 'event' => $this->serc, 'entity_id' => $this->team->id]))->assertNotFound();
-    }
     private function speedDqSubmission(?bool $resolved, bool $viewable): JudgeDQSubmission
     {
         $base = new SpeedEvent();

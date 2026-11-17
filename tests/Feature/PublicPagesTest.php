@@ -432,11 +432,11 @@ class PublicPagesTest extends TestCase
         $this->get('/')
             ->assertOk()
             ->assertSee('href="' . route('manage.home') . '">Sign in</a>', false)
-            ->assertSee('href="' . route('dj.home') . '"', false)
+            ->assertSee('href="' . route('judge.login') . '"', false)
             ->assertSee('href="' . route('explore') . '"', false);
 
         $this->assertStringStartsWith('http://' . RouteHelpers::domainRemap('app.'), route('manage.home'));
-        $this->assertStringStartsWith('http://' . RouteHelpers::domainRemap('judge.'), route('dj.home'));
+        $this->assertStringStartsWith('http://' . RouteHelpers::domainRemap('judge.'), route('judge.login'));
     }
 
     public function test_follow_live_shows_only_for_competitions_the_live_pages_will_open_today(): void

@@ -2,9 +2,6 @@
 
 namespace App\Models;
 
-use App\DTO\DQ;
-use App\DTO\Result;
-use App\DTO\SERCResult as DTOSERCResult;
 use App\Models\AbstractClasses\Resultable;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -32,17 +29,6 @@ class SERCResult extends Resultable
     public function disqualifications()
     {
         return null;
-    }
-
-    public function transformToResult(): Result
-    {
-        return new DTOSERCResult(
-            $this->id,
-            $this->result,
-            $this->getMarkingPoint,
-            $this->entity,
-            $this->getSerc,
-        );
     }
 
     public function entity()

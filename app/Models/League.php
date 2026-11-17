@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\AbstractClasses\Entity;
+use App\Models\Pivots\Leagueable;
 use App\Traits\Cloneable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -24,12 +25,12 @@ class League extends Model
             'leagueables',
             'league_id',   // League's key on pivot
             'entity_id'    // Organisation's key on pivot
-        );
+        )->using(Leagueable::class);
     }
 
     public function competitors()
     {
-        return $this->morphedByMany(Competitor::class, 'entity', 'leagueables', 'league_id', 'entity_id');
+        return $this->morphedByMany(Competitor::class, 'entity', 'leagueables', 'league_id', 'entity_id')->using(Leagueable::class);
     }
 
     public function entityCount(): array

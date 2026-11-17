@@ -29,4 +29,13 @@ storage/logs/*.log
 /*.csv
 /public/*.csv
 /.cache
+
+# Database dumps (production data)
+/*.sql
 scoring.sql
+
+# Claude Code settings for this machine only
+/.claude/settings.local.json
+
+# Windows download metadata
+*:Zone.Identifier

@@ -15,7 +15,7 @@
             <tbody>
                 @foreach ($results as $result)
                     <tr>
-                        <td class="py-2 px-2 border text-left font-semibold">{{ $result->entity->getName($comp) }}</td>
+                        <td class="py-2 px-2 border text-left font-semibold">{{ $result->entry->name }}</td>
                         <td class="py-2 px-2 border">{{ round($result->totalPoints) }}</td>
                         <td class="py-2 px-2 border">{{ $result->position }}</td>
                     </tr>
