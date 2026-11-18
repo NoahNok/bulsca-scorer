@@ -6,6 +6,7 @@
     - .pack-section starts a new page (each Pool, event or SERC).
     - .pack-block is never split across pages; blocks flow until a page is full.
     - .pack-page puts one block on each page.
+    - .entry-name caps a team/entry name to 3 lines in a 40–70mm column.
 --}}
 <!DOCTYPE html>
 <html lang="en">
@@ -47,6 +48,18 @@
 
         tr {
             break-inside: avoid;
+        }
+
+        /* Team/entry names in a table's first column: wrap to at most 3 lines in a capped column, then cut off */
+        .entry-name {
+            min-width: 40mm;
+            max-width: 70mm;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 3;
+            overflow: hidden;
+            /* break-word, not anywhere: anywhere lets the table squash the column to one letter */
+            overflow-wrap: break-word;
         }
     </style>
 </head>

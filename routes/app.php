@@ -182,6 +182,8 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
 
                                 Route::get('/results/{entity}', [SercEventController::class, 'marks'])->whereNumber('entity')->name('marks');
                                 Route::post('/results/{entity}', [SercEventController::class, 'saveMarks'])->whereNumber('entity')->name('marks.save');
+                                // Clearing every mark at once is for Organisers (and Admins) only
+                                Route::delete('/results/{entity}', [SercEventController::class, 'clearMarks'])->whereNumber('entity')->middleware('can:access,comp,"admin"')->name('marks.clear');
                                 Route::get('/mark-splits', [SercEventController::class, 'markSplits'])->name('mark-splits');
                                 Route::get('/league-objectives', [SercEventController::class, 'leagueObjectives'])->name('league-objectives');
 
@@ -238,6 +240,7 @@ Route::domain(RouteHelpers::domainRemap("app."))->group(function () {
                         Route::post('', [MasterSheetsController::class, 'update'])->name('update');
                         Route::post('/visibility', [MasterSheetsController::class, 'visibility'])->name('visibility');
                         Route::delete('', [MasterSheetsController::class, 'destroy'])->name('destroy');
+                        Route::get('/print', [ResultsPrintoutController::class, 'master'])->name('print');
                     });
                 });
 

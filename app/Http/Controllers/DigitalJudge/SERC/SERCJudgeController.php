@@ -513,10 +513,21 @@ class SERCJudgeController extends Controller
     {
         $judges = DigitalJudge::getClientJudges();
 
-        $notes = $judges->map(function ($judge) use ($competition, $serc) {
+        // Only show notes for entries in the Tank this judge is marking
+        $tank = DigitalJudge::getTank();
+        $tankEntities = $tank == null ? null : $serc->getDraw()->where('tank', $tank)->get(['entity_type', 'entity_id'])
+            ->map(fn($draw) => $draw->entity_type . ':' . $draw->entity_id);
+
+        $notes = $judges->map(function ($judge) use ($competition, $serc, $tankEntities) {
+            $judgeNotes = $judge->getNotes()->with('entity')->get(['note', 'entity_id', 'entity_type']);
+
+            if ($tankEntities !== null) {
+                $judgeNotes = $judgeNotes->filter(fn($note) => $tankEntities->contains($note->entity_type . ':' . $note->entity_id))->values();
+            }
+
             return [
                 'name' => $judge->name,
-                'notes' => $judge->getNotes()->with('entity')->get(['note', 'entity_id', 'entity_type'])->map(function ($note) use ($competition, $serc) {
+                'notes' => $judgeNotes->map(function ($note) use ($competition, $serc) {
                     return [
                         'entity' => $this->entityForJudges($competition, $serc, $note->entity),
                         'note' => $note->note
@@ -538,6 +549,11 @@ class SERCJudgeController extends Controller
             $markingPoints = $judge->getMarkingPoints;
             $draws = $judge->getSERC->getDraw;
 
+            // Only show the Tank this judge is marking
+            $tank = DigitalJudge::getTank();
+            if ($tank != null) {
+                $draws = $draws->where('tank', $tank);
+            }
 
             foreach ($markingPoints as $mp) {
 

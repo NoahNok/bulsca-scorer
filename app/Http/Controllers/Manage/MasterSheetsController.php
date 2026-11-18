@@ -44,6 +44,7 @@ class MasterSheetsController extends Controller
                 'total' => round($result->total, 1),
                 'position' => $result->position,
             ])->values(),
+            'printUrl' => route('manage.competitions.results.master.print', [$comp, $master]),
             // Set by getResults(), so after it
             'withoutClub' => collect($master->withoutClub)->map(fn ($names, $sheet) => ['sheet' => $sheet, 'names' => $names])->values(),
             ...ResultSheetsController::confirmation($comp),

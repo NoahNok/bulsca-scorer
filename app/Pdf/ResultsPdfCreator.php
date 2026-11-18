@@ -4,6 +4,7 @@ namespace App\Pdf;
 
 use App\Models\Competition;
 use App\Models\CompetitionSpeedEvent;
+use App\Models\MasterSchema;
 use App\Models\ResultSchema;
 use App\Models\SERC;
 use Spatie\LaravelPdf\Enums\Orientation;
@@ -80,13 +81,44 @@ class ResultsPdfCreator
     }
 
     /**
-     * Every Results sheet's Breakdown in one PDF, including sheets hidden from results
+     * A Master sheet: each Club's value from every Results sheet in it, with the total and place
+     */
+    public function master(MasterSchema $master): PdfBuilder
+    {
+        return $this->printout('pdfs.results.breakdown', $master->name, [
+            'sections' => $this->masterSections([$master]),
+        ], Orientation::Landscape);
+    }
+
+    /**
+     * Every Results sheet's Breakdown then every Master sheet in one PDF, including sheets hidden from results
      */
     public function allSheets(): PdfBuilder
     {
         return $this->printout('pdfs.results.breakdown', 'All Results sheets', [
-            'sections' => $this->breakdownSections($this->comp->getResultSchemas()->orderBy('id')->get()),
+            'sections' => [
+                ...$this->breakdownSections($this->comp->getResultSchemas()->orderBy('id')->get()),
+                ...$this->masterSections($this->comp->getMasterSchemas()->orderBy('id')->get()),
+            ],
         ], Orientation::Landscape);
+    }
+
+    /**
+     * A section per Master sheet, leaving out sheets with no Clubs to rank
+     */
+    private function masterSections(iterable $masters): array
+    {
+        $sections = [];
+
+        foreach ($masters as $master) {
+            $results = $master->getResults();
+
+            if (count($results) > 0) {
+                $sections[] = ['title' => $master->name, 'master' => true, 'sheets' => $master->getSheets(), 'results' => $results];
+            }
+        }
+
+        return $sections;
     }
 
     /**

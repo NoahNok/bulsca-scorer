@@ -349,6 +349,94 @@ class SercEventPageTest extends TestCase
         $this->actingAs($this->organiser)->post($this->url('/results/' . $b->id), ['marks' => []])->assertRedirect($this->url());
     }
 
+    public function test_an_organiser_can_clear_an_entitys_marks(): void
+    {
+        [$a, $b] = $this->teams;
+        $this->mark($a, $this->markingPoints[0], 7);
+        $this->mark($a, $this->markingPoints[1], 5);
+        $this->mark($b, $this->markingPoints[0], 3);
+        $this->serc->addEntityDisqualification($a, 101);
+
+        $this->actingAs($this->organiser)->get($this->url('/results/' . $a->id))
+            ->assertInertia(fn (Assert $page) => $page->where('canClear', true));
+
+        $this->actingAs($this->organiser)->delete($this->url('/results/' . $a->id))
+            ->assertRedirect($this->url('/results/' . $a->id))->assertSessionHas('success');
+
+        $this->assertSame(0, SERCResult::forEntity($a)->count());
+        // Another Entity's marks and its DQ stay
+        $this->assertSame(1, SERCResult::forEntity($b)->count());
+        $this->assertSame('DQ101', (string) $this->serc->getEntityDisqualifications($a)->sole());
+        $activity = \App\Models\Activity\Activity::where('activity', 'SERC_RESULT_UPDATED')->sole();
+        $this->assertCount(2, $activity->context['changes']);
+    }
+
+    public function test_only_organisers_can_clear_marks(): void
+    {
+        $a = $this->teams[0];
+        $this->mark($a, $this->markingPoints[0], 7);
+
+        $marker = User::factory()->create();
+        $this->comp->addAccount($marker, ['serc']);
+
+        $this->actingAs($marker)->get($this->url('/results/' . $a->id))
+            ->assertInertia(fn (Assert $page) => $page->where('canClear', false));
+        $this->actingAs($marker)->delete($this->url('/results/' . $a->id))->assertForbidden();
+        $this->actingAs($this->writer())->delete($this->url('/results/' . $a->id))->assertForbidden();
+        $this->assertSame(1, SERCResult::forEntity($a)->count());
+
+        $admin = User::factory()->create(['admin' => true]);
+        $this->actingAs($admin)->delete($this->url('/results/' . $a->id))->assertRedirect();
+        $this->assertSame(0, SERCResult::forEntity($a)->count());
+    }
+
+    private function note(?CompetitionTeam $team, string $text, ?int $objective = null): void
+    {
+        $objective ??= $this->markingPoints[0]->judge;
+        $note = $team
+            ? new \App\Models\DigitalJudge\JudgeNote(['judge' => $objective, 'entity_type' => $team->getMorphClass(), 'entity_id' => $team->id])
+            : new \App\Models\DigitalJudge\OverallJudgeNote(['judge' => $objective]);
+        $note->note = $text;
+        $note->save();
+    }
+
+    public function test_judges_notes_show_on_the_serc_and_each_entitys_marks(): void
+    {
+        [$a, $b] = $this->teams;
+        $this->note($b, 'Forgot to check for danger');
+        $this->note(null, 'Busy tank today');
+
+        // Another SERC's notes stay out
+        $other = new SERC();
+        $other->forceFill(['name' => 'Wet', 'type' => 'WET', 'scorable_entity' => 'team', 'competition' => $this->comp->id])->save();
+        $objective = new SERCJudge();
+        $objective->forceFill(['name' => 'Other', 'description' => '', 'serc' => $other->id])->save();
+        $this->note($a, 'Not this SERC', $objective->id);
+
+        $this->actingAs($this->organiser)->get($this->url())
+            ->assertInertia(fn (Assert $page) => $page
+                ->missing('notes')
+                ->reloadOnly('notes', fn (Assert $reload) => $reload
+                ->where('notes.overall.0.note', 'Busy tank today')
+                ->where('notes.overall.0.objective', 'Casualty 1')
+                ->has('notes.entities', 1)
+                ->where('notes.entities.0.name', $b->getName($this->comp))
+                ->where('notes.entities.0.notes.0.note', 'Forgot to check for danger')));
+
+        $this->actingAs($this->organiser)->get($this->url('/results/' . $b->id))
+            ->assertInertia(fn (Assert $page) => $page->has('notes', 1)->where('notes.0.objective', 'Casualty 1'));
+        $this->actingAs($this->organiser)->get($this->url('/results/' . $a->id))
+            ->assertInertia(fn (Assert $page) => $page->has('notes', 0));
+    }
+
+    public function test_a_serc_writer_gets_no_notes(): void
+    {
+        $this->note($this->teams[0], 'Secret');
+
+        $this->actingAs($this->writer())->get($this->url())
+            ->assertInertia(fn (Assert $page) => $page->reloadOnly('notes', fn (Assert $reload) => $reload->where('notes', null)));
+    }
+
     public function test_marks_and_codes_are_checked(): void
     {
         $a = $this->teams[0];

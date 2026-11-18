@@ -2,7 +2,8 @@
     A SERC's page (manage.competitions.events.sercs.show), in CompetitionLayout. Its ranked results (by
     league) and then every Entity in draw order, each opening its marks, fill the left; a column of actions
     on the right links to its setup, mark splits, League Objectives and settings, and holds showing it in
-    results and printing it. A SERC Writer sees the results and only the link to the setup.
+    results and printing it. A SERC Writer sees the results and only the link to the setup. With SERC access,
+    "Judges' notes" in the actions opens every note its judges left.
 -->
 <script lang="ts">
     import { leagueObjectives, markSplits, marks, settings, setup, visibility } from "@/actions/App/Http/Controllers/Manage/SercEventController";
@@ -12,7 +13,8 @@
     import ActionSwitch from "@/manage/components/ActionSwitch.svelte";
     import ChipGroup from "@/manage/components/ChipGroup.svelte";
     import PageHeading from "@/manage/components/PageHeading.svelte";
-    import type { CompetitionHeader, SercEntity, SercEventHeader, SercResultRow } from "@/manage/types";
+    import SercNotesDialog from "@/manage/events/SercNotesDialog.svelte";
+    import type { CompetitionHeader, SercEntity, SercEventHeader, SercNotes, SercResultRow } from "@/manage/types";
     import { leadTable, TARGET_LABELS } from "@/manage/ui";
     import { Link, router } from "@inertiajs/svelte";
 
@@ -28,6 +30,7 @@
         eventsUrl,
         printUrl,
         sheetsUrl,
+        notes,
     }: {
         competition: CompetitionHeader;
         event: SercEventHeader;
@@ -46,6 +49,8 @@
         printUrl: string;
         /** Null without access to printables */
         sheetsUrl: string | null;
+        /** Only once the notes dialog asks for them; null without SERC access */
+        notes?: SercNotes | null;
     } = $props();
 
     const comp = $derived(competition.id);
@@ -64,6 +69,16 @@
 
     function setViewable(viewable: boolean) {
         router.post(visibility({ comp, serc: event.id }).url, { viewable }, { preserveScroll: true });
+    }
+
+    // Notes load the first time the dialog opens, then again each time so new ones show
+    let notesDialog = $state<SercNotesDialog>();
+    let loadingNotes = $state(false);
+
+    function showNotes() {
+        loadingNotes = notes === undefined;
+        notesDialog?.open();
+        router.reload({ only: ["notes"], onFinish: () => (loadingNotes = false) });
     }
 
     const marksUrl = (entity: SercEntity) => marks({ comp, serc: event.id, entity: entity.id }).url;
@@ -259,6 +274,12 @@
                         </li>
                     {/if}
                     <li>
+                        <button type="button" class={sidebarRow} onclick={showNotes}>
+                            Judges' notes
+                            <RowIcon />
+                        </button>
+                    </li>
+                    <li>
                         <Link href={settingsUrl} class={sidebarRow}>
                             Settings
                             <RowIcon />
@@ -290,3 +311,12 @@
         </nav>
     {/snippet}
 </SidebarPage>
+
+{#if event.canManage}
+    <SercNotesDialog
+        bind:this={notesDialog}
+        overall={notes?.overall ?? []}
+        entities={notes?.entities ?? []}
+        loading={loadingNotes}
+    />
+{/if}
