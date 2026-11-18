@@ -1,6 +1,7 @@
 <!--
     An Invite for someone without an account: accepting it creates their account and makes them an
-    Organiser of the competition or organisation. Someone who already has one gets InviteExistingAccount.
+    Organiser of the competition or organisation. Someone who already has one gets InviteExistingAccount,
+    except an unclaimed official-only account (accountName set), which this claims with a password.
 -->
 <script lang="ts">
     import {
@@ -15,6 +16,7 @@
 
     let {
         invite,
+        accountName = null,
     }: {
         invite: {
             id: string;
@@ -22,6 +24,7 @@
             name: string;
             to: "competition" | "organisation";
         };
+        accountName?: string | null;
     } = $props();
 
     const args = $derived({ invite: invite.id, email: invite.email });
@@ -36,7 +39,7 @@
 <h1 class="a-title">Join {invite.name}</h1>
 <p class="a-lead">
     You've been invited to join a {invite.to}. Choose a name and password for
-    your new account.
+    {accountName ? "your account" : "your new account"}.
 </p>
 
 <Form
@@ -58,6 +61,7 @@
             id="name"
             name="name"
             label="Name"
+            value={accountName ?? undefined}
             autocomplete="name"
             required
             minlength={3}
@@ -83,7 +87,7 @@
             required
         />
 
-        <SubmitButton {processing}>Accept and create account</SubmitButton>
+        <SubmitButton {processing}>{accountName ? "Accept and set password" : "Accept and create account"}</SubmitButton>
         <LegalNotice />
     {/snippet}
 </Form>

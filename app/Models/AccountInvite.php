@@ -25,6 +25,17 @@ class AccountInvite extends Model
         return User::where('email', $this->email)->first();
     }
 
+    /**
+     * The account to sign in to before accepting, or null when accepting sets up the account: there's none
+     * for this email yet, or only an unclaimed official-only one, which they claim by choosing a password.
+     */
+    public function getSignInUser(): ?User
+    {
+        $user = $this->getUser();
+
+        return $user?->isUnclaimed() ? null : $user;
+    }
+
     public function getName()
     {
 

@@ -228,4 +228,78 @@ class AccountInviteTest extends TestCase
 
         $this->assertModelExists($this->invite);
     }
+
+    public function test_inviting_an_official_only_account_makes_it_a_full_one(): void
+    {
+        $official = User::factory()->create(['email' => 'sam@example.com', 'judge_only' => true]);
+
+        \Illuminate\Support\Facades\Mail::fake();
+        \App\Http\Controllers\AccountInviteController::invite('sam@example.com', $this->comp, ['access' => 'admin']);
+
+        $this->assertFalse($official->fresh()->isJudgeOnly());
+    }
+
+    public function test_inviting_an_unclaimed_official_only_account_leaves_it_to_be_claimed(): void
+    {
+        $official = User::factory()->unverified()->create(['email' => 'sam@example.com', 'judge_only' => true]);
+
+        \Illuminate\Support\Facades\Mail::fake();
+        \App\Http\Controllers\AccountInviteController::invite('sam@example.com', $this->comp, ['access' => 'admin']);
+
+        $this->assertTrue($official->fresh()->isJudgeOnly());
+    }
+
+    public function test_an_older_invite_to_an_official_only_account_makes_it_a_full_one(): void
+    {
+        $user = $this->existingAccount();
+        $user->update(['judge_only' => true]);
+
+        $this->get(route('invite.show', [$this->invite, 'sam@example.com']))
+            ->assertRedirect(route('login'));
+
+        $this->assertFalse($user->fresh()->isJudgeOnly());
+    }
+
+    public function test_an_unclaimed_official_only_account_claims_itself_from_the_invite(): void
+    {
+        $this->invite->email = 'sam@example.com';
+        $this->invite->save();
+        $official = User::factory()->unverified()->create(['email' => 'sam@example.com', 'name' => 'Sam', 'judge_only' => true]);
+
+        $this->get(route('invite.show', [$this->invite, 'sam@example.com']))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Manage/Auth/InviteNewAccount')
+                ->where('accountName', 'Sam'));
+
+        $this->post(route('manage.invite.accept-new-account', [$this->invite, 'sam@example.com']), [
+            'name' => 'Sam Jones',
+            'password' => 'secret123',
+            'password_confirmation' => 'secret123',
+        ]);
+
+        $official->refresh();
+        $this->assertSame(1, User::where('email', 'sam@example.com')->count());
+        $this->assertFalse($official->isJudgeOnly());
+        $this->assertTrue($official->hasVerifiedEmail());
+        $this->assertSame('Sam Jones', $official->name);
+        $this->assertAuthenticatedAs($official);
+        $this->assertModelMissing($this->invite);
+        $this->assertDatabaseHas('user_competition_accesses', ['user' => $official->id, 'competition' => $this->comp->id, 'access_to' => 'admin']);
+    }
+
+    public function test_a_claimed_account_cant_be_taken_over_with_the_new_account_form(): void
+    {
+        $user = $this->existingAccount();
+        $password = $user->password;
+
+        $this->post(route('manage.invite.accept-new-account', [$this->invite, 'sam@example.com']), [
+            'name' => 'Someone',
+            'password' => 'secret123',
+            'password_confirmation' => 'secret123',
+        ])->assertRedirect(route('invite.show', [$this->invite, 'sam@example.com']));
+
+        $this->assertSame($password, $user->fresh()->password);
+        $this->assertModelExists($this->invite);
+    }
 }

@@ -205,8 +205,7 @@ class AdminUsersController extends Controller
             return back()->with('success', "{$user->name} already has a full account");
         }
 
-        $user->judge_only = false;
-        $user->save();
+        $user->makeFullAccount();
 
         return back()->with('success', "{$user->name} now has a full account");
     }
