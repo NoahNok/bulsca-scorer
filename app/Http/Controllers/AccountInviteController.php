@@ -28,9 +28,11 @@ class AccountInviteController extends Controller
             return self::invalidInvite();
         }
 
-        $user = $invite->getUser();
+        $user = $invite->getSignInUser();
 
         if ($user) {
+            // invites sent before official-only accounts were made full when invited
+            $user->makeFullAccount();
 
             if (!Auth::check()) {
                 return redirect()->guest(route('login'));
@@ -50,6 +52,8 @@ class AccountInviteController extends Controller
                 'name' => $invite->getName(),
                 'to' => $invite->to instanceof Organisation ? 'organisation' : 'competition',
             ],
+            // an unclaimed official-only account's name, which the new account form starts with
+            'accountName' => $user ? null : $invite->getUser()?->name,
         ]);
     }
 
@@ -89,10 +93,13 @@ class AccountInviteController extends Controller
 
         $validated = $request->validated();
 
-        $user = new User();
+        // an unclaimed official-only account becomes theirs: the invite reached their inbox, so they own the email
+        $user = $invite->getUser() ?? new User();
         $user->name = $validated['name'];
         $user->email = $invite->email;
         $user->password = Hash::make($validated['password']);
+        $user->judge_only = false;
+        $user->email_verified_at ??= now();
         $user->save();
 
         if (!$invite->to instanceof IInvitable) {
@@ -134,7 +141,7 @@ class AccountInviteController extends Controller
             return redirect()->guest(route('login'));
         }
 
-        if (Auth::user()->id != $invite->getUser()?->id) {
+        if (Auth::user()->id != $invite->getSignInUser()?->id) {
             return self::wrongAccount();
         }
 
@@ -148,6 +155,11 @@ class AccountInviteController extends Controller
     {
         if (!self::isUsable($invite, $email)) {
             return self::invalidInvite();
+        }
+
+        // the email has an account they can sign in to, so the invite is accepted from that
+        if ($invite->getSignInUser()) {
+            return redirect()->route('invite.show', [$invite, $email]);
         }
 
         if (Auth::check()) {
@@ -196,7 +208,12 @@ class AccountInviteController extends Controller
     public static function invite(string $email, Model $to, array $details)
     {
 
+        // an official-only account can't sign in to the Management app to accept, so it's made a full one.
+        // An unclaimed one is left: it has no password to sign in with, so it's claimed from the invite page.
         $user = User::where('email', $email)->first();
+        if ($user && !$user->isUnclaimed()) {
+            $user->makeFullAccount();
+        }
 
         $ac = new AccountInvite();
         $ac->email = $email;

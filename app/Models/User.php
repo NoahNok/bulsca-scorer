@@ -90,6 +90,26 @@ class User extends Authenticatable
     }
 
     /**
+     * Let an official-only account sign in to the Management app as well as Digital Judge.
+     */
+    public function makeFullAccount(): void
+    {
+        if ($this->isJudgeOnly()) {
+            $this->judge_only = false;
+            $this->save();
+        }
+    }
+
+    /**
+     * An official-only account nobody has claimed yet: made by an Organiser adding an official, or a
+     * Digital Judge sign up whose PIN was never entered. Its password is random, so nobody can sign in with it.
+     */
+    public function isUnclaimed(): bool
+    {
+        return $this->isJudgeOnly() && !$this->hasVerifiedEmail();
+    }
+
+    /**
      * Sign out every other device, leaving the one making this request signed in.
      */
     public function logoutOtherDevices(): void
